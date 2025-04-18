@@ -6,7 +6,10 @@
     <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src\UnshackledWord.Domain\UnshackledWord.Domain.csproj" Type="Classic C#" />
     <Project Path="src\UnshackledWord.Tooling.SeedDb\UnshackledWord.Tooling.SeedDb.csproj" Type="Classic C#" />
+    <Project Path="UnshackledWord.Application\UnshackledWord.Application.csproj" Type="Classic C#" />
+    <Project Path="UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/tests/" />
 </Solution>

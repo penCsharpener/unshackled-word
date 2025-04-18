@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-UnshackledWord.Tooling.SeedDb-ff6e585f-9657-42a0-905e-72d15cbc893f</UserSecretsId>
     </PropertyGroup>
 
@@ -11,5 +8,10 @@
         <PackageReference Include="Microsoft.Extensions.Hosting"/>
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Sinks.Async" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\UnshackledWord.Application\UnshackledWord.Application.csproj" />
+      <ProjectReference Include="..\..\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" />
     </ItemGroup>
 </Project>
