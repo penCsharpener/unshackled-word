@@ -1,0 +1,10 @@
+﻿version: '3.8'
+
+services:
+  worker:
+    image: myworkerservice:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DOTNET_ENVIRONMENT=Development
