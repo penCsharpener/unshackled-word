@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
 
-namespace UnshackledWord.Infrastructure.Services;
+namespace UnshackledWord.Tooling.SeedDb.Services;
 
 public class GithubFileDownloader : IFileDownloader
 {
@@ -20,9 +19,10 @@ public class GithubFileDownloader : IFileDownloader
         _options = options.Value;
     }
 
-    public async Task DownloadFileAsync(CancellationToken token = default)
+    public async Task<List<string>> DownloadFileAsync(CancellationToken token = default)
     {
         EnsurePath();
+        var fileList = new List<string>();
 
         foreach (var file in _options.DatabaseSeeding.SRFileUrls)
         {
@@ -31,6 +31,7 @@ public class GithubFileDownloader : IFileDownloader
 
             if (_fileService.FileExists(filePath))
             {
+                fileList.Add(filePath);
                 continue;
             }
 
@@ -44,7 +45,10 @@ public class GithubFileDownloader : IFileDownloader
 
             await using var httpStream = await response.Content.ReadAsStreamAsync(token);
             await httpStream.CopyToAsync(fileStream, token);
+            fileList.Add(filePath);
         }
+
+        return fileList;
     }
 
     public void EnsurePath()

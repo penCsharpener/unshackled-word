@@ -2,5 +2,5 @@
 
 public interface IFileDownloader
 {
-    Task DownloadFileAsync(CancellationToken token = default);
+    Task<List<string>> DownloadFileAsync(CancellationToken token = default);
 }

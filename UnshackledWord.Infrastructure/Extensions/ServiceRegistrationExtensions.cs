@@ -10,10 +10,6 @@ public static class ServiceRegistrationExtensions
     {
         services.AddSingleton<IFileService, FileService>();
         services.AddSingleton<IUnzipService, UnzipService>();
-        services.AddHttpClient<IFileDownloader, GithubFileDownloader>(client =>
-        {
-            client.BaseAddress = new Uri("https://github.com/");
-        });
         return services;
     }
 }
