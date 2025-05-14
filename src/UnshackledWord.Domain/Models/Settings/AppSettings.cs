@@ -14,4 +14,13 @@ public sealed class DatabaseSeedSettings
     public string BibleKommentareDestinationPath { get; set; } = default!;
     public string RepoLocationEliranWongLxxRalfs1935 { get; set; } = default!;
     public string Elberfelder1871TextFile { get; set; } = default!;
+    public OpenScripturesGithubSettings OpenScripturesGithub { get; set; } = default!;
+}
+
+public sealed class OpenScripturesGithubSettings
+{
+    public string LocalPath { get; set; } = default!;
+    public string DownloadDomain { get; set; } = default!;
+    public string DownloadPath { get; set; } = default!;
+    public string XmlFiles { get; set; } = default!;
 }

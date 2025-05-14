@@ -1,5 +1,7 @@
 ﻿using System.Text;
+using System.Text.Unicode;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Domain.Extensions;
 
 namespace UnshackledWord.Infrastructure.Services;
 
@@ -64,6 +66,13 @@ public class FileService : IFileService
     public string Combine(params string[] paths)
     {
         return Path.Combine(paths);
+    }
+
+    public string UrlCombine(params string[] paths)
+    {
+        return paths
+            .Select(x => x.Replace('\\', '/').Trim('/').Trim('\\'))
+            .JoinStrings("/");
     }
 
     public string GetFileName(string path)

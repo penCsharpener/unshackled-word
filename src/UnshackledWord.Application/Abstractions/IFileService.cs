@@ -14,6 +14,7 @@ public interface IFileService
     Task WriteAllBytesAsync(string path, byte[] bytes, CancellationToken token = default);
     void DeleteFolderRecursively(string path);
     string Combine(params string[] paths);
+    string UrlCombine(params string[] paths);
     string GetFileName(string path);
     string[] SearchFiles(string destinationPath, string searchPattern, SearchOption allDirectories);
     void Copy(string sourcePath, string destinationPath, bool overwrite = false);

@@ -18,8 +18,4 @@
     <ProjectReference Include="..\UnshackledWord.Tooling.Sqlite.Migration\UnshackledWord.Tooling.Sqlite.Migration.csproj"/>
     <ProjectReference Include="..\UnshackledWord.Persistence.Sqlite\UnshackledWord.Persistence.Sqlite.csproj"/>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\OpenScriptureData\"/>
-  </ItemGroup>
 </Project>

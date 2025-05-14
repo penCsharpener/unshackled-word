@@ -1,4 +1,5 @@
-﻿using UnshackledWord.Application.Abstractions;
+﻿using Serilog;
+using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Persistence.Sqlite.Services;
 
 namespace UnshackledWord.Tooling.Sqlite.Migration.Extensions;
