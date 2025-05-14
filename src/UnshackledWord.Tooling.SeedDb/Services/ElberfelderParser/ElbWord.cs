@@ -1,4 +1,6 @@
-﻿namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+﻿using UnshackledWord.Tooling.SeedDb.Models;
+
+namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 
 public record ElbWord(string Word, string? Strong, WordInfo? WordInfo)
 {

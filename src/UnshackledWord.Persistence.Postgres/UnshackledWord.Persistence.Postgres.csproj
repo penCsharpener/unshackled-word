@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Abstractions\"/>
+  </ItemGroup>
+
+</Project>

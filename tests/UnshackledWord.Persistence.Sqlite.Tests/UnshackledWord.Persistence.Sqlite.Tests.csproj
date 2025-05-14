@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit"/>
+    <Using Include="Shouldly"/>
+    <Using Include="NSubstitute"/>
+  </ItemGroup>
+
+  <ItemGroup>
+      <Using Include="Xunit"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnshackledWord.TestTooling\UnshackledWord.TestTooling.csproj" />
+  </ItemGroup>
+
+</Project>

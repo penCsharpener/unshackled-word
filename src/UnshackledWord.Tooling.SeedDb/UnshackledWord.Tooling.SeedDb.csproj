@@ -1,17 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
-    <PropertyGroup>
-        <UserSecretsId>dotnet-UnshackledWord.Tooling.SeedDb-ff6e585f-9657-42a0-905e-72d15cbc893f</UserSecretsId>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>dotnet-UnshackledWord.Tooling.SeedDb-ff6e585f-9657-42a0-905e-72d15cbc893f</UserSecretsId>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting"/>
-        <PackageReference Include="Serilog.AspNetCore" />
-        <PackageReference Include="Serilog.Sinks.Async" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting"/>
+    <PackageReference Include="Serilog.AspNetCore"/>
+    <PackageReference Include="Serilog.Sinks.Async"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\UnshackledWord.Application\UnshackledWord.Application.csproj" />
-      <ProjectReference Include="..\..\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UnshackledWord.Application\UnshackledWord.Application.csproj"/>
+    <ProjectReference Include="..\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj"/>
+    <ProjectReference Include="..\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj" />
+    <ProjectReference Include="..\UnshackledWord.Tooling.Sqlite.Migration\UnshackledWord.Tooling.Sqlite.Migration.csproj"/>
+    <ProjectReference Include="..\UnshackledWord.Persistence.Sqlite\UnshackledWord.Persistence.Sqlite.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\OpenScriptureData\"/>
+  </ItemGroup>
 </Project>

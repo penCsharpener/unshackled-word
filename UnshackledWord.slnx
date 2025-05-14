@@ -6,10 +6,24 @@
     <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src\UnshackledWord.Application\UnshackledWord.Application.csproj" Type="Classic C#" />
     <Project Path="src\UnshackledWord.Domain\UnshackledWord.Domain.csproj" Type="Classic C#" />
+    <Project Path="src\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="src\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj" Type="Classic C#" />
+    <Project Path="src\UnshackledWord.Persistence.Sqlite\UnshackledWord.Persistence.Sqlite.csproj" Type="Classic C#" />
+    <Project Path="src\UnshackledWord.Tooling.Postgres.Migration\UnshackledWord.Tooling.Postgres.Migration.csproj" Type="Classic C#" />
     <Project Path="src\UnshackledWord.Tooling.SeedDb\UnshackledWord.Tooling.SeedDb.csproj" Type="Classic C#" />
-    <Project Path="UnshackledWord.Application\UnshackledWord.Application.csproj" Type="Classic C#" />
-    <Project Path="UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="src\UnshackledWord.Tooling.Sqlite.Migration\UnshackledWord.Tooling.Sqlite.Migration.csproj" Type="Classic C#" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests\UnshackledWord.Application.Tests\UnshackledWord.Application.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\UnshackledWord.Domain.Tests\UnshackledWord.Domain.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\UnshackledWord.Infrastructure.Tests\UnshackledWord.Infrastructure.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\UnshackledWord.Persistence.Sqlite.Tests\UnshackledWord.Persistence.Sqlite.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\UnshackledWord.TestTooling\UnshackledWord.TestTooling.csproj" Type="Classic C#" />
+    <Project Path="tests\UnshackledWord.Tooling.SeedDb.Tests\UnshackledWord.Tooling.SeedDb.Tests.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/tests/.misc/">
+    <File Path="tests\Directory.Build.props" />
+  </Folder>
 </Solution>

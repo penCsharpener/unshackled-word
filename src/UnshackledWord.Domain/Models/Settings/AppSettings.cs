@@ -12,4 +12,6 @@ public sealed class DatabaseSeedSettings
     public string BibleKommentareElberfelderUrl { get; set; } = default!;
     public string BibleKommentareSourcePath { get; set; } = default!;
     public string BibleKommentareDestinationPath { get; set; } = default!;
+    public string RepoLocationEliranWongLxxRalfs1935 { get; set; } = default!;
+    public string Elberfelder1871TextFile { get; set; } = default!;
 }

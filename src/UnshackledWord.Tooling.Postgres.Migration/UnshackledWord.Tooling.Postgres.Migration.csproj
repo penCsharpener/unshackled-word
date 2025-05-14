@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>dotnet-UnshackledWord.Migration.Postgres-ff6e585f-9657-42a0-905e-72d15cbc893f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dbup-postgresql"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting"/>
+    <PackageReference Include="Serilog.AspNetCore"/>
+    <PackageReference Include="Serilog.Sinks.Async"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="scripts/**/*.sql"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj"/>
+    <ProjectReference Include="..\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj"/>
+  </ItemGroup>
+
+</Project>

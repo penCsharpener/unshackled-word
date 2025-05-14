@@ -1,6 +1,9 @@
 ﻿using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
+using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 
 namespace UnshackledWord.Tooling.SeedDb.Services;
 
@@ -25,9 +28,11 @@ public sealed class FileParserFactory : IFileParserFactory
 
         return file.Split(".") switch
         {
-            [ "SR", "tsv" ] => scope.ServiceProvider.GetRequiredService<SrTsvParserStrategy>(),
-            [ "SR", "txt"] => scope.ServiceProvider.GetRequiredService<SrTxtParserStrategy>(),
-            [ "bible_elb_bk_mybible", "xml"] => scope.ServiceProvider.GetRequiredService<ElbParserStrategy>(),
+            ["SR", "tsv"] => scope.ServiceProvider.GetRequiredService<SrTsvParserStrategy>(),
+            ["SR", "txt"] => scope.ServiceProvider.GetRequiredService<SrTxtParserStrategy>(),
+            ["elberfelder1871", "txt"] => scope.ServiceProvider.GetRequiredService<Elberfelder1871Strategy>(),
+            ["bible_elb_bk_mybible", "xml"] => scope.ServiceProvider.GetRequiredService<ElbParserStrategy>(),
+            ["bible_elb_bk_mydbible", "xml"] => scope.ServiceProvider.GetRequiredService<RalfsLxxParserStrategy>(),
             _ => new DevNullParserStrategy()
         };
     }

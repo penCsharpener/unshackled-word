@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnshackledWord.Application\UnshackledWord.Application.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+  </ItemGroup>
+
+</Project>
