@@ -12,6 +12,7 @@ public interface IFileService
     Task WriteAllTextAsync(string path, string content, Encoding encoding, CancellationToken token = default);
     Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, CancellationToken token = default);
     Task WriteAllBytesAsync(string path, byte[] bytes, CancellationToken token = default);
+    IAsyncEnumerable<string> ReadLinesAsync(string path, CancellationToken token = default);
     void DeleteFolderRecursively(string path);
     string Combine(params string[] paths);
     string UrlCombine(params string[] paths);

@@ -8,6 +8,7 @@ using UnshackledWord.Persistence.Sqlite.Services;
 using UnshackledWord.Tooling.SeedDb.Services;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
+using UnshackledWord.Tooling.SeedDb.Services.CsvImports;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
@@ -52,5 +53,6 @@ public static class ServiceRegistrationExtensions
         //     client.BaseAddress = new Uri("https://www.bibelkommentare.de/");
         // });
         builder.Services.AddScoped<IFileDownloader, BibelKommentareCopyService>();
+        builder.Services.RegisterCsvServices();
     }
 }

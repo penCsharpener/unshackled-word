@@ -45,6 +45,11 @@ public class FileService : IFileService
         return await File.ReadAllLinesAsync(path, token);
     }
 
+    public IAsyncEnumerable<string> ReadLinesAsync(string path, CancellationToken token = default)
+    {
+        return File.ReadLinesAsync(path, token);
+    }
+
     public async Task WriteAllBytesAsync(string path, byte[] bytes, CancellationToken token = default)
     {
         await File.WriteAllBytesAsync(path, bytes, token);
