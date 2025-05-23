@@ -401,3 +401,4 @@ FodyWeavers.xsd
 .idea/*
 temp/*
 *.ffs_db
+/src/UnshackledWord.Tooling.SeedDb/Services/CsvImports/Services
