@@ -8,7 +8,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = Host.CreateApplicationBuilder(args);
-        builder.AddSeedDbServices();
+        builder.Services.AddSeedDbServices(builder.Configuration);
         builder.Services.AddHostedService<Worker>();
         builder.Services.AddSerilog((sp, loggerConfig) => loggerConfig.ReadFrom.Configuration(builder.Configuration));
 

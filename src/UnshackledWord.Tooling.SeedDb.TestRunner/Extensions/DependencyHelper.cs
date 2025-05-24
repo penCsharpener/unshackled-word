@@ -14,8 +14,7 @@ public static class DependencyHelper
             .Build();
 
         var serviceProvider = new ServiceCollection()
-            .RegisterServices(configuration)
-            .RegisterCsvServices()
+            .AddSeedDbServices(configuration)
             .BuildServiceProvider();
 
         return serviceProvider;

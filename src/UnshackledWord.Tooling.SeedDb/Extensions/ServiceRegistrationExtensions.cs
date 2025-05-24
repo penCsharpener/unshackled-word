@@ -18,41 +18,43 @@ namespace UnshackledWord.Tooling.SeedDb.Extensions;
 
 public static class ServiceRegistrationExtensions
 {
-    public static void AddSeedDbServices(this HostApplicationBuilder builder)
+    public static IServiceCollection AddSeedDbServices(this IServiceCollection services, IConfiguration configuration)
     {
-        builder.Services.AddInfrastructureServices();
-        builder.Services.AddScoped<SeedingService>();
-        builder.Services.AddScoped<IFileParserFactory, FileParserFactory>();
-        builder.Services.AddScoped<SrTxtParserStrategy>();
-        builder.Services.AddScoped<SrTsvParserStrategy>();
-        builder.Services.AddScoped<ElbParserStrategy>();
-        builder.Services.AddScoped<Elberfelder1871Strategy>();
-        builder.Services.AddScoped<RalfsLxxParserStrategy>();
-        builder.Services.AddScoped<OpenScriptureHebrewStrategy>();
-        builder.Services.AddScoped<SrRunner>();
-        builder.Services.AddScoped<ElbRunner>();
-        builder.Services.AddScoped<BkRunner>();
-        builder.Services.AddScoped<OpenScriptureRunner>();
-        builder.Services.AddScoped<IDbWriter, DbWriter>();
-        builder.Services.AddScoped<IDbReader, DbReader>();
-        builder.Services.AddSingleton<IDbConnectionFactory, PostgresDbConnectionFactory>();
-        builder.Services.AddSingleton<ParseHelper>();
-        builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
+        services.AddInfrastructureServices();
+        services.AddScoped<SeedingService>();
+        services.AddScoped<IFileParserFactory, FileParserFactory>();
+        services.AddScoped<SrTxtParserStrategy>();
+        services.AddScoped<SrTsvParserStrategy>();
+        services.AddScoped<ElbParserStrategy>();
+        services.AddScoped<Elberfelder1871Strategy>();
+        services.AddScoped<RalfsLxxParserStrategy>();
+        services.AddScoped<OpenScriptureHebrewStrategy>();
+        services.AddScoped<SrRunner>();
+        services.AddScoped<ElbRunner>();
+        services.AddScoped<BkRunner>();
+        services.AddScoped<OpenScriptureRunner>();
+        services.AddScoped<IDbWriter, DbWriter>();
+        services.AddScoped<IDbReader, DbReader>();
+        services.AddSingleton<IDbConnectionFactory, PostgresDbConnectionFactory>();
+        services.AddSingleton<ParseHelper>();
+        services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
 
-        builder.Services.AddHttpClient<GithubFileDownloader>(client =>
+        services.AddHttpClient<GithubFileDownloader>(client =>
         {
             client.BaseAddress = new Uri("https://github.com/");
         });
-        builder.Services.AddHttpClient<OpenScriptureHebrewDownloader>((sp, client) =>
+        services.AddHttpClient<OpenScriptureHebrewDownloader>((sp, client) =>
         {
             var url = sp.GetRequiredService<IOptions<AppSettings>>().Value.DatabaseSeeding.OpenScripturesGithub
                 .DownloadDomain;
             client.BaseAddress = new Uri(url);
         });
-        // builder.Services.AddHttpClient<IFileDownloader, BibelKommentareDownloader>(client => {
+        // services.AddHttpClient<IFileDownloader, BibelKommentareDownloader>(client => {
         //     client.BaseAddress = new Uri("https://www.bibelkommentare.de/");
         // });
-        builder.Services.AddScoped<IFileDownloader, BibelKommentareCopyService>();
-        builder.Services.RegisterCsvServices();
+        services.AddScoped<IFileDownloader, BibelKommentareCopyService>();
+        services.RegisterCsvServices();
+
+        return services;
     }
 }
