@@ -46,7 +46,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             var book = bookRef[0];
             var chapter = int.Parse(chapterVerse[0]);
             var verse = int.Parse(chapterVerse[1]);
-            var bookId = BibleBook.NewTestamentBooks.First(x => x.Value.Name == book).Key;
+            var bookId = BibleBook.AllBooks.First(x => x.Value.Name == book).Key;
 
             var words = SplitAndSaveIndividualWords(refText[1]).ToList();
             var verseObj = new Elb1871Verse(bookId, chapter, verse, refText[1], words);

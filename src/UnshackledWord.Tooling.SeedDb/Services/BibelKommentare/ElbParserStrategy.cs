@@ -79,7 +79,7 @@ public sealed class ElbParserStrategy : IFileParserStrategy
                         .Replace(" !", "!")
                         .Replace(" ?", "?");
 
-                    var srVerse = new ElbVerse(BibleBook.NewTestamentBooks[book.BookNumber], chapter.ChapterNumber,
+                    var srVerse = new ElbVerse(BibleBook.AllBooks[book.BookNumber], chapter.ChapterNumber,
                         verse.VerseNumber, verseText, words);
 
                     ElberfelderStrongsVerses.Add(srVerse);

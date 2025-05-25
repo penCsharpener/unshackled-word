@@ -10,6 +10,7 @@ public static class DependencyHelper
     public static IServiceProvider RegisterDependencies()
     {
         var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json",  optional: true, reloadOnChange: true)
             .AddUserSecrets<AssemblyMarker>()
             .Build();
 

@@ -25,7 +25,7 @@ public class ParseHelper
         var chapterId = int.Parse(verseString[2..5]);
         var verseIdInChapter = int.Parse(verseString[5..8]);
 
-        return BibleBook.NewTestamentBooks.TryGetValue(bookId, out var book)
+        return BibleBook.AllBooks.TryGetValue(bookId, out var book)
             ? book
             : throw new ArgumentException(nameof(bookId), "Book Id is not valid.");
     }

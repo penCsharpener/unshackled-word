@@ -29,7 +29,7 @@ public sealed class SrTxtParserStrategy : IFileParserStrategy
             var ntId = int.Parse(verseString);
             var verseText = line[9..];
 
-            verseList.Add(new SrVerse(ntId, BibleBook.NewTestamentBooks[bookId], chapterId, verseId, verseText));
+            verseList.Add(new SrVerse(ntId, BibleBook.AllBooks[bookId], chapterId, verseId, verseText));
         }
 
         var groupedByBook = verseList.GroupBy(v => v.BibleBook).ToDictionary(key => key.Key, value => value.ToList());

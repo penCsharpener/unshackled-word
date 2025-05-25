@@ -11,6 +11,7 @@ using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
 using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
+using UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
 namespace UnshackledWord.Tooling.SeedDb.Extensions;
 
@@ -30,6 +31,8 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<SrRunner>();
         services.AddScoped<ElbRunner>();
         services.AddScoped<BkRunner>();
+        services.AddScoped<TskTextReader>();
+        services.AddScoped<TskRunner>();
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<IDbWriter, DbWriter>();
         services.AddScoped<IDbReader, DbReader>();

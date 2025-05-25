@@ -13,15 +13,28 @@ public record struct BibleBook
         Abbreviations = abbreviations;
     }
 
-    public static Dictionary<int, BibleBook> NewTestamentBooks => new()
+    public static BibleBook? FindByAbbreviation(string abbreviation)
+    {
+        foreach (var book in AllBooks.Values)
+        {
+            if (book.Abbreviations.Contains(abbreviation, StringComparer.OrdinalIgnoreCase))
+            {
+                return book;
+            }
+        }
+
+        return null;
+    }
+
+    public static Dictionary<int, BibleBook> AllBooks => new()
     {
         { 1, new BibleBook(1, "Genesis", ["Gen", "Ge", "Gn"]) },
         { 2, new BibleBook(2, "Exodus", ["Exod", "Ex", "Exo"]) },
         { 3, new BibleBook(3, "Leviticus", ["Lev", "Le", "Lv"]) },
         { 4, new BibleBook(4, "Numbers", ["Num", "Nu", "Nm"]) },
-        { 5, new BibleBook(5, "Deuteronomy", ["Deut", "Dt", "Deu"]) },
+        { 5, new BibleBook(5, "Deuteronomy", ["Deut", "Dt", "Deu", "de"]) },
         { 6, new BibleBook(6, "Joshua", ["Josh", "Jos", "Jsh"]) },
-        { 7, new BibleBook(7, "Judges", ["Judg", "Jdg", "Jgs"]) },
+        { 7, new BibleBook(7, "Judges", ["Judg", "Jdg", "Jgs", "jud"]) },
         { 8, new BibleBook(8, "Ruth", ["Ruth", "Ru", "Rt"]) },
         { 9, new BibleBook(9, "1 Samuel", ["1 Sam", "1Sa", "1st Sam"]) },
         { 10, new BibleBook(10, "2 Samuel", ["2 Sam", "2Sa", "2nd Sam"]) },
@@ -35,15 +48,15 @@ public record struct BibleBook
         { 18, new BibleBook(18, "Job", ["Job", "Jb"]) },
         { 19, new BibleBook(19, "Psalms", ["Ps", "Psa", "Psalms"]) },
         { 20, new BibleBook(20, "Proverbs", ["Prov", "Pr", "Prv"]) },
-        { 21, new BibleBook(21, "Ecclesiastes", ["Eccl", "Ecc", "Qoheleth"]) },
-        { 22, new BibleBook(22, "Song of Solomon", ["Song", "SoS", "Canticles", "Song of Songs"]) },
+        { 21, new BibleBook(21, "Ecclesiastes", ["Eccl", "Ecc", "Qoheleth", "ec"]) },
+        { 22, new BibleBook(22, "Song of Solomon", ["Song", "SoS", "Canticles", "Song of Songs", "so"]) },
         { 23, new BibleBook(23, "Isaiah", ["Isa", "Is"]) },
         { 24, new BibleBook(24, "Jeremiah", ["Jer", "Je", "Jr"]) },
         { 25, new BibleBook(25, "Lamentations", ["Lam", "La"]) },
         { 26, new BibleBook(26, "Ezekiel", ["Ezek", "Eze", "Ez"]) },
         { 27, new BibleBook(27, "Daniel", ["Dan", "Da", "Dn"]) },
         { 28, new BibleBook(28, "Hosea", ["Hos", "Ho"]) },
-        { 29, new BibleBook(29, "Joel", ["Joel", "Jl"]) },
+        { 29, new BibleBook(29, "Joel", ["Joel", "Jl", "joe"]) },
         { 30, new BibleBook(30, "Amos", ["Amos", "Am"]) },
         { 31, new BibleBook(31, "Obadiah", ["Obad", "Ob"]) },
         { 32, new BibleBook(32, "Jonah", ["Jon", "Jnh"]) },
@@ -55,7 +68,7 @@ public record struct BibleBook
         { 38, new BibleBook(38, "Zechariah", ["Zech", "Zec", "Zc"]) },
         { 39, new BibleBook(39, "Malachi", ["Mal", "Ml"]) },
         { 40, new BibleBook(40, "Matthew", ["Matt", "Mt", "Mat"]) },
-        { 41, new BibleBook(41, "Mark", ["Mk", "Mrk", "Mar"]) },
+        { 41, new BibleBook(41, "Mark", ["Mk", "Mrk", "Mar", "mr"]) },
         { 42, new BibleBook(42, "Luke", ["Lk", "Lu"]) },
         { 43, new BibleBook(43, "John", ["Jn", "Jhn", "Joh"]) },
         { 44, new BibleBook(44, "Acts", ["Acts", "Ac", "Apg"]) },
