@@ -1,0 +1,6 @@
+@UnshackledWord.Tooling.WebApi_HostAddress = http://localhost:5142
+
+GET {{UnshackledWord.Tooling.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

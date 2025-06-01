@@ -8,3 +8,21 @@ services:
       dockerfile: Dockerfile
     environment:
       - DOTNET_ENVIRONMENT=Development
+  UnshackledWord.tooling.webapi:
+    image: UnshackledWord.tooling.webapi
+    build:
+      context: .
+      dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
+
+  unshackledword.tooling.bibletagger:
+    image: unshackledword.tooling.bibletagger
+    build:
+      context: .
+      dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger/Dockerfile
+
+  unshackledword.tooling.bibletagger.client:
+    image: unshackledword.tooling.bibletagger.client
+    build:
+      context: .
+      dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger.Client/Dockerfile
+

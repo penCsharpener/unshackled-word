@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\UnshackledWord.Tooling.WebApi\UnshackledWord.Tooling.WebApi.csproj" />
+    <ProjectReference Include="..\UnshackledWord.Tooling.BibleTagger.Client\UnshackledWord.Tooling.BibleTagger.Client.csproj"/>
+  </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+</Project>
