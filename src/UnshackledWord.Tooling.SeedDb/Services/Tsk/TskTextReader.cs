@@ -5,6 +5,7 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
+using UnshackledWord.Tooling.SeedDb.Services.Tsk.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Tsk.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.Tsk;
@@ -20,7 +21,7 @@ public class TskTextReader
         _appSettings = appSettings.Value;
     }
 
-    public async Task<ICollection<TskRow>> ReadAsync(CancellationToken token = default)
+    public async Task<ICollection<TskReference>> ReadAsync(CancellationToken token = default)
     {
         var settings = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -31,13 +32,11 @@ public class TskTextReader
 
         using var textReader = new StreamReader(_appSettings.DatabaseSeeding.TskFilePath);
         using var csvReader = new CsvHelper.CsvReader(textReader, settings);
-        var list = new List<TskRow>();
+        var list = new List<TskReference>();
 
         await foreach (var row in csvReader.GetRecordsAsync<TskRow>(token))
         {
-
-
-            list.Add(row);
+            list.Add(row.ToTskReference());
         }
 
         return list;
