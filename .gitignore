@@ -403,3 +403,4 @@ temp/*
 *.ffs_db
 /src/UnshackledWord.Tooling.SeedDb/Services/CsvImports/Services
 /src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger/wwwroot/lib
+/docker/postgres-test-db/postgres_data
