@@ -22,4 +22,12 @@ public sealed class DbReader : IDbReader
         connection.Open();
         return await connection.QueryFirstOrDefaultAsync<T>(sql, param);
     }
+
+    public async Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object param = null)
+    {
+        using var connection = _factory.CreateDbConnection();
+
+        connection.Open();
+        return await connection.QueryAsync<T>(sql, param);
+    }
 }

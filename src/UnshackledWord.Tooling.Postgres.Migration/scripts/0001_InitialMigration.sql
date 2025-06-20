@@ -26,14 +26,16 @@ CREATE TABLE "unshackled-word"."Elb1871Words"
     "Chapter"         integer                      NOT NULL,
     "Verse"           integer                      NOT NULL,
     "WordInContext"   varchar COLLATE "en_US.utf8" NOT NULL,
-    "German"          varchar COLLATE "en_US.utf8" NOT NULL,
+    "PlainWord"       varchar COLLATE "en_US.utf8" NULL,
     "Lemma"           varchar COLLATE "en_US.utf8" NULL,
     "PositionInVerse" integer                      NOT NULL,
-    "Strongs"         varchar NULL,
+    "Strongs"         varchar                      NULL,
     "PartOfSpeech"    varchar                      NULL,
     "GrammaticalKey"  varchar                      NULL,
     CONSTRAINT "Elb1871Words_pk" PRIMARY KEY ("Id")
 );
+
+COMMENT ON COLUMN "unshackled-word"."Elb1871Words"."PlainWord" IS 'Is the same as WordInContext but clean of all special characters.';
 
 CREATE INDEX elb1871words_reference_idx ON "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse");
 CREATE INDEX elb1871words_strongs_idx ON "unshackled-word"."Elb1871Words" ("Strongs");

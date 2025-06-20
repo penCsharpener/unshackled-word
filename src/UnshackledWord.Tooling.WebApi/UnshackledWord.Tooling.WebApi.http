@@ -1,6 +1,16 @@
-@UnshackledWord.Tooling.WebApi_HostAddress = http://localhost:5142
+@WebApi_HostAddress = http://localhost:5142/api
 
-GET {{UnshackledWord.Tooling.WebApi_HostAddress}}/weatherforecast/
+GET {{WebApi_HostAddress}}/elberfelder/bookId/1/chapterId/1/verseId/1
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/elberfelder/chapterText/bookId/1/chapterId/1
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/elberfelder/chapterWords/bookId/1/chapterId/1
 Accept: application/json
 
 ###

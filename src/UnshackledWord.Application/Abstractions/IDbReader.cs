@@ -5,6 +5,7 @@ namespace UnshackledWord.Application.Abstractions;
 public interface IDbReader
 {
     Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object param = null);
+    Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object param = null);
 }
 
 public interface IDbWriter

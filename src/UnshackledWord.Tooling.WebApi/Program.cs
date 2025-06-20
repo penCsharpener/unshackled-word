@@ -1,5 +1,6 @@
 using FastEndpoints;
 using Serilog;
+using UnshackledWord.Tooling.WebApi.Extensions;
 
 namespace UnshackledWord.Tooling.WebApi;
 
@@ -11,15 +12,14 @@ public class Program
 
         builder.Services.AddSerilog((_, logger) => logger.ReadFrom.Configuration(builder.Configuration));
         builder.Services.AddFastEndpoints();
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();
+        builder.Services.AddWebApiServices();
 
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
 
-        app.UseFastEndpoints(x =>
-        {
-            x.Endpoints.RoutePrefix = "api";
-        });
 
         if (app.Environment.IsDevelopment())
         {
@@ -30,6 +30,17 @@ public class Program
         {
             app.UseHttpsRedirection();
         }
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseFastEndpoints(x =>
+        {
+            x.Endpoints.RoutePrefix = "api";
+            x.Endpoints.Configurator = ep =>
+            {
+                ep.AllowAnonymous();
+            };
+        });
 
         app.Run();
     }

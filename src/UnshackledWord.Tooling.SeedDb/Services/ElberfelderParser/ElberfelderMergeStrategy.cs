@@ -41,10 +41,10 @@ public sealed class ElberfelderMergeStrategy
 
             foreach (var word in elb1871Verse.Words)
             {
-                var strongs = bkVerseWords.FirstOrDefault(x => x.Strong.IsNotNullOrWhiteSpace() && x.Word == word.Lemma)?.Strong;
+                var strongs = bkVerseWords.FirstOrDefault(x => x.Strong.IsNotNullOrWhiteSpace() && x.Word == word.PlainWord)?.Strong;
                 strongs = strongs.IsNullOrWhiteSpace() ? "NULL" : $"'{strongsPrefix}{strongs}'";
                 dynParams.Add($"@InContent{word.Order}", word.InContext);
-                dynParams.Add($"@Lemma{word.Order}", word.Lemma);
+                dynParams.Add($"@Lemma{word.Order}", word.PlainWord);
                 insertRows.Add($"({elb1871Verse.BibleBookId}, {elb1871Verse.Chapter}, {elb1871Verse.Verse}, @InContent{word.Order}, @Lemma{word.Order}, {strongs}, {word.Order})");
                 // insertRows.Add($"({elb1871Verse.BibleBookId}, {elb1871Verse.Chapter}, {elb1871Verse.Verse}, '{word.InContext}', '{word.Lemma}', {strongs}, {word.Order})");
             }

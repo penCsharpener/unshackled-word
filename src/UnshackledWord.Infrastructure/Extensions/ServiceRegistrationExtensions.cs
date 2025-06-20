@@ -8,6 +8,8 @@ public static class ServiceRegistrationExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
+        services.AddSingleton<IDbReader, DbReader>();
+        services.AddSingleton<IDbWriter, DbWriter>();
         services.AddSingleton<IFileService, FileService>();
         services.AddSingleton<IUnzipService, UnzipService>();
         return services;
