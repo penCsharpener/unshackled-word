@@ -21,6 +21,7 @@ public static class ServiceRegistrationExtensions
     {
         services.AddInfrastructureServices();
         services.AddScoped<SeedingService>();
+        services.AddSingleton(configuration);
         services.AddScoped<IFileParserFactory, FileParserFactory>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();

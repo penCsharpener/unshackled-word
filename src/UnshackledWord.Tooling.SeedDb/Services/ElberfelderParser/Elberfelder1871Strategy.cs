@@ -28,13 +28,6 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        // var existingRows = await _reader.ReadFirstOrDefaultAsync<object>("SELECT * FROM ElberfelderVerseInfo LIMIT 1;");
-        //
-        // if (existingRows is not null)
-        // {
-        //     return;
-        // }
-
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
 
         foreach (var line in lines)
@@ -53,27 +46,25 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             Elberfelder1871Verses.Add(verseObj);
         }
 
-        // await SaveToDatabaseAsync(Elberfelder1871Verses, 25, token);
+        await SaveToDatabaseAsync(Elberfelder1871Verses, 250, token);
     }
 
-    private async Task SaveToDatabaseAsync(List<Elb1871Verse> list, int batchSize, CancellationToken token)
+    private async Task SaveToDatabaseAsync(List<Elb1871Verse> list, int batchSize, CancellationToken token = default)
     {
         var batch = new List<Elb1871Verse>();
 
         foreach (var verse in list)
         {
-            var words = SplitAndSaveIndividualWords(verse.Text).ToList();
-            // batch.Add(verse);
+            batch.Add(verse);
 
-            // if (batch.Count >= batchSize)
-            // {
-            //     await WriteToDbAsync(batch, token);
-            //     batch.Clear();
-            //     continue;
-            // }
+            if (batch.Count >= batchSize)
+            {
+                await WriteVersesToDbAsync(batch, token);
+                batch.Clear();
+            }
         }
 
-        // await WriteToDbAsync(batch, token);
+        await WriteVersesToDbAsync(batch, token);
     }
 
     private static IEnumerable<Elb1871Word> SplitAndSaveIndividualWords(string verseText)
@@ -92,7 +83,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
     private static string CleanUpWord(string word)
     {
-        var characters = new[] { ',', ';', ':', '.', '!', '?', '"', '\'', ')', '(', '’' };
+        var characters = ",;:.!?\"'{}[]()’".ToCharArray();
 
         var result = word.Trim();
 
@@ -104,7 +95,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         return result;
     }
 
-    private async Task WriteToDbAsync(List<Elb1871Verse> batch, CancellationToken token = default)
+    private async Task WriteVersesToDbAsync(List<Elb1871Verse> batch, CancellationToken token = default)
     {
         var rowList = new List<string>();
 
@@ -114,7 +105,26 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         }
 
         var sql = $"""
-                   INSERT INTO "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse", "WordInContext", "German", "Strongs")
+                   INSERT INTO "unshackled-word"."Elb1871Verses" ("BibleBookId", "Chapter", "Verse", "VerseText")
+                   VALUES
+                   {rowList.JoinStrings($",{nl}")};
+
+                   """;
+
+        await _writer.WriteAsync(sql);
+    }
+
+    private async Task WriteWordsToDbAsync(Elb1871Verse verse, List<Elb1871Word> batch, CancellationToken token = default)
+    {
+        var rowList = new List<string>();
+
+        foreach (var word in batch)
+        {
+            rowList.Add($"({verse.BibleBookId}, {verse.Chapter}, {verse.Verse}, '{word.InContext}', null,)");
+        }
+
+        var sql = $"""
+                   INSERT INTO "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse", "WordInContext", "German", "Order", "Strongs")
                    VALUES
                    {rowList.JoinStrings($",{nl}")};
 
