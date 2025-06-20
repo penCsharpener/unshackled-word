@@ -38,3 +38,14 @@ CREATE TABLE "unshackled-word"."Elb1871Words"
 CREATE INDEX elb1871words_reference_idx ON "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse");
 CREATE INDEX elb1871words_strongs_idx ON "unshackled-word"."Elb1871Words" ("Strongs");
 
+CREATE TABLE "unshackled-word"."Elb1871Verses"
+(
+    "Id"           serial4                      NOT NULL,
+    "BibleBookId"  integer                      NOT NULL,
+    "Chapter"      integer                      NOT NULL,
+    "Verse"        integer                      NOT NULL,
+    "VerseText"    text COLLATE "en_US.utf8"    NOT NULL,
+    CONSTRAINT "Elb1871Verses_pk" PRIMARY KEY ("Id")
+);
+
+CREATE INDEX elb1871verses_reference_idx ON "unshackled-word"."Elb1871Verses" ("BibleBookId", "Chapter", "Verse");
