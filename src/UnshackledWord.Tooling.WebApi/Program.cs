@@ -17,6 +17,7 @@ public class Program
         builder.Services.AddWebApiServices();
 
         builder.Services.AddOpenApi();
+        builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
 
         var app = builder.Build();
 

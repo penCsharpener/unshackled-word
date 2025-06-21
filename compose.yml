@@ -1,28 +1,57 @@
-﻿version: '3.8'
+﻿services:
+  database:
+    image: postgres:latest
+    container_name: postgres-test-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./temp/postgres_data:/var/lib/postgresql/data
 
-services:
-  worker:
-    image: myworkerservice:latest
+  db-migration:
+    #image: unshackledword.migration.postgres
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: src/UnshackledWord.Tooling.Postgres.Migration/Dockerfile
     environment:
-      - DOTNET_ENVIRONMENT=Development
+      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
+      - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
+
+  seed-db:
+    #image: unshackledword.tooling.seeddb
+    build:
+      context: .
+      dockerfile: src/UnshackledWord.Tooling.SeedDb/Dockerfile
+    depends_on:
+      - db-migration
+    environment:
+      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
+      - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
+
   UnshackledWord.tooling.webapi:
-    image: UnshackledWord.tooling.webapi
+    #image: unshackledword.tooling.webapi
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
+    depends_on:
+      - seed-db
 
   unshackledword.tooling.bibletagger:
-    image: unshackledword.tooling.bibletagger
+    #image: unshackledword.tooling.bibletagger
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger/Dockerfile
+    depends_on:
+      - UnshackledWord.tooling.webapi
 
   unshackledword.tooling.bibletagger.client:
-    image: unshackledword.tooling.bibletagger.client
+    #image: unshackledword.tooling.bibletagger.client
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger.Client/Dockerfile
+    depends_on:
+      - UnshackledWord.tooling.webapi
 

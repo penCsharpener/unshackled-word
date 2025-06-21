@@ -1,18 +1,28 @@
-﻿# Use the official .NET 9 SDK image for building the app
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /src
-
-# Copy csproj and restore as distinct layers
-COPY ["UnshackledWord.Tooling.SeedDb/UnshackledWord.Tooling.SeedDb.csproj", "UnshackledWord.Tooling.SeedDb/"]
-RUN dotnet restore "UnshackledWord.Tooling.SeedDb/UnshackledWord.Tooling.SeedDb.csproj"
-
-# Copy everything else and build
-COPY . .
-WORKDIR "/src/UnshackledWord.Tooling.SeedDb"
-RUN dotnet publish "UnshackledWord.Tooling.SeedDb.csproj" -c Release -o /app/publish
-
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER $APP_UID
 WORKDIR /app
-COPY --from=build /app/publish .
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["src/UnshackledWord.Tooling.SeedDb/UnshackledWord.Tooling.SeedDb.csproj", "src/UnshackledWord.Tooling.SeedDb/"]
+COPY ["src/UnshackledWord.Application/UnshackledWord.Application.csproj", "src/UnshackledWord.Application/"]
+COPY ["src/UnshackledWord.Domain/UnshackledWord.Domain.csproj", "src/UnshackledWord.Domain/"]
+COPY ["src/UnshackledWord.Infrastructure/UnshackledWord.Infrastructure.csproj", "src/UnshackledWord.Infrastructure/"]
+COPY ["src/UnshackledWord.Persistence.Postgres/UnshackledWord.Persistence.Postgres.csproj", "src/UnshackledWord.Persistence.Postgres/"]
+COPY ["assets/", "assets/"]
+COPY ["Directory.Build.props", "Directory.Build.props"]
+COPY ["Directory.Packages.props", "Directory.Packages.props"]
+RUN dotnet restore "src/UnshackledWord.Tooling.SeedDb/UnshackledWord.Tooling.SeedDb.csproj"
+
+WORKDIR "/src/src/UnshackledWord.Tooling.SeedDb"
+RUN dotnet build "./UnshackledWord.Tooling.SeedDb.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./UnshackledWord.Tooling.SeedDb.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "UnshackledWord.Tooling.SeedDb.dll"]

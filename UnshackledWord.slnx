@@ -4,6 +4,7 @@
     <File Path="Directory.Packages.props" />
     <File Path="Directory.Build.props" />
     <File Path=".editorconfig" />
+    <File Path=".env" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\UnshackledWord.Application\UnshackledWord.Application.csproj" Type="Classic C#" />

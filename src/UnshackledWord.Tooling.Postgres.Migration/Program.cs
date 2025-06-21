@@ -10,6 +10,7 @@ public class Program
         var builder = Host.CreateApplicationBuilder(args);
         builder.Services.AddSerilog((sp, loggerConfig) => loggerConfig.ReadFrom.Configuration(builder.Configuration));
         builder.Services.RegisterServices(builder.Configuration);
+        builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
 
         var host = builder.Build();
         host.Run();

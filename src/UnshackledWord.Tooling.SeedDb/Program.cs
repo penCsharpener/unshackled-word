@@ -11,6 +11,7 @@ public class Program
         builder.Services.AddSeedDbServices(builder.Configuration);
         builder.Services.AddHostedService<Worker>();
         builder.Services.AddSerilog((sp, loggerConfig) => loggerConfig.ReadFrom.Configuration(builder.Configuration));
+        builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
 
         var host = builder.Build();
         host.Run();

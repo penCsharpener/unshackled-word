@@ -31,6 +31,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<OpenScriptureHebrewStrategy>();
         services.AddScoped<SrRunner>();
         services.AddScoped<ElbRunner>();
+        services.AddScoped<ElberfelderTextRunner>();
         services.AddScoped<BkRunner>();
         services.AddScoped<TskTextReader>();
         services.AddScoped<TskRunner>();

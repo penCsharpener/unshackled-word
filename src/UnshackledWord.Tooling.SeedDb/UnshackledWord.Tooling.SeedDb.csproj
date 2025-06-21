@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <UserSecretsId>dotnet-UnshackledWord.Tooling.SeedDb-ff6e585f-9657-42a0-905e-72d15cbc893f</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +17,13 @@
     <ProjectReference Include="..\UnshackledWord.Application\UnshackledWord.Application.csproj"/>
     <ProjectReference Include="..\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj"/>
     <ProjectReference Include="..\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj" />
-    <ProjectReference Include="..\UnshackledWord.Tooling.Sqlite.Migration\UnshackledWord.Tooling.Sqlite.Migration.csproj"/>
-    <ProjectReference Include="..\UnshackledWord.Persistence.Sqlite\UnshackledWord.Persistence.Sqlite.csproj"/>
+<!--    <ProjectReference Include="..\UnshackledWord.Tooling.Sqlite.Migration\UnshackledWord.Tooling.Sqlite.Migration.csproj"/>-->
+<!--    <ProjectReference Include="..\UnshackledWord.Persistence.Sqlite\UnshackledWord.Persistence.Sqlite.csproj"/>-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 </Project>
