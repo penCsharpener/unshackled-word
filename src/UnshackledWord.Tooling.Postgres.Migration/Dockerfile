@@ -5,13 +5,15 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/UnshackledWord.Tooling.Postgres.Migration/UnshackledWord.Tooling.Postgres.Migration.csproj", "src/UnshackledWord.Tooling.Postgres.Migration/"]
-COPY ["src/UnshackledWord.Infrastructure/UnshackledWord.Infrastructure.csproj", "src/UnshackledWord.Infrastructure/"]
-COPY ["src/UnshackledWord.Application/UnshackledWord.Application.csproj", "src/UnshackledWord.Application/"]
-COPY ["src/UnshackledWord.Domain/UnshackledWord.Domain.csproj", "src/UnshackledWord.Domain/"]
-COPY ["src/UnshackledWord.Persistence.Postgres/UnshackledWord.Persistence.Postgres.csproj", "src/UnshackledWord.Persistence.Postgres/"]
+COPY ["Directory.Build.props", "Directory.Build.props"]
+COPY ["Directory.Packages.props", "Directory.Packages.props"]
+COPY ["src/UnshackledWord.Tooling.Postgres.Migration/", "src/UnshackledWord.Tooling.Postgres.Migration/"]
+COPY ["src/UnshackledWord.Infrastructure/", "src/UnshackledWord.Infrastructure/"]
+COPY ["src/UnshackledWord.Application/", "src/UnshackledWord.Application/"]
+COPY ["src/UnshackledWord.Domain/", "src/UnshackledWord.Domain/"]
+COPY ["src/UnshackledWord.Persistence.Postgres/", "src/UnshackledWord.Persistence.Postgres/"]
 RUN dotnet restore "src/UnshackledWord.Tooling.Postgres.Migration/UnshackledWord.Tooling.Postgres.Migration.csproj"
-#COPY . .
+
 WORKDIR "/src/src/UnshackledWord.Tooling.Postgres.Migration"
 RUN dotnet build "./UnshackledWord.Tooling.Postgres.Migration.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

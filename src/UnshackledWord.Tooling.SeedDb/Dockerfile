@@ -5,17 +5,17 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/UnshackledWord.Tooling.SeedDb/UnshackledWord.Tooling.SeedDb.csproj", "src/UnshackledWord.Tooling.SeedDb/"]
-COPY ["src/UnshackledWord.Application/UnshackledWord.Application.csproj", "src/UnshackledWord.Application/"]
-COPY ["src/UnshackledWord.Domain/UnshackledWord.Domain.csproj", "src/UnshackledWord.Domain/"]
-COPY ["src/UnshackledWord.Infrastructure/UnshackledWord.Infrastructure.csproj", "src/UnshackledWord.Infrastructure/"]
-COPY ["src/UnshackledWord.Persistence.Postgres/UnshackledWord.Persistence.Postgres.csproj", "src/UnshackledWord.Persistence.Postgres/"]
+COPY ["src/UnshackledWord.Tooling.SeedDb/", "src/UnshackledWord.Tooling.SeedDb/"]
+COPY ["src/UnshackledWord.Application/", "src/UnshackledWord.Application/"]
+COPY ["src/UnshackledWord.Domain/", "src/UnshackledWord.Domain/"]
+COPY ["src/UnshackledWord.Infrastructure/", "src/UnshackledWord.Infrastructure/"]
+COPY ["src/UnshackledWord.Persistence.Postgres/", "src/UnshackledWord.Persistence.Postgres/"]
 COPY ["assets/", "assets/"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 COPY ["Directory.Packages.props", "Directory.Packages.props"]
-RUN dotnet restore "src/UnshackledWord.Tooling.SeedDb/UnshackledWord.Tooling.SeedDb.csproj"
 
 WORKDIR "/src/src/UnshackledWord.Tooling.SeedDb"
+RUN dotnet restore "./UnshackledWord.Tooling.SeedDb.csproj"
 RUN dotnet build "./UnshackledWord.Tooling.SeedDb.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/build
 
 FROM build AS publish

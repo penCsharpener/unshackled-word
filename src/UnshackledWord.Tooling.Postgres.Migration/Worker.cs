@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using DbUp;
+using DbUp.Postgresql;
 
 namespace UnshackledWord.Tooling.Postgres.Migration;
 
@@ -20,13 +21,15 @@ public class Worker : BackgroundService
         var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         var connectionString = configuration.GetConnectionString("PostgresConnection");
+        var schema = "\"unshackled-word\"";
 
         var upgrader =
             DeployChanges.To
-                .PostgresqlDatabase(connectionString, "\"unshackled-word\"")
+                .PostgresqlDatabase(connectionString)
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
                 .LogTo(loggerFactory)
                 .Build();
+
         var result = upgrader.PerformUpgrade();
 
         if (!result.Successful)

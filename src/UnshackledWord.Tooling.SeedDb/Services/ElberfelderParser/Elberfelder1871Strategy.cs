@@ -1,9 +1,7 @@
 ﻿using System.Text;
-using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
-using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
@@ -13,21 +11,34 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     private readonly IFileService _fileService;
     private readonly IDbWriter _writer;
     private readonly IDbReader _reader;
-    private readonly DatabaseSeedSettings _options;
+    private readonly ILogger<Elberfelder1871Strategy> _logger;
     private static string nl = Environment.NewLine;
     public List<Elb1871Verse> Elberfelder1871Verses { get; private set; } = new() ;
 
-    public Elberfelder1871Strategy(IFileService fileService, IDbWriter writer, IDbReader reader,
-        IOptions<AppSettings> options)
+    public Elberfelder1871Strategy(IFileService fileService, IDbWriter writer, IDbReader reader, ILogger<Elberfelder1871Strategy> logger)
     {
         _fileService = fileService;
         _writer = writer;
         _reader = reader;
-        _options = options.Value.DatabaseSeeding;
+        _logger = logger;
     }
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        var sql = """
+                  SELECT "Id"
+                  FROM "unshackled-word"."Elb1871Verses"
+                  ORDER BY "Id" ASC
+                  LIMIT 1;
+                  """;
+        var tableHasRows = await _reader.ReadFirstOrDefaultAsync<Elb1871Verse>(sql, token);
+
+        if (tableHasRows is not null)
+        {
+            _logger.LogInformation("Elberfelder 1871 verses already exist in the database. Skipping import.");
+            return;
+        }
+
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
 
         foreach (var line in lines)
@@ -46,6 +57,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             Elberfelder1871Verses.Add(verseObj);
         }
 
+        _logger.LogInformation("Saving split verses to Database.");
         await SaveToDatabaseAsync(Elberfelder1871Verses, 100, token);
     }
 

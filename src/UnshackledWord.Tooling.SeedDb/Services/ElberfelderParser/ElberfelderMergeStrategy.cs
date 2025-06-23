@@ -23,7 +23,6 @@ public sealed class ElberfelderMergeStrategy
                         VALUES
                         """;
 
-
         foreach (var elb1871Verse in elb1871List)
         {
             var insertRows = new List<string>();

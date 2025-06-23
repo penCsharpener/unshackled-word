@@ -1,25 +1,25 @@
-# Ignore build outputs
-bin/
-obj/
-
-# Ignore user-specific files
-*.user
-*.suo
-
-# Ignore Rider and VS Code settings
-.idea/
-.vscode/
-*.code-workspace
-
-# Ignore Mac system files
-.DS_Store
-
-# Ignore logs
-*.log
-
-# Ignore test results
-TestResults/
-
-# Optional: git-related stuff
-.git
-.gitignore
+﻿**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/.idea
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/azds.yaml
+**/bin
+**/charts
+**/docker-compose*
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+LICENSE
+README.md

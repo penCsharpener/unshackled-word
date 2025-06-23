@@ -20,22 +20,23 @@ public static class ServiceRegistrationExtensions
     public static IServiceCollection AddSeedDbServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddInfrastructureServices();
-        services.AddScoped<SeedingService>();
         services.AddSingleton(configuration);
+        services.AddScoped<SeedingService>();
         services.AddScoped<IFileParserFactory, FileParserFactory>();
+        services.AddScoped<ElberfelderTextRunner>();
+        services.AddScoped<SrRunner>();
+        services.AddScoped<ElbRunner>();
+        services.AddScoped<BkRunner>();
+        services.AddScoped<TskRunner>();
+        services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();
         services.AddScoped<ElbParserStrategy>();
         services.AddScoped<Elberfelder1871Strategy>();
+        services.AddScoped<ElberfelderMergeStrategy>();
         services.AddScoped<RalfsLxxParserStrategy>();
         services.AddScoped<OpenScriptureHebrewStrategy>();
-        services.AddScoped<SrRunner>();
-        services.AddScoped<ElbRunner>();
-        services.AddScoped<ElberfelderTextRunner>();
-        services.AddScoped<BkRunner>();
         services.AddScoped<TskTextReader>();
-        services.AddScoped<TskRunner>();
-        services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<IDbWriter, DbWriter>();
         services.AddScoped<IDbReader, DbReader>();
         services.AddSingleton<IDbConnectionFactory, PostgresDbConnectionFactory>();

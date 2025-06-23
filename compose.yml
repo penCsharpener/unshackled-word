@@ -1,5 +1,5 @@
 ﻿services:
-  database:
+  unshackledword.tooling.database:
     image: postgres:latest
     container_name: postgres-test-db
     environment:
@@ -8,10 +8,10 @@
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test}
     ports:
       - "5432:5432"
-    volumes:
-      - ./temp/postgres_data:/var/lib/postgresql/data
+#    volumes:
+#      - ./temp/postgres_data:/var/lib/postgresql/data
 
-  db-migration:
+  unshackledword.tooling.db-migration:
     #image: unshackledword.migration.postgres
     build:
       context: .
@@ -20,7 +20,7 @@
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
 
-  seed-db:
+  unshackledword.tooling.seed-db:
     #image: unshackledword.tooling.seeddb
     build:
       context: .
@@ -30,14 +30,20 @@
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__ELBERFELDER1871TEXTFILE=${ELBERFELDER1871TEXTFILE:-/src/assets/elberfelder1871-theword-export.txt}
 
-  UnshackledWord.tooling.webapi:
+  unshackledword.tooling.webapi:
     #image: unshackledword.tooling.webapi
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
+    ports:
+      - "7654:8080"
     depends_on:
       - seed-db
+    environment:
+      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
+      - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
 
   unshackledword.tooling.bibletagger:
     #image: unshackledword.tooling.bibletagger
@@ -46,6 +52,9 @@
       dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger/Dockerfile
     depends_on:
       - UnshackledWord.tooling.webapi
+    environment:
+      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
+      - UNSHACKLEDWORD_APIURL=http://unshackledword.tooling.webapi:8080/api
 
   unshackledword.tooling.bibletagger.client:
     #image: unshackledword.tooling.bibletagger.client
@@ -54,4 +63,6 @@
       dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger.Client/Dockerfile
     depends_on:
       - UnshackledWord.tooling.webapi
+    environment:
+      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
 
