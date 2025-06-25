@@ -26,7 +26,7 @@
       context: .
       dockerfile: src/UnshackledWord.Tooling.SeedDb/Dockerfile
     depends_on:
-      - db-migration
+      - unshackledword.tooling.db-migration
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
@@ -40,7 +40,7 @@
     ports:
       - "7654:8080"
     depends_on:
-      - seed-db
+      - unshackledword.tooling.seed-db
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
@@ -50,8 +50,10 @@
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger/Dockerfile
+    ports:
+      - "8765:8080"
     depends_on:
-      - UnshackledWord.tooling.webapi
+      - unshackledword.tooling.webapi
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_APIURL=http://unshackledword.tooling.webapi:8080/api
@@ -61,8 +63,11 @@
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger.Client/Dockerfile
+    ports:
+      - "8765:8080"
     depends_on:
-      - UnshackledWord.tooling.webapi
+      - unshackledword.tooling.webapi
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
+      - UNSHACKLEDWORD_APIURL=http://unshackledword.tooling.webapi:8080/api
 
