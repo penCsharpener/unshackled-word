@@ -13,10 +13,10 @@
     <ProjectReference Include="..\UnshackledWord.Tooling.BibleTagger.Client\UnshackledWord.Tooling.BibleTagger.Client.csproj"/>
   </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="..\..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+  </ItemGroup>
 
 </Project>
