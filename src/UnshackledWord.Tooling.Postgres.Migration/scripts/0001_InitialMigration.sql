@@ -16,8 +16,8 @@ CREATE TABLE "unshackled-word"."GntHotWords"
     CONSTRAINT "GntHotWords_pk" PRIMARY KEY ("Id")
 );
 
-CREATE INDEX gnthotwords_reference_idx ON "unshackled-word"."GntHotWords" ("BibleBookId", "Chapter", "Verse");
-CREATE INDEX gnthotwords_strongs_idx ON "unshackled-word"."GntHotWords" ("Strongs");
+CREATE INDEX "GntHotWords_reference_idx" ON "unshackled-word"."GntHotWords" ("BibleBookId", "Chapter", "Verse");
+CREATE INDEX "GntHotWords_strongs_idx" ON "unshackled-word"."GntHotWords" ("Strongs");
 
 CREATE TABLE "unshackled-word"."Elb1871Words"
 (
@@ -37,17 +37,31 @@ CREATE TABLE "unshackled-word"."Elb1871Words"
 
 COMMENT ON COLUMN "unshackled-word"."Elb1871Words"."PlainWord" IS 'Is the same as WordInContext but clean of all special characters.';
 
-CREATE INDEX elb1871words_reference_idx ON "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse");
-CREATE INDEX elb1871words_strongs_idx ON "unshackled-word"."Elb1871Words" ("Strongs");
+CREATE INDEX "Elb1871Words_reference_idx" ON "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse");
+CREATE INDEX "Elb1871Words_strongs_idx" ON "unshackled-word"."Elb1871Words" ("Strongs");
 
 CREATE TABLE "unshackled-word"."Elb1871Verses"
 (
-    "Id"           serial4                      NOT NULL,
-    "BibleBookId"  integer                      NOT NULL,
-    "Chapter"      integer                      NOT NULL,
-    "Verse"        integer                      NOT NULL,
-    "VerseText"    text COLLATE "en_US.utf8"    NOT NULL,
+    "Id"           serial4                   NOT NULL,
+    "BibleBookId"  integer                   NOT NULL,
+    "Chapter"      integer                   NOT NULL,
+    "Verse"        integer                   NOT NULL,
+    "VerseText"    text COLLATE "en_US.utf8" NOT NULL,
     CONSTRAINT "Elb1871Verses_pk" PRIMARY KEY ("Id")
 );
 
-CREATE INDEX elb1871verses_reference_idx ON "unshackled-word"."Elb1871Verses" ("BibleBookId", "Chapter", "Verse");
+CREATE INDEX "Elb1871Verses_reference_idx" ON "unshackled-word"."Elb1871Verses" ("BibleBookId", "Chapter", "Verse");
+
+CREATE TABLE "unshackled-word"."SourceWords"
+(
+    "Id"          serial4                   NOT NULL,
+    "BibleBookId" integer                   NOT NULL,
+    "Chapter"     integer                   NOT NULL,
+    "Verse"       integer                   NOT NULL,
+    "SortNumber"  integer                   NOT NULL,
+    "SourceWord"  text COLLATE "en_US.utf8" NOT NULL,
+    "GrammarKey"  text COLLATE "en_US.utf8" NOT NULL,
+    CONSTRAINT "SourceWords_pk" PRIMARY KEY ("Id")
+);
+
+CREATE INDEX "SourceWords_reference_idx" ON "unshackled-word"."SourceWords" ("BibleBookId", "Chapter", "Verse");

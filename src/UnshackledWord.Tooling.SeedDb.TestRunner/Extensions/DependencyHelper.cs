@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UnshackledWord.Tooling.SeedDb.Extensions;
-using UnshackledWord.Tooling.Sqlite.Migration.Extensions;
 
 namespace UnshackledWord.Tooling.SeedDb.TestRunner.Extensions;
 

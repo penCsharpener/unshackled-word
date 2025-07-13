@@ -17,12 +17,24 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var seedingService = scope.ServiceProvider.GetRequiredService<SeedingService>();
+        try
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var seedingService = scope.ServiceProvider.GetRequiredService<SeedingService>();
 
-        await seedingService.SeedDatabaseAsync(stoppingToken);
+            await seedingService.SeedDatabaseAsync(stoppingToken);
 
-        _logger.LogInformation("Database seeding completed. Shutting down application.");
-        //_lifetime.StopApplication();
+            _logger.LogInformation("Database seeding completed. Shutting down application.");
+            // _lifetime.StopApplication();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred during database seeding.");
+            // _lifetime.StopApplication();
+        }
+        finally
+        {
+            _logger.LogInformation("Worker has completed its execution.");
+        }
     }
 }

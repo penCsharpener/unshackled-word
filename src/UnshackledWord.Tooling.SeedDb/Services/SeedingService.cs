@@ -1,5 +1,7 @@
 ﻿using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
+
 // #if DEBUG
 // using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
 // using UnshackledWord.Tooling.SeedDb.Services.CsvImports;
@@ -17,6 +19,7 @@ public sealed class SeedingService
     private readonly Type[] _runnerTypes =
     {
         typeof(ElberfelderTextRunner),
+        typeof(GbtRunner)
 // #if DEBUG
 //         typeof(ElbRunner),
 //         typeof(SrRunner),

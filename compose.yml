@@ -1,4 +1,4 @@
-﻿services:
+services:
   unshackledword.tooling.database:
     image: postgres:latest
     container_name: postgres-test-db
@@ -13,6 +13,8 @@
 
   unshackledword.tooling.db-migration:
     #image: unshackledword.migration.postgres
+    depends_on:
+      - unshackledword.tooling.database
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.Postgres.Migration/Dockerfile
@@ -22,6 +24,9 @@
 
   unshackledword.tooling.seed-db:
     #image: unshackledword.tooling.seeddb
+    depends_on:
+      - unshackledword.tooling.database
+      - unshackledword.tooling.db-migration
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.SeedDb/Dockerfile
@@ -31,9 +36,14 @@
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__ELBERFELDER1871TEXTFILE=${ELBERFELDER1871TEXTFILE:-/src/assets/elberfelder1871-theword-export.txt}
-
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__GLOBALBIBLETOOLSWORDSCSVFILE=${GLOBALBIBLETOOLSWORDSCSVFILE:-/src/assets/globalbibletools-data.csv}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__GLOBALBIBLETOOLSLEMMACSVFILE=${GLOBALBIBLETOOLSLEMMACSVFILE:-/src/assets/globalbibletools-lemma-form.csv}
   unshackledword.tooling.webapi:
     #image: unshackledword.tooling.webapi
+    depends_on:
+      - unshackledword.tooling.database
+      - unshackledword.tooling.seed-db
+      - unshackledword.tooling.db-migration
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
