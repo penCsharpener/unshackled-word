@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="Microsoft.Extensions.Hosting"/>
+    <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Serilog.AspNetCore"/>
     <PackageReference Include="Serilog.Sinks.Async"/>
   </ItemGroup>

@@ -9,6 +9,7 @@ using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
+using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
 using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
 using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 using UnshackledWord.Tooling.SeedDb.Services.Tsk;
@@ -28,6 +29,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<ElbRunner>();
         services.AddScoped<BkRunner>();
         services.AddScoped<TskRunner>();
+        services.AddScoped<GbtRunner>();
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();
@@ -36,6 +38,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<ElberfelderMergeStrategy>();
         services.AddScoped<RalfsLxxParserStrategy>();
         services.AddScoped<OpenScriptureHebrewStrategy>();
+        services.AddScoped<GbtCsvStrategy>();
         services.AddScoped<TskTextReader>();
         services.AddScoped<IDbWriter, DbWriter>();
         services.AddScoped<IDbReader, DbReader>();
