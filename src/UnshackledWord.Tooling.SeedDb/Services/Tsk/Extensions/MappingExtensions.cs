@@ -26,6 +26,11 @@ public static class MappingExtensions
         return tskCrossReferences.SelectMany(tskCrossReference => tskCrossReference.ToBibleReference());
     }
 
+    public static int CountChars(this string str, char @char)
+    {
+        return str.Count(c => c == @char);
+    }
+
     public static IEnumerable<IBibleReference> ToBibleReference(this TskCrossReference tskCrossReference)
     {
         var bookSplit = tskCrossReference.CrossReference.Split(' ');
@@ -43,7 +48,18 @@ public static class MappingExtensions
         var chapterVerse = bookSplit.Last();
         var chapterVerseSplit = chapterVerse.Split(':');
 
-        var chapterId = int.Parse(chapterVerseSplit.First());
+        var chapterPart = chapterVerseSplit.First();
+        var startChapter = chapterPart;
+        var endChapter = startChapter;
+        if (chapterPart.Contains('-') && chapterPart.Contains(':'))
+        {
+            var chapterRangeSplit = chapterPart.Split('-');
+            startChapter = chapterRangeSplit[0];
+            endChapter = chapterRangeSplit[1];
+        }
+
+        var startChapterId = int.Parse(startChapter);
+        var endChapterId = int.Parse(endChapter);
         var verse = chapterVerseSplit.Last();
         var endVerse = string.Empty;
 
@@ -55,11 +71,11 @@ public static class MappingExtensions
                 var verseId = int.Parse(spanSplit.First());
                 var endVerseId = int.Parse(spanSplit.Last());
 
-                yield return new BibleReferenceRange(new(bookId, chapterId, verseId), new(bookId, chapterId, endVerseId));
+                yield return new BibleReferenceRange(new(bookId, startChapterId, verseId), new(bookId, endChapterId, endVerseId));
                 continue;
             }
 
-            yield return new BibleReference(bookId, chapterId, int.Parse(verseOptions));
+            yield return new BibleReference(bookId, startChapterId, int.Parse(verseOptions));
         }
     }
 }

@@ -37,6 +37,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<Elberfelder1871Strategy>();
         services.AddScoped<ElberfelderMergeStrategy>();
         services.AddScoped<RalfsLxxParserStrategy>();
+        services.AddScoped<TskStrategy>();
         services.AddScoped<OpenScriptureHebrewStrategy>();
         services.AddScoped<GbtCsvStrategy>();
         services.AddScoped<TskTextReader>();

@@ -16,8 +16,8 @@ public sealed class TskRunner : IRunner
     public async Task Run(CancellationToken token = default)
     {
         using var scope = _scopeFactory.CreateScope();
-        var runner = scope.ServiceProvider.GetRequiredService<TskTextReader>();
+        var runner = scope.ServiceProvider.GetRequiredService<TskStrategy>();
 
-        await runner.ReadAsync(token);
+        await runner.SaveToDatabase("", token);
     }
 }

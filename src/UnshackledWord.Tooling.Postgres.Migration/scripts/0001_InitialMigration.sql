@@ -42,11 +42,11 @@ CREATE INDEX "Elb1871Words_strongs_idx" ON "unshackled-word"."Elb1871Words" ("St
 
 CREATE TABLE "unshackled-word"."Elb1871Verses"
 (
-    "Id"           serial4                   NOT NULL,
-    "BibleBookId"  integer                   NOT NULL,
-    "Chapter"      integer                   NOT NULL,
-    "Verse"        integer                   NOT NULL,
-    "VerseText"    text COLLATE "en_US.utf8" NOT NULL,
+    "Id"          serial4                   NOT NULL,
+    "BibleBookId" integer                   NOT NULL,
+    "Chapter"     integer                   NOT NULL,
+    "Verse"       integer                   NOT NULL,
+    "VerseText"   text COLLATE "en_US.utf8" NOT NULL,
     CONSTRAINT "Elb1871Verses_pk" PRIMARY KEY ("Id")
 );
 
@@ -65,3 +65,23 @@ CREATE TABLE "unshackled-word"."SourceWords"
 );
 
 CREATE INDEX "SourceWords_reference_idx" ON "unshackled-word"."SourceWords" ("BibleBookId", "Chapter", "Verse");
+
+CREATE TABLE "unshackled-word"."Tsk"
+(
+    "Id"                      serial4                   NOT NULL,
+    "BibleBookId"             integer                   NOT NULL,
+    "Chapter"                 integer                   NOT NULL,
+    "Verse"                   integer                   NOT NULL,
+    "Scope"                   text COLLATE "en_US.utf8" NOT NULL,
+    "RelatedStartBibleBookId" integer                   NOT NULL,
+    "RelatedStartChapter"     integer                   NOT NULL,
+    "RelatedStartVerse"       integer                   NOT NULL,
+    "RelatedEndBibleBookId"   integer                   NULL,
+    "RelatedEndChapter"       integer                   NULL,
+    "RelatedEndVerse"         integer                   NULL,
+    CONSTRAINT "Tsk_pk" PRIMARY KEY ("Id")
+);
+
+CREATE INDEX "Tsk_reference_idx" ON "unshackled-word"."Tsk" ("BibleBookId", "Chapter", "Verse");
+CREATE INDEX "Tsk_relatedStartReference_idx" ON "unshackled-word"."Tsk" ("RelatedStartBibleBookId", "RelatedStartChapter", "RelatedStartVerse");
+CREATE INDEX "Tsk_relatedEndReference_idx" ON "unshackled-word"."Tsk" ("RelatedEndBibleBookId", "RelatedEndChapter", "RelatedEndVerse");
