@@ -20,6 +20,7 @@ public sealed class DatabaseSeedSettings
     public string TskWithSummariesDownloadGithubPath { get; set; } = default!;
     public string TskDownloadGithubPath { get; set; } = default!;
     public string TskFilePath { get; set; } = default!;
+    public SblSettings SblSettings { get; set; } = default!;
     public OpenScripturesGithubSettings OpenScripturesGithub { get; set; } = default!;
 }
 
@@ -29,4 +30,12 @@ public sealed class OpenScripturesGithubSettings
     public string DownloadDomain { get; set; } = default!;
     public string DownloadPath { get; set; } = default!;
     public string XmlFiles { get; set; } = default!;
+}
+
+public sealed class SblSettings
+{
+    public string TextDownloadUrl { get; set; } = default!;
+    public string TextFilePath { get; set; } = default!;
+    public string ApparatusDownloadUrl { get; set; } = default!;
+    public string ApparatusFilePath { get; set; } = default!;
 }
