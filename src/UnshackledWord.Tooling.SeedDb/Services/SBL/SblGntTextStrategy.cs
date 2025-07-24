@@ -8,14 +8,14 @@ using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.SBL;
 
-public class SblGntStrategy : IFileParserStrategy
+public class SblGntTextStrategy : IFileParserStrategy
 {
     private readonly IFileService _fileService;
     private readonly IDbWriter _dbWriter;
     private readonly SblSettings _options;
     private static string _delimiter = $",{Environment.NewLine}    ";
 
-    public SblGntStrategy(IFileService fileService, IDbWriter dbWriter, IOptions<AppSettings> options)
+    public SblGntTextStrategy(IFileService fileService, IDbWriter dbWriter, IOptions<AppSettings> options)
     {
         _fileService = fileService;
         _dbWriter = dbWriter;

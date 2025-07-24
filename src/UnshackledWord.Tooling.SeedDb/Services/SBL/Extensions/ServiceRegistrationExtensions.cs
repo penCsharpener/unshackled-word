@@ -6,7 +6,8 @@ public static class ServiceRegistrationExtensions
     {
         services.AddScoped<SblTextDownloader>();
         services.AddScoped<SblApparatusDownloader>();
-        services.AddScoped<SblGntStrategy>();
+        services.AddScoped<SblGntTextStrategy>();
+        services.AddScoped<SblGntApparatusStrategy>();
         services.AddScoped<SblRunner>();
 
         services.AddHttpClient("Github", client =>

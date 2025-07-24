@@ -4,17 +4,20 @@ namespace UnshackledWord.Tooling.SeedDb.Services.SBL;
 
 public class SblRunner : IRunner
 {
-    private readonly SblGntStrategy _textStrategy;
+    private readonly SblGntTextStrategy _textTextStrategy;
+    private readonly SblGntApparatusStrategy _apparatusStrategy;
     private readonly ILogger<SblRunner> _logger;
 
-    public SblRunner(SblGntStrategy textStrategy, ILogger<SblRunner> logger)
+    public SblRunner(SblGntTextStrategy textTextStrategy, SblGntApparatusStrategy apparatusStrategy, ILogger<SblRunner> logger)
     {
-        _textStrategy = textStrategy;
+        _textTextStrategy = textTextStrategy;
+        _apparatusStrategy = apparatusStrategy;
         _logger = logger;
     }
 
     public async Task Run(CancellationToken token = default)
     {
-        await _textStrategy.SaveToDatabase("", token);
+        // await _textTextStrategy.SaveToDatabase("", token);
+        await _apparatusStrategy.SaveToDatabase("", token);
     }
 }

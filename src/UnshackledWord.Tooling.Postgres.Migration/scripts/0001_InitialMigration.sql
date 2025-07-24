@@ -88,12 +88,25 @@ CREATE INDEX "Tsk_relatedEndReference_idx" ON "unshackled-word"."Tsk" ("RelatedE
 
 CREATE TABLE "unshackled-word"."SblText"
 (
-    "Id"                      serial4                   NOT NULL,
-    "BibleBookId"             integer                   NOT NULL,
-    "Chapter"                 integer                   NOT NULL,
-    "Verse"                   integer                   NOT NULL,
-    "VerseText"               text COLLATE "en_US.utf8" NOT NULL,
+    "Id"          serial4                   NOT NULL,
+    "BibleBookId" integer                   NOT NULL,
+    "Chapter"     integer                   NOT NULL,
+    "Verse"       integer                   NOT NULL,
+    "VerseText"   text COLLATE "en_US.utf8" NOT NULL,
     CONSTRAINT "SblText_pk" PRIMARY KEY ("Id")
 );
 
 CREATE INDEX "SblText_reference_idx" ON "unshackled-word"."SblText" ("BibleBookId", "Chapter", "Verse");
+
+CREATE TABLE "unshackled-word"."SblApparatus"
+(
+    "Id"          serial4                   NOT NULL,
+    "BibleBookId" integer                   NOT NULL,
+    "Chapter"     integer                   NOT NULL,
+    "Verse"       integer                   NOT NULL,
+    "Text"        text COLLATE "en_US.utf8" NOT NULL,
+    CONSTRAINT "SblApparatus_pk" PRIMARY KEY ("Id")
+);
+
+CREATE INDEX "SblApparatus_reference_idx" ON "unshackled-word"."SblApparatus" ("BibleBookId", "Chapter", "Verse");
+
