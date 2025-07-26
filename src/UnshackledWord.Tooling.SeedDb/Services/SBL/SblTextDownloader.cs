@@ -27,7 +27,7 @@ public class SblTextDownloader : IFileDownloader
         var fileList = new List<string>();
         var sblSettings = _options.DatabaseSeeding.SblSettings;
 
-        foreach (var file in Constants.SblDownloadFileNames)
+        foreach (var file in Constants.SblDownloadFileNames.Keys)
         {
             var filePath = _fileService.Combine(sblSettings.TextFilePath, file);
 

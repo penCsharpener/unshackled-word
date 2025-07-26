@@ -110,3 +110,17 @@ CREATE TABLE "unshackled-word"."SblApparatus"
 
 CREATE INDEX "SblApparatus_reference_idx" ON "unshackled-word"."SblApparatus" ("BibleBookId", "Chapter", "Verse");
 
+CREATE TABLE "unshackled-word"."ByzTxtWords"
+(
+    "Id"           serial4                   NOT NULL,
+    "BibleBookId"  integer                   NOT NULL,
+    "Chapter"      integer                   NOT NULL,
+    "Verse"        integer                   NOT NULL,
+    "SortNumber"   integer                   NOT NULL,
+    "Word"         text COLLATE "en_US.utf8" NOT NULL,
+    "StrongNumber" text COLLATE "en_US.utf8" NOT NULL,
+    "Morphology"   text COLLATE "en_US.utf8" NOT NULL,
+    CONSTRAINT "ByzTxtWords_pk" PRIMARY KEY ("Id")
+);
+
+CREATE INDEX "ByzTxtWords_reference_idx" ON "unshackled-word"."ByzTxtWords" ("BibleBookId", "Chapter", "Verse");

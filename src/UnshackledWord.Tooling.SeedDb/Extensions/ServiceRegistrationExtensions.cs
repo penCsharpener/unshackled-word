@@ -7,6 +7,7 @@ using UnshackledWord.Persistence.Postgres.Services;
 using UnshackledWord.Tooling.SeedDb.Services;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
+using UnshackledWord.Tooling.SeedDb.Services.ByzTxt.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
@@ -33,6 +34,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<TskRunner>();
         services.AddScoped<GbtRunner>();
         services.AddSblServices();
+        services.AddByzTxtServices();
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();

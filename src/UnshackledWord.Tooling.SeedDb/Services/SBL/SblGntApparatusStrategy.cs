@@ -29,11 +29,11 @@ public class SblGntApparatusStrategy : IFileParserStrategy
     {
         var apparatusItems = new List<ApparatusEntry>();
 
-        foreach (var fileName in Constants.SblDownloadFileNames)
+        foreach (var fileName in Constants.SblDownloadFileNames.Keys)
         {
             var filePath = _fileService.Combine(_options.ApparatusFilePath, $"{fileName}.txt");
             var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
-            var book = BibleBook.AllBooks.First(x => x.Value.Abbreviations.Any(y => y == fileName)).Value;
+            var book = BibleBook.AllBooks[Constants.SblDownloadFileNames[fileName]];
 
             var apparatusEntry = new ApparatusEntry();
             var sb = new StringBuilder();

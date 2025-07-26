@@ -29,9 +29,7 @@ public class SblGntTextStrategy : IFileParserStrategy
 
     private async Task GetCombinedLinesOfAllFilesAsync(CancellationToken token = default)
     {
-        var combinedLines = new List<string>();
-
-        foreach (var fileName in Constants.SblDownloadFileNames)
+        foreach (var fileName in Constants.SblDownloadFileNames.Keys)
         {
             var filePath = _fileService.Combine(_options.TextFilePath, fileName);
             var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
