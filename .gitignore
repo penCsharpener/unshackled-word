@@ -405,3 +405,4 @@ temp/*
 /src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger/wwwroot/lib
 /docker/postgres-test-db/postgres_data
 .env
+*.ignore.sql
