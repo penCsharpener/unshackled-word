@@ -20,7 +20,9 @@ public class SblGntApparatusStrategy : IFileParserStrategy
         _fileService = fileService;
         _dbWriter = dbWriter;
         _options = options.Value.DatabaseSeeding.SblSettings;
-    }public async Task SaveToDatabase(string _, CancellationToken token = default)
+    }
+
+    public async Task SaveToDatabase(string _, CancellationToken token = default)
     {
         await GetCombinedLinesOfAllFilesAsync(token);
     }

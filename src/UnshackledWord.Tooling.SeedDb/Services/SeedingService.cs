@@ -19,13 +19,16 @@ public sealed class SeedingService
 
     private readonly Type[] _runnerTypes =
     {
-        typeof(ElberfelderTextRunner),
-        typeof(GbtRunner),
-        typeof(TskRunner)
+        // typeof(ElberfelderTextRunner),
+        // typeof(GbtRunner),
+        // typeof(TskRunner)
 // #if DEBUG
 //         typeof(ElbRunner),
-//         typeof(SrRunner),
-//         typeof(CsvRunner),
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt.SrRunner),
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.CsvImports.CsvRunner),
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.SBL.SblRunner),
+         typeof(UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt.SrRunner),
+           // typeof(UnshackledWord.Tooling.SeedDb.Services.ByzTxt.ByzRunner),
 //         typeof(BkRunner),
 //         typeof(OpenScriptureRunner),
 // #endif

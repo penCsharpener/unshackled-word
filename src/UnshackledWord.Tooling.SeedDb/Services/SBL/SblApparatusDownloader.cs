@@ -28,7 +28,7 @@ public sealed class SblApparatusDownloader : IFileDownloader
 
         foreach (var file in Constants.SblDownloadFileNames.Keys)
         {
-            var filePath = _fileService.Combine(sblSettings.ApparatusFilePath, file);
+            var filePath = _fileService.Combine(sblSettings.ApparatusFilePath, $"{file}.txt");
 
             if (_fileService.FileExists(filePath))
             {
@@ -36,7 +36,7 @@ public sealed class SblApparatusDownloader : IFileDownloader
                 continue;
             }
 
-            var fileUrl = $"{sblSettings.ApparatusDownloadUrl}{file}";
+            var fileUrl = $"{sblSettings.ApparatusDownloadUrl}{file}.txt";
             var response = await _httpclient.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead, token);
             if (response.IsSuccessStatusCode is false)
             {

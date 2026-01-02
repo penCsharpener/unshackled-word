@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
 
@@ -29,7 +28,7 @@ public class SblTextDownloader : IFileDownloader
 
         foreach (var file in Constants.SblDownloadFileNames.Keys)
         {
-            var filePath = _fileService.Combine(sblSettings.TextFilePath, file);
+            var filePath = _fileService.Combine(sblSettings.TextFilePath, $"{file}.txt");
 
             if (_fileService.FileExists(filePath))
             {
@@ -37,7 +36,7 @@ public class SblTextDownloader : IFileDownloader
                 continue;
             }
 
-            var fileUrl = $"{sblSettings.TextDownloadUrl}{file}";
+            var fileUrl = $"{sblSettings.TextDownloadUrl}{file}.txt";
             var response = await _httpclient.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead, token);
             if (response.IsSuccessStatusCode is false)
             {

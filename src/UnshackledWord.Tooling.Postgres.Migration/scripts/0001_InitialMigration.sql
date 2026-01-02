@@ -1,4 +1,4 @@
-﻿CREATE SCHEMA "unshackled-word" AUTHORIZATION postgres;
+﻿CREATE SCHEMA IF NOT EXISTS "unshackled-word" AUTHORIZATION postgres;
 
 CREATE TABLE "unshackled-word"."GntHotWords"
 (
@@ -124,3 +124,29 @@ CREATE TABLE "unshackled-word"."ByzTxtWords"
 );
 
 CREATE INDEX "ByzTxtWords_reference_idx" ON "unshackled-word"."ByzTxtWords" ("BibleBookId", "Chapter", "Verse");
+
+CREATE TABLE "unshackled-word"."SrGntWords"
+(
+    "Id"              serial4                      NOT NULL,
+    "BibleBookId"     integer                      NOT NULL,
+    "Chapter"         integer                      NOT NULL,
+    "Verse"           integer                      NOT NULL,
+    "WordInContext"   varchar COLLATE "en_US.utf8" NOT NULL,
+    "Koine"           varchar COLLATE "en_US.utf8" NOT NULL,
+    "Lemma"           varchar COLLATE "en_US.utf8" NOT NULL,
+    "PositionInVerse" integer                      NOT NULL,
+    "Strongs"         varchar                      NOT NULL,
+    "PartOfSpeech"    varchar                      NOT NULL,
+    "GrammaticalKey"  varchar                      NOT NULL,
+    "Mood"            integer                      NULL,
+    "Tense"           integer                      NULL,
+    "Voice"           integer                      NULL,
+    "Person"          integer                      NULL,
+    "Case"            integer                      NULL,
+    "Gender"          integer                      NULL,
+    "Number"          integer                      NULL,
+    CONSTRAINT "SrGntWords_pk" PRIMARY KEY ("Id")
+);
+
+CREATE INDEX "SrGntWords_reference_idx" ON "unshackled-word"."SrGntWords" ("BibleBookId", "Chapter", "Verse");
+CREATE INDEX "SrGntWords_strongs_idx" ON "unshackled-word"."SrGntWords" ("Strongs");

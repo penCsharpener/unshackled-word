@@ -25,12 +25,12 @@ public class Worker : BackgroundService
             await seedingService.SeedDatabaseAsync(stoppingToken);
 
             _logger.LogInformation("Database seeding completed. Shutting down application.");
-            // _lifetime.StopApplication();
+            _lifetime.StopApplication();
         }
         catch (Exception e)
         {
             _logger.LogError(e, "An error occurred during database seeding.");
-            // _lifetime.StopApplication();
+            _lifetime.StopApplication();
         }
         finally
         {

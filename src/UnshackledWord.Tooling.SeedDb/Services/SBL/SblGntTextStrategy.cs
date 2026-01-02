@@ -31,7 +31,7 @@ public class SblGntTextStrategy : IFileParserStrategy
     {
         foreach (var fileName in Constants.SblDownloadFileNames.Keys)
         {
-            var filePath = _fileService.Combine(_options.TextFilePath, fileName);
+            var filePath = _fileService.Combine(_options.TextFilePath, $"{fileName}.txt");
             var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
             var insertRows = new List<string>();
 
