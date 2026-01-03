@@ -106,6 +106,11 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         {
             foreach (var word in verse.Words)
             {
+                if (word.InContext is "-" or "G17-36")
+                {
+                    continue;
+                }
+
                 rowList.Add($"({verse.BibleBookId}, {verse.Chapter}, {verse.Verse}, '{word.InContext}', {word.Order}, '{word.PlainWord}')");
             }
         }
@@ -127,8 +132,10 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
         foreach (var character in characters)
         {
-            result = result.Trim(character);
+            result = result.Replace(character.ToString(), string.Empty);
         }
+
+        result = result.Trim('-');
 
         return result;
     }

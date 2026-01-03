@@ -9,6 +9,8 @@ public sealed class DatabaseSeedSettings
 {
     public string FolderLocation { get; set; } = default!;
     public string[] SRFileUrls { get; set; } = default!;
+    public string SolutionTempPath { get; set; } = default!;
+    public string SolutionAssetsPath { get; set; } = default!;
     public string BibleKommentareElberfelderUrl { get; set; } = default!;
     public string BibleKommentareSourcePath { get; set; } = default!;
     public string BibleKommentareDestinationPath { get; set; } = default!;
@@ -17,12 +19,18 @@ public sealed class DatabaseSeedSettings
     public string GlobalBibleToolsWordsCsvFile { get; set; } = default!;
     public string GlobalBibleToolsLemmaCsvFile { get; set; } = default!;
     public string GlobalBibleToolsDictionaryCsvFile { get; set; } = default!;
+    public Elberfelder1871 Elberfelder1871 { get; set; } = default!;
     public string TskWithSummariesDownloadGithubPath { get; set; } = default!;
     public string TskDownloadGithubPath { get; set; } = default!;
     public string TskFilePath { get; set; } = default!;
     public SblSettings SblSettings { get; set; } = default!;
     public ByzantineSettings ByzantineSettings { get; set; } = default!;
     public OpenScripturesGithubSettings OpenScripturesGithub { get; set; } = default!;
+}
+
+public sealed class Elberfelder1871
+{
+    public string LemmatizerGermanLink { get; set; } = default!;
 }
 
 public sealed class OpenScripturesGithubSettings

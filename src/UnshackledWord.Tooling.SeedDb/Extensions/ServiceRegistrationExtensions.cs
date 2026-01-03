@@ -8,6 +8,8 @@ using UnshackledWord.Tooling.SeedDb.Services;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
 using UnshackledWord.Tooling.SeedDb.Services.ByzTxt.Extensions;
+using UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer;
+using UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
@@ -35,6 +37,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<GbtRunner>();
         services.AddSblServices();
         services.AddByzTxtServices();
+        services.AddElberfelder1871Lemmatizer();
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();
@@ -46,6 +49,7 @@ public static class ServiceRegistrationExtensions
         services.AddScoped<OpenScriptureHebrewStrategy>();
         services.AddScoped<GbtCsvStrategy>();
         services.AddScoped<TskTextReader>();
+        services.RegisterElb1871SrWordMapperServices();
         services.AddScoped<IDbWriter, DbWriter>();
         services.AddScoped<IDbReader, DbReader>();
         services.AddSingleton<IDbConnectionFactory, PostgresDbConnectionFactory>();

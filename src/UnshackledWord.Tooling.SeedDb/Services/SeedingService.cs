@@ -1,7 +1,4 @@
 ﻿using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
-using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
-using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
-using UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
 // #if DEBUG
 // using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
@@ -19,18 +16,19 @@ public sealed class SeedingService
 
     private readonly Type[] _runnerTypes =
     {
-        // typeof(ElberfelderTextRunner),
-        // typeof(GbtRunner),
-        // typeof(TskRunner)
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser.ElberfelderTextRunner),
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools.GbtRunner),
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.Tsk.TskRunner)
 // #if DEBUG
 //         typeof(ElbRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt.SrRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.CsvImports.CsvRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.SBL.SblRunner),
-         typeof(UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt.SrRunner),
            // typeof(UnshackledWord.Tooling.SeedDb.Services.ByzTxt.ByzRunner),
-//         typeof(BkRunner),
-//         typeof(OpenScriptureRunner),
+           typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper.Elb1871SrMappingRunner),
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer.LemmatizerRunner)
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.BibelKommentare.BkRunner),
+//         typeof(UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData.OpenScriptureRunner),
 // #endif
     };
 
