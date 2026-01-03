@@ -20,7 +20,8 @@
     {
       <div class="alert alert-danger">
         <strong>You have no recovery codes left.</strong>
-        <p>You must <a href="Account/Manage/GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+        <p>You must <a href="Account/Manage/GenerateRecoveryCodes">generate a new set of recovery codes</a> before you
+          can log in with a recovery code.</p>
       </div>
     }
     else if (recoveryCodesLeft == 1)
@@ -40,7 +41,8 @@
 
     if (isMachineRemembered)
     {
-      <form style="display: inline-block" @formname="forget-browser" @onsubmit="OnSubmitForgetBrowserAsync" method="post">
+      <form style="display: inline-block" @formname="forget-browser" @onsubmit="OnSubmitForgetBrowserAsync"
+            method="post">
         <AntiforgeryToken/>
         <button type="submit" class="btn btn-primary">Forget this browser</button>
       </form>

@@ -31,8 +31,12 @@
             <AntiforgeryToken/>
             <div>
               <input type="hidden" name="CredentialId" value="@credentialId"/>
-              <button type="submit" name="Action" value="rename" class="btn btn-primary" title="Rename this passkey">Rename</button>
-              <button type="submit" name="Action" value="delete" class="btn btn-danger" title="Remove this passkey from your account">Delete</button>
+              <button type="submit" name="Action" value="rename" class="btn btn-primary" title="Rename this passkey">
+                Rename
+              </button>
+              <button type="submit" name="Action" value="delete" class="btn btn-danger"
+                      title="Remove this passkey from your account">Delete
+              </button>
             </div>
           </form>
         </td>
@@ -50,11 +54,13 @@ else
   <AntiforgeryToken/>
   @if (currentPasskeys is { Count: >= MaxPasskeyCount })
   {
-    <p class="text-danger">You have reached the maximum number of allowed passkeys. Please delete one before adding a new one.</p>
+    <p class="text-danger">You have reached the maximum number of allowed passkeys. Please delete one before adding a
+      new one.</p>
   }
   else
   {
-    <PasskeySubmit Operation="PasskeyOperation.Create" Name="Input" class="btn btn-primary">Add a new passkey</PasskeySubmit>
+    <PasskeySubmit Operation="PasskeyOperation.Create" Name="Input" class="btn btn-primary">Add a new passkey
+    </PasskeySubmit>
   }
 
 </form>
