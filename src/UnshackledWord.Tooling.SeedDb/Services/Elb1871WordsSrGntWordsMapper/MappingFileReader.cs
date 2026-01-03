@@ -24,7 +24,7 @@ public class MappingFileReader
             var settings = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = true,
-                Delimiter = ";",
+                Delimiter = "\t",
                 Encoding = Encoding.UTF8
             };
 

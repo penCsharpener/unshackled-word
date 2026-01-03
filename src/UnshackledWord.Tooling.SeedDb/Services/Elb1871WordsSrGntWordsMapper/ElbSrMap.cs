@@ -11,5 +11,7 @@ public sealed class ElbSrMap
 
     [Ignore]
     public string[] Elb1871WordList { get; set; } = [];
+
+    public int Count { get; set; }
     public string SrGntWord { get; set; } = default!;
 }
