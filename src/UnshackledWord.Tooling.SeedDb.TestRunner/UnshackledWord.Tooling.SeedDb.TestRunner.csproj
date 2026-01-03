@@ -1,23 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <UserSecretsId>dotnet-UnshackledWord.Tooling.SeedDb-ff6e585f-9657-42a0-905e-72d15cbc893f</UserSecretsId>
-    </PropertyGroup>
+  <PropertyGroup>
+    <UserSecretsId>dotnet-UnshackledWord.Tooling.SeedDb-ff6e585f-9657-42a0-905e-72d15cbc893f</UserSecretsId>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="Shouldly" />
-        <PackageReference Include="xunit.v3"/>
-        <PackageReference Include="xunit.runner.visualstudio"/>
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    <PackageReference Include="Shouldly"/>
+    <PackageReference Include="xunit.v3"/>
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
-    <ItemGroup>
-        <Using Include="Xunit"/>
-    </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\UnshackledWord.Tooling.SeedDb\UnshackledWord.Tooling.SeedDb.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UnshackledWord.Tooling.SeedDb\UnshackledWord.Tooling.SeedDb.csproj"/>
+  </ItemGroup>
 
 </Project>
