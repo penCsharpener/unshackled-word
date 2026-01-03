@@ -406,3 +406,4 @@ temp/*
 /docker/postgres-test-db/postgres_data
 .env
 *.ignore.sql
+*.7z
