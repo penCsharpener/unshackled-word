@@ -6,6 +6,7 @@
     <File Path="Directory.Build.props" />
     <File Path=".editorconfig" />
     <File Path=".env" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger.csproj" />

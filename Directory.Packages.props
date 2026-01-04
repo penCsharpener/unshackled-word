@@ -10,6 +10,7 @@
     <PackageVersion Include="dbup-sqlite" Version="6.0.4"/>
     <PackageVersion Include="FastEndpoints" Version="7.1.1"/>
     <PackageVersion Include="LemmaGenerator" Version="1.1.0"/>
+    <PackageVersion Include="MailKit" Version="4.14.1"/>
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1"/>
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.1"/>
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.1"/>
