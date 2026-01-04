@@ -29,3 +29,15 @@ To migrate database directly within BibleTagger
 ```sh
 dotnet ef database update
 ```
+
+### Managing JS/CSS libraries
+
+```sh
+dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+```
+
+```sh
+cd src\UnshackledWord.Tooling.BibleTagger\wwwroot
+# libman init
+libman update bootstrap
+```
