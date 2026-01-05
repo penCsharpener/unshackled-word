@@ -1,0 +1,55 @@
+/* Additional styles for the word-items */
+.bibleReference-book {
+    max-width: 300px;
+}
+
+.bibleReference-chapter {
+    max-width: 300px;
+}
+
+.bibleReference-verse {
+    max-width: 300px;
+}
+
+.word-item {
+    cursor: pointer;
+    padding: 10px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.word-item:hover {
+    background-color: #f1f1f1;
+}
+
+.word-item.selected {
+    background-color: #aaf0a0;
+    border-color: #78e378;
+}
+
+.word-text {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.part-of-speech {
+    font-size: 14px;
+    color: #777;
+}
+
+.word-id {
+    display: none;
+}
+
+#saveButton {
+    cursor: pointer;
+}
+
+#saveButton:focus {
+    outline: none;
+}
+

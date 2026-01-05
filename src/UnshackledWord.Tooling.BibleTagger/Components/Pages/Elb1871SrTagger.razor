@@ -1,0 +1,76 @@
+﻿@page "/elb1871-sr-tagger"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+@* Form to select book, chapter, and verse *@
+<EditForm Model="@bibleReference" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-4">
+            <label for="book">Book</label>
+            <select id="book" class="form-control bibleReference-book" @bind="bibleReference.Book">
+                @foreach (var book in bibleBooks)
+                {
+                    <option value="@book">@book</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="chapter">Chapter</label>
+            <input id="chapter" type="number" class="form-control bibleReference-chapter" @bind="bibleReference.Chapter" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="verse">Verse</label>
+            <input id="verse" type="number" class="form-control bibleReference-verse" @bind="bibleReference.Verse" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Load Verse</button>
+</EditForm>
+
+<hr>
+
+@* Two columns to display the words *@
+<div class="row">
+    @* Elberfelder Words on the Left *@
+    <div class="col-md-6">
+        <h3>Elberfelder 1871</h3>
+        <div id="elberfelderWords">
+            @foreach (var word in elberfelderWords)
+            {
+                <div class="word-item" @onclick="() => ToggleSelection(word)">
+                    <input type="checkbox" @bind="@word.Selected" />
+                    <span class="word-text">@word.Text</span>
+                    <span class="part-of-speech">@word.PartOfSpeech</span>
+                    <span class="word-id" style="display:none;">@word.Id</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* Greek Words on the Right *@
+    <div class="col-md-6">
+        <h3>Greek</h3>
+        <div id="greekWords">
+            @foreach (var word in greekWords)
+            {
+                <div class="word-item" @onclick="() => ToggleSelection(word)">
+                    <input type="checkbox" @bind="@word.Selected" />
+                    <span class="word-text">@word.Text</span>
+                    <span class="part-of-speech">@word.PartOfSpeech</span>
+                    <span class="word-id" style="display:none;">@word.Id</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@* Floating Button to Save Word Connections *@
+<div class="fixed-bottom d-flex justify-content-center p-3">
+    <button class="btn btn-success" @onclick="SaveWordMapping" id="saveButton">
+        Save Selected Words
+    </button>
+</div>
