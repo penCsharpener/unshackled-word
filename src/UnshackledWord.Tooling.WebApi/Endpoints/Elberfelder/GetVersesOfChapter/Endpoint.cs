@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using UnshackledWord.Application.Abstractions;
 
-namespace UnshackledWord.Tooling.WebApi.Elberfelder.GetVersesOfChapter;
+namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetVersesOfChapter;
 
 public class Endpoint : Ep.Req<GetVersesOfChapterRequest>.Res<GetVersesOfChapterResponse>
 {

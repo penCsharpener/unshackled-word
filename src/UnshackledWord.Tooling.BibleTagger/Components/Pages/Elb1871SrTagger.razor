@@ -7,8 +7,8 @@
 <EditForm Model="@bibleReference" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="row">
-        <div class="col-md-4">
+    <div class="row reference-control">
+        <div class="col-md-3">
             <label for="book">Book</label>
             <select id="book" class="form-control bibleReference-book" @bind="bibleReference.Book">
                 @foreach (var book in bibleBooks)
@@ -18,17 +18,21 @@
             </select>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="chapter">Chapter</label>
             <input id="chapter" type="number" class="form-control bibleReference-chapter" @bind="bibleReference.Chapter" />
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="verse">Verse</label>
             <input id="verse" type="number" class="form-control bibleReference-verse" @bind="bibleReference.Verse" />
         </div>
+
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary mt-3">Load Verse</button>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Load Verse</button>
+
 </EditForm>
 
 <hr>

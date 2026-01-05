@@ -11,6 +11,10 @@
     max-width: 300px;
 }
 
+.reference-control {
+    max-width: 900px;
+}
+
 .word-item {
     cursor: pointer;
     padding: 10px;

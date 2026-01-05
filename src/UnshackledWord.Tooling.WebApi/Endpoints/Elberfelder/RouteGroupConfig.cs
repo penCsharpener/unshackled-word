@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
 
-namespace UnshackledWord.Tooling.WebApi.Elberfelder;
+namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder;
 
-public class RouteGroupConfig : Group
+public sealed class RouteGroupConfig : Group
 {
     public RouteGroupConfig()
     {

@@ -1,7 +1,7 @@
 using FastEndpoints;
 using UnshackledWord.Domain.Models;
 
-namespace UnshackledWord.Tooling.WebApi.Elberfelder.GetVerseForMapping;
+namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetVerseForMapping;
 
 public class Endpoint : Ep.Req<GetVerseRequest>.Res<GetVerseResponse>
 {
