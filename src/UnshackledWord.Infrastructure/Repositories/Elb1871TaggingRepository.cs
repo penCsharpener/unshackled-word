@@ -40,7 +40,7 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
                            VALUES(@{nameof(tagging.Elb1871WordsId)}, @{nameof(tagging.SrGntWordsId)}, @{nameof(tagging.PositionInVerse)}, NULL);
                            """;
 
-                await _dbWriter.WriteAsync(sql, tagging);
+                //await _dbWriter.WriteAsync(sql, tagging);
                 insertedRows++;
             }
             catch (Exception ex)

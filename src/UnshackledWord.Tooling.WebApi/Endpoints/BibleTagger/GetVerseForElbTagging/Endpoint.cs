@@ -2,9 +2,9 @@ using FastEndpoints;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.WebApi.BibleTagger.GetVerse;
 
-namespace UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.GetVerse;
+namespace UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.GetVerseForElbTagging;
 
-public sealed class Endpoint : Ep.Req<GetVerseRequest>.Res<GetVerseResponse>
+public sealed class Endpoint : Ep.Req<GetVerseForElbTaggingRequest>.Res<GetVerseForElbTaggingResponse>
 {
     private readonly IElb1871WordRepository _elbRepo;
     private readonly ISrWordRepository _srRepo;
@@ -21,13 +21,14 @@ public sealed class Endpoint : Ep.Req<GetVerseRequest>.Res<GetVerseResponse>
         Group<RouteGroupConfig>();
     }
 
-    public override async Task<GetVerseResponse> ExecuteAsync(GetVerseRequest req, CancellationToken ct)
+    public override async Task<GetVerseForElbTaggingResponse> ExecuteAsync(GetVerseForElbTaggingRequest req, CancellationToken ct)
     {
         var elbWords = await _elbRepo.GetWordForVerseAsync(req.BibleBookId, req.ChapterId, req.VerseId, ct);
         var srWords = await _srRepo.GetWordForVerseAsync(req.BibleBookId, req.ChapterId, req.VerseId, ct);
 
-        var response = new GetVerseResponse { ElberfelderWords = elbWords, SrWords = srWords };
+        var response = new GetVerseForElbTaggingResponse { ElberfelderWords = elbWords, SrWords = srWords };
 
         return response;
     }
 }
+

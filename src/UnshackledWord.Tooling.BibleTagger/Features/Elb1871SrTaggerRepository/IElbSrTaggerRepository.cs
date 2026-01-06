@@ -6,7 +6,7 @@ namespace UnshackledWord.Tooling.BibleTagger.Features.Elb1871SrTaggerRepository;
 
 public interface IElbSrTaggerRepository
 {
-    Task<GetVerseResponse> GetVerseAsync(int bookId, int chapter, int verse, CancellationToken token = default);
+    Task<GetVerseForElbTaggingResponse> GetVerseAsync(int bookId, int chapter, int verse, CancellationToken token = default);
 
     Task<CreateElbSrResponse> CreateMappingAsync(Elb1871WordDbo elbWords, SrGntWordDbo srWords,
         CancellationToken token = default);

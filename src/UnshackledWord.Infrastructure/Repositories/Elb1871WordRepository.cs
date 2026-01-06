@@ -1,9 +1,11 @@
 using System.Text;
+using Dapper;
 using Microsoft.Extensions.Logging;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo;
+using UnshackledWord.Domain.Models.Dto;
 
 namespace UnshackledWord.Infrastructure.Repositories;
 
@@ -20,7 +22,7 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
         _logger = logger;
     }
 
-    public async Task<IEnumerable<Elb1871WordDbo>> GetWordForVerseAsync(int bookId, int chapterId, int verseId, CancellationToken token = default)
+    public async Task<List<Elb1871WordDbo>> GetWordForVerseAsync(int bookId, int chapterId, int verseId, CancellationToken token = default)
     {
         var sql = $"""
                    select *
@@ -34,10 +36,12 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
                             "{nameof(Elb1871WordDbo.PositionInVerse)}";
                    """;
 
-        return await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sql);
+        var result = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sql);
+
+        return result.ToList();
     }
 
-    public async Task<IEnumerable<Elb1871WordDbo>> GetWordForChapterAsync(int bookId, int chapterId, CancellationToken token = default)
+    public async Task<List<Elb1871WordDbo>> GetWordForChapterAsync(int bookId, int chapterId, CancellationToken token = default)
     {
         var sql = $"""
                    select *
@@ -50,7 +54,9 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
                             "{nameof(Elb1871WordDbo.PositionInVerse)}";
                    """;
 
-        return await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sql);
+        var result = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sql);
+
+        return result.ToList();
     }
 
     public async Task<List<int>> BulkUpdateStrongsAsync(List<Elb1871WordDbo> modifiedWords, CancellationToken token = default)
@@ -73,14 +79,89 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
 
         var param = new { modifiedWords.First().Strongs };
 
-        await _dbWriter.WriteAsync(sb.ToString(), param);
+        //await _dbWriter.WriteAsync(sb.ToString(), param);
         _logger.LogInformation("Updated rows with strongs {strongs}: {ids}", param.Strongs, modifiedRows.JoinStrings(","));
 
         return modifiedRows;
     }
 
-    public async Task BulkUpdateGrammarAsync(IEnumerable<Elb1871WordDbo> modifiedWords, CancellationToken token = default)
+    public async Task<List<Elb1871GrammarUpdateResult>> BulkUpdateGrammarAsync(List<Elb1871WordGrammarDto> modifiedWords, CancellationToken token = default)
     {
+        var updatableWords = new List<Elb1871WordDbo>();
+        var dictResults = new Dictionary<string, Elb1871GrammarUpdateResult>();
 
+        foreach (var word in modifiedWords)
+        {
+            var optionalWords = word.OptionalForms.IsNotNullOrWhiteSpace() ? word.OptionalForms.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList() : [];
+            optionalWords.Add(word.PlainWord!);
+            var paramNames = Enumerable.Range(1, optionalWords.Count).Select(x => $"@PlainWord{x}").ToArray();
+
+            var sqlExactMatch = $"""
+                                 select *
+                                 from {Elb1871WordDbo.DboName}
+                                 where 1=1
+                                    and "{nameof(Elb1871WordDbo.PlainWord)}" IN ({paramNames.JoinStrings(", ")})
+                                    and "{nameof(Elb1871WordDbo.Lemma)}" is null
+                                 order by "{nameof(Elb1871WordDbo.BibleBookId)}", "{nameof(Elb1871WordDbo.Chapter)}", "{nameof(Elb1871WordDbo.Verse)}", "{nameof(Elb1871WordDbo.PositionInVerse)}";
+                                 """;
+
+            var param = new DynamicParameters();
+
+            for (int i = 1; i <= optionalWords.Count; i++)
+            {
+                param.Add(paramNames[i], optionalWords[i]);
+            }
+
+            var exactMatch = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sqlExactMatch, param);
+
+            if (!dictResults.ContainsKey(word.PlainWord!))
+            {
+                dictResults[word.PlainWord!] = new Elb1871GrammarUpdateResult
+                {
+                    UpdatedLemma = word.Lemma!,
+                    UpdatedPartOfSpeech = word.PartOfSpeech
+                };
+            }
+
+            foreach (var match in exactMatch)
+            {
+                var updateItem = new Elb1871WordDbo
+                {
+                    Id = match.Id,
+                    BibleBookId = match.BibleBookId,
+                    Chapter = match.Chapter,
+                    Verse = match.Verse,
+                    PositionInVerse = match.PositionInVerse,
+                    Strongs = match.Strongs,
+                    PlainWord = match.PlainWord,
+                    Lemma = word.Lemma,
+                    PartOfSpeech = word.PartOfSpeech
+                };
+
+                updatableWords.Add(updateItem);
+            }
+        }
+
+        var updateParam = new DynamicParameters();
+        var sqlSb = new StringBuilder();
+
+        for (var index = 0; index < updatableWords.Count; index++)
+        {
+            var word = updatableWords[index];
+            var sql = $"""
+                       update {Elb1871WordDbo.DboName}
+                            set "{nameof(Elb1871WordDbo.Lemma)}" = @Lemma0{index}, "{nameof(Elb1871WordDbo.PartOfSpeech)}" = @PartOfSpeech0{index}
+                       where "{nameof(Elb1871WordDbo.Id)}" = {word.Id};
+                       """;
+            sqlSb.AppendLine(sql);
+
+            updateParam.Add($"@Lemma0{index}", word.Lemma);
+            updateParam.Add($"@PartOfSpeech0{index}", word.PartOfSpeech);
+            dictResults[word.PlainWord!].UpdatedIds.Add(word.Id);
+        }
+
+        await _dbWriter.WriteAsync(sqlSb.ToString(), updateParam);
+
+        return dictResults.Select(x => x.Value).ToList();
     }
 }

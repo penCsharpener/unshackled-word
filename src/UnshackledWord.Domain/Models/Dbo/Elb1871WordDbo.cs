@@ -1,6 +1,6 @@
 namespace UnshackledWord.Domain.Models.Dbo;
 
-public sealed class Elb1871WordDbo
+public class Elb1871WordDbo
 {
     public const string DboName = "\"unshackled-word\".\"Elb1871Words\"";
 

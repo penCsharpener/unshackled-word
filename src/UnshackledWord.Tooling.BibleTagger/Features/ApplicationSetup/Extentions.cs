@@ -14,7 +14,8 @@ public static class Extensions
     public static WebApplicationBuilder ApplicationSetup(this WebApplicationBuilder builder)
     {
         builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents();
+            .AddInteractiveServerComponents()
+            .AddCircuitOptions(x => x.DetailedErrors = builder.Environment.IsDevelopment());
         builder.Services.AddDbContentAndIdentity(builder.Configuration);
         builder.Services.AddAppSettings(builder.Configuration);
         builder.Services.AddEmail(builder.Configuration);

@@ -4,6 +4,6 @@ namespace UnshackledWord.Application.Repositories;
 
 public interface ISrWordRepository
 {
-    Task<IEnumerable<SrGntWordDbo>> GetWordForVerseAsync(int bookId, int chapterId, int verseId, CancellationToken token = default);
-    Task<IEnumerable<SrGntWordDbo>> GetWordForChapterAsync(int bookId, int chapterId, CancellationToken token = default);
+    Task<List<SrGntWordDbo>> GetWordForVerseAsync(int bookId, int chapterId, int verseId, CancellationToken token = default);
+    Task<List<SrGntWordDbo>> GetWordForChapterAsync(int bookId, int chapterId, CancellationToken token = default);
 }

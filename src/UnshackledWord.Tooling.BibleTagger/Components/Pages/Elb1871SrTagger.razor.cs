@@ -13,11 +13,11 @@ public partial class Elb1871SrTagger
         Chapter = 1,
         Verse = 1
     };
-    private List<BibleBookDbo> bibleBooks = new();
-    private List<WordItem> elberfelderWords = new List<WordItem>();
-    private List<WordItem> greekWords = new List<WordItem>();
+    private List<BibleBookDbo> bibleBooks = [];
+    private List<WordItem> elberfelderWords = [];
+    private List<WordItem> greekWords = [];
     private bool invalidSelection = false;
-    private GetVerseResponse verseResponse = new();
+    private GetVerseForElbTaggingResponse _verseForElbTaggingResponse = new();
     private bool ShowNotification = false;
 
     public CreateElbSrResponse? MappingResult
@@ -44,9 +44,9 @@ public partial class Elb1871SrTagger
 
     private async Task HandleSubmitAsync()
     {
-        verseResponse = await ElbRepo.GetVerseAsync(bibleReference.BookId, bibleReference.Chapter, bibleReference.Verse);
+        _verseForElbTaggingResponse = await ElbRepo.GetVerseAsync(bibleReference.BookId, bibleReference.Chapter, bibleReference.Verse);
         // Fetch words from the database for the selected book, chapter, and verse
-        elberfelderWords = verseResponse.ElberfelderWords.Select(x => new WordItem()
+        elberfelderWords = _verseForElbTaggingResponse.ElberfelderWords.Select(x => new WordItem()
         {
             Id = x.Id,
             PartOfSpeech = x.PartOfSpeech,
@@ -54,7 +54,7 @@ public partial class Elb1871SrTagger
             Text = x.PlainWord!,
             Lemma = x.Lemma
         }).ToList();
-        greekWords = verseResponse.SrWords.Select(x => new WordItem()
+        greekWords = _verseForElbTaggingResponse.SrWords.Select(x => new WordItem()
         {
             Id = x.Id,
             PartOfSpeech = x.PartOfSpeech,
@@ -93,8 +93,8 @@ public partial class Elb1871SrTagger
         var elWord = selectedElberfelderWords.First();
         var grWord = selectedGreekWords.First();
 
-        MappingResult = await ElbRepo.CreateMappingAsync(verseResponse.ElberfelderWords.First(x => x.Id == elWord.Id),
-            verseResponse.SrWords.First(x => x.Id == grWord.Id));
+        MappingResult = await ElbRepo.CreateMappingAsync(_verseForElbTaggingResponse.ElberfelderWords.First(x => x.Id == elWord.Id),
+            _verseForElbTaggingResponse.SrWords.First(x => x.Id == grWord.Id));
 
         // Deselect all words after saving
         foreach (var word in elberfelderWords)

@@ -1,12 +1,13 @@
 ﻿@page "/elb1871-sr-tagger"
+@using Microsoft.AspNetCore.Authorization
 @using UnshackledWord.Domain.Extensions
 @using UnshackledWord.Tooling.BibleTagger.Components.Common
 @using UnshackledWord.Tooling.BibleTagger.Features.Elb1871SrTaggerRepository
 @rendermode InteractiveServer
-@inject NavigationManager Navigation
 @inject IElbSrTaggerRepository ElbRepo
 @inject IMetaBibleRepository MetaRepo
 @inject IJSRuntime Js
+@attribute [Authorize]
 
 @* Form to select book, chapter, and verse *@
 <EditForm Model="@bibleReference" OnValidSubmit="HandleSubmitAsync">
@@ -64,22 +65,35 @@
 
     @* Greek Words on the Right *@
     <div class="col-md-6">
-        <h3>Greek</h3>
-        <div id="greekWords">
-            @foreach (var word in greekWords)
-            {
-                <div class="word-item" @onclick="() => ToggleSelection(word)">
-                    <input type="checkbox" class="word-checkbox" @bind="@word.Selected" />
-                    <span class="word-text">@word.Text</span>
-                    <span class="word-lemma">@word.Lemma</span>
-                    <span class="word-strongs">@word.Strongs</span>
-                    <span class="part-of-speech">@word.PartOfSpeech</span>
-                    <span class="word-id" style="display:none;">@word.Id</span>
-                </div>
-            }
-        </div>
+      <h3>Greek</h3>
+      <div id="greekWords">
+        @foreach (var word in greekWords)
+        {
+          <div class="word-item" @onclick="() => ToggleSelection(word)">
+            <input type="checkbox" class="word-checkbox" @bind="@word.Selected" />
+            <span class="word-text">@word.Text</span>
+            <span class="word-lemma">@word.Lemma</span>
+            <span class="word-strongs">@word.Strongs</span>
+            <span class="part-of-speech">@word.PartOfSpeech</span>
+            <span class="word-id" style="display:none;">@word.Id</span>
+          </div>
+        }
+      </div>
     </div>
 </div>
+
+<div class="row">
+  <Notification Show="ShowNotification" OnClose="@HideNotification">
+    <strong class="text-success">Success!</strong>
+    <p>Your request was successfully processed.</p>
+    @if (MappingResult is not null)
+    {
+      <p>Inserted Tags: @MappingResult.InsertedTags</p>
+      <p>Updated Ids: @MappingResult.UpdatedElbWordIds.JoinStrings(",")</p>
+    }
+  </Notification>
+</div>
+
 
 @* Floating Button to Save Word Connections *@
 <div class="fixed-bottom d-flex justify-content-center p-3">
@@ -88,12 +102,3 @@
     </button>
 </div>
 
-<Notification Show="ShowNotification" OnClose="@HideNotification">
-  <strong class="text-success">Success!</strong>
-  <p>Your request was successfully processed.</p>
-  @if (MappingResult is not null)
-  {
-    <p>Inserted Tags: @MappingResult.InsertedTags</p>
-    <p>Updated Ids: @MappingResult.UpdatedElbWordIds.JoinStrings(",")</p>
-  }
-</Notification>

@@ -13,7 +13,7 @@ public sealed class SrWordRepository : ISrWordRepository
         _dbReader = dbReader;
     }
 
-    public async Task<IEnumerable<SrGntWordDbo>> GetWordForVerseAsync(int bookId, int chapterId, int verseId, CancellationToken token = default)
+    public async Task<List<SrGntWordDbo>> GetWordForVerseAsync(int bookId, int chapterId, int verseId, CancellationToken token = default)
     {
         var sql = $"""
                    select *
@@ -27,10 +27,12 @@ public sealed class SrWordRepository : ISrWordRepository
                             "{nameof(SrGntWordDbo.PositionInVerse)}";
                    """;
 
-        return await _dbReader.ReadAsListAsync<SrGntWordDbo>(sql);
+        var result = await _dbReader.ReadAsListAsync<SrGntWordDbo>(sql);
+
+        return result.ToList();
     }
 
-    public async Task<IEnumerable<SrGntWordDbo>> GetWordForChapterAsync(int bookId, int chapterId, CancellationToken token = default)
+    public async Task<List<SrGntWordDbo>> GetWordForChapterAsync(int bookId, int chapterId, CancellationToken token = default)
     {
         var sql = $"""
                    select *
@@ -43,6 +45,8 @@ public sealed class SrWordRepository : ISrWordRepository
                             "{nameof(SrGntWordDbo.PositionInVerse)}";
                    """;
 
-        return await _dbReader.ReadAsListAsync<SrGntWordDbo>(sql);
+        var result = await _dbReader.ReadAsListAsync<SrGntWordDbo>(sql);
+
+        return result.ToList();
     }
 }

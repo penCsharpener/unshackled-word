@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddElb1871Tagging(this IServiceCollection services)
     {
         services.AddScoped<IElbSrTaggerRepository, ElbSrTaggerRepository>();
+        services.AddScoped<IElbGrammarRepository, ElbGrammarRepository>();
         services.AddScoped<IMetaBibleRepository, MetaBibleRepository>();
 
         services.AddHttpClient("core-api", (sp, client) =>

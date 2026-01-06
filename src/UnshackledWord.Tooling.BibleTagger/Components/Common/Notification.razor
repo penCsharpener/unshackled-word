@@ -4,6 +4,17 @@
   [Parameter] public RenderFragment? ChildContent { get; set; }
   private string? _fadeClass = null;
   private string notificationId = Guid.NewGuid().ToString(); // Unique ID for each notification
+  private DotNetObjectReference<Notification>? dotNetObject;
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      dotNetObject = DotNetObjectReference.Create(this);
+      _fadeClass = "fade-in";
+      await JSRuntime.InvokeVoidAsync("startNotificationTimer", dotNetObject, 3000);
+    }
+  }
 
   protected override void OnParametersSet()
   {
@@ -11,7 +22,6 @@
     {
       _fadeClass = "fade-in";
       // Start the auto close timer
-      JSRuntime.InvokeVoidAsync("startNotificationTimer", notificationId);
     }
     else
     {
@@ -25,68 +35,38 @@
     // Wait for the fade-out effect to complete before raising the Close event
     await Task.Delay(500); // Match the duration of the fade-out transition
     await OnClose.InvokeAsync();
+    Show = false;
+    StateHasChanged();
   }
 
+  [JSInvokable("CloseFromJs")]
   public async Task CloseFromJs()
   {
     await CloseNotification();
   }
+
+  async ValueTask IAsyncDisposable.DisposeAsync()
+  {
+    dotNetObject?.Dispose();
+  }
 }
 
+@implements IAsyncDisposable
 @inject IJSRuntime JSRuntime
 
-<div id="@notificationId" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
-  <div class="toast" style="max-width: 300px; display: @(Show ? "block" : "none");"
-       role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <strong class="me-auto">Notification</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" @onclick="CloseNotification"></button>
-    </div>
-    <div class="toast-body">
-      @ChildContent
+@if (Show)
+{
+  <div id="@notificationId" class="container my-3">
+    <div class="toast show w-100" style="max-width: 100%; display: @(Show ? "block" : "none");"
+         role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Notification</strong>
+        <button type="button" class="btn-close" aria-label="Close" @onclick="CloseNotification">
+        </button>
+      </div>
+      <div class="toast-body">
+        @ChildContent
+      </div>
     </div>
   </div>
-</div>
-
-
-<style>
-  .fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  .fade-out {
-    animation: fadeOut 0.5s ease-in-out;
-  }
-
-  @@keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  @@keyframes fadeOut {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-
-  .toast-body strong {
-    color: green;
-    font-weight: bold;
-  }
-
-  .toast-body {
-    max-height: 600px;
-    overflow-y: auto;
-  }
-
-  .toast-body p {
-    margin-top: 5px;
-  }
-</style>
+}

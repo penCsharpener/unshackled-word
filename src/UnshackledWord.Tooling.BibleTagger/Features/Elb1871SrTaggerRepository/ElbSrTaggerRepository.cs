@@ -14,9 +14,9 @@ public sealed class ElbSrTaggerRepository : IElbSrTaggerRepository
         _httpClient = httpClientFactory.GetCoreApiClient();
     }
 
-    public async Task<GetVerseResponse> GetVerseAsync(int bookId, int chapter, int verse, CancellationToken token = default)
+    public async Task<GetVerseForElbTaggingResponse> GetVerseAsync(int bookId, int chapter, int verse, CancellationToken token = default)
     {
-        var response = await _httpClient.GetFromJsonAsync<GetVerseResponse>($"bt/bookId/{bookId}/chapterId/{chapter}/verseId/{verse}", token);
+        var response = await _httpClient.GetFromJsonAsync<GetVerseForElbTaggingResponse>($"bt/bookId/{bookId}/chapterId/{chapter}/verseId/{verse}", token);
 
         return response!;
     }
