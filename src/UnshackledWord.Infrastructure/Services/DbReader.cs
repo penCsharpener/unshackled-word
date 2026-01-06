@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Microsoft.Extensions.Logging;
 using UnshackledWord.Application.Abstractions;
 
@@ -15,19 +16,19 @@ public sealed class DbReader : IDbReader
         _logger = logger;
     }
 
-    public async Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object param = null)
+    public async Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object? param = null)
     {
         using var connection = _factory.CreateDbConnection();
 
         connection.Open();
-        return await connection.QueryFirstOrDefaultAsync<T>(sql, param);
+        return await connection.QueryFirstOrDefaultAsync<T>(sql, param: param, commandType: CommandType.Text);
     }
 
-    public async Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object param = null)
+    public async Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object? param = null)
     {
         using var connection = _factory.CreateDbConnection();
 
         connection.Open();
-        return await connection.QueryAsync<T>(sql, param);
+        return await connection.QueryAsync<T>(sql, param: param, commandType: CommandType.Text);
     }
 }

@@ -2,16 +2,19 @@
 
     <PropertyGroup>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>a4c68a65-4ea6-43f7-a627-dfe3a3295577</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="FastEndpoints" />
+        <PackageReference Include="FastEndpoints.Swagger" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Sinks.Async" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\UnshackledWord.Domain.WebApi\UnshackledWord.Domain.WebApi.csproj" />
       <ProjectReference Include="..\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj" />
     </ItemGroup>
 

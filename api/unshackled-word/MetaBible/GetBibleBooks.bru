@@ -1,0 +1,19 @@
+meta {
+  name: GetBibleBooks
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}meta-bible/bible-books/language/:languageId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  languageId: 1
+}
+
+settings {
+  encodeUrl: true
+}

@@ -2,7 +2,7 @@
 
 public static class StringExtensions
 {
-    public static string JoinStrings(this IEnumerable<string> elements, string separator)
+    public static string JoinStrings<T>(this IEnumerable<T> elements, string separator)
     {
         return string.Join(separator, elements);
     }

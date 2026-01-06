@@ -1,4 +1,5 @@
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using Serilog;
 using UnshackledWord.Tooling.WebApi.Extensions;
 
@@ -11,7 +12,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddSerilog((_, logger) => logger.ReadFrom.Configuration(builder.Configuration));
-        builder.Services.AddFastEndpoints();
+        builder.Services.AddFastEndpoints()
+            .SwaggerDocument();
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
         builder.Services.AddWebApiServices();
@@ -41,7 +43,7 @@ public class Program
             {
                 ep.AllowAnonymous();
             };
-        });
+        }).UseSwaggerGen();
 
         app.Run();
     }

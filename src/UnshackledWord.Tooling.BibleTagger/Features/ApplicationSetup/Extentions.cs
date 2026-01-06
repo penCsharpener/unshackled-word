@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using UnshackledWord.Tooling.BibleTagger.Components.Account;
 using UnshackledWord.Tooling.BibleTagger.Data;
 using UnshackledWord.Tooling.BibleTagger.Features.Configuration;
+using UnshackledWord.Tooling.BibleTagger.Features.Elb1871SrTaggerRepository;
 using UnshackledWord.Tooling.BibleTagger.Features.Email;
 
 namespace UnshackledWord.Tooling.BibleTagger.Features.ApplicationSetup;
@@ -17,6 +18,7 @@ public static class Extensions
         builder.Services.AddDbContentAndIdentity(builder.Configuration);
         builder.Services.AddAppSettings(builder.Configuration);
         builder.Services.AddEmail(builder.Configuration);
+        builder.Services.AddElb1871Tagging();
 
         return builder;
     }
@@ -50,5 +52,10 @@ public static class Extensions
             .AddDefaultTokenProviders();
 
         return services;
+    }
+
+    public static HttpClient GetCoreApiClient(this IHttpClientFactory clientFactory)
+    {
+        return clientFactory.CreateClient("core-api");
     }
 }

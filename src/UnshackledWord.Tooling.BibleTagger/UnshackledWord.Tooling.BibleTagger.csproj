@@ -26,4 +26,8 @@
     <Folder Include="Pages\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UnshackledWord.Domain.WebApi\UnshackledWord.Domain.WebApi.csproj" />
+  </ItemGroup>
+
 </Project>

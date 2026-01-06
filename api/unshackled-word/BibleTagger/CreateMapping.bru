@@ -1,0 +1,53 @@
+meta {
+  name: CreateMapping
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}bt/mapping/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "Elb1871Word": {
+      "Id": 4,
+      "BibleBookId": 40,
+      "Chapter": 1,
+      "Verse": 1,
+      "WordInContext": "Christus",
+      "PlainWord": "Christus",
+      "Lemma": null,
+      "PositionInVerse": 3,
+      "Strongs": null,
+      "PartOfSpeech": null,
+      "GrammaticalKey": null
+    },
+    "SrGntWord": {
+      "Id": 4,
+      "BibleBookId": 40,
+      "Chapter": 1,
+      "Verse": 1,
+      "WordInContext": null,
+      "Koine": null,
+      "Lemma": "χριστός",
+      "PositionInVerse": 3,
+      "Strongs": "5547",
+      "PartOfSpeech": null,
+      "GrammaticalKey": null,
+      "Mood": null,
+      "Tense": null,
+      "Voice": null,
+      "Person": null,
+      "Case": null,
+      "Gender": null,
+      "Number": null
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

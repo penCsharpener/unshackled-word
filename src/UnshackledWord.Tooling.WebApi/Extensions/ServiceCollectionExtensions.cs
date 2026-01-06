@@ -1,4 +1,5 @@
 ﻿using UnshackledWord.Infrastructure.Extensions;
+using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Persistence.Postgres.Extensions;
 
 namespace UnshackledWord.Tooling.WebApi.Extensions;
@@ -9,6 +10,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddPostgresPersistence();
         services.AddInfrastructureServices();
+        services.AddRepositories();
 
         return services;
     }
