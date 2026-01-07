@@ -3,7 +3,7 @@ using UnshackledWord.Domain.WebApi.BibleTagger.GetVerse;
 using UnshackledWord.Domain.WebApi.BibleTagger.SaveElbGrammar;
 using UnshackledWord.Tooling.BibleTagger.Features.ApplicationSetup;
 
-namespace UnshackledWord.Tooling.BibleTagger.Features.Elb1871SrTaggerRepository;
+namespace UnshackledWord.Tooling.BibleTagger.Features.ElbGrammarRepository;
 
 public sealed class ElbGrammarRepository : IElbGrammarRepository
 {
