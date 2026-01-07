@@ -26,6 +26,15 @@ public record struct BibleBook
         return null;
     }
 
+    public static implicit operator int(BibleBook book) => book.Id;
+    public static implicit operator BibleBook(int id) => AllBooks[id];
+    public static BibleBook operator ++(BibleBook book) => book.Id + 1;
+    public static BibleBook operator --(BibleBook book) => book.Id - 1;
+    public static bool operator <(BibleBook left, BibleBook right) => left.Id < right.Id;
+    public static bool operator >(BibleBook left, BibleBook right) => left.Id > right.Id;
+    public static bool operator <=(BibleBook left, BibleBook right) => left.Id <= right.Id;
+    public static bool operator >=(BibleBook left, BibleBook right) => left.Id >= right.Id;
+
     public static Dictionary<int, BibleBook> AllBooks => new()
     {
         { 1, new BibleBook(1, "Genesis", ["Gen", "Ge", "Gn"]) },
