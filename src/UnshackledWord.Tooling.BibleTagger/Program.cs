@@ -7,10 +7,9 @@ public partial class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args)
-            .ApplicationSetup();
-
+        var builder = WebApplication.CreateBuilder(args);
         AddLocalSecrets(builder.Configuration);
+        builder.ApplicationSetup();
 
         var app = builder.Build();
 
