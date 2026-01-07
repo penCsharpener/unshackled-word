@@ -5,7 +5,7 @@ using UnshackledWord.Tooling.WebApi.Extensions;
 
 namespace UnshackledWord.Tooling.WebApi;
 
-public class Program
+public partial class Program
 {
     public static void Main(string[] args)
     {
@@ -20,6 +20,7 @@ public class Program
 
         builder.Services.AddOpenApi();
         builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
+        AddLocalSecrets(builder.Configuration);
 
         var app = builder.Build();
 
@@ -47,4 +48,6 @@ public class Program
 
         app.Run();
     }
+
+    static partial void AddLocalSecrets(ConfigurationManager builder);
 }

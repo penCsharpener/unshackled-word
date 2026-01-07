@@ -3,12 +3,14 @@ using UnshackledWord.Tooling.BibleTagger.Features.ApplicationSetup;
 
 namespace UnshackledWord.Tooling.BibleTagger;
 
-public class Program
+public partial class Program
 {
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args)
             .ApplicationSetup();
+
+        AddLocalSecrets(builder.Configuration);
 
         var app = builder.Build();
 
@@ -38,4 +40,6 @@ public class Program
 
         app.Run();
     }
+
+    static partial void AddLocalSecrets(ConfigurationManager builder);
 }
