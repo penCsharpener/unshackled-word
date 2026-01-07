@@ -51,7 +51,7 @@
         <div id="elberfelderWords">
             @foreach (var word in elberfelderWords)
             {
-                <div class="word-item" @onclick="() => ToggleSelection(word)">
+                <div class="word-item" @key="word.Id" @onclick="() => ToggleSelection(word)">
                     <input type="checkbox" class="word-checkbox" @bind="@word.Selected" />
                     <span class="word-text">@word.Text</span>
                     <span class="word-lemma">@word.Lemma</span>

@@ -1,4 +1,5 @@
 using Microsoft.JSInterop;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.WebApi.BibleTagger.CreateElbSrMapping;
 using UnshackledWord.Domain.WebApi.BibleTagger.GetVerse;
@@ -7,7 +8,7 @@ namespace UnshackledWord.Tooling.BibleTagger.Components.Pages;
 
 public partial class Elb1871SrTagger
 {
-    private BibleReference bibleReference = new BibleReference()
+    private BibleReference bibleReference = new()
     {
         BookId = 40,
         Chapter = 1,
@@ -109,13 +110,6 @@ public partial class Elb1871SrTagger
     }
 }
 
-public class BibleReference
-{
-    public int BookId { get; set; }
-    public int Chapter { get; set; }
-    public int Verse { get; set; }
-}
-
 public class WordItem
 {
     public int Id { get; set; }
@@ -124,11 +118,4 @@ public class WordItem
     public string? PartOfSpeech { get; set; } = default!;
     public string? Strongs { get; set; } = default!;
     public bool Selected { get; set; } // To keep track of selected words
-}
-
-public class WordMapping
-{
-    public int Id { get; set; }
-    public int ElberfelderWordId { get; set; }
-    public int GreekWordId { get; set; }
 }

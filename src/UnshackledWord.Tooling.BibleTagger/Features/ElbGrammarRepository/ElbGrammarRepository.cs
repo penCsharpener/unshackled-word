@@ -25,7 +25,8 @@ public sealed class ElbGrammarRepository : IElbGrammarRepository
     public async Task<SaveElbGrammarResponse> SaveVerseAsync(List<Elb1871WordGrammarDto> elbWords,
         CancellationToken token = default)
     {
-        var response = await _httpClient.PostAsJsonAsync($"bt/grammar", elbWords, token);
+        var req = new SaveElbGrammarRequest { ElbWord = elbWords };
+        var response = await _httpClient.PostAsJsonAsync($"bt/grammar", req, token);
 
         response.EnsureSuccessStatusCode();
 

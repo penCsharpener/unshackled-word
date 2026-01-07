@@ -94,7 +94,8 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
         {
             var optionalWords = word.OptionalForms.IsNotNullOrWhiteSpace() ? word.OptionalForms.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList() : [];
             optionalWords.Add(word.PlainWord!);
-            var paramNames = Enumerable.Range(1, optionalWords.Count).Select(x => $"@PlainWord{x}").ToArray();
+            var allWordForms = optionalWords.Distinct().ToList();
+            var paramNames = Enumerable.Range(1, allWordForms.Count).Select(x => $"@PlainWord{x}").ToArray();
 
             var sqlExactMatch = $"""
                                  select *
@@ -107,23 +108,27 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
 
             var param = new DynamicParameters();
 
-            for (int i = 1; i <= optionalWords.Count; i++)
+            for (int i = 0; i < optionalWords.Count; i++)
             {
                 param.Add(paramNames[i], optionalWords[i]);
             }
 
-            var exactMatch = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sqlExactMatch, param);
+            var exactMatches = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sqlExactMatch, param);
 
-            if (!dictResults.ContainsKey(word.PlainWord!))
+            foreach (var wordForm in allWordForms)
             {
-                dictResults[word.PlainWord!] = new Elb1871GrammarUpdateResult
+                if (!dictResults.ContainsKey(wordForm))
                 {
-                    UpdatedLemma = word.Lemma!,
-                    UpdatedPartOfSpeech = word.PartOfSpeech
-                };
+                    dictResults[wordForm] = new Elb1871GrammarUpdateResult
+                    {
+                        UpdatedLemma = word.Lemma!,
+                        UpdatedPlainWord = wordForm,
+                        UpdatedPartOfSpeech = word.PartOfSpeech
+                    };
+                }
             }
 
-            foreach (var match in exactMatch)
+            foreach (var match in exactMatches)
             {
                 var updateItem = new Elb1871WordDbo
                 {
@@ -160,7 +165,7 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
             dictResults[word.PlainWord!].UpdatedIds.Add(word.Id);
         }
 
-        await _dbWriter.WriteAsync(sqlSb.ToString(), updateParam);
+        //await _dbWriter.WriteAsync(sqlSb.ToString(), updateParam);
 
         return dictResults.Select(x => x.Value).ToList();
     }

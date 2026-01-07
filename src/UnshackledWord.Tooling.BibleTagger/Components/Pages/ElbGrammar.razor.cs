@@ -1,5 +1,7 @@
 using Microsoft.JSInterop;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
+using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.WebApi.BibleTagger.GetVerse;
 using UnshackledWord.Domain.WebApi.BibleTagger.SaveElbGrammar;
 
@@ -7,9 +9,9 @@ namespace UnshackledWord.Tooling.BibleTagger.Components.Pages;
 
 public partial class ElbGrammar
 {
-    private BibleReference bibleReference = new BibleReference()
+    private BibleReference bibleReference = new()
     {
-        BookId = 40,
+        BookId = 1,
         Chapter = 1,
         Verse = 1
     };
@@ -18,6 +20,8 @@ public partial class ElbGrammar
     private bool invalidSelection = false;
     private GetVerseForElbGrammarResponse verseResponse = new();
     private bool ShowNotification = false;
+    private readonly Dictionary<PartOfSpeech, string> PartOfSpeechOptions = Enum.GetValues<PartOfSpeech>()
+        .ToDictionary(pos => pos, pos => pos.ToString());
 
     public SaveElbGrammarResponse? MappingResult
     {
@@ -36,8 +40,7 @@ public partial class ElbGrammar
 
     protected override async Task OnInitializedAsync()
     {
-        var books = await MetaRepo.GetBibleBooksAsync(1);
-        bibleBooks = books.Where(x => x.Id >= 40).ToList();
+        bibleBooks = await MetaRepo.GetBibleBooksAsync(1);
         await HandleSubmitAsync();
     }
 
@@ -77,9 +80,7 @@ public partial class ElbGrammar
             return;
         }
 
-        var elWord = selectedElberfelderWords.First();
-
-        MappingResult = await ElbRepo.SaveVerseAsync(verseResponse.ElberfelderWords);
+        MappingResult = await ElbRepo.SaveVerseAsync(selectedElberfelderWords.Select(x => x.ElbWord).ToList());
 
         // Deselect all words after saving
         foreach (var word in elberfelderWords)
@@ -91,6 +92,6 @@ public partial class ElbGrammar
 
 public class WordGrammarItem
 {
-    public Elb1871WordDbo ElbWord { get; set; } = default!;
+    public Elb1871WordGrammarDto ElbWord { get; set; } = default!;
     public bool Selected { get; set; } // To keep track of selected words
 }

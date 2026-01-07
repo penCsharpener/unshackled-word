@@ -3,6 +3,7 @@
 @using UnshackledWord.Domain.Extensions
 @using UnshackledWord.Tooling.BibleTagger.Components.Common
 @using UnshackledWord.Tooling.BibleTagger.Features.Elb1871SrTaggerRepository
+@using UnshackledWord.Tooling.BibleTagger.Features.ElbGrammarRepository
 @rendermode InteractiveServer
 @inject IJSRuntime Js
 @inject IElbGrammarRepository ElbRepo
@@ -47,19 +48,51 @@
 <div class="row">
   @* Elberfelder Words on the Left *@
   <div class="col-md-12">
-    <h3>Elberfelder 1871</h3>
-    <div id="elberfelderWords">
-      @foreach (var word in elberfelderWords)
-      {
-        <div class="word-item" @onclick="() => ToggleSelection(word)">
-          <input type="checkbox" class="word-checkbox" @bind="@word.Selected" />
-          <span class="word-text">@word.ElbWord.PlainWord</span>
-          <span class="word-lemma">@word.ElbWord.Lemma</span>
-          <span class="part-of-speech">@word.ElbWord.PartOfSpeech</span>
-          <span class="word-id" style="display:none;">@word.ElbWord.Id</span>
+    <h3>Elberfelder 1871: @bibleReference.ToString()</h3>
+    <EditForm Model="@elberfelderWords" OnValidSubmit="SaveWordMappingAsync">
+      <div class="word-form">
+
+        <div class="word-row header">
+          <div class="col select-col">Select</div>
+          <div class="col word-col">Word</div>
+          <div class="col lemma-col">Lemma</div>
+          <div class="col forms-col">Other Forms</div>
+          <div class="col pos-col">Part of Speech</div>
         </div>
-      }
-    </div>
+
+        @foreach (var word in elberfelderWords)
+        {
+          <div class="word-row" @key="word.ElbWord.Id">
+            <div class="col select-col" @onclick="() => ToggleSelection(word)">
+              <InputCheckbox @bind-Value="word.Selected" />
+            </div>
+            <div class="col word-col" @onclick="() => ToggleSelection(word)">
+              <input class="form-control-plaintext" value="@word.ElbWord.PlainWord" readonly />
+            </div>
+            <div class="col lemma-col">
+              <InputText class="form-control" @bind-Value="word.ElbWord.Lemma" />
+            </div>
+            <div class="col forms-col">
+              <InputText class="form-control" @bind-Value="word.ElbWord.OptionalForms" />
+            </div>
+            <div class="col pos-col">
+              <InputSelect class="form-select" @bind-Value="word.ElbWord.PartOfSpeech">
+                <option value=""> </option>
+                @foreach (var (pos, text) in PartOfSpeechOptions)
+                {
+                  <option value="@pos">@text</option>
+                }
+              </InputSelect>
+            </div>
+          </div>
+        }
+
+        <div class="submit-container">
+          <button type="submit" class="btn btn-primary">Submit Selected</button>
+        </div>
+
+      </div>
+    </EditForm>
   </div>
 </div>
 
@@ -71,9 +104,15 @@
     {
       @foreach (var r in MappingResult.ModifiedElbWordIds)
       {
-        <p>Inserted Tags: @r.UpdatedLemma</p>
-        <p>Inserted Tags: @r.UpdatedPartOfSpeech</p>
-        <p>Updated Ids: @MappingResult.ModifiedElbWordIds.JoinStrings(",")</p>
+        <div class="d-flex flex-column">
+          <div class="d-flex">
+            <div class="p-2"><strong>Updated Word:</strong> @r.UpdatedPlainWord</div>
+            <div class="p-2"><strong>Lemma:</strong> @r.UpdatedLemma</div>
+            <div class="p-2"><strong>Part of Speech:</strong> @r.UpdatedPartOfSpeech</div>
+          </div>
+          <div class="p-2"><strong>Ids:</strong> @r.UpdatedIds.Select(x => x).OrderBy(x => x).JoinStrings(",")</div>
+        </div>
+        <hr />
       }
     }
   </Notification>
