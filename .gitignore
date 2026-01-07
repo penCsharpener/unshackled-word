@@ -408,3 +408,4 @@ temp/*
 *.ignore.sql
 *.7z
 /src/UnshackledWord.Tooling.BibleTagger/wwwroot/lib
+*.local.cs
