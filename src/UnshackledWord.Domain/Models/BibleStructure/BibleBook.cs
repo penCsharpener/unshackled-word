@@ -26,6 +26,8 @@ public record struct BibleBook
         return null;
     }
 
+    public static explicit operator BibleBook?(int bookId) => AllBooks[bookId];
+    public static explicit operator BibleBook?(string abbreviation) => FindByAbbreviation(abbreviation);
     public static implicit operator int(BibleBook book) => book.Id;
     public static implicit operator BibleBook(int id) => AllBooks[id];
     public static BibleBook operator ++(BibleBook book) => book.Id + 1;

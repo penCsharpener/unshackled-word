@@ -1,4 +1,5 @@
 using UnshackledWord.Domain.Models.Dbo;
+using UnshackledWord.Domain.WebApi.BibleTagger.BackupElbData;
 using UnshackledWord.Domain.WebApi.BibleTagger.CreateElbSrMapping;
 using UnshackledWord.Domain.WebApi.BibleTagger.GetVerse;
 
@@ -10,4 +11,6 @@ public interface IElbSrTaggerRepository
 
     Task<CreateElbSrResponse> CreateMappingAsync(Elb1871WordDbo elbWords, SrGntWordDbo srWords,
         CancellationToken token = default);
+
+    Task<BackupElbDataResponse> BackupDataAsync(CancellationToken token = default);
 }

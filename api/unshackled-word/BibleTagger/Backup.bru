@@ -1,0 +1,20 @@
+meta {
+  name: Backup
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}bt/dashboard/backup
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

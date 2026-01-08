@@ -165,7 +165,7 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
             dictResults[word.PlainWord!].UpdatedIds.Add(word.Id);
         }
 
-        //await _dbWriter.WriteAsync(sqlSb.ToString(), updateParam);
+        await _dbWriter.WriteAsync(sqlSb.ToString(), updateParam);
 
         return dictResults.Select(x => x.Value).ToList();
     }

@@ -89,6 +89,11 @@
     flex: 0 0 10%;
 }
 
+.form-control-plaintext {
+    font-size: 20px;
+    font-weight: bold;
+}
+
 .lemma-col {
     flex: 0 0 34%;
 }

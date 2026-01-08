@@ -60,6 +60,14 @@ public class FileService : IFileService
         File.Copy(sourcePath, destinationPath, overwrite);
     }
 
+    public void DeleteFile(string path)
+    {
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+    }
+
     public void DeleteFolderRecursively(string path)
     {
         if (PathExists(path))

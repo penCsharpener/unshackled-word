@@ -19,4 +19,5 @@ public interface IFileService
     string GetFileName(string path);
     string[] SearchFiles(string destinationPath, string searchPattern, SearchOption allDirectories);
     void Copy(string sourcePath, string destinationPath, bool overwrite = false);
+    void DeleteFile(string path);
 }

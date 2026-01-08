@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
@@ -7,7 +8,7 @@ using UnshackledWord.Domain.WebApi.BibleTagger.SaveElbGrammar;
 
 namespace UnshackledWord.Tooling.BibleTagger.Components.Pages;
 
-public partial class ElbGrammar
+public partial class ElbGrammar : ComponentBase
 {
     private BibleReference bibleReference = new()
     {

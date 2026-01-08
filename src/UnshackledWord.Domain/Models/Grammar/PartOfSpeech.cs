@@ -9,6 +9,8 @@ public enum PartOfSpeech
     Indeclinable,
     Interjection,
     Noun,
+    NounProperPerson,
+    NounProperPlace,
     Particle,
     Preposition,
     Pronoun,

@@ -16,7 +16,7 @@ public partial class Program
             .SwaggerDocument();
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
-        builder.Services.AddWebApiServices();
+        builder.Services.AddWebApiServices(builder.Configuration);
 
         builder.Services.AddOpenApi();
         builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");

@@ -1,4 +1,5 @@
 using UnshackledWord.Domain.Models.Dbo;
+using UnshackledWord.Domain.WebApi.BibleTagger.BackupElbData;
 using UnshackledWord.Domain.WebApi.BibleTagger.CreateElbSrMapping;
 using UnshackledWord.Domain.WebApi.BibleTagger.GetVerse;
 using UnshackledWord.Tooling.BibleTagger.Features.ApplicationSetup;
@@ -25,11 +26,23 @@ public sealed class ElbSrTaggerRepository : IElbSrTaggerRepository
         CancellationToken token = default)
     {
         var req = new CreateElbSrRequest { Elb1871Word = elbWords, SrGntWord = srWords };
-        var responseMessage = await _httpClient.PostAsJsonAsync($"bt/mapping/create", req, token);
+        var responseMessage = await _httpClient.PostAsJsonAsync("bt/mapping/create", req, token);
 
         responseMessage.EnsureSuccessStatusCode();
 
         var response = await responseMessage.Content.ReadFromJsonAsync<CreateElbSrResponse>(token);
+
+        return response ?? new();
+    }
+
+    public async Task<BackupElbDataResponse> BackupDataAsync(CancellationToken token = default)
+    {
+        var req = new BackupElbDataRequest();
+        var responseMessage = await _httpClient.PostAsJsonAsync("bt/dashboard/backup", default(BackupElbDataRequest), token);
+
+        responseMessage.EnsureSuccessStatusCode();
+
+        var response = await responseMessage.Content.ReadFromJsonAsync<BackupElbDataResponse>(token);
 
         return response ?? new();
     }
