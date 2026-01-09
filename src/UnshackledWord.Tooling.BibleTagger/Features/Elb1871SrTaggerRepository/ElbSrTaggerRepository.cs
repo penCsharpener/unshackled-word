@@ -42,8 +42,6 @@ public sealed class ElbSrTaggerRepository : IElbSrTaggerRepository
 
         responseMessage.EnsureSuccessStatusCode();
 
-        var response = await responseMessage.Content.ReadFromJsonAsync<BackupElbDataResponse>(token);
-
-        return response ?? new();
+        return new();
     }
 }

@@ -48,21 +48,13 @@ public partial class Elb1871SrTagger : ComponentBase
     {
         _verseForElbTaggingResponse = await ElbRepo.GetVerseAsync(bibleReference.BookId, bibleReference.Chapter, bibleReference.Verse);
         // Fetch words from the database for the selected book, chapter, and verse
-        elberfelderWords = _verseForElbTaggingResponse.ElberfelderWords.Select(x => new WordItem()
+        elberfelderWords = _verseForElbTaggingResponse.ElberfelderWords.Select(x => new WordItem
         {
-            Id = x.Id,
-            PartOfSpeech = x.PartOfSpeech,
-            Strongs = x.Strongs,
-            Text = x.PlainWord!,
-            Lemma = x.Lemma
+            ElbWord = x
         }).ToList();
-        greekWords = _verseForElbTaggingResponse.SrWords.Select(x => new WordItem()
+        greekWords = _verseForElbTaggingResponse.SrWords.Select(x => new WordItem
         {
-            Id = x.Id,
-            PartOfSpeech = x.PartOfSpeech,
-            Strongs = x.Strongs,
-            Text = x.WordInContext,
-            Lemma = x.Lemma
+            SrWord = x
         }).ToList();
     }
 
@@ -85,18 +77,20 @@ public partial class Elb1871SrTagger : ComponentBase
         var selectedElberfelderWords = elberfelderWords.Where(w => w.Selected).ToList();
         var selectedGreekWords = greekWords.Where(w => w.Selected).ToList();
 
-        invalidSelection = selectedElberfelderWords.Count > 1 || selectedGreekWords.Count > 1;
+        invalidSelection = selectedElberfelderWords.Count > 1 || selectedGreekWords.Count > 1 || selectedElberfelderWords.Count != selectedGreekWords.Count;
 
         if (invalidSelection)
         {
             return;
         }
 
+        invalidSelection = false;
+
         var elWord = selectedElberfelderWords.First();
         var grWord = selectedGreekWords.First();
 
-        MappingResult = await ElbRepo.CreateMappingAsync(_verseForElbTaggingResponse.ElberfelderWords.First(x => x.Id == elWord.Id),
-            _verseForElbTaggingResponse.SrWords.First(x => x.Id == grWord.Id));
+        MappingResult = await ElbRepo.CreateMappingAsync(_verseForElbTaggingResponse.ElberfelderWords.First(x => x.Id == elWord.ElbWord.Id),
+            _verseForElbTaggingResponse.SrWords.First(x => x.Id == grWord.SrWord.Id));
 
         // Deselect all words after saving
         foreach (var word in elberfelderWords)
@@ -113,10 +107,7 @@ public partial class Elb1871SrTagger : ComponentBase
 
 public class WordItem
 {
-    public int Id { get; set; }
-    public string Text { get; set; } = default!;
-    public string? Lemma { get; set; } = default!;
-    public string? PartOfSpeech { get; set; } = default!;
-    public string? Strongs { get; set; } = default!;
+    public Elb1871WordDbo ElbWord { get; set; } = default!;
+    public SrGntWordDbo SrWord { get; set; } = default!;
     public bool Selected { get; set; } // To keep track of selected words
 }

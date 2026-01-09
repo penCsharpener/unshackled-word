@@ -2,6 +2,8 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Repositories;
+using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 
 namespace UnshackledWord.Infrastructure.Repositories;
@@ -36,11 +38,12 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
             {
                 var sql = $"""
                            INSERT INTO "unshackled-word"."Elb1871SrGntTagging"
-                           ("Elb1871WordsId", "SrGntWordsId", "PositionInVerse", "Comment")
-                           VALUES(@{nameof(tagging.Elb1871WordsId)}, @{nameof(tagging.SrGntWordsId)}, @{nameof(tagging.PositionInVerse)}, NULL);
+                           ("Elb1871WordsId", "SrGntWordsId", "PositionInVerse")
+                           VALUES(@{nameof(tagging.Elb1871WordsId)}, @{nameof(tagging.SrGntWordsId)}, @{nameof(tagging.PositionInVerse)})
+                           ON CONFLICT ("{nameof(tagging.Elb1871WordsId)}", "{nameof(tagging.SrGntWordsId)}") DO NOTHING;
                            """;
 
-                //await _dbWriter.WriteAsync(sql, tagging);
+                await _dbWriter.WriteAsync(sql, tagging);
                 insertedRows++;
             }
             catch (Exception ex)
@@ -58,53 +61,50 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
         CancellationToken token = default)
     {
         var matches = await GetTagMatchesAsync(elbWord, srWord, onlySingleVerse: true);
+        var book = (BibleBook)elbWord.BibleBookId;
 
         if (matches.ElbWords.Count == 0)
         {
-            _logger.LogWarning("No words in verse {bookId} {chapter}:{verse}! Impossible case.", elbWord.BibleBookId, elbWord.Chapter, elbWord.Verse);
+            _logger.LogWarning("No words in verse {book} {bookId} {chapter}:{verse}! Impossible case.", elbWord.BibleBookId, book.Abbreviations[0], elbWord.Chapter, elbWord.Verse);
             return new(0, []);
         }
 
         if (matches.ElbWords.Count != matches.SrWords.Count)
         {
-            _logger.LogWarning("Word count in verse {bookId} {chapter}:{verse} doesn't match.", elbWord.BibleBookId, elbWord.Chapter, elbWord.Verse);
+            _logger.LogWarning("Word count in verse {book} {bookId} {chapter}:{verse} doesn't match.", elbWord.BibleBookId, book.Abbreviations[0], elbWord.Chapter, elbWord.Verse);
             return new(0, []);
         }
 
         if (matches.SrWords.Any(x => x.Strongs != matches.SrWords[0].Strongs))
         {
-            _logger.LogWarning("Not all SR words have the same strongs number in verse {bookId} {chapter}:{verse}", elbWord.BibleBookId, elbWord.Chapter, elbWord.Verse);
+            _logger.LogWarning("Not all SR words have the same strongs number in verse {book} {bookId} {chapter}:{verse}", elbWord.BibleBookId, book.Abbreviations[0], elbWord.Chapter, elbWord.Verse);
             return new(0, []);
         }
 
-        var positionInVerse = 0;
+        var updatedWordsInVerse = new List<Elb1871WordDbo>();
+        var updatedTagsinVerse = new List<Elb1871SrGntTaggingDbo>();
 
         for (int i = 0; i < matches.ElbWords.Count; i++)
         {
             var e =  matches.ElbWords[i];
             var s =  matches.SrWords[i];
 
-            if (e.Id == elbWord.Id)
+            updatedWordsInVerse.Add(new()
             {
-                positionInVerse = i;
-            }
+                Id = e.Id,
+                Strongs = e.Strongs
+            });
+
+            updatedTagsinVerse.Add(new ()
+            {
+                Elb1871WordsId = e.Id,
+                SrGntWordsId = s.Id,
+                PositionInVerse = i + 1
+            });
         }
 
-        var singleElbUpdate = new Elb1871WordDbo
-        {
-            Id = elbWord.Id,
-            Strongs = srWord.Strongs
-        };
-
-        var singleTag = new Elb1871SrGntTaggingDbo
-        {
-            Elb1871WordsId = elbWord.Id,
-            SrGntWordsId = srWord.Id,
-            PositionInVerse = positionInVerse
-        };
-
-        var ids = await _elbRepo.BulkUpdateStrongsAsync([singleElbUpdate], token);
-        var count = await BulkInsertAsync([singleTag], token);
+        var ids = await _elbRepo.BulkUpdateStrongsAsync(updatedWordsInVerse, token);
+        var count = await BulkInsertAsync(updatedTagsinVerse, token);
         return new(count, ids);
     }
 
@@ -120,6 +120,7 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
         {
             var wordsInVerse = elbVerse.Select(x => x).ToList();
             var bbRef = elbVerse.Key;
+            var book = (BibleBook)elbWord.BibleBookId;
 
             var srInVerse = matches.SrWords.Where(x =>
                 x.BibleBookId == bbRef.BibleBookId &&
@@ -128,19 +129,19 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
 
             if (wordsInVerse.Count == 0)
             {
-                _logger.LogWarning("No words in verse {bookId} {chapter}:{verse}! Impossible case.", bbRef.BibleBookId, bbRef.Chapter, bbRef.Verse);
+                _logger.LogWarning("No words in verse {book} {bookId} {chapter}:{verse}! Impossible case.", bbRef.BibleBookId, book.Abbreviations[0], bbRef.Chapter, bbRef.Verse);
                 continue;
             }
 
             if (wordsInVerse.Count != srInVerse.Count)
             {
-                _logger.LogWarning("Word count in verse {bookId} {chapter}:{verse} doesn't match.", bbRef.BibleBookId, bbRef.Chapter, bbRef.Verse);
+                _logger.LogWarning("Word count in verse {book} {bookId} {chapter}:{verse} doesn't match.", bbRef.BibleBookId, book.Abbreviations[0], bbRef.Chapter, bbRef.Verse);
                 continue;
             }
 
             if (srInVerse.Any(x => x.Strongs != srInVerse[0].Strongs))
             {
-                _logger.LogWarning("Not all SR words have the same strongs number in verse {bookId} {chapter}:{verse}", bbRef.BibleBookId, bbRef.Chapter, bbRef.Verse);
+                _logger.LogWarning("Not all SR words have the same strongs number in verse {book} {bookId} {chapter}:{verse}", bbRef.BibleBookId, book.Abbreviations[0], bbRef.Chapter, bbRef.Verse);
                 continue;
             }
 
@@ -162,7 +163,7 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
 
                 var tag = new Elb1871SrGntTaggingDbo
                 {
-                    PositionInVerse = index,
+                    PositionInVerse = index + 1,
                     Elb1871WordsId = elbItem.Id,
                     SrGntWordsId = srItem.Id
                 };
@@ -178,6 +179,9 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
 
     private async Task<TagMatches> GetTagMatchesAsync(Elb1871WordDbo elbWord, SrGntWordDbo srWord, bool onlySingleVerse)
     {
+        var lemmaClause = elbWord.Lemma.IsNullOrWhiteSpace()
+            ? ""
+            : $"or e.\"{nameof(Elb1871WordDbo.Lemma)}\" = @{nameof(Elb1871WordDbo.Lemma)}";
         var elbSql = $"""
                       select
                           e."{nameof(Elb1871WordDbo.Id)}",
@@ -188,7 +192,7 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
                           e."{nameof(Elb1871WordDbo.PositionInVerse)}",
                           e."{nameof(Elb1871WordDbo.Strongs)}"
                       from {Elb1871WordDbo.DboName} e
-                      where e."{nameof(Elb1871WordDbo.PlainWord)}" = @{nameof(Elb1871WordDbo.PlainWord)}
+                      where (e."{nameof(Elb1871WordDbo.PlainWord)}" = @{nameof(Elb1871WordDbo.PlainWord)} {lemmaClause})
                         {(onlySingleVerse ? $"  and e.\"{nameof(Elb1871WordDbo.BibleBookId)}\" = {elbWord.BibleBookId}" : "")}
                         {(onlySingleVerse ? $"  and e.\"{nameof(Elb1871WordDbo.Chapter)}\" = {elbWord.Chapter}" : "")}
                         {(onlySingleVerse ? $"  and e.\"{nameof(Elb1871WordDbo.Verse)}\" = {elbWord.Verse}" : "")}
@@ -197,7 +201,7 @@ public sealed class Elb1871TaggingRepository : IElb1871TaggingRepository
                         and e."{nameof(Elb1871WordDbo.BibleBookId)}" <= 66
                       """;
 
-        var elbWords = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(elbSql, new { elbWord.PlainWord });
+        var elbWords = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(elbSql, new { elbWord.PlainWord, elbWord.Lemma });
 
         var srSql = $"""
                      select

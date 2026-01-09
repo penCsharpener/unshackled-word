@@ -51,13 +51,13 @@
         <div id="elberfelderWords">
             @foreach (var word in elberfelderWords)
             {
-                <div class="word-item" @key="word.Id" @onclick="() => ToggleSelection(word)">
+                <div class="word-item" @key="word.ElbWord.Id" @onclick="() => ToggleSelection(word)">
                     <input type="checkbox" class="word-checkbox" @bind="@word.Selected" />
-                    <span class="word-text">@word.Text</span>
-                    <span class="word-lemma">@word.Lemma</span>
-                    <span class="word-strongs">@word.Strongs</span>
-                    <span class="part-of-speech">@word.PartOfSpeech</span>
-                    <span class="word-id" style="display:none;">@word.Id</span>
+                    <span class="word-text">@word.ElbWord.PlainWord</span>
+                    <span class="word-lemma">@word.ElbWord.Lemma</span>
+                    <span class="word-strongs">@word.ElbWord.Strongs</span>
+                    <span class="part-of-speech">@word.ElbWord.PartOfSpeech</span>
+                    <span class="word-id" style="display:none;">@word.ElbWord.Id</span>
                 </div>
             }
         </div>
@@ -69,30 +69,32 @@
       <div id="greekWords">
         @foreach (var word in greekWords)
         {
-          <div class="word-item" @onclick="() => ToggleSelection(word)">
+          <div class="word-item" @key="word.SrWord.Id" @onclick="() => ToggleSelection(word)">
             <input type="checkbox" class="word-checkbox" @bind="@word.Selected" />
-            <span class="word-text">@word.Text</span>
-            <span class="word-lemma">@word.Lemma</span>
-            <span class="word-strongs">@word.Strongs</span>
-            <span class="part-of-speech">@word.PartOfSpeech</span>
-            <span class="word-id" style="display:none;">@word.Id</span>
+            <span class="word-text">@word.SrWord.WordInContext</span>
+            <span class="word-lemma">@word.SrWord.Lemma</span>
+            <span class="word-strongs">@word.SrWord.Strongs</span>
+            <span class="part-of-speech">@word.SrWord.PartOfSpeech</span>
+            <span class="word-id" style="display:none;">@word.SrWord.Id</span>
           </div>
         }
       </div>
     </div>
 </div>
 
-<div class="row">
-  <Notification Show="ShowNotification" OnClose="@HideNotification">
-    <strong class="text-success">Success!</strong>
-    <p>Your request was successfully processed.</p>
-    @if (MappingResult is not null)
-    {
-      <p>Inserted Tags: @MappingResult.InsertedTags</p>
-      <p>Updated Ids: @MappingResult.UpdatedElbWordIds.JoinStrings(",")</p>
-    }
-  </Notification>
-</div>
+@if (!invalidSelection)
+{
+  <div class="row">
+    <Notification Show="ShowNotification" OnClose="@HideNotification">
+      <strong class="text-success">Success!</strong>
+      @if (MappingResult is not null)
+      {
+        <p>Inserted Tags: @MappingResult.InsertedTags</p>
+        <p>Updated Ids: @MappingResult.UpdatedElbWordIds.JoinStrings(",")</p>
+      }
+    </Notification>
+  </div>
+}
 
 
 @* Floating Button to Save Word Connections *@

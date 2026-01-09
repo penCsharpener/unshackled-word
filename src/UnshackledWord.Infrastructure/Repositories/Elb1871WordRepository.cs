@@ -66,20 +66,18 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
             return [];
         }
 
-        var sb = new StringBuilder();
         var modifiedRows = new List<int>();
 
         foreach (var elbWord in modifiedWords)
         {
-            var sql = $"UPDATE {Elb1871WordDbo.DboName} SET \"{nameof(elbWord.Strongs)}\"=@Strongs WHERE \"{nameof(elbWord.Id)}\"={elbWord.Id};";
             modifiedRows.Add(elbWord.Id);
-
-            sb.AppendLine(sql);
         }
 
-        var param = new { modifiedWords.First().Strongs };
+        var sql = $"UPDATE {Elb1871WordDbo.DboName} SET \"{nameof(Elb1871WordDbo.Strongs)}\"=@Strongs WHERE \"{nameof(Elb1871WordDbo.Id)}\" IN ({modifiedRows.JoinStrings(",")});";
 
-        //await _dbWriter.WriteAsync(sb.ToString(), param);
+        var param = new { modifiedWords[0].Strongs };
+
+        await _dbWriter.WriteAsync(sql, param);
         _logger.LogInformation("Updated rows with strongs {strongs}: {ids}", param.Strongs, modifiedRows.JoinStrings(","));
 
         return modifiedRows;
