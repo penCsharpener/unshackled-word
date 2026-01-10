@@ -25,7 +25,8 @@ public sealed class SeedingService
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.CsvImports.CsvRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.SBL.SblRunner),
            // typeof(UnshackledWord.Tooling.SeedDb.Services.ByzTxt.ByzRunner),
-           typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper.Elb1871SrMappingRunner),
+           // typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper.Elb1871SrMappingRunner),
+           typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer.LemmatizerRunner)
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.BibelKommentare.BkRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData.OpenScriptureRunner),

@@ -26,6 +26,7 @@ public sealed class DatabaseSeedSettings
     public SblSettings SblSettings { get; set; } = default!;
     public ByzantineSettings ByzantineSettings { get; set; } = default!;
     public OpenScripturesGithubSettings OpenScripturesGithub { get; set; } = default!;
+    public StepBibleData StepBibleData { get; set; } = default!;
 }
 
 public sealed class Elberfelder1871
@@ -53,4 +54,13 @@ public sealed class ByzantineSettings
 {
     public string TextDownloadUrl { get; set; } = default!;
     public string TextFilePath { get; set; } = default!;
+}
+
+public sealed class StepBibleData
+{
+    public string GithubRepoUrl { get; set; } = default!;
+    public string AmalgamatedSubPath { get; set; } = default!;
+    public string[] AmalgamatedFiles { get; set; } = default!;
+    public string StrongsLexiconSubPath { get; set; } = default!;
+    public string[] StrongsFiles { get; set; } = default!;
 }
