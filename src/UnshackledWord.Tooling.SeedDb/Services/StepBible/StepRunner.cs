@@ -1,4 +1,5 @@
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
@@ -8,7 +9,9 @@ public sealed class StepRunner : IRunner
     private readonly StepGreekFileStrategy _greekFileStrategy;
     private readonly StepHebrewFileStrategy _hebrewFileStrategy;
 
-    public StepRunner(StepGithubDownloader githubDownloader, StepGreekFileStrategy greekFileStrategy, StepHebrewFileStrategy hebrewFileStrategy)
+    public StepRunner(StepGithubDownloader githubDownloader,
+        StepGreekFileStrategy greekFileStrategy,
+        StepHebrewFileStrategy hebrewFileStrategy)
     {
         _githubDownloader = githubDownloader;
         _greekFileStrategy = greekFileStrategy;
@@ -21,16 +24,41 @@ public sealed class StepRunner : IRunner
         var totalGreekEntries = new List<StepAmalgamatedGreekEntry>();
         var totalHebrewEntries = new List<StepAmalgamatedHebrewEntry>();
 
-        // foreach (var file in files.Where(f => f.Contains("Amalgamated Hebrew")))
-        // {
-        //     var parsedEntries = await _hebrewFileStrategy.SaveToDatabase(file, token);
-        //     totalHebrewEntries.AddRange(parsedEntries);
-        // }
-
-        foreach (var file in files.Where(f => f.Contains("Amalgamated Greek")))
+        foreach (var file in files)
         {
-            var parsedEntries = await _greekFileStrategy.SaveToDatabase(file, token);
-            totalGreekEntries.AddRange(parsedEntries);
+            if (file.Contains("Amalgamated Hebrew"))
+            {
+                var parsedEntries = await _hebrewFileStrategy.SaveToDatabase(file, token);
+                totalHebrewEntries.AddRange(parsedEntries);
+                continue;
+            }
+
+            if (file.Contains("Amalgamated Greek"))
+            {
+                var parsedEntries = await _greekFileStrategy.SaveToDatabase(file, token);
+                totalGreekEntries.AddRange(parsedEntries);
+                continue;
+            }
+
+            if (file.Contains("Extended Strongs for Greek"))
+            {
+                continue;
+            }
+
+            if (file.Contains("Extended Strongs for Hebrew"))
+            {
+                continue;
+            }
+
+            if (file.Contains("Greek Morphhology Codes"))
+            {
+                continue;
+            }
+
+            if (file.Contains("Hebrew Morphology Codes"))
+            {
+                continue;
+            }
         }
     }
 }

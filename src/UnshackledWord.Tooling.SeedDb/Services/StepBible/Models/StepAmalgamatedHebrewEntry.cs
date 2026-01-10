@@ -1,8 +1,8 @@
 using CsvHelper.Configuration.Attributes;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
+namespace UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
-public class StepAmalgamatedGreekEntry
+public class StepAmalgamatedHebrewEntry
 {
     [Name("Book")]
     public string BookAbbreviation { get; set; } = default!;
@@ -25,14 +25,20 @@ public class StepAmalgamatedGreekEntry
     [Name("Type")]
     public string Type { get; set; } = default!;
 
-    [Name("Greek")]
-    public string Greek { get; set; } = default!;
+    [Name("Hebrew")]
+    public string Hebrew { get; set; } = default!;
+
+    [Name("Hebrew No Diacritics")]
+    public string HebrewNoDiacritics { get; set; } = default!;
+
+    [Name("Hebrew Normalised")]
+    public string HebrewNormalised { get; set; } = default!;
 
     [Name("Transliteration")]
     public string Transliteration { get; set; } = default!;
 
     [Name("English translation")]
-    public string EnglishTranslation { get; set; } = default!;
+    public string Gloss { get; set; } = default!;
 
     [Name("dStrongs")]
     public string DisambiguatedStrongs { get; set; } = default!;
@@ -40,33 +46,21 @@ public class StepAmalgamatedGreekEntry
     [Name("Grammar")]
     public string Grammar { get; set; } = default!;
 
-    [Name("Gloss")]
-    public string Gloss { get; set; } = default!;
-
-    [Name("Dictionary form")]
-    public string Lemma { get; set; } = default!;
-
-    [Name("editions")]
-    public string Editions { get; set; } = default!;
-
     [Name("Meaning variants")]
     public string MeaningVariants { get; set; } = default!;
 
     [Name("Spelling variants")]
     public string SpellingVariants { get; set; } = default!;
 
-    [Name("Spanish translation")]
-    public string SpanishTranslation { get; set; } = default!;
+    [Name("Root dStrongs+Instance")]
+    public string RootDisambiguatedStrongsInstance { get; set; } = default!;
 
-    [Name("Sub-meaning")]
-    public string SubMeaning { get; set; } = default!;
+    [Name("Alternative Strongs+Instance")]
+    public string AlternativeStrongs { get; set; } = default!;
 
     [Name("Conjoin word")]
     public string ConjoinWord { get; set; } = default!;
 
-    [Name("sStrong+Instance")]
-    public string StrongInstance { get; set; } = default!;
-
-    [Name("Alt Strongs")]
-    public string AltStrongs { get; set; } = default!;
+    [Name("Expanded Strong tags")]
+    public string ExpandedStrongTags { get; set; } = default!;
 }
