@@ -63,4 +63,5 @@ public sealed class StepBibleData
     public string[] AmalgamatedFiles { get; set; } = default!;
     public string StrongsLexiconSubPath { get; set; } = default!;
     public string[] StrongsFiles { get; set; } = default!;
+    public string[] MorphologyFiles { get; set; } = default!;
 }

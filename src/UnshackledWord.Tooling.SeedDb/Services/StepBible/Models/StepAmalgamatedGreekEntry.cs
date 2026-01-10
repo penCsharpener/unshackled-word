@@ -1,9 +1,16 @@
 using CsvHelper.Configuration.Attributes;
+using UnshackledWord.Domain.Models.BibleStructure;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 public class StepAmalgamatedGreekEntry
 {
+    public int EntryId { get; set; }
+
+    public BibleBook BibleBook { get; set; }
+
+    public BibleReference BibleReference { get; set; }
+
     [Name("Book")]
     public string BookAbbreviation { get; set; } = default!;
 
@@ -25,6 +32,10 @@ public class StepAmalgamatedGreekEntry
     [Name("Type")]
     public string Type { get; set; } = default!;
 
+    public bool FoundInNestleAland { get; set; }
+    public bool FoundInTextusReceptus { get; set; }
+    public bool FoundInOther { get; set; }
+
     [Name("Greek")]
     public string Greek { get; set; } = default!;
 
@@ -38,7 +49,7 @@ public class StepAmalgamatedGreekEntry
     public string DisambiguatedStrongs { get; set; } = default!;
 
     [Name("Grammar")]
-    public string Grammar { get; set; } = default!;
+    public string Morphology { get; set; } = default!;
 
     [Name("Gloss")]
     public string Gloss { get; set; } = default!;
@@ -48,6 +59,8 @@ public class StepAmalgamatedGreekEntry
 
     [Name("editions")]
     public string Editions { get; set; } = default!;
+
+    public string[] EditionList { get; set; } = default!;
 
     [Name("Meaning variants")]
     public string MeaningVariants { get; set; } = default!;

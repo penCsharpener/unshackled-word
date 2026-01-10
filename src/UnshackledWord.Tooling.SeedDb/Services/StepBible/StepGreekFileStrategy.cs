@@ -1,5 +1,6 @@
 using System.Text;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -70,8 +71,12 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
             var form = GetAtIndex(columns, 4);
             var formParts = form.Split("=", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
+            var bibleBook = BibleBook.FindByAbbreviation(bibleReference.Book)!.Value;
+
             var entry = new StepAmalgamatedGreekEntry
             {
+                BibleBook = bibleBook,
+                BibleReference = new BibleReference(bibleBook.Id, bibleReference.Chapter, bibleReference.Verse),
                 BookAbbreviation = bibleReference.Book,
                 Chapter = bibleReference.Chapter,
                 Verse = bibleReference.Verse,
@@ -79,14 +84,18 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 AlternativeVerse = altBibleReference?.Verse,
                 PositionInVerse = positionInVerse,
                 Type = type,
+                FoundInNestleAland = type.Contains('N'),
+                FoundInTextusReceptus = type.Contains('K'),
+                FoundInOther = type.Contains('O'),
                 Greek = GetAtIndex(grParts, 0),
                 Transliteration = GetAtIndex(grParts, 1),
                 EnglishTranslation = GetAtIndex(columns, 2),
                 DisambiguatedStrongs = GetAtIndex(gramParts, 0),
-                Grammar = GetAtIndex(gramParts, 1),
+                Morphology = GetAtIndex(gramParts, 1),
                 Lemma = GetAtIndex(formParts, 0),
                 Gloss = GetAtIndex(formParts, 1),
                 Editions = GetAtIndex(columns, 5),
+                EditionList = GetAtIndex(columns, 5).Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
                 MeaningVariants = GetAtIndex(columns, 6),
                 SpellingVariants = GetAtIndex(columns, 7),
                 SpanishTranslation = GetAtIndex(columns, 8),

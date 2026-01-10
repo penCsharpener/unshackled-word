@@ -40,6 +40,14 @@ public sealed class StepGithubDownloader : IFileDownloader
             dictionary[fileUrl] = savePath;
         }
 
+        foreach (var fileSubPath in stepOptions.MorphologyFiles)
+        {
+            var fileUrl = $"{stepOptions.GithubRepoUrl}{fileSubPath}";
+            var fileName = _fileService.GetFileName(fileUrl).Replace("%20", " ");
+            var savePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", fileName);
+            dictionary[fileUrl] = savePath;
+        }//,Rom,1Co,2Co,Gal,Eph,Php,Col,1Th,2Th,1Ti,2Ti,Tit,Phm,Heb,Jas,1Pe,2Pe,1Jn,2Jn,3Jn,Jud,Rev
+
         foreach (var (fileUrl, savePath) in dictionary)
         {
             if (_fileService.FileExists(savePath))

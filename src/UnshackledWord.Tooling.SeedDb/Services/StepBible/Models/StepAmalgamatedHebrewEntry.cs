@@ -1,9 +1,16 @@
 using CsvHelper.Configuration.Attributes;
+using UnshackledWord.Domain.Models.BibleStructure;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 public class StepAmalgamatedHebrewEntry
 {
+    public int EntryId { get; set; }
+
+    public BibleBook BibleBook { get; set; }
+
+    public BibleReference BibleReference { get; set; }
+
     [Name("Book")]
     public string BookAbbreviation { get; set; } = default!;
 

@@ -42,17 +42,17 @@ public sealed class StepRunner : IRunner
 
         foreach (var file in files)
         {
-            if (file.Contains("Amalgamated Hebrew"))
-            {
-                var entries = await _hebrewFileStrategy.SaveToDatabase(file, token);
-                totalHebrewEntries.AddRange(entries);
-                continue;
-            }
-
             if (file.Contains("Amalgamated Greek"))
             {
                 var entries = await _greekFileStrategy.SaveToDatabase(file, token);
                 totalGreekEntries.AddRange(entries);
+                continue;
+            }
+
+            if (file.Contains("Amalgamated Hebrew"))
+            {
+                var entries = await _hebrewFileStrategy.SaveToDatabase(file, token);
+                totalHebrewEntries.AddRange(entries);
                 continue;
             }
 
