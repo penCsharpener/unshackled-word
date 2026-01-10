@@ -7,3 +7,8 @@ public interface IFileParserStrategy
 {
     Task SaveToDatabase(string filePath, CancellationToken token = default);
 }
+
+public interface IFileParserStrategy<T>
+{
+    Task<T> SaveToDatabase(string filePath, CancellationToken token = default);
+}

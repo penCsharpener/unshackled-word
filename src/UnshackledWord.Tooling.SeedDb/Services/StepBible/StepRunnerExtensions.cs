@@ -8,7 +8,8 @@ public static class StepRunnerExtensions
     {
         services.AddSingleton<StepRunner>();
         services.AddSingleton<StepGithubDownloader>();
-        services.AddSingleton<StepFileStrategy>();
+        services.AddSingleton<StepGreekFileStrategy>();
+        services.AddSingleton<StepHebrewFileStrategy>();
         services.AddHttpClient<StepGithubDownloader>(client =>
         {
             client.BaseAddress = new Uri("https://github.com/");
