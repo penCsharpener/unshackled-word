@@ -22,7 +22,7 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
 
         for (var index = 0; index < lines.Length; index++)
         {
-                        var line = lines[index];
+            var line = lines[index];
             var columns = line.Split('\t', StringSplitOptions.TrimEntries);
             // Implement parsing logic based on the STEP file format
 
