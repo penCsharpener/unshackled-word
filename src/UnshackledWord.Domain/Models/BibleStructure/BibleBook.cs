@@ -17,7 +17,7 @@ public record struct BibleBook
     {
         foreach (var book in AllBooks.Values)
         {
-            if (book.Abbreviations.Contains(abbreviation, StringComparer.OrdinalIgnoreCase))
+            if (book.Abbreviations.Contains(abbreviation))
             {
                 return book;
             }
@@ -80,7 +80,7 @@ public record struct BibleBook
         { 39, new BibleBook(39, "Malachi", ["Mal", "Ml"]) },
         { 40, new BibleBook(40, "Matthew", ["Matt", "Mt", "Mat"]) },
         { 41, new BibleBook(41, "Mark", ["Mk", "Mrk", "Mar", "Mark", "mr"]) },
-        { 42, new BibleBook(42, "Luke", ["Lk", "Lu", "Luke"]) },
+        { 42, new BibleBook(42, "Luke", ["Lk", "Luk", "Lu", "Luke"]) },
         { 43, new BibleBook(43, "John", ["Jn", "Jhn", "Joh", "John"]) },
         { 44, new BibleBook(44, "Acts", ["Acts", "Act", "Ac", "Apg"]) },
         { 45, new BibleBook(45, "Romans", ["Rom", "Ro", "Rm", "Rö"]) },

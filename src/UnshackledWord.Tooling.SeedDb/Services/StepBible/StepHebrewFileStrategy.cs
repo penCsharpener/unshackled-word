@@ -1,5 +1,7 @@
 using System.Text;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Application.Abstractions.Step;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
@@ -9,14 +11,23 @@ namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalgamatedHebrewEntry>>
 {
     private readonly IFileService _fileService;
+    private readonly IStepHebrewWordsRepository _repo;
 
-    public StepHebrewFileStrategy(IFileService fileService)
+    public StepHebrewFileStrategy(IFileService fileService, IStepHebrewWordsRepository repo)
     {
         _fileService = fileService;
+        _repo = repo;
     }
 
     public async Task<List<StepAmalgamatedHebrewEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        var filter = new StepHebrewWordFilter { IncludedBibleBookIds = [1]};
+        var count = await _repo.CountByFilterAsync(filter, token);
+        if (count > 0)
+        {
+            return [];
+        }
+
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
         var parsedEntries = new List<StepAmalgamatedHebrewEntry>();
         var canReadVerseData = false;
@@ -85,11 +96,11 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
                 AlternativeVerse = altBibleReference?.Verse,
                 PositionInVerse = positionInVerse,
                 Type = type,
-                HebrewNormalised = GetAtIndex(columns, 1),
-                Transliteration = GetAtIndex(columns, 2),
-                Gloss = GetAtIndex(columns, 3),
-                DisambiguatedStrongs = GetAtIndex(columns, 4),
-                Grammar = GetAtIndex(columns, 5),
+                HebrewNormalised = GetAtIndex(columns, 1, string.Empty),
+                Transliteration = GetAtIndex(columns, 2, string.Empty),
+                Gloss = GetAtIndex(columns, 3, string.Empty),
+                DisambiguatedStrongs = GetAtIndex(columns, 4, string.Empty),
+                Grammar = GetAtIndex(columns, 5, string.Empty),
                 MeaningVariants = GetAtIndex(columns, 6),
                 SpellingVariants = GetAtIndex(columns, 7),
                 RootDisambiguatedStrongsInstance = GetAtIndex(columns, 8),
@@ -99,7 +110,7 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
             };
 
             entry.Hebrew = DenormalizeHebrew(entry.HebrewNormalised);
-            entry.HebrewNoDiacritics = RemoveDiacritics(entry.Hebrew);
+            entry.HebrewNoDiacritics = entry.Hebrew.RemoveHebrewDiacritics()!;
 
             parsedEntries.Add(entry);
         }
@@ -107,48 +118,28 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
         return parsedEntries;
     }
 
-    public string GetAtIndex(string[] columns, int index)
+    public string? GetAtIndex(string[] columns, int index, string? defaultValue = null)
     {
-        return columns.Length > index ? columns[index] : string.Empty;
-    }
-
-    private string DenormalizeHebrew(string input)
-    {
-        return input.Replace("/", "").Replace(@"\", "");
-    }
-
-    private string RemoveDiacritics(string input)
-    {
-        input = input.Replace("\u05B0", "") // Sheva;
-            .Replace("\u05B1", "") // Hataf Segol
-            .Replace("\u05B2", "") // Hataf Patah
-            .Replace("\u05B3", "") // Hataf Qamats
-            .Replace("\u05B4", "") // Hiriq
-            .Replace("\u05B5", "") // Tsere
-            .Replace("\u05B6", "") // Segol
-            .Replace("\u05B7", "") // Patah
-            .Replace("\u05B8", "") // Qamats
-            .Replace("\u05B9", "") // Holam
-            .Replace("\u05BA", "") // Holam Haser for Vav
-            .Replace("\u05BB", "") // Qubuts
-            .Replace("\u05BC", "") // Dagesh or Mapiq
-            .Replace("\u05BD", "") // Meteg
-            .Replace("\u05BE", "") // Maqqef
-            .Replace("\u05BF", "") // Rafe
-            .Replace("\u05C1", "") // Shin Dot
-            .Replace("\u05C2", "") // Sin Dot
-            .Replace("\u05C3", "") // Sof Pasuq
-            .Replace("\u05C4", "") // Upper Dot
-            .Replace("\u05C5", "") // Lower Dot
-            .Replace("\u05C6", "") // Nun Hafukha
-            .Replace("\u05C7", ""); // Qamats Qatan
-
-        // remove cantillation marks
-        for (var c = '\u0591'; c <= '\u05AF'; c++)
+        if (columns.Length > index)
         {
-            input = input.Replace(c.ToString(), "");
+            if (columns[index].IsNullOrEmpty())
+            {
+                return defaultValue;
+            }
+
+            return columns[index];
         }
 
-        return input;
+        return defaultValue;
+    }
+
+    private string DenormalizeHebrew(string? input)
+    {
+        if (input.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
+
+        return input.Replace("/", "").Replace(@"\", "");
     }
 }

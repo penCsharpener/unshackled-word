@@ -2,17 +2,17 @@
 
 CREATE TABLE "unshackled-word"."GntHotWords"
 (
-    "Id"              serial4                      NOT NULL,
-    "BibleBookId"     integer                      NOT NULL,
-    "Chapter"         integer                      NOT NULL,
-    "Verse"           integer                      NOT NULL,
-    "WordInContext"   varchar COLLATE "en_US.utf8" NOT NULL,
-    "Koine"           varchar COLLATE "en_US.utf8" NOT NULL,
-    "Lemma"           varchar COLLATE "en_US.utf8" NOT NULL,
-    "PositionInVerse" integer                      NOT NULL,
-    "Strongs"         varchar                      NOT NULL,
-    "PartOfSpeech"    varchar                      NOT NULL,
-    "GrammaticalKey"  varchar                      NOT NULL,
+    "Id"              serial4                     NOT NULL,
+    "BibleBookId"     integer                     NOT NULL,
+    "Chapter"         integer                     NOT NULL,
+    "Verse"           integer                     NOT NULL,
+    "WordInContext"   varchar COLLATE "und-x-icu" NOT NULL,
+    "Koine"           varchar COLLATE "und-x-icu" NOT NULL,
+    "Lemma"           varchar COLLATE "und-x-icu" NOT NULL,
+    "PositionInVerse" integer                     NOT NULL,
+    "Strongs"         varchar                     NOT NULL,
+    "PartOfSpeech"    varchar                     NOT NULL,
+    "GrammaticalKey"  varchar                     NOT NULL,
     CONSTRAINT "GntHotWords_PK" PRIMARY KEY ("Id")
 );
 
@@ -21,33 +21,33 @@ CREATE INDEX "GntHotWords_strongs_idx" ON "unshackled-word"."GntHotWords" ("Stro
 
 CREATE TABLE "unshackled-word"."Elb1871Words"
 (
-    "Id"              serial4                      NOT NULL,
-    "BibleBookId"     integer                      NOT NULL,
-    "Chapter"         integer                      NOT NULL,
-    "Verse"           integer                      NOT NULL,
-    "WordInContext"   varchar COLLATE "en_US.utf8" NOT NULL,
-    "PlainWord"       varchar COLLATE "en_US.utf8" NULL,
-    "Lemma"           varchar COLLATE "en_US.utf8" NULL,
-    "PositionInVerse" integer                      NOT NULL,
-    "Strongs"         varchar                      NULL,
-    "PartOfSpeech"    varchar                      NULL,
-    "GrammaticalKey"  varchar                      NULL,
+    "Id"              serial4                     NOT NULL,
+    "BibleBookId"     integer                     NOT NULL,
+    "Chapter"         integer                     NOT NULL,
+    "Verse"           integer                     NOT NULL,
+    "WordInContext"   varchar COLLATE "und-x-icu" NOT NULL,
+    "PlainWord"       varchar COLLATE "und-x-icu" NULL,
+    "Lemma"           varchar COLLATE "und-x-icu" NULL,
+    "PositionInVerse" integer                     NOT NULL,
+    "Strongs"         varchar COLLATE "und-x-icu" NULL,
+    "PartOfSpeech"    varchar COLLATE "und-x-icu" NULL,
+    "GrammaticalKey"  varchar COLLATE "und-x-icu" NULL,
     CONSTRAINT "Elb1871Words_PK" PRIMARY KEY ("Id")
 );
 
-COMMENT
-ON COLUMN "unshackled-word"."Elb1871Words"."PlainWord" IS 'Is the same as WordInContext but clean of all special characters.';
+        COMMENT
+        ON COLUMN "unshackled-word"."Elb1871Words"."PlainWord" IS 'Is the same as WordInContext but clean of all special characters.';
 
 CREATE INDEX "Elb1871Words_reference_idx" ON "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse");
 CREATE INDEX "Elb1871Words_strongs_idx" ON "unshackled-word"."Elb1871Words" ("Strongs");
 
 CREATE TABLE "unshackled-word"."Elb1871Verses"
 (
-    "Id"          serial4                   NOT NULL,
-    "BibleBookId" integer                   NOT NULL,
-    "Chapter"     integer                   NOT NULL,
-    "Verse"       integer                   NOT NULL,
-    "VerseText"   text COLLATE "en_US.utf8" NOT NULL,
+    "Id"          serial4                  NOT NULL,
+    "BibleBookId" integer                  NOT NULL,
+    "Chapter"     integer                  NOT NULL,
+    "Verse"       integer                  NOT NULL,
+    "VerseText"   text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "Elb1871Verses_PK" PRIMARY KEY ("Id")
 );
 
@@ -55,13 +55,13 @@ CREATE INDEX "Elb1871Verses_reference_idx" ON "unshackled-word"."Elb1871Verses" 
 
 CREATE TABLE "unshackled-word"."SourceWords"
 (
-    "Id"          serial4                   NOT NULL,
-    "BibleBookId" integer                   NOT NULL,
-    "Chapter"     integer                   NOT NULL,
-    "Verse"       integer                   NOT NULL,
-    "SortNumber"  integer                   NOT NULL,
-    "SourceWord"  text COLLATE "en_US.utf8" NOT NULL,
-    "GrammarKey"  text COLLATE "en_US.utf8" NOT NULL,
+    "Id"          serial4                  NOT NULL,
+    "BibleBookId" integer                  NOT NULL,
+    "Chapter"     integer                  NOT NULL,
+    "Verse"       integer                  NOT NULL,
+    "SortNumber"  integer                  NOT NULL,
+    "SourceWord"  text COLLATE "und-x-icu" NOT NULL,
+    "GrammarKey"  text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "SourceWords_PK" PRIMARY KEY ("Id")
 );
 
@@ -69,17 +69,17 @@ CREATE INDEX "SourceWords_reference_idx" ON "unshackled-word"."SourceWords" ("Bi
 
 CREATE TABLE "unshackled-word"."Tsk"
 (
-    "Id"                      serial4                   NOT NULL,
-    "BibleBookId"             integer                   NOT NULL,
-    "Chapter"                 integer                   NOT NULL,
-    "Verse"                   integer                   NOT NULL,
-    "Scope"                   text COLLATE "en_US.utf8" NOT NULL,
-    "RelatedStartBibleBookId" integer                   NOT NULL,
-    "RelatedStartChapter"     integer                   NOT NULL,
-    "RelatedStartVerse"       integer                   NOT NULL,
-    "RelatedEndBibleBookId"   integer                   NULL,
-    "RelatedEndChapter"       integer                   NULL,
-    "RelatedEndVerse"         integer                   NULL,
+    "Id"                      serial4                  NOT NULL,
+    "BibleBookId"             integer                  NOT NULL,
+    "Chapter"                 integer                  NOT NULL,
+    "Verse"                   integer                  NOT NULL,
+    "Scope"                   text COLLATE "und-x-icu" NOT NULL,
+    "RelatedStartBibleBookId" integer                  NOT NULL,
+    "RelatedStartChapter"     integer                  NOT NULL,
+    "RelatedStartVerse"       integer                  NOT NULL,
+    "RelatedEndBibleBookId"   integer                  NULL,
+    "RelatedEndChapter"       integer                  NULL,
+    "RelatedEndVerse"         integer                  NULL,
     CONSTRAINT "Tsk_PK" PRIMARY KEY ("Id")
 );
 
@@ -89,11 +89,11 @@ CREATE INDEX "Tsk_relatedEndReference_idx" ON "unshackled-word"."Tsk" ("RelatedE
 
 CREATE TABLE "unshackled-word"."SblText"
 (
-    "Id"          serial4                   NOT NULL,
-    "BibleBookId" integer                   NOT NULL,
-    "Chapter"     integer                   NOT NULL,
-    "Verse"       integer                   NOT NULL,
-    "VerseText"   text COLLATE "en_US.utf8" NOT NULL,
+    "Id"          serial4                  NOT NULL,
+    "BibleBookId" integer                  NOT NULL,
+    "Chapter"     integer                  NOT NULL,
+    "Verse"       integer                  NOT NULL,
+    "VerseText"   text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "SblText_PK" PRIMARY KEY ("Id")
 );
 
@@ -101,11 +101,11 @@ CREATE INDEX "SblText_reference_idx" ON "unshackled-word"."SblText" ("BibleBookI
 
 CREATE TABLE "unshackled-word"."SblApparatus"
 (
-    "Id"          serial4                   NOT NULL,
-    "BibleBookId" integer                   NOT NULL,
-    "Chapter"     integer                   NOT NULL,
-    "Verse"       integer                   NOT NULL,
-    "Text"        text COLLATE "en_US.utf8" NOT NULL,
+    "Id"          serial4                  NOT NULL,
+    "BibleBookId" integer                  NOT NULL,
+    "Chapter"     integer                  NOT NULL,
+    "Verse"       integer                  NOT NULL,
+    "Text"        text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "SblApparatus_PK" PRIMARY KEY ("Id")
 );
 
@@ -113,14 +113,14 @@ CREATE INDEX "SblApparatus_reference_idx" ON "unshackled-word"."SblApparatus" ("
 
 CREATE TABLE "unshackled-word"."ByzTxtWords"
 (
-    "Id"           serial4                   NOT NULL,
-    "BibleBookId"  integer                   NOT NULL,
-    "Chapter"      integer                   NOT NULL,
-    "Verse"        integer                   NOT NULL,
-    "SortNumber"   integer                   NOT NULL,
-    "Word"         text COLLATE "en_US.utf8" NOT NULL,
-    "StrongNumber" text COLLATE "en_US.utf8" NOT NULL,
-    "Morphology"   text COLLATE "en_US.utf8" NOT NULL,
+    "Id"           serial4                  NOT NULL,
+    "BibleBookId"  integer                  NOT NULL,
+    "Chapter"      integer                  NOT NULL,
+    "Verse"        integer                  NOT NULL,
+    "SortNumber"   integer                  NOT NULL,
+    "Word"         text COLLATE "und-x-icu" NOT NULL,
+    "StrongNumber" text COLLATE "und-x-icu" NOT NULL,
+    "Morphology"   text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "ByzTxtWords_PK" PRIMARY KEY ("Id")
 );
 
@@ -128,24 +128,24 @@ CREATE INDEX "ByzTxtWords_reference_idx" ON "unshackled-word"."ByzTxtWords" ("Bi
 
 CREATE TABLE "unshackled-word"."SrGntWords"
 (
-    "Id"              serial4                      NOT NULL,
-    "BibleBookId"     integer                      NOT NULL,
-    "Chapter"         integer                      NOT NULL,
-    "Verse"           integer                      NOT NULL,
-    "WordInContext"   varchar COLLATE "en_US.utf8" NOT NULL,
-    "Koine"           varchar COLLATE "en_US.utf8" NOT NULL,
-    "Lemma"           varchar COLLATE "en_US.utf8" NOT NULL,
-    "PositionInVerse" integer                      NOT NULL,
-    "Strongs"         varchar                      NOT NULL,
-    "PartOfSpeech"    varchar                      NOT NULL,
-    "GrammaticalKey"  varchar                      NOT NULL,
-    "Mood"            integer                      NULL,
-    "Tense"           integer                      NULL,
-    "Voice"           integer                      NULL,
-    "Person"          integer                      NULL,
-    "Case"            integer                      NULL,
-    "Gender"          integer                      NULL,
-    "Number"          integer                      NULL,
+    "Id"              serial4                     NOT NULL,
+    "BibleBookId"     integer                     NOT NULL,
+    "Chapter"         integer                     NOT NULL,
+    "Verse"           integer                     NOT NULL,
+    "WordInContext"   varchar COLLATE "und-x-icu" NOT NULL,
+    "Koine"           varchar COLLATE "und-x-icu" NOT NULL,
+    "Lemma"           varchar COLLATE "und-x-icu" NOT NULL,
+    "PositionInVerse" integer                     NOT NULL,
+    "Strongs"         varchar COLLATE "und-x-icu" NOT NULL,
+    "PartOfSpeech"    varchar COLLATE "und-x-icu" NOT NULL,
+    "GrammaticalKey"  varchar COLLATE "und-x-icu" NOT NULL,
+    "Mood"            integer                     NULL,
+    "Tense"           integer                     NULL,
+    "Voice"           integer                     NULL,
+    "Person"          integer                     NULL,
+    "Case"            integer                     NULL,
+    "Gender"          integer                     NULL,
+    "Number"          integer                     NULL,
     CONSTRAINT "SrGntWords_PK" PRIMARY KEY ("Id")
 );
 
@@ -154,11 +154,11 @@ CREATE INDEX "SrGntWords_strongs_idx" ON "unshackled-word"."SrGntWords" ("Strong
 
 CREATE TABLE "unshackled-word"."Elb1871SrGntTagging"
 (
-    "Id"              serial4 NOT NULL,
-    "Elb1871WordsId"  integer NOT NULL,
-    "SrGntWordsId"    integer NOT NULL,
-    "PositionInVerse" integer NOT NULL,
-    "Comment"         varchar NULL,
+    "Id"              serial4                     NOT NULL,
+    "Elb1871WordsId"  integer                     NOT NULL,
+    "SrGntWordsId"    integer                     NOT NULL,
+    "PositionInVerse" integer                     NOT NULL,
+    "Comment"         varchar COLLATE "und-x-icu" NULL,
     CONSTRAINT "Elb1871SrGntTagging_PK" PRIMARY KEY ("Id"),
     CONSTRAINT "Elb1871SrGntTagging_Unique" UNIQUE ("Elb1871WordsId", "SrGntWordsId"),
     CONSTRAINT "Elb1871SrGntTagging_Elb1871Words_FK" FOREIGN KEY ("Elb1871WordsId") REFERENCES "unshackled-word"."Elb1871Words" ("Id"),
@@ -169,8 +169,8 @@ CREATE INDEX "Elb1871SrGntTagging_reference_idx" ON "unshackled-word"."Elb1871Sr
 
 CREATE TABLE "unshackled-word"."Languages"
 (
-    "Id"   serial4 NOT NULL,
-    "Name" varchar NOT NULL,
+    "Id"   serial4                     NOT NULL,
+    "Name" varchar COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "Languages_PK" PRIMARY KEY ("Id")
 );
 
@@ -180,10 +180,10 @@ VALUES ('english'),
 
 CREATE TABLE "unshackled-word"."BibleBooks"
 (
-    "Id"            serial4 NOT NULL,
-    "Name"          varchar NOT NULL,
-    "Abbreviations" varchar NOT NULL,
-    "LanguageId"    integer NOT NULL,
+    "Id"            serial4                     NOT NULL,
+    "Name"          varchar COLLATE "und-x-icu" NOT NULL,
+    "Abbreviations" varchar COLLATE "und-x-icu" NOT NULL,
+    "LanguageId"    integer                     NOT NULL,
     CONSTRAINT "BibleBooks_PK" PRIMARY KEY ("Id"),
     CONSTRAINT "BibleBooks_Languages_FK" FOREIGN KEY ("LanguageId") REFERENCES "unshackled-word"."Languages" ("Id")
 );

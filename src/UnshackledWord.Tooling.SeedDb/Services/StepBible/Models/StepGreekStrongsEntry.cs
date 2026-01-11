@@ -7,5 +7,12 @@ public sealed class StepGreekStrongsEntry : StepStrongsBaseEntry
         get => OriginalWord;
         set => OriginalWord = value;
     }
+
+    public string GreekNoDiacritics
+    {
+        get => OriginalWordNoDiacritics;
+        set => OriginalWordNoDiacritics = value;
+    }
+
     public string AbbottSmithLexicon { get; set; } = default!;
 }

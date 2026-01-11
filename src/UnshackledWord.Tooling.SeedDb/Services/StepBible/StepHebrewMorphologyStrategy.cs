@@ -44,11 +44,6 @@ public sealed class StepHebrewMorphologyStrategy : IFileParserStrategy<List<Step
                         Value: parts.Length > 1 ? parts[1] : string.Empty);
                 }).ToHebrewMorphEntry();
 
-            if (columns[0].Contains("AVeq3mp"))
-            {
-
-            }
-
             entry.Code = columns[0];
             parsedEntries.Add(entry);
         }
@@ -129,9 +124,6 @@ public static class StepHebrewMorphologyExtensions
                     {
                         entry.Stem = value;
                     }
-                    break;
-                case "Case":
-                    entry.Case = value;
                     break;
                 case "Number":
                     entry.Number = value;

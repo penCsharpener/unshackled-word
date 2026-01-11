@@ -8,5 +8,11 @@ public sealed class StepHebrewStrongsEntry : StepStrongsBaseEntry
         set => OriginalWord = value;
     }
 
+    public string HebrewNoDiacritics
+    {
+        get => OriginalWordNoDiacritics;
+        set => OriginalWordNoDiacritics = value;
+    }
+
     public string Meaning { get; set; } = default!;
 }

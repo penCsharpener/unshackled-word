@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Application.Abstractions.Step;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -9,15 +11,24 @@ namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 public sealed partial class StepGreekStrongsStrategy : IFileParserStrategy<List<StepGreekStrongsEntry>>
 {
     private readonly IFileService _fileService;
+    private readonly IStepStrongsRepository _repo;
     private static Regex _lineStart = IsLineStart();
 
-    public StepGreekStrongsStrategy(IFileService fileService)
+    public StepGreekStrongsStrategy(IFileService fileService, IStepStrongsRepository repo)
     {
         _fileService = fileService;
+        _repo = repo;
     }
 
     public async Task<List<StepGreekStrongsEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        var filter = new StepStrongsFilter { IncludeExtendedStrongs = ["G0001"] };
+        var count = await _repo.CountByFilterAsync(filter, token);
+        if (count > 0)
+        {
+            return [];
+        }
+
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
         var parsedEntries = new List<StepGreekStrongsEntry>();
 
@@ -39,7 +50,7 @@ public sealed partial class StepGreekStrongsStrategy : IFileParserStrategy<List<
 
             if (isDataLine)
             {
-                var entry = new StepGreekStrongsEntry()
+                var entry = new StepGreekStrongsEntry
                 {
                     ExtendedStrongs = columns[0],
                     DisambiguatedStrongs = columns[1],
@@ -50,6 +61,8 @@ public sealed partial class StepGreekStrongsStrategy : IFileParserStrategy<List<
                     Gloss = columns[6],
                     AbbottSmithLexicon = columns[7],
                 };
+
+                entry.GreekNoDiacritics = entry.Greek.RemoveGreekDiacritics()!;
 
                 parsedEntries.Add(entry);
             }

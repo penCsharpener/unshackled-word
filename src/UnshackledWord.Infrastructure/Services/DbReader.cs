@@ -31,4 +31,19 @@ public sealed class DbReader : IDbReader
         connection.Open();
         return await connection.QueryAsync<T>(sql, param: param, commandType: CommandType.Text);
     }
+
+    public async Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null)
+    {
+        if (sql.Contains("insert into", StringComparison.OrdinalIgnoreCase) ||
+            sql.Contains("update", StringComparison.OrdinalIgnoreCase) ||
+            sql.Contains("delete", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException("Do not use IDbReader's ExecuteScalarAsync for insert, update, or delete operations.");
+        }
+
+        using var connection = _factory.CreateDbConnection();
+
+        connection.Open();
+        return await connection.ExecuteScalarAsync<T>(sql, param: param, commandType: CommandType.Text);
+    }
 }

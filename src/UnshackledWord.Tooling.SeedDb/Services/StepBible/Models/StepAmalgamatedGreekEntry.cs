@@ -39,6 +39,8 @@ public class StepAmalgamatedGreekEntry
     [Name("Greek")]
     public string Greek { get; set; } = default!;
 
+    public string GreekNoDiacritics { get; set; } = default!;
+
     [Name("Transliteration")]
     public string Transliteration { get; set; } = default!;
 
@@ -56,6 +58,7 @@ public class StepAmalgamatedGreekEntry
 
     [Name("Dictionary form")]
     public string Lemma { get; set; } = default!;
+    public string LemmaNoDiacritics { get; set; } = default!;
 
     [Name("editions")]
     public string Editions { get; set; } = default!;
@@ -63,23 +66,23 @@ public class StepAmalgamatedGreekEntry
     public string[] EditionList { get; set; } = default!;
 
     [Name("Meaning variants")]
-    public string MeaningVariants { get; set; } = default!;
+    public string? MeaningVariants { get; set; } = default!;
 
     [Name("Spelling variants")]
-    public string SpellingVariants { get; set; } = default!;
+    public string? SpellingVariants { get; set; } = default!;
 
     [Name("Spanish translation")]
-    public string SpanishTranslation { get; set; } = default!;
+    public string? SpanishTranslation { get; set; } = default!;
 
     [Name("Sub-meaning")]
-    public string SubMeaning { get; set; } = default!;
+    public string? SubMeaning { get; set; } = default!;
 
     [Name("Conjoin word")]
-    public string ConjoinWord { get; set; } = default!;
+    public string? ConjoinWord { get; set; } = default!;
 
     [Name("sStrong+Instance")]
-    public string StrongInstance { get; set; } = default!;
+    public string? StrongInstance { get; set; } = default!;
 
     [Name("Alt Strongs")]
-    public string AltStrongs { get; set; } = default!;
+    public string? AltStrongs { get; set; } = default!;
 }

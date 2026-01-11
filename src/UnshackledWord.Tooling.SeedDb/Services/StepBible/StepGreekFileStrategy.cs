@@ -1,5 +1,8 @@
+using System.Globalization;
 using System.Text;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Application.Abstractions.Step;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
@@ -9,14 +12,23 @@ namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgamatedGreekEntry>>
 {
     private readonly IFileService _fileService;
+    private readonly IStepGreekWordsRepository _repo;
 
-    public StepGreekFileStrategy(IFileService fileService)
+    public StepGreekFileStrategy(IFileService fileService, IStepGreekWordsRepository repo)
     {
         _fileService = fileService;
+        _repo = repo;
     }
 
     public async Task<List<StepAmalgamatedGreekEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        var filter = new StepGreekWordFilter { IncludedBibleBookIds = [40]};
+        var count = await _repo.CountByFilterAsync(filter, token);
+        if (count > 0)
+        {
+            return [];
+        }
+
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
         var parsedEntries = new List<StepAmalgamatedGreekEntry>();
 
@@ -24,7 +36,6 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
         {
             var line = lines[index];
             var columns = line.Split('\t', StringSplitOptions.TrimEntries);
-            // Implement parsing logic based on the STEP file format
 
             if (columns.Length == 0)
             {
@@ -37,7 +48,6 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 continue;
             }
 
-            // split Bible reference Act.2.11[2.10]#01=NKO where Act=book, 2=chapter, 11=verse, 2=alt chapter, 10=alt verse, 01=position in verse, NKO=type
             var refParts = columns[0].Split(['#', '='], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             var bibleRef = GetAtIndex(refParts, 0);
             (string Book, int Chapter, int Verse) bibleReference;
@@ -62,7 +72,7 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 altBibleReference = null;
             }
             var positionInVerse = refParts.Length > 1 ? int.Parse(refParts[1]) : 0;
-            var type = GetAtIndex(refParts, 0);
+            var type = GetAtIndex(refParts, 2);
 
             var grWithTransliteration = GetAtIndex(columns, 1);
             var grParts = grWithTransliteration.Split(['(', ')'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
@@ -95,7 +105,7 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 Lemma = GetAtIndex(formParts, 0),
                 Gloss = GetAtIndex(formParts, 1),
                 Editions = GetAtIndex(columns, 5),
-                EditionList = GetAtIndex(columns, 5).Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
+                //EditionList = GetAtIndex(columns, 5).Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
                 MeaningVariants = GetAtIndex(columns, 6),
                 SpellingVariants = GetAtIndex(columns, 7),
                 SpanishTranslation = GetAtIndex(columns, 8),
@@ -105,16 +115,27 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 AltStrongs = GetAtIndex(columns, 12)
             };
 
+            entry.GreekNoDiacritics = entry.Greek.RemoveGreekDiacritics()!;
+            entry.LemmaNoDiacritics = entry.Lemma.RemoveGreekDiacritics()!;
+
             parsedEntries.Add(entry);
-            // Here you would typically save the entry to the database
-            // For example: await _databaseService.SaveBiblicalLexiconEntryAsync(entry, token);
         }
 
         return parsedEntries;
     }
 
-    public string GetAtIndex(string[] columns, int index)
+    public string? GetAtIndex(string[] columns, int index, string? defaultValue = null)
     {
-        return columns.Length > index ? columns[index] : string.Empty;
+        if (columns.Length > index)
+        {
+            if (columns[index].IsNullOrEmpty())
+            {
+                return defaultValue;
+            }
+
+            return columns[index];
+        }
+
+        return defaultValue;
     }
 }

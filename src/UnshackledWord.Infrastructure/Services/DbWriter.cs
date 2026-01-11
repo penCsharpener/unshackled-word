@@ -36,6 +36,14 @@ public sealed class DbWriter : IDbWriter, IDisposable, IAsyncDisposable
         return await _connection.ExecuteAsync(sql);
     }
 
+    public async Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null)
+    {
+        using var connection = _factory.CreateDbConnection();
+
+        connection.Open();
+        return await connection.ExecuteScalarAsync<T>(sql, param: param, commandType: CommandType.Text);
+    }
+
     public void Dispose()
     {
         _factory.Dispose();

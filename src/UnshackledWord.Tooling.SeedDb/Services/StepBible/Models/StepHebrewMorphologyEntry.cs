@@ -28,9 +28,6 @@ public sealed class StepHebrewMorphologyEntry
     [Name("Gender")]
     public string Gender { get; set; } = default!;
 
-    [Name("Case")]
-    public string Case { get; set; } = default!;
-
     [Name("State")]
     public string State { get; set; } = default!;
 

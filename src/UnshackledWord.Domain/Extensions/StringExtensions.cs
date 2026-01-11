@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Text;
 
 namespace UnshackledWord.Domain.Extensions;
 
@@ -96,4 +98,53 @@ public static class StringExtensions
         yield return lastSegment;
     }
 
+    public static string? RemoveGreekDiacritics(this string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
+
+        // Step 1: Decompose characters (e.g., 'ᾄ' becomes 'α' + breathing + accent + subscript)
+        var normalizedString = text.Normalize(NormalizationForm.FormD);
+        var stringBuilder = new StringBuilder();
+
+        foreach (var c in normalizedString)
+        {
+            // Step 2: Only keep characters that are NOT non-spacing marks
+            var category = CharUnicodeInfo.GetUnicodeCategory(c);
+            if (category != UnicodeCategory.NonSpacingMark && category != UnicodeCategory.OtherPunctuation)
+            {
+                stringBuilder.Append(c);
+            }
+        }
+
+        // Step 3: Recompose into a standard form (Form C)
+        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+    }
+
+    public static string? RemoveHebrewDiacritics(this string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
+
+        // NormalizationForm.FormD separates consonants from vowels/accents
+        var normalizedString = text.Normalize(NormalizationForm.FormD);
+        var stringBuilder = new StringBuilder();
+
+        foreach (var c in normalizedString)
+        {
+            // Filter out all "Non-Spacing Marks" (vowels, accents, dagesh, etc.)
+            var category = CharUnicodeInfo.GetUnicodeCategory(c);
+            if (category != UnicodeCategory.NonSpacingMark && category != UnicodeCategory.OtherPunctuation)
+            {
+                stringBuilder.Append(c);
+            }
+        }
+
+        // Return to standard composed form
+        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+    }
 }

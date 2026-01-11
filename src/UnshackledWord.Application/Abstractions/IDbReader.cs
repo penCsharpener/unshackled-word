@@ -6,12 +6,14 @@ public interface IDbReader
 {
     Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object param = null);
     Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object param = null);
+    Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null);
 }
 
 public interface IDbWriter
 {
     Task<int> WriteAsync<T>(string sql, T parameters);
     Task<int> WriteAsync(string sql);
+    Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null);
 }
 
 public interface IDbMigrator
