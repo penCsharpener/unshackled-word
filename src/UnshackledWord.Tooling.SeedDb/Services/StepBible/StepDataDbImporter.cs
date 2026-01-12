@@ -18,6 +18,7 @@ public sealed class StepDataDbImporter
     private readonly IStepHebrewWordsRepository _stepHebrewWordsRepository;
     private readonly IStepStrongsRepository _stepStrongsRepository;
     private readonly IStepHebrewMorphologyRepository _stepHebrewMorphologyRepository;
+    private readonly IStepGreekMorphologyRepository _stepGreekMorphologyRepository;
 
     public StepDataDbImporter(StepGithubDownloader githubDownloader,
         StepGreekFileStrategy greekFileStrategy,
@@ -29,7 +30,8 @@ public sealed class StepDataDbImporter
         IStepGreekWordsRepository stepGreekWordsRepository,
         IStepHebrewWordsRepository stepHebrewWordsRepository,
         IStepStrongsRepository stepStrongsRepository,
-        IStepHebrewMorphologyRepository stepHebrewMorphologyRepository)
+        IStepHebrewMorphologyRepository stepHebrewMorphologyRepository,
+        IStepGreekMorphologyRepository stepGreekMorphologyRepository)
     {
         _githubDownloader = githubDownloader;
         _greekFileStrategy = greekFileStrategy;
@@ -42,6 +44,7 @@ public sealed class StepDataDbImporter
         _stepHebrewWordsRepository = stepHebrewWordsRepository;
         _stepStrongsRepository = stepStrongsRepository;
         _stepHebrewMorphologyRepository = stepHebrewMorphologyRepository;
+        _stepGreekMorphologyRepository = stepGreekMorphologyRepository;
     }
 
         public async Task Run(CancellationToken token = default)
@@ -83,12 +86,12 @@ public sealed class StepDataDbImporter
                 continue;
             }
 
-            // if (file.Contains("Greek Morphhology Codes"))
-            // {
-            //     var entries = await _greekMorphologyStrategy.SaveToDatabase(file, token);
-            //     totalGreekMorphology.AddRange(entries);
-            //     continue;
-            // }
+            if (file.Contains("Greek Morphhology Codes"))
+            {
+                var entries = await _greekMorphologyStrategy.SaveToDatabase(file, token);
+                totalGreekMorphology.AddRange(entries);
+                continue;
+            }
 
             if (file.Contains("Hebrew Morphology Codes"))
             {
@@ -116,6 +119,11 @@ public sealed class StepDataDbImporter
         foreach (var chunk in totalHebrewMorphology.ToDbo().EnumerateWithIds().Chunk(5000))
         {
             await _stepHebrewMorphologyRepository.BulkInsertAsync(chunk, token);
+        }
+
+        foreach (var chunk in totalGreekMorphology.ToDbo().EnumerateWithIds().Chunk(5000))
+        {
+            await _stepGreekMorphologyRepository.BulkInsertAsync(chunk, token);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Text;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
@@ -9,14 +10,23 @@ namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 public sealed class StepHebrewMorphologyStrategy : IFileParserStrategy<List<StepHebrewMorphologyEntry>>
 {
     private readonly IFileService _fileService;
+    private readonly IStepHebrewMorphologyRepository _repo;
 
-    public StepHebrewMorphologyStrategy(IFileService fileService)
+    public StepHebrewMorphologyStrategy(IFileService fileService, IStepHebrewMorphologyRepository repo)
     {
         _fileService = fileService;
+        _repo = repo;
     }
 
     public async Task<List<StepHebrewMorphologyEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        var filter = new StepHebrewMorphologyFilter { PartOfSpeech = "Adjective" };
+        var count = await _repo.CountByFilterAsync(filter, token);
+        if (count > 0)
+        {
+            return [];
+        }
+
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
         var parsedEntries = new List<StepHebrewMorphologyEntry>();
 

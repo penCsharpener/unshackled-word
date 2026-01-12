@@ -20,6 +20,7 @@ public static class StepRunnerExtensions
         services.AddScoped<IStepHebrewWordsRepository, StepHebrewWordsRepository>();
         services.AddScoped<IStepStrongsRepository, StepStrongsRepository>();
         services.AddScoped<IStepHebrewMorphologyRepository, StepHebrewMorphologyRepository>();
+        services.AddScoped<IStepGreekMorphologyRepository, StepGreekMorphologyRepository>();
         services.AddHttpClient<StepGithubDownloader>(client =>
         {
             client.BaseAddress = new Uri("https://github.com/");

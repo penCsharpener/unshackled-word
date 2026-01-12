@@ -128,4 +128,25 @@ public static class DboExtensions
             };
         }
     }
+
+    public static IEnumerable<StepGreekMorphologyDbo> ToDbo(this IEnumerable<StepGreekMorphologyEntry> entries)
+    {
+        foreach (var entry in entries)
+        {
+            yield return new StepGreekMorphologyDbo
+            {
+                Code = entry.Code,
+                PartOfSpeech = entry.PartOfSpeech,
+                Voice = entry.Voice,
+                Tense = entry.Tense,
+                Mood = entry.Mood,
+                Person = entry.Person,
+                Number = entry.Number,
+                Gender = entry.Gender,
+                Degree = entry.Degree,
+                Extras = entry.Extras,
+                NameType = entry.NameType
+            };
+        }
+    }
 }
