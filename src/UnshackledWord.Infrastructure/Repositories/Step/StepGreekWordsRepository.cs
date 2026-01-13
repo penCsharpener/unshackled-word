@@ -17,11 +17,6 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         _dbReader = dbReader;
     }
 
-    public async Task<List<StepGreekWordDbo>> GetByFilterAsync(StepGreekWordFilter filter, CancellationToken token = default)
-    {
-        return [];
-    }
-
     public async Task<int> CountByFilterAsync(StepGreekWordFilter filter, CancellationToken token = default)
     {
         var sql = $"""
@@ -39,6 +34,19 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         };
 
         return await _dbReader.ExecuteScalarAsync<int>(sql, parameter);
+    }
+
+    public async Task<IEnumerable<StepGreekWordDbo>> GetByFilterAsync(StepGreekWordFilter filter, CancellationToken token = default)
+    {
+        var sql = $"""
+                   SELECT {filter.GetSelectColumns()}
+                   FROM {StepGreekWordDbo.DbName} AS w
+                   WHERE 1=1
+                     {(filter.IncludedBibleBookIds.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.BibleBookId)}\" = ANY(@IncludedBibleBookIds)")}
+                     {(filter.IncludeChapters.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.Chapter)}\" = ANY(@IncludeChapters)")};
+                   """;
+
+        return await _dbReader.ReadAsListAsync<StepGreekWordDbo>(sql, filter);
     }
 
     public async Task BulkInsertAsync(StepGreekWordDbo[] entries, CancellationToken token = default)

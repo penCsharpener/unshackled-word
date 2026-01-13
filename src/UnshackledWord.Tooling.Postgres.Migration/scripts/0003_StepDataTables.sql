@@ -142,3 +142,27 @@ CREATE TABLE "unshackled-word"."StepGreekMorphology"
 
 CREATE INDEX "IX_StepGreekMorphology_Code"
     ON "unshackled-word"."StepGreekMorphology" ("Code");
+
+
+CREATE TABLE "unshackled-word"."StepStrongsToVerses"
+(
+    "Id"                        SERIAL PRIMARY KEY,
+    "BibleBookId"               INTEGER     NOT NULL,
+    "Chapter"                   INTEGER     NOT NULL,
+    "Verse"                     INTEGER     NOT NULL,
+    "IsRoot"                    BOOLEAN     NOT NULL,
+    "Grammar"                   VARCHAR(30),
+    "Hebrew"                    VARCHAR(40) COLLATE "und-x-icu",
+    "Gloss"                     VARCHAR(120),
+    "FirstOccuranceBibleBookId" INTEGER,
+    "FirstOccuranceChapter"     INTEGER,
+    "FirstOccuranceVerse"       INTEGER,
+    "LastOccuranceBibleBookId"  INTEGER,
+    "LastOccuranceChapter"      INTEGER,
+    "LastOccuranceVerse"        INTEGER,
+    "StrongsNumber"             VARCHAR(20) NOT NULL,
+
+    -- Unique index on the specified columns
+    CONSTRAINT "UQ_StepStrongsToVerses_Book_Ch_Vs_Strong"
+        UNIQUE ("BibleBookId", "Chapter", "Verse", "StrongsNumber")
+);

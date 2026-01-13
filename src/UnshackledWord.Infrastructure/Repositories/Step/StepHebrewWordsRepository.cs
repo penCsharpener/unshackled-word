@@ -36,6 +36,19 @@ public sealed class StepHebrewWordsRepository : IStepHebrewWordsRepository
         return await _dbReader.ExecuteScalarAsync<int>(sql, parameter);
     }
 
+    public async Task<IEnumerable<StepHebrewWordDbo>> GetByFilterAsync(StepHebrewWordFilter filter, CancellationToken token = default)
+    {
+        var sql = $"""
+                   SELECT {filter.GetSelectColumns()}
+                   FROM {StepHebrewWordDbo.DbName} AS w
+                   WHERE 1=1
+                     {(filter.IncludedBibleBookIds.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.BibleBookId)}\" = ANY(@IncludedBibleBookIds)")}
+                     {(filter.IncludeChapters.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.Chapter)}\" = ANY(@IncludeChapters)")};
+                   """;
+
+        return await _dbReader.ReadAsListAsync<StepHebrewWordDbo>(sql, filter);
+    }
+
     public async Task BulkInsertAsync(StepHebrewWordDbo[] entries, CancellationToken token = default)
     {
         if (entries.Length == 0)

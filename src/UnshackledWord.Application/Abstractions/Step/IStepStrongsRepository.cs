@@ -5,5 +5,6 @@ namespace UnshackledWord.Application.Abstractions.Step;
 public interface IStepStrongsRepository
 {
     Task<int> CountByFilterAsync(StepStrongsFilter filter, CancellationToken token = default);
+    Task<IEnumerable<StepStrongsDbo>> GetByFilterAsync(StepStrongsFilter filter, CancellationToken token = default);
     Task BulkInsertAsync(StepStrongsDbo[] entries, CancellationToken token = default);
 }

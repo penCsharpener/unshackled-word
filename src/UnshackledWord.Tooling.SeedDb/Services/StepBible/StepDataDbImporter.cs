@@ -19,6 +19,7 @@ public sealed class StepDataDbImporter
     private readonly IStepStrongsRepository _stepStrongsRepository;
     private readonly IStepHebrewMorphologyRepository _stepHebrewMorphologyRepository;
     private readonly IStepGreekMorphologyRepository _stepGreekMorphologyRepository;
+    private readonly StepStrongsNormalizingStrategy _stepStrongsNormalizingStrategy;
 
     public StepDataDbImporter(StepGithubDownloader githubDownloader,
         StepGreekFileStrategy greekFileStrategy,
@@ -31,7 +32,8 @@ public sealed class StepDataDbImporter
         IStepHebrewWordsRepository stepHebrewWordsRepository,
         IStepStrongsRepository stepStrongsRepository,
         IStepHebrewMorphologyRepository stepHebrewMorphologyRepository,
-        IStepGreekMorphologyRepository stepGreekMorphologyRepository)
+        IStepGreekMorphologyRepository stepGreekMorphologyRepository,
+        StepStrongsNormalizingStrategy stepStrongsNormalizingStrategy)
     {
         _githubDownloader = githubDownloader;
         _greekFileStrategy = greekFileStrategy;
@@ -45,6 +47,7 @@ public sealed class StepDataDbImporter
         _stepStrongsRepository = stepStrongsRepository;
         _stepHebrewMorphologyRepository = stepHebrewMorphologyRepository;
         _stepGreekMorphologyRepository = stepGreekMorphologyRepository;
+        _stepStrongsNormalizingStrategy = stepStrongsNormalizingStrategy;
     }
 
         public async Task Run(CancellationToken token = default)
@@ -125,5 +128,7 @@ public sealed class StepDataDbImporter
         {
             await _stepGreekMorphologyRepository.BulkInsertAsync(chunk, token);
         }
+
+        await _stepStrongsNormalizingStrategy.SaveToDatabase(null!, token);
     }
 }

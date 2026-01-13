@@ -22,15 +22,32 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
                    SELECT COUNT(*)
                    FROM {StepStrongsDbo.DbName} AS s
                    WHERE 1=1
-                     {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsDbo.ExtendedStrongs)}\" = ANY(@IncludeStrongs)")};
+                     {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsDbo.ExtendedStrongs)}\" = ANY(@IncludeExtendedStrongs)")};
                    """;
 
         var parameter = new
         {
-            IncludeStrongs = filter.IncludeExtendedStrongs
+            filter.IncludeExtendedStrongs
         };
 
         return await _dbReader.ExecuteScalarAsync<int>(sql, parameter);
+    }
+
+    public async Task<IEnumerable<StepStrongsDbo>> GetByFilterAsync(StepStrongsFilter filter, CancellationToken token = default)
+    {
+        var sql = $"""
+                   SELECT {filter.GetSelectColumns()}
+                   FROM {StepStrongsDbo.DbName} AS s
+                   WHERE 1=1
+                     {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsDbo.ExtendedStrongs)}\" = ANY(@IncludeExtendedStrongs)")};
+                   """;
+
+        var parameter = new
+        {
+            filter.IncludeExtendedStrongs
+        };
+
+        return await _dbReader.ReadAsListAsync<StepStrongsDbo>(sql, parameter);
     }
 
     public async Task BulkInsertAsync(StepStrongsDbo[] entries, CancellationToken token = default)
