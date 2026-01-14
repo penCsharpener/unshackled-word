@@ -20,7 +20,7 @@ public sealed class StepHebrewMorphologyStrategy : IFileParserStrategy<List<Step
 
     public async Task<List<StepHebrewMorphologyEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var filter = new StepHebrewMorphologyFilter { PartOfSpeech = "Adjective" };
+        var filter = new StepHebrewMorphologyFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {

@@ -25,12 +25,7 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
                      {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsDbo.ExtendedStrongs)}\" = ANY(@IncludeExtendedStrongs)")};
                    """;
 
-        var parameter = new
-        {
-            filter.IncludeExtendedStrongs
-        };
-
-        return await _dbReader.ExecuteScalarAsync<int>(sql, parameter);
+        return await _dbReader.ExecuteScalarAsync<int>(sql, filter);
     }
 
     public async Task<IEnumerable<StepStrongsDbo>> GetByFilterAsync(StepStrongsFilter filter, CancellationToken token = default)

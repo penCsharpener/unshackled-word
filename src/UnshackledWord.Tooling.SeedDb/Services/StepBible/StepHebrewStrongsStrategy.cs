@@ -22,7 +22,7 @@ public sealed partial class StepHebrewStrongsStrategy : IFileParserStrategy<List
 
     public async Task<List<StepHebrewStrongsEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var filter = new StepStrongsFilter { IncludeExtendedStrongs = ["H0001"] };
+        var filter = new StepStrongsFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {

@@ -1,3 +1,4 @@
+using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnshackledWord.Application.Abstractions;
@@ -22,7 +23,7 @@ public sealed partial class StepGreekStrongsStrategy : IFileParserStrategy<List<
 
     public async Task<List<StepGreekStrongsEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var filter = new StepStrongsFilter { IncludeExtendedStrongs = ["G0001"] };
+        var filter = new StepStrongsFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {

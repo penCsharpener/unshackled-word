@@ -25,12 +25,7 @@ public sealed class StepGreekMorphologyRepository : IStepGreekMorphologyReposito
                      {(filter.PartOfSpeech.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepGreekMorphologyDbo.PartOfSpeech)}\" = @PartOfSpeech")};
                    """;
 
-        var parameter = new
-        {
-            filter.PartOfSpeech
-        };
-
-        return await _dbReader.ExecuteScalarAsync<int>(sql, parameter);
+        return await _dbReader.ExecuteScalarAsync<int>(sql, filter);
     }
 
     public async Task BulkInsertAsync(StepGreekMorphologyDbo[] entries, CancellationToken token = default)

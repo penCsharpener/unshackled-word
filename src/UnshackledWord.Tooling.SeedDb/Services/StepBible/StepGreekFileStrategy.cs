@@ -22,7 +22,7 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
 
     public async Task<List<StepAmalgamatedGreekEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var filter = new StepGreekWordFilter { IncludedBibleBookIds = [40]};
+        var filter = new StepGreekWordFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {

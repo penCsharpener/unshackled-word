@@ -21,10 +21,7 @@ public sealed class StepStrongsNormalizingStrategy : IFileParserStrategy
 
     public async Task SaveToDatabase(string _, CancellationToken token = default)
     {
-        var filter = new StepStrongsFilter
-        {
-            IncludeExtendedStrongs = ["G0001"],
-        };
+        var filter = new StepStrongsFilter();
 
         var count = await _versesRepo.CountByFilterAsync(filter, token);
         if (count > 0)

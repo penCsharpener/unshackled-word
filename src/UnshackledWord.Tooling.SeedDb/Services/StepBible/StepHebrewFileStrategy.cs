@@ -21,7 +21,7 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
 
     public async Task<List<StepAmalgamatedHebrewEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var filter = new StepHebrewWordFilter { IncludedBibleBookIds = [1]};
+        var filter = new StepHebrewWordFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {

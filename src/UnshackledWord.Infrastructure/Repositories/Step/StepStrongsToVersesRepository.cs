@@ -25,11 +25,6 @@ public sealed class StepStrongsToVersesRepository : IStepStrongsToVersesReposito
                      {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsToVersesDbo.StrongsNumber)}\" = ANY(@IncludeExtendedStrongs)")};
                    """;
 
-        var parameter = new
-        {
-            filter.IncludeExtendedStrongs
-        };
-
         return await _dbReader.ExecuteScalarAsync<int>(sql, filter);
     }
 

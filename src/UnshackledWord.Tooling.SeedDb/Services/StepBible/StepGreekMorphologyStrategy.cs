@@ -19,7 +19,7 @@ public sealed class StepGreekMorphologyStrategy : IFileParserStrategy<List<StepG
 
     public async Task<List<StepGreekMorphologyEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var filter = new StepGreekMorphologyFilter { PartOfSpeech = "Adjective" };
+        var filter = new StepGreekMorphologyFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {

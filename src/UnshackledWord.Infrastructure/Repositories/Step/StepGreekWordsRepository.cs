@@ -27,13 +27,7 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
                      {(filter.IncludeChapters.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.Chapter)}\" = ANY(@IncludeChapters)")};
                    """;
 
-        var parameter = new
-        {
-            filter.IncludedBibleBookIds,
-            filter.IncludeChapters
-        };
-
-        return await _dbReader.ExecuteScalarAsync<int>(sql, parameter);
+        return await _dbReader.ExecuteScalarAsync<int>(sql, filter);
     }
 
     public async Task<IEnumerable<StepGreekWordDbo>> GetByFilterAsync(StepGreekWordFilter filter, CancellationToken token = default)
