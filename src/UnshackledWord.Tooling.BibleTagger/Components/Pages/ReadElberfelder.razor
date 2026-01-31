@@ -1,0 +1,16 @@
+@page "/ReadElberfelder"
+@using UnshackledWord.Domain.Models.BibleStructure
+@using UnshackledWord.Tooling.BibleTagger.Components.Common
+@rendermode InteractiveServer
+
+<BibleVerseSelector @bind-BibleReference="@_bibleReference" OnSubmit="@HandleSubmitAsync" />
+
+@code {
+  private BibleReference _bibleReference = BibleReference.NtStart;
+
+  private async Task HandleSubmitAsync()
+  {
+    Console.WriteLine(_bibleReference.ToString());
+  }
+
+}

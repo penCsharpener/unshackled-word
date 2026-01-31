@@ -1,0 +1,93 @@
+@using UnshackledWord.Domain.Models.BibleStructure
+@using UnshackledWord.Domain.Models.Dbo
+@using UnshackledWord.Tooling.BibleTagger.Features.Elb1871SrTaggerRepository
+@inject IMetaBibleRepository MetaRepo
+
+
+<MudGrid Spacing="2" Class="align-end">
+  <MudItem xs="12" md="3">
+    <MudSelect T="int" Label="Book"
+               Value="BibleReference.BookId"
+               ValueChanged="UpdateBook"
+               AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+      @foreach (var book in bibleBooks)
+      {
+        <MudSelectItem Value="@book.Id">@book.Name</MudSelectItem>
+      }
+    </MudSelect>
+  </MudItem>
+
+  <MudItem xs="12" md="3">
+    <MudNumericField Label="Chapter"
+                     Value="BibleReference.Chapter"
+                     ValueChanged="@((int v) => UpdateChapter(v))"
+                     Min="1" Variant="Variant.Outlined" />
+  </MudItem>
+
+  <MudItem xs="12" md="3">
+    <MudNumericField Label="Verse"
+                     Value="BibleReference.Verse"
+                     ValueChanged="@((int v) => UpdateVerse(v))"
+                     Min="1" Variant="Variant.Outlined" />
+  </MudItem>
+
+  <MudItem xs="12" md="3">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               FullWidth="true" Class="py-3"
+               OnClick="@OnSubmit">
+      Load Verse
+    </MudButton>
+  </MudItem>
+</MudGrid>
+
+@code {
+  private BibleReference _bibleReference = default!;
+
+  [Parameter, EditorRequired]
+  public BibleReference BibleReference
+  {
+    get => _bibleReference;
+    set => _bibleReference = value;
+  }
+
+  private List<BibleBookDbo> bibleBooks = [];
+
+  [Parameter]
+  public string ButtonText { get; set; } = "Load Verse";
+
+  [Parameter]
+  public EventCallback OnSubmit { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    bibleBooks = await MetaRepo.GetBibleBooksAsync(1);
+    await OnSubmit.InvokeAsync();
+  }
+
+  [Parameter]
+  public EventCallback<BibleReference> BibleReferenceChanged { get; set; }
+
+  private async Task UpdateBook(int id)
+  {
+    _bibleReference.BookId = id;
+    await Notify();
+  }
+
+  private async Task UpdateChapter(int val)
+  {
+    _bibleReference.Chapter = val;
+    await Notify();
+  }
+
+  private async Task UpdateVerse(int val)
+  {
+    _bibleReference.Verse = val;
+    await Notify();
+  }
+
+  private Task Notify()
+  {
+    return BibleReferenceChanged.InvokeAsync(BibleReference);
+  }
+
+}

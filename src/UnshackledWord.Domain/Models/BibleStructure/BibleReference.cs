@@ -59,4 +59,7 @@ public record struct BibleReference(int BookId, int Chapter, int Verse) : IBible
     public static bool operator >(BibleReference left, BibleReference right) => left.CompareTo(right) > 0;
     public static bool operator <=(BibleReference left, BibleReference right) => left.CompareTo(right) <= 0;
     public static bool operator >=(BibleReference left, BibleReference right) => left.CompareTo(right) >= 0;
+
+    public static BibleReference NtStart => new(40, 1, 1);
+    public static BibleReference OtStart => new(1, 1, 1);
 }

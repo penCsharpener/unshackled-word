@@ -12,89 +12,61 @@
 
 <PageTitle>Elberfelder Grammar</PageTitle>
 
-<EditForm Model="@bibleReference" OnValidSubmit="HandleSubmitAsync">
-  <DataAnnotationsValidator />
-  <ValidationSummary />
-  <div class="row reference-control">
-    <div class="col-md-3">
-      <label for="book">Book</label>
-      <select id="book" class="form-control bibleReference-book" @bind="bibleReference.BookId">
-        @foreach (var book in bibleBooks)
-        {
-          <option value="@book.Id">@book.Name</option>
-        }
-      </select>
-    </div>
-
-    <div class="col-md-3">
-      <label for="chapter">Chapter</label>
-      <input id="chapter" type="number" class="form-control bibleReference-chapter" @bind="bibleReference.Chapter" />
-    </div>
-
-    <div class="col-md-3">
-      <label for="verse">Verse</label>
-      <input id="verse" type="number" class="form-control bibleReference-verse" @bind="bibleReference.Verse" />
-    </div>
-
-    <div class="col-md-3">
-      <button type="submit" class="btn btn-primary mt-3">Load Verse</button>
-    </div>
-  </div>
-
-</EditForm>
+<BibleVerseSelector @bind-BibleReference="@bibleReference" OnSubmit="@HandleSubmitAsync" />
 
 <hr>
 
-<div class="row">
-  @* Elberfelder Words on the Left *@
-  <div class="col-md-12">
-    <h3>Elberfelder 1871: @bibleReference.ToString()</h3>
-    <EditForm Model="@elberfelderWords" OnValidSubmit="SaveWordMappingAsync">
-      <div class="word-form">
+<MudText Typo="Typo.h5" Class="mb-4">Elberfelder 1871: @bibleReference.ToString()</MudText>
 
-        <div class="word-row header">
-          <div class="col select-col">Select</div>
-          <div class="col word-col">Word</div>
-          <div class="col lemma-col">Lemma</div>
-          <div class="col forms-col">Other Forms</div>
-          <div class="col pos-col">Part of Speech</div>
-        </div>
+<EditForm Model="@elberfelderWords" OnValidSubmit="SaveWordMappingAsync">
+  <MudTable Items="@elberfelderWords" Hover="true" Breakpoint="Breakpoint.Sm" Dense="true" Elevation="1">
+    <HeaderContent>
+      <MudTh Style="width: 50px;">Select</MudTh>
+      <MudTh>Word</MudTh>
+      <MudTh>Lemma</MudTh>
+      <MudTh>Other Forms</MudTh>
+      <MudTh>Part of Speech</MudTh>
+    </HeaderContent>
+    <RowTemplate Context="rowContext">
+      <MudTd DataLabel="Select">
+        <MudCheckBox @bind-Value="@rowContext.Selected" Color="Color.Primary" />
+      </MudTd>
+      <MudTd DataLabel="Word">
+        <MudText>@rowContext.ElbWord.PlainWord</MudText>
+      </MudTd>
+      <MudTd DataLabel="Lemma">
+        <MudTextField @bind-Value="@rowContext.ElbWord.Lemma" Margin="Margin.Dense" Variant="Variant.Outlined" />
+      </MudTd>
+      <MudTd DataLabel="Other Forms">
+        <MudTextField @bind-Value="@rowContext.ElbWord.OptionalForms" Margin="Margin.Dense" Variant="Variant.Outlined" />
+      </MudTd>
+      <MudTd DataLabel="Part of Speech">
+        @* Set T to the actual Enum type *@
+        <MudSelect T="string?"
+                   @bind-Value="@rowContext.ElbWord.PartOfSpeech"
+                   Margin="Margin.Dense"
+                   Variant="Variant.Outlined"
+                   Dense="true">
 
-        @foreach (var word in elberfelderWords)
-        {
-          <div class="word-row" @key="word.ElbWord.Id">
-            <div class="col select-col" @onclick="() => ToggleSelection(word)">
-              <InputCheckbox @bind-Value="word.Selected" />
-            </div>
-            <div class="col word-col" @onclick="() => ToggleSelection(word)">
-              <input class="form-control-plaintext" value="@word.ElbWord.PlainWord" readonly />
-            </div>
-            <div class="col lemma-col">
-              <InputText class="form-control" @bind-Value="word.ElbWord.Lemma" />
-            </div>
-            <div class="col forms-col">
-              <InputText class="form-control" @bind-Value="word.ElbWord.OptionalForms" />
-            </div>
-            <div class="col pos-col">
-              <InputSelect class="form-select" @bind-Value="word.ElbWord.PartOfSpeech">
-                <option value=""> </option>
-                @foreach (var (pos, text) in PartOfSpeechOptions)
-                {
-                  <option value="@pos">@text</option>
-                }
-              </InputSelect>
-            </div>
-          </div>
-        }
+          @* The null/empty option must also be cast to the Enum type *@
+          <MudSelectItem T="string?" Value="null">None</MudSelectItem>
 
-        <div class="submit-container">
-          <button type="submit" class="btn btn-primary">Submit Selected</button>
-        </div>
+          @foreach (var (pos, text) in PartOfSpeechOptions)
+          {
+            @* Ensure Value matches the Enum type exactly *@
+            <MudSelectItem T="string?" Value="@text">@text</MudSelectItem>
+          }
+        </MudSelect>
+      </MudTd>
+    </RowTemplate>
+  </MudTable>
 
-      </div>
-    </EditForm>
+  <div class="d-flex justify-end mt-4">
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+      Submit Selected
+    </MudButton>
   </div>
-</div>
+</EditForm>
 
 <div class="row">
   <Notification Show="ShowNotification" OnClose="@HideNotification">

@@ -9,37 +9,7 @@
 @inject IJSRuntime Js
 @attribute [Authorize]
 
-@* Form to select book, chapter, and verse *@
-<EditForm Model="@bibleReference" OnValidSubmit="HandleSubmitAsync">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="row reference-control">
-        <div class="col-md-3">
-            <label for="book">Book</label>
-            <select id="book" class="form-control bibleReference-book" @bind="bibleReference.BookId">
-                @foreach (var book in bibleBooks)
-                {
-                    <option value="@book.Id">@book.Name</option>
-                }
-            </select>
-        </div>
-
-        <div class="col-md-3">
-            <label for="chapter">Chapter</label>
-            <input id="chapter" type="number" class="form-control bibleReference-chapter" @bind="bibleReference.Chapter" />
-        </div>
-
-        <div class="col-md-3">
-            <label for="verse">Verse</label>
-            <input id="verse" type="number" class="form-control bibleReference-verse" @bind="bibleReference.Verse" />
-        </div>
-
-        <div class="col-md-3">
-          <button type="submit" class="btn btn-primary mt-3">Load Verse</button>
-        </div>
-    </div>
-
-</EditForm>
+<BibleVerseSelector @bind-BibleReference="@bibleReference" OnSubmit="@HandleSubmitAsync" />
 
 <hr>
 
