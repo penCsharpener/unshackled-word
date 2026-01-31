@@ -1,0 +1,9 @@
+a.bible-word {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a.bible-word:hover {
+    text-decoration: underline;
+}

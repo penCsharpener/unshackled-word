@@ -24,3 +24,46 @@ window.startNotificationTimer = (notificationId) => {
     }
   }, 3000); // 3 seconds timer
 }
+
+window.bibleInterop = {
+  initHighlighting: function (containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+      return;
+    }
+
+    container.addEventListener('mouseover', (e) => {
+      const strongs = e.target.getAttribute('data-strongs');
+      if (strongs) {
+        // Select all elements with this specific Strong's number
+        const matches = container.querySelectorAll(`[data-strongs="${strongs}"]`);
+        matches.forEach(el => el.classList.add('highlight-strongs'));
+      }
+    });
+
+    container.addEventListener('mouseout', (e) => {
+      const strongs = e.target.getAttribute('data-strongs');
+      if (strongs) {
+        const matches = container.querySelectorAll(`[data-strongs="${strongs}"]`);
+        matches.forEach(el => el.classList.remove('highlight-strongs'));
+      }
+    });
+  }
+};
+
+window.getBoundingClientRect = (element) => {
+  return element.getBoundingClientRect();
+};
+
+window.listenForOutsideClick = (dotNetHelper, containerId) => {
+  const listener = (event) => {
+    const container = document.getElementById(containerId);
+    // If the click is outside the popup container, notify C# to close it
+    if (container && !container.contains(event.target)) {
+      dotNetHelper.invokeMethodAsync('InvokeClose');
+      document.removeEventListener('click', listener); // Cleanup
+    }
+  };
+  // Timeout prevents the click that OPENED the popup from immediately closing it
+  setTimeout(() => document.addEventListener('click', listener), 10);
+};

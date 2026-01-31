@@ -1,0 +1,43 @@
+@page "/ReadElberfelder"
+@using UnshackledWord.Domain.Models.BibleStructure
+@using UnshackledWord.Tooling.BibleTagger.Components.Common
+@using UnshackledWord.Tooling.BibleTagger.Features.ReadElberfelderRepository
+@rendermode InteractiveServer
+@inject WordPopupService PopupService
+@inject IReadElberfelderRepository Repo
+
+<BibleVerseSelector @bind-BibleReference="@_bibleReference" HideVerseSelector="true" OnSubmit="@HandleSubmitAsync" />
+
+<CascadingValue Value="PopupService">
+  @if (_chapter is not null)
+  {
+    <ChapterComponent Chapter="_chapter" />
+  }
+
+  <WordDetailPopOver />
+</CascadingValue>
+@code {
+  private BibleReference _bibleReference = BibleReference.NtStart;
+  private ElbChapter _chapter;
+
+  private async Task HandleSubmitAsync()
+  {
+    var words = await Repo.GetWordsInChapterAsync(_bibleReference.BookId, _bibleReference.Chapter);
+    var dict = words.Words.ToDictionary(k => (VersePosition)k.Key, v => v.Value);
+    _chapter = new ElbChapter();
+    var verse = new ElbVerse();
+
+    foreach (var (vp, word) in dict)
+    {
+      _chapter.Verses.TryAdd(vp.Verse, verse);
+
+      if (vp.PositionInVerse == 1)
+      {
+        _chapter.Verses[vp.Verse] = new ElbVerse();
+      }
+
+      word.Id = $"{_bibleReference.BookId}.{_bibleReference.Chapter}:{vp.Verse}@{vp.PositionInVerse}";
+      _chapter.Verses[vp.Verse].Words.Add(vp.PositionInVerse, word);
+    }
+  }
+}

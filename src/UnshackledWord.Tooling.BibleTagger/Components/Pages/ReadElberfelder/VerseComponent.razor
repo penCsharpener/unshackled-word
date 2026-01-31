@@ -1,0 +1,16 @@
+<p class="bible-verse">
+  <span class="bible-verse-number">@VerseNumber @(" ")</span>
+  @foreach (var (p, word) in Verse.Words)
+  {
+    <WordComponent Id="@word.Id" Strongs="@word.Strongs" WordInContext="@word.WordInContext" />
+  }
+</p>
+
+@code {
+  [Parameter, EditorRequired]
+  public required int VerseNumber { get; set; }
+
+  [Parameter, EditorRequired]
+  public required ElbVerse Verse { get; set; }
+
+}

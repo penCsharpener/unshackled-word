@@ -106,9 +106,9 @@ public sealed class Elb1871WordRepository : IElb1871WordRepository
 
             var param = new DynamicParameters();
 
-            for (int i = 0; i < optionalWords.Count; i++)
+            for (int i = 0; i < allWordForms.Count; i++)
             {
-                param.Add(paramNames[i], optionalWords[i]);
+                param.Add(paramNames[i], allWordForms[i]);
             }
 
             var exactMatches = await _dbReader.ReadAsListAsync<Elb1871WordDbo>(sqlExactMatch, param);

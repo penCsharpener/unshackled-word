@@ -8,6 +8,7 @@ using UnshackledWord.Tooling.BibleTagger.Features.Configuration;
 using UnshackledWord.Tooling.BibleTagger.Features.Elb1871SrTaggerRepository;
 using UnshackledWord.Tooling.BibleTagger.Features.ElbGrammarRepository;
 using UnshackledWord.Tooling.BibleTagger.Features.Email;
+using UnshackledWord.Tooling.BibleTagger.Features.ReadElberfelderRepository;
 
 namespace UnshackledWord.Tooling.BibleTagger.Features.ApplicationSetup;
 
@@ -24,6 +25,7 @@ public static class Extensions
         builder.Services.AddEmail(builder.Configuration);
         builder.Services.AddElb1871Tagging();
         builder.Services.AddElbGrammar();
+        builder.Services.AddReadElberfelderServices();
 
         return builder;
     }

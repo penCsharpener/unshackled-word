@@ -1,0 +1,14 @@
+::deep .chapter-container {
+    /* Allows words to wrap naturally to the next line */
+    display: flex;
+    flex-wrap: wrap;
+
+    /* Optional: Provides consistent spacing without manual " " strings */
+    gap: 0 4px;
+
+    /* Ensures long words don't overflow the container */
+    word-break: break-word;
+
+    /* Standard text alignment */
+    text-align: left;
+}

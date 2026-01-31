@@ -1,0 +1,15 @@
+@inject IJSRuntime Js
+
+<div class="chapter-container" id="chapter-container">
+  @foreach (var (verseId, verse) in Chapter.Verses)
+  {
+    <VerseComponent VerseNumber="@verseId" Verse="@verse" />
+  }
+</div>
+
+<WordDetailPopOver />
+
+@code {
+  [Parameter, EditorRequired]
+  public required ElbChapter Chapter { get; set; }
+}

@@ -1,0 +1,91 @@
+@implements IDisposable
+@inject IJSRuntime Js
+
+<MudOverlay @bind-Visible="_isOpen"
+            AutoClose="true"
+            ZIndex="1200"
+            LockScroll="false"
+            Opacity="0" />
+
+<MudPopover Open="_isOpen"
+            Fixed="false"
+            Style="@_style"
+            ZIndex="1300">
+  <div style="display: flex; flex-direction: column; width: 280px; background: white; border: 1px solid #ddd;" id="word-detail-popup-container">
+    @* Row 1: Strongs *@
+    <div class="pa-3 mud-theme-primary white-text"><strong>Strong's:</strong> @_strongs</div>
+
+    @* Row 2: Lemma/Count *@
+    <div class="pa-3 mud-bg-gray-light">
+      <div><strong>Lemma:</strong> @_lemma</div>
+      <div><strong>Occurrences:</strong> 42</div> @* Placeholder *@
+    </div>
+
+    @* Rows 3-5: Placeholders *@
+    <div class="pa-3 border-bottom">Placeholder 3</div>
+    <div class="pa-3 border-bottom">Placeholder 4</div>
+    <div class="pa-3">Placeholder 5</div>
+  </div>
+</MudPopover>
+
+@code {
+
+  [CascadingParameter]
+  public WordPopupService? PopupService { get; set; }
+
+  private bool _isOpen;
+  private string _style = "";
+  private string _strongs = "strongs";
+  private string _lemma = "lemma";
+  private DotNetObjectReference<WordDetailPopOver>? _objRef;
+
+  protected override void OnInitialized()
+  {
+    // Subscribe to the global word-click event
+    if (PopupService is not null)
+    {
+      PopupService.OnWordSelected -= Show;
+      PopupService.OnWordSelected += Show;
+    }
+
+    _objRef = DotNetObjectReference.Create(this);
+  }
+
+  private async Task Show(ElementReference element, string strongs)
+  {
+    _strongs = strongs;
+
+    // Use the same JS interop logic to position the popup
+    var bounds = await Js.InvokeAsync<BoundingRect>("getBoundingClientRect", element);
+    double leftPos = bounds.Left + (bounds.Bottom / 2) - 140;
+    _style = $"position: fixed; left: {bounds.Left}px; top: {leftPos + 5}px;";
+
+    _isOpen = true;
+    StateHasChanged();
+
+    await Js.InvokeVoidAsync("listenForOutsideClick", _objRef, "word-detail-popup-container");
+  }
+
+  [JSInvokable]
+  public void InvokeClose() {
+    _isOpen = false;
+    StateHasChanged();
+  }
+
+  public void Dispose()
+  {
+    if (PopupService is not null)
+    {
+      PopupService.OnWordSelected -= Show;
+    }
+
+    _objRef?.Dispose();
+  }
+
+  public record BoundingRect
+  {
+    public double Left { get; set; }
+    public double Bottom { get; set; }
+  }
+
+}

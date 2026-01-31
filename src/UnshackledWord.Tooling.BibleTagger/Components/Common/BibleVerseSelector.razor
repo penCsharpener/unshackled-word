@@ -5,7 +5,7 @@
 
 
 <MudGrid Spacing="2" Class="align-end">
-  <MudItem xs="12" md="3">
+  <MudItem xs="12" md="@mdWidth">
     <MudSelect T="int" Label="Book"
                Value="BibleReference.BookId"
                ValueChanged="UpdateBook"
@@ -17,21 +17,24 @@
     </MudSelect>
   </MudItem>
 
-  <MudItem xs="12" md="3">
+  <MudItem xs="12" md="@mdWidth">
     <MudNumericField Label="Chapter"
                      Value="BibleReference.Chapter"
                      ValueChanged="@((int v) => UpdateChapter(v))"
                      Min="1" Variant="Variant.Outlined" />
   </MudItem>
 
-  <MudItem xs="12" md="3">
-    <MudNumericField Label="Verse"
-                     Value="BibleReference.Verse"
-                     ValueChanged="@((int v) => UpdateVerse(v))"
-                     Min="1" Variant="Variant.Outlined" />
-  </MudItem>
+  @if (!HideVerseSelector)
+  {
+    <MudItem xs="12" md="@mdWidth">
+      <MudNumericField Label="Verse"
+                       Value="BibleReference.Verse"
+                       ValueChanged="@((int v) => UpdateVerse(v))"
+                       Min="1" Variant="Variant.Outlined" />
+    </MudItem>
+  }
 
-  <MudItem xs="12" md="3">
+  <MudItem xs="12" md="@mdWidth">
     <MudButton Variant="Variant.Filled" Color="Color.Primary"
                FullWidth="true" Class="py-3"
                OnClick="@OnSubmit">
@@ -50,6 +53,7 @@
     set => _bibleReference = value;
   }
 
+  private int mdWidth = 3;
   private List<BibleBookDbo> bibleBooks = [];
 
   [Parameter]
@@ -58,8 +62,12 @@
   [Parameter]
   public EventCallback OnSubmit { get; set; }
 
+  [Parameter]
+  public bool HideVerseSelector { get; set; } = false;
+
   protected override async Task OnInitializedAsync()
   {
+    mdWidth = HideVerseSelector ? 4 : 3;
     bibleBooks = await MetaRepo.GetBibleBooksAsync(1);
     await OnSubmit.InvokeAsync();
   }
@@ -85,9 +93,9 @@
     await Notify();
   }
 
-  private Task Notify()
+  private async Task Notify()
   {
-    return BibleReferenceChanged.InvokeAsync(BibleReference);
+    //await OnSubmit.InvokeAsync();
+    await BibleReferenceChanged.InvokeAsync(BibleReference);
   }
-
 }

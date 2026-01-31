@@ -1,5 +1,7 @@
 ﻿using FastEndpoints;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Domain.Models.Dbo;
+using UnshackledWord.Domain.WebApi.BibleTagger.Reading;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetWordsForChapter;
 
@@ -20,44 +22,24 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
     public override async Task<GetWordsOfChapterResponse> ExecuteAsync(GetWordsOfChapterRequest req, CancellationToken ct)
     {
         var sql = $"""
-                   SELECT "Verse", "WordInContext", "PlainWord", "PositionInVerse"
+                   SELECT "Verse", "WordInContext", "PlainWord", "Lemma", "Strongs", "PositionInVerse"
                    FROM "unshackled-word"."Elb1871Words"
                    WHERE "BibleBookId" = {req.BibleBookId}
-                   AND "Chapter" = {req.ChapterId};
+                   AND "Chapter" = {req.ChapterId}
+                   ORDER BY "Verse", "PositionInVerse";
                    """;
 
-        var verses = await _reader.ReadAsListAsync<WordModel>(sql);
+        var verses = await _reader.ReadAsListAsync<Elb1871WordDbo>(sql);
 
         return new GetWordsOfChapterResponse
         {
             BibleBookId = req.BibleBookId,
             Chapter = req.ChapterId,
-            Words = verses.ToDictionary(k => $"{k.Verse}|{k.PositionInVerse}", v => new WordResponse { WordInContext = v.WordInContext, PlainWord = v.PlainWord })
+            Words = verses.ToDictionary(k => $"{k.Verse}|{k.PositionInVerse}", v =>
+                new WordResponse
+                {
+                    WordInContext = v.WordInContext, PlainWord = v.PlainWord, Lemma = v.Lemma, Strongs = v.Strongs
+                }),
         };
     }
-}
-
-public record GetWordsOfChapterRequest
-{
-    public int BibleBookId { get; set; }
-    public int ChapterId { get; set; }
-}
-
-public record GetWordsOfChapterResponse
-{
-    public int BibleBookId { get; set; }
-    public int Chapter { get; set; }
-    public Dictionary<string, WordResponse> Words { get; set; }
-}
-
-public record WordResponse
-{
-    public string WordInContext { get; set; } = default!;
-    public string PlainWord { get; set; } = default!;
-}
-
-public record WordModel : WordResponse
-{
-    public int Verse { get; set; }
-    public int PositionInVerse { get; set; }
 }
