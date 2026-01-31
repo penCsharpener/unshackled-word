@@ -11,20 +11,51 @@
             Fixed="false"
             Style="@_style"
             ZIndex="1300">
-  <div style="display: flex; flex-direction: column; width: 280px; background: white; border: 1px solid #ddd;" id="word-detail-popup-container">
-    @* Row 1: Strongs *@
-    <div class="pa-3 mud-theme-primary white-text"><strong>Strong's:</strong> @_strongs</div>
-
-    @* Row 2: Lemma/Count *@
-    <div class="pa-3 mud-bg-gray-light">
-      <div><strong>Lemma:</strong> @_lemma</div>
-      <div><strong>Occurrences:</strong> 42</div> @* Placeholder *@
+  <div class="container pa-4" style="display: flex; flex-direction: column; width: 500px; background: white; border: 1px solid #ddd;" id="word-detail-popup-container">
+    <div class="section">
+      <div class="strong-title">Strongs: @_strongs</div>
+      <div class="count">97x in 65 Versen</div>
+      <div class="details">@_lemma – @_lemmaTransliteration - @_glosses [+5]</div>
     </div>
 
-    @* Rows 3-5: Placeholders *@
-    <div class="pa-3 border-bottom">Placeholder 3</div>
-    <div class="pa-3 border-bottom">Placeholder 4</div>
-    <div class="pa-3">Placeholder 5</div>
+    <!-- Section 2 -->
+    <div class="section">
+      <div class="lemma-title">Lemma:
+        <span class="tag at">AT</span>
+        <span class="tag nt">NT</span>
+        zeugen
+        </div>
+      <div class="count">290x in 204 Versen</div>
+      <div class="details">H3205 (198x); G1080 (47x); G3140 (19x); H5749:1 (11x); [+15x]</div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section">
+      <div class="strong-title">Grammar: </div>
+      @* <div class="count">47 Mal</div> *@
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section lock-emphasis">
+      @* <div class="icon">⚲</div> *@
+      @* <div class="text">Lock emphasis</div> *@
+    </div>
+
+    <!-- Section 5 (Footer/Legend) -->
+    <div class="legend">
+      <div class="legend-item">
+        @* <span class="color-box purple"></span> *@
+        @* Strong u. Lemma gleich *@
+      </div>
+      <div class="legend-item">
+        <span class="color-box yellow"></span>
+        Strong gleich
+      </div>
+      <div class="legend-item">
+        @* <span class="color-box blue"></span> *@
+        @* Lemma gleich *@
+      </div>
+    </div>
   </div>
 </MudPopover>
 
@@ -36,7 +67,9 @@
   private bool _isOpen;
   private string _style = "";
   private string _strongs = "strongs";
-  private string _lemma = "lemma";
+  private string _lemma = "γεννάω";
+  private string _lemmaTransliteration = "gennao";
+  private string _glosses = "zeugen; geboren sein; geboren werden;";
   private DotNetObjectReference<WordDetailPopOver>? _objRef;
 
   protected override void OnInitialized()

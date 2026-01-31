@@ -7,7 +7,7 @@
 }
 else
 {
-  <a class="bible-word" @ref="_ref" @onclick="OnClickHandler" data-strongs="@($"G{Strongs.PadLeft(4, '0')}")">@WordInContext</a>@(" ")
+  <a class="bible-word" @ref="_ref" @onclick="@OnClickHandler" data-strongs="@($"G{Strongs.PadLeft(4, '0')}")">@WordInContext</a>@(" ")
 }
 
 @* href="/readelberfelder/wordstudy/{@Strongs}"  *@

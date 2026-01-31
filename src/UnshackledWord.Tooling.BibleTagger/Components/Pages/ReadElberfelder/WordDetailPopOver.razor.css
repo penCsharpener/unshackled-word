@@ -1,3 +1,101 @@
 .border-bottom {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+body {
+    color: #2e2e2e;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 500px;
+    background-color: #4a4a4a;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.section {
+    display: grid;
+    /* Two columns: 70% for content, auto for counts, with a small gap */
+    grid-template-columns: 60% auto;
+    gap: 5px;
+    padding: 10px 0;
+    border-bottom: 1px solid #666;
+}
+
+.section:last-of-type {
+    border-bottom: none;
+}
+
+.strong-title, .lemma-title {
+    font-weight: bold;
+    grid-column: 1 / 2; /* Span across the first column */
+}
+
+.details {
+    grid-column: 1 / span 2; /* Span across both columns */
+    font-size: 0.9em;
+    color: #555;
+}
+
+.count {
+    text-align: right;
+    font-size: 0.9em;
+    color: #555;
+    grid-column: 2 / 3; /* Second column */
+}
+
+.tag {
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: normal;
+    margin-right: 5px;
+}
+
+.at { background-color: #ffa9a1; } /* Reddish color for AT */
+.nt { background-color: #4dff7f; } /* Greenish color for NT */
+
+.lock-emphasis {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: none;
+    padding: 15px 0;
+}
+
+.lock-emphasis .icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.legend {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    font-size: 0.8em;
+    color: #777;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+
+.color-box {
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+    border-radius: 3px;
+}
+
+.purple { background-color: #7e57d0; }
+.green { background-color: #3fdb3f; }
+.blue { background-color: #208ce0; }

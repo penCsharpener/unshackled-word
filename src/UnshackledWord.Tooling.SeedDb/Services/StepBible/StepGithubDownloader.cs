@@ -46,7 +46,18 @@ public sealed class StepGithubDownloader : IFileDownloader
             var fileName = _fileService.GetFileName(fileUrl).Replace("%20", " ");
             var savePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", fileName);
             dictionary[fileUrl] = savePath;
-        }//,Rom,1Co,2Co,Gal,Eph,Php,Col,1Th,2Th,1Ti,2Ti,Tit,Phm,Heb,Jas,1Pe,2Pe,1Jn,2Jn,3Jn,Jud,Rev
+        }
+        //,Rom,1Co,2Co,Gal,Eph,Php,Col,1Th,2Th,1Ti,2Ti,Tit,Phm,Heb,Jas,1Pe,2Pe,1Jn,2Jn,3Jn,Jud,Rev
+
+        var personPlaceFileUrl = $"{stepOptions.GithubRepoUrl}{stepOptions.PersonPlaceFile}";
+        var personPlaceFileName = _fileService.GetFileName(personPlaceFileUrl).Replace("%20", " ");
+        var personPlaceSavePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", personPlaceFileName);
+        dictionary[personPlaceFileUrl] = personPlaceSavePath;
+
+        var versificationFileUrl = $"{stepOptions.GithubRepoUrl}{stepOptions.VersificationFile}";
+        var versificationFileName = _fileService.GetFileName(versificationFileUrl).Replace("%20", " ");
+        var versificationSavePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", versificationFileName);
+        dictionary[versificationFileUrl] = versificationSavePath;
 
         foreach (var (fileUrl, savePath) in dictionary)
         {

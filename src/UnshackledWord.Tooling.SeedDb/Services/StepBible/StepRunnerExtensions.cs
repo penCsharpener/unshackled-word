@@ -1,5 +1,6 @@
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Infrastructure.Repositories.Step;
+using UnshackledWord.Tooling.SeedDb.Services.StepBible.LexiconParser;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
@@ -18,12 +19,15 @@ public static class StepRunnerExtensions
         services.AddScoped<StepGreekMorphologyStrategy>();
         services.AddScoped<StepStrongsNormalizingStrategy>();
         services.AddScoped<StepBibleStructureStrategy>();
+        services.AddScoped<StepLexiconStrategyFactory>();
+        services.AddScoped<StepPersonPlaceLexiconStrategy>();
         services.AddScoped<IStepStrongsToVersesRepository, StepStrongsToVersesRepository>();
         services.AddScoped<IStepGreekWordsRepository, StepGreekWordsRepository>();
         services.AddScoped<IStepHebrewWordsRepository, StepHebrewWordsRepository>();
         services.AddScoped<IStepStrongsRepository, StepStrongsRepository>();
         services.AddScoped<IStepHebrewMorphologyRepository, StepHebrewMorphologyRepository>();
         services.AddScoped<IStepGreekMorphologyRepository, StepGreekMorphologyRepository>();
+        services.AddScoped<IStepPersonPlaceRepository, StepPersonPlaceRepository>();
         services.AddHttpClient<StepGithubDownloader>(client =>
         {
             client.BaseAddress = new Uri("https://github.com/");

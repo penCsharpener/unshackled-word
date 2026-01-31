@@ -1,6 +1,7 @@
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Domain.Models.Extensions;
+using UnshackledWord.Tooling.SeedDb.Services.StepBible.LexiconParser;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
@@ -19,8 +20,10 @@ public sealed class StepDataDbImporter
     private readonly IStepStrongsRepository _stepStrongsRepository;
     private readonly IStepHebrewMorphologyRepository _stepHebrewMorphologyRepository;
     private readonly IStepGreekMorphologyRepository _stepGreekMorphologyRepository;
+    private readonly IStepPersonPlaceRepository _stepPersonPlaceRepository;
     private readonly StepStrongsNormalizingStrategy _stepStrongsNormalizingStrategy;
     private readonly StepBibleStructureStrategy _stepBibleStructureStrategy;
+    private readonly StepPersonPlaceLexiconStrategy _lexiconStrategy;
 
     public StepDataDbImporter(StepGithubDownloader githubDownloader,
         StepGreekFileStrategy greekFileStrategy,
@@ -34,8 +37,10 @@ public sealed class StepDataDbImporter
         IStepStrongsRepository stepStrongsRepository,
         IStepHebrewMorphologyRepository stepHebrewMorphologyRepository,
         IStepGreekMorphologyRepository stepGreekMorphologyRepository,
+        IStepPersonPlaceRepository stepPersonPlaceRepository,
         StepStrongsNormalizingStrategy stepStrongsNormalizingStrategy,
-        StepBibleStructureStrategy stepBibleStructureStrategy)
+        StepBibleStructureStrategy stepBibleStructureStrategy,
+        StepPersonPlaceLexiconStrategy lexiconStrategy)
     {
         _githubDownloader = githubDownloader;
         _greekFileStrategy = greekFileStrategy;
@@ -51,6 +56,8 @@ public sealed class StepDataDbImporter
         _stepGreekMorphologyRepository = stepGreekMorphologyRepository;
         _stepStrongsNormalizingStrategy = stepStrongsNormalizingStrategy;
         _stepBibleStructureStrategy = stepBibleStructureStrategy;
+        _lexiconStrategy = lexiconStrategy;
+        _stepPersonPlaceRepository = stepPersonPlaceRepository;
     }
 
         public async Task Run(CancellationToken token = default)
@@ -103,6 +110,12 @@ public sealed class StepDataDbImporter
             {
                 var entries = await _hebrewMorphologyStrategy.SaveToDatabase(file, token);
                 totalHebrewMorphology.AddRange(entries);
+                continue;
+            }
+
+            if (file.Contains("Individualised Proper Names"))
+            {
+                await _lexiconStrategy.SaveToDatabase(file, token);
                 continue;
             }
         }
