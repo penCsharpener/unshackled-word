@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using UnshackledWord.Tooling.BibleTagger.Components.Account;
 using UnshackledWord.Tooling.BibleTagger.Data;
 using UnshackledWord.Tooling.BibleTagger.Features.Configuration;
@@ -14,6 +15,7 @@ public static class Extensions
 {
     public static WebApplicationBuilder ApplicationSetup(this WebApplicationBuilder builder)
     {
+        builder.Services.AddMudServices();
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddCircuitOptions(x => x.DetailedErrors = builder.Environment.IsDevelopment());

@@ -8,6 +8,7 @@
     <PackageVersion Include="Dapper" Version="2.1.66"/>
     <PackageVersion Include="dbup-postgresql" Version="6.1.5"/>
     <PackageVersion Include="dbup-sqlite" Version="6.0.4"/>
+    <PackageVersion Include="Extensions.MudBlazor.StaticInput" Version="3.2.1"/>
     <PackageVersion Include="FastEndpoints" Version="7.1.1"/>
     <PackageVersion Include="FastEndpoints.Swagger" Version="7.1.1"/>
     <PackageVersion Include="LemmaGenerator" Version="1.1.0"/>
@@ -27,6 +28,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1"/>
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.1"/>
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+    <PackageVersion Include="MudBlazor" Version="8.15.0"/>
     <PackageVersion Include="Npgsql" Version="10.0.1"/>
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0"/>
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0"/>

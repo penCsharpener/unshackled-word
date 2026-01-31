@@ -1,95 +1,16 @@
-﻿@implements IDisposable
-
-@inject NavigationManager NavigationManager
-
-<div class="top-row ps-3 navbar navbar-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="">UnshackledWord</a>
-  </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-  <nav class="nav flex-column">
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-      </NavLink>
-    </div>
-
-    <AuthorizeView>
-      <Authorized>
-        <div class="nav-item px-3">
-          <NavLink class="nav-link" href="elb1871-sr-tagger">
-            <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Elb1871 Tagger
-          </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-          <NavLink class="nav-link" href="elb-grammar">
-            <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Elberfelder Grammar
-          </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-          <NavLink class="nav-link" href="elb-dashboard">
-            <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Elberfelder Dashboard
-          </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-          <NavLink class="nav-link" href="Account/Manage">
-            <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Manage Account
-          </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-          <form action="Account/Logout" method="post">
-            <AntiforgeryToken/>
-            <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
-            <button type="submit" class="nav-link">
-              <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
-            </button>
-          </form>
-        </div>
-      </Authorized>
-      <NotAuthorized>
-
-        <div class="nav-item px-3">
-          <NavLink class="nav-link" href="Account/Register">
-            <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
-          </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-          <NavLink class="nav-link" href="Account/Login">
-            <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-          </NavLink>
-        </div>
-
-      </NotAuthorized>
-    </AuthorizeView>
-  </nav>
-</div>
-
-@code {
-  private string? currentUrl;
-
-  protected override void OnInitialized()
-  {
-    currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-    NavigationManager.LocationChanged += OnLocationChanged;
-  }
-
-  private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-  {
-    currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
-    StateHasChanged();
-  }
-
-  public void Dispose()
-  {
-    NavigationManager.LocationChanged -= OnLocationChanged;
-  }
-}
+﻿<MudNavMenu>
+  <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+  <AuthorizeView>
+    <Authorized>
+      <MudNavLink Href="elb1871-sr-tagger" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Elb1871 Tagger</MudNavLink>
+      <MudNavLink Href="elb-grammar" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Elberfelder Grammar</MudNavLink>
+      <MudNavLink Href="elb-dashboard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Elberfelder Dashboard</MudNavLink>
+      <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Manage Account</MudNavLink>
+      <AccountLogoutForm />
+    </Authorized>
+    <NotAuthorized>
+      <MudNavLink Href="Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Register</MudNavLink>
+      <MudNavLink Href="Account/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Login</MudNavLink>
+    </NotAuthorized>
+  </AuthorizeView>
+</MudNavMenu>
