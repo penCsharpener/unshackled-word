@@ -411,3 +411,4 @@ temp/*
 *.local.cs
 /git*.git
 /src/MudBlazorWebApp1
+package-lock.json
