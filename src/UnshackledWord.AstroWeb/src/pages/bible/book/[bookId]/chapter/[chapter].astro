@@ -52,29 +52,20 @@ const wordEntries = data.words as WordResponse[];
 </Layout>
 
 <script>
-  const container = document.querySelector('.bible-chapter');
+  const container = document.querySelector<HTMLElement>('.bible-chapter');
 
-  container?.addEventListener('mouseover', (e) => {
-    if (e.target instanceof HTMLElement) {
-      const target = e.target.closest('[data-strongs]');
-      if (!target) return;
+  const updateHighlights = (e: MouseEvent, isAdding: boolean) => {
+    const target = (e.target as HTMLElement).closest<HTMLElement>('[data-strongs]');
+    if (!target) return;
 
-      const strongsId = target.getAttribute('data-strongs');
-      const matches = container.querySelectorAll(`[data-strongs="${strongsId}"]`);
-      
-      matches.forEach(el => el.style.backgroundColor = 'lightblue');
-    }
-  });
+    const strongsId = target.dataset.strongs;
+    const matches = container?.querySelectorAll<HTMLElement>(`[data-strongs="${strongsId}"]`);
+    
+    matches?.forEach(el => {
+      el.classList.toggle('active-highlight', isAdding);
+    });
+  };
 
-  container?.addEventListener('mouseout', (e) => {
-    if (e.target instanceof HTMLElement) {
-      const target = e.target.closest('[data-strongs]');
-      if (!target) return;
-
-      const strongsId = target.getAttribute('data-strongs');
-      const matches = container.querySelectorAll(`[data-strongs="${strongsId}"]`);
-      
-      matches.forEach(el => el.style.backgroundColor = '');
-    }
-  });
+  container?.addEventListener('mouseover', (e) => updateHighlights(e, true));
+  container?.addEventListener('mouseout', (e) => updateHighlights(e, false));
 </script>
