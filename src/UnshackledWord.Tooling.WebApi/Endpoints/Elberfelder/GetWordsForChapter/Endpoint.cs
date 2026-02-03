@@ -22,10 +22,10 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
     public override async Task<GetWordsOfChapterResponse> ExecuteAsync(GetWordsOfChapterRequest req, CancellationToken ct)
     {
         var sql = $"""
-                   SELECT "Verse", "WordInContext", "PlainWord", "Lemma", "Strongs", "PositionInVerse"
+                   SELECT "Id", "Verse", "WordInContext", "PlainWord", "Lemma", "Strongs", "PositionInVerse"
                    FROM "unshackled-word"."Elb1871Words"
                    WHERE "BibleBookId" = {req.BibleBookId}
-                   AND "Chapter" = {req.ChapterId}
+                      AND "Chapter" = {req.ChapterId}
                    ORDER BY "Verse", "PositionInVerse";
                    """;
 
@@ -35,11 +35,19 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
         {
             BibleBookId = req.BibleBookId,
             Chapter = req.ChapterId,
-            Words = verses.ToDictionary(k => $"{k.Verse}|{k.PositionInVerse}", v =>
-                new WordResponse
+            Words = verses.Select(x =>
+            {
+                return new WordResponse
                 {
-                    WordInContext = v.WordInContext, PlainWord = v.PlainWord, Lemma = v.Lemma, Strongs = v.Strongs
-                }),
+                    Id = x.Id,
+                    Lemma = x.Lemma,
+                    PlainWord = x.PlainWord,
+                    PositionInVerse = x.PositionInVerse,
+                    Strongs = x.Strongs,
+                    Verse = x.Verse,
+                    WordInContext = x.WordInContext
+                };
+            }).ToList()
         };
     }
 }
