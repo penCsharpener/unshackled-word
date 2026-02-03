@@ -19,6 +19,7 @@ public partial class Program
         builder.Services.AddWebApiServices(builder.Configuration);
 
         builder.Services.AddOpenApi();
+        builder.Services.AddCors();
         builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
         AddLocalSecrets(builder.Configuration);
 
@@ -28,11 +29,13 @@ public partial class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         }
 
         if (app.Environment.IsProduction())
         {
             app.UseHttpsRedirection();
+            app.UseCors();
         }
 
         app.UseAuthentication();
