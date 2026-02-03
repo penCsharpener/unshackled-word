@@ -1,0 +1,63 @@
+---
+import MenuItem from '../components/navigation/MenuItem.astro';
+import SearchBar from '../components/navigation/SearchBar.astro';
+import '../styles/global.css';
+
+const { title = "Entfesseltes Word" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="font-[Roboto]">
+		<header class="bg-gray-200 gap-6 p-5">
+            <nav class="flex justify-between items-center">
+                <div class="text-4xl font-light text-gray-600">
+                    Entfesseltes Wort
+                </div>
+                <div class="">
+    
+                </div>
+                <div class="flex-1">
+                    <div>
+                        <SearchBar />
+                    </div>
+                </div>
+                <div class="">
+                    <ul class="flex gap-6 font-light text-xl">
+                        <MenuItem link="/bible" title="Bibel" />
+                        <MenuItem link="/tagging" title="Tagging" />
+                        <MenuItem link="/concordance" title="Konkordanz" />
+                    </ul>
+                </div>
+                <div class="ml-5">
+                    <button class="bg-[#a6c1ee] text-white px-4 py-2 font-light text-xl rounded-md hover:bg-[#fbc2eb] hover:text-black transition">
+                        <a href="/accounts/login">Anmelden</a>
+                    </button>
+                </div>
+            </nav>
+		</header>
+		<main class="">
+			<slot />
+		</main>
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

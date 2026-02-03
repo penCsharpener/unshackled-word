@@ -1,0 +1,33 @@
+---
+import Layout from "../layouts/Layout.astro"
+import { PUBLIC_API_DOMAIN } from 'astro:env/client';
+import type { SearchResult } from '../types';
+
+const query = Astro.url.searchParams.get('q'); // Get the 'q' param from URL
+let results: SearchResult[] = [];
+
+if (query) {
+  // Replace with your actual API endpoint
+  const response = await fetch(`${PUBLIC_API_DOMAIN}/search?query=${query}`);
+  results = await response.json() as SearchResult[];
+}
+---
+
+<Layout>
+    <section class="max-w-4xl mx-auto p-8">
+        <h1 class="text-2xl font-bold mb-4">Ergebnisse für "{query}"</h1>
+        
+        {results.length > 0 ? (
+            <ul class="space-y-4">
+            {results.map((item) => (
+                <li class="p-4 border rounded shadow-sm">
+                <h3 class="font-semibold text-lg">{item.title}</h3>
+                <p class="text-gray-600">{item.description}</p>
+                </li>
+            ))}
+            </ul>
+        ) : (
+            <p class="text-gray-500 italic">Suche konnte nichts finden.</p>
+        )}
+    </section>
+</Layout>

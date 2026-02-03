@@ -1,0 +1,21 @@
+---
+import type { WordResponse } from "../../types";
+
+const info = Astro.props.info as WordResponse;
+const isFirstInVerse = info.positionInVerse === 1;
+---
+
+{/* Render a verse number if this is the start of a new verse */}
+{isFirstInVerse && <br>}
+{isFirstInVerse && <sup class="verse-num">{info.verse}</sup>}
+<span
+class="bible-word"
+data-order={info.positionInVerse}
+data-plain={info.plainWord}
+data-lemma={info.lemma}
+data-strongs={info.strongs}
+data-id={info.id}
+>
+{`${info.wordInContext}`}
+</span>
+{` `}
