@@ -8,13 +8,15 @@ namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 public class ElberfelderTextRunner : IRunner
 {
     private readonly IFileService _fileService;
+    private readonly IDbReader _dbReader;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<ElberfelderTextRunner> _logger;
     private readonly AppSettings _options;
 
-    public ElberfelderTextRunner(IFileService fileService, IServiceScopeFactory scopeFactory, IOptions<AppSettings> options, ILogger<ElberfelderTextRunner> logger)
+    public ElberfelderTextRunner(IFileService fileService, IDbReader dbReader, IServiceScopeFactory scopeFactory, IOptions<AppSettings> options, ILogger<ElberfelderTextRunner> logger)
     {
         _fileService = fileService;
+        _dbReader = dbReader;
         _scopeFactory = scopeFactory;
         _logger = logger;
         _options = options.Value;

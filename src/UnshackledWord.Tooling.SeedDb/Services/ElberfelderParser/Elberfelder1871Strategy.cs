@@ -12,6 +12,8 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     private readonly IDbWriter _writer;
     private readonly IDbReader _reader;
     private readonly ILogger<Elberfelder1871Strategy> _logger;
+    private int _countVerses;
+    private int _countWords;
     private static string nl = Environment.NewLine;
     public List<Elb1871Verse> Elberfelder1871Verses { get; private set; } = new() ;
 
@@ -25,17 +27,12 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var sql = """
-                  SELECT "Id"
-                  FROM "unshackled-word"."Elb1871Verses"
-                  ORDER BY "Id" ASC
-                  LIMIT 1;
-                  """;
-        var tableHasRows = await _reader.ReadFirstOrDefaultAsync<Elb1871Verse>(sql, token);
+        _countVerses = await GetCountVersesAsync(token);
+        _countWords = await GetCountWordsAsync(token);
 
-        if (tableHasRows is not null)
+        if (_countVerses > 0 && _countWords > 0)
         {
-            _logger.LogInformation("Elberfelder 1871 verses already exist in the database. Skipping import.");
+            _logger.LogInformation("Elberfelder 1871 verses and words already exist in the database. Skipping import.");
             return;
         }
 
@@ -71,13 +68,23 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
             if (batch.Count >= batchSize)
             {
-                await WriteVersesToDbAsync(batch, token);
-                await WriteWordsToDbAsync(batch, token);
+                if (_countWords > 0)
+                {
+                    await WriteWordsToDbAsync(batch, token);
+                }
+
+                if (_countVerses > 0)
+                {
+                    await WriteVersesToDbAsync(batch, token);
+                }
                 batch.Clear();
             }
         }
 
-        await WriteVersesToDbAsync(batch, token);
+        if (_countVerses > 0)
+        {
+            await WriteVersesToDbAsync(batch, token);
+        }
     }
 
     private async Task WriteVersesToDbAsync(List<Elb1871Verse> batch, CancellationToken token = default)
@@ -152,6 +159,26 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             yield return new Elb1871Word(orderCounter, word, cleanedWord);
             orderCounter++;
         }
+    }
+
+    private async Task<int> GetCountVersesAsync(CancellationToken token = default)
+    {
+        var sql = """
+                  select Count(*)
+                  from "unshackled-word"."Elb1871Words"
+                  """;
+
+        return await _reader.ExecuteScalarAsync<int>(sql);
+    }
+
+    private async Task<int> GetCountWordsAsync(CancellationToken token = default)
+    {
+        var sql = """
+                  select Count(*)
+                  from "unshackled-word"."Elb1871Words"
+                  """;
+
+        return await _reader.ExecuteScalarAsync<int>(sql);
     }
 }
 public record Elb1871Verse(int BibleBookId, int Chapter, int Verse, string Text, List<Elb1871Word> Words);

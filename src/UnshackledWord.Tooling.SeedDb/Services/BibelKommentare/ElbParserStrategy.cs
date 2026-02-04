@@ -34,6 +34,12 @@ public sealed class ElbParserStrategy : IFileParserStrategy
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        var count = await GetCountAsync();
+        if (count > 0)
+        {
+            return;
+        }
+
         var xml = await _fileService.ReadAllTextAsync(filePath, Encoding.UTF8, token);
         // xml = _fillReplace.Replace(xml, "$1<fill>$2</fill>$3");
         // xml = _fillReplace2.Replace(xml, "$1<fill>$2</fill>$3");
@@ -88,7 +94,7 @@ public sealed class ElbParserStrategy : IFileParserStrategy
             }
         }
 
-        // await SaveToDatabaseAsync(ElberfelderStrongsVerses, 10, token);
+        await SaveToDatabaseAsync(ElberfelderStrongsVerses, 10, token);
     }
 
     private async Task SaveToDatabaseAsync(List<ElbVerse> verseList, int batchsize, CancellationToken token = default)
@@ -250,5 +256,15 @@ public sealed class ElbParserStrategy : IFileParserStrategy
         }
 
         return elements;
+    }
+
+    private async Task<int> GetCountAsync()
+    {
+        var sql = """
+                  select count(*)
+                  from ElberfelderVerseInfo
+                  """;
+
+        return await _reader.ExecuteScalarAsync<int>(sql);
     }
 }

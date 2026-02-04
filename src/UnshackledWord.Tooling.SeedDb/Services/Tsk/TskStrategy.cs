@@ -28,8 +28,8 @@ public class TskStrategy : IFileParserStrategy
             {
                 if (crossRef is BibleReference bibleRef)
                 {
-                insertRows.Add($"({tskReference.Reference.BookId}, {tskReference.Reference.Chapter}, {tskReference.Reference.Verse}, " +
-                               $"'{tskReference.Words.Replace("'", "''")}', {bibleRef.BookId}, {bibleRef.Chapter}, {bibleRef.Verse}, null, null, null)");
+                    insertRows.Add($"({tskReference.Reference.BookId}, {tskReference.Reference.Chapter}, {tskReference.Reference.Verse}, " +
+                                   $"'{tskReference.Words.Replace("'", "''")}', {bibleRef.BookId}, {bibleRef.Chapter}, {bibleRef.Verse}, null, null, null)");
                 }
 
                 if (crossRef is BibleReferenceRange range)

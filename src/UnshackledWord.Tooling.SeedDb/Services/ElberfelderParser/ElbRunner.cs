@@ -25,16 +25,16 @@ public class ElbRunner : IRunner
         IList<ElbVerse> bkList = null!;
         IList<Elb1871Verse> elb1871List = null!;
 
-        var bkFilePath = "../../temp/SeedData/Elb/bible_elb_bk_mybible.xml";
+        var bkFilePath = _fileService.Combine(_options.SolutionTempPath, "SeedData/Elb/bible_elb_bk_mybible.xml") ;
         if (_fileService.FileExists(bkFilePath))
         {
             var strategy = scope.ServiceProvider.GetRequiredService<ElbParserStrategy>();
 
-            //await strategy.SaveToDatabase(bkFilePath, token);
+            await strategy.SaveToDatabase(bkFilePath, token);
             bkList = strategy.ElberfelderStrongsVerses;
         }
 
-        var elb1871Path = "../../temp/SeedData/Elb/elberfelder1871.txt";
+        var elb1871Path = _fileService.Combine(_options.SolutionTempPath, "SeedData/Elb/elberfelder1871.txt");
         if (_fileService.FileExists(elb1871Path))
         {
             var strategy = scope.ServiceProvider.GetRequiredService<Elberfelder1871Strategy>();

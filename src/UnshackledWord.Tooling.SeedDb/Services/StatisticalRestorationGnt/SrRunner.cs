@@ -8,17 +8,20 @@ namespace UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 public class SrRunner : IRunner
 {
     private readonly ILogger<SrRunner> _logger;
-    private readonly IFileDownloader _fileDownloader;
+    private readonly GithubFileDownloader _fileDownloader;
     private readonly IFileService _fileService;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IDbReader _dbReader;
     private readonly DatabaseSeedSettings _options;
 
-    public SrRunner(GithubFileDownloader downloader, IFileService fileService, IServiceScopeFactory scopeFactory,
+    public SrRunner(GithubFileDownloader downloader, IFileService fileService,
+        IServiceScopeFactory scopeFactory, IDbReader dbReader,
         IOptions<AppSettings> options, ILogger<SrRunner> logger)
     {
         _fileDownloader = downloader;
         _fileService = fileService;
         _scopeFactory = scopeFactory;
+        _dbReader = dbReader;
         _options = options.Value.DatabaseSeeding;
         _logger = logger;
     }
@@ -28,7 +31,14 @@ public class SrRunner : IRunner
         await _fileDownloader.DownloadFileAsync(token);
 
         using var scope = _scopeFactory.CreateScope();
-        const string srTsvPath = "../../temp/SeedData/SR/SR.tsv";
+        var countText = await GetCountTextAsync(token);
+
+        if (countText > 0)
+        {
+            return;
+        }
+
+        var srTsvPath = _fileService.Combine(_options.SolutionTempPath, "SeedData/SR/SR.tsv");
 
         if (_fileService.FileExists(srTsvPath))
         {
@@ -36,12 +46,34 @@ public class SrRunner : IRunner
             await strategy.SaveToDatabase(srTsvPath, token);
         }
 
-        const string srTxtPath = "../../temp/SeedData/SR/SR.txt";
+        return;
+
+        var srTxtPath = _fileService.Combine(_options.SolutionTempPath, "SeedData/SR/SR.txt");
 
         if (_fileService.FileExists(srTxtPath))
         {
             var strategy = scope.ServiceProvider.GetRequiredService<SrTxtParserStrategy>();
             await strategy.SaveToDatabase(srTxtPath, token);
         }
+    }
+
+    private async Task<int> GetCountTsvAsync(CancellationToken token = default)
+    {
+        var sql = """
+                  select count(*)
+                  from "unshackled-word"."SrGntWords"
+                  """;
+
+        return await _dbReader.ExecuteScalarAsync<int>(sql);
+    }
+
+    private async Task<int> GetCountTextAsync(CancellationToken token = default)
+    {
+        var sql = """
+                  select count(*)
+                  from "unshackled-word"."SblText"
+                  """;
+
+        return await _dbReader.ExecuteScalarAsync<int>(sql);
     }
 }
