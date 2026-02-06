@@ -7,4 +7,3 @@ public interface IStepStrongsToVersesRepository
     Task<int> CountByFilterAsync(StepStrongsFilter filter, CancellationToken token = default);
     Task BulkInsertAsync(StepStrongsToVersesDbo[] entries, CancellationToken token = default);
 }
-

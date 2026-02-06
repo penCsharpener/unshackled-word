@@ -72,6 +72,28 @@ CREATE INDEX "IX_StepHebrewWords_Book_Chapter_Verse"
 CREATE INDEX "IX_StepHebrewWords_HebrewNoDiacritics"
     ON "unshackled-word"."StepHebrewWords" ("HebrewNoDiacritics");
 
+CREATE TABLE "unshackled-word"."StepHebrewWordsNormalized"
+(
+    "Id"                        SERIAL PRIMARY KEY,
+    "IsRoot"                    BOOLEAN     NOT NULL,
+    "Grammar"                   VARCHAR(30),
+    "SuffixCode"                VARCHAR(30),
+    "Hebrew"                    VARCHAR(40) COLLATE "und-x-icu",
+    "StrongsNumber"             VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords"
+(
+    "StepHebrewWordsId"              INTEGER     NOT NULL,
+    "StepHebrewWordsNormalizedId"    INTEGER     NOT NULL,
+
+    PRIMARY KEY ("StepHebrewWordsId", "StepHebrewWordsNormalizedId"),
+
+    FOREIGN KEY ("StepHebrewWordsId")
+        REFERENCES "unshackled-word"."StepHebrewWords" ("Id"),
+    FOREIGN KEY ("StepHebrewWordsNormalizedId")
+        REFERENCES "unshackled-word"."StepHebrewWordsNormalized" ("Id")
+);
 
 CREATE TABLE "unshackled-word"."StepStrongs"
 (
@@ -99,7 +121,6 @@ CREATE INDEX "IX_StepStrongs_Morphology"
 -- Note: If you plan to do full-text search on long Glosses, consider a GIN index instead.
 CREATE INDEX "IX_StepStrongs_Gloss"
     ON "unshackled-word"."StepStrongs" ("Gloss");
-
 
 
 CREATE TABLE "unshackled-word"."StepHebrewMorphology"

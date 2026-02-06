@@ -11,8 +11,8 @@ public sealed class StepStrongsToVersesDbo
     public int StepDisambiguatedStrongsId { get; set; }
     public bool IsRoot { get; set; }
     public string? Grammar { get; set; } = default!;
-    public string? Hebrew { get; set; } = default!;
-    public string? Gloss { get; set; } = default!;
+    public string Hebrew { get; set; } = default!;
+    public string Gloss { get; set; } = default!;
     public string? Name { get; set; }
     public int? FirstOccuranceBibleBookId { get; set; }
     public int? FirstOccuranceChapter { get; set; }

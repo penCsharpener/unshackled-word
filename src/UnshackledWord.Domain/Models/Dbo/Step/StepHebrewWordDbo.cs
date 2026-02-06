@@ -27,6 +27,7 @@ public sealed class StepHebrewWordDbo : IBibleWordOrderColumns
     public string? AlternativeStrongs { get; set; }
     public string? ConjoinWord { get; set; }
     public string? ExpandedStrongTags { get; set; }
+    public ICollection<StepHebrewWordsNormalizedDbo> NormalizedWords { get; set; } = [];
 
     public string GetManuscriptMeaning()
     {

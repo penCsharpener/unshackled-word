@@ -2,26 +2,26 @@ using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo.Step;
+using UnshackledWord.Domain.Models.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
-public sealed class StepStrongsNormalizingStrategy : IFileParserStrategy
+public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
 {
-    private readonly IStepGreekWordsRepository _greekRepo;
     private readonly IStepHebrewWordsRepository _hebRepo;
-    private readonly IStepStrongsToVersesRepository _versesRepo;
+    private readonly IStepHebrewWordsNormalizedRepository _versesRepo;
+    private static string[] _noneSuffixStrings = ["־", "׃", "׀", "׆", "a"];
 
-    public StepStrongsNormalizingStrategy(IStepGreekWordsRepository greekRepo, IStepHebrewWordsRepository hebRepo, IStepStrongsToVersesRepository versesRepo)
+    public StepHebrewStrongsNormalizingStrategy(IStepHebrewWordsRepository hebRepo, IStepHebrewWordsNormalizedRepository versesRepo)
     {
-        _greekRepo = greekRepo;
         _hebRepo = hebRepo;
         _versesRepo = versesRepo;
     }
 
     public async Task SaveToDatabase(string _, CancellationToken token = default)
     {
-        var filter = new StepStrongsFilter();
+        var filter = new StepNormalizedHebrewWordsFilter();
 
         var count = await _versesRepo.CountByFilterAsync(filter, token);
         if (count > 0)
@@ -29,30 +29,14 @@ public sealed class StepStrongsNormalizingStrategy : IFileParserStrategy
             return;
         }
 
-        var gFilter = new StepGreekWordFilter();
-        gFilter.Columns = [ nameof(StepGreekWordDbo.BibleBookId), nameof(StepGreekWordDbo.Chapter), nameof(StepGreekWordDbo.Verse), nameof(StepGreekWordDbo.DisambiguatedStrongs) ];
-        var greekEntries = await _greekRepo.GetByFilterAsync(gFilter, token);
         var hFilter = new StepHebrewWordFilter();
-        hFilter.Columns = [ nameof(StepHebrewWordDbo.BibleBookId), nameof(StepHebrewWordDbo.Chapter), nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.DisambiguatedStrongs), nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags) ];
+        hFilter.Columns = [ nameof(StepHebrewWordDbo.Id), nameof(StepHebrewWordDbo.BibleBookId), nameof(StepHebrewWordDbo.Chapter), nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.DisambiguatedStrongs), nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags) ];
         var hebrewEntries = await _hebRepo.GetByFilterAsync(hFilter, token);
         var index = 0;
         var normalisedEntries = new List<StepStrongsToVersesDbo>();
-
-        foreach (var word in greekEntries)
-        {
-            index++;
-
-            var normalisedStrongs = new StepStrongsToVersesDbo()
-            {
-                Id = index,
-                StrongsNumber = word.DisambiguatedStrongs,
-                BibleBookId = word.BibleBookId,
-                Chapter = word.Chapter,
-                Verse = word.Verse
-            };
-
-            normalisedEntries.Add(normalisedStrongs);
-        }
+        var normalisedHebrewWordsDict = new Dictionary<StepHebrewWordsNormalizedDbo, List<int>>();
+        var bridgeList = new List<StepHebrewWordsNormalizedToHebrewWordDbo>();
+        var normalizedIndex = 1;
 
         foreach (var word in hebrewEntries)
         {
@@ -67,15 +51,31 @@ public sealed class StepStrongsNormalizingStrategy : IFileParserStrategy
 
             for (var i = 0; i < splitStrongs.Length; i++)
             {
+                if (normalizedIndex == 14)
+                {
+
+                }
                 var part = splitStrongs[i];
                 index++;
                 var grammar = GetStringAtIndex(splitGrammar, i);
                 var expanded = GetStringAtIndex(splitExpanded, i);
                 var expandedParts = expanded?.Split('=', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                var hebrew = GetStringAtIndex(expandedParts, 1);
+                var hebrew = GetStringAtIndex(expandedParts, 1)!;
                 var gloss = GetStringAtIndex(expandedParts, 2);
+                string? suffixType = null;
                 gloss = gloss?.Replace("{", "").Replace("}", "");
                 var parsedGloss = ParseGloss(gloss);
+
+                // check if it actually contains Hebrew consonants
+                if (!hebrew.Any(c => c is >= '\u05D0' and <= '\u05EA'))
+                {
+                    if (_noneSuffixStrings.All(x => x != hebrew))
+                    {
+                        // if not it's the grammar code for pronomial suffixes
+                        suffixType = hebrew;
+                        hebrew = string.Empty;
+                    }
+                }
 
                 var normalisedStrongs = new StepStrongsToVersesDbo
                 {
@@ -86,7 +86,7 @@ public sealed class StepStrongsNormalizingStrategy : IFileParserStrategy
                     Verse = word.Verse,
                     Grammar = grammar,
                     Hebrew = hebrew,
-                    Gloss = parsedGloss?.Gloss,
+                    Gloss = parsedGloss?.Gloss!,
                     FirstOccuranceBibleBookId = parsedGloss?.FirstBookId,
                     FirstOccuranceChapter = parsedGloss?.FirstChapter,
                     FirstOccuranceVerse = parsedGloss?.FirstVerse,
@@ -96,14 +96,46 @@ public sealed class StepStrongsNormalizingStrategy : IFileParserStrategy
                     IsRoot = part.Contains('{')
                 };
 
+                var normalisedHebrew = new StepHebrewWordsNormalizedDbo
+                {
+                    Hebrew = normalisedStrongs.Hebrew,
+                    Grammar = normalisedStrongs.Grammar,
+                    SuffixCode = suffixType,
+                    IsRoot = normalisedStrongs.IsRoot,
+                    StrongsNumber = normalisedStrongs.StrongsNumber,
+                };
+
                 normalisedEntries.Add(normalisedStrongs);
+                if (normalisedHebrewWordsDict.ContainsKey(normalisedHebrew))
+                {
+                    normalisedHebrewWordsDict[normalisedHebrew].Add(word.Id);
+                }
+                else
+                {
+                    normalisedHebrew.Id = normalizedIndex;
+                    normalisedHebrewWordsDict[normalisedHebrew] = [word.Id];
+                    normalizedIndex++;
+                }
             }
         }
 
-        // foreach (var chunk in normalisedEntries.Chunk(10000))
-        // {
-        //     await _versesRepo.BulkInsertAsync(chunk, token);
-        // }
+        foreach (var chunk in normalisedHebrewWordsDict.Keys.Chunk(10000))
+        {
+            await _versesRepo.BulkInsertAsync(chunk, token);
+        }
+
+        foreach (var (normalizedHeb, wordIds) in normalisedHebrewWordsDict)
+        {
+            foreach (var id in wordIds)
+            {
+                bridgeList.Add(new() { StepHebrewWordsId = id, StepHebrewWordsNormalizedId = normalizedHeb.Id });
+            }
+        }
+
+        foreach (var chunk in bridgeList.Chunk(10000))
+        {
+            await _versesRepo.BulkInsertAsync(chunk, token);
+        }
     }
 
     private string? GetStringAtIndex(string[]? array, int index)

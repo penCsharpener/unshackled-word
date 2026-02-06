@@ -21,7 +21,7 @@ public sealed class StepDataDbImporter
     private readonly IStepHebrewMorphologyRepository _stepHebrewMorphologyRepository;
     private readonly IStepGreekMorphologyRepository _stepGreekMorphologyRepository;
     private readonly IStepPersonPlaceRepository _stepPersonPlaceRepository;
-    private readonly StepStrongsNormalizingStrategy _stepStrongsNormalizingStrategy;
+    private readonly StepHebrewStrongsNormalizingStrategy _stepHebrewStrongsNormalizingStrategy;
     private readonly StepBibleStructureStrategy _stepBibleStructureStrategy;
     private readonly StepPersonPlaceLexiconStrategy _lexiconStrategy;
 
@@ -38,7 +38,7 @@ public sealed class StepDataDbImporter
         IStepHebrewMorphologyRepository stepHebrewMorphologyRepository,
         IStepGreekMorphologyRepository stepGreekMorphologyRepository,
         IStepPersonPlaceRepository stepPersonPlaceRepository,
-        StepStrongsNormalizingStrategy stepStrongsNormalizingStrategy,
+        StepHebrewStrongsNormalizingStrategy stepHebrewStrongsNormalizingStrategy,
         StepBibleStructureStrategy stepBibleStructureStrategy,
         StepPersonPlaceLexiconStrategy lexiconStrategy)
     {
@@ -54,7 +54,7 @@ public sealed class StepDataDbImporter
         _stepStrongsRepository = stepStrongsRepository;
         _stepHebrewMorphologyRepository = stepHebrewMorphologyRepository;
         _stepGreekMorphologyRepository = stepGreekMorphologyRepository;
-        _stepStrongsNormalizingStrategy = stepStrongsNormalizingStrategy;
+        _stepHebrewStrongsNormalizingStrategy = stepHebrewStrongsNormalizingStrategy;
         _stepBibleStructureStrategy = stepBibleStructureStrategy;
         _lexiconStrategy = lexiconStrategy;
         _stepPersonPlaceRepository = stepPersonPlaceRepository;
@@ -145,7 +145,7 @@ public sealed class StepDataDbImporter
             await _stepGreekMorphologyRepository.BulkInsertAsync(chunk, token);
         }
 
-        await _stepStrongsNormalizingStrategy.SaveToDatabase(null!, token);
+        await _stepHebrewStrongsNormalizingStrategy.SaveToDatabase(null!, token);
         await _stepBibleStructureStrategy.SaveToDatabase(null!, token);
     }
 }

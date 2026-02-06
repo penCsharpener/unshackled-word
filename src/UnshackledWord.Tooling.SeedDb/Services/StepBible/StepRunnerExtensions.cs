@@ -17,10 +17,11 @@ public static class StepRunnerExtensions
         services.AddScoped<StepHebrewMorphologyStrategy>();
         services.AddScoped<StepGreekStrongsStrategy>();
         services.AddScoped<StepGreekMorphologyStrategy>();
-        services.AddScoped<StepStrongsNormalizingStrategy>();
+        services.AddScoped<StepHebrewStrongsNormalizingStrategy>();
         services.AddScoped<StepBibleStructureStrategy>();
         services.AddScoped<StepLexiconStrategyFactory>();
         services.AddScoped<StepPersonPlaceLexiconStrategy>();
+        services.AddScoped<IStepHebrewWordsNormalizedRepository, StepHebrewWordsNormalizedRepository>();
         services.AddScoped<IStepStrongsToVersesRepository, StepStrongsToVersesRepository>();
         services.AddScoped<IStepGreekWordsRepository, StepGreekWordsRepository>();
         services.AddScoped<IStepHebrewWordsRepository, StepHebrewWordsRepository>();
