@@ -100,10 +100,10 @@ public sealed class StepStrongsNormalizingStrategy : IFileParserStrategy
             }
         }
 
-        foreach (var chunk in normalisedEntries.Chunk(10000))
-        {
-            await _versesRepo.BulkInsertAsync(chunk, token);
-        }
+        // foreach (var chunk in normalisedEntries.Chunk(10000))
+        // {
+        //     await _versesRepo.BulkInsertAsync(chunk, token);
+        // }
     }
 
     private string? GetStringAtIndex(string[]? array, int index)
