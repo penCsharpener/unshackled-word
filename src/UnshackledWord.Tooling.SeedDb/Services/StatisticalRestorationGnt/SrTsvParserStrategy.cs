@@ -84,7 +84,7 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
                 wordInContext,
                 koineWord,
                 lemma,
-                strongs,
+                $"G{strongs}",
                 ParsePartOfSpeechAbbreviation(partOfSpeech).ToString(),
                 conjugation,
                 grammaticalKey
