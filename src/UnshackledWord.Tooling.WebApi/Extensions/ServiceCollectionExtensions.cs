@@ -1,6 +1,7 @@
 ﻿using UnshackledWord.Infrastructure.Extensions;
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Persistence.Postgres.Extensions;
+using UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.BackupElbData;
 using UnshackledWord.Tooling.WebApi.Models;
 
 namespace UnshackledWord.Tooling.WebApi.Extensions;
@@ -20,7 +21,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
-        //services.AddScoped<BackupFileService>();
+        services.AddScoped<BackupFileService>();
         return services;
     }
 }
