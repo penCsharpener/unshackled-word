@@ -1,0 +1,12 @@
+services:
+  astro-dev:
+    build: .
+    volumes:
+      - .:/workspaces/web
+      # Essential: Keeps container-specific dependencies separate from host
+      - /workspaces/web/node_modules
+    ports:
+      - "4321:4321" # Astro dev server
+      - "4322:4322" # (Optional) Astro Toolbar/Preview
+    stdin_open: true
+    tty: true

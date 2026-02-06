@@ -11,6 +11,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.17.1",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "@biomejs/biome": "1.9.4"
   }
 }
