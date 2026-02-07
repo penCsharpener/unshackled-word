@@ -1,0 +1,74 @@
+---
+import TaggingMenuItem from "./TaggingMenuItem.astro";
+
+// You can define your menu items here for easy management
+const menuItems = [
+	{ name: "Sprachschlüsselklassifizierung", url: "/tagging/grammar-tagger" },
+	{ name: "Elberfelder Tagging", url: "/tagging/elberfelder-tagging" },
+];
+---
+
+<div class="relative inline-block text-left">
+  <!-- Trigger Button -->
+  <button 
+    id="tagging-btn"
+    type="button" 
+    class="hover:text-gray-500"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    Tagging
+  </button>
+
+  <!-- Dropdown Menu (Hidden by default) -->
+  <div 
+    id="tagging-menu"
+    class="absolute left-1/2 -translate-x-1/2 z-50 mt-2 w-100% origin-top-right bg-gray-200 rounded-md shadow-lg hidden transition-all duration-300 transform opacity-0"
+    role="menu" 
+    aria-orientation="vertical" 
+    aria-labelledby="tagging-btn"
+  >
+    <div class="py-1" role="none">
+      {menuItems.map((item) => (
+        <TaggingMenuItem url={item.url} name={item.name} />
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('tagging-btn');
+  const menu = document.getElementById('tagging-menu');
+
+  btn?.addEventListener('click', () => {
+    const isHidden = menu?.classList.contains('hidden');
+    
+    if (isHidden) {
+      // Show menu
+      menu?.classList.remove('hidden');
+      // Small timeout to trigger the transition
+      setTimeout(() => {
+        menu?.classList.remove('opacity-0');
+        menu?.classList.add('opacity-100');
+      }, 10);
+      btn?.setAttribute('aria-expanded', 'true');
+    } else {
+      // Hide menu
+      menu?.classList.add('opacity-0');
+      menu?.classList.remove('opacity-100');
+      // Wait for transition before hiding completely
+      menu?.addEventListener('transitionend', () => {
+        menu?.classList.add('hidden');
+      }, { once: true });
+      btn?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Close when clicking outside
+  window.addEventListener('click', (e) => {
+    if (!btn?.contains(e.target as Node) && !menu?.contains(e.target as Node)) {
+      menu?.classList.add('hidden');
+      btn?.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>

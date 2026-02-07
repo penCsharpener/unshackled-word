@@ -1,0 +1,24 @@
+---
+import BookChapterSelector from "../../../../../../components/navigation/BookChapterSelector.astro";
+import bibleData from "../../../../../../data/bibleData.json";
+import Layout from "../../../../../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const allBooks = [...bibleData.OT, ...bibleData.NT];
+  // Create a route for every chapter in every book
+  return allBooks.flatMap((book) => {
+    return Array.from({ length: book.chapters }, (_, i) => ({
+      params: {
+        bookId: book.id.toString(),
+        chapter: (i + 1).toString(),
+      },
+      props: { bookName: book.name }, // Optional: pass data to the page
+    }));
+  });
+}
+---
+
+
+<Layout>
+    <BookChapterSelector baseRoute="tagging/elberfelder-tagging" />
+</Layout>

@@ -1,9 +1,9 @@
 ---
-import BookChapterSelector from "../../../../../components/navigation/BookChapterSelector.astro";
-import Layout from "../../../../../layouts/Layout.astro";
-import bibleData from "../../../../../data/bibleData.json";
-import type { WordResponse } from "../../../../../types";
 import ElbBibleWord from "../../../../../components/bible/ElbBibleWord.astro";
+import BookChapterSelector from "../../../../../components/navigation/BookChapterSelector.astro";
+import bibleData from "../../../../../data/bibleData.json";
+import Layout from "../../../../../layouts/Layout.astro";
+import type { WordResponse } from "../../../../../types";
 const allBooks = [...bibleData.OT, ...bibleData.NT];
 
 export async function getStaticPaths() {
@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 }
 
 const { bookId, chapter } = Astro.params;
-const currentBook = allBooks.find(b => b.id === Number(bookId));
+const currentBook = allBooks.find((b) => b.id === Number(bookId));
 
 // Use the parameters in your API call
 const response = await fetch(
