@@ -1,23 +1,21 @@
 {
-  "name": "Astro 5 + Biome (Node 22)",
-  "dockerComposeFile": "../compose.yml",
-  "service": "astro-dev",
-  "workspaceFolder": "/workspaces/web",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "astro-build.astro-vscode",
-        "biomejs.biome"
-      ],
-      "settings": {
-        "editor.defaultFormatter": "biomejs.biome",
-        "editor.formatOnSave": true,
-        "editor.codeActionsOnSave": {
-          "source.fixAll.biome": "explicit",
-          "source.organizeImports.biome": "explicit"
-        }
-      }
-    }
-  },
-  "postCreateCommand": "npm install && npx biome init"
+	"name": "Astro 5 + Biome (Node 22)",
+	"dockerComposeFile": "../compose.yml",
+	"service": "astro-dev",
+	"workspaceFolder": "/workspaces/web",
+	"forwardPorts": [4321, 4322, 5000],
+	"customizations": {
+		"vscode": {
+			"extensions": ["astro-build.astro-vscode", "biomejs.biome"],
+			"settings": {
+				"editor.defaultFormatter": "biomejs.biome",
+				"editor.formatOnSave": true,
+				"editor.codeActionsOnSave": {
+					"source.fixAll.biome": "explicit",
+					"source.organizeImports.biome": "explicit"
+				}
+			}
+		}
+	},
+	"postCreateCommand": "npm install -g npm@latest && npm install && (npx biome init || true)"
 }
