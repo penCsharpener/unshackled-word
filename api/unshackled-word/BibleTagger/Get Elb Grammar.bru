@@ -1,0 +1,22 @@
+meta {
+  name: Get Elb Grammar
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}bt/grammar/bookId/:bookId/chapterId/:chapter/verseId/:verse
+  body: none
+  auth: inherit
+}
+
+params:path {
+  verse: 1
+  chapter: 1
+  bookId: 40
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

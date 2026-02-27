@@ -1,5 +1,7 @@
 ---
+import PartOfSpeechDropdown from "../../../../../../components/bible/PartOfSpeechDropdown";
 import BookChapterSelector from "../../../../../../components/navigation/BookChapterSelector.astro";
+import VersePicker from "../../../../../../components/navigation/VersePicker.astro";
 import bibleData from "../../../../../../data/bibleData.json";
 import Layout from "../../../../../../layouts/Layout.astro";
 
@@ -10,14 +12,38 @@ export async function getStaticPaths() {
     return Array.from({ length: book.chapters }, (_, i) => ({
       params: {
         bookId: book.id.toString(),
-        chapter: (i + 1).toString(),
+        chapter: (i + 1 + book.startChapter).toString(),
       },
-      props: { bookName: book.name }, // Optional: pass data to the page
+      props: { bookId: book.id, chapter: i + 1, bookName: book.name },
     }));
   });
 }
+const { bookId, chapter } = Astro.params;
+const bookNum = Number.parseInt(bookId || "0", 10);
+const chapterNum = Number.parseInt(chapter || "0", 10);
+
+//const url = `/bt/grammar/bookId/1/chapterId/1/verseId/1`;
 ---
 
 <Layout>
-    <BookChapterSelector baseRoute="tagging/grammar-tagging" />
+  <BookChapterSelector baseRoute="tagging/grammar-tagger" />
+  <VersePicker bookId={bookNum} chapter={chapterNum} width="100%" height="auto" />
+
+  <div id="selection-output" class="mt-4 p-2 text-blue-600 font-semibold">
+    No verse selected
+  </div>
+
+  <PartOfSpeechDropdown client:load onChange={(val: number) => console.log("Selected ID:", val)} />
 </Layout>
+
+
+<script>
+  const picker = document.querySelector('.verse-picker-root');
+  const output = document.querySelector('#selection-output');
+
+  picker?.addEventListener('verseSelected', (e: any) => {
+    if (output) {
+      output.textContent = `Selected Verse: ${e.detail.verse}`;
+    }
+  });
+</script>

@@ -1,0 +1,57 @@
+---
+// Define the enum-like structure for the template
+const partsOfSpeech = [
+  { name: "Adjective", value: 0 },
+  { name: "Adverb", value: 1 },
+  { name: "Article", value: 2 },
+  { name: "Conjunction", value: 3 },
+  { name: "Indeclinable", value: 4 },
+  { name: "Interjection", value: 5 },
+  { name: "Noun", value: 6 },
+  { name: "NounProperPerson", value: 7 },
+  { name: "NounProperPlace", value: 8 },
+  { name: "Particle", value: 9 },
+  { name: "Preposition", value: 10 },
+  { name: "Pronoun", value: 11 },
+  { name: "Verb", value: 12 },
+];
+
+interface Props {
+  id?: string;
+  label?: string;
+}
+
+const { id = "pos-select", label = "Select Part of Speech" } = Astro.props;
+---
+
+<div class="flex flex-col gap-2">
+  <label for={id} class="text-sm font-medium text-gray-700 dark:text-gray-300">
+    {label}
+  </label>
+  <select
+    id={id}
+    class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+  >
+    {partsOfSpeech.map((pos) => (
+      <option value={pos.value}>{pos.name}</option>
+    ))}
+  </select>
+</div>
+
+<script>
+  // Handle the change and "pass back" the numeric value via a Custom Event
+  const selects = document.querySelectorAll('select[id^="pos-select"]');
+  
+  selects.forEach(select => {
+    select.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      const enumValue = parseInt(target.value, 10);
+      
+      // Dispatch custom event for parent components to listen to
+      const event = new CustomEvent('pos-change', {
+        detail: { value: enumValue }
+      });
+      select.dispatchEvent(event);
+    });
+  });
+</script>

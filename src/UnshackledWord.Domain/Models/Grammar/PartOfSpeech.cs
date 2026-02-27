@@ -2,7 +2,7 @@ namespace UnshackledWord.Domain.Models.Grammar;
 
 public enum PartOfSpeech
 {
-    Adjective,
+    Adjective = 0,
     Adverb,
     Article,
     Conjunction,
