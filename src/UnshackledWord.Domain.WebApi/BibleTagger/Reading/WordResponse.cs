@@ -11,4 +11,5 @@ public record WordResponse
     public string? OriginalLemma { get; set; }
     public string? Strongs { get; set; }
     public int Id { get; set; }
+    public string VerseCode { get; set; } = default!;
 }

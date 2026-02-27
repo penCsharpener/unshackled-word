@@ -13,6 +13,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/UnshackledWord.Domain.WebApi/UnshackledWord.Domain.WebApi.csproj" />
+    <Project Path="src/UnshackledWord.Tooling.AiWorker/UnshackledWord.Tooling.AiWorker.csproj" />
     <Project Path="src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger.csproj" />
     <Project Path="src\UnshackledWord.Application\UnshackledWord.Application.csproj" />
     <Project Path="src\UnshackledWord.Domain\UnshackledWord.Domain.csproj" />

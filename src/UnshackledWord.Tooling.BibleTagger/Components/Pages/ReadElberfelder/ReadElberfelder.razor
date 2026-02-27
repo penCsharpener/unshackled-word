@@ -23,7 +23,7 @@
   private async Task HandleSubmitAsync()
   {
     var words = await Repo.GetWordsInChapterAsync(_bibleReference.BookId, _bibleReference.Chapter);
-    var dict = words.Words.ToDictionary(k => (VersePosition)k.Key, v => v.Value);
+    var dict = words.Words.ToDictionary(k => (VersePosition)$"{k.Verse}|{k.PositionInVerse}", v => v);
     _chapter = new ElbChapter();
     var verse = new ElbVerse();
 
@@ -36,7 +36,7 @@
         _chapter.Verses[vp.Verse] = new ElbVerse();
       }
 
-      word.Id = $"{_bibleReference.BookId}.{_bibleReference.Chapter}:{vp.Verse}@{vp.PositionInVerse}";
+      word.VerseCode = $"{_bibleReference.BookId}.{_bibleReference.Chapter}:{vp.Verse}@{vp.PositionInVerse}";
       _chapter.Verses[vp.Verse].Words.Add(vp.PositionInVerse, word);
     }
   }

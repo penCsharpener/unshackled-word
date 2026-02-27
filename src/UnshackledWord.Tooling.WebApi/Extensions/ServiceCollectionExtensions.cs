@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
-        services.AddScoped<BackupFileService>();
+        //services.AddScoped<BackupFileService>();
         return services;
     }
 }

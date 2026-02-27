@@ -7,7 +7,12 @@ public partial class CsvRunner : IRunner
     public partial Task Run(CancellationToken token = default);
 }
 
-public static partial class CsvRunnerExtensions
-{
-    public static partial IServiceCollection RegisterCsvImportServices(this IServiceCollection services);
-}
+/*
+// add CsvRunner.local.cs next to this class
+public partial class CsvRunner
+   {
+       public partial async Task Run(CancellationToken token = default)
+       {
+       }
+   }
+ */

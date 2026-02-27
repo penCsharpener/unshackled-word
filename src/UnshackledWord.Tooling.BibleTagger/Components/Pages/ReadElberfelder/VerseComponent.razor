@@ -2,7 +2,7 @@
   <span class="bible-verse-number">@VerseNumber @(" ")</span>
   @foreach (var (p, word) in Verse.Words)
   {
-    <WordComponent Id="@word.Id" Strongs="@word.Strongs" WordInContext="@word.WordInContext" />
+    <WordComponent Id="@word.VerseCode" Strongs="@word.Strongs" WordInContext="@word.WordInContext" />
   }
 </p>
 

@@ -22,7 +22,7 @@ using UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
 namespace UnshackledWord.Tooling.SeedDb.Extensions;
 
-public static class ServiceRegistrationExtensions
+public static partial class ServiceRegistrationExtensions
 {
     public static IServiceCollection AddSeedDbServices(this IServiceCollection services, IConfiguration configuration)
     {
@@ -76,4 +76,6 @@ public static class ServiceRegistrationExtensions
 
         return services;
     }
+
+    static partial void RegisterCsvServices(this IServiceCollection services);
 }
