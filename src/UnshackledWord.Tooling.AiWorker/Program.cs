@@ -22,6 +22,7 @@ public static partial class Program
                 .AddGoogleAiClient(configuration)
                 .AddSingleton<IConfiguration>(configuration)
                 .AddSingleton<MappingRepository>()
+                .AddSingleton<GeminiFlashClient>()
                 .AddLogging()
             ;
 
