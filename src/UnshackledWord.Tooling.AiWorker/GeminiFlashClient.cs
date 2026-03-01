@@ -35,7 +35,7 @@ public class GeminiFlashClient
     public async Task<List<ElbStepMapping>> GetElbStepMappings(IEnumerable<ElbVerseData> elbWords,
         IEnumerable<StepGreekVerseData> stepWords, CancellationToken token = default)
     {
-        if (_cacheContent is null)
+        if (_cacheContent is null && SystemInstruction.Length > 4500)
         {
             _cacheContent = await GetCachedContentAsync(token);
         }
@@ -85,19 +85,15 @@ public class GeminiFlashClient
 
     private async Task<CachedContent?> GetCachedContentAsync(CancellationToken token = default)
     {
-        return await _client.Caches.CreateAsync(ModelName, new CreateCachedContentConfig()
+        return await _client.Caches.CreateAsync(ModelName, new CreateCachedContentConfig
         {
-            Contents = new List<Content>
+            SystemInstruction = new Content
             {
-                new()
+                Parts = new List<Part>
                 {
-                    Role = "system",
-                    Parts = new List<Part>
+                    new()
                     {
-                        new()
-                        {
-                            Text = SystemInstruction
-                        }
+                        Text = SystemInstruction
                     }
                 }
             },
@@ -106,7 +102,7 @@ public class GeminiFlashClient
         }, token);
     }
 
-    private GenerateContentConfig GetResponseSchema(CachedContent cache)
+    private GenerateContentConfig GetResponseSchema(CachedContent? cache)
     {
         // Define the schema as an object (OpenAPI 3.0 compatible)
         var responseSchema = new Schema
@@ -136,7 +132,17 @@ public class GeminiFlashClient
         {
             ResponseMimeType = "application/json",
             ResponseSchema = responseSchema,
-            CachedContent = cache.Name
+            SystemInstruction = new Content
+            {
+                Parts = new List<Part>
+                {
+                    new()
+                    {
+                        Text = SystemInstruction
+                    }
+                }
+            },
+            CachedContent = cache?.Name
         };
 
         return config;

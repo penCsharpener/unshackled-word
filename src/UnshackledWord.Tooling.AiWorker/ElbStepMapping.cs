@@ -8,14 +8,14 @@ public sealed class ElbStepMapping
     public int ElbWordId { get; set; }
 
     [JsonPropertyName("step_greek_id")]
-    public int StepWordId { get; set; }
+    public int? StepWordId { get; set; }
 
     [JsonPropertyName("strongs_number")]
-    public string Strongs { get; set; } = default!;
+    public string? Strongs { get; set; }
 
     [JsonPropertyName("is_added_word")]
     public bool IsAddedWord { get; set; }
 
     [JsonPropertyName("parent_german_word_id")]
-    public int ParentElbWordId { get; set; }
+    public int? ParentElbWordId { get; set; }
 }
