@@ -15,4 +15,9 @@ public static class JsonExtensions
     {
         return JsonSerializer.Serialize<T>(obj, _jsonSerializerOptions);
     }
+
+    public static string ToNonIndentedJson<T>(this T obj)
+    {
+        return JsonSerializer.Serialize<T>(obj);
+    }
 }
