@@ -23,7 +23,8 @@ public class GeminiFlashClient
                                              1. Link split verbs (e.g. 'geht...aus') to the same Greek ID.
                                              2. If a German word has no Greek equivalent, mark it 'isAddedWord': true.
                                              3. Return a JSON array matching the 'elb_greek_mapping' schema.
-                                             4. Return NO markdown or text, only the raw JSON array.
+                                             4. Make sure that no id of one Greek verse is mapped to a verse in another German verse.
+                                             5. Return NO markdown or text, only the raw JSON array.
                                              """;
 
     public GeminiFlashClient(GeminiClient client, ILogger<GeminiFlashClient> logger)
@@ -32,7 +33,7 @@ public class GeminiFlashClient
         _logger = logger;
     }
 
-    public async Task<List<ElbStepMapping>> GetElbStepMappings(IEnumerable<ElbVerseData> elbWords,
+    public async Task<List<VerseDataList<ElbStepMapping>>> GetElbStepMappings(IEnumerable<ElbVerseData> elbWords,
         IEnumerable<StepGreekVerseData> stepWords, CancellationToken token = default)
     {
         if (_cacheContent is null && SystemInstruction.Length > 4500)
@@ -80,7 +81,7 @@ public class GeminiFlashClient
             return [];
         }
 
-        return JsonSerializer.Deserialize<List<ElbStepMapping>>(text) ?? [];
+        return JsonSerializer.Deserialize<List<VerseDataList<ElbStepMapping>>>(text) ?? [];
     }
 
     private async Task<CachedContent?> GetCachedContentAsync(CancellationToken token = default)
@@ -113,18 +114,29 @@ public class GeminiFlashClient
                 Type = GeminiType.Object,
                 Properties = new Dictionary<string, Schema>
                 {
-                    ["elb_word_id"] = new() { Type = GeminiType.Integer, Description = "ID from the German table" },
-                    ["step_greek_id"] = new()
-                        { Type = GeminiType.Integer, Nullable = true, Description = "ID from STEP Bible Greek data" },
-                    ["strongs_number"] = new() { Type = GeminiType.String, Nullable = true },
-                    ["is_added_word"] = new()
-                        { Type = GeminiType.Boolean, Description = "True if no direct Greek equivalent" },
-                    ["parent_german_word_id"] = new()
+                    ["BookId"] = new() { Type = GeminiType.Integer },
+                    ["Chapter"] = new() { Type = GeminiType.Integer },
+                    ["Verse"] = new() { Type = GeminiType.Integer },
+                    ["Data"] = new()
                     {
-                        Type = GeminiType.Integer, Nullable = true, Description = "Closest mapped word for added words"
+                        Type = GeminiType.Array,
+                        Items = new Schema
+                        {
+                            Type = GeminiType.Object,
+                            Properties = new Dictionary<string, Schema>
+                            {
+                                ["ElbWordId"] = new() { Type = GeminiType.Integer },
+                                ["StepWordId"] = new() { Type = GeminiType.Integer, Nullable = true },
+                                ["Strongs"] = new() { Type = GeminiType.String, Nullable = true },
+                                ["IsAddedWord"] = new() { Type = GeminiType.Boolean },
+                                ["ParentElbWordId"] = new() { Type = GeminiType.Integer, Nullable = true }
+                            },
+                            Required = ["ElbWordId", "IsAddedWord"]
+                        }
                     }
                 },
-                Required = new List<string> { "elb_word_id", "is_added_word" }
+                Required = ["BookId", "Chapter", "Verse", "Data"]
+
             }
         };
 
