@@ -21,10 +21,11 @@ public class GeminiFlashClient
                                              Map the German words in this JSON to the Greek words.
                                              Rules:
                                              1. Link split verbs (e.g. 'geht...aus') to the same Greek ID.
-                                             2. If a German word has no Greek equivalent, mark it 'isAddedWord': true.
-                                             3. Return a JSON array matching the 'elb_greek_mapping' schema.
-                                             4. Make sure that no id of one Greek verse is mapped to a verse in another German verse.
-                                             5. Return NO markdown or text, only the raw JSON array.
+                                             2. If a German word has no Greek equivalent, mark it 'IsAddedWord': true.
+                                             3. Return a JSON array matching the given json schema.
+                                             4. Make sure that no id of one Greek verse is mapped to a word in different verse in German.
+                                             5. For every word marked 'IsAddedWord': true, identify the nearest German word that HAS a Greek mapping and set 'ParentGermanWordId' to that word's ID. This should typically be the noun an article modifies or the main verb of a phrase.
+                                             6. Return NO markdown or text, only the raw JSON array.
                                              """;
 
     public GeminiFlashClient(GeminiClient client, ILogger<GeminiFlashClient> logger)
@@ -33,8 +34,8 @@ public class GeminiFlashClient
         _logger = logger;
     }
 
-    public async Task<List<VerseDataList<ElbStepMapping>>> GetElbStepMappings(IEnumerable<ElbVerseData> elbWords,
-        IEnumerable<StepGreekVerseData> stepWords, CancellationToken token = default)
+    public async Task<List<VerseDataList<ElbStepMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
+        IEnumerable<VerseDataList<StepGreekVerseData>> stepWords, CancellationToken token = default)
     {
         if (_cacheContent is null && SystemInstruction.Length > 4500)
         {
@@ -81,7 +82,9 @@ public class GeminiFlashClient
             return [];
         }
 
-        return JsonSerializer.Deserialize<List<VerseDataList<ElbStepMapping>>>(text) ?? [];
+        var result = JsonSerializer.Deserialize<List<VerseDataList<ElbStepMapping>>>(text) ?? [];
+
+
     }
 
     private async Task<CachedContent?> GetCachedContentAsync(CancellationToken token = default)

@@ -34,16 +34,14 @@ public class ElberfelderMapping
                 var elbWords = await repo.GetElbVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
                 var stepWords = await repo.GetStepGreekVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
 
+                var response = await client.GetElbStepMappings(elbWords, stepWords, TestContext.Current.CancellationToken);
 
+                await using var writer = new StringWriter();
+                await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+                await csv.WriteRecordsAsync(response, TestContext.Current.CancellationToken);
+
+                _output.WriteLine(writer.ToString());
             }
-
-            var response = await client.GetElbStepMappings(elbWords, stepWords, TestContext.Current.CancellationToken);
-
-            await using var writer = new StringWriter();
-            await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            await csv.WriteRecordsAsync(response, TestContext.Current.CancellationToken);
-
-            _output.WriteLine(writer.ToString());
         }
     }
 }

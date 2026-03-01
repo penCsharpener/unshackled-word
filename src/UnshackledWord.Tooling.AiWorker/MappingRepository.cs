@@ -95,7 +95,10 @@ public class MappingRepository
                     Id = d.Id,
                     Order = d.PositionInVerse
                 }).OrderBy(o => o.Order).ToList()
-            }).ToList();
+            }).OrderBy(x => x.BookId)
+            .ThenBy(x => x.Chapter)
+            .ThenBy(x => x.Verse)
+            .ToList();
 
         return list;
     }
@@ -125,7 +128,10 @@ public class MappingRepository
                     Id = d.Id,
                     Order = d.PositionInVerse
                 }).OrderBy(o => o.Order).ToList()
-            }).ToList();
+            }).OrderBy(x => x.BookId)
+            .ThenBy(x => x.Chapter)
+            .ThenBy(x => x.Verse)
+            .ToList();
 
         return list;
     }
