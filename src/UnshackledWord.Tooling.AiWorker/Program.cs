@@ -26,7 +26,7 @@ public static partial class Program
     {
         services.AddWebApiServices(configuration)
             .AddGoogleAiClient(configuration)
-            .AddSingleton<MappingRepository>()
+            .AddSingleton<GreekMappingRepository>()
             .AddSingleton<GeminiFlashClient>()
             .AddHostedService<Worker>()
             .AddSingleton<GreekMappingService>();

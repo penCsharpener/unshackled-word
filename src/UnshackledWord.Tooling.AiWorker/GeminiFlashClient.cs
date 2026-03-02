@@ -33,7 +33,7 @@ public class GeminiFlashClient
         _logger = logger;
     }
 
-    public async Task<List<VerseDataList<ElbStepMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
+    public async Task<List<VerseDataList<ElbStepGreekMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
         IEnumerable<VerseDataList<StepGreekVerseData>> stepWords, CancellationToken token = default)
     {
         if (_cacheContent is null && SystemInstruction.Length > 4500)
@@ -81,7 +81,7 @@ public class GeminiFlashClient
             return [];
         }
 
-        return JsonSerializer.Deserialize<List<VerseDataList<ElbStepMapping>>>(text) ?? [];
+        return JsonSerializer.Deserialize<List<VerseDataList<ElbStepGreekMapping>>>(text) ?? [];
     }
 
     private async Task<CachedContent?> GetCachedContentAsync(CancellationToken token = default)

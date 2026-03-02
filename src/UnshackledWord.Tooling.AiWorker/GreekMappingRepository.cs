@@ -6,12 +6,12 @@ using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
 
-public class MappingRepository
+public class GreekMappingRepository
 {
     private readonly IDbReader _dbReader;
     private readonly IDbWriter _dbWriter;
 
-    public MappingRepository(IDbReader dbReader, IDbWriter dbWriter)
+    public GreekMappingRepository(IDbReader dbReader, IDbWriter dbWriter)
     {
         _dbReader = dbReader;
         _dbWriter = dbWriter;
@@ -223,7 +223,7 @@ public class MappingRepository
         return list;
     }
 
-    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepMapping>> mappings, IList<ElbVerseData> elbVerses)
+    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepGreekMapping>> mappings, IList<ElbVerseData> elbVerses)
     {
         var sb = new List<string>();
 

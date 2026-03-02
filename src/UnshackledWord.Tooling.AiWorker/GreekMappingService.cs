@@ -6,11 +6,11 @@ namespace UnshackledWord.Tooling.AiWorker;
 
 public class GreekMappingService
 {
-    private readonly MappingRepository _repo;
+    private readonly GreekMappingRepository _repo;
     private readonly GeminiFlashClient _client;
     private readonly ILogger<GreekMappingService> _logger;
 
-    public GreekMappingService(MappingRepository repo, GeminiFlashClient client, ILogger<GreekMappingService> logger)
+    public GreekMappingService(GreekMappingRepository repo, GeminiFlashClient client, ILogger<GreekMappingService> logger)
     {
         _repo = repo;
         _client = client;
