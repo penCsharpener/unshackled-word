@@ -277,6 +277,32 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
         REFERENCES "unshackled-word"."Elb1871GreekMapping" ("ElbWordId") ON DELETE SET NULL
 );
 
-CREATE INDEX "IdxElbWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
-CREATE INDEX "IdxElbVerse" ON "unshackled-word"."Elb1871GreekMapping" ("BookId", "Chapter", "Verse");
-CREATE INDEX "IdxElbStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
+CREATE INDEX "IdxElbGreekWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
+CREATE INDEX "IdxElbGreekVerse" ON "unshackled-word"."Elb1871GreekMapping" ("BookId", "Chapter", "Verse");
+CREATE INDEX "IdxElbGreekStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
+
+
+CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
+(
+    "Id"                            SERIAL PRIMARY KEY,
+    "ElbWordId"                     INT NOT NULL UNIQUE,
+    "StepHebrewNormalizedId"        INT NULL,
+    "BookId"                        INT NOT NULL,
+    "Chapter"                       INT NOT NULL,
+    "Verse"                         INT NOT NULL,
+    "StrongsNumber"                 VARCHAR(10) NULL,
+    "IsAddedWord"                   BOOLEAN DEFAULT FALSE,
+    "ParentGermanWordId"            INT NULL,
+    "WordOrderInVerse"              INT NOT NULL,
+    -- Composite Unique Key for ElbWordId and StepGreekId
+    -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
+    CONSTRAINT "UqElbStepHebrew" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepHebrewNormalizedId"),
+
+    -- Foreign Key now works because ElbWordId is explicitly UNIQUE
+    CONSTRAINT "FkParentWord" FOREIGN KEY ("ParentGermanWordId")
+        REFERENCES "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId") ON DELETE SET NULL
+);
+
+CREATE INDEX "IdxElbHebrewWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
+CREATE INDEX "IdxElbHebrewVerse" ON "unshackled-word"."Elb1871HebrewMapping" ("BookId", "Chapter", "Verse");
+CREATE INDEX "IdxElbHebrewStrongs" ON "unshackled-word"."Elb1871HebrewMapping" ("StrongsNumber");

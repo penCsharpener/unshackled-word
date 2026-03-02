@@ -1,6 +1,6 @@
 namespace UnshackledWord.Tooling.AiWorker;
 
-public sealed class ElbStepGreekMapping
+public sealed class ElbStepAiMapping
 {
     public int ElbWordId { get; set; }
     public int? StepWordId { get; set; }

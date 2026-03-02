@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Google.GenAI.Types;
-using Microsoft.Extensions.Logging;
 using UnshackledWord.Application.Extensions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
@@ -10,14 +9,14 @@ using GeminiType = Google.GenAI.Types.Type;
 
 namespace UnshackledWord.Tooling.AiWorker;
 
-public class GeminiFlashClient
+public class GreekGeminiFlashClient
 {
     private readonly GeminiClient _client;
     private readonly ILogger _logger;
     private CachedContent? _cacheContent;
     private const string ModelName = "gemini-3-flash-preview";
 
-    private const string SystemInstruction = """
+    private const string GreekSystemInstruction = """
                                              You are a linguistic expert mapping the Elberfelder 1871 German NT to STEP Bible Greek data.
                                              RULES:
                                              1. OUTPUT: Return a JSON object matching the provided schema.
@@ -28,20 +27,15 @@ public class GeminiFlashClient
                                              6. NO MARKDOWN: Return only raw JSON.
                                              """;
 
-    public GeminiFlashClient(GeminiClient client, ILogger<GeminiFlashClient> logger)
+    public GreekGeminiFlashClient(GeminiClient client, ILogger<GreekGeminiFlashClient> logger)
     {
         _client = client;
         _logger = logger;
     }
 
-    public async Task<List<VerseDataList<ElbStepGreekMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
-        IEnumerable<VerseDataList<StepGreekVerseData>> stepWords, CancellationToken token = default)
+    public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(List<VerseDataList<ElbVerseData>> elbWords,
+        List<VerseDataList<StepGreekVerseData>> stepWords, CancellationToken token = default)
     {
-        if (_cacheContent is null && SystemInstruction.Length > 4500)
-        {
-            _cacheContent = await GetCachedContentAsync(token);
-        }
-
         var germanVerseJson = elbWords.ToNonIndentedJson();
         var greekVerseJson = stepWords.ToNonIndentedJson();
 
@@ -82,26 +76,7 @@ public class GeminiFlashClient
             return [];
         }
 
-        return JsonSerializer.Deserialize<List<VerseDataList<ElbStepGreekMapping>>>(text) ?? [];
-    }
-
-    private async Task<CachedContent?> GetCachedContentAsync(CancellationToken token = default)
-    {
-        return await _client.Caches.CreateAsync(ModelName, new CreateCachedContentConfig
-        {
-            SystemInstruction = new Content
-            {
-                Parts = new List<Part>
-                {
-                    new()
-                    {
-                        Text = SystemInstruction
-                    }
-                }
-            },
-            // Ttl = $"{30 * 24 * 60 * 60}s"
-            Ttl = $"{60 * 60}s"
-        }, token);
+        return JsonSerializer.Deserialize<List<VerseDataList<ElbStepAiMapping>>>(text) ?? [];
     }
 
     private GenerateContentConfig GetResponseSchema(CachedContent? cache)
@@ -151,7 +126,7 @@ public class GeminiFlashClient
                 {
                     new()
                     {
-                        Text = SystemInstruction
+                        Text = GreekSystemInstruction
                     }
                 }
             },

@@ -2,15 +2,17 @@ namespace UnshackledWord.Tooling.AiWorker;
 
 public class Worker : BackgroundService
 {
-    private readonly GreekMappingService _service;
+    private readonly GreekMappingService _gkMapping;
+    private readonly HebrewMappingService _hebMapping;
 
-    public Worker(GreekMappingService service)
+    public Worker(GreekMappingService gkMapping, HebrewMappingService hebMapping)
     {
-        _service = service;
+        _gkMapping = gkMapping;
+        _hebMapping = hebMapping;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await _service.RunAsync(stoppingToken);
+        await _hebMapping.RunAsync(stoppingToken);
     }
 }

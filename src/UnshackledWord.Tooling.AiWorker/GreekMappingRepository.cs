@@ -223,7 +223,7 @@ public class GreekMappingRepository
         return list;
     }
 
-    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepGreekMapping>> mappings, IList<ElbVerseData> elbVerses)
+    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepAiMapping>> mappings, IList<ElbVerseData> elbVerses)
     {
         var sb = new List<string>();
 

@@ -27,10 +27,13 @@ public static partial class Program
         services.AddWebApiServices(configuration)
             .AddGoogleAiClient(configuration)
             .AddSingleton<GreekMappingRepository>()
-            .AddSingleton<GeminiFlashClient>()
+            .AddSingleton<GreekGeminiFlashClient>()
+            .AddSingleton<GreekMappingService>()
+            .AddSingleton<HebrewMappingRepository>()
+            .AddSingleton<HebrewGeminiFlashClient>()
+            .AddSingleton<HebrewMappingService>()
             .AddHostedService<Worker>()
-            .AddSingleton<GreekMappingService>();
-
+            ;
         return services;
     }
 

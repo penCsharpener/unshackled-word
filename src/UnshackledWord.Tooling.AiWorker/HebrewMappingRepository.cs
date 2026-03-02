@@ -1,5 +1,7 @@
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
 
 namespace UnshackledWord.Tooling.AiWorker;
 
@@ -63,5 +65,67 @@ public class HebrewMappingRepository
         return list;
     }
 
+    internal async Task<List<VerseDataList<StepHebrewVerseData>>> GetHebrewVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
+    {
+        var sql = $"""
+                   SELECT shw."BibleBookId", shw."Chapter", shw."Verse", shw."PositionInVerse", shwn."Id", shwn."Hebrew" "Word"
+                   FROM "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords" shwnthw
+                       INNER JOIN "unshackled-word"."StepHebrewWordsNormalized"    shwn    ON shwnthw."StepHebrewWordsNormalizedId" = shwn."Id"
+                       INNER  JOIN "unshackled-word"."StepHebrewWords"             shw     ON shwnthw."StepHebrewWordsId" = shw."Id"
+                      WHERE (shw."BibleBookId" < 40
+                          AND shw."BibleBookId" = {bookId})
+                          AND shw."Chapter" = {chapter}
+                          AND shw."Verse" >= {startVerse}
+                          AND shw."Verse" <= {endVerse}
+                   ORDER BY shw."BibleBookId", shw."Chapter", shw."Verse", shw."PositionInVerse"
+                   """;
 
+        var verses = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql);
+        var list = verses.GroupBy(x => new { x.BibleBookId, x.Chapter, x.Verse })
+            .Select(x => new VerseDataList<StepHebrewVerseData>
+            {
+                BookId = x.Key.BibleBookId,
+                Chapter = x.Key.Chapter,
+                Verse = x.Key.Verse,
+                Data = x.Select(d => new StepHebrewVerseDataWithOrder()
+                {
+                    Hebrew = d.Word,
+                    Id = d.Id,
+                    Order = d.PositionInVerse
+                }).OrderBy(o => o.Order).ToList()
+            }).OrderBy(x => x.BookId)
+            .ThenBy(x => x.Chapter)
+            .ThenBy(x => x.Verse)
+            .ToList();
+
+        return list;
+    }
+
+    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepAiMapping>> mappings, IList<ElbVerseData> elbVerses)
+    {
+        var sb = new List<string>();
+
+        foreach (var mapping in mappings)
+        {
+            foreach (var wordMap in mapping.Data)
+            {
+                var stepId = wordMap.StepWordId?.ToString() ?? "null";
+                var strongs = "null";
+                var parentId = wordMap.ParentElbWordId?.ToString() ?? "null";
+                var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
+                var elbWordOrder = foundWord?.Order ?? 999;
+                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, {strongs}, {wordMap.IsAddedWord}, {parentId}, {elbWordOrder})");
+            }
+        }
+
+        var sql = $"""
+                   INSERT INTO "unshackled-word"."Elb1871HebrewMapping"
+                   ("ElbWordId","StepHebrewNormalizedId","BookId","Chapter","Verse","StrongsNumber","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
+                   VALUES
+                   {sb.JoinStrings($",{Environment.NewLine}")}
+                   ON CONFLICT ("ElbWordId") DO NOTHING
+                   """;
+
+        await _dbWriter.WriteAsync(sql);
+    }
 }
