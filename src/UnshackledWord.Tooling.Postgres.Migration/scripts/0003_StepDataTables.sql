@@ -255,3 +255,28 @@ CREATE TABLE "unshackled-word"."StepPlaceLexicon"
     "Short"            varchar(1000) NOT NULL,
     "Article"          text          NOT NULL
 );
+
+CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
+(
+    "Id"                 SERIAL PRIMARY KEY,
+    "ElbWordId"          INT NOT NULL UNIQUE,
+    "StepGreekId"        INT NULL,
+    "BookId"             INT NOT NULL,
+    "Chapter"            INT NOT NULL,
+    "Verse"              INT NOT NULL,
+    "StrongsNumber"      VARCHAR(10) NULL,
+    "IsAddedWord"        BOOLEAN DEFAULT FALSE,
+    "ParentGermanWordId" INT NULL,
+    "WordOrderInVerse"   INT NOT NULL,
+    -- Composite Unique Key for ElbWordId and StepGreekId
+    -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
+    CONSTRAINT "UqElbStepGreek" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepGreekId"),
+
+    -- Foreign Key now works because ElbWordId is explicitly UNIQUE
+    CONSTRAINT "FkParentWord" FOREIGN KEY ("ParentGermanWordId")
+        REFERENCES "unshackled-word"."Elb1871GreekMapping" ("ElbWordId") ON DELETE SET NULL
+);
+
+CREATE INDEX "IdxElbWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
+CREATE INDEX "IdxElbVerse" ON "unshackled-word"."Elb1871GreekMapping" ("BookId", "Chapter", "Verse");
+CREATE INDEX "IdxElbStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
