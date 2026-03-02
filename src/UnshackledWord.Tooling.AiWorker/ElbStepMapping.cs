@@ -11,7 +11,7 @@ public sealed class ElbStepMapping
     public int? StepWordId { get; set; }
 
     // [JsonPropertyName("strongs_number")]
-    public string? Strongs { get; set; }
+    // public string? Strongs { get; set; }
 
     // [JsonPropertyName("is_added_word")]
     public bool IsAddedWord { get; set; }

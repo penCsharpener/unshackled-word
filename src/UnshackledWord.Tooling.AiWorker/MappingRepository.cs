@@ -32,6 +32,21 @@ public class MappingRepository
         return structureData;
     }
 
+    internal async Task<IEnumerable<BibleReferenceRange>> GetMissingVerseRangesAsync()
+    {
+        var sql = """
+                  select ew."BibleBookId", ew."Chapter", MIN(ew."Verse") MinVerse, MAX(ew."Verse") MaxVerse
+                  from "unshackled-word"."Elb1871Words" ew
+                    left join "unshackled-word"."Elb1871GreekMapping" egm on ew."Id" = egm."ElbWordId"
+                  where ew."BibleBookId" >= 40
+                    and egm."ElbWordId" is null
+                  group by ew."BibleBookId", ew."Chapter"
+                  order by ew."BibleBookId", ew."Chapter"
+                  """;
+
+        return await _dbReader.ReadAsListAsync<BibleReferenceRange>(sql);
+    }
+
     internal async Task<IEnumerable<BibleReference>> GetGreekNtStructureByChapterAsync(int? bookId, int? chapter, int? verse)
     {
         var sql = """
@@ -217,7 +232,8 @@ public class MappingRepository
             foreach (var wordMap in mapping.Data)
             {
                 var stepId = wordMap.StepWordId?.ToString() ?? "null";
-                var strongs = wordMap.Strongs is null ? "null" : $"'{wordMap.Strongs}'";
+                // var strongs = wordMap.Strongs is null ? "null" : $"'{wordMap.Strongs}'";
+                var strongs = "null";
                 var parentId = wordMap.ParentElbWordId?.ToString() ?? "null";
                 var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
                 var elbWordOrder = foundWord?.Order ?? 999;
@@ -230,6 +246,7 @@ public class MappingRepository
                    ("ElbWordId","StepGreekId","BookId","Chapter","Verse","StrongsNumber","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
                    VALUES
                    {sb.JoinStrings($",{Environment.NewLine}")}
+                   ON CONFLICT ("ElbWordId") DO NOTHING
                    """;
 
         await _dbWriter.WriteAsync(sql);

@@ -1,8 +1,7 @@
 using Google.GenAI;
 using Google.GenAI.Types;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Serilog;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.WebApi.Extensions;
 using GeminiClient = Google.GenAI.Client;
@@ -11,25 +10,28 @@ namespace UnshackledWord.Tooling.AiWorker;
 
 public static partial class Program
 {
-    public static IServiceProvider SetupDependencies(Action<IServiceCollection>? configureServices, Action<IConfigurationBuilder>? configureConfiguration)
+    public static void Main(string[] args)
     {
-        var builder = new ConfigurationBuilder();
-        builder.AddLocalSecrets();
-        configureConfiguration?.Invoke(builder);
-        var configuration = builder.Build();
+        var builder = Host.CreateApplicationBuilder(args);
+        builder.Services.AddSerilog((sp, loggerConfig) => loggerConfig.ReadFrom.Configuration(builder.Configuration));
+        builder.Services.RegisterServices(builder.Configuration);
+        builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
+        builder.Configuration.AddLocalSecrets();
 
-        var services = new ServiceCollection()
-                .AddWebApiServices(configuration)
-                .AddGoogleAiClient(configuration)
-                .AddSingleton<IConfiguration>(configuration)
-                .AddSingleton<MappingRepository>()
-                .AddSingleton<GeminiFlashClient>()
-                .AddLogging()
-            ;
+        var host = builder.Build();
+        host.Run();
+    }
 
-        configureServices?.Invoke(services);
+    public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddWebApiServices(configuration)
+            .AddGoogleAiClient(configuration)
+            .AddSingleton<MappingRepository>()
+            .AddSingleton<GeminiFlashClient>()
+            .AddHostedService<Worker>()
+            .AddSingleton<GreekMappingService>();
 
-        return services.BuildServiceProvider();
+        return services;
     }
 
     public static IServiceCollection AddGoogleAiClient(this IServiceCollection services, IConfiguration configuration)
