@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using System.Text;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Models.Greek;
 
 namespace UnshackledWord.Tooling.AiWorker;
 
@@ -250,16 +250,5 @@ public class GreekMappingRepository
                    """;
 
         await _dbWriter.WriteAsync(sql);
-    }
-
-    private class InternalVerseDto
-    {
-        public int Id { get; set; }
-        public int BibleBookId { get; set; }
-        public int Chapter { get; set; }
-        public int Verse { get; set; }
-        public string Word { get; set; } = default!;
-        public string? Strongs { get; set; }
-        public int PositionInVerse { get; set; }
     }
 }

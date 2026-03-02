@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UnshackledWord.Application.Extensions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Models.Greek;
 using GeminiClient = Google.GenAI.Client;
 using GeminiType = Google.GenAI.Types.Type;
 

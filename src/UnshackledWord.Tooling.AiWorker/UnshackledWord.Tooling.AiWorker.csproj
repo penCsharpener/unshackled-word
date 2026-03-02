@@ -11,9 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\UnshackledWord.Tooling.WebApi\UnshackledWord.Tooling.WebApi.csproj"/>
   </ItemGroup>
 

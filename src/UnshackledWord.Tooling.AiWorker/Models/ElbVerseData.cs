@@ -1,8 +1,6 @@
 namespace UnshackledWord.Tooling.AiWorker.Models;
 
-public sealed class ElbVerseData
+public sealed class ElbVerseData : ElbVerseDataWithoutOrder
 {
-    public int Id { get; set; }
-    public string German { get; set; } = default!;
     public int Order { get; set; }
 }
