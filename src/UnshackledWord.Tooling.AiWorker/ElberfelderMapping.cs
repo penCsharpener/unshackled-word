@@ -20,7 +20,8 @@ public class ElberfelderMapping
     public async Task Test1()
     {
         var repo = _serviceProvider.GetRequiredService<MappingRepository>();
-        var structureData = await repo.GetGreekNtStructureByChapterAsync();
+        var lastCompletedRef = await repo.GetLastCompletedVerseAsync();
+        var structureData = await repo.GetGreekNtStructureByChapterAsync(lastCompletedRef.BibleBookId, lastCompletedRef.Chapter, lastCompletedRef.Verse);
 
         var client = _serviceProvider.GetRequiredService<GeminiFlashClient>();
 
@@ -36,11 +37,13 @@ public class ElberfelderMapping
 
                 var response = await client.GetElbStepMappings(elbWords, stepWords, TestContext.Current.CancellationToken);
 
-                await using var writer = new StringWriter();
-                await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-                await csv.WriteRecordsAsync(response, TestContext.Current.CancellationToken);
+                // await using var writer = new StringWriter();
+                // await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+                // await csv.WriteRecordsAsync(response.SelectMany(x => x.Data).ToList(), TestContext.Current.CancellationToken);
+                //
+                // _output.WriteLine(writer.ToString());
 
-                _output.WriteLine(writer.ToString());
+                await repo.InsertMappingsAsync(response, elbWords.SelectMany(x => x.Data).ToList());
             }
         }
     }

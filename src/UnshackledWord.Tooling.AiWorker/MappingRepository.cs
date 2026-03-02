@@ -1,4 +1,7 @@
+using System.Diagnostics;
+using System.Text;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
@@ -6,10 +9,12 @@ namespace UnshackledWord.Tooling.AiWorker;
 public class MappingRepository
 {
     private readonly IDbReader _dbReader;
+    private readonly IDbWriter _dbWriter;
 
-    public MappingRepository(IDbReader dbReader)
+    public MappingRepository(IDbReader dbReader, IDbWriter dbWriter)
     {
         _dbReader = dbReader;
+        _dbWriter = dbWriter;
     }
 
     internal async Task<IEnumerable<BibleReference>> GetGreekNtStructureByVerseAsync()
@@ -27,19 +32,86 @@ public class MappingRepository
         return structureData;
     }
 
-    internal async Task<IEnumerable<BibleReference>> GetGreekNtStructureByChapterAsync()
+    internal async Task<IEnumerable<BibleReference>> GetGreekNtStructureByChapterAsync(int? bookId, int? chapter, int? verse)
     {
         var sql = """
                   select ew."BibleBookId", ew."Chapter", MAX(ew."Verse") Verse
                   from "unshackled-word"."Elb1871Words" ew
                   where ew."BibleBookId" >= 40
+                        and (@BookId is null or ew."BibleBookId" >= @BookId)
+                        and (@Chapter is null or ew."Chapter" >= @Chapter)
+                        and (@Verse is null or ew."Verse" >= @Verse)
                   group by ew."BibleBookId", ew."Chapter"
                   order by ew."BibleBookId", ew."Chapter"
                   """;
 
-        var structureData = await _dbReader.ReadAsListAsync<BibleReference>(sql);
+        var parameters = new
+        {
+            BookId = bookId,
+            Chapter = chapter,
+            Verse = verse
+        };
 
-        return structureData;
+        return await _dbReader.ReadAsListAsync<BibleReference>(sql, parameters);
+    }
+
+    internal async Task<BibleReference> GetLastCompletedVerseAsync()
+    {
+        const string sql = """
+                           select max(egm."BookId") "BibleBookId", max(egm."Chapter") "Chapter", max(egm."Verse") "Verse"
+                           from "unshackled-word"."Elb1871GreekMapping" egm
+                           """;
+
+        var result = await _dbReader.ReadFirstOrDefaultAsync<BibleReference>(sql);
+
+        if (result is null)
+        {
+            throw new UnreachableException("There should be something in \"unshackled-word\".\"Elb1871GreekMapping\" to continue from");
+        }
+
+        var verseExists = await DoesRefExistAsync(result.BibleBookId, result.Chapter, result.Verse + 1);
+
+        if (verseExists)
+        {
+            result.Verse++;
+            return result;
+        }
+
+        var doesChapterExist = await DoesRefExistAsync(result.BibleBookId, result.Chapter + 1, 1);
+
+        if (doesChapterExist)
+        {
+            result.Chapter++;
+            result.Verse = 1;
+            return result;
+        }
+
+        var doesBookExist = await DoesRefExistAsync(result.BibleBookId + 1, 1, 1);
+
+        if (doesBookExist)
+        {
+            result.BibleBookId++;
+            result.Chapter = 1;
+            result.Verse = 1;
+            return result;
+        }
+
+        throw new UnreachableException("You seemed to have mapped already all the words in the Greek NT for Elberfelder 1871.");
+    }
+
+    internal async Task<bool> DoesRefExistAsync(int bookId, int chapter, int verse)
+    {
+        var sqlValidation = $"""
+                             select count(*)
+                             from "unshackled-word"."Elb1871Words" ew
+                             where ew."BibleBookId" = {bookId}
+                                 and ew."Chapter" = {chapter}
+                                 and ew."Verse" = {verse}
+                             """;
+
+        var result = await _dbReader.ExecuteScalarAsync<int>(sqlValidation);
+
+        return result > 0;
     }
 
     internal async Task<IEnumerable<ElbVerseData>> GetElbVerseDataAsync(int bookId, int chapter, int verse)
@@ -70,7 +142,7 @@ public class MappingRepository
         return await _dbReader.ReadAsListAsync<StepGreekVerseData>(sql);
     }
 
-    internal async Task<IEnumerable<VerseDataList<ElbVerseData>>> GetElbVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
+    internal async Task<List<VerseDataList<ElbVerseData>>> GetElbVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
     {
         var sql = $"""
                    select ew."Id", ew."BibleBookId", ew."Chapter", ew."Verse", ew."WordInContext" "Word", ew."PositionInVerse"
@@ -82,7 +154,7 @@ public class MappingRepository
                    order by ew."PositionInVerse" asc
                    """;
 
-        var verses = await _dbReader.ReadAsListAsync<InteralVerseDto>(sql);
+        var verses = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql);
         var list = verses.GroupBy(x => new { x.BibleBookId, x.Chapter, x.Verse })
             .Select(x => new VerseDataList<ElbVerseData>
             {
@@ -103,7 +175,7 @@ public class MappingRepository
         return list;
     }
 
-    internal async Task<IEnumerable<VerseDataList<StepGreekVerseData>>> GetStepGreekVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
+    internal async Task<List<VerseDataList<StepGreekVerseData>>> GetStepGreekVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
     {
         var sql = $"""
                    select sgw."Id", sgw."BibleBookId", sgw."Chapter", sgw."Verse", sgw."Greek" "Word", sgw."PositionInVerse", sgw."DisambiguatedStrongs" "Strongs"
@@ -115,7 +187,7 @@ public class MappingRepository
                    order by sgw."PositionInVerse" asc
                    """;
 
-        var verses = await _dbReader.ReadAsListAsync<InteralVerseDto>(sql);
+        var verses = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql);
         var list = verses.GroupBy(x => new { x.BibleBookId, x.Chapter, x.Verse })
             .Select(x => new VerseDataList<StepGreekVerseData>
             {
@@ -136,7 +208,34 @@ public class MappingRepository
         return list;
     }
 
-    private class InteralVerseDto
+    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepMapping>> mappings, IList<ElbVerseData> elbVerses)
+    {
+        var sb = new List<string>();
+
+        foreach (var mapping in mappings)
+        {
+            foreach (var wordMap in mapping.Data)
+            {
+                var stepId = wordMap.StepWordId?.ToString() ?? "null";
+                var strongs = wordMap.Strongs is null ? "null" : $"'{wordMap.Strongs}'";
+                var parentId = wordMap.ParentElbWordId?.ToString() ?? "null";
+                var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
+                var elbWordOrder = foundWord?.Order ?? 999;
+                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, {strongs}, {wordMap.IsAddedWord}, {parentId}, {elbWordOrder})");
+            }
+        }
+
+        var sql = $"""
+                   INSERT INTO "unshackled-word"."Elb1871GreekMapping"
+                   ("ElbWordId","StepGreekId","BookId","Chapter","Verse","StrongsNumber","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
+                   VALUES
+                   {sb.JoinStrings($",{Environment.NewLine}")}
+                   """;
+
+        await _dbWriter.WriteAsync(sql);
+    }
+
+    private class InternalVerseDto
     {
         public int Id { get; set; }
         public int BibleBookId { get; set; }

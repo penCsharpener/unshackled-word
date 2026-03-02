@@ -1,4 +1,5 @@
 using Google.GenAI;
+using Google.GenAI.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -38,7 +39,11 @@ public static partial class Program
         services.AddSingleton(sp =>
         {
             var options = sp.GetRequiredService<IOptions<GoogleAiOptions>>().Value;
-            return new GeminiClient(apiKey: options.ApiKey);
+            var httpOptions = new HttpOptions
+            {
+                Timeout = 10 * 60 * 1000
+            };
+            return new GeminiClient(apiKey: options.ApiKey, httpOptions: httpOptions);
         });
 
         return services;
