@@ -101,7 +101,9 @@ public class HebrewMappingRepository
         return list;
     }
 
-    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepAiMapping>> mappings, IList<ElbVerseData> elbVerses)
+    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepAiMapping>> mappings,
+        IList<ElbVerseData> elbVerses,
+        IList<StepHebrewVerseData> stepVerses)
     {
         var sb = new List<string>();
 
@@ -110,17 +112,20 @@ public class HebrewMappingRepository
             foreach (var wordMap in mapping.Data)
             {
                 var stepId = wordMap.StepWordId?.ToString() ?? "null";
-                var strongs = "null";
                 var parentId = wordMap.ParentElbWordId?.ToString() ?? "null";
                 var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
                 var elbWordOrder = foundWord?.Order ?? 999;
-                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, {strongs}, {wordMap.IsAddedWord}, {parentId}, {elbWordOrder})");
+                var germanWord = foundWord?.German;
+                var foundGreek = stepVerses.FirstOrDefault(x => wordMap.StepWordId is not null && x.Id == wordMap.StepWordId);
+                var greekWord = foundGreek?.Hebrew;
+                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}," +
+                       $" {mapping.Verse}, {wordMap.IsAddedWord}, {parentId}, {elbWordOrder} /* {germanWord} - {greekWord} */)");
             }
         }
 
         var sql = $"""
                    INSERT INTO "unshackled-word"."Elb1871HebrewMapping"
-                   ("ElbWordId","StepHebrewNormalizedId","BookId","Chapter","Verse","StrongsNumber","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
+                   ("ElbWordId","StepHebrewNormalizedId","BookId","Chapter","Verse","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
                    VALUES
                    {sb.JoinStrings($",{Environment.NewLine}")}
                    ON CONFLICT ("ElbWordId") DO NOTHING

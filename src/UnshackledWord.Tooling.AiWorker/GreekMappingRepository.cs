@@ -223,7 +223,7 @@ public class GreekMappingRepository
         return list;
     }
 
-    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepAiMapping>> mappings, IList<ElbVerseData> elbVerses)
+    public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepAiMapping>> mappings, IList<ElbVerseData> elbVerses, IList<StepGreekVerseData> stepVerses)
     {
         var sb = new List<string>();
 
@@ -237,7 +237,11 @@ public class GreekMappingRepository
                 var parentId = wordMap.ParentElbWordId?.ToString() ?? "null";
                 var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
                 var elbWordOrder = foundWord?.Order ?? 999;
-                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, {strongs}, {wordMap.IsAddedWord}, {parentId}, {elbWordOrder})");
+                var germanWord = foundWord?.German;
+                var foundGreek = stepVerses.FirstOrDefault(x => wordMap.StepWordId is not null && x.Id == wordMap.StepWordId);
+                var greekWord = foundGreek?.Greek;
+                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, {strongs}, " +
+                       $"{wordMap.IsAddedWord}, {parentId}, {elbWordOrder} /* {germanWord} - {greekWord} */)");
             }
         }
 

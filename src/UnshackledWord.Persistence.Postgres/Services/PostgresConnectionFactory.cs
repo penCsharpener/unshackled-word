@@ -15,7 +15,7 @@ public sealed class PostgresDbConnectionFactory : IDbConnectionFactory
     {
         _logger = logger;
         _connectionString = configuration.GetConnectionString("PostgresConnection")!;
-        logger.LogInformation("Connection: {con}", _connectionString);
+        logger.LogDebug("Connection: {con}", _connectionString);
         DbConnection = new NpgsqlConnection(_connectionString);
     }
 

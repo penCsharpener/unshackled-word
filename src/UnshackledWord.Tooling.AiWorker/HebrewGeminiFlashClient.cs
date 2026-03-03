@@ -1,6 +1,9 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Google.GenAI;
 using Google.GenAI.Types;
+using Polly;
+using Polly.Retry;
 using UnshackledWord.Application.Extensions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
@@ -13,8 +16,9 @@ public class HebrewGeminiFlashClient
 {
     private readonly Client _client;
     private readonly ILogger _logger;
-    private CachedContent? _cacheContent;
-    private const string ModelName = "gemini-3-flash-preview";
+    private const string ModelName = "gemini-2.5-flash";
+    // private const string ModelName = "gemini-3-flash-preview";
+    private AsyncRetryPolicy _apiErrorPolicies;
 
     private const string HebrewSystemInstruction = """
                                                   You are a linguistic expert mapping the Elberfelder 1871 German NT to STEP Bible Hebrew data.
@@ -32,6 +36,15 @@ public class HebrewGeminiFlashClient
     {
         _client = client;
         _logger = logger;
+
+        _apiErrorPolicies = Policy.Handle<ServerError>().Or<HttpRequestException>().Or<TimeoutException>()
+            .WaitAndRetryAsync(
+                retryCount: 15,
+                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(1.7, retryAttempt) + 10), onRetry:
+                (ex, timeSpan, retryCount, context) =>
+                {
+                    _logger.LogWarning("Retry {retryCount} after {delay} delay. {exMessage}", retryCount, timeSpan.ToString(@"mm\:ss"), ex.Message);
+                });
     }
 
     public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
@@ -65,12 +78,21 @@ public class HebrewGeminiFlashClient
                       Hebrew Words: {hebrewVerseJson}
                       """;
 
-        var response = await _client.Models.GenerateContentAsync(
-            model: ModelName,
-            contents: prompt,
-            config: GetResponseSchema(_cacheContent!),
-            cancellationToken: token
-        );
+        var response = await _apiErrorPolicies.ExecuteAsync(async () =>
+        {
+            var timeStamp = Stopwatch.GetTimestamp();
+            var mappings = await _client.Models.GenerateContentAsync(
+                model: ModelName,
+                contents: prompt,
+                config: GetResponseSchema(),
+                cancellationToken: token
+            );
+            var elapsed = Stopwatch.GetElapsedTime(timeStamp);
+            var elapsedString = elapsed.ToString(@"mm\:ss");
+            _logger.LogInformation("Request took {elapsed}", elapsedString);
+
+            return mappings;
+        });
 
         if (response.Candidates is null || response.Candidates.Count == 0)
         {
@@ -100,7 +122,7 @@ public class HebrewGeminiFlashClient
         return JsonSerializer.Deserialize<List<VerseDataList<ElbStepAiMapping>>>(text) ?? [];
     }
 
-    private GenerateContentConfig GetResponseSchema(CachedContent? cache)
+    private GenerateContentConfig GetResponseSchema()
     {
         // Define the schema as an object (OpenAPI 3.0 compatible)
         var responseSchema = new Schema
@@ -141,6 +163,13 @@ public class HebrewGeminiFlashClient
         {
             ResponseMimeType = "application/json",
             ResponseSchema = responseSchema,
+            // Temperature = 0.2,
+            // TopP = 0.1f,
+            // TopK = 1,
+            // ThinkingConfig = new ThinkingConfig
+            // {
+            //     ThinkingLevel = ThinkingLevel.Medium
+            // },
             SystemInstruction = new Content
             {
                 Parts = new List<Part>
@@ -150,8 +179,7 @@ public class HebrewGeminiFlashClient
                         Text = HebrewSystemInstruction
                     }
                 }
-            },
-            CachedContent = cache?.Name
+            }
         };
 
         return config;

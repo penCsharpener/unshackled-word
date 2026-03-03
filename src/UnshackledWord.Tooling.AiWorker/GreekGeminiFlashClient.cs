@@ -1,5 +1,9 @@
+using System.Diagnostics;
 using System.Text.Json;
+using Google.GenAI;
 using Google.GenAI.Types;
+using Polly;
+using Polly.Retry;
 using UnshackledWord.Application.Extensions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
@@ -13,11 +17,13 @@ public class GreekGeminiFlashClient
 {
     private readonly GeminiClient _client;
     private readonly ILogger _logger;
-    private CachedContent? _cacheContent;
-    private const string ModelName = "gemini-3-flash-preview";
+    private const string ModelName = "gemini-2.5-flash";
+    // private const string ModelName = "gemini-3-flash-preview";
+    // Skip thinking and provide only the direct mapping in JSON format.
+    private AsyncRetryPolicy _apiErrorPolicies;
 
     private const string GreekSystemInstruction = """
-                                             You are a linguistic expert mapping the Elberfelder 1871 German NT to STEP Bible Greek data.
+                                             You are a linguistic mapping tool mapping the Elberfelder 1871 German NT to STEP Bible Greek data.
                                              RULES:
                                              1. OUTPUT: Return a JSON object matching the provided schema.
                                              2. SPLIT VERBS: Map split German verb parts (e.g., 'aus' in 'geht...aus') to the same Greek 'StepWordId' and 'Strongs'.
@@ -31,6 +37,15 @@ public class GreekGeminiFlashClient
     {
         _client = client;
         _logger = logger;
+
+        _apiErrorPolicies = Policy.Handle<ServerError>().Or<HttpRequestException>().Or<TimeoutException>()
+            .WaitAndRetryAsync(
+                retryCount: 15,
+                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(1.7, retryAttempt) + 10), onRetry:
+                (ex, timeSpan, retryCount, context) =>
+                {
+                    _logger.LogWarning("Retry {retryCount} after {delay} delay. {exMessage}", retryCount, timeSpan.ToString(@"mm\:ss"), ex.Message);
+                });
     }
 
     public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(List<VerseDataList<ElbVerseData>> elbWords,
@@ -44,12 +59,21 @@ public class GreekGeminiFlashClient
                       Greek Words: {greekVerseJson}
                       """;
 
-        var response = await _client.Models.GenerateContentAsync(
-            model: ModelName,
-            contents: prompt,
-            config: GetResponseSchema(_cacheContent!),
-            cancellationToken: token
-        );
+        var response = await _apiErrorPolicies.ExecuteAsync(async () =>
+        {
+            var timeStamp = Stopwatch.GetTimestamp();
+            var mappings = await _client.Models.GenerateContentAsync(
+                model: ModelName,
+                contents: prompt,
+                config: GetResponseSchema(),
+                cancellationToken: token
+            );
+            var elapsed = Stopwatch.GetElapsedTime(timeStamp);
+            var elapsedString = elapsed.ToString(@"mm\:ss");
+            _logger.LogInformation("Request took {elapsed}", elapsedString);
+
+            return mappings;
+        });
 
         if (response.Candidates is null || response.Candidates.Count == 0)
         {
@@ -79,7 +103,7 @@ public class GreekGeminiFlashClient
         return JsonSerializer.Deserialize<List<VerseDataList<ElbStepAiMapping>>>(text) ?? [];
     }
 
-    private GenerateContentConfig GetResponseSchema(CachedContent? cache)
+    private GenerateContentConfig GetResponseSchema()
     {
         // Define the schema as an object (OpenAPI 3.0 compatible)
         var responseSchema = new Schema
@@ -120,6 +144,13 @@ public class GreekGeminiFlashClient
         {
             ResponseMimeType = "application/json",
             ResponseSchema = responseSchema,
+            // Temperature = 0.2,
+            // TopP = 0.1f,
+            // TopK = 1,
+            // ThinkingConfig = new ThinkingConfig
+            // {
+            //     ThinkingLevel = ThinkingLevel.Medium
+            // },
             SystemInstruction = new Content
             {
                 Parts = new List<Part>
@@ -130,7 +161,6 @@ public class GreekGeminiFlashClient
                     }
                 }
             },
-            CachedContent = cache?.Name
         };
 
         return config;
