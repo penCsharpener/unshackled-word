@@ -47,6 +47,8 @@ public class GreekMappingService
 
         var response = await _client.GetElbStepMappings(elbWords, stepWords, token);
 
+        response = response.Where(x => x.Data.All(d => d.ElbWordId >= 551768)).ToList();
+
         await _repo.InsertMappingsAsync(response,
             elbWords.SelectMany(x => x.Data).ToList(),
             stepWords.SelectMany(x => x.Data).ToList());
