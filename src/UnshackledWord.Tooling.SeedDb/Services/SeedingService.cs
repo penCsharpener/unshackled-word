@@ -16,10 +16,12 @@ public sealed class SeedingService
 
     private readonly Type[] _runnerTypes =
     {
+        #if DEBUG
+        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepRunner),
+        #else
         typeof(UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser.ElberfelderTextRunner),
         typeof(UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools.GbtRunner),
         typeof(UnshackledWord.Tooling.SeedDb.Services.Tsk.TskRunner),
-// #if DEBUG
          typeof(UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser.ElbRunner),
         typeof(UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt.SrRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.CsvImports.CsvRunner),
@@ -30,7 +32,8 @@ public sealed class SeedingService
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer.LemmatizerRunner)
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.BibelKommentare.BkRunner),
 //         typeof(UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData.OpenScriptureRunner),
-// #endif
+        #endif
+
     };
 
     public SeedingService(IServiceScopeFactory scopeFactory, ILogger<SeedingService> logger)

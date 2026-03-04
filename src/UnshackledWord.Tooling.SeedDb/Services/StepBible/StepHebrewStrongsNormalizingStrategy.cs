@@ -63,13 +63,10 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
             var splitStrongs = word.DisambiguatedStrongs.Split(['\\', '/'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             var splitExpanded = word.ExpandedStrongTags!.Split(['\\', '/'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             var splitGrammar = word.Grammar.Split(['\\', '/'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var positionInWord = 1;
 
             for (var i = 0; i < splitStrongs.Length; i++)
             {
-                if (normalizedIndex == 14)
-                {
-
-                }
                 var part = splitStrongs[i];
                 index++;
                 var grammar = GetStringAtIndex(splitGrammar, i);
@@ -120,6 +117,13 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
                     StrongsNumber = normalisedStrongs.StrongsNumber,
                 };
 
+                var hebNormToWordRelation = new StepHebrewWordsNormalizedToHebrewWordDbo
+                {
+                    StepHebrewWordsId = word.Id,
+                    StepHebrewWordsNormalizedId = normalizedIndex,
+                    PositionInWord = positionInWord
+                };
+
                 normalisedEntries.Add(normalisedStrongs);
                 if (normalisedHebrewWordsDict.ContainsKey(normalisedHebrew))
                 {
@@ -131,20 +135,15 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
                     normalisedHebrewWordsDict[normalisedHebrew] = [word.Id];
                     normalizedIndex++;
                 }
+
+                bridgeList.Add(hebNormToWordRelation);
+                positionInWord++;
             }
         }
 
         foreach (var chunk in normalisedHebrewWordsDict.Keys.Chunk(10000))
         {
             await _versesRepo.BulkInsertAsync(chunk, token);
-        }
-
-        foreach (var (normalizedHeb, wordIds) in normalisedHebrewWordsDict)
-        {
-            foreach (var id in wordIds)
-            {
-                bridgeList.Add(new() { StepHebrewWordsId = id, StepHebrewWordsNormalizedId = normalizedHeb.Id });
-            }
         }
 
         foreach (var chunk in bridgeList.Chunk(10000))

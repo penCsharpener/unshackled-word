@@ -37,7 +37,8 @@ public sealed class StepHebrewWordsRepository : IStepHebrewWordsRepository
                    FROM {StepHebrewWordDbo.DbName} AS w
                    WHERE 1=1
                      {(filter.IncludedBibleBookIds.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.BibleBookId)}\" = ANY(@IncludedBibleBookIds)")}
-                     {(filter.IncludeChapters.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.Chapter)}\" = ANY(@IncludeChapters)")};
+                     {(filter.IncludeChapters.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.Chapter)}\" = ANY(@IncludeChapters)")}
+                   ORDER BY w."BibleBookId", w."Chapter", w."Verse", w."PositionInVerse";
                    """;
 
         return await _dbReader.ReadAsListAsync<StepHebrewWordDbo>(sql, filter);

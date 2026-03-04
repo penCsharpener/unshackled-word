@@ -74,6 +74,7 @@ public sealed class StepHebrewWordsNormalizedRepository : IStepHebrewWordsNormal
         {
             valueList.AddInt(entry.StepHebrewWordsId);
             valueList.AddInt(entry.StepHebrewWordsNormalizedId);
+            valueList.AddInt(entry.PositionInWord);
 
             valueList.ValuesToInsertRow();
             valueList.Clear();
