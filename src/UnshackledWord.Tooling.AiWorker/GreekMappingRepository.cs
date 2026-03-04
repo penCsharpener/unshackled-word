@@ -232,22 +232,20 @@ public class GreekMappingRepository
             foreach (var wordMap in mapping.Data)
             {
                 var stepId = wordMap.StepWordId?.ToString() ?? "null";
-                // var strongs = wordMap.Strongs is null ? "null" : $"'{wordMap.Strongs}'";
-                var strongs = "null";
                 var parentId = wordMap.ParentElbWordId?.ToString() ?? "null";
                 var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
                 var elbWordOrder = foundWord?.Order ?? 999;
                 var germanWord = foundWord?.German;
                 var foundGreek = stepVerses.FirstOrDefault(x => wordMap.StepWordId is not null && x.Id == wordMap.StepWordId);
                 var greekWord = foundGreek?.Greek;
-                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, {strongs}, " +
+                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, " +
                        $"{wordMap.IsAddedWord}, {parentId}, {elbWordOrder} /* {germanWord} - {greekWord} */)");
             }
         }
 
         var sql = $"""
                    INSERT INTO "unshackled-word"."Elb1871GreekMapping"
-                   ("ElbWordId","StepGreekId","BookId","Chapter","Verse","StrongsNumber","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
+                   ("ElbWordId","StepGreekId","BookId","Chapter","Verse","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
                    VALUES
                    {sb.JoinStrings($",{Environment.NewLine}")}
                    ON CONFLICT ("ElbWordId") DO NOTHING

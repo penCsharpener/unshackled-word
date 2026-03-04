@@ -24,7 +24,7 @@ public class Worker : BackgroundService
         //     MaxVerse = 30
         // };
         // await _gkMapping.MapWordsForRangeAsync(minVerse, 30, bRef, stoppingToken);
-        // await _gkMapping.RunAsync(stoppingToken);
-        await _hebMapping.RunAsync(stoppingToken);
+        await _gkMapping.RunAsync(stoppingToken);
+        //await _hebMapping.RunAsync(stoppingToken);
     }
 }
