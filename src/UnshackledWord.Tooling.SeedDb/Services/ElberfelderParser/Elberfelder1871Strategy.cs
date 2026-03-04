@@ -30,9 +30,10 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         _countVerses = await GetCountVersesAsync(token);
         _countWords = await GetCountWordsAsync(token);
 
-        if (_countVerses > 0 && _countWords > 0)
+        if (_countVerses > 0 || _countWords > 0)
         {
-            _logger.LogInformation("Elberfelder 1871 verses and words already exist in the database. Skipping import.");
+            _logger.LogInformation("Elberfelder 1871 verses and words already exist in the database. Skipping import. " +
+                                   "{countVerses} rows of verses {countWords} rows of words ", _countVerses, _countWords);
             return;
         }
 
@@ -165,7 +166,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     {
         var sql = """
                   select Count(*)
-                  from "unshackled-word"."Elb1871Words"
+                  from "unshackled-word"."Elb1871Verses"
                   """;
 
         return await _reader.ExecuteScalarAsync<int>(sql);

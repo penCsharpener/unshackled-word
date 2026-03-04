@@ -13,26 +13,29 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
     private readonly IDbWriter _dbWriter;
     private readonly IDbReader _reader;
     private readonly ParseHelper _parseHelper;
+    private readonly ILogger<SrTsvParserStrategy> _logger;
 
-    public SrTsvParserStrategy(IFileService fileService, IDbWriter dbWriter, IDbReader reader, ParseHelper parseHelper)
+    public SrTsvParserStrategy(IFileService fileService, IDbWriter dbWriter,
+        IDbReader reader, ParseHelper parseHelper, ILogger<SrTsvParserStrategy> logger)
     {
         _fileService = fileService;
         _dbWriter = dbWriter;
         _reader = reader;
         _parseHelper = parseHelper;
+        _logger = logger;
     }
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
         var select = """
-                     SELECT *
+                     SELECT count(*)
                      FROM "unshackled-word"."SrGntWords"
-                     LIMIT 1;
                      """;
-        var existingRows = await _reader.ReadFirstOrDefaultAsync<object>(select);
+        var countRows = await _reader.ExecuteScalarAsync<int>(select);
 
-        if (existingRows is not null)
+        if (countRows > 0)
         {
+            _logger.LogInformation("Sr tsv data already imported... {count} rows", countRows);
             return;
         }
 

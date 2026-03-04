@@ -12,12 +12,14 @@ public sealed partial class StepHebrewStrongsStrategy : IFileParserStrategy<List
 {
     private readonly IFileService _fileService;
     private readonly IStepStrongsRepository _repo;
+    private readonly ILogger<StepHebrewStrongsStrategy> _logger;
     private static Regex _lineStart = IsLineStart();
 
-    public StepHebrewStrongsStrategy(IFileService fileService, IStepStrongsRepository repo)
+    public StepHebrewStrongsStrategy(IFileService fileService, IStepStrongsRepository repo, ILogger<StepHebrewStrongsStrategy> logger)
     {
         _fileService = fileService;
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<List<StepHebrewStrongsEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
@@ -26,6 +28,7 @@ public sealed partial class StepHebrewStrongsStrategy : IFileParserStrategy<List
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {
+            _logger.LogInformation("Step Hebrew strongs file data already imported... {count} rows", count);
             return [];
         }
 

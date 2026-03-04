@@ -16,6 +16,7 @@ public sealed class ElbParserStrategy : IFileParserStrategy
     private readonly IDbWriter _writer;
     private readonly IDbReader _reader;
     private readonly ParseHelper _parseHelper;
+    private readonly ILogger<ElbParserStrategy> _logger;
     public List<ElbVerse> ElberfelderStrongsVerses { get; set; } = [];
 
     private static Regex _fillReplace = new(@"(</gr>)(\s|\s+[^<]{2,}?|[,.;:]?\s?\w*\s?)(<gr\s)",
@@ -24,12 +25,13 @@ public sealed class ElbParserStrategy : IFileParserStrategy
     private static Regex _fillReplace2 = new(@"(<VERS vnumber.*?>)(.*?\s?)(<gr\s|<STYLE\s|<DIV>|</VERS>)",
         RegexOptions.Compiled | RegexOptions.Singleline);
 
-    public ElbParserStrategy(IFileService fileService, IDbWriter writer, IDbReader reader, ParseHelper parseHelper)
+    public ElbParserStrategy(IFileService fileService, IDbWriter writer, IDbReader reader, ParseHelper parseHelper, ILogger<ElbParserStrategy> logger)
     {
         _fileService = fileService;
         _writer = writer;
         _reader = reader;
         _parseHelper = parseHelper;
+        _logger = logger;
     }
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
@@ -37,6 +39,7 @@ public sealed class ElbParserStrategy : IFileParserStrategy
         var count = await GetCountAsync();
         if (count > 0)
         {
+            _logger.LogInformation("Bibelkommentare Data imported. Skipping import... {count} rows", count);
             return;
         }
 
@@ -262,7 +265,7 @@ public sealed class ElbParserStrategy : IFileParserStrategy
     {
         var sql = """
                   select count(*)
-                  from ElberfelderVerseInfo
+                  from "unshackled-word"."ElberfelderVerseInfo"
                   """;
 
         return await _reader.ExecuteScalarAsync<int>(sql);

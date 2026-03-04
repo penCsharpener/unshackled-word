@@ -2,7 +2,6 @@ using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo.Step;
-using UnshackledWord.Domain.Models.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
@@ -11,12 +10,22 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
 {
     private readonly IStepHebrewWordsRepository _hebRepo;
     private readonly IStepHebrewWordsNormalizedRepository _versesRepo;
+    private readonly ILogger<StepHebrewStrongsNormalizingStrategy> _logger;
     private static string[] _noneSuffixStrings = ["־", "׃", "׀", "׆", "a"];
 
-    public StepHebrewStrongsNormalizingStrategy(IStepHebrewWordsRepository hebRepo, IStepHebrewWordsNormalizedRepository versesRepo)
+    /*
+    to reset and redo the seeding
+    TRUNCATE TABLE "unshackled-word"."StepHebrewWordsNormalized" RESTART IDENTITY;
+    TRUNCATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords" RESTART IDENTITY;
+    TRUNCATE TABLE "unshackled-word"."Elb1871HebrewMapping" RESTART IDENTITY;
+    */
+    public StepHebrewStrongsNormalizingStrategy(IStepHebrewWordsRepository hebRepo,
+        IStepHebrewWordsNormalizedRepository versesRepo,
+        ILogger<StepHebrewStrongsNormalizingStrategy> logger)
     {
         _hebRepo = hebRepo;
         _versesRepo = versesRepo;
+        _logger = logger;
     }
 
     public async Task SaveToDatabase(string _, CancellationToken token = default)
@@ -26,11 +35,17 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
         var count = await _versesRepo.CountByFilterAsync(filter, token);
         if (count > 0)
         {
+            _logger.LogInformation("Normalized Hebrew words already imported...");
             return;
         }
 
         var hFilter = new StepHebrewWordFilter();
-        hFilter.Columns = [ nameof(StepHebrewWordDbo.Id), nameof(StepHebrewWordDbo.BibleBookId), nameof(StepHebrewWordDbo.Chapter), nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.DisambiguatedStrongs), nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags) ];
+        hFilter.Columns =
+        [
+            nameof(StepHebrewWordDbo.Id), nameof(StepHebrewWordDbo.BibleBookId), nameof(StepHebrewWordDbo.Chapter),
+            nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.DisambiguatedStrongs),
+            nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags)
+        ];
         var hebrewEntries = await _hebRepo.GetByFilterAsync(hFilter, token);
         var index = 0;
         var normalisedEntries = new List<StepStrongsToVersesDbo>();

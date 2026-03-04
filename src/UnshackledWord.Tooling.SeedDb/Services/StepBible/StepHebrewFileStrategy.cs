@@ -12,11 +12,13 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
 {
     private readonly IFileService _fileService;
     private readonly IStepHebrewWordsRepository _repo;
+    private readonly ILogger<StepHebrewFileStrategy> _logger;
 
-    public StepHebrewFileStrategy(IFileService fileService, IStepHebrewWordsRepository repo)
+    public StepHebrewFileStrategy(IFileService fileService, IStepHebrewWordsRepository repo, ILogger<StepHebrewFileStrategy> logger)
     {
         _fileService = fileService;
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<List<StepAmalgamatedHebrewEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
@@ -25,6 +27,7 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {
+            _logger.LogInformation("Step Hebrew file data already imported... {count} rows", count);
             return [];
         }
 

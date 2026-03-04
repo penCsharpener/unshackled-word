@@ -31,10 +31,11 @@ public class SrRunner : IRunner
         await _fileDownloader.DownloadFileAsync(token);
 
         using var scope = _scopeFactory.CreateScope();
-        var countText = await GetCountTextAsync(token);
+        var countSr = await GetCountTsvAsync(token);
 
-        if (countText > 0)
+        if (countSr > 0)
         {
+            _logger.LogInformation("Statistical Restoration data imported. Skipping import... {countSr} rows", countSr);
             return;
         }
 
@@ -62,16 +63,6 @@ public class SrRunner : IRunner
         var sql = """
                   select count(*)
                   from "unshackled-word"."SrGntWords"
-                  """;
-
-        return await _dbReader.ExecuteScalarAsync<int>(sql);
-    }
-
-    private async Task<int> GetCountTextAsync(CancellationToken token = default)
-    {
-        var sql = """
-                  select count(*)
-                  from "unshackled-word"."SblText"
                   """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);

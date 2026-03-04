@@ -29,20 +29,36 @@ public class SblRunner : IRunner
 
     public async Task Run(CancellationToken token = default)
     {
+        await ImportSblTextAsync(token);
+        await ImportSblApparatusAsync(token);
+    }
+
+    private async Task ImportSblTextAsync(CancellationToken token = default)
+    {
         var countText = await GetCountTextAsync(token);
+
+        if (countText > 0)
+        {
+            _logger.LogInformation("SBL text data already imported... {countText} rows", countText);
+            return;
+        }
+
+        await _textDownloader.DownloadFileAsync(token);
+        await _textTextStrategy.SaveToDatabase("", token);
+    }
+
+    private async Task ImportSblApparatusAsync(CancellationToken token = default)
+    {
         var countApparatusText = await GetCountApparatusAsync(token);
 
-        if (countText == 0)
+        if (countApparatusText > 0)
         {
-            await _textDownloader.DownloadFileAsync(token);
-            await _textTextStrategy.SaveToDatabase("", token);
+            _logger.LogInformation("SBL apparatus data already imported... {countApparatusText} rows", countApparatusText);
+            return;
         }
 
-        if (countApparatusText == 0)
-        {
-            await _apparatusDownloader.DownloadFileAsync(token);
-            await _apparatusStrategy.SaveToDatabase("", token);
-        }
+        await _apparatusDownloader.DownloadFileAsync(token);
+        await _apparatusStrategy.SaveToDatabase("", token);
     }
 
     private async Task<int> GetCountTextAsync(CancellationToken token = default)

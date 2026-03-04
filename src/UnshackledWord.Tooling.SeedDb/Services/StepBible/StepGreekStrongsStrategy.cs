@@ -13,12 +13,14 @@ public sealed partial class StepGreekStrongsStrategy : IFileParserStrategy<List<
 {
     private readonly IFileService _fileService;
     private readonly IStepStrongsRepository _repo;
+    private readonly ILogger<StepGreekStrongsStrategy> _logger;
     private static Regex _lineStart = IsLineStart();
 
-    public StepGreekStrongsStrategy(IFileService fileService, IStepStrongsRepository repo)
+    public StepGreekStrongsStrategy(IFileService fileService, IStepStrongsRepository repo, ILogger<StepGreekStrongsStrategy> logger)
     {
         _fileService = fileService;
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<List<StepGreekStrongsEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
@@ -27,6 +29,7 @@ public sealed partial class StepGreekStrongsStrategy : IFileParserStrategy<List<
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {
+            _logger.LogInformation("Step Greek strongs file data already imported... {count} rows", count);
             return [];
         }
 

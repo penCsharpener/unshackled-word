@@ -13,11 +13,13 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
 {
     private readonly IFileService _fileService;
     private readonly IStepGreekWordsRepository _repo;
+    private readonly ILogger<StepGreekFileStrategy> _logger;
 
-    public StepGreekFileStrategy(IFileService fileService, IStepGreekWordsRepository repo)
+    public StepGreekFileStrategy(IFileService fileService, IStepGreekWordsRepository repo, ILogger<StepGreekFileStrategy> logger)
     {
         _fileService = fileService;
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<List<StepAmalgamatedGreekEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
@@ -26,6 +28,7 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {
+            _logger.LogInformation("Step Greek file data already imported... {count} rows", count);
             return [];
         }
 

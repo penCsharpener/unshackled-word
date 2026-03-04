@@ -10,12 +10,14 @@ public sealed class StepPersonPlaceLexiconStrategy : IFileParserStrategy
 {
     private readonly IFileService _fileService;
     private readonly IStepPersonPlaceRepository _repo;
+    private readonly ILogger<StepPersonPlaceLexiconStrategy> _logger;
     private readonly StepLexiconStrategyFactory _factory;
 
-    public StepPersonPlaceLexiconStrategy(IFileService fileService, IStepPersonPlaceRepository repo)
+    public StepPersonPlaceLexiconStrategy(IFileService fileService, IStepPersonPlaceRepository repo, ILogger<StepPersonPlaceLexiconStrategy> logger)
     {
         _fileService = fileService;
         _repo = repo;
+        _logger = logger;
         _factory = new StepLexiconStrategyFactory();
     }
 
@@ -49,6 +51,10 @@ public sealed class StepPersonPlaceLexiconStrategy : IFileParserStrategy
         {
             await _repo.BulkInsertAsync(persons, token);
         }
+        else
+        {
+            _logger.LogInformation("Step person data already imported... {count} rows", personCount);
+        }
 
         if (relationCount == 0)
         {
@@ -61,17 +67,29 @@ public sealed class StepPersonPlaceLexiconStrategy : IFileParserStrategy
 
             await _repo.BulkInsertAsync(relations.EnumerateWithIds().ToArray(), token);
         }
+        else
+        {
+            _logger.LogInformation("Step person relation data already imported... {count} rows", relationCount);
+        }
 
         if (placeCount == 0)
         {
             var places = entities.OfType<PlaceRecord>().ToDbo().EnumerateWithIds().ToArray();
             await _repo.BulkInsertAsync(places, token);
         }
+        else
+        {
+            _logger.LogInformation("Step place data already imported... {count} rows", placeCount);
+        }
 
         if (otherCount == 0)
         {
             var others = entities.OfType<OtherRecord>().ToDbo().EnumerateWithIds().ToArray();
             await _repo.BulkInsertAsync(others, token);
+        }
+        else
+        {
+            _logger.LogInformation("Step other data already imported... {count} rows", otherCount);
         }
     }
 

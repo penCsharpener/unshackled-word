@@ -8,11 +8,13 @@ public class GbtRunner : IRunner
 {
     private readonly GbtCsvStrategy _gbtCsvStrategy;
     private readonly IDbReader _dbReader;
+    private readonly ILogger<GbtRunner> _logger;
 
-    public GbtRunner(GbtCsvStrategy gbtCsvStrategy, IDbReader dbReader)
+    public GbtRunner(GbtCsvStrategy gbtCsvStrategy, IDbReader dbReader, ILogger<GbtRunner> logger)
     {
         _gbtCsvStrategy = gbtCsvStrategy;
         _dbReader = dbReader;
+        _logger = logger;
     }
 
     public async Task Run(CancellationToken token = default)
@@ -20,6 +22,7 @@ public class GbtRunner : IRunner
         var count = await GetCountAsync(token);
         if (count > 0)
         {
+            _logger.LogInformation("Global Bible Tools already imported. Skipping import... {count} rows", count);
             return;
         }
 

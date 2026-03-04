@@ -12,15 +12,22 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
     private readonly IFileService _fileService;
     private readonly IDbWriter _dbWriter;
     private readonly IDbReader _dbReader;
+    private readonly ILogger<ByzTxtStrategy> _logger;
     private readonly ByzantineSettings _options;
     private readonly HttpClient _githubClient;
     private static string _delimiter = $",{Environment.NewLine}    ";
 
-    public ByzTxtStrategy(IFileService fileService, IDbWriter dbWriter, IDbReader dbReader, IHttpClientFactory clientFactory, IOptions<AppSettings> options)
+    public ByzTxtStrategy(IFileService fileService,
+        IDbWriter dbWriter,
+        IDbReader dbReader,
+        IHttpClientFactory clientFactory,
+        IOptions<AppSettings> options,
+        ILogger<ByzTxtStrategy> logger)
     {
         _fileService = fileService;
         _dbWriter = dbWriter;
         _dbReader = dbReader;
+        _logger = logger;
         _githubClient = clientFactory.CreateClient("Github");
         _options = options.Value.DatabaseSeeding.ByzantineSettings;
     }
@@ -30,6 +37,7 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
         var count = await GetCountAsync();
         if (count > 0)
         {
+            _logger.LogInformation("Byzantine text data already imported... {count} rows", count);
             return;
         }
 

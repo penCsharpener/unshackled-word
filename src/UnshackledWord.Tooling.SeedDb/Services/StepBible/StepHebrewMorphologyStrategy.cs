@@ -11,11 +11,13 @@ public sealed class StepHebrewMorphologyStrategy : IFileParserStrategy<List<Step
 {
     private readonly IFileService _fileService;
     private readonly IStepHebrewMorphologyRepository _repo;
+    private readonly ILogger<StepHebrewMorphologyStrategy> _logger;
 
-    public StepHebrewMorphologyStrategy(IFileService fileService, IStepHebrewMorphologyRepository repo)
+    public StepHebrewMorphologyStrategy(IFileService fileService, IStepHebrewMorphologyRepository repo, ILogger<StepHebrewMorphologyStrategy> logger)
     {
         _fileService = fileService;
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<List<StepHebrewMorphologyEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
@@ -24,6 +26,7 @@ public sealed class StepHebrewMorphologyStrategy : IFileParserStrategy<List<Step
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {
+            _logger.LogInformation("Step Hebrew morphology data already imported... {count} rows", count);
             return [];
         }
 

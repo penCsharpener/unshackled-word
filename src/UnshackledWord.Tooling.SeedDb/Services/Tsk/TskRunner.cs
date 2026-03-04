@@ -22,6 +22,7 @@ public sealed class TskRunner : IRunner
 
         if (count > 0)
         {
+            _logger.LogInformation("TSK already imported. Skipping import... {count} rows", count);
             return;
         }
 

@@ -9,11 +9,15 @@ public sealed class StepBibleStructureStrategy : IFileParserStrategy
 {
     private readonly IDbReader _dbReader;
     private readonly IDbWriter _dbWriter;
+    private readonly ILogger<StepBibleStructureStrategy> _logger;
 
-    public StepBibleStructureStrategy(IDbReader dbReader, IDbWriter dbWriter)
+    public StepBibleStructureStrategy(IDbReader dbReader,
+        IDbWriter dbWriter,
+        ILogger<StepBibleStructureStrategy> logger)
     {
         _dbReader = dbReader;
         _dbWriter = dbWriter;
+        _logger = logger;
     }
 
     public async Task SaveToDatabase(string _, CancellationToken token = default)
@@ -31,6 +35,7 @@ public sealed class StepBibleStructureStrategy : IFileParserStrategy
         var existingCount = await _dbReader.ExecuteScalarAsync<int>(sqlCount);
         if (existingCount > 0)
         {
+            _logger.LogInformation("Step Bible structure already imported...");
             return;
         }
 

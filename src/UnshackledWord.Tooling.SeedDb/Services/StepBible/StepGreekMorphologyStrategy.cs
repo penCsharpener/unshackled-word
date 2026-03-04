@@ -10,11 +10,13 @@ public sealed class StepGreekMorphologyStrategy : IFileParserStrategy<List<StepG
 {
     private readonly IFileService _fileService;
     private readonly IStepGreekMorphologyRepository _repo;
+    private readonly ILogger<StepGreekMorphologyStrategy> _logger;
 
-    public StepGreekMorphologyStrategy(IFileService fileService, IStepGreekMorphologyRepository repo)
+    public StepGreekMorphologyStrategy(IFileService fileService, IStepGreekMorphologyRepository repo, ILogger<StepGreekMorphologyStrategy> logger)
     {
         _fileService = fileService;
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<List<StepGreekMorphologyEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
@@ -23,6 +25,7 @@ public sealed class StepGreekMorphologyStrategy : IFileParserStrategy<List<StepG
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)
         {
+            _logger.LogInformation("Step Greek morphology data already imported... {count} rows", count);
             return [];
         }
 

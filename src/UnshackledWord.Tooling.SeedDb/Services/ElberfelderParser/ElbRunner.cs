@@ -25,6 +25,7 @@ public class ElbRunner : IRunner
         IList<ElbVerse> bkList = null!;
         IList<Elb1871Verse> elb1871List = null!;
 
+        /*
         var bkFilePath = _fileService.Combine(_options.SolutionTempPath, "SeedData/Elb/bible_elb_bk_mybible.xml") ;
         if (_fileService.FileExists(bkFilePath))
         {
@@ -33,6 +34,7 @@ public class ElbRunner : IRunner
             await strategy.SaveToDatabase(bkFilePath, token);
             bkList = strategy.ElberfelderStrongsVerses;
         }
+        */
 
         var elb1871Path = _fileService.Combine(_options.SolutionTempPath, "SeedData/Elb/elberfelder1871.txt");
         if (_fileService.FileExists(elb1871Path))
