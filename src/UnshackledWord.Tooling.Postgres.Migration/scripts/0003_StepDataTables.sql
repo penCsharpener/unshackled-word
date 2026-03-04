@@ -86,6 +86,7 @@ CREATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords"
 (
     "StepHebrewWordsId"              INTEGER     NOT NULL,
     "StepHebrewWordsNormalizedId"    INTEGER     NOT NULL,
+    "PositionInWord"                 INTEGER     NOT NULL,
 
     PRIMARY KEY ("StepHebrewWordsId", "StepHebrewWordsNormalizedId"),
 
