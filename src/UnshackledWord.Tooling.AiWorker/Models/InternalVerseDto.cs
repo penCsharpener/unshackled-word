@@ -9,4 +9,5 @@ internal class InternalVerseDto
     public string Word { get; set; } = default!;
     public string? Strongs { get; set; }
     public int PositionInVerse { get; set; }
+    public int PositionInWord { get; set; }
 }

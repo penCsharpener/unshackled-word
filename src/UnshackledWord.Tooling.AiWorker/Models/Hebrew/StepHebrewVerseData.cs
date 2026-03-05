@@ -9,4 +9,5 @@ public class StepHebrewVerseData
 public sealed class StepHebrewVerseDataWithOrder : StepHebrewVerseData
 {
     public int Order { get; set; }
+    public int PositionInWord { get; set; }
 }

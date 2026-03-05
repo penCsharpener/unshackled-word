@@ -43,12 +43,12 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
         hFilter.Columns =
         [
             nameof(StepHebrewWordDbo.Id), nameof(StepHebrewWordDbo.BibleBookId), nameof(StepHebrewWordDbo.Chapter),
-            nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.DisambiguatedStrongs),
+            nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.DisambiguatedStrongs), nameof(StepHebrewWordDbo.Hebrew),
             nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags)
         ];
         var hebrewEntries = await _hebRepo.GetByFilterAsync(hFilter, token);
         var index = 0;
-        var normalisedEntries = new List<StepStrongsToVersesDbo>();
+        // var normalisedEntries = new List<StepStrongsToVersesDbo>();
         var normalisedHebrewWordsDict = new Dictionary<StepHebrewWordsNormalizedDbo, List<int>>();
         var bridgeList = new List<StepHebrewWordsNormalizedToHebrewWordDbo>();
         var normalizedIndex = 1;
@@ -89,49 +89,53 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
                     }
                 }
 
-                var normalisedStrongs = new StepStrongsToVersesDbo
-                {
-                    Id = index,
-                    StrongsNumber = part.Replace("{", "").Replace("}", ""),
-                    BibleBookId = word.BibleBookId,
-                    Chapter = word.Chapter,
-                    Verse = word.Verse,
-                    Grammar = grammar,
-                    Hebrew = hebrew,
-                    Gloss = parsedGloss?.Gloss!,
-                    FirstOccuranceBibleBookId = parsedGloss?.FirstBookId,
-                    FirstOccuranceChapter = parsedGloss?.FirstChapter,
-                    FirstOccuranceVerse = parsedGloss?.FirstVerse,
-                    LastOccuranceBibleBookId = parsedGloss?.LastBookId,
-                    LastOccuranceChapter = parsedGloss?.LastChapter,
-                    LastOccuranceVerse = parsedGloss?.LastVerse,
-                    IsRoot = part.Contains('{')
-                };
+                // var normalisedStrongs = new StepStrongsToVersesDbo
+                // {
+                //     Id = index,
+                //     StrongsNumber = part.Replace("{", "").Replace("}", ""),
+                //     BibleBookId = word.BibleBookId,
+                //     Chapter = word.Chapter,
+                //     Verse = word.Verse,
+                //     Grammar = grammar,
+                //     Hebrew = hebrew,
+                //     Gloss = parsedGloss?.Gloss!,
+                //     FirstOccuranceBibleBookId = parsedGloss?.FirstBookId,
+                //     FirstOccuranceChapter = parsedGloss?.FirstChapter,
+                //     FirstOccuranceVerse = parsedGloss?.FirstVerse,
+                //     LastOccuranceBibleBookId = parsedGloss?.LastBookId,
+                //     LastOccuranceChapter = parsedGloss?.LastChapter,
+                //     LastOccuranceVerse = parsedGloss?.LastVerse,
+                //     IsRoot = part.Contains('{')
+                // };
 
                 var normalisedHebrew = new StepHebrewWordsNormalizedDbo
                 {
-                    Hebrew = normalisedStrongs.Hebrew,
-                    Grammar = normalisedStrongs.Grammar,
+                    Hebrew = hebrew,
+                    Grammar = grammar,
                     SuffixCode = suffixType,
-                    IsRoot = normalisedStrongs.IsRoot,
-                    StrongsNumber = normalisedStrongs.StrongsNumber,
+                    IsRoot = part.Contains('{'),
+                    StrongsNumber = part.Replace("{", "").Replace("}", ""),
                 };
 
                 var hebNormToWordRelation = new StepHebrewWordsNormalizedToHebrewWordDbo
                 {
                     StepHebrewWordsId = word.Id,
                     StepHebrewWordsNormalizedId = normalizedIndex,
-                    PositionInWord = positionInWord
+                    PositionInWord = positionInWord,
+                    TestHebrewNormalisedWord = normalisedHebrew.Hebrew,
+                    TestHebrewWord = word.Hebrew
                 };
 
-                normalisedEntries.Add(normalisedStrongs);
+                // normalisedEntries.Add(normalisedStrongs);
                 if (normalisedHebrewWordsDict.ContainsKey(normalisedHebrew))
                 {
+                    hebNormToWordRelation.StepHebrewWordsNormalizedId = normalisedHebrewWordsDict.Keys.First(x => x.Equals(normalisedHebrew)).Id;
                     normalisedHebrewWordsDict[normalisedHebrew].Add(word.Id);
                 }
                 else
                 {
                     normalisedHebrew.Id = normalizedIndex;
+                    hebNormToWordRelation.StepHebrewWordsNormalizedId = normalisedHebrew.Id;
                     normalisedHebrewWordsDict[normalisedHebrew] = [word.Id];
                     normalizedIndex++;
                 }

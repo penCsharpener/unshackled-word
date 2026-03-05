@@ -33,6 +33,6 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
                       Greek Words: {greekVerseJson}
                       """;
 
-        return await SubmitAsync(prompt, GreekSystemInstruction, token);
+        return await SubmitAsync(prompt, GreekSystemInstruction, GeminiModelType.Flash2_5, token);
     }
 }

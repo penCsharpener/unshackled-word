@@ -6,4 +6,6 @@ public sealed class StepHebrewWordsNormalizedToHebrewWordDbo
     public int StepHebrewWordsId { get; set; }
     public int StepHebrewWordsNormalizedId { get; set; }
     public int PositionInWord { get; set; }
+    public string TestHebrewNormalisedWord { get; set; } = default!;
+    public string TestHebrewWord { get; set; } = default!;
 }

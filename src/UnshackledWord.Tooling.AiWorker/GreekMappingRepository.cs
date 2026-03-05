@@ -160,7 +160,7 @@ public class GreekMappingRepository
     internal async Task<List<VerseDataList<ElbVerseData>>> GetElbVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
     {
         var sql = $"""
-                   select ew."Id", ew."BibleBookId", ew."Chapter", ew."Verse", ew."WordInContext" "Word", ew."PositionInVerse"
+                   select ew."Id", ew."BibleBookId", ew."Chapter", ew."Verse", ew."WordInContext" "Word", ew."PositionInVerse", 0 "PositionInWord"
                    from "unshackled-word"."Elb1871Words" ew
                    where   ew."BibleBookId" = {bookId}
                        and ew."Chapter" = {chapter}

@@ -16,8 +16,6 @@ public abstract class GeminiFlashAbstractClient
     protected AsyncRetryPolicy _apiErrorPolicies;
     protected readonly GeminiClient _client;
     protected readonly ILogger _logger;
-    protected const string ModelName = "gemini-2.5-flash";
-    // protected const string ModelName = "gemini-3-flash-preview";
 
     public GeminiFlashAbstractClient(GeminiClient client, ILogger<GreekGeminiFlashClient> logger)
     {
@@ -34,13 +32,13 @@ public abstract class GeminiFlashAbstractClient
                 });
     }
 
-    protected async Task<List<VerseDataList<ElbStepAiMapping>>> SubmitAsync(string prompt, string systemInstructions, CancellationToken token = default)
+    protected async Task<List<VerseDataList<ElbStepAiMapping>>> SubmitAsync(string prompt, string systemInstructions, string modelName = "gemini-2.5-flash", CancellationToken token = default)
     {
         var response = await _apiErrorPolicies.ExecuteAsync(async () =>
         {
             var timeStamp = Stopwatch.GetTimestamp();
             var mappings = await _client.Models.GenerateContentAsync(
-                model: ModelName,
+                model: modelName,
                 contents: prompt,
                 config: GetResponseSchema(systemInstructions),
                 cancellationToken: token

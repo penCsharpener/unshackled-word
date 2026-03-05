@@ -21,7 +21,7 @@ public class HebrewMappingRepository
         var sql = """
                   select ew."BibleBookId", ew."Chapter", MIN(ew."Verse") MinVerse, MAX(ew."Verse") MaxVerse
                   from "unshackled-word"."Elb1871Words" ew
-                    left join "unshackled-word"."Elb1871GreekMapping" egm on ew."Id" = egm."ElbWordId"
+                    left join "unshackled-word"."Elb1871HebrewMapping" egm on ew."Id" = egm."ElbWordId"
                   where ew."BibleBookId" < 40
                     and egm."ElbWordId" is null
                   group by ew."BibleBookId", ew."Chapter"
@@ -68,7 +68,7 @@ public class HebrewMappingRepository
     internal async Task<List<VerseDataList<StepHebrewVerseData>>> GetHebrewVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
     {
         var sql = $"""
-                   SELECT shw."BibleBookId", shw."Chapter", shw."Verse", shw."PositionInVerse", shwn."Id", shwn."Hebrew" "Word"
+                   SELECT shw."BibleBookId", shw."Chapter", shw."Verse", shw."PositionInVerse", shwn."Id", shwn."Hebrew" "Word", shwnthw."PositionInWord"
                    FROM "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords" shwnthw
                        INNER JOIN "unshackled-word"."StepHebrewWordsNormalized"    shwn    ON shwnthw."StepHebrewWordsNormalizedId" = shwn."Id"
                        INNER  JOIN "unshackled-word"."StepHebrewWords"             shw     ON shwnthw."StepHebrewWordsId" = shw."Id"
@@ -91,7 +91,8 @@ public class HebrewMappingRepository
                 {
                     Hebrew = d.Word,
                     Id = d.Id,
-                    Order = d.PositionInVerse
+                    Order = d.PositionInVerse,
+                    PositionInWord = d.PositionInWord
                 }).OrderBy(o => o.Order).ToList()
             }).OrderBy(x => x.BookId)
             .ThenBy(x => x.Chapter)

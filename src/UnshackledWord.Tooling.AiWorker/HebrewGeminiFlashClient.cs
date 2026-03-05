@@ -8,12 +8,12 @@ namespace UnshackledWord.Tooling.AiWorker;
 public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
 {
     // private const string ModelName = "gemini-3-flash-preview";
-
+    // a) if there are multiple German words possible candidates for a parent then prefer less frequent words as parent, ie. 'er gemacht hatte' the parent is 'gemacht', not 'hatte'
     private const string HebrewSystemInstruction = """
                                                   You are a linguistic expert mapping the Elberfelder 1871 German NT to STEP Bible Hebrew data.
                                                   RULES:
                                                   1. OUTPUT: Return a JSON object matching the provided schema.
-                                                  2. SPLIT VERBS: Map split German verb parts (e.g., 'aus' in 'geht...aus') to the same Hebrew 'StepWordId'.
+                                                  2. SPLIT VERBS: Map split German verb parts (e.g., 'aus' in 'geht...aus') to the same Hebrew 'StepWordId'. For example a) the verb is 'עָשָׂה' and the German 'er gemacht hatte', then tag all three German words with the same 'StepWordId' of 'עָשָׂה' or b) if the verb is 'כָּבַשׁ' then tag all the words 'machet sie euch untertan' with the 'StepWordId' of 'כָּבַשׁ'
                                                   3. ADDED WORDS: If a German word has no Hebrew source, set 'IsAddedWord': true and 'StepWordId': null.
                                                   4. PARENT MAPPING: For German words where IsAddedWord is true (e.g., articles like 'der' or particles), set ParentElbWordId to the ElbWordId of the semantic head of the phrase. For articles and adjectives, this is the Noun. For auxiliary verbs or split particles, this is the Main Verb. If 'der' refers to 'Tisch' in 'der kleine Tisch', map 'der' to the ID of 'Tisch', even if 'kleine' is in between.
                                                   5. VERSE INTEGRITY: Never map a German word ID to a Hebrew word from a different verse.
@@ -54,6 +54,6 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
                       Hebrew Words: {hebrewVerseJson}
                       """;
 
-        return await SubmitAsync(prompt, HebrewSystemInstruction, token);
+        return await SubmitAsync(prompt, HebrewSystemInstruction, GeminiModelType.Flash2_5, token);
     }
 }
