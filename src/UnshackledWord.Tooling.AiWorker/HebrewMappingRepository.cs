@@ -16,6 +16,16 @@ public class HebrewMappingRepository
         _dbWriter = dbWriter;
     }
 
+    internal async Task<IEnumerable<BibleBookName>> GetBookNamesAsync()
+    {
+        var sql = """
+                  SELECT bb."Id", bb."Name"
+                  FROM "unshackled-word"."BibleBooks" bb
+                  """;
+
+        return await _dbReader.ReadAsListAsync<BibleBookName>(sql);
+    }
+
     internal async Task<IEnumerable<BibleReferenceRange>> GetMissingVerseRangesAsync()
     {
         var sql = """

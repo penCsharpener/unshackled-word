@@ -8,6 +8,7 @@ public class HebrewMappingService
     private readonly HebrewMappingRepository _repo;
     private readonly HebrewGeminiFlashClient _client;
     private readonly ILogger<HebrewMappingService> _logger;
+    private Dictionary<int, string> _booksDictionary;
 
     public HebrewMappingService(HebrewMappingRepository repo, HebrewGeminiFlashClient client, ILogger<HebrewMappingService> logger)
     {
@@ -26,6 +27,9 @@ public class HebrewMappingService
                 {
                     _logger.LogError(ex, "Retry {retryCount} after {delay} delay.", retryCount, timeSpan.ToString(@"mm\:ss"));
                 });
+
+        var bookNames = await _repo.GetBookNamesAsync();
+        _booksDictionary = bookNames.ToDictionary(x => x.Id, x => x.Name);
 
         // Best practice: respect the cancellation token in your while loop
         while (!token.IsCancellationRequested)
@@ -63,9 +67,10 @@ public class HebrewMappingService
                     var elbWords = await _repo.GetElbVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
                     var stepWords = await _repo.GetHebrewVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
                     var wordCount = elbWords.SelectMany(x => x.Data).Count();
+                    var gotBookName = _booksDictionary.TryGetValue(bRef.BibleBookId, out string bookName);
 
-                    _logger.LogInformation("Submitting {bookId}:{chapter}:{minVerse}-{maxVerse} of a total of {totalVerses} verses with {totalWords} words",
-                        bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse, bRef.MaxVerse, wordCount);
+                    _logger.LogInformation("Submitting {bookId} {chapter}:{minVerse}-{maxVerse} of a total of {totalVerses} verses with {totalWords} words",
+                        gotBookName ? bookName : bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse, bRef.MaxVerse, wordCount);
 
                     var response = await _client.GetElbStepMappings(elbWords, stepWords, token);
 
