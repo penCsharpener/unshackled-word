@@ -38,11 +38,11 @@ public class HebrewMappingService
                 break;
             }
 
-            await policy.ExecuteAsync(async () => await MapHebrewAsync(token, bRef));
+            await policy.ExecuteAsync(async () => await MapHebrewAsync(bRef, token));
         }
     }
 
-    private async Task MapHebrewAsync(CancellationToken token, BibleReferenceRange bRef)
+    internal async Task MapHebrewAsync(BibleReferenceRange bRef, CancellationToken token = default)
     {
         // 1. Get chunks of 5 verses (as you originally had)
         var verseChunks = Enumerable.Range(bRef.MinVerse, bRef.MaxVerse - bRef.MinVerse + 1).Chunk(5);

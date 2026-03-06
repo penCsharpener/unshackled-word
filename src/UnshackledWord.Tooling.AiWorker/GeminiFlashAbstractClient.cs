@@ -45,7 +45,7 @@ public abstract class GeminiFlashAbstractClient
             );
             var elapsed = Stopwatch.GetElapsedTime(timeStamp);
             var elapsedString = elapsed.ToString(@"mm\:ss");
-            _logger.LogInformation("Request took {elapsed}", elapsedString);
+            _logger.LogInformation("Prompt size: {promptSize}, SystemInstruction: {instructionSize} Request took {elapsed}", prompt.Length, systemInstructions.Length, elapsedString);
 
             return mappings;
         });

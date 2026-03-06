@@ -1,3 +1,4 @@
+using System.Text;
 using UnshackledWord.Application.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
@@ -13,6 +14,7 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
                                                   You are a linguistic expert mapping the Elberfelder 1871 German NT to STEP Bible Hebrew data.
                                                   RULES:
                                                   1. OUTPUT: Return a JSON object matching the provided schema.
+                                                     INPUT: The Input format is [Ref BookId:Chapter:Verse[(wordId<Word>)(wordId<Word>)]] which is an array of Bible References containing another array with tuples of words in the verse.
                                                   2. SPLIT VERBS: Map split German verb parts (e.g., 'aus' in 'geht...aus') to the same Hebrew 'StepWordId'. For example a) the verb is 'עָשָׂה' and the German 'er gemacht hatte', then tag all three German words with the same 'StepWordId' of 'עָשָׂה' or b) if the verb is 'כָּבַשׁ' then tag all the words 'machet sie euch untertan' with the 'StepWordId' of 'כָּבַשׁ'
                                                   3. ADDED WORDS: If a German word has no Hebrew source, set 'IsAddedWord': true and 'StepWordId': null.
                                                   4. PARENT MAPPING: For German words where IsAddedWord is true (e.g., articles like 'der' or particles), set ParentElbWordId to the ElbWordId of the semantic head of the phrase. For articles and adjectives, this is the Noun. For auxiliary verbs or split particles, this is the Main Verb. If 'der' refers to 'Tisch' in 'der kleine Tisch', map 'der' to the ID of 'Tisch', even if 'kleine' is in between.
@@ -26,28 +28,28 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
     public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
         IEnumerable<VerseDataList<StepHebrewVerseData>> stepWords, CancellationToken token = default)
     {
-        var germanVerseJson = elbWords.Select(x => new VerseDataList<ElbVerseDataWithoutOrder>()
+        var germanVerseJson = elbWords.Select(x => new VerseDataList<VerseDataWithoutOrder>
         {
             BookId = x.BookId,
             Chapter = x.Chapter,
             Verse = x.Verse,
-            Data = x.Data.Select(k => new ElbVerseDataWithoutOrder
+            Data = x.Data.Select(k => new VerseDataWithoutOrder
             {
                 Id = k.Id,
-                German = k.German
+                Word = k.German
             }).ToList()
-        }).ToNonIndentedJson();
-        var hebrewVerseJson = stepWords.Select(x => new VerseDataList<StepHebrewVerseDataWithOrder>()
+        }).ToDelimitedString();
+        var hebrewVerseJson = stepWords.Select(x => new VerseDataList<VerseDataWithoutOrder>
         {
             BookId = x.BookId,
             Chapter = x.Chapter,
             Verse = x.Verse,
-            Data = x.Data.Select(k => new StepHebrewVerseDataWithOrder
+            Data = x.Data.Select(k => new VerseDataWithoutOrder
             {
                 Id = k.Id,
-                Hebrew = k.Hebrew
+                Word = k.Hebrew
             }).ToList()
-        }).ToNonIndentedJson();
+        }).ToDelimitedString();
 
         var prompt = $"""
                       German Words: {germanVerseJson}
@@ -56,4 +58,26 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
 
         return await SubmitAsync(prompt, HebrewSystemInstruction, GeminiModelType.Flash2_5, token);
     }
+}
+
+public static class MappingPromptExtensions
+{
+    public static string ToDelimitedString(this IEnumerable<VerseDataList<VerseDataWithoutOrder>> verseDataItems)
+    {
+        var sb = new StringBuilder();
+        foreach (var item in verseDataItems)
+        {
+            var reference = $"[Ref {item.BookId}:{item.Chapter}:{item.Verse}[";
+            sb.Append(reference);
+            foreach (var word in item.Data)
+            {
+                sb.Append($"({word.Id},{word.Word})");
+            }
+
+            sb.Append("]]");
+        }
+
+        return sb.ToString();
+    }
+
 }

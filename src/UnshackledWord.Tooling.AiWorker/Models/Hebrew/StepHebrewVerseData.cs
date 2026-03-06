@@ -1,9 +1,12 @@
 namespace UnshackledWord.Tooling.AiWorker.Models.Hebrew;
 
-public class StepHebrewVerseData
+public class StepHebrewVerseData : VerseDataWithoutOrder
 {
-    public int Id { get; set; }
-    public string Hebrew { get; set; } = default!;
+    public string Hebrew
+    {
+        get => Word;
+        set => Word = value;
+    }
 }
 
 public sealed class StepHebrewVerseDataWithOrder : StepHebrewVerseData
