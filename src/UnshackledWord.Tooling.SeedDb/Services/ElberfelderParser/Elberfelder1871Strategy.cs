@@ -63,28 +63,17 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     {
         var batch = new List<Elb1871Verse>();
 
-        foreach (var verse in list)
+        foreach (var verseChunk in list.Chunk(batchSize))
         {
-            batch.Add(verse);
-
-            if (batch.Count >= batchSize)
+            if (_countWords == 0)
             {
-                if (_countWords > 0)
-                {
-                    await WriteWordsToDbAsync(batch, token);
-                }
-
-                if (_countVerses > 0)
-                {
-                    await WriteVersesToDbAsync(batch, token);
-                }
-                batch.Clear();
+                await WriteWordsToDbAsync(batch, token);
             }
-        }
 
-        if (_countVerses > 0)
-        {
-            await WriteVersesToDbAsync(batch, token);
+            if (_countVerses == 0)
+            {
+                await WriteVersesToDbAsync(batch, token);
+            }
         }
     }
 
@@ -114,7 +103,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         {
             foreach (var word in verse.Words)
             {
-                if (word.InContext is "-" or "G17-36")
+                if (word.InContext is "G17-36")
                 {
                     continue;
                 }

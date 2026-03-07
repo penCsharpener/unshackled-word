@@ -36,17 +36,16 @@ public class ElbRunner : IRunner
         }
         */
 
-        var elb1871Path = _fileService.Combine(_options.SolutionTempPath, "SeedData/Elb/elberfelder1871.txt");
-        if (_fileService.FileExists(elb1871Path))
+        if (_fileService.FileExists(_options.Elberfelder1871TextFile))
         {
             var strategy = scope.ServiceProvider.GetRequiredService<Elberfelder1871Strategy>();
 
-            await strategy.SaveToDatabase(elb1871Path, token);
+            await strategy.SaveToDatabase(_options.Elberfelder1871TextFile, token);
             elb1871List = strategy.Elberfelder1871Verses;
         }
 
-        var mergeStrategy = scope.ServiceProvider.GetRequiredService<ElberfelderMergeStrategy>();
+        // var mergeStrategy = scope.ServiceProvider.GetRequiredService<ElberfelderMergeStrategy>();
 
-        await mergeStrategy.SaveToDatabaseAsync(bkList, elb1871List, token);
+        // await mergeStrategy.SaveToDatabaseAsync(bkList, elb1871List, token);
     }
 }
