@@ -40,6 +40,7 @@ CREATE TABLE "unshackled-word"."Elb1871Words"
 
 CREATE INDEX "Elb1871Words_reference_idx" ON "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse");
 CREATE INDEX "Elb1871Words_strongs_idx" ON "unshackled-word"."Elb1871Words" ("Strongs");
+ALTER TABLE "unshackled-word"."Elb1871Words" ADD CONSTRAINT "Elb1871RefAndPositions_unique" UNIQUE ("BibleBookId","Chapter","Verse","PositionInVerse");
 
 CREATE TABLE "unshackled-word"."Elb1871Verses"
 (
@@ -52,6 +53,7 @@ CREATE TABLE "unshackled-word"."Elb1871Verses"
 );
 
 CREATE INDEX "Elb1871Verses_reference_idx" ON "unshackled-word"."Elb1871Verses" ("BibleBookId", "Chapter", "Verse");
+ALTER TABLE "unshackled-word"."Elb1871Verses" ADD CONSTRAINT "Elb1871Verses_unique" UNIQUE ("BibleBookId","Chapter","Verse");
 
 CREATE TABLE "unshackled-word"."SourceWords"
 (
