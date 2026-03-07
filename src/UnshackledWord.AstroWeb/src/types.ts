@@ -10,8 +10,9 @@ export interface WordResponse {
   verse: number;
   wordInContext: string;
   plainWord: string;
-  lemma: string;
-  strongs: string;
+  lemma?: string;
+  original?: string;
+  strongs?: string;
 }
 
 export enum PartOfSpeech {

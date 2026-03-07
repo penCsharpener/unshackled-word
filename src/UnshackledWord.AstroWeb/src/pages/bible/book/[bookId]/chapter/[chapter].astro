@@ -55,14 +55,28 @@ const wordEntries = data.words as WordResponse[];
   const container = document.querySelector<HTMLElement>('.bible-chapter');
 
   const updateHighlights = (e: MouseEvent, isAdding: boolean) => {
-    const target = (e.target as HTMLElement).closest<HTMLElement>('[data-strongs]');
+    const target = (e.target as HTMLElement).closest<HTMLElement>('.bible-word:not(.no-strongs)');
     if (!target) return;
 
-    const strongsId = target.dataset.strongs;
+    const { strongs: strongsId, original: originalText } = target.dataset;
+    if (!strongsId) return;
+
+    // Find all elements with the same Strongs ID
     const matches = container?.querySelectorAll<HTMLElement>(`[data-strongs="${strongsId}"]`);
     
     matches?.forEach(el => {
-      el.classList.toggle('active-highlight', isAdding);
+      if (!isAdding) {
+        // Remove both classes when moving away
+        el.classList.remove('active-highlight', 'active-highlight-green');
+        return;
+      }
+
+      // Check if original text matches to determine which class to add
+      if (el.dataset.original === originalText) {
+        el.classList.add('active-highlight');
+      } else {
+        el.classList.add('active-highlight-green');
+      }
     });
   };
 

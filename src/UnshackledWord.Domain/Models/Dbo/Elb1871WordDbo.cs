@@ -11,6 +11,7 @@ public class Elb1871WordDbo
     public string WordInContext { get; set; } = default!;
     public string? PlainWord { get; set; }
     public string? Lemma { get; set; }
+    public string? Original { get; set; }
     public int PositionInVerse { get; set; }
     public string? Strongs { get; set; }
     public string? PartOfSpeech { get; set; }

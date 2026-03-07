@@ -12,4 +12,5 @@ public record WordResponse
     public string? Strongs { get; set; }
     public int Id { get; set; }
     public string VerseCode { get; set; } = default!;
+    public string? GrammaticalKey { get; set; }
 }

@@ -9,11 +9,15 @@ const isFirstInVerse = info.positionInVerse === 1;
 {isFirstInVerse && <br>}
 {isFirstInVerse && <sup class="verse-num">{info.verse}{` `}</sup>}
 <span
-class="bible-word"
+class:list={[
+  "bible-word",
+  { "no-strongs": !info.strongs }
+]}
 data-order={info.positionInVerse}
 data-plain={info.plainWord}
 data-lemma={info.lemma}
 data-strongs={info.strongs}
+data-original={info.original}
 data-id={info.id}
 >
 {`${info.wordInContext}`}
@@ -27,11 +31,23 @@ data-id={info.id}
     transition-delay: 0s;
     border-radius: 4px;
     padding: 0 2px;
+    cursor: pointer;
+  }
+
+  .bible-word.no-strongs {
+    color: #779;
+    cursor: default;
   }
 
   .bible-word.active-highlight {
     background-color: lightblue;
     transition: background-color 0.2s ease-in;
-    transition-delay: 300ms; 
+    transition-delay: 150ms; 
+  }
+
+   .bible-word.active-highlight-green {
+    background-color: lightgreen;
+    transition: background-color 0.2s ease-in;
+    transition-delay: 150ms; 
   }
 </style>
