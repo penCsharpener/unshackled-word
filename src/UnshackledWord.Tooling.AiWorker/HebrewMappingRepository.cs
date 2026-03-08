@@ -78,6 +78,41 @@ public class HebrewMappingRepository
     internal async Task<List<VerseDataList<StepHebrewVerseData>>> GetHebrewVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
     {
         var sql = $"""
+                   SELECT shw."BibleBookId", shw."Chapter", shw."Verse", shw."PositionInVerse", shw."Id", shw."Hebrew" "Word"
+                   FROM "unshackled-word"."StepHebrewWords" shw
+                   WHERE (shw."BibleBookId" < 40
+                       AND shw."BibleBookId" = {bookId})
+                       AND shw."Chapter" = {chapter}
+                       AND shw."Verse" >= {startVerse}
+                       AND shw."Verse" <= {endVerse}
+                   ORDER BY shw."BibleBookId", shw."Chapter", shw."Verse", shw."PositionInVerse"
+                   """;
+
+        var verses = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql);
+        var list = verses.GroupBy(x => new { x.BibleBookId, x.Chapter, x.Verse })
+            .Select(x => new VerseDataList<StepHebrewVerseData>
+            {
+                BookId = x.Key.BibleBookId,
+                Chapter = x.Key.Chapter,
+                Verse = x.Key.Verse,
+                Data = x.Select(d => new StepHebrewVerseDataWithOrder
+                {
+                    Hebrew = d.Word,
+                    Id = d.Id,
+                    Order = d.PositionInVerse,
+                    PositionInWord = d.PositionInWord
+                }).OrderBy(o => o.Order).ToList()
+            }).OrderBy(x => x.BookId)
+            .ThenBy(x => x.Chapter)
+            .ThenBy(x => x.Verse)
+            .ToList();
+
+        return list;
+    }
+
+    internal async Task<List<VerseDataList<StepHebrewVerseData>>> GetNormalizedHebrewVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
+    {
+        var sql = $"""
                    SELECT shw."BibleBookId", shw."Chapter", shw."Verse", shw."PositionInVerse", shwn."Id", shwn."Hebrew" "Word", shwnthw."PositionInWord"
                    FROM "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords" shwnthw
                        INNER JOIN "unshackled-word"."StepHebrewWordsNormalized"    shwn    ON shwnthw."StepHebrewWordsNormalizedId" = shwn."Id"

@@ -273,7 +273,7 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
     -- Composite Unique Key for ElbWordId and StepGreekId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
     -- when there is one ElbWordId with multiple StepGreekId then each StepGreekId must have a unique GermanWordPart
-    CONSTRAINT "UqElbStepGreek" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepGreekId"),
+    CONSTRAINT "UqElbStepGreek" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepGreekId")
 );
 
 CREATE INDEX "IdxElbGreekWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
@@ -297,7 +297,7 @@ CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
     -- Composite Unique Key for ElbWordId and StepGreekId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
     -- when there is one ElbWordId with multiple StepHebrewNormalizedIds then each StepHebrewNormalizedId must have a unique GermanWordPart
-    CONSTRAINT "UqElbStepHebrew" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepHebrewNormalizedId"),
+    CONSTRAINT "UqElbStepHebrew" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepHebrewNormalizedId")
 );
 
 CREATE INDEX "IdxElbHebrewWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
