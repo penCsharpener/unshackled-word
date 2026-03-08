@@ -1,4 +1,5 @@
 using Polly;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
@@ -48,6 +49,12 @@ public class HebrewMappingService
 
     internal async Task MapHebrewAsync(BibleReferenceRange bRef, CancellationToken token = default)
     {
+        if (_booksDictionary.IsNullOrEmpty())
+        {
+            var bookNames = await _repo.GetBookNamesAsync();
+            _booksDictionary = bookNames.ToDictionary(x => x.Id, x => x.Name);
+        }
+
         // 1. Get chunks of 5 verses (as you originally had)
         var verseChunks = Enumerable.Range(bRef.MinVerse, bRef.MaxVerse - bRef.MinVerse + 1).Chunk(5);
 

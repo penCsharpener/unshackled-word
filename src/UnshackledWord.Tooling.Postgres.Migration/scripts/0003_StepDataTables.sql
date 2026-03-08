@@ -269,13 +269,11 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
     "IsAddedWord"        BOOLEAN DEFAULT FALSE,
     "ParentGermanWordId" INT NULL,
     "WordOrderInVerse"   INT NOT NULL,
+    "GermanWordPart"     varchar(30) NULL,
     -- Composite Unique Key for ElbWordId and StepGreekId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
+    -- when there is one ElbWordId with multiple StepGreekId then each StepGreekId must have a unique GermanWordPart
     CONSTRAINT "UqElbStepGreek" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepGreekId"),
-
-    -- Foreign Key now works because ElbWordId is explicitly UNIQUE
-    CONSTRAINT "FkParentWord" FOREIGN KEY ("ParentGermanWordId")
-        REFERENCES "unshackled-word"."Elb1871GreekMapping" ("ElbWordId") ON DELETE SET NULL
 );
 
 CREATE INDEX "IdxElbGreekWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
@@ -295,13 +293,11 @@ CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
     "IsAddedWord"                   BOOLEAN DEFAULT FALSE,
     "ParentGermanWordId"            INT NULL,
     "WordOrderInVerse"              INT NOT NULL,
+    "GermanWordPart"                varchar(30) NULL,
     -- Composite Unique Key for ElbWordId and StepGreekId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
+    -- when there is one ElbWordId with multiple StepHebrewNormalizedIds then each StepHebrewNormalizedId must have a unique GermanWordPart
     CONSTRAINT "UqElbStepHebrew" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepHebrewNormalizedId"),
-
-    -- Foreign Key now works because ElbWordId is explicitly UNIQUE
-    CONSTRAINT "FkParentWord" FOREIGN KEY ("ParentGermanWordId")
-        REFERENCES "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId") ON DELETE SET NULL
 );
 
 CREATE INDEX "IdxElbHebrewWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");

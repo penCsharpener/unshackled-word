@@ -32,7 +32,7 @@ public abstract class GeminiFlashAbstractClient
                 });
     }
 
-    protected async Task<List<VerseDataList<ElbStepAiMapping>>> SubmitAsync(string prompt, string systemInstructions, string modelName = "gemini-2.5-flash", CancellationToken token = default)
+    protected async Task<List<VerseDataList<string>>> SubmitAsync(string prompt, string systemInstructions, string modelName = "gemini-2.5-flash", CancellationToken token = default)
     {
         var response = await _apiErrorPolicies.ExecuteAsync(async () =>
         {
@@ -75,7 +75,12 @@ public abstract class GeminiFlashAbstractClient
             return [];
         }
 
-        return JsonSerializer.Deserialize<List<VerseDataList<ElbStepAiMapping>>>(text) ?? [];
+        if (_logger.IsEnabled(LogLevel.Trace))
+        {
+            _logger.LogTrace("Prompt: {prompt} - Response: {response}", prompt, text);
+        }
+
+        return JsonSerializer.Deserialize<List<VerseDataList<string>>>(text) ?? [];
     }
 
     private GenerateContentConfig GetResponseSchema(string systemInstructions)
@@ -97,16 +102,11 @@ public abstract class GeminiFlashAbstractClient
                         Type = GeminiType.Array,
                         Items = new Schema
                         {
-                            Type = GeminiType.Object,
-                            Properties = new Dictionary<string, Schema>
-                            {
-                                ["ElbWordId"] = new() { Type = GeminiType.Integer },
-                                ["StepWordId"] = new() { Type = GeminiType.Integer, Nullable = true },
-                                ["Strongs"] = new() { Type = GeminiType.String, Nullable = true },
-                                ["IsAddedWord"] = new() { Type = GeminiType.Boolean },
-                                ["ParentElbWordId"] = new() { Type = GeminiType.Integer, Nullable = true }
-                            },
-                            Required = ["ElbWordId", "IsAddedWord"]
+                            Type = GeminiType.String,
+                            Description = "A pipe-delimited string (no spaces) representing these 6 fields: " +
+                                          "ElbWordId|StepWordId|IsAddedWord|ParentElbWordId|PartOrder|GermanWordPart. " +
+                                          "Rules: 1=true, 0=false, '-'=null. " +
+                                          "Examples: '123|456|0|-|-|-', '123|-|1|456|-|-', '123|456|0|-|1|Gersten', '123|876|0|-|2|ernte'"
                         }
                     }
                 },
