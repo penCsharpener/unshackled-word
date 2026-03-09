@@ -56,7 +56,7 @@ public class HebrewMappingService
         }
 
         // 1. Get chunks of 5 verses (as you originally had)
-        var verseChunks = Enumerable.Range(bRef.MinVerse, bRef.MaxVerse - bRef.MinVerse + 1).Chunk(5);
+        var verseChunks = Enumerable.Range(bRef.MinVerse, bRef.MaxVerse - bRef.MinVerse + 1).Chunk(10);
 
         // 2. Chunk the verse chunks into batches of 5.
         // This means we prepare up to 5 parallel requests per iteration.

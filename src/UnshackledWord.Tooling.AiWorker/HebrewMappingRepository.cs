@@ -171,7 +171,7 @@ public class HebrewMappingRepository
 
         var sql = $"""
                    INSERT INTO "unshackled-word"."Elb1871HebrewMapping"
-                   ("ElbWordId","StepHebrewNormalizedId","BookId","Chapter","Verse","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
+                   ("ElbWordId","StepWordId","BookId","Chapter","Verse","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
                    VALUES
                    {sb.JoinStrings($",{Environment.NewLine}")}
                    ON CONFLICT ("ElbWordId") DO NOTHING
