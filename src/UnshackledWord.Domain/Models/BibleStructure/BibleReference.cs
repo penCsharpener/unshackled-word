@@ -4,6 +4,29 @@ public interface IBibleReference;
 
 public record struct BibleReference(int BookId, int Chapter, int Verse) : IBibleReference, IComparer<BibleReference>, IComparable<BibleReference>
 {
+    public BibleReference FromRefId(int refId)
+    {
+        var verse = refId % 1000;
+        var remaining = refId / 1000;
+        var chapter = remaining % 1000;
+        var bookId = remaining / 1000;
+
+        return new(bookId, chapter, verse);
+    }
+
+    public int RefId => GetRefId();
+
+    /// <summary>
+    /// Generates a continuous, sortable number based on bookId, chapter and verse.
+    /// </summary>
+    /// <returns></returns>
+    private int GetRefId()
+    {
+        var bookRefId = BookId * 1000000;
+        var chapterRefId = Chapter * 1000;
+        return bookRefId + chapterRefId + Verse;
+    }
+
     public int Compare(BibleReference x, BibleReference y)
     {
         var bookIdComparison = x.BookId.CompareTo(y.BookId);

@@ -1,16 +1,20 @@
 ﻿namespace UnshackledWord.Domain.Models.BibleStructure;
 
-public record struct BibleBook
+public partial record struct BibleBook
 {
     public int Id { get; }
     public string Name { get; }
     public string[] Abbreviations { get; }
+    public int[] VersesPerChapterHeb { get; }
+    public int[] VersesPerChapterLxx { get; }
 
     public BibleBook(int id, string name, string[] abbreviations)
     {
         Id = id;
         Name = name;
         Abbreviations = abbreviations;
+        VersesPerChapterHeb = _vpcHebMap[Id];
+        VersesPerChapterLxx = _vpcLxxMap[Id];
     }
 
     public static BibleBook? FindByAbbreviation(string abbreviation)
@@ -24,6 +28,17 @@ public record struct BibleBook
         }
 
         return null;
+    }
+
+    public int GetVerseCountInChapter(int chapter, bool isHebrewCounting = true)
+    {
+        var index = chapter - 1;
+        if (isHebrewCounting)
+        {
+            return VersesPerChapterHeb.Length > chapter ? VersesPerChapterHeb[index] : 0;
+        }
+
+        return VersesPerChapterLxx.Length > chapter ? VersesPerChapterHeb[index] : 0;
     }
 
     public static explicit operator BibleBook?(int bookId) => AllBooks[bookId];

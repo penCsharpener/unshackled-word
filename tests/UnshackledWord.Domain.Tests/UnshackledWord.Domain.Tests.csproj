@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\UnshackledWord.Domain\UnshackledWord.Domain.csproj" />
     <ProjectReference Include="..\UnshackledWord.TestTooling\UnshackledWord.TestTooling.csproj" />
   </ItemGroup>
 
