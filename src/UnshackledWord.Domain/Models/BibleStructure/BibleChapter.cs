@@ -20,6 +20,9 @@ public class BibleChapter
     [Range(1, 176)]
     public int VersesLxx { get; set; }
 
+    public List<BibleVerse> HebVerses { get; set; } = [];
+    public List<BibleVerse> LxxVerses { get; set; } = [];
+
     public BibleChapter(int id, int bibleBookId, int? chapterLxx, int versesLxx, int? chapterHeb, int versesHeb)
     {
         Id = id;

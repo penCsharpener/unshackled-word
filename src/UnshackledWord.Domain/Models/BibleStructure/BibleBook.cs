@@ -7,6 +7,8 @@ public partial record struct BibleBook
     public string[] Abbreviations { get; }
     public int[] VersesPerChapterHeb { get; }
     public int[] VersesPerChapterLxx { get; }
+    public List<BibleChapter> HebChapters { get; set; } = [];
+    public List<BibleChapter> LxxChapters { get; set; } = [];
 
     public BibleBook(int id, string name, string[] abbreviations)
     {
