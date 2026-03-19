@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
@@ -16,6 +17,7 @@ public class StepHebrewStrongsNormalizingStrategyTests
     private readonly IDbWriter _dbMockWriter;
     private readonly IDbReader _dbReader;
     private readonly IDbWriter _dbWriter;
+    private ILogger<StepHebrewStrongsNormalizingStrategy> _logger;
 
     public StepHebrewStrongsNormalizingStrategyTests()
     {
@@ -23,9 +25,10 @@ public class StepHebrewStrongsNormalizingStrategyTests
         _dbWriter = sp.GetRequiredService<IDbWriter>();
         _dbMockWriter = Substitute.For<IDbWriter>();
         _dbReader = sp.GetRequiredService<IDbReader>();
+        _logger = Substitute.For<ILogger<StepHebrewStrongsNormalizingStrategy>>();
         _wordsRepo = new StepHebrewWordsRepository(_dbWriter, _dbReader);
         _normalizedRepo = sp.GetRequiredService<IStepHebrewWordsNormalizedRepository>();
-        _sut = new StepHebrewStrongsNormalizingStrategy(_wordsRepo, _normalizedRepo);
+        _sut = new StepHebrewStrongsNormalizingStrategy(_wordsRepo, _normalizedRepo, _logger);
     }
 
     [Fact]

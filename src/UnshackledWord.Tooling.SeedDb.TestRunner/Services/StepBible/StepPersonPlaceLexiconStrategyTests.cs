@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
@@ -13,13 +14,15 @@ public class StepPersonPlaceLexiconStrategyTests
     private readonly StepPersonPlaceLexiconStrategy _sut;
     private readonly IFileService _fileService;
     private readonly IStepPersonPlaceRepository _repo;
+    private ILogger<StepPersonPlaceLexiconStrategy> _logger;
 
     public StepPersonPlaceLexiconStrategyTests()
     {
         _repo = Substitute.For<IStepPersonPlaceRepository>();
         _repo.CountPersonsByFilterAsync(new(),  Arg.Any<CancellationToken>()).Returns(Task.FromResult(0));
         _fileService = Substitute.For<IFileService>();
-        _sut = new StepPersonPlaceLexiconStrategy(_fileService, _repo);
+        _logger = Substitute.For<ILogger<StepPersonPlaceLexiconStrategy>>();
+        _sut = new StepPersonPlaceLexiconStrategy(_fileService, _repo, _logger);
     }
 
     [Theory]
@@ -35,7 +38,7 @@ public class StepPersonPlaceLexiconStrategyTests
     public async Task ParseLexiconFromFile()
     {
         var fileService = new FileService();
-        var service = new StepPersonPlaceLexiconStrategy(fileService, _repo);
+        var service = new StepPersonPlaceLexiconStrategy(fileService, _repo, _logger);
 
         await service.SaveToDatabase("X:\\Code\\repos\\unshackeled-word\\temp\\SeedData\\Step\\TIPNR - Translators Individualised Proper Names with all References - STEPBible.org CC BY.txt", CancellationToken.None);
     }
