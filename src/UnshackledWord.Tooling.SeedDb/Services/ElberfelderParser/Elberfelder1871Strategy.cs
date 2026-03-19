@@ -42,7 +42,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
         foreach (var line in lines)
         {
-            var refText = line.Split(" || ");
+            var refText = line.Split(" || ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             var bookRef = refText[0].Split("$");
             var chapterVerse = bookRef[1].Split(":");
 
@@ -50,6 +50,11 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             var chapter = int.Parse(chapterVerse[0]);
             var verse = int.Parse(chapterVerse[1]);
             var bookId = BibleBook.AllBooks.First(x => x.Value.Name == book).Key;
+
+            if (refText.Length == 1 || refText[1].IsNullOrWhiteSpace())
+            {
+                continue;
+            }
 
             var words = SplitAndSaveIndividualWords(refText[1]).ToList();
             var verseObj = new Elb1871Verse(new BibleReference(bookId, chapter, verse), refText[1], words);
