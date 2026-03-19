@@ -2847,7 +2847,14 @@ Leviticus$5:15 || Wenn jemand Untreue begeht und aus Versehen an den heiligen Di
 Leviticus$5:16 || Und was er an dem Heiligen gesündigt hat, soll er erstatten und dessen Fünftel darüber hinzufügen und es dem Priester geben; und der Priester soll Sühnung für ihn tun mit dem Widder des Schuldopfers, und es wird ihm vergeben werden.
 Leviticus$5:17 || Und wenn jemand sündigt und eines von allen den Verboten Jahwes tut, die nicht getan werden sollen, -hat er es auch nicht gewußt, so ist er schuldig und soll seine Ungerechtigkeit tragen.
 Leviticus$5:18 || Und er soll einen Widder ohne Fehl vom Kleinvieh nach deiner Schätzung zu dem Priester bringen, zum Schuldopfer; und der Priester soll Sühnung für ihn tun wegen seines Versehens, das er begangen hat, ohne es zu wissen; und es wird ihm vergeben werden.
-Leviticus$5:19 || Es ist ein Schuldopfer; er hat sich gewißlich an Jahwe verschuldet. H5-20 Und Jahwe redete zu Mose und sprach: H5-21 Wenn jemand sündigt und Untreue wider Jahwe begeht, daß er seinem Nächsten ein anvertrautes Gut ableugnet oder ein Darlehn oder etwas Geraubtes; oder er hat von seinem Nächsten etwas erpreßt, H5-22 oder er hat Verlorenes gefunden, und leugnet es ab; und er schwört falsch über irgend etwas von allem, was ein Mensch tun mag, sich darin zu versündigen: H5-23 so soll es geschehen, wenn er gesündigt und sich verschuldet hat, daß er zurückerstatte das Geraubte, das er geraubt, oder das Erpreßte, das er erpreßt hat, oder das Anvertraute, das ihm anvertraut worden ist, oder das Verlorene, das er gefunden hat, H5-24 oder alles, worüber er falsch geschworen hat; und er soll es erstatten nach seiner vollen Summe und dessen Fünftel darüber hinzufügen; wem es gehört, dem soll er es geben am Tage seines Schuldopfers. H5-25 Und sein Schuldopfer soll er Jahwe bringen, einen Widder ohne Fehl vom Kleinvieh, nach deiner Schätzung, zum Schuldopfer, zu dem Priester; H5-26 und der Priester soll Sühnung für ihn tun vor Jahwe, und es wird ihm vergeben werden wegen irgend etwas von allem, was er getan hat, sich darin zu verschulden.
+Leviticus$5:19 || Es ist ein Schuldopfer; er hat sich gewißlich an Jahwe verschuldet.
+Leviticus$5:20 || Und Jahwe redete zu Mose und sprach:
+Leviticus$5:21 || Wenn jemand sündigt und Untreue wider Jahwe begeht, daß er seinem Nächsten ein anvertrautes Gut ableugnet oder ein Darlehn oder etwas Geraubtes; oder er hat von seinem Nächsten etwas erpreßt,
+Leviticus$5:22 || oder er hat Verlorenes gefunden, und leugnet es ab; und er schwört falsch über irgend etwas von allem, was ein Mensch tun mag, sich darin zu versündigen:
+Leviticus$5:23 || so soll es geschehen, wenn er gesündigt und sich verschuldet hat, daß er zurückerstatte das Geraubte, das er geraubt, oder das Erpreßte, das er erpreßt hat, oder das Anvertraute, das ihm anvertraut worden ist, oder das Verlorene, das er gefunden hat,
+Leviticus$5:24 || oder alles, worüber er falsch geschworen hat; und er soll es erstatten nach seiner vollen Summe und dessen Fünftel darüber hinzufügen; wem es gehört, dem soll er es geben am Tage seines Schuldopfers.
+Leviticus$5:25 || Und sein Schuldopfer soll er Jahwe bringen, einen Widder ohne Fehl vom Kleinvieh, nach deiner Schätzung, zum Schuldopfer, zu dem Priester;
+Leviticus$5:26 || und der Priester soll Sühnung für ihn tun vor Jahwe, und es wird ihm vergeben werden wegen irgend etwas von allem, was er getan hat, sich darin zu verschulden.
 Leviticus$6:1 || Und Jahwe redete zu Mose und sprach:
 Leviticus$6:2 || Gebiete Aaron und seinen Söhnen und sprich: Dies ist das Gesetz des Brandopfers. Dieses, das Brandopfer, soll auf seiner Feuerstelle sein, auf dem Altar, die ganze Nacht bis an den Morgen; und das Feuer des Altars soll auf demselben in Brand erhalten werden.
 Leviticus$6:3 || Und der Priester soll sein leinenes Kleid anziehen, und soll seine leinenen Beinkleider anziehen über sein Fleisch; und er soll die Fettasche abheben, wozu das Feuer das Brandopfer auf dem Altar verzehrt hat, und soll sie neben den Altar schütten.
@@ -2871,13 +2878,13 @@ Leviticus$6:20 || Alles, was sein Fleisch anrührt, wird heilig sein; und wenn v
 Leviticus$6:21 || Und das irdene Gefäß, in welchem es gekocht wird, soll zerbrochen werden, und wenn es in einem ehernen Gefäß gekocht wird, so soll dieses gescheuert und mit Wasser gespült werden.
 Leviticus$6:22 || Alles Männliche unter den Priestern soll es essen: hochheilig ist es.
 Leviticus$6:23 || Aber alles Sündopfer, von dessen Blut in das Zelt der Zusammenkunft gebracht wird, um im Heiligtum Sühnung zu tun, soll nicht gegessen werden; es soll mit Feuer verbrannt werden.
-Leviticus$6:24 || 
-Leviticus$6:25 || 
-Leviticus$6:26 || 
-Leviticus$6:27 || 
-Leviticus$6:28 || 
-Leviticus$6:29 || 
-Leviticus$6:30 || 
+Leviticus$6:24 ||
+Leviticus$6:25 ||
+Leviticus$6:26 ||
+Leviticus$6:27 ||
+Leviticus$6:28 ||
+Leviticus$6:29 ||
+Leviticus$6:30 ||
 Leviticus$7:1 || Und dies ist das Gesetz des Schuldopfers; es ist hochheilig.
 Leviticus$7:2 || An dem Orte, wo man das Brandopfer schlachtet, soll man das Schuldopfer schlachten; und sein Blut soll er an den Altar sprengen ringsum.
 Leviticus$7:3 || Und alles Fett soll er davon darbringen, den Fettschwanz und das Fett, welches das Eingeweide bedeckt,
@@ -4662,7 +4669,8 @@ Numbers$30:12 || und ihr Mann hat es gehört und gegen sie geschwiegen, er hat i
 Numbers$30:13 || Wenn aber ihr Mann dieselben irgend aufgehoben hat an dem Tage, da er sie hörte, so soll alles, was über ihre Lippen gegangen ist an Gelübden und an Verbindnissen ihrer Seele, nicht bestehen; ihr Mann hat dieselben aufgehoben, und Jahwe wird ihr vergeben.
 Numbers$30:14 || Jedes Gelübde und jeder Eid des Verbindnisses, um die Seele zu kasteien-ihr Mann kann es bestätigen, und ihr Mann kann es aufheben.
 Numbers$30:15 || Und wenn ihr Mann von Tag zu Tage gänzlich gegen sie schweigt, so bestätigt er alle ihre Gelübde oder alle ihre Verbindnisse, die auf ihr sind; er hat sie bestätigt, denn er hat gegen sie geschwiegen an dem Tage, da er sie hörte.
-Numbers$30:16 || Wenn er sie aber irgend aufhebt, nachdem er sie gehört hat, so wird er ihre Ungerechtigkeit tragen. H30-17 Das sind die Satzungen, welche Jahwe dem Mose geboten hat, zwischen einem Manne und seinem Weibe, zwischen einem Vater und seiner Tochter in ihrer Jugend, im Hause ihres Vaters.
+Numbers$30:16 || Wenn er sie aber irgend aufhebt, nachdem er sie gehört hat, so wird er ihre Ungerechtigkeit tragen.
+Numbers$30:17 || Das sind die Satzungen, welche Jahwe dem Mose geboten hat, zwischen einem Manne und seinem Weibe, zwischen einem Vater und seiner Tochter in ihrer Jugend, im Hause ihres Vaters.
 Numbers$31:1 || Und Jahwe redete zu Mose und sprach:
 Numbers$31:2 || Übe Rache für die Kinder Israel an den Midianitern; danach sollst du zu deinen Völkern versammelt werden.
 Numbers$31:3 || Und Mose redete zu dem Volke und sprach: Rüstet von euch Männer zum Heere aus, daß sie wider Midian ziehen, um die Rache Jahwes an Midian auszuführen.
@@ -5677,7 +5685,8 @@ Deuteronomy$28:64 || Und Jahwe wird dich unter alle Völker zerstreuen, von eine
 Deuteronomy$28:65 || Und unter jenen Nationen wirst du nicht rasten, und deine Fußsohle wird keine Ruhestätte finden; und Jahwe wird dir daselbst ein zitterndes Herz geben, Erlöschen der Augen und Verschmachten der Seele.
 Deuteronomy$28:66 || Und dein Leben wird schwebend vor dir hangen, und du wirst dich fürchten Nacht und Tag und deinem Leben nicht trauen.
 Deuteronomy$28:67 || Am Morgen wirst du sagen: Wäre es doch Abend! und am Abend wirst du sagen: Wäre es doch Morgen! wegen der Furcht deines Herzens, womit du dich fürchten, und wegen des Anblicks deiner Augen, den du erblicken wirst.
-Deuteronomy$28:68 || Und Jahwe wird dich auf Schiffen nach Ägypten zurückführen, auf dem Wege, von dem ich dir gesagt habe: du sollst ihn nie mehr wiedersehen! und ihr werdet daselbst euren Feinden zu Knechten und zu Mägden verkauft werden, aber niemand wird kaufen. H28-69 Das sind die Worte des Bundes, welchen Jahwe im Lande Moab dem Mose geboten hat, mit den Kindern Israel zu machen, außer dem Bunde, den er am Horeb mit ihnen gemacht hatte.
+Deuteronomy$28:68 || Und Jahwe wird dich auf Schiffen nach Ägypten zurückführen, auf dem Wege, von dem ich dir gesagt habe: du sollst ihn nie mehr wiedersehen! und ihr werdet daselbst euren Feinden zu Knechten und zu Mägden verkauft werden, aber niemand wird kaufen.
+Deuteronomy$28:69 || Das sind die Worte des Bundes, welchen Jahwe im Lande Moab dem Mose geboten hat, mit den Kindern Israel zu machen, außer dem Bunde, den er am Horeb mit ihnen gemacht hatte.
 Deuteronomy$29:1 || Und Mose berief ganz Israel und sprach zu ihnen:
 Deuteronomy$29:2 || Ihr habt alles gesehen, was Jahwe vor euren Augen im Lande Ägypten getan hat, an dem Pharao und an allen seinen Knechten und an seinem ganzen Lande:
 Deuteronomy$29:3 || die großen Versuchungen, welche deine Augen gesehen haben, jene großen Zeichen und Wunder.
@@ -7770,7 +7779,8 @@ Ruth$4:22 || und Obed zeugte Isai, und Isai zeugte David.
 1 Samuel$20:39 || Der Knabe aber wußte um nichts; nur Jonathan und David wußten um die Sache.
 1 Samuel$20:40 || Und Jonathan gab seine Waffen seinem Knaben und sprach zu ihm: Gehe, bringe sie in die Stadt.
 1 Samuel$20:41 || Der Knabe ging, und David machte sich auf von der Südseite her und fiel auf sein Antlitz zur Erde und beugte sich dreimal nieder; und sie küßten einander und weinten miteinander, bis David über die Maßen weinte.
-1 Samuel$20:42 || Und Jonathan sprach zu David: Gehe hin in Frieden! Es sei, wie wir beide im Namen Jahwes geschworen haben, als wir sagten: Jahwe sei zwischen mir und dir und zwischen meinem Samen und deinem Samen auf ewig! - H20-43 Und David machte sich auf und ging hinweg; Jonathan aber kam in die Stadt.
+1 Samuel$20:42 || Und Jonathan sprach zu David: Gehe hin in Frieden! Es sei, wie wir beide im Namen Jahwes geschworen haben, als wir sagten: Jahwe sei zwischen mir und dir und zwischen meinem Samen und deinem Samen auf ewig! -
+1 Samuel$20:43 || Und David machte sich auf und ging hinweg; Jonathan aber kam in die Stadt.
 1 Samuel$21:1 || Und David kam nach Nob, zu Ahimelech, dem Priester. Und Ahimelech kam David ängstlich entgegen und sprach zu ihm: Warum bist du allein, und niemand ist bei dir?
 1 Samuel$21:2 || Und David sprach zu dem Priester Ahimelech: Der König hat mir eine Sache geboten; und er sprach zu mir: Niemand soll irgendwie um die Sache wissen, in der ich dich sende und die ich dir geboten habe! und die Knaben habe ich an den und den Ort beschieden.
 1 Samuel$21:3 || Und nun, was ist unter deiner Hand? Gib fünf Brote in meine Hand, oder was sich vorfindet.
@@ -7837,7 +7847,7 @@ Ruth$4:22 || und Obed zeugte Isai, und Isai zeugte David.
 1 Samuel$23:26 || Und Saul ging auf dieser Seite des Berges, David aber und seine Männer auf jener Seite des Berges. Und es geschah, als David eilte, Saul zu entgehen, und Saul und seine Männer David und seine Männer umringten, um sie zu fangen,
 1 Samuel$23:27 || da kam ein Bote zu Saul und sprach: Eile und komm, denn die Philister sind ins Land eingefallen!
 1 Samuel$23:28 || Da kehrte Saul um von der Verfolgung Davids und zog den Philistern entgegen. Daher nannte man jenen Ort: Selach-Hammachlekoth.
-1 Samuel$23:29 || 
+1 Samuel$23:29 ||
 1 Samuel$24:1 || Und David zog von dannen hinauf und blieb auf den Bergfesten von Engedi.
 1 Samuel$24:2 || Und es geschah, als Saul von der Verfolgung der Philister zurückgekehrt war, da berichtete man ihm und sprach: Siehe, David ist in der Wüste Engedi.
 1 Samuel$24:3 || Und Saul nahm dreitausend auserlesene Männer aus ganz Israel und zog hin, um David und seine Männer auf den Steinbockfelsen zu suchen.
@@ -7859,7 +7869,8 @@ Ruth$4:22 || und Obed zeugte Isai, und Isai zeugte David.
 1 Samuel$24:19 || und du hast heute bewiesen, daß du Gutes an mir getan hast, da Jahwe mich in deine Hand geliefert, und du mich nicht getötet hast.
 1 Samuel$24:20 || Denn wenn jemand seinen Feind findet, wird er ihn auf gutem Wege ziehen lassen? So möge Jahwe dir Gutes vergelten für das, was du an diesem Tage an mir getan hast!
 1 Samuel$24:21 || Und nun siehe, ich weiß, daß du gewißlich König werden wirst, und daß in deiner Hand das Königtum Israels bestehen wird;
-1 Samuel$24:22 || so schwöre mir nun bei Jahwe, daß du meinen Samen nach mir nicht ausrotten und meinen Namen nicht vertilgen willst aus dem Hause meines Vaters! H24-23 Und David schwur Saul. Und Saul ging nach seinem Hause; David und seine Männer aber stiegen auf die Bergfeste.
+1 Samuel$24:22 || so schwöre mir nun bei Jahwe, daß du meinen Samen nach mir nicht ausrotten und meinen Namen nicht vertilgen willst aus dem Hause meines Vaters!
+1 Samuel$24:23 || Und David schwur Saul. Und Saul ging nach seinem Hause; David und seine Männer aber stiegen auf die Bergfeste.
 1 Samuel$25:1 || Und Samuel starb; und ganz Israel versammelte sich und klagte um ihn und begrub ihn in seinem Hause zu Rama. Und David machte sich auf und zog hinab in die Wüste Paran.
 1 Samuel$25:2 || Und es war ein Mann in Maon, der seine Geschäfte zu Karmel hatte; und der Mann war sehr vermögend und hatte dreitausend Schafe und tausend Ziegen; und er war während der Schur seiner Schafe in Karmel.
 1 Samuel$25:3 || Und der Name des Mannes war Nabal, und der Name seines Weibes Abigail. Und das Weib war von guter Einsicht und schön von Gestalt; der Mann aber war hart und boshaft in seinen Handlungen, und er war ein Kalebiter.
@@ -9531,7 +9542,8 @@ Ruth$4:22 || und Obed zeugte Isai, und Isai zeugte David.
 1 Kings$22:50 || Damals sprach Ahasja, der Sohn Ahabs, zu Josaphat: Laß meine Knechte mit deinen Knechten auf den Schiffen fahren; aber Josaphat wollte nicht.
 1 Kings$22:51 || Und Josaphat legte sich zu seinen Vätern, und er wurde bei seinen Vätern begraben in der Stadt seines Vaters David. Und Joram, sein Sohn, ward König an seiner Statt.
 1 Kings$22:52 || Ahasja, der Sohn Ahabs, wurde König über Israel zu Samaria, im 17. Jahre Josaphats, des Königs von Juda; und er regierte zwei Jahre über Israel.
-1 Kings$22:53 || Und er tat, was böse war in den Augen Jahwes, und er wandelte auf dem Wege seines Vaters und auf dem Wege seiner Mutter und auf dem Wege Jerobeams, des Sohnes Nebats, der Israel sündigen gemacht hatte. H22-54 Und er diente dem Baal und beugte sich vor ihm nieder; und er reizte Jahwe, den Gott Israels, nach allem, was sein Vater getan hatte.
+1 Kings$22:53 || Und er tat, was böse war in den Augen Jahwes, und er wandelte auf dem Wege seines Vaters und auf dem Wege seiner Mutter und auf dem Wege Jerobeams, des Sohnes Nebats, der Israel sündigen gemacht hatte.
+1 Kings$22:54 || Und er diente dem Baal und beugte sich vor ihm nieder; und er reizte Jahwe, den Gott Israels, nach allem, was sein Vater getan hatte.
 2 Kings$1:1 || Und nach dem Tode Ahabs fielen die Moabiter von Israel ab. -
 2 Kings$1:2 || Und Ahasja fiel durch das Gitter an seinem Obergemach zu Samaria und wurde krank. Und er sandte Boten und sprach zu ihnen: Gehet hin, befraget Baal-Sebub, den Gott von Ekron, ob ich von dieser Krankheit genesen werde.
 2 Kings$1:3 || Und der Engel Jahwes redete zu Elia, dem Tisbiter: Mache dich auf, gehe hinauf, den Boten des Königs von Samaria entgegen, und sprich zu ihnen: Ist es, weil kein Gott in Israel ist, daß ihr hingehet, um Baal-Sebub, den Gott von Ekron, zu befragen?
@@ -9848,7 +9860,7 @@ Ruth$4:22 || und Obed zeugte Isai, und Isai zeugte David.
 2 Kings$11:18 || Da ging alles Volk des Landes in das Haus des Baal und riß es nieder; seine Altäre und seine Bilder zerschlugen sie gänzlich; und Mattan, den Priester des Baal, töteten sie vor den Altären. Und der Priester setzte Aufseher über das Haus Jahwes.
 2 Kings$11:19 || Und er nahm die Obersten über hundert und die Karier und die Läufer und alles Volk des Landes, und sie führten den König aus dem Hause Jahwes hinab und kamen auf dem Wege des Läufertores in das Haus des Königs; und er setzte sich auf den Thron der Könige.
 2 Kings$11:20 || Und alles Volk des Landes freute sich, und die Stadt hatte Ruhe. Athalja aber hatten sie im Hause des Königs mit dem Schwerte getötet.
-2 Kings$11:21 || 
+2 Kings$11:21 ||
 2 Kings$12:1 || Sieben Jahre war Joas alt, als er König wurde. Im siebten Jahre Jehus wurde Joas König, und er regierte vierzig Jahre zu Jerusalem; und der Name seiner Mutter war Zibja, von Beerseba.
 2 Kings$12:2 || Und Joas tat, was recht war in den Augen Jahwes, solange der Priester Jojada ihn unterwies.
 2 Kings$12:3 || Doch die Höhen wichen nicht; das Volk opferte und räucherte noch auf den Höhen.
@@ -9961,7 +9973,8 @@ Ruth$4:22 || und Obed zeugte Isai, und Isai zeugte David.
 2 Kings$15:35 || Doch die Höhen wichen nicht; das Volk opferte und räucherte noch auf den Höhen. Er baute das obere Tor des Hauses Jahwes.
 2 Kings$15:36 || Und das Übrige der Geschichte Jothams und alles, was er getan hat, ist das nicht geschrieben in dem Buche der Chronika der Könige von Juda?
 2 Kings$15:37 || In jenen Tagen begann Jahwe, Rezin, den König von Syrien, und Pekach, den Sohn Remaljas, wider Juda zu senden.
-2 Kings$15:38 || Und Jotham legte sich zu seinen Vätern, und er wurde begraben bei seinen Vätern in der Stadt seines Vaters David. H15-39 Und Ahas, sein Sohn, ward König an seiner Statt.
+2 Kings$15:38 || Und Jotham legte sich zu seinen Vätern, und er wurde begraben bei seinen Vätern in der Stadt seines Vaters David.
+2 Kings$15:39 || Und Ahas, sein Sohn, ward König an seiner Statt.
 2 Kings$16:1 || Im 17. Jahre Pekachs, des Sohnes Remaljas, wurde Ahas König, der Sohn Jothams, des Königs von Juda.
 2 Kings$16:2 || Zwanzig Jahre war Ahas alt, als er König wurde, und er regierte sechzehn Jahre zu Jerusalem. Und er tat nicht, was recht war in den Augen Jahwes, seines Gottes, wie sein Vater David;
 2 Kings$16:3 || sondern er wandelte auf dem Wege der Könige von Israel, und er ließ sogar seinen Sohn durchs Feuer gehen, nach den Greueln der Nationen, die Jahwe vor den Kindern Israel ausgetrieben hatte;
@@ -13862,7 +13875,12 @@ Job$39:26 || Schwingt sich der Habicht durch deinen Verstand empor, breitet sein
 Job$39:27 || Oder erhebt sich auf deinen Befehl der Adler, und baut in der Höhe sein Nest?
 Job$39:28 || In den Felsen wohnt und verweilt er, auf Felsenzacken und den Spitzen der Berge.
 Job$39:29 || Von dort aus erspäht er Nahrung, in die Ferne blicken seine Augen.
-Job$39:30 || Und seine Jungen schlürfen Blut, und wo Erschlagene sind, da ist er. H39-31 Und Jahwe antwortete Hiob und sprach: H39-32 Will der Tadler rechten mit dem Allmächtigen? Der da Gott zurechtweist, antworte darauf! H39-33 Und Hiob antwortete Jahwe und sprach: H39-34 Siehe, zu gering bin ich, was soll ich dir erwidern? Ich lege meine Hand auf meinen Mund. H39-35 Einmal habe ich geredet, und ich will nicht mehr antworten, und zweimal, und ich will es nicht mehr tun.
+Job$39:30 || Und seine Jungen schlürfen Blut, und wo Erschlagene sind, da ist er.
+Job$39:31 || Und Jahwe antwortete Hiob und sprach:
+Job$39:32 || Will der Tadler rechten mit dem Allmächtigen? Der da Gott zurechtweist, antworte darauf!
+Job$39:33 || Und Hiob antwortete Jahwe und sprach:
+Job$39:34 || Siehe, zu gering bin ich, was soll ich dir erwidern? Ich lege meine Hand auf meinen Mund.
+Job$39:35 || Einmal habe ich geredet, und ich will nicht mehr antworten, und zweimal, und ich will es nicht mehr tun.
 Job$40:1 || Und Jahwe antwortete Hiob aus dem Sturme und sprach:
 Job$40:2 || Gürte doch wie ein Mann deine Lenden; ich will dich fragen, und du belehre mich!
 Job$40:3 || Willst du gar mein Recht zunichte machen, mich verdammen, damit du gerecht seiest?
@@ -13886,7 +13904,10 @@ Job$40:20 || Ziehst du den Leviathan herbei mit der Angel, und senkst du seine Z
 Job$40:21 || Kannst du einen Binsenstrick durch seine Nase ziehen, und seinen Kinnbacken mit einem Ringe durchbohren?
 Job$40:22 || Wird er viel Flehens an dich richten, oder dir sanfte Worte geben?
 Job$40:23 || Wird er einen Bund mit dir machen, daß du ihn zum ewigen Knechte nehmest?
-Job$40:24 || Wirst du mit ihm spielen wie mit einem Vogel, und ihn anbinden für deine Mädchen? H40-25 Werden die Fischergenossen ihn verhandeln, ihn verteilen unter Kaufleute? H40-26 Kannst du seine Haut mit Spießen füllen, und seinen Kopf mit Fischharpunen? H40-27 Lege deine Hand an ihn, -gedenke des Kampfes, tue es nicht wieder!
+Job$40:24 || Wirst du mit ihm spielen wie mit einem Vogel, und ihn anbinden für deine Mädchen?
+Job$40:25 || Werden die Fischergenossen ihn verhandeln, ihn verteilen unter Kaufleute?
+Job$40:26 || Kannst du seine Haut mit Spießen füllen, und seinen Kopf mit Fischharpunen?
+Job$40:27 || Lege deine Hand an ihn, -gedenke des Kampfes, tue es nicht wieder!
 Job$41:1 || Siehe, eines jeden Hoffnung wird betrogen: wird man nicht schon bei seinem Anblick niedergeworfen? Niemand ist so kühn, daß er ihn aufreize. Und wer ist es, der sich vor mein Angesicht stellen dürfte?
 Job$41:2 || Wer hat mir zuvor gegeben? und ich werde ihm vergelten. Was unter dem ganzen Himmel ist, ist mein.
 Job$41:3 || Nicht schweigen will ich von seinen Gliedern und von seiner Kraftfülle und von der Schönheit seines Baues.
@@ -13912,15 +13933,15 @@ Job$41:22 || Er macht die Tiefe sieden wie einen Topf, macht das Meer wie einen 
 Job$41:23 || Hinter ihm leuchtet der Pfad, man könnte die Tiefe für graues Haar halten.
 Job$41:24 || Auf Erden ist keiner ihm gleich, der geschaffen ist ohne Furcht.
 Job$41:25 || Alles Hohe sieht er an; er ist König über alle wilden Tiere.
-Job$41:26 || 
-Job$41:27 || 
-Job$41:28 || 
-Job$41:29 || 
-Job$41:30 || 
-Job$41:31 || 
-Job$41:32 || 
-Job$41:33 || 
-Job$41:34 || 
+Job$41:26 ||
+Job$41:27 ||
+Job$41:28 ||
+Job$41:29 ||
+Job$41:30 ||
+Job$41:31 ||
+Job$41:32 ||
+Job$41:33 ||
+Job$41:34 ||
 Job$42:1 || Und Hiob antwortete Jahwe und sprach:
 Job$42:2 || Ich weiß, daß du alles vermagst, und kein Vorhaben dir verwehrt werden kann.
 Job$42:3 || Wer ist es, der den Rat verhüllt ohne Erkenntnis? So habe ich denn beurteilt, was ich nicht verstand, Dinge, zu wunderbar für mich, die ich nicht kannte.
@@ -17427,7 +17448,7 @@ Ecclesiastes$6:8 || Denn was hat der Weise vor dem Toren voraus, was der Arme, d
 Ecclesiastes$6:9 || Besser das Anschauen der Augen als das Umherschweifen der Begierde. Auch das ist Eitelkeit und ein Haschen nach Wind.
 Ecclesiastes$6:10 || Was entsteht, schon längst war sein Name genannt; und es ist bekannt, was ein Mensch sein wird, und er vermag nicht mit dem zu rechten, der stärker ist als er.
 Ecclesiastes$6:11 || Denn es gibt viele Worte welche die Eitelkeit mehren; welchen Nutzen hat der Mensch davon? Denn wer weiß, was dem Menschen gut ist im Leben, die Zahl der Tage seines eitlen Lebens, welche er wie ein Schatten verbringt? Denn wer kann dem Menschen kundtun, was nach ihm sein wird unter der Sonne?
-Ecclesiastes$6:12 || 
+Ecclesiastes$6:12 ||
 Ecclesiastes$7:1 || Besser ein guter Name als gutes Salböl, und der Tag des Todes als der Tag, da einer geboren wird.
 Ecclesiastes$7:2 || Besser, in das Haus der Trauer zu gehen, als in das Haus des Gelages zu gehen, indem jenes das Ende aller Menschen ist; und der Lebende nimmt es zu Herzen. -
 Ecclesiastes$7:3 || Besser Bekümmernis als Lachen; denn bei traurigem Angesicht ist es dem Herzen wohl. -
@@ -20938,11 +20959,11 @@ Ezekiel$20:41 || Als einen lieblichen Geruch werde ich euch wohlgefällig annehm
 Ezekiel$20:42 || Und ihr werdet wissen, daß ich Jahwe bin, wenn ich euch in das Land Israel bringe, in das Land, welches euren Vätern zu geben ich meine Hand erhoben habe.
 Ezekiel$20:43 || Und ihr werdet daselbst eurer Wege und all eurer Handlungen gedenken, durch welche ihr euch verunreinigt habt; und ihr werdet Ekel an euch selbst empfinden wegen all eurer Übeltaten, die ihr begangen habt.
 Ezekiel$20:44 || Und ihr werdet wissen, daß ich Jahwe bin, wenn ich mit euch handle um meines Namens willen, und nicht nach euren bösen Wegen und nach euren verderbten Handlungen, Haus Israel, spricht der Herr, Jahwe.
-Ezekiel$20:45 || 
-Ezekiel$20:46 || 
-Ezekiel$20:47 || 
-Ezekiel$20:48 || 
-Ezekiel$20:49 || 
+Ezekiel$20:45 ||
+Ezekiel$20:46 ||
+Ezekiel$20:47 ||
+Ezekiel$20:48 ||
+Ezekiel$20:49 ||
 Ezekiel$21:1 || Und das Wort Jahwes geschah zu mir also:
 Ezekiel$21:2 || Menschensohn, richte dein Angesicht gegen Süden und rede gegen Mittag, und weissage über den Wald des Gefildes im Süden
 Ezekiel$21:3 || und sprich zu dem Walde des Südens: Höre das Wort Jahwes! So spricht der Herr, Jahwe: Siehe, ich will in dir ein Feuer anzünden, welches jeden grünen Baum und jeden dürren Baum in dir verzehren wird; die lodernde Flamme wird nicht erlöschen, und vom Süden bis zum Norden werden alle Angesichter dadurch versengt werden.
@@ -20974,7 +20995,12 @@ Ezekiel$21:28 || Und es wird ihnen wie eine falsche Wahrsagung in ihren Augen se
 Ezekiel$21:29 || Darum, so spricht der Herr, Jahwe: Weil ihr eure Ungerechtigkeit in Erinnerung bringet, indem eure Übertretungen offenbar werden, so daß eure Sünden in allen euren Handlungen zum Vorschein kommen-weil ihr in Erinnerung kommet, werdet ihr von der Hand ergriffen werden.
 Ezekiel$21:30 || Und du, Unheiliger, Gesetzloser, Fürst Israels, dessen Tag gekommen ist zur Zeit der Ungerechtigkeit des Endes!
 Ezekiel$21:31 || so spricht der Herr, Jahwe: Hinweg mit dem Kopfbund und fort mit der Krone! Dies wird nicht mehr sein Das Niedrige werde erhöht und das Hohe erniedrigt!
-Ezekiel$21:32 || Umgestürzt, umgestürzt, umgestürzt will ich sie machen; auch dies wird nicht mehr sein-bis der kommt, welchem das Recht gehört: dem werde ich’s geben. H21-33 Und du, Menschensohn, weissage und sprich: So spricht der Herr, Jahwe, über die Kinder Ammon und über ihren Hohn; und sprich: Ein Schwert, ein Schwert, zur Schlachtung gezückt, geschliffen, damit es fresse, damit es blitze H21-34 (während man dir Eitles schaut, während man dir Lügen wahrsagt), um dich zu den Hälsen der erschlagenen Gesetzlosen zu legen, deren Tag gekommen ist zur Zeit der Ungerechtigkeit des Endes! H21-35 Stecke es wieder in seine Scheide! An dem Orte, wo du geschaffen bist, in dem Lande deines Ursprungs, werde ich dich richten. H21-36 Und ich werde meinen Zorn über dich ausgießen, das Feuer meines Grimmes wider dich anfachen; und ich werde dich in die Hand roher Menschen geben, welche Verderben schmieden. H21-37 Du wirst dem Feuer zum Fraße werden, dein Blut wird inmitten des Landes sein; deiner wird nicht mehr gedacht werden. Denn ich, Jahwe, habe geredet.
+Ezekiel$21:32 || Umgestürzt, umgestürzt, umgestürzt will ich sie machen; auch dies wird nicht mehr sein-bis der kommt, welchem das Recht gehört: dem werde ich’s geben.
+Ezekiel$21:33 || Und du, Menschensohn, weissage und sprich: So spricht der Herr, Jahwe, über die Kinder Ammon und über ihren Hohn; und sprich: Ein Schwert, ein Schwert, zur Schlachtung gezückt, geschliffen, damit es fresse, damit es blitze
+Ezekiel$21:34 || (während man dir Eitles schaut, während man dir Lügen wahrsagt), um dich zu den Hälsen der erschlagenen Gesetzlosen zu legen, deren Tag gekommen ist zur Zeit der Ungerechtigkeit des Endes!
+Ezekiel$21:35 || Stecke es wieder in seine Scheide! An dem Orte, wo du geschaffen bist, in dem Lande deines Ursprungs, werde ich dich richten.
+Ezekiel$21:36 || Und ich werde meinen Zorn über dich ausgießen, das Feuer meines Grimmes wider dich anfachen; und ich werde dich in die Hand roher Menschen geben, welche Verderben schmieden.
+Ezekiel$21:37 || Du wirst dem Feuer zum Fraße werden, dein Blut wird inmitten des Landes sein; deiner wird nicht mehr gedacht werden. Denn ich, Jahwe, habe geredet.
 Ezekiel$22:1 || Und das Wort Jahwes geschah zu mir also:
 Ezekiel$22:2 || Und du, Menschensohn, willst du richten, willst du richten die Stadt der Blutschuld? So tue ihr kund alle ihre Greuel
 Ezekiel$22:3 || und sprich: so spricht der Herr, Jahwe: Stadt, die Blut vergießt in ihrer Mitte, damit ihre Zeit komme, und welche sich Götzen macht, um sich zu verunreinigen!
@@ -21903,7 +21929,7 @@ Daniel$5:27 || Tekel-du bist auf der Waage gewogen und zu leicht erfunden worden
 Daniel$5:28 || Peres -dein Königreich wird zerteilt und den Medern und Persern gegeben.
 Daniel$5:29 || Alsdann befahl Belsazar, und man bekleidete Daniel mit Purpur, mit einer goldenen Kette um seinen Hals; und man rief über ihn aus, daß er der dritte Herrscher im Königreich sein solle. -
 Daniel$5:30 || In derselben Nacht wurde Belsazar, der König der Chaldäer, getötet.
-Daniel$5:31 || 
+Daniel$5:31 ||
 Daniel$6:1 || Und Darius, der Meder, bekam das Königreich, als er ungefähr 62 Jahre alt war.
 Daniel$6:2 || Es gefiel Darius, über das Königreich 120 Satrapen zu bestellen, die im ganzen Königreich sein sollten,
 Daniel$6:3 || und über diese drei Vorsteher, von welchen Daniel einer war: damit jene Satrapen ihnen Rechenschaft gäben und der König keinen Schaden erlitte.
@@ -21931,7 +21957,8 @@ Daniel$6:24 || Da freute sich der König sehr, und er befahl, Daniel aus der Gru
 Daniel$6:25 || Und der König befahl, und man brachte jene Männer, welche Daniel angezeigt hatten, und man warf sie in die Löwengrube, sie, ihre Kinder und ihre Weiber; und ehe sie noch auf den Boden der Grube gekommen waren, bemächtigten sich ihrer die Löwen und zermalmten alle ihre Gebeine.
 Daniel$6:26 || Alsdann schrieb der König Darius an alle Völker, Völkerschaften und Sprachen, welche auf der ganzen Erde wohnten: Friede euch in Fülle!
 Daniel$6:27 || Von mir wird Befehl gegeben, daß man in der ganzen Herrschaft meines Königreichs bebe und sich fürchte vor dem Gott Daniels; denn er ist der lebendige Gott und besteht in Ewigkeit, und sein Reich wird nie zerstört werden, und seine Herrschaft währt bis ans Ende;
-Daniel$6:28 || der da rettet und befreit, und Zeichen und Wunder tut im Himmel und auf der Erde: denn er hat Daniel aus der Gewalt der Löwen errettet. H6-29 Und dieser Daniel hatte Gedeihen unter der Regierung des Darius und unter der Regierung Kores’, des Persers.
+Daniel$6:28 || der da rettet und befreit, und Zeichen und Wunder tut im Himmel und auf der Erde: denn er hat Daniel aus der Gewalt der Löwen errettet.
+Daniel$6:29 || Und dieser Daniel hatte Gedeihen unter der Regierung des Darius und unter der Regierung Kores’, des Persers.
 Daniel$7:1 || Im ersten Jahre Belsazars, des Königs von Babel, sah Daniel einen Traum und Gesichte seines Hauptes auf seinem Lager. Dann schrieb er den Traum auf, die Summe der Sache berichtete er.
 Daniel$7:2 || Daniel hob an und sprach: Ich schaute in meinem Gesicht bei der Nacht, und siehe, die vier Winde des Himmels brachen los auf das große Meer.
 Daniel$7:3 || Und vier große Tiere stiegen aus dem Meere herauf, eines verschieden von dem anderen. -
@@ -22250,7 +22277,7 @@ Hosea$11:8 || Wie sollte ich dich hingeben, Ephraim, dich überliefern, Israel? 
 Hosea$11:9 || Nicht will ich ausführen die Glut meines Zornes, nicht wiederum Ephraim verderben; denn ich bin Gott und nicht ein Mensch, der Heilige in deiner Mitte, und ich will nicht in Zornesglut kommen. -
 Hosea$11:10 || Sie werden Jahwe nachwandeln: wie ein Löwe wird er brüllen; denn er wird brüllen, und zitternd werden die Kinder herbeieilen vom Meere
 Hosea$11:11 || wie Vögel werden sie zitternd herbeieilen aus Ägypten und wie Tauben aus dem Lande Assyrien; und ich werde sie in ihren Häusern wohnen lassen, spricht Jahwe.
-Hosea$11:12 || 
+Hosea$11:12 ||
 Hosea$12:1 || Mit Lüge hat Ephraim mich umringt, und das Haus Israel mit Trug; und Juda ist immer noch zügellos gegen Gott und gegen den Heiligen der treu ist.
 Hosea$12:2 || Ephraim weidet sich an Wind und jagt dem Ostwinde nach; den ganzen Tag mehrt es Lüge und Gewalttat; und sie schließen einen Bund mit Assyrien, und Öl wird nach Ägypten gebracht.
 Hosea$12:3 || Auch mit Juda hat Jahwe einen Rechtsstreit; und er wird Jakob heimsuchen nach seinen Wegen, nach seinen Handlungen ihm vergelten. -
@@ -22264,7 +22291,8 @@ Hosea$12:10 || Ich aber bin Jahwe, dein Gott, vom Lande Ägypten her; ich werde 
 Hosea$12:11 || Und ich habe zu den Propheten geredet, ja, ich habe Gesichte vermehrt und durch die Propheten in Gleichnissen geredet.
 Hosea$12:12 || Wenn Gilead Frevel ist, so werden sie nur Nichtiges werden. In Gilgal opferten sie Stiere; so werden auch ihre Altäre wie Steinhaufen sein auf den Furchen des Feldes.
 Hosea$12:13 || Und Jakob entfloh nach dem Gefilde von Aram, und Israel diente um ein Weib und hütete um ein Weib.
-Hosea$12:14 || Und Jahwe führte Israel durch einen Propheten aus Ägypten herauf, und durch einen Propheten wurde es gehütet. H12-15 Ephraim erzürnte ihn bitterlich, und sein Herr wird seine Blutschuld auf ihm lassen und seine Schmähung ihm vergelten.
+Hosea$12:14 || Und Jahwe führte Israel durch einen Propheten aus Ägypten herauf, und durch einen Propheten wurde es gehütet.
+Hosea$12:15 || Ephraim erzürnte ihn bitterlich, und sein Herr wird seine Blutschuld auf ihm lassen und seine Schmähung ihm vergelten.
 Hosea$13:1 || Wenn Ephraim redete, war Schrecken; es erhob sich in Israel. Aber es verschuldete sich durch Baal und starb.
 Hosea$13:2 || Und nun fahren sie fort zu sündigen und machen sich von ihrem Silber gegossene Bilder, Götzenbilder nach ihrem Verstande, allesamt ein Werk der Künstler; von eben diesen sagt man: Die Menschen, welche opfern, küssen die Kälber!
 Hosea$13:3 || Darum werden sie sein wie die Morgenwolke und wie der Tau, der früh verschwindet, wie Spreu, welche von der Tenne dahinfliegt, und wie Rauch aus dem Gitter.
@@ -22546,7 +22574,7 @@ Jonah$1:13 || Und die Männer ruderten hart um das Schiff ans Land zurückzufüh
 Jonah$1:14 || Da riefen sie zu Jahwe und sprachen: Ach, Jahwe! laß uns doch nicht umkommen um der Seele dieses Mannes willen, und lege nicht unschuldiges Blut auf uns; denn du, Jahwe, hast getan, wie es dir gefallen hat.
 Jonah$1:15 || Und sie nahmen Jona und warfen ihn ins Meer. Da ließ das Meer ab von seinem Wüten.
 Jonah$1:16 || Und die Männer fürchteten sich vor Jahwe mit großer Furcht, und sie schlachteten Schlachtopfer und taten Gelübde dem Jahwe.
-Jonah$1:17 || 
+Jonah$1:17 ||
 Jonah$2:1 || Und Jahwe bestellte einen großen Fisch, um Jona zu verschlingen; und Jona war im Bauche des Fisches drei Tage und drei Nächte.
 Jonah$2:2 || Und Jona betete zu Jahwe, seinem Gott, aus dem Bauche des Fisches und sprach:
 Jonah$2:3 || Ich rief aus meiner Bedrängnis zu Jahwe, und er antwortete mir; ich schrie aus dem Schoße des Scheols, du hörtest meine Stimme.
@@ -22556,7 +22584,8 @@ Jonah$2:6 || Die Wasser umfingen mich bis an die Seele, die Tiefe umschloß mich
 Jonah$2:7 || Ich fuhr hinab zu den Gründen der Berge; der Erde Riegel waren hinter mir auf ewig. Da führtest du mein Leben aus der Grube herauf, Jahwe, mein Gott.
 Jonah$2:8 || Als meine Seele in mir verschmachtete, gedachte ich Jahwes, und zu dir kam mein Gebet in deinen heiligen Tempel.
 Jonah$2:9 || Die auf nichtige Götzen achten, verlassen ihre Gnade
-Jonah$2:10 || Ich aber werde dir opfern mit der Stimme des Lobes was ich gelobt habe, werde ich bezahlen. Bei Jahwe ist die Rettung. H2-11 Und Jahwe befahl dem Fische, und er spie Jona an das Land aus.
+Jonah$2:10 || Ich aber werde dir opfern mit der Stimme des Lobes was ich gelobt habe, werde ich bezahlen. Bei Jahwe ist die Rettung.
+Jonah$2:11 || Und Jahwe befahl dem Fische, und er spie Jona an das Land aus.
 Jonah$3:1 || Und das Wort Jahwes geschah zum zweiten Male zu Jona also:
 Jonah$3:2 || Mache dich auf, gehe nach Ninive, der großen Stadt, und rufe ihr die Botschaft aus, die ich dir sagen werde.
 Jonah$3:3 || Da machte sich Jona auf und ging nach Ninive, nach dem Worte Jahwes. Ninive war aber eine außerordentlich große Stadt von drei Tagereisen.
@@ -22631,7 +22660,8 @@ Micah$4:9 || Nun, warum erhebst du ein Geschrei? Ist kein König in dir? oder is
 Micah$4:10 || Kreiße und stöhne Tochter Zion, gleich einer Gebärenden! denn nun wirst du aus der Stadt hinausziehen und auf dem Felde wohnen und bis nach Babel kommen. -Daselbst wirst du errettet werden, daselbst wird Jahwe dich aus der Hand deiner Feinde erlösen.
 Micah$4:11 || Und nun haben sich viele Nationen wider dich versammelt, die da sprechen: Sie werde entweiht, und unsere Augen mögen an Zion ihre Lust sehen!
 Micah$4:12 || Aber sie kennen nicht die Gedanken Jahwes und verstehen nicht seinen Ratschluß; denn er hat sie gesammelt, wie man Garben auf die Tenne sammelt.
-Micah$4:13 || Mache dich auf und drisch, Tochter Zion! Denn ich werde dein Horn zu Eisen und deine Hufe zu Erz machen, und du wirst viele Völker zermalmen; und ich werde ihren Raub dem Jahwe verbannen und ihr Vermögen dem Herrn der ganzen Erde. - H4-14 Nun dränge dich zusammen, Tochter des Gedränges: man hat eine Belagerung gegen uns gerichtet; mit dem Stabe schlagen sie den Richter Israels auf den Backen.
+Micah$4:13 || Mache dich auf und drisch, Tochter Zion! Denn ich werde dein Horn zu Eisen und deine Hufe zu Erz machen, und du wirst viele Völker zermalmen; und ich werde ihren Raub dem Jahwe verbannen und ihr Vermögen dem Herrn der ganzen Erde. -
+Micah$4:14 || Nun dränge dich zusammen, Tochter des Gedränges: man hat eine Belagerung gegen uns gerichtet; mit dem Stabe schlagen sie den Richter Israels auf den Backen.
 Micah$5:1 || Und du, Bethlehem, Ephrata, zu klein, um unter den Tausenden von Juda zu sein, aus dir wird mir hervorkommen, der Herrscher über Israel sein soll; und seine Ausgänge sind von der Urzeit, von den Tagen der Ewigkeit her.
 Micah$5:2 || Darum wird er sie dahingeben bis zur Zeit, da eine Gebärende geboren hat; und der Rest seiner Brüder wird zurückkehren samt den Kindern Israel.
 Micah$5:3 || Und er wird dastehen und seine Herde weiden in der Kraft Jahwes, in der Hoheit des Namens Jahwes, seines Gottes. Und sie werden wohnen denn nun wird er groß sein bis an die Enden der Erde.
@@ -22646,7 +22676,7 @@ Micah$5:11 || Und ich werde die Wahrsagereien ausrotten aus deiner Hand, und du 
 Micah$5:12 || Und ich werde deine geschnitzten Bilder und deine Bildsäulen aus deiner Mitte ausrotten, und du wirst dich nicht mehr niederwerfen vor dem Werke deiner Hände.
 Micah$5:13 || Und ich werde deine Ascherim herausreißen aus deiner Mitte und deine Städte vertilgen.
 Micah$5:14 || Und ich werde in Zorn und in Grimm Rache üben an den Nationen, die nicht gehört haben.
-Micah$5:15 || 
+Micah$5:15 ||
 Micah$6:1 || Höret doch, was Jahwe sagt: Mache dich auf, rechte vor den Bergen und laß die Hügel deine Stimme hören!
 Micah$6:2 || Höret, ihr Berge, den Rechtsstreit Jahwes, und ihr Unwandelbaren, ihr Grundfesten der Erde! Denn Jahwe hat einen Rechtsstreit mit seinem Volke, und mit Israel wird er rechten.
 Micah$6:3 || "Mein Volk, was habe ich dir getan, und womit habe ich dich ermüdet? Lege Zeugnis gegen mich ab!
@@ -25685,8 +25715,8 @@ Luke$17:32 || Gedenket an Lots Weib!
 Luke$17:33 || Wer irgend sein Leben zu retten sucht, wird es verlieren; und wer irgend es verliert, wird es erhalten.
 Luke$17:34 || Ich sage euch: In jener Nacht werden zwei auf einem Bette sein; einer wird genommen und der andere gelassen werden.
 Luke$17:35 || Zwei Weiber werden zusammen mahlen, die eine wird genommen, und die andere gelassen werden.
-Luke$17:36 || 
-Luke$17:37 ||  G17-36 Und sie antworten und sagen zu ihm: Wo, Herr? Er aber sprach zu ihnen: Wo der Leichnam ist, da werden auch die Adler versammelt werden.
+Luke$17:36 ||
+Luke$17:37 || Und sie antworten und sagen zu ihm: Wo, Herr? Er aber sprach zu ihnen: Wo der Leichnam ist, da werden auch die Adler versammelt werden.
 Luke$18:1 || Er sagte ihnen aber auch ein Gleichnis dafür, daß sie allezeit beten und nicht ermatten sollten,
 Luke$18:2 || und sprach: Es war ein gewisser Richter in einer Stadt, der Gott nicht fürchtete und vor keinem Menschen sich scheute.
 Luke$18:3 || Es war aber eine Witwe in jener Stadt; und sie kam zu ihm und sprach: Schaffe mir Recht von meinem Widersacher.
@@ -29055,7 +29085,7 @@ Romans$16:27 || dem allein weisen Gott durch Jesum Christum, ihm sei die Herrlic
 2 Corinthians$13:11 || Übrigens, Brüder, freuet euch, werdet vollkommen, seid getrost, seid eines Sinnes, seid in Frieden, und der Gott der Liebe und des Friedens wird mit euch sein.
 2 Corinthians$13:12 || Grüßet einander mit heiligem Kuß. Es grüßen euch die Heiligen alle.
 2 Corinthians$13:13 || Die Gnade des Herrn Jesu Christi und die Liebe Gottes und die Gemeinschaft des Heiligen Geistes sei mit euch allen!
-2 Corinthians$13:14 || 
+2 Corinthians$13:14 ||
 Galatians$1:1 || Paulus, Apostel, nicht von Menschen, noch durch einen Menschen, sondern durch Jesum Christum und Gott, den Vater, der ihn auferweckt hat aus den Toten,
 Galatians$1:2 || und alle Brüder, die bei mir sind, den Versammlungen von Galatien:
 Galatians$1:3 || Gnade euch und Friede von Gott, dem Vater, und unserem Herrn Jesu Christi,
@@ -30670,7 +30700,8 @@ James$5:20 || so wisse er, daß der, welcher einen Sünder von dem Irrtum seines
 3 John$1:11 || Geliebter, ahme nicht das Böse nach, sondern das Gute. Wer Gutes tut, ist aus Gott; wer Böses tut, hat Gott nicht gesehen.
 3 John$1:12 || Dem Demetrius wird Zeugnis gegeben von allen und von der Wahrheit selbst; aber auch wir geben Zeugnis, und du weißt, daß unser Zeugnis wahr ist.
 3 John$1:13 || Ich hätte dir vieles zu schreiben, aber ich will dir nicht mit Tinte und Feder schreiben,
-3 John$1:14 || sondern ich hoffe, dich bald zu sehen, und wir wollen mündlich miteinander reden. G1-15 Friede dir! Es grüßen dich die Freunde. Grüße die Freunde mit Namen.
+3 John$1:14 || sondern ich hoffe, dich bald zu sehen, und wir wollen mündlich miteinander reden.
+3 John$1:15 || Friede dir! Es grüßen dich die Freunde. Grüße die Freunde mit Namen.
 Jude$1:1 || Judas, Knecht Jesu Christi und Bruder des Jakobus, den in Gott, dem Vater, geliebten und in Jesu Christo bewahrten Berufenen:
 Jude$1:2 || Barmherzigkeit und Friede und Liebe sei euch vermehrt!
 Jude$1:3 || Geliebte, indem ich allen Fleiß anwandte, euch über unser gemeinsames Heil zu schreiben, war ich genötigt, euch zu schreiben und zu ermahnen, für den einmal den Heiligen überlieferten Glauben zu kämpfen.
@@ -30906,7 +30937,8 @@ Revelation$12:13 || Und als der Drache sah, daß er auf die Erde geworfen war, v
 Revelation$12:14 || Und es wurden dem Weibe die zwei Flügel des großen Adlers gegeben, auf daß sie in die Wüste fliege, an ihre Stätte, woselbst sie ernährt wird eine Zeit und Zeiten und eine halbe Zeit, fern von dem Angesicht der Schlange.
 Revelation$12:15 || Und die Schlange warf aus ihrem Munde Wasser, wie einen Strom, hinter dem Weibe her, auf daß sie sie mit dem Strome fortrisse.
 Revelation$12:16 || Und die Erde half dem Weibe, und die Erde tat ihren Mund auf und verschlang den Strom, den der Drache aus seinem Munde warf.
-Revelation$12:17 || Und der Drache ward zornig über das Weib und ging hin, Krieg zu führen mit den übrigen ihres Samens, welche die Gebote Gottes halten und das Zeugnis Jesu haben. G12-18 Und ich stand auf dem Sande des Meeres.
+Revelation$12:17 || Und der Drache ward zornig über das Weib und ging hin, Krieg zu führen mit den übrigen ihres Samens, welche die Gebote Gottes halten und das Zeugnis Jesu haben.
+Revelation$12:18 || Und ich stand auf dem Sande des Meeres.
 Revelation$13:1 || Und ich sah aus dem Meere ein Tier aufsteigen, welches zehn Hörner und sieben Köpfe hatte, und auf seinen Hörnern zehn Diademe, und auf seinen Köpfen Namen der Lästerung.
 Revelation$13:2 || Und das Tier, das ich sah, war gleich einem Pardel, und seine Füße wie die eines Bären, und sein Maul wie eines Löwen Maul. Und der Drache gab ihm seine Macht und seinen Thron und große Gewalt.
 Revelation$13:3 || Und ich sah einen seiner Köpfe wie zum Tode geschlachtet. Und seine Todeswunde wurde geheilt, und die ganze Erde verwunderte sich über das Tier.
