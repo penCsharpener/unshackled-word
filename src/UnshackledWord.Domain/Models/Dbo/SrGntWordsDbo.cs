@@ -1,8 +1,9 @@
 namespace UnshackledWord.Domain.Models.Dbo;
 
-public sealed class SrGntWordDbo
+public sealed class SrGntWordsDbo
 {
     public const string DboName = "\"unshackled-word\".\"SrGntWords\"";
+
     public int Id { get; set; }
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }

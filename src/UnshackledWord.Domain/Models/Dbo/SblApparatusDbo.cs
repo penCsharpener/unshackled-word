@@ -1,7 +1,9 @@
-﻿namespace UnshackledWord.Domain.Models;
+namespace UnshackledWord.Domain.Models.Dbo;
 
-public class ElberfelderVerseInfo
+public sealed class SblApparatusDbo
 {
+    public const string DboName = "\"unshackled-word\".\"SblApparatus\"";
+
     public int Id { get; set; }
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }

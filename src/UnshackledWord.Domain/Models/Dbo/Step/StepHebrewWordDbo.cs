@@ -10,6 +10,7 @@ public sealed class StepHebrewWordDbo : IBibleWordOrderColumns
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }
     public int Verse { get; set; }
+    public int RefId { get; set; }
     public int PositionInVerse { get; set; }
     public int? AltChapter { get; set; }
     public int? AltVerse { get; set; }

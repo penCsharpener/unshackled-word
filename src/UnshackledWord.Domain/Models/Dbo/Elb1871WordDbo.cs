@@ -8,6 +8,7 @@ public class Elb1871WordDbo
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }
     public int Verse { get; set; }
+    public int RefId { get; set; }
     public string WordInContext { get; set; } = default!;
     public string? PlainWord { get; set; }
     public string? Lemma { get; set; }

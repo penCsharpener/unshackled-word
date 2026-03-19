@@ -1,4 +1,5 @@
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.SBL;
@@ -63,20 +64,20 @@ public class SblRunner : IRunner
 
     private async Task<int> GetCountTextAsync(CancellationToken token = default)
     {
-        var sql = """
-                  select count(*)
-                  from "unshackled-word"."SblText"
-                  """;
+        var sql = $"""
+                   select count(*)
+                   from {SblTextDbo.DboName}
+                   """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);
     }
 
     private async Task<int> GetCountApparatusAsync(CancellationToken token = default)
     {
-        var sql = """
-                  select count(*)
-                  from "unshackled-word"."SblApparatus"
-                  """;
+        var sql = $"""
+                   select count(*)
+                   from {SblApparatusDbo.DboName}
+                   """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);
     }

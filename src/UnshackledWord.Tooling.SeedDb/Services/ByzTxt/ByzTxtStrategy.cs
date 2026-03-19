@@ -68,10 +68,10 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
 
     private async Task<int> GetCountAsync()
     {
-        var sql = """
-                  select COUNT(*)
-                  from "unshackled-word"."ByzTxtWords";
-                  """;
+        var sql = $"""
+                   select COUNT(*)
+                   from {ByzTxtWord.DboName};
+                   """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql, CancellationToken.None);
     }
@@ -139,7 +139,7 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
             }
 
             var sql = $"""
-                       INSERT INTO "unshackled-word"."ByzTxtWords" ("BibleBookId", "Chapter", "Verse", "SortNumber", "Word", "StrongNumber", "Morphology")
+                       INSERT INTO {ByzTxtWord.DboName} ("BibleBookId", "Chapter", "Verse", "SortNumber", "Word", "StrongNumber", "Morphology")
                        VALUES
                        {rowList.JoinStrings(_delimiter)};
                        """;

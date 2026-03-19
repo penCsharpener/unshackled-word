@@ -8,6 +8,7 @@ public sealed class StepStrongsToVersesDbo
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }
     public int Verse { get; set; }
+    public int RefId { get; set; }
     public int StepDisambiguatedStrongsId { get; set; }
     public bool IsRoot { get; set; }
     public string? Grammar { get; set; } = default!;

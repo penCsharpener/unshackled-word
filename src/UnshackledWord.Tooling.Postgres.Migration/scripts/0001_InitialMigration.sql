@@ -1,4 +1,4 @@
-﻿CREATE SCHEMA IF NOT EXISTS "unshackled-word" AUTHORIZATION postgres;
+﻿CREATE SCHEMA IF NOT EXISTS "unshackled-word";
 
 CREATE TABLE "unshackled-word"."GntHotWords"
 (
@@ -25,6 +25,7 @@ CREATE TABLE "unshackled-word"."Elb1871Words"
     "BibleBookId"     integer                     NOT NULL,
     "Chapter"         integer                     NOT NULL,
     "Verse"           integer                     NOT NULL,
+    "RefId"           integer                     NOT NULL,
     "WordInContext"   varchar COLLATE "und-x-icu" NOT NULL,
     "PlainWord"       varchar COLLATE "und-x-icu" NULL,
     "Lemma"           varchar COLLATE "und-x-icu" NULL,
@@ -48,6 +49,7 @@ CREATE TABLE "unshackled-word"."Elb1871Verses"
     "BibleBookId" integer                  NOT NULL,
     "Chapter"     integer                  NOT NULL,
     "Verse"       integer                  NOT NULL,
+    "RefId"       integer                  NOT NULL,
     "VerseText"   text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "Elb1871Verses_PK" PRIMARY KEY ("Id")
 );
@@ -61,6 +63,7 @@ CREATE TABLE "unshackled-word"."SourceWords"
     "BibleBookId" integer                  NOT NULL,
     "Chapter"     integer                  NOT NULL,
     "Verse"       integer                  NOT NULL,
+    "RefId"       integer                  NOT NULL,
     "SortNumber"  integer                  NOT NULL,
     "SourceWord"  text COLLATE "und-x-icu" NOT NULL,
     "GrammarKey"  text COLLATE "und-x-icu" NOT NULL,
@@ -75,13 +78,16 @@ CREATE TABLE "unshackled-word"."Tsk"
     "BibleBookId"             integer                  NOT NULL,
     "Chapter"                 integer                  NOT NULL,
     "Verse"                   integer                  NOT NULL,
+    "RefId"                   integer                  NOT NULL,
     "Scope"                   text COLLATE "und-x-icu" NOT NULL,
     "RelatedStartBibleBookId" integer                  NOT NULL,
     "RelatedStartChapter"     integer                  NOT NULL,
     "RelatedStartVerse"       integer                  NOT NULL,
+    "RelatedStartRefId"       integer                  NOT NULL,
     "RelatedEndBibleBookId"   integer                  NULL,
     "RelatedEndChapter"       integer                  NULL,
     "RelatedEndVerse"         integer                  NULL,
+    "RelatedEndRefId"         integer                  NULL,
     CONSTRAINT "Tsk_PK" PRIMARY KEY ("Id")
 );
 
@@ -95,6 +101,7 @@ CREATE TABLE "unshackled-word"."SblText"
     "BibleBookId" integer                  NOT NULL,
     "Chapter"     integer                  NOT NULL,
     "Verse"       integer                  NOT NULL,
+    "RefId"       integer                  NOT NULL,
     "VerseText"   text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "SblText_PK" PRIMARY KEY ("Id")
 );
@@ -107,6 +114,7 @@ CREATE TABLE "unshackled-word"."SblApparatus"
     "BibleBookId" integer                  NOT NULL,
     "Chapter"     integer                  NOT NULL,
     "Verse"       integer                  NOT NULL,
+    "RefId"       integer                  NOT NULL,
     "Text"        text COLLATE "und-x-icu" NOT NULL,
     CONSTRAINT "SblApparatus_PK" PRIMARY KEY ("Id")
 );
@@ -119,6 +127,7 @@ CREATE TABLE "unshackled-word"."ByzTxtWords"
     "BibleBookId"  integer                  NOT NULL,
     "Chapter"      integer                  NOT NULL,
     "Verse"        integer                  NOT NULL,
+    "RefId"        integer                  NOT NULL,
     "SortNumber"   integer                  NOT NULL,
     "Word"         text COLLATE "und-x-icu" NOT NULL,
     "StrongNumber" text COLLATE "und-x-icu" NOT NULL,
@@ -134,6 +143,7 @@ CREATE TABLE "unshackled-word"."SrGntWords"
     "BibleBookId"     integer                     NOT NULL,
     "Chapter"         integer                     NOT NULL,
     "Verse"           integer                     NOT NULL,
+    "RefId"           integer                     NOT NULL,
     "WordInContext"   varchar COLLATE "und-x-icu" NOT NULL,
     "Koine"           varchar COLLATE "und-x-icu" NOT NULL,
     "Lemma"           varchar COLLATE "und-x-icu" NOT NULL,

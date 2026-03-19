@@ -6,6 +6,7 @@ internal class InternalVerseDto
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }
     public int Verse { get; set; }
+    public int RefId { get; set; }
     public string Word { get; set; } = default!;
     public string? Strongs { get; set; }
     public int PositionInVerse { get; set; }

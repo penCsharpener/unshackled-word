@@ -60,10 +60,10 @@ public class SrRunner : IRunner
 
     private async Task<int> GetCountTsvAsync(CancellationToken token = default)
     {
-        var sql = """
-                  select count(*)
-                  from "unshackled-word"."SrGntWords"
-                  """;
+        var sql = $"""
+                   select count(*)
+                   from "unshackled-word"."SrGntWords"
+                   """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);
     }

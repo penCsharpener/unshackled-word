@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
@@ -104,7 +105,7 @@ public class SblGntApparatusStrategy : IFileParserStrategy
         }
 
         var insertSql = $"""
-                         INSERT INTO "unshackled-word"."SblApparatus" ("BibleBookId", "Chapter", "Verse", "Text")
+                         INSERT INTO {SblApparatusDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "Text")
                          VALUES
                          {apparatusItems.Select(x => x.ToString()).JoinStrings(_delimiter)};
                          """;
@@ -117,8 +118,10 @@ public class SblGntApparatusStrategy : IFileParserStrategy
         public int BibleBookId { get; set; }
         public int Chapter { get; set; }
         public int Verse { get; set; }
+        public int RefId { get; set; }
         public string Text { get; set; }
+        public BibleReference BibRef => new(BibleBookId, Chapter, Verse);
 
-        public override string ToString() => $"({BibleBookId}, {Chapter}, {Verse}, '{Text}')";
+        public override string ToString() => $"({BibleBookId}, {Chapter}, {Verse}, {BibRef.RefId}, '{Text}')";
     }
 }

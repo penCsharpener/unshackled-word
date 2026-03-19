@@ -6,9 +6,10 @@ public sealed class StepPersonLexiconDbo : IEntityId
 
     public int Id { get; set; }
     public string Name { get; set; } = default!;
-    public int BibleBookId { get; set; } = default!;
-    public int Chapter { get; set; } = default!;
-    public int Verse { get; set; } = default!;
+    public int BibleBookId { get; set; }
+    public int Chapter { get; set; }
+    public int Verse { get; set; }
+    public int RefId { get; set; }
     public string? Strongs { get; set; } = default!;
     public string? Note { get; set; }
     public string? OriginalSpelling { get; set; }

@@ -1,15 +1,15 @@
 CREATE TABLE "unshackled-word"."BibleStructureVerses"
 (
-    "BibleBookId"  INTEGER NOT NULL,
-    "Chapter"      INTEGER NOT NULL,
-    "LastVerse"    INTEGER NOT NULL,
-    "AltChapter"   INTEGER NULL,
-    "AltLastVerse" INTEGER NULL
+    "BibleBookId"  INT NOT NULL,
+    "Chapter"      INT NOT NULL,
+    "LastVerse"    INT NOT NULL,
+    "AltChapter"   INT NULL,
+    "AltLastVerse" INT NULL
 );
 
 CREATE TABLE "unshackled-word"."BibleStructureChapters"
 (
-    "BibleBookId"    INTEGER NOT NULL,
-    "LastChapter"    INTEGER NOT NULL,
-    "AltLastChapter" INTEGER NULL
+    "BibleBookId"    INT NOT NULL,
+    "LastChapter"    INT NOT NULL,
+    "AltLastChapter" INT NULL
 );

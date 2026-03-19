@@ -2,6 +2,7 @@
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
@@ -51,7 +52,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             var bookId = BibleBook.AllBooks.First(x => x.Value.Name == book).Key;
 
             var words = SplitAndSaveIndividualWords(refText[1]).ToList();
-            var verseObj = new Elb1871Verse(bookId, chapter, verse, refText[1], words);
+            var verseObj = new Elb1871Verse(new BibleReference(bookId, chapter, verse), refText[1], words);
             Elberfelder1871Verses.Add(verseObj);
         }
 
@@ -83,11 +84,11 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
         foreach (var verse in batch)
         {
-            rowList.Add($"({verse.BibleBookId}, {verse.Chapter}, {verse.Verse}, '{verse.Text}')");
+            rowList.Add($"({verse.BibRef.BookId}, {verse.BibRef.Chapter}, {verse.BibRef.Verse}, {verse.BibRef.RefId}, '{verse.Text}')");
         }
 
         var sql = $"""
-                   INSERT INTO "unshackled-word"."Elb1871Verses" ("BibleBookId", "Chapter", "Verse", "VerseText")
+                   INSERT INTO {Elb1871VersesDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "VerseText")
                    VALUES
                    {rowList.JoinStrings($",{nl}")};
                    """;
@@ -108,12 +109,12 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
                     continue;
                 }
 
-                rowList.Add($"({verse.BibleBookId}, {verse.Chapter}, {verse.Verse}, '{word.InContext}', {word.Order}, '{word.PlainWord}')");
+                rowList.Add($"({verse.BibRef.BookId}, {verse.BibRef.Chapter}, {verse.BibRef.Verse}, {verse.BibRef.RefId}, '{word.InContext}', {word.Order}, '{word.PlainWord}')");
             }
         }
 
         var sql = $"""
-                   INSERT INTO "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse", "WordInContext", "PositionInVerse", "PlainWord")
+                   INSERT INTO {Elb1871WordDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "PositionInVerse", "PlainWord")
                    VALUES
                    {rowList.JoinStrings($",{nl}")};
                    """;
@@ -153,23 +154,23 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
     private async Task<int> GetCountVersesAsync(CancellationToken token = default)
     {
-        var sql = """
-                  select Count(*)
-                  from "unshackled-word"."Elb1871Verses"
-                  """;
+        var sql = $"""
+                   select Count(*)
+                   from {Elb1871VersesDbo.DboName}
+                   """;
 
         return await _reader.ExecuteScalarAsync<int>(sql);
     }
 
     private async Task<int> GetCountWordsAsync(CancellationToken token = default)
     {
-        var sql = """
-                  select Count(*)
-                  from "unshackled-word"."Elb1871Words"
-                  """;
+        var sql = $"""
+                   select Count(*)
+                   from {Elb1871WordDbo.DboName}
+                   """;
 
         return await _reader.ExecuteScalarAsync<int>(sql);
     }
 }
-public record Elb1871Verse(int BibleBookId, int Chapter, int Verse, string Text, List<Elb1871Word> Words);
+public record Elb1871Verse(BibleReference BibRef, string Text, List<Elb1871Word> Words);
 public record Elb1871Word(int Order, string InContext, string PlainWord);

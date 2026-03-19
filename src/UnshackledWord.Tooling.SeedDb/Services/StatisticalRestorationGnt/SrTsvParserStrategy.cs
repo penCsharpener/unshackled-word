@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Tooling.SeedDb.Models;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
@@ -27,10 +29,10 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        var select = """
-                     SELECT count(*)
-                     FROM "unshackled-word"."SrGntWords"
-                     """;
+        var select = $"""
+                      SELECT count(*)
+                      FROM {SrGntWordsDbo.DboName}
+                      """;
         var countRows = await _reader.ExecuteScalarAsync<int>(select);
 
         if (countRows > 0)
@@ -80,9 +82,7 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
 
             var wordInfo = new WordInfo(
                 bibleBook,
-                bibleBook.Id,
-                reference.Chapter,
-                reference.Verse,
+                new BibleReference(bibleBook.Id, reference.Chapter, reference.Verse),
                 positionInVerse,
                 wordInContext,
                 koineWord,
@@ -99,48 +99,30 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
         await InsertAsync(wordList, 50);
     }
 
-    private async Task InsertAsync(WordInfo wordInfo)
-    {
-        var sql = """
-                  INSERT INTO "unshackled-word"."SrGntWords"
-                  ("BibleBookId"", "Chapter", "Verse", "WordInContext", "Koine", "Lemma", "PositionInVerse", "Strongs", "PartOfSpeech", "GrammaticalKey")
-                  VALUES (@BibleBookId, @WordInContext, @Koine, @Lemma, @PositionInVerse, @Strongs, @PartOfSpeech, @ConjugationKey);
-                  """;
-
-        await _dbWriter.WriteAsync(sql, wordInfo);
-    }
-
     private async Task InsertAsync(List<WordInfo> wordInfos, int bulkSize)
     {
-        var sql = """
-                  INSERT INTO "unshackled-word"."SrGntWords"
-                  ("BibleBookId", "Chapter", "Verse", "WordInContext", "Koine", "Lemma", "PositionInVerse", "Strongs", "PartOfSpeech", "GrammaticalKey", "Mood", "Tense", "Voice", "Person", "Case", "Gender", "Number")
-                  VALUES
-                  """;
+        var sql = $"""
+                   INSERT INTO {SrGntWordsDbo.DboName}
+                   ("BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "Koine", "Lemma", "PositionInVerse", "Strongs", "PartOfSpeech", "GrammaticalKey", "Mood", "Tense", "Voice", "Person", "Case", "Gender", "Number")
+                   VALUES
+                   """;
 
-        var counter = 1;
         var batch = new List<string>();
 
         foreach (var wordInfo in wordInfos)
         {
-            batch.Add($"({wordInfo.BibleBookId}, {wordInfo.Chapter}, {wordInfo.Verse}, '{wordInfo.WordInContext}', " +
+            batch.Add($"({wordInfo.BibRef.BookId}, {wordInfo.BibRef.Chapter}, {wordInfo.BibRef.Verse}, {wordInfo.BibRef.RefId}, '{wordInfo.WordInContext}', " +
                       $"'{wordInfo.Koine}', '{wordInfo.Lemma}', '{wordInfo.PositionInVerse}', '{wordInfo.Strongs}', " +
                       $"'{wordInfo.PartOfSpeech}', '{wordInfo.ConjugationKey}', {ConvertToSql((int?)wordInfo.GrammaticalKey.Mood)}, " +
                       $"{ConvertToSql((int?)wordInfo.GrammaticalKey.Tense)}, {ConvertToSql((int?)wordInfo.GrammaticalKey.Voice)}, " +
                       $"{ConvertToSql((int?)wordInfo.GrammaticalKey.Person)}, {ConvertToSql((int?)wordInfo.GrammaticalKey.Case)}, " +
                       $"{ConvertToSql((int?)wordInfo.GrammaticalKey.Gender)}, {ConvertToSql((int?)wordInfo.GrammaticalKey.Number)})");
-            counter++;
-
-            if (counter == bulkSize)
-            {
-                await WriteBatch(sql, batch);
-
-                batch.Clear();
-                counter = 1;
-            }
         }
 
-        await WriteBatch(sql, batch);
+        foreach (var chunk in batch.Chunk(bulkSize))
+        {
+            await WriteBatch(sql, chunk);
+        }
     }
 
     private string ConvertToSql(int? number)
@@ -148,7 +130,7 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
         return number.HasValue ? number.Value.ToString() : "NULL";
     }
 
-    private async Task WriteBatch(string command, List<string> rows)
+    private async Task WriteBatch(string command, ICollection<string> rows)
     {
         var insert = command + Environment.NewLine + rows.JoinStrings($",{Environment.NewLine}") + ";";
         await _dbWriter.WriteAsync(insert);

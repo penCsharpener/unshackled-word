@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
@@ -46,14 +47,15 @@ public class SblGntTextStrategy : IFileParserStrategy
                 var chapterVerse = bookChapterVerse[1].Split(':');
                 var chapter = int.Parse(chapterVerse[0]);
                 var verse = int.Parse(chapterVerse[1]);
+                var bibRef = new BibleReference(bookId, chapter, verse);
 
                 var text = parts[1];
 
-                insertRows.Add($"({bookId}, {chapter}, {verse}, '{text}')");
+                insertRows.Add($"({bookId}, {chapter}, {verse}, {bibRef.RefId}, '{text}')");
             }
 
             var insertSql = $"""
-                            INSERT INTO "unshackled-word"."SblText" ("BibleBookId", "Chapter", "Verse", "VerseText")
+                            INSERT INTO {SblTextDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "VerseText")
                             VALUES
                             {insertRows.JoinStrings(_delimiter)};
                             """;

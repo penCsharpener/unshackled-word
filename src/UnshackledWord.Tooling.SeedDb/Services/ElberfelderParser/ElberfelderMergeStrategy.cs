@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.Dbo;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 
@@ -18,20 +19,20 @@ public sealed class ElberfelderMergeStrategy
 
     public async Task SaveToDatabaseAsync(IList<ElbVerse> bkList, IList<Elb1871Verse> elb1871List, CancellationToken token = default)
     {
-        var insertSql = """
-                        INSERT INTO "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse", "WordInContext", "German", "Strongs", "PositionInVerse")
-                        VALUES
-                        """;
+        var insertSql = $"""
+                         INSERT INTO {Elb1871WordDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "German", "Strongs", "PositionInVerse")
+                         VALUES
+                         """;
 
         foreach (var elb1871Verse in elb1871List)
         {
             var insertRows = new List<string>();
 
             var bkVerseWords = bkList.FirstOrDefault(bk =>
-                bk.BibleBook.Id == elb1871Verse.BibleBookId && bk.ChapterId == elb1871Verse.Chapter &&
-                bk.VerseId == elb1871Verse.Verse)?.Words ?? new List<ElbWord>();
+                bk.BibleBook.Id == elb1871Verse.BibRef.BookId && bk.ChapterId == elb1871Verse.BibRef.Chapter &&
+                bk.VerseId == elb1871Verse.BibRef.Verse)?.Words ?? new List<ElbWord>();
             var dynParams = new DynamicParameters();
-            var strongsPrefix = elb1871Verse.BibleBookId >= 40 ? "G" : "H";
+            var strongsPrefix = elb1871Verse.BibRef.BookId >= 40 ? "G" : "H";
 
             if (elb1871Verse.Words.Count == 0)
             {
@@ -44,8 +45,8 @@ public sealed class ElberfelderMergeStrategy
                 strongs = strongs.IsNullOrWhiteSpace() ? "NULL" : $"'{strongsPrefix}{strongs}'";
                 dynParams.Add($"@InContent{word.Order}", word.InContext);
                 dynParams.Add($"@Lemma{word.Order}", word.PlainWord);
-                insertRows.Add($"({elb1871Verse.BibleBookId}, {elb1871Verse.Chapter}, {elb1871Verse.Verse}, @InContent{word.Order}, @Lemma{word.Order}, {strongs}, {word.Order})");
-                // insertRows.Add($"({elb1871Verse.BibleBookId}, {elb1871Verse.Chapter}, {elb1871Verse.Verse}, '{word.InContext}', '{word.Lemma}', {strongs}, {word.Order})");
+                insertRows.Add($"({elb1871Verse.BibRef.BookId}, {elb1871Verse.BibRef.Chapter}, {elb1871Verse.BibRef.Verse}, {elb1871Verse.BibRef.RefId}, @InContent{word.Order}, @Lemma{word.Order}, {strongs}, {word.Order})");
+                // insertRows.Add($"({elb1871Verse.BibRef.BookId}, {elb1871Verse.BibRef.Chapter}, {elb1871Verse.BibRef.Verse}, {elb1871Verse.BibRef.RefId}, '{word.InContext}', '{word.Lemma}', {strongs}, {word.Order})");
             }
 
             var commandText = insertSql + nl + insertRows.JoinStrings($",{nl}") + ";";

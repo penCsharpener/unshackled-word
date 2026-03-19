@@ -5,9 +5,7 @@ namespace UnshackledWord.Tooling.SeedDb.Models;
 
 public record WordInfo(
     BibleBook Book,
-    int BibleBookId,
-    int Chapter,
-    int Verse,
+    BibleReference BibRef,
     int PositionInVerse,
     string WordInContext,
     string Koine,
