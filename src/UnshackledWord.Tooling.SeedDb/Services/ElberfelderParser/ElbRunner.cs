@@ -41,7 +41,6 @@ public class ElbRunner : IRunner
             var strategy = scope.ServiceProvider.GetRequiredService<Elberfelder1871Strategy>();
 
             await strategy.SaveToDatabase(_options.Elberfelder1871TextFile, token);
-            elb1871List = strategy.Elberfelder1871Verses;
         }
 
         // var mergeStrategy = scope.ServiceProvider.GetRequiredService<ElberfelderMergeStrategy>();

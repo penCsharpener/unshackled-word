@@ -19,7 +19,5 @@ public class Elberfelder1871StrategyTests
         var strategy = _serviceProvider.GetRequiredService<Elberfelder1871Strategy>();
         var filePath = "../../../../../temp/SeedData/Elb/elberfelder1871.txt";
         await strategy.SaveToDatabase(filePath, TestContext.Current.CancellationToken);
-
-        Assert.NotEmpty(strategy.Elberfelder1871Verses);
     }
 }

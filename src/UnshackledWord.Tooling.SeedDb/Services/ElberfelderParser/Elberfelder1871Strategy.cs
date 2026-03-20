@@ -15,8 +15,6 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     private readonly ILogger<Elberfelder1871Strategy> _logger;
     private int _countVerses;
     private int _countWords;
-    private static string nl = Environment.NewLine;
-    public List<Elb1871Verse> Elberfelder1871Verses { get; private set; } = new() ;
 
     public Elberfelder1871Strategy(IFileService fileService, IDbWriter writer, IDbReader reader, ILogger<Elberfelder1871Strategy> logger)
     {
@@ -38,11 +36,13 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             return;
         }
 
+        var totalWords = new List<Elb1871WordDbo>();
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
+        var id = 1;
 
         foreach (var line in lines)
         {
-            var refText = line.Split(" || ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var refText = line.Split(" ||", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             var bookRef = refText[0].Split("$");
             var chapterVerse = bookRef[1].Split(":");
 
@@ -57,74 +57,52 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             }
 
             var words = SplitAndSaveIndividualWords(refText[1]).ToList();
-            var verseObj = new Elb1871Verse(new BibleReference(bookId, chapter, verse), refText[1], words);
-            Elberfelder1871Verses.Add(verseObj);
-        }
-
-        _logger.LogInformation("Saving split verses to Database.");
-        await SaveToDatabaseAsync(Elberfelder1871Verses, 100, token);
-    }
-
-    private async Task SaveToDatabaseAsync(List<Elb1871Verse> list, int batchSize, CancellationToken token = default)
-    {
-        var batch = new List<Elb1871Verse>();
-
-        foreach (var verseChunk in list.Chunk(batchSize))
-        {
-            if (_countWords == 0)
+            var bibRef = new BibleReference(bookId, chapter, verse);
+            var wordDbos = words.Select(x =>
             {
-                await WriteWordsToDbAsync(batch, token);
-            }
-
-            if (_countVerses == 0)
-            {
-                await WriteVersesToDbAsync(batch, token);
-            }
-        }
-    }
-
-    private async Task WriteVersesToDbAsync(List<Elb1871Verse> batch, CancellationToken token = default)
-    {
-        var rowList = new List<string>();
-
-        foreach (var verse in batch)
-        {
-            rowList.Add($"({verse.BibRef.BookId}, {verse.BibRef.Chapter}, {verse.BibRef.Verse}, {verse.BibRef.RefId}, '{verse.Text}')");
-        }
-
-        var sql = $"""
-                   INSERT INTO {Elb1871VersesDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "VerseText")
-                   VALUES
-                   {rowList.JoinStrings($",{nl}")};
-                   """;
-
-        await _writer.WriteAsync(sql);
-    }
-
-    private async Task WriteWordsToDbAsync(List<Elb1871Verse> batch, CancellationToken token = default)
-    {
-        var rowList = new List<string>();
-
-        foreach (var verse in batch)
-        {
-            foreach (var word in verse.Words)
-            {
-                if (word.InContext is "G17-36")
+                var word = new Elb1871WordDbo
                 {
-                    continue;
-                }
+                    Id = id,
+                    BibleBookId = bookId,
+                    Chapter = chapter,
+                    Verse = verse,
+                    RefId = bibRef.RefId,
+                    WordInContext = x.InContext,
+                    PlainWord = x.PlainWord,
+                    PositionInVerse = x.Order
+                };
+                id++;
 
-                rowList.Add($"({verse.BibRef.BookId}, {verse.BibRef.Chapter}, {verse.BibRef.Verse}, {verse.BibRef.RefId}, '{word.InContext}', {word.Order}, '{word.PlainWord}')");
-            }
+                return word;
+            }).ToList();
+            totalWords.AddRange(wordDbos);
         }
 
+        _logger.LogInformation("Saving split words to Database.");
+        await BulkInsertIntoDatabaseAsync(totalWords, token);
+    }
+
+    private async Task BulkInsertIntoDatabaseAsync(List<Elb1871WordDbo> batch, CancellationToken token = default)
+    {
         var sql = $"""
-                   INSERT INTO {Elb1871WordDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "PositionInVerse", "PlainWord")
-                   VALUES
-                   {rowList.JoinStrings($",{nl}")};
+                   INSERT INTO {Elb1871WordDbo.DboName} ("Id", "BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "PositionInVerse", "PlainWord")
+                   SELECT *
+                   FROM UNNEST(@Ids, @BookIds, @Chapters, @Verses, @RefIds, @WordsInContext, @PositionInVerses, @PlainWord)
                    """;
 
-        await _writer.WriteAsync(sql);
+        var parameters = new
+        {
+            Ids = batch.Select(x => x.Id).ToArray(),
+            BookIds = batch.Select(x => x.BibleBookId).ToArray(),
+            Chapters = batch.Select(x => x.Chapter).ToArray(),
+            Verses = batch.Select(x => x.Verse).ToArray(),
+            RefIds = batch.Select(x => x.RefId).ToArray(),
+            WordsInContext = batch.Select(x => x.WordInContext).ToArray(),
+            PositionInVerses = batch.Select(x => x.PositionInVerse).ToArray(),
+            PlainWord = batch.Select(x => x.PlainWord).ToArray()
+        };
+
+        await _writer.WriteAsync(sql, parameters);
     }
 
     private static string CleanUpWord(string word)
@@ -152,7 +130,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         {
             var cleanedWord = CleanUpWord(word);
 
-            yield return new Elb1871Word(orderCounter, word, cleanedWord);
+            yield return new Elb1871Word(new BibleReference(), orderCounter, word, cleanedWord);
             orderCounter++;
         }
     }
@@ -178,4 +156,4 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     }
 }
 public record Elb1871Verse(BibleReference BibRef, string Text, List<Elb1871Word> Words);
-public record Elb1871Word(int Order, string InContext, string PlainWord);
+public record Elb1871Word(BibleReference BibRef, int Order, string InContext, string PlainWord);

@@ -17,6 +17,6 @@ public class GlobalBibleToolsRunnerTests
     public async Task Test_GbtRunner()
     {
         var strategy = _serviceProvider.GetRequiredService<GbtRunner>();
-        await strategy.Run();
+        await strategy.Run(CancellationToken.None);
     }
 }
