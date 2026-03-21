@@ -25,7 +25,7 @@ CREATE TABLE "unshackled-word"."Elb1871Words"
     "BibleBookId"     integer                     NOT NULL,
     "Chapter"         integer                     NOT NULL,
     "Verse"           integer                     NOT NULL,
-    "RefId"           integer                     NOT NULL,
+    "HebRefId"        integer                     NOT NULL,
     "WordInContext"   varchar COLLATE "und-x-icu" NOT NULL,
     "PlainWord"       varchar COLLATE "und-x-icu" NULL,
     "Lemma"           varchar COLLATE "und-x-icu" NULL,

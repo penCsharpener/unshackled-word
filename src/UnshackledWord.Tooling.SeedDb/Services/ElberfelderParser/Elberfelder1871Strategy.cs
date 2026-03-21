@@ -42,31 +42,25 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
         foreach (var line in lines)
         {
-            var refText = line.Split(" ||", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            var bookRef = refText[0].Split("$");
-            var chapterVerse = bookRef[1].Split(":");
+            var refText = line.Split("||", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var hebRef = ParseBibleReference(refText[0]);
+            var lxxRef = ParseBibleReference(refText[1]);
 
-            var book = bookRef[0];
-            var chapter = int.Parse(chapterVerse[0]);
-            var verse = int.Parse(chapterVerse[1]);
-            var bookId = BibleBook.AllBooks.First(x => x.Value.Name == book).Key;
-
-            if (refText.Length == 1 || refText[1].IsNullOrWhiteSpace())
+            if (refText.Length == 2 || (refText.Length == 2 && refText[2].IsNullOrWhiteSpace()))
             {
                 continue;
             }
 
             var words = SplitAndSaveIndividualWords(refText[1]).ToList();
-            var bibRef = new BibleReference(bookId, chapter, verse);
             var wordDbos = words.Select(x =>
             {
                 var word = new Elb1871WordDbo
                 {
                     Id = id,
-                    BibleBookId = bookId,
-                    Chapter = chapter,
-                    Verse = verse,
-                    RefId = bibRef.RefId,
+                    BibleBookId = hebRef.BookId,
+                    Chapter = hebRef.Chapter,
+                    Verse = hebRef.Verse,
+                    HebRefId = hebRef.RefId,
                     WordInContext = x.InContext,
                     PlainWord = x.PlainWord,
                     PositionInVerse = x.Order
@@ -82,12 +76,24 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         await BulkInsertIntoDatabaseAsync(totalWords, token);
     }
 
+    private BibleReference ParseBibleReference(string stringReference)
+    {
+        var bookRef = stringReference.Split("$");
+        var chapterVerse = bookRef[1].Split(":");
+
+        var book = bookRef[0];
+        var chapter = int.Parse(chapterVerse[0]);
+        var verse = int.Parse(chapterVerse[1]);
+        var bookId = BibleBook.AllBooks.First(x => x.Value.Name == book).Key;
+        return new BibleReference(bookId, chapter, verse);
+    }
+
     private async Task BulkInsertIntoDatabaseAsync(List<Elb1871WordDbo> batch, CancellationToken token = default)
     {
         var sql = $"""
-                   INSERT INTO {Elb1871WordDbo.DboName} ("Id", "BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "PositionInVerse", "PlainWord")
+                   INSERT INTO {Elb1871WordDbo.DboName} ("Id", "BibleBookId", "Chapter", "Verse", "HebRefId", "WordInContext", "PositionInVerse", "PlainWord")
                    SELECT *
-                   FROM UNNEST(@Ids, @BookIds, @Chapters, @Verses, @RefIds, @WordsInContext, @PositionInVerses, @PlainWord)
+                   FROM UNNEST(@Ids, @BookIds, @Chapters, @Verses, @HebRefIds, @WordsInContext, @PositionInVerses, @PlainWord)
                    """;
 
         var parameters = new
@@ -96,11 +102,17 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             BookIds = batch.Select(x => x.BibleBookId).ToArray(),
             Chapters = batch.Select(x => x.Chapter).ToArray(),
             Verses = batch.Select(x => x.Verse).ToArray(),
-            RefIds = batch.Select(x => x.RefId).ToArray(),
+            HebRefIds = batch.Select(x => x.HebRefId).ToArray(),
             WordsInContext = batch.Select(x => x.WordInContext).ToArray(),
             PositionInVerses = batch.Select(x => x.PositionInVerse).ToArray(),
             PlainWord = batch.Select(x => x.PlainWord).ToArray()
         };
+
+        var sqlHebLxxMapping = $"""
+                                INSERT INTO {} ()
+                                SELECT *
+                                FROM UNNEST()
+                                """;
 
         await _writer.WriteAsync(sql, parameters);
     }

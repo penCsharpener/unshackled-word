@@ -13,3 +13,11 @@ CREATE TABLE "unshackled-word"."BibleStructureChapters"
     "LastChapter"    INT NOT NULL,
     "AltLastChapter" INT NULL
 );
+
+CREATE TABLE "unshackled-word"."BibleVerseCountingMapping"
+(
+    "Id"       serial4 NOT NULL,
+    "HebRefId" INT     NOT NULL,
+    "LxxRefId" INT     NOT NULL,
+    CONSTRAINT "BibleVerseCountingMapping_PK" PRIMARY KEY ("Id")
+);
