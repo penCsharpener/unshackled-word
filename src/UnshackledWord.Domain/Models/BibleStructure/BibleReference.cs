@@ -78,6 +78,11 @@ public record struct BibleReference(int BookId, int Chapter, int Verse) : IBible
         return $"{BibleBook.AllBooks[BookId].Abbreviations[0]} {Chapter}:{Verse}";
     }
 
+    public string ToString(string bookSeparation)
+    {
+        return $"{BibleBook.AllBooks[BookId].Abbreviations[0]}{bookSeparation}{Chapter}:{Verse}";
+    }
+
     public static bool operator <(BibleReference left, BibleReference right) => left.CompareTo(right) < 0;
     public static bool operator >(BibleReference left, BibleReference right) => left.CompareTo(right) > 0;
     public static bool operator <=(BibleReference left, BibleReference right) => left.CompareTo(right) <= 0;

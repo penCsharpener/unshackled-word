@@ -19,13 +19,13 @@ public class BibleReferenceValidationTests
         // 1. Flatten the list into individual verse strings for Hebrew
         var hebVerses = chapters.SelectMany(c =>
             Enumerable.Range(1, c.VersesHeb)
-                .Select(v => new BibleReference(bookId, c.ChapterHeb ?? 0, v).ToString())
+                .Select(v => new BibleReference(bookId, c.ChapterHeb ?? 0, v).ToString("$"))
         ).ToList();
 
         // 2. Flatten the list for LXX
         var lxxVerses = chapters.SelectMany(c =>
             Enumerable.Range(1, c.VersesLxx)
-                .Select(v => new BibleReference(bookId, c.ChapterLxx ?? 0, v).ToString())
+                .Select(v => new BibleReference(bookId, c.ChapterLxx ?? 0, v).ToString("$"))
         ).ToList();
 
         // 3. Zip them together and print where they diverge
@@ -39,8 +39,8 @@ public class BibleReferenceValidationTests
                 continue;
             }
 
-            _outputHelper.WriteLine($"Heb >> {map.heb,-20} - Lxx >> {map.lxx}");
-            divergingList.Add(map.heb);
+            _outputHelper.WriteLine($"{map.heb} || {map.lxx}");
+            divergingList.Add($"{map.heb} || {map.lxx}");
         }
 
         divergingList.Count.ShouldBe(expectedDifferenceCount);
@@ -79,15 +79,15 @@ public class BibleReferenceValidationTests
 
     public static IEnumerable<TheoryDataRow<int, int>> GetDivergingVerseData()
     {
-        yield return new(1, 33);
-        yield return new(2, 63);
-        yield return new(3, 0);
-        yield return new(4, 45);
-        yield return new(5, 188);
-        yield return new(6, 0);
-        yield return new(7, 0);
-        yield return new(8, 0);
-        yield return new(9, 235);
+        yield return new(01, 33);
+        yield return new(02, 63);
+        yield return new(03, 0);
+        yield return new(04, 45);
+        yield return new(05, 188);
+        yield return new(06, 0);
+        yield return new(07, 0);
+        yield return new(08, 0);
+        yield return new(09, 235);
         yield return new(10, 44);
         yield return new(11, 32);
         yield return new(12, 22);
