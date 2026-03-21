@@ -37,6 +37,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         }
 
         var totalWords = new List<Elb1871WordDbo>();
+        var totalMappings = new List<BibleVerseCountingMappingDbo>();
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
         var id = 1;
 
@@ -70,10 +71,12 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
                 return word;
             }).ToList();
             totalWords.AddRange(wordDbos);
+            var mapping = new List<BibleVerseCountingMappingDbo>();
+            totalMappings.AddRange();
         }
 
         _logger.LogInformation("Saving split words to Database.");
-        await BulkInsertIntoDatabaseAsync(totalWords, token);
+        await BulkInsertIntoDatabaseAsync(totalWords, totalMappings, token);
     }
 
     private BibleReference ParseBibleReference(string stringReference)
@@ -88,7 +91,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         return new BibleReference(bookId, chapter, verse);
     }
 
-    private async Task BulkInsertIntoDatabaseAsync(List<Elb1871WordDbo> batch, CancellationToken token = default)
+    private async Task BulkInsertIntoDatabaseAsync(List<Elb1871WordDbo> batch, List<BibleVerseCountingMappingDbo> mappings, CancellationToken token = default)
     {
         var sql = $"""
                    INSERT INTO {Elb1871WordDbo.DboName} ("Id", "BibleBookId", "Chapter", "Verse", "HebRefId", "WordInContext", "PositionInVerse", "PlainWord")
@@ -108,10 +111,16 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             PlainWord = batch.Select(x => x.PlainWord).ToArray()
         };
 
+        var parameters2 = new
+        {
+            LxxRefIds = mappings.Select(x => x.LxxRefId).ToArray(),
+            HebRefIds = mappings.Select(x => x.HebRefId).ToArray(),
+        };
+
         var sqlHebLxxMapping = $"""
-                                INSERT INTO {} ()
+                                INSERT INTO {BibleVerseCountingMappingDbo.DboName} ("HebRefId", "LxxRefId")
                                 SELECT *
-                                FROM UNNEST()
+                                FROM UNNEST(@LxxRefIds, @LxxRefIds)
                                 """;
 
         await _writer.WriteAsync(sql, parameters);
