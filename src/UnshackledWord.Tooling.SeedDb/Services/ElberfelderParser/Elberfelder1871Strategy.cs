@@ -26,7 +26,6 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
-        _countVerses = await GetCountVersesAsync(token);
         _countWords = await GetCountWordsAsync(token);
 
         if (_countVerses > 0 || _countWords > 0)
@@ -71,12 +70,16 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
                 return word;
             }).ToList();
             totalWords.AddRange(wordDbos);
-            var mapping = new List<BibleVerseCountingMappingDbo>();
-            totalMappings.AddRange();
+            var mapping = words.Select(x => new BibleVerseCountingMappingDbo()
+            {
+                HebRefId = hebRef.RefId, LxxRefId = lxxRef.RefId
+            }).ToList();
+            totalMappings.AddRange(mapping);
         }
 
         _logger.LogInformation("Saving split words to Database.");
-        await BulkInsertIntoDatabaseAsync(totalWords, totalMappings, token);
+        await BulkInsertIntoDatabaseAsync(totalMappings, token);
+        await BulkInsertIntoDatabaseAsync(totalWords, token);
     }
 
     private BibleReference ParseBibleReference(string stringReference)
@@ -91,7 +94,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         return new BibleReference(bookId, chapter, verse);
     }
 
-    private async Task BulkInsertIntoDatabaseAsync(List<Elb1871WordDbo> batch, List<BibleVerseCountingMappingDbo> mappings, CancellationToken token = default)
+    private async Task BulkInsertIntoDatabaseAsync(List<Elb1871WordDbo> batch, CancellationToken token = default)
     {
         var sql = $"""
                    INSERT INTO {Elb1871WordDbo.DboName} ("Id", "BibleBookId", "Chapter", "Verse", "HebRefId", "WordInContext", "PositionInVerse", "PlainWord")
@@ -111,17 +114,28 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             PlainWord = batch.Select(x => x.PlainWord).ToArray()
         };
 
-        var parameters2 = new
+        await _writer.WriteAsync(sql, parameters);
+    }
+
+    private async Task BulkInsertIntoDatabaseAsync(List<BibleVerseCountingMappingDbo> mappings, CancellationToken token = default)
+    {
+        var count = await GetCountVerseCoutingMappingsAsync(token);
+        if (count > 0)
+        {
+            return;
+        }
+
+        var parameters = new
         {
             LxxRefIds = mappings.Select(x => x.LxxRefId).ToArray(),
             HebRefIds = mappings.Select(x => x.HebRefId).ToArray(),
         };
 
-        var sqlHebLxxMapping = $"""
-                                INSERT INTO {BibleVerseCountingMappingDbo.DboName} ("HebRefId", "LxxRefId")
-                                SELECT *
-                                FROM UNNEST(@LxxRefIds, @LxxRefIds)
-                                """;
+        var sql = $"""
+                   INSERT INTO {BibleVerseCountingMappingDbo.DboName} ("HebRefId", "LxxRefId")
+                   SELECT *
+                   FROM UNNEST(@LxxRefIds, @LxxRefIds)
+                   """;
 
         await _writer.WriteAsync(sql, parameters);
     }
@@ -156,11 +170,11 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         }
     }
 
-    private async Task<int> GetCountVersesAsync(CancellationToken token = default)
+    private async Task<int> GetCountVerseCoutingMappingsAsync(CancellationToken token = default)
     {
         var sql = $"""
                    select Count(*)
-                   from {Elb1871VersesDbo.DboName}
+                   from {BibleVerseCountingMappingDbo.DboName}
                    """;
 
         return await _reader.ExecuteScalarAsync<int>(sql);
