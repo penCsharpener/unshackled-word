@@ -25755,7 +25755,7 @@ Luke$17:32 || Luke$17:32 || Gedenket an Lots Weib!
 Luke$17:33 || Luke$17:33 || Wer irgend sein Leben zu retten sucht, wird es verlieren; und wer irgend es verliert, wird es erhalten.
 Luke$17:34 || Luke$17:34 || Ich sage euch: In jener Nacht werden zwei auf einem Bette sein; einer wird genommen und der andere gelassen werden.
 Luke$17:35 || Luke$17:35 || Zwei Weiber werden zusammen mahlen, die eine wird genommen, und die andere gelassen werden.
-Luke$17:36 ||
+Luke$17:36 || Luke$17:36 || Zwei werden auf dem Felde sein: der eine wird angenommen, der andere wird preisgegeben werden.
 Luke$17:37 || Luke$17:37 || Und sie antworten und sagen zu ihm: Wo, Herr? Er aber sprach zu ihnen: Wo der Leichnam ist, da werden auch die Adler versammelt werden.
 Luke$18:1 || Luke$18:1 || Er sagte ihnen aber auch ein Gleichnis dafür, daß sie allezeit beten und nicht ermatten sollten,
 Luke$18:2 || Luke$18:2 || und sprach: Es war ein gewisser Richter in einer Stadt, der Gott nicht fürchtete und vor keinem Menschen sich scheute.
@@ -29123,9 +29123,9 @@ Romans$16:27 || Romans$16:27 || dem allein weisen Gott durch Jesum Christum, ihm
 2 Corinthians$13:9 || 2 Corinthians$13:9 || Denn wir freuen uns, wenn wir schwach sind, ihr aber mächtig seid; um dieses bitten wir auch, um eure Vervollkommnung.
 2 Corinthians$13:10 || 2 Corinthians$13:10 || Deswegen schreibe ich dieses abwesend, auf daß ich anwesend nicht Strenge gebrauchen müsse, nach der Gewalt, die der Herr mir gegeben hat zur Auferbauung und nicht zur Zerstörung.
 2 Corinthians$13:11 || 2 Corinthians$13:11 || Übrigens, Brüder, freuet euch, werdet vollkommen, seid getrost, seid eines Sinnes, seid in Frieden, und der Gott der Liebe und des Friedens wird mit euch sein.
-2 Corinthians$13:12 || 2 Corinthians$13:12 || Grüßet einander mit heiligem Kuß. Es grüßen euch die Heiligen alle.
-2 Corinthians$13:13 || 2 Corinthians$13:13 || Die Gnade des Herrn Jesu Christi und die Liebe Gottes und die Gemeinschaft des Heiligen Geistes sei mit euch allen!
-2 Corinthians$13:14 ||
+2 Corinthians$13:12 || 2 Corinthians$13:12 || Grüßet einander mit heiligem Kuß.
+2 Corinthians$13:12 || 2 Corinthians$13:13 || Es grüßen euch die Heiligen alle.
+2 Corinthians$13:13 || 2 Corinthians$13:14 || Die Gnade des Herrn Jesu Christi und die Liebe Gottes und die Gemeinschaft des Heiligen Geistes sei mit euch allen!
 Galatians$1:1 || Galatians$1:1 || Paulus, Apostel, nicht von Menschen, noch durch einen Menschen, sondern durch Jesum Christum und Gott, den Vater, der ihn auferweckt hat aus den Toten,
 Galatians$1:2 || Galatians$1:2 || und alle Brüder, die bei mir sind, den Versammlungen von Galatien:
 Galatians$1:3 || Galatians$1:3 || Gnade euch und Friede von Gott, dem Vater, und unserem Herrn Jesu Christi,
