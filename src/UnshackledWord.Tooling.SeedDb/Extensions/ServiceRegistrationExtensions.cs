@@ -45,6 +45,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<SrTsvParserStrategy>();
         services.AddScoped<ElbParserStrategy>();
         services.AddScoped<Elberfelder1871Strategy>();
+        services.AddScoped<BibleVerseCoutingMappingStrategy>();
         services.AddScoped<ElberfelderMergeStrategy>();
         services.AddScoped<RalfsLxxParserStrategy>();
         services.AddScoped<TskStrategy>();

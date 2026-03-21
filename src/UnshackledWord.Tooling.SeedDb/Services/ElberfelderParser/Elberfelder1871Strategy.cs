@@ -36,31 +36,35 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         }
 
         var totalWords = new List<Elb1871WordDbo>();
-        var totalMappings = new List<BibleVerseCountingMappingDbo>();
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
+        var verse = "";
         var id = 1;
 
-        foreach (var line in lines)
+        for (var i = 0; i < lines.Length; i++)
         {
-            var refText = line.Split("||", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            var hebRef = ParseBibleReference(refText[0]);
-            var lxxRef = ParseBibleReference(refText[1]);
+            var lineItem = new ElbExportLineItem(lines[i]);
+            var nextVerse = lineItem.Verse;
 
-            if (refText.Length == 2 || (refText.Length == 2 && refText[2].IsNullOrWhiteSpace()))
+            if (i < lines.Length - 1)
             {
-                continue;
+                var nextLineItem = new ElbExportLineItem(lines[i + 1]);
+
+                if (lineItem.HebRefId.RefId == nextLineItem.HebRefId.RefId)
+                {
+                    verse += " " + nextVerse;
+                    i++;
+                }
             }
 
-            var words = SplitAndSaveIndividualWords(refText[1]).ToList();
-            var wordDbos = words.Select(x =>
+            var wordDbos = lineItem.Words.Select(x =>
             {
                 var word = new Elb1871WordDbo
                 {
                     Id = id,
-                    BibleBookId = hebRef.BookId,
-                    Chapter = hebRef.Chapter,
-                    Verse = hebRef.Verse,
-                    HebRefId = hebRef.RefId,
+                    BibleBookId = lineItem.HebRefId.BookId,
+                    Chapter = lineItem.HebRefId.Chapter,
+                    Verse = lineItem.HebRefId.Verse,
+                    HebRefId = lineItem.HebRefId.RefId,
                     WordInContext = x.InContext,
                     PlainWord = x.PlainWord,
                     PositionInVerse = x.Order
@@ -70,28 +74,10 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
                 return word;
             }).ToList();
             totalWords.AddRange(wordDbos);
-            var mapping = words.Select(x => new BibleVerseCountingMappingDbo()
-            {
-                HebRefId = hebRef.RefId, LxxRefId = lxxRef.RefId
-            }).ToList();
-            totalMappings.AddRange(mapping);
         }
 
         _logger.LogInformation("Saving split words to Database.");
-        await BulkInsertIntoDatabaseAsync(totalMappings, token);
         await BulkInsertIntoDatabaseAsync(totalWords, token);
-    }
-
-    private BibleReference ParseBibleReference(string stringReference)
-    {
-        var bookRef = stringReference.Split("$");
-        var chapterVerse = bookRef[1].Split(":");
-
-        var book = bookRef[0];
-        var chapter = int.Parse(chapterVerse[0]);
-        var verse = int.Parse(chapterVerse[1]);
-        var bookId = BibleBook.AllBooks.First(x => x.Value.Name == book).Key;
-        return new BibleReference(bookId, chapter, verse);
     }
 
     private async Task BulkInsertIntoDatabaseAsync(List<Elb1871WordDbo> batch, CancellationToken token = default)
@@ -117,69 +103,6 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         await _writer.WriteAsync(sql, parameters);
     }
 
-    private async Task BulkInsertIntoDatabaseAsync(List<BibleVerseCountingMappingDbo> mappings, CancellationToken token = default)
-    {
-        var count = await GetCountVerseCoutingMappingsAsync(token);
-        if (count > 0)
-        {
-            return;
-        }
-
-        var parameters = new
-        {
-            LxxRefIds = mappings.Select(x => x.LxxRefId).ToArray(),
-            HebRefIds = mappings.Select(x => x.HebRefId).ToArray(),
-        };
-
-        var sql = $"""
-                   INSERT INTO {BibleVerseCountingMappingDbo.DboName} ("HebRefId", "LxxRefId")
-                   SELECT *
-                   FROM UNNEST(@LxxRefIds, @LxxRefIds)
-                   """;
-
-        await _writer.WriteAsync(sql, parameters);
-    }
-
-    private static string CleanUpWord(string word)
-    {
-        var characters = ",;:.!?\"'{}[]()’".ToCharArray();
-
-        var result = word.Trim();
-
-        foreach (var character in characters)
-        {
-            result = result.Replace(character.ToString(), string.Empty);
-        }
-
-        result = result.Trim('-');
-
-        return result;
-    }
-
-    private static IEnumerable<Elb1871Word> SplitAndSaveIndividualWords(string verseText)
-    {
-        var words = verseText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-        var orderCounter = 1;
-
-        foreach (var word in words)
-        {
-            var cleanedWord = CleanUpWord(word);
-
-            yield return new Elb1871Word(new BibleReference(), orderCounter, word, cleanedWord);
-            orderCounter++;
-        }
-    }
-
-    private async Task<int> GetCountVerseCoutingMappingsAsync(CancellationToken token = default)
-    {
-        var sql = $"""
-                   select Count(*)
-                   from {BibleVerseCountingMappingDbo.DboName}
-                   """;
-
-        return await _reader.ExecuteScalarAsync<int>(sql);
-    }
-
     private async Task<int> GetCountWordsAsync(CancellationToken token = default)
     {
         var sql = $"""
@@ -190,5 +113,3 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         return await _reader.ExecuteScalarAsync<int>(sql);
     }
 }
-public record Elb1871Verse(BibleReference BibRef, string Text, List<Elb1871Word> Words);
-public record Elb1871Word(BibleReference BibRef, int Order, string InContext, string PlainWord);

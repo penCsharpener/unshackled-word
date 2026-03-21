@@ -35,5 +35,9 @@ public class ElberfelderTextRunner : IRunner
         var strategy = scope.ServiceProvider.GetRequiredService<Elberfelder1871Strategy>();
 
         await strategy.SaveToDatabase(_options.DatabaseSeeding.Elberfelder1871TextFile, token);
+
+        var strategy2 = scope.ServiceProvider.GetRequiredService<BibleVerseCoutingMappingStrategy>();
+
+        await strategy2.SaveToDatabase(_options.DatabaseSeeding.Elberfelder1871TextFile, token);
     }
 }
