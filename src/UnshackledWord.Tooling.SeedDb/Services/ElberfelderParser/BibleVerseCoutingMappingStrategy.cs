@@ -55,7 +55,7 @@ public sealed class BibleVerseCoutingMappingStrategy : IFileParserStrategy
         var sql = $"""
                    INSERT INTO {BibleVerseCountingMappingDbo.DboName} ("HebRefId", "LxxRefId")
                    SELECT *
-                   FROM UNNEST(@LxxRefIds, @LxxRefIds)
+                   FROM UNNEST(@HebRefIds, @LxxRefIds)
                    """;
 
         await _writer.WriteAsync(sql, parameters);
