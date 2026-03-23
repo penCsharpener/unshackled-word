@@ -405,10 +405,10 @@ temp/*
 /src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger/wwwroot/lib
 /docker/postgres-test-db/postgres_data
 .env
-*.ignore.sql
+*.ignore.*
 *.7z
 /src/UnshackledWord.Tooling.BibleTagger/wwwroot/lib
-*.local.cs
+*.local.*
 /git*.git
 /src/MudBlazorWebApp1
 package-lock.json
