@@ -16361,7 +16361,7 @@ Psalms$142:4 || Psalms$142:3 || Als mein Geist in mir ermattete, da kanntest du 
 Psalms$142:5 || Psalms$142:4 || Schaue zur Rechten, und sieh: ich habe ja niemand, der mich erkennt; verloren ist mir jede Zuflucht, niemand fragt nach meiner Seele.
 Psalms$142:6 || Psalms$142:5 || Zu dir habe ich geschrieen, Jahwe! Ich habe gesagt: Du bist meine Zuflucht, mein Teil im Lande der Lebendigen.
 Psalms$142:7 || Psalms$142:6 || Horche auf mein Schreien, denn ich bin sehr elend; errette mich von meinen Verfolgern, denn sie sind mir zu mächtig!
-Psalms$142:1 || Psalms$142:7 || Führe aus dem Gefängnis heraus meine Seele, damit ich deinen Namen preise! Die Gerechten werden mich umringen, wenn du mir wohlgetan hast.
+Psalms$142:8 || Psalms$142:7 || Führe aus dem Gefängnis heraus meine Seele, damit ich deinen Namen preise! Die Gerechten werden mich umringen, wenn du mir wohlgetan hast.
 Psalms$143:2 || Psalms$143:1 || Ein Psalm. Von David. Jahwe! höre mein Gebet, nimm zu Ohren mein Flehen; erhöre mich in deiner Treue, in deiner Gerechtigkeit!
 Psalms$143:3 || Psalms$143:2 || Und gehe nicht ins Gericht mit deinem Knechte! denn vor dir ist kein Lebendiger gerecht.
 Psalms$143:4 || Psalms$143:3 || Denn der Feind verfolgt meine Seele, zertritt zur Erde mein Leben, macht mich wohnen in Finsternissen gleich den Toten der Urzeit.
