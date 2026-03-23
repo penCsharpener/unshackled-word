@@ -2,6 +2,7 @@ using System.Globalization;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
@@ -9,7 +10,6 @@ namespace UnshackledWord.Tooling.SeedDb.Services.ByzTxt;
 
 public sealed class ByzTxtStrategy : IFileParserStrategy
 {
-    private readonly IFileService _fileService;
     private readonly IDbWriter _dbWriter;
     private readonly IDbReader _dbReader;
     private readonly ILogger<ByzTxtStrategy> _logger;
@@ -17,14 +17,12 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
     private readonly HttpClient _githubClient;
     private static string _delimiter = $",{Environment.NewLine}    ";
 
-    public ByzTxtStrategy(IFileService fileService,
-        IDbWriter dbWriter,
+    public ByzTxtStrategy(IDbWriter dbWriter,
         IDbReader dbReader,
         IHttpClientFactory clientFactory,
         IOptions<AppSettings> options,
         ILogger<ByzTxtStrategy> logger)
     {
-        _fileService = fileService;
         _dbWriter = dbWriter;
         _dbReader = dbReader;
         _logger = logger;
@@ -60,10 +58,8 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
             }
         }
 
-        await InsertIntoDb(allEntries.OrderBy(x => x.BibleBookId)
-            .ThenBy(x => x.Chapter)
-            .ThenBy(x => x.Verse)
-            .ThenBy(x => x.SortNumber).ToList(), token);
+        await InsertIntoDb(allEntries.OrderBy(x => x.LxxRefId)
+            .ThenBy(x => x.PositionInVerse).ToList(), token);
     }
 
     private async Task<int> GetCountAsync()
@@ -103,7 +99,7 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
                 sortNumber++;
                 byzWord.Morphology = word.Trim('{').Trim('}');
                 entity.ByzWords.Add(byzWord);
-                byzWord.SortNumber = sortNumber;
+                byzWord.PositionInVerse = sortNumber;
                 byzWord = CreateByzTxtWord(entity);
             }
         }
@@ -113,9 +109,7 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
     {
         return new ByzTxtWord
         {
-            BibleBookId = entity.BibleBookId,
-            Chapter = entity.Chapter,
-            Verse = entity.Verse
+            LxxRefId = new BibleReference(entity.BibleBookId, entity.Chapter, entity.Verse).RefId
         };
     }
 
@@ -135,11 +129,11 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
 
             foreach (var word in allWords.Skip(i * batchSize).Take(batchSize))
             {
-                rowList.Add($"({word.BibleBookId}, {word.Chapter}, {word.Verse}, {word.SortNumber}, '{word.Word}', '{word.StrongNumber}', '{word.Morphology}')");
+                rowList.Add($"({word.LxxRefId}, {word.PositionInVerse}, '{word.Word}', '{word.StrongNumber}', '{word.Morphology}')");
             }
 
             var sql = $"""
-                       INSERT INTO {ByzTxtWord.DboName} ("BibleBookId", "Chapter", "Verse", "SortNumber", "Word", "StrongNumber", "Morphology")
+                       INSERT INTO {ByzTxtWord.DboName} ("LxxRefId", "PositionInVerse", "Word", "StrongNumber", "Morphology")
                        VALUES
                        {rowList.JoinStrings(_delimiter)};
                        """;

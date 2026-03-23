@@ -33,7 +33,7 @@ public class GbtRunner : IRunner
     {
         var sql = """
                   select COUNT(*)
-                  from "unshackled-word"."SourceWords"
+                  from "unshackled-word"."GbtSourceWords"
                   """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);

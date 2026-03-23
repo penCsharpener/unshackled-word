@@ -4,7 +4,7 @@ CREATE TABLE "unshackled-word"."StepGreekWords"
     "BibleBookId"          INTEGER                          NOT NULL,
     "Chapter"              INTEGER                          NOT NULL,
     "Verse"                INTEGER                          NOT NULL,
-    "RefId"                INTEGER                          NOT NULL,
+    "LxxRefId"             INTEGER                          NOT NULL,
     "PositionInVerse"      INTEGER                          NOT NULL,
     "AltChapter"           INTEGER,
     "AltVerse"             INTEGER,
@@ -34,7 +34,7 @@ CREATE TABLE "unshackled-word"."StepGreekWords"
 
 -- Index for rapid scripture lookups (Book, Chapter, Verse)
 CREATE INDEX "IX_StepGreekWords_Book_Chapter_Verse"
-    ON "unshackled-word"."StepGreekWords" ("BibleBookId", "Chapter", "Verse");
+    ON "unshackled-word"."StepGreekWords" ("LxxRefId");
 
 -- Index for word-based searches (Greek text)
 CREATE INDEX "IX_StepGreekWords_GreekNoDiacritics"
@@ -46,7 +46,7 @@ CREATE TABLE "unshackled-word"."StepHebrewWords"
     "BibleBookId"                      INTEGER                          NOT NULL,
     "Chapter"                          INTEGER                          NOT NULL,
     "Verse"                            INTEGER                          NOT NULL,
-    "RefId"                            INTEGER                          NOT NULL,
+    "LxxRefId"                         INTEGER                          NOT NULL,
     "PositionInVerse"                  INTEGER                          NOT NULL,
     "AltChapter"                       INTEGER,
     "AltVerse"                         INTEGER,
@@ -68,7 +68,7 @@ CREATE TABLE "unshackled-word"."StepHebrewWords"
 
 -- Index for rapid scripture lookups (Book, Chapter, Verse)
 CREATE INDEX "IX_StepHebrewWords_Book_Chapter_Verse"
-    ON "unshackled-word"."StepHebrewWords" ("BibleBookId", "Chapter", "Verse");
+    ON "unshackled-word"."StepHebrewWords" ("LxxRefId");
 
 -- Index for word-based searches (Hebrew text)
 CREATE INDEX "IX_StepHebrewWords_HebrewNoDiacritics"
@@ -76,12 +76,12 @@ CREATE INDEX "IX_StepHebrewWords_HebrewNoDiacritics"
 
 CREATE TABLE "unshackled-word"."StepHebrewWordsNormalized"
 (
-    "Id"                        SERIAL PRIMARY KEY,
-    "IsRoot"                    BOOLEAN     NOT NULL,
-    "Grammar"                   VARCHAR(30),
-    "SuffixCode"                VARCHAR(30),
-    "Hebrew"                    VARCHAR(40) COLLATE "und-x-icu",
-    "StrongsNumber"             VARCHAR(20) NOT NULL
+    "Id"               SERIAL PRIMARY KEY,
+    "IsRoot"           BOOLEAN     NOT NULL,
+    "Grammar"          VARCHAR(30),
+    "SuffixCode"       VARCHAR(30),
+    "Hebrew"           VARCHAR(40) COLLATE "und-x-icu",
+    "StrongsNumber"    VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords"
@@ -168,29 +168,6 @@ CREATE INDEX "IX_StepGreekMorphology_Code"
     ON "unshackled-word"."StepGreekMorphology" ("Code");
 
 
-CREATE TABLE "unshackled-word"."StepStrongsToVerses"
-(
-    "Id"                        SERIAL PRIMARY KEY,
-    "BibleBookId"               INTEGER     NOT NULL,
-    "Chapter"                   INTEGER     NOT NULL,
-    "Verse"                     INTEGER     NOT NULL,
-    "RefId"                     INTEGER     NOT NULL,
-    "IsRoot"                    BOOLEAN     NOT NULL,
-    "Grammar"                   VARCHAR(30),
-    "Hebrew"                    VARCHAR(40) COLLATE "und-x-icu",
-    "Gloss"                     VARCHAR(120),
-    "FirstOccuranceBibleBookId" INTEGER,
-    "FirstOccuranceChapter"     INTEGER,
-    "FirstOccuranceVerse"       INTEGER,
-    "LastOccuranceBibleBookId"  INTEGER,
-    "LastOccuranceChapter"      INTEGER,
-    "LastOccuranceVerse"        INTEGER,
-    "StrongsNumber"             VARCHAR(20) NOT NULL,
-
-    -- Unique index on the specified columns
-    CONSTRAINT "UQ_StepStrongsToVerses_Book_Ch_Vs_Strong"
-        UNIQUE ("BibleBookId", "Chapter", "Verse", "StrongsNumber")
-);
 
 CREATE TABLE "unshackled-word"."StepOtherLexicon"
 (
@@ -199,7 +176,7 @@ CREATE TABLE "unshackled-word"."StepOtherLexicon"
     "BibleBookId"      integer       NOT NULL,
     "Chapter"          integer       NOT NULL,
     "Verse"            integer       NOT NULL,
-    "RefId"            integer       NOT NULL,
+    "LxxRefId"         integer       NOT NULL,
     "Strongs"          varchar(20)   NOT NULL,
     "Note"             varchar(1000),
     "Type"             varchar(100),
@@ -211,6 +188,8 @@ CREATE TABLE "unshackled-word"."StepOtherLexicon"
     "Article"          text          NOT NULL
 );
 
+CREATE INDEX "IdxStepOtherLexiconRefId" ON "unshackled-word"."StepOtherLexicon" ("LxxRefId");
+
 CREATE TABLE "unshackled-word"."StepPersonLexicon"
 (
     "Id"               SERIAL PRIMARY KEY,
@@ -218,7 +197,7 @@ CREATE TABLE "unshackled-word"."StepPersonLexicon"
     "BibleBookId"      integer      NOT NULL,
     "Chapter"          integer      NOT NULL,
     "Verse"            integer      NOT NULL,
-    "RefId"            integer      NOT NULL,
+    "LxxRefId"         integer      NOT NULL,
     "Strongs"          varchar(20),
     "Note"             varchar(2000),
     "OriginalSpelling" varchar(100) COLLATE "und-x-icu",
@@ -230,6 +209,8 @@ CREATE TABLE "unshackled-word"."StepPersonLexicon"
     "Article"          text
 );
 
+CREATE INDEX "IdxStepPersonLexiconLxxRefId" ON "unshackled-word"."StepPersonLexicon" ("LxxRefId");
+
 CREATE TABLE "unshackled-word"."StepPersonLexiconRelations"
 (
     "Id"              SERIAL PRIMARY KEY,
@@ -238,9 +219,12 @@ CREATE TABLE "unshackled-word"."StepPersonLexiconRelations"
     "BibleBookId"     integer      NOT NULL,
     "Chapter"         integer      NOT NULL,
     "Verse"           integer      NOT NULL,
+    "LxxRefId"        INTEGER       NOT NULL,
     "Strongs"         varchar(20),
     "RelationType"    varchar(100) NOT NULL
 );
+
+CREATE INDEX "IdxStepPersonLexiconRelationsLxxRefId" ON "unshackled-word"."StepPersonLexiconRelations" ("LxxRefId");
 
 CREATE TABLE "unshackled-word"."StepPlaceLexicon"
 (
@@ -249,7 +233,7 @@ CREATE TABLE "unshackled-word"."StepPlaceLexicon"
     "BibleBookId"      integer       NOT NULL,
     "Chapter"          integer       NOT NULL,
     "Verse"            integer       NOT NULL,
-    "RefId"            INTEGER       NOT NULL,
+    "LxxRefId"         INTEGER       NOT NULL,
     "Strongs"          varchar(20)   NOT NULL,
     "Note"             varchar(2000),
     "Type"             varchar(100),
@@ -263,18 +247,21 @@ CREATE TABLE "unshackled-word"."StepPlaceLexicon"
     "Article"          text          NOT NULL
 );
 
+CREATE INDEX "IdxStepPlaceLexiconLxxRefId" ON "unshackled-word"."StepPlaceLexicon" ("LxxRefId");
+
+
 CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
 (
     "Id"                 SERIAL PRIMARY KEY,
     "ElbWordId"          INT     NOT NULL UNIQUE,
-    "StepGreekId"        INT NULL,
+    "StepGreekId"        INT     NULL,
     "BookId"             INT     NOT NULL,
     "Chapter"            INT     NOT NULL,
     "Verse"              INT     NOT NULL,
-    "RefId"              INT     NOT NULL,
+    "HebRefId"           INT     NOT NULL,
     "StrongsNumber"      VARCHAR(10) NULL,
     "IsAddedWord"        BOOLEAN DEFAULT FALSE,
-    "ParentGermanWordId" INT NULL,
+    "ParentGermanWordId" INT     NULL,
     "WordOrderInVerse"   INT     NOT NULL,
     "GermanWordPart"     varchar(30) NULL,
     -- Composite Unique Key for ElbWordId and StepGreekId
@@ -285,23 +272,24 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
 
 CREATE INDEX "IdxElbGreekWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
 CREATE INDEX "IdxElbGreekVerse" ON "unshackled-word"."Elb1871GreekMapping" ("BookId", "Chapter", "Verse");
+CREATE INDEX "IdxElbGreekHebRefId" ON "unshackled-word"."Elb1871GreekMapping" ("HebRefId");
 CREATE INDEX "IdxElbGreekStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
 
 
 CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
 (
-    "Id"                            SERIAL PRIMARY KEY,
-    "ElbWordId"                     INT NOT NULL UNIQUE,
-    "StepHebrewNormalizedId"        INT NULL,
-    "BookId"                        INT NOT NULL,
-    "Chapter"                       INT NOT NULL,
-    "Verse"                         INT NOT NULL,
-    "RefId"                         INT NOT NULL,
-    "StrongsNumber"                 VARCHAR(10) NULL,
-    "IsAddedWord"                   BOOLEAN DEFAULT FALSE,
-    "ParentGermanWordId"            INT NULL,
-    "WordOrderInVerse"              INT NOT NULL,
-    "GermanWordPart"                varchar(30) NULL,
+    "Id"                        SERIAL PRIMARY KEY,
+    "ElbWordId"                 INT NOT NULL UNIQUE,
+    "StepHebrewNormalizedId"    INT NULL,
+    "BookId"                    INT NOT NULL,
+    "Chapter"                   INT NOT NULL,
+    "Verse"                     INT NOT NULL,
+    "HebRefId"                  INT NOT NULL,
+    "StrongsNumber"             VARCHAR(10) NULL,
+    "IsAddedWord"               BOOLEAN DEFAULT FALSE,
+    "ParentGermanWordId"        INT NULL,
+    "WordOrderInVerse"          INT NOT NULL,
+    "GermanWordPart"            varchar(30) NULL,
     -- Composite Unique Key for ElbWordId and StepGreekId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
     -- when there is one ElbWordId with multiple StepHebrewNormalizedIds then each StepHebrewNormalizedId must have a unique GermanWordPart
@@ -310,4 +298,5 @@ CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
 
 CREATE INDEX "IdxElbHebrewWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
 CREATE INDEX "IdxElbHebrewVerse" ON "unshackled-word"."Elb1871HebrewMapping" ("BookId", "Chapter", "Verse");
+CREATE INDEX "IdxElbHebrewHebRefId" ON "unshackled-word"."Elb1871HebrewMapping" ("HebRefId");
 CREATE INDEX "IdxElbHebrewStrongs" ON "unshackled-word"."Elb1871HebrewMapping" ("StrongsNumber");

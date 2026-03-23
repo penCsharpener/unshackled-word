@@ -10,7 +10,7 @@ public sealed class StepPersonLexiconRelationsDbo : IEntityId
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }
     public int Verse { get; set; }
-    public int RefId { get; set; }
+    public int LxxRefId { get; set; }
     public string? Strongs { get; set; } = default!;
     /// <summary>
     /// Child, Sibling, Parent, Spouse

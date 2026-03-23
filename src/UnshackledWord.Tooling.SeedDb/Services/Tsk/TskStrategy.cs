@@ -29,16 +29,12 @@ public class TskStrategy : IFileParserStrategy
             {
                 if (crossRef is BibleReference bibleRef)
                 {
-                    insertRows.Add($"({tskReference.Reference.BookId}, {tskReference.Reference.Chapter}, {tskReference.Reference.Verse}, {tskReference.Reference.RefId}, " +
-                                   $"'{tskReference.Words.Replace("'", "''")}', {bibleRef.BookId}, {bibleRef.Chapter}, {bibleRef.Verse}, null, null, null)");
+                    insertRows.Add($"({tskReference.Reference.RefId}, '{tskReference.Words.Replace("'", "''")}', {bibleRef.RefId}, null)");
                 }
 
                 if (crossRef is BibleReferenceRange range)
                 {
-                    insertRows.Add($"({tskReference.Reference.BookId}, {tskReference.Reference.Chapter}, {tskReference.Reference.Verse}, {tskReference.Reference.RefId}, " +
-                                   $"'{tskReference.Words.Replace("'", "''")}', " +
-                                   $"{range.Start.BookId}, {range.Start.Chapter}, {range.Start.Verse}, {range.Start.RefId}, " +
-                                   $"{range.End.BookId}, {range.End.Chapter}, {range.End.Verse}, {range.End.RefId})");
+                    insertRows.Add($"({tskReference.Reference.RefId}, '{tskReference.Words.Replace("'", "''")}', {range.Start.RefId}, {range.End.RefId})");
                 }
             }
         }
@@ -52,7 +48,7 @@ public class TskStrategy : IFileParserStrategy
 
             var insertSql = $"""
                              INSERT INTO {TskDbo.DboName}
-                             ("BibleBookId", "Chapter", "Verse", "RefId", "Scope", "RelatedStartBibleBookId", "RelatedStartChapter", "RelatedStartVerse", "RelatedStartRefId", "RelatedEndBibleBookId", "RelatedEndChapter", "RelatedEndVerse", "RelatedEndRefId")
+                             ("LxxRefId", "Scope", "RelatedStartLxxRefId", "RelatedEndLxxRefId")
                              VALUES
                              {batchRows.JoinStrings(delimiter)}
                              ;

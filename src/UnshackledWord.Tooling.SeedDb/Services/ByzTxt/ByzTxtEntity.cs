@@ -10,7 +10,6 @@ public sealed class ByzTxtEntity
     public int Chapter { get; set; }
     [Name("verse")]
     public int Verse { get; set; }
-    public int RefId { get; set; }
     [Name("text")]
     public string CsvText { get; set; } = default;
     [Ignore]

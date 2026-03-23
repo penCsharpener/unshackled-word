@@ -8,19 +8,15 @@ public sealed class StepStrongsToVersesDbo
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }
     public int Verse { get; set; }
-    public int RefId { get; set; }
+    public int LxxRefId { get; set; }
     public int StepDisambiguatedStrongsId { get; set; }
     public bool IsRoot { get; set; }
     public string? Grammar { get; set; } = default!;
     public string Hebrew { get; set; } = default!;
     public string Gloss { get; set; } = default!;
     public string? Name { get; set; }
-    public int? FirstOccuranceBibleBookId { get; set; }
-    public int? FirstOccuranceChapter { get; set; }
-    public int? FirstOccuranceVerse { get; set; }
-    public int? LastOccuranceBibleBookId { get; set; }
-    public int? LastOccuranceChapter { get; set; }
-    public int? LastOccuranceVerse { get; set; }
+    public int? FirstOccuranceLxxRefId { get; set; }
+    public int? LastOccuranceLxxRefId { get; set; }
     // max 20 chars long
     public string StrongsNumber { get; set; } = default!;
 
@@ -38,11 +34,7 @@ public sealed class StepDisambiguatedStrongsDbo
     public string? Hebrew { get; set; } = default!;
     public string? Gloss { get; set; } = default!;
     public string? Name { get; set; }
-    public int? FirstOccuranceBibleBookId { get; set; }
-    public int? FirstOccuranceChapter { get; set; }
-    public int? FirstOccuranceVerse { get; set; }
-    public int? LastOccuranceBibleBookId { get; set; }
-    public int? LastOccuranceChapter { get; set; }
-    public int? LastOccuranceVerse { get; set; }
+    public int? FirstOccuranceLxxRefId { get; set; }
+    public int? LastOccuranceLxxRefId { get; set; }
     public string StrongsNumber { get; set; } = default!;
 }

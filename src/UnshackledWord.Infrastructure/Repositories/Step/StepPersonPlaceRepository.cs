@@ -75,6 +75,7 @@ public sealed class StepPersonPlaceRepository : IStepPersonPlaceRepository
             valueList.AddInt(entry.BibleBookId);
             valueList.AddInt(entry.Chapter);
             valueList.AddInt(entry.Verse);
+            valueList.AddInt(entry.LxxRefId);
             valueList.AddString(entry.Strongs);
             valueList.AddString(entry.Note);
             valueList.AddString(entry.OriginalSpelling);
@@ -118,6 +119,7 @@ public sealed class StepPersonPlaceRepository : IStepPersonPlaceRepository
             valueList.AddInt(entry.BibleBookId);
             valueList.AddInt(entry.Chapter);
             valueList.AddInt(entry.Verse);
+            valueList.AddInt(entry.LxxRefId);
             valueList.AddString(entry.Strongs);
             valueList.AddString(entry.RelationType);
 
@@ -156,6 +158,7 @@ public sealed class StepPersonPlaceRepository : IStepPersonPlaceRepository
             valueList.AddInt(entry.BibleBookId);
             valueList.AddInt(entry.Chapter);
             valueList.AddInt(entry.Verse);
+            valueList.AddInt(entry.LxxRefId);
             valueList.AddString(entry.Strongs);
             valueList.AddString(entry.Note);
             valueList.AddString(entry.Type);

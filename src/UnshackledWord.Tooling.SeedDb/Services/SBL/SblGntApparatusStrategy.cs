@@ -105,7 +105,7 @@ public class SblGntApparatusStrategy : IFileParserStrategy
         }
 
         var insertSql = $"""
-                         INSERT INTO {SblApparatusDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "Text")
+                         INSERT INTO {SblApparatusDbo.DboName} ("LxxRefId", "Text")
                          VALUES
                          {apparatusItems.Select(x => x.ToString()).JoinStrings(_delimiter)};
                          """;
@@ -113,15 +113,14 @@ public class SblGntApparatusStrategy : IFileParserStrategy
         await _dbWriter.WriteAsync(insertSql);
     }
 
-    private record struct ApparatusEntry()
+    private record struct ApparatusEntry
     {
         public int BibleBookId { get; set; }
         public int Chapter { get; set; }
         public int Verse { get; set; }
-        public int RefId { get; set; }
         public string Text { get; set; }
         public BibleReference BibRef => new(BibleBookId, Chapter, Verse);
 
-        public override string ToString() => $"({BibleBookId}, {Chapter}, {Verse}, {BibRef.RefId}, '{Text}')";
+        public override string ToString() => $"({BibRef.RefId}, '{Text}')";
     }
 }

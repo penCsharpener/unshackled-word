@@ -51,11 +51,11 @@ public class SblGntTextStrategy : IFileParserStrategy
 
                 var text = parts[1];
 
-                insertRows.Add($"({bookId}, {chapter}, {verse}, {bibRef.RefId}, '{text}')");
+                insertRows.Add($"({bibRef.RefId}, '{text}')");
             }
 
             var insertSql = $"""
-                            INSERT INTO {SblTextDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "VerseText")
+                            INSERT INTO {SblTextDbo.DboName} ("LxxRefId", "VerseText")
                             VALUES
                             {insertRows.JoinStrings(_delimiter)};
                             """;

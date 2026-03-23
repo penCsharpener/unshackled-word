@@ -43,8 +43,8 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
         hFilter.Columns =
         [
             nameof(StepHebrewWordDbo.Id), nameof(StepHebrewWordDbo.BibleBookId), nameof(StepHebrewWordDbo.Chapter),
-            nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.DisambiguatedStrongs), nameof(StepHebrewWordDbo.Hebrew),
-            nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags)
+            nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.LxxRefId), nameof(StepHebrewWordDbo.DisambiguatedStrongs),
+            nameof(StepHebrewWordDbo.Hebrew), nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags)
         ];
         var hebrewEntries = await _hebRepo.GetByFilterAsync(hFilter, token);
         var index = 0;

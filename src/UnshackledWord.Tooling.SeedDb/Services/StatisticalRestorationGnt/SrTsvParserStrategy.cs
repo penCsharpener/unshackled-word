@@ -103,7 +103,7 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
     {
         var sql = $"""
                    INSERT INTO {SrGntWordsDbo.DboName}
-                   ("BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "Koine", "Lemma", "PositionInVerse", "Strongs", "PartOfSpeech", "GrammaticalKey", "Mood", "Tense", "Voice", "Person", "Case", "Gender", "Number")
+                   ("LxxRefId", "WordInContext", "Koine", "Lemma", "PositionInVerse", "Strongs", "PartOfSpeech", "GrammaticalKey", "Mood", "Tense", "Voice", "Person", "Case", "Gender", "Number")
                    VALUES
                    """;
 
@@ -111,7 +111,7 @@ public sealed class SrTsvParserStrategy : IFileParserStrategy
 
         foreach (var wordInfo in wordInfos)
         {
-            batch.Add($"({wordInfo.BibRef.BookId}, {wordInfo.BibRef.Chapter}, {wordInfo.BibRef.Verse}, {wordInfo.BibRef.RefId}, '{wordInfo.WordInContext}', " +
+            batch.Add($"({wordInfo.BibRef.RefId}, '{wordInfo.WordInContext}', " +
                       $"'{wordInfo.Koine}', '{wordInfo.Lemma}', '{wordInfo.PositionInVerse}', '{wordInfo.Strongs}', " +
                       $"'{wordInfo.PartOfSpeech}', '{wordInfo.ConjugationKey}', {ConvertToSql((int?)wordInfo.GrammaticalKey.Mood)}, " +
                       $"{ConvertToSql((int?)wordInfo.GrammaticalKey.Tense)}, {ConvertToSql((int?)wordInfo.GrammaticalKey.Voice)}, " +

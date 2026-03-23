@@ -24,10 +24,7 @@ public class GbtWord
         return new GbtParsedWord
         {
             BibleReference = new BibleReference(bookId, chapterId, verseId),
-            BookId = bookId,
-            ChapterId = chapterId,
-            VerseId = verseId,
-            SortNumber = sortOrder,
+            PositionInVerse = sortOrder,
             Text = Text
         };
     }

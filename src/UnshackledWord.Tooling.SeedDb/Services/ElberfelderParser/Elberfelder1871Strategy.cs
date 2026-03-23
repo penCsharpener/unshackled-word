@@ -1,7 +1,5 @@
 ﻿using System.Text;
 using UnshackledWord.Application.Abstractions;
-using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 

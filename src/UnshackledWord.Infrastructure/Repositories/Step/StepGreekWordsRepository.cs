@@ -58,6 +58,7 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
             valueList.AddInt(entry.BibleBookId);
             valueList.AddInt(entry.Chapter);
             valueList.AddInt(entry.Verse);
+            valueList.AddInt(entry.LxxRefId);
             valueList.AddInt(entry.PositionInVerse);
             valueList.AddInt(entry.AltChapter);
             valueList.AddInt(entry.AltVerse);

@@ -20,7 +20,7 @@ public sealed class ElberfelderMergeStrategy
     public async Task SaveToDatabaseAsync(IList<ElbVerse> bkList, IList<Elb1871Verse> elb1871List, CancellationToken token = default)
     {
         var insertSql = $"""
-                         INSERT INTO {Elb1871WordDbo.DboName} ("BibleBookId", "Chapter", "Verse", "RefId", "WordInContext", "German", "Strongs", "PositionInVerse")
+                         INSERT INTO {Elb1871WordDbo.DboName} ("BibleBookId", "Chapter", "Verse", "LxxRefId", "WordInContext", "German", "Strongs", "PositionInVerse")
                          VALUES
                          """;
 

@@ -4,6 +4,7 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
@@ -11,23 +12,23 @@ namespace UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
 
 public sealed class GbtCsvStrategy : IFileParserStrategy
 {
-    private readonly IDbWriter _sqlWriter;
+    private readonly IDbReader _dbReader;
+    private readonly IDbWriter _dbWriter;
     private readonly AppSettings _appSettings;
     private static string nl = Environment.NewLine;
 
-    public GbtCsvStrategy(IDbWriter sqlWriter, IOptions<AppSettings> options)
+    public GbtCsvStrategy(IDbReader dbReader, IDbWriter dbWriter, IOptions<AppSettings> options)
     {
-        _sqlWriter = sqlWriter;
+        _dbReader = dbReader;
+        _dbWriter = dbWriter;
         _appSettings = options.Value;
     }
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
     {
         var words = await ReadFromCsvAsync(token);
-        var sortedWords = words.OrderBy(x => x.BookId)
-            .ThenBy(x => x.ChapterId)
-            .ThenBy(x => x.VerseId)
-            .ThenBy(x => x.SortNumber)
+        var sortedWords = words.OrderBy(x => x.BibleReference.RefId)
+            .ThenBy(x => x.PositionInVerse)
             .ToList();
 
         await WriteWordsToDatabase(sortedWords, token);
@@ -35,6 +36,13 @@ public sealed class GbtCsvStrategy : IFileParserStrategy
 
     private async Task WriteWordsToDatabase(List<GbtParsedWord> words, CancellationToken token = default)
     {
+        var count = await GetCountAsync();
+
+        if (count > 0)
+        {
+            return;
+        }
+
         const int batchSize = 10000;
         var totalBatches = (int)Math.Ceiling((double)words.Count / batchSize);
 
@@ -45,17 +53,17 @@ public sealed class GbtCsvStrategy : IFileParserStrategy
             var rowList = new List<string>();
             foreach (var word in batch)
             {
-                rowList.Add($"({word.BookId}, {word.ChapterId}, {word.VerseId}, {word.SortNumber}, '{word.Text.Replace("'", "''")}', '{word.GrammarKey}')");
+                rowList.Add($"({word.BibleReference.RefId}, {word.PositionInVerse}, '{word.Text.Replace("'", "''")}', '{word.GrammarKey}')");
             }
 
             var sqlBatch = $"""
-                            INSERT INTO "unshackled-word"."SourceWords"
-                                ("BibleBookId", "Chapter", "Verse", "SortNumber", "SourceWord", "GrammarKey")
+                            INSERT INTO {GbtSourceWordDbo.DboName}
+                                ("LxxRefId", "PositionInVerse", "SourceWord", "GrammarKey")
                                 VALUES
                                 {rowList.JoinStrings($",{nl}    ")};
                             """;
 
-            await _sqlWriter.WriteAsync(sqlBatch);
+            await _dbWriter.WriteAsync(sqlBatch);
         }
     }
 
@@ -105,5 +113,15 @@ public sealed class GbtCsvStrategy : IFileParserStrategy
         }
 
         return list;
+    }
+
+    private async Task<int> GetCountAsync()
+    {
+        var sql = $"""
+                   SELECT COUNT(*)
+                   FROM {GbtSourceWordDbo.DboName}
+                   """;
+
+        return await _dbReader.ExecuteScalarAsync<int>(sql);
     }
 }

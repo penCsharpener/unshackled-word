@@ -47,12 +47,8 @@ public sealed class StepStrongsToVersesRepository : IStepStrongsToVersesReposito
             valueList.AddString(entry.Grammar);
             valueList.AddString(entry.Hebrew);
             valueList.AddString(entry.Gloss);
-            valueList.AddInt(entry.FirstOccuranceBibleBookId);
-            valueList.AddInt(entry.FirstOccuranceChapter);
-            valueList.AddInt(entry.FirstOccuranceVerse);
-            valueList.AddInt(entry.LastOccuranceBibleBookId);
-            valueList.AddInt(entry.LastOccuranceChapter);
-            valueList.AddInt(entry.LastOccuranceVerse);
+            valueList.AddInt(entry.FirstOccuranceLxxRefId);
+            valueList.AddInt(entry.LastOccuranceLxxRefId);
             valueList.AddString(entry.StrongsNumber);
 
             valueList.ValuesToInsertRow();
