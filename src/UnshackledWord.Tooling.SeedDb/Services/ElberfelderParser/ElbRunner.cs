@@ -2,7 +2,6 @@
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
-using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 

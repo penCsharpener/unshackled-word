@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.Extensions.Logging;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Repositories;

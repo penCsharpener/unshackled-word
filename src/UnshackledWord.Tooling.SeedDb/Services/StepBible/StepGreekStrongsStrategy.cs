@@ -1,4 +1,3 @@
-using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnshackledWord.Application.Abstractions;

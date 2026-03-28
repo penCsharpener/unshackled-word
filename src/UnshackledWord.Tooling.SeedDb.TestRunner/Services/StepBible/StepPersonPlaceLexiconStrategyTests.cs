@@ -4,7 +4,6 @@ using NSubstitute;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Infrastructure.Services;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.LexiconParser;
 
 namespace UnshackledWord.Tooling.SeedDb.TestRunner.Services.StepBible;

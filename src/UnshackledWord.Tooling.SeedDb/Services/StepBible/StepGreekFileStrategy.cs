@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;

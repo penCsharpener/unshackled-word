@@ -1,14 +1,16 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
-public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalgamatedHebrewEntry>>
+public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalgamatedHebrewEntry>>
 {
     private readonly IFileService _fileService;
     private readonly IStepHebrewWordsRepository _repo;
@@ -112,6 +114,8 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
                 ExpandedStrongTags = GetAtIndex(columns, 11),
             };
 
+            entry.StrongsNumbers = GetStrongsNumbers(entry).ToList();
+
             entry.Hebrew = DenormalizeHebrew(entry.HebrewNormalised);
             entry.HebrewNoDiacritics = entry.Hebrew.RemoveHebrewDiacritics()!;
 
@@ -119,6 +123,27 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
         }
 
         return parsedEntries;
+    }
+
+    private IEnumerable<StrongsNumberDbo> GetStrongsNumbers(StepAmalgamatedHebrewEntry entry)
+    {
+        var parts = entry.DisambiguatedStrongs.Split(['/', '\\']);
+        var regex = ExtractStrongs();
+
+        foreach (var part in parts)
+        {
+            if (part.Contains('{') || part.Contains('}'))
+            {
+
+            }
+
+            if (part.Contains('+'))
+            {
+
+            }
+
+            yield return new();
+        }
     }
 
     public string? GetAtIndex(string[] columns, int index, string? defaultValue = null)
@@ -145,4 +170,7 @@ public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalga
 
         return input.Replace("/", "").Replace(@"\", "");
     }
+
+    [GeneratedRegex(@"({)([HGA])(\d\d\d\d)(_\w)(})(\+)")]
+    private static partial Regex ExtractStrongs();
 }

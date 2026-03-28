@@ -1,5 +1,3 @@
-using UnshackledWord.Tooling.AiWorker.Models;
-
 namespace UnshackledWord.Tooling.AiWorker;
 
 public class Worker : BackgroundService

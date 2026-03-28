@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using DbUp;
-using DbUp.Postgresql;
 
 namespace UnshackledWord.Tooling.Postgres.Migration;
 

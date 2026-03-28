@@ -1,4 +1,3 @@
-using Google.GenAI;
 using Google.GenAI.Types;
 using Microsoft.Extensions.Options;
 using Serilog;

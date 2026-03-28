@@ -1,4 +1,3 @@
-using System.Net;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer;

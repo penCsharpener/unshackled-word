@@ -50,6 +50,11 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
             return;
         }
 
+        await BulkInsertInternalNewAsync(entries, token);
+    }
+
+    private async Task BulkInsertInternalOldAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
+    {
         var valueList = new ColumnInsertCollection();
 
         foreach (var entry in entries)
@@ -96,6 +101,89 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
                    """;
 
         var parameter = new { };
+
+        await _dbWriter.WriteAsync(sql, parameter);
+    }
+
+
+
+    private async Task BulkInsertInternalNewAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
+    {
+        const int dataSize = 10001;
+        var parameter = new
+        {
+            Id = new List<int>(dataSize),
+            BibleBookId = new List<int>(dataSize),
+            Chapter = new List<int>(dataSize),
+            Verse = new List<int>(dataSize),
+            LxxRefId = new List<int>(dataSize),
+            PositionInVerse = new List<int>(dataSize),
+            AltChapter = new List<int?>(dataSize),
+            AltVerse = new List<int?>(dataSize),
+            Type = new List<string>(dataSize),
+            IsInNestleAland = new List<bool>(dataSize),
+            IsInTextusReceptus = new List<bool>(dataSize),
+            IsInOther = new List<bool>(dataSize),
+            Greek = new List<string>(dataSize),
+            GreekNoDiacritics = new List<string>(dataSize),
+            Transliteration = new List<string>(dataSize),
+            English = new List<string>(dataSize),
+            Spanish = new List<string?>(dataSize),
+            DisambiguatedStrongs = new List<string>(dataSize),
+            Morphology = new List<string>(dataSize),
+            Lemma = new List<string>(dataSize),
+            LemmaNoDiacritics = new List<string>(dataSize),
+            Gloss = new List<string>(dataSize),
+            Editions = new List<string>(dataSize),
+            MeaningVariants = new List<string?>(dataSize),
+            SpellingVariants = new List<string?>(dataSize),
+            SubMeaning = new List<string?>(dataSize),
+            ConjoinWord = new List<string?>(dataSize),
+            StrongInstance = new List<string?>(dataSize),
+            AltStrongs = new List<string?>(dataSize)
+        };
+
+        foreach (var entry in entries)
+        {
+            parameter.Id.Add(entry.Id);
+            parameter.BibleBookId.Add(entry.BibleBookId);
+            parameter.Chapter.Add(entry.Chapter);
+            parameter.Verse.Add(entry.Verse);
+            parameter.LxxRefId.Add(entry.LxxRefId);
+            parameter.PositionInVerse.Add(entry.PositionInVerse);
+            parameter.AltChapter.Add(entry.AltChapter);
+            parameter.AltVerse.Add(entry.AltVerse);
+            parameter.Type.Add(entry.Type);
+            parameter.IsInNestleAland.Add(entry.IsInNestleAland);
+            parameter.IsInTextusReceptus.Add(entry.IsInTextusReceptus);
+            parameter.IsInOther.Add(entry.IsInOther);
+            parameter.Greek.Add(entry.Greek);
+            parameter.GreekNoDiacritics.Add(entry.GreekNoDiacritics);
+            parameter.Transliteration.Add(entry.Transliteration);
+            parameter.English.Add(entry.English);
+            parameter.Spanish.Add(entry.Spanish);
+            parameter.DisambiguatedStrongs.Add(entry.DisambiguatedStrongs);
+            parameter.Morphology.Add(entry.Morphology);
+            parameter.Lemma.Add(entry.Lemma);
+            parameter.LemmaNoDiacritics.Add(entry.LemmaNoDiacritics);
+            parameter.Gloss.Add(entry.Gloss);
+            parameter.Editions.Add(entry.Editions);
+            parameter.MeaningVariants.Add(entry.MeaningVariants);
+            parameter.SpellingVariants.Add(entry.SpellingVariants);
+            parameter.SubMeaning.Add(entry.SubMeaning);
+            parameter.ConjoinWord.Add(entry.ConjoinWord);
+            parameter.StrongInstance.Add(entry.StrongInstance);
+            parameter.AltStrongs.Add(entry.AltStrongs);
+        }
+
+        var sql = $"""
+                   INSERT INTO {StepGreekWordDbo.DbName} (
+                       "Id","BibleBookId","Chapter","Verse","LxxRefId","PositionInVerse","AltChapter","AltVerse","Type","IsInNestleAland","IsInTextusReceptus","IsInOther","Greek","GreekNoDiacritics","Transliteration","English","Spanish","DisambiguatedStrongs","Morphology","Lemma","LemmaNoDiacritics","Gloss","Editions","MeaningVariants","SpellingVariants","SubMeaning","ConjoinWord","StrongInstance","AltStrongs"
+                   )
+                   SELECT *
+                   FROM UNNEST(@Id,@BibleBookId,@Chapter,@Verse,@LxxRefId,@PositionInVerse,@AltChapter,@AltVerse,@Type,@IsInNestleAland,@IsInTextusReceptus,@IsInOther,@Greek,@GreekNoDiacritics,@Transliteration,@English,@Spanish,@DisambiguatedStrongs,@Morphology,@Lemma,@LemmaNoDiacritics,@Gloss,@Editions,@MeaningVariants,@SpellingVariants,@SubMeaning,@ConjoinWord,@StrongInstance,@AltStrongs)
+                   """;
+
 
         await _dbWriter.WriteAsync(sql, parameter);
     }

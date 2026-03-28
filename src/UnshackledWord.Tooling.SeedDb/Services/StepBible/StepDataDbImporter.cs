@@ -78,6 +78,7 @@ public sealed class StepDataDbImporter
                 continue;
             }
 
+            continue;
             if (file.Contains("Amalgamated Hebrew"))
             {
                 var entries = await _hebrewFileStrategy.SaveToDatabase(file, token);
@@ -124,6 +125,8 @@ public sealed class StepDataDbImporter
         {
             await _stepGreekWordsRepository.BulkInsertAsync(chunk, token);
         }
+
+        return;
 
         foreach (var chunk in totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(10000))
         {

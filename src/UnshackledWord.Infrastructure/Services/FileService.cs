@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Text.Unicode;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 

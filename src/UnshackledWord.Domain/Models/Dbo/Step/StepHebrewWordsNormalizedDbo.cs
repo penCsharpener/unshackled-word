@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace UnshackledWord.Domain.Models.Dbo.Step;
 
 public class StepHebrewWordsNormalizedDbo : IEntityId, IEquatable<StepHebrewWordsNormalizedDbo>

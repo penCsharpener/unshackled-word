@@ -2,7 +2,6 @@ using FastEndpoints;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.WebApi.BibleTagger.GetVerse;
-using UnshackledWord.Domain.WebApi.BibleTagger.SaveElbGrammar;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.GetVerseForElbGrammar;
 

@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Options;
-using UnshackledWord.Domain.Models.Settings;
-
 namespace UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer;
 
 public static class ServiceRegistrationExtensions

@@ -1,5 +1,4 @@
 using System.Text;
-using UnshackledWord.Application.Extensions;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
 using GeminiClient = Google.GenAI.Client;

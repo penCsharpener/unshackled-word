@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using UnshackledWord.Application.Abstractions;
+﻿using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;

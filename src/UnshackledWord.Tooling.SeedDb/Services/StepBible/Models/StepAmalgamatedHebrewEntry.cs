@@ -1,5 +1,6 @@
 using CsvHelper.Configuration.Attributes;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo.Step;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -70,4 +71,6 @@ public class StepAmalgamatedHebrewEntry
 
     [Name("Expanded Strong tags")]
     public string ExpandedStrongTags { get; set; } = default!;
+
+    public List<StrongsNumberDbo> StrongsNumbers { get; set; } = default!;
 }
