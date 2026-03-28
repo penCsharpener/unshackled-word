@@ -1,49 +1,24 @@
 ﻿using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
-// #if DEBUG
-// using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
-// using UnshackledWord.Tooling.SeedDb.Services.CsvImports;
-// using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
-// using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
-// #endif
-
 namespace UnshackledWord.Tooling.SeedDb.Services;
 
-public sealed class SeedingService
+public sealed partial class SeedingService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<SeedingService> _logger;
 
-    private readonly Type[] _runnerTypes =
-    {
-        #if DEBUG
-        // typeof(UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser.ElberfelderTextRunner),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataBibleTextImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataStrongsImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataMorphologyImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataLexiconImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataRelationshipImporter),
-        #else
-        typeof(UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser.ElberfelderTextRunner),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools.GbtRunner),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.Tsk.TskRunner),
-         typeof(UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser.ElbRunner),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt.SrRunner),
-//         typeof(UnshackledWord.Tooling.SeedDb.Services.CsvImports.CsvRunner),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.SBL.SblRunner),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.ByzTxt.ByzRunner),
-        // typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper.Elb1871SrMappingRunner),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataBibleTextImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataStrongsImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataMorphologyImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataLexiconImporter),
-        typeof(UnshackledWord.Tooling.SeedDb.Services.StepBible.StepDataRelationshipImporter),
-//         typeof(UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer.LemmatizerRunner)
-//         typeof(UnshackledWord.Tooling.SeedDb.Services.BibelKommentare.BkRunner),
-//         typeof(UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData.OpenScriptureRunner),
-        #endif
-
-    };
+    private Type[] _runnerTypes =
+    [
+        typeof(ElberfelderParser.ElberfelderTextRunner),
+        typeof(Tsk.TskRunner),
+        typeof(StatisticalRestorationGnt.SrRunner),
+        typeof(SBL.SblRunner),
+        typeof(StepBible.StepDataBibleTextImporter),
+        typeof(StepBible.StepDataStrongsImporter),
+        typeof(StepBible.StepDataMorphologyImporter),
+        typeof(StepBible.StepDataLexiconImporter),
+        typeof(StepBible.StepDataRelationshipImporter),
+    ];
 
     public SeedingService(IServiceScopeFactory scopeFactory, ILogger<SeedingService> logger)
     {
@@ -55,6 +30,7 @@ public sealed class SeedingService
     {
         using var scope = _scopeFactory.CreateScope();
 
+        FilterSeedRunnerTypes();
         foreach (var runnerType in _runnerTypes)
         {
             _logger.LogInformation("Running seeding service: {RunnerType}", runnerType.Name);
@@ -62,4 +38,9 @@ public sealed class SeedingService
             await runner.Run(token);
         }
     }
+
+    /// <summary>
+    /// method used for local selection of specific types in SeedingService.local.cs
+    /// </summary>
+    partial void FilterSeedRunnerTypes();
 }
