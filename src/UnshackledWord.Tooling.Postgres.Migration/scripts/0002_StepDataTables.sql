@@ -300,3 +300,20 @@ CREATE INDEX "IdxElbHebrewWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("
 CREATE INDEX "IdxElbHebrewVerse" ON "unshackled-word"."Elb1871HebrewMapping" ("BookId", "Chapter", "Verse");
 CREATE INDEX "IdxElbHebrewHebRefId" ON "unshackled-word"."Elb1871HebrewMapping" ("HebRefId");
 CREATE INDEX "IdxElbHebrewStrongs" ON "unshackled-word"."Elb1871HebrewMapping" ("StrongsNumber");
+
+
+CREATE TABLE "unshackled-word"."StrongsNumbers"
+(
+    "Id"               SERIAL PRIMARY KEY,
+    "LanguageId"       INTEGER NOT NULL, -- Enum: Hebrew=0, Aramaic=1, Greek=2
+    "Number"           INTEGER NOT NULL,
+    "Extra"            VARCHAR(1),
+    "StrongsType"      INTEGER NOT NULL, -- Enum: Extended=0, Disambiguated=1, Unified=2
+    "IsRoot"           BOOLEAN NOT NULL DEFAULT FALSE,
+    "CoversNextWord"   BOOLEAN NOT NULL DEFAULT FALSE,
+    "StepHebrewWordId" INTEGER,
+    "StepGreekWordId"  INTEGER,
+    "Order"            INTEGER NOT NULL
+);
+
+CREATE INDEX "IX_StrongsNumbers_LanguageId_Number" ON "unshackled-word"."StrongsNumbers" ("LanguageId", "Number");

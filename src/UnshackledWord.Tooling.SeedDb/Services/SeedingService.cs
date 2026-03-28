@@ -41,6 +41,7 @@ public sealed partial class SeedingService
 
     /// <summary>
     /// method used for local selection of specific types in SeedingService.local.cs
+    /// in this method you can override or filter _runnerTypes
     /// </summary>
     partial void FilterSeedRunnerTypes();
 }

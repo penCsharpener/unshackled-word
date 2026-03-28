@@ -34,4 +34,5 @@ public sealed class StepGreekWordDbo : IBibleWordOrderColumns
     public string? ConjoinWord { get; set; }
     public string? StrongInstance { get; set; }
     public string? AltStrongs { get; set; }
+    public List<StrongsNumberDbo> StrongsNumbers { get; set; } = default!;
 }

@@ -37,7 +37,8 @@ public static class DboExtensions
                 SubMeaning = entry.SubMeaning,
                 ConjoinWord = entry.ConjoinWord,
                 StrongInstance = entry.StrongInstance,
-                AltStrongs = entry.AltStrongs
+                AltStrongs = entry.AltStrongs,
+                StrongsNumbers = entry.StrongsNumbers
             };
         }
     }
@@ -67,7 +68,8 @@ public static class DboExtensions
                 RootDisambiguatedStrongsInstance = entry.RootDisambiguatedStrongsInstance,
                 AlternativeStrongs = entry.AlternativeStrongs,
                 ConjoinWord = entry.ConjoinWord,
-                ExpandedStrongTags = entry.ExpandedStrongTags
+                ExpandedStrongTags = entry.ExpandedStrongTags,
+                StrongsNumbers = entry.StrongsNumbers
             };
         }
     }

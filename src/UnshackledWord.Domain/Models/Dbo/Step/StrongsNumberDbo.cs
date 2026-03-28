@@ -1,6 +1,6 @@
 namespace UnshackledWord.Domain.Models.Dbo.Step;
 
-public class StrongsNumberDbo
+public class StrongsNumberDbo : IEntityId
 {
     public const string DbName = "\"unshackled-word\".\"StrongsNumbers\"";
 
@@ -20,6 +20,8 @@ public class StrongsNumberDbo
     /// when the strongs number is followed by a +
     /// </summary>
     public bool CoversNextWord { get; set; }
+    public int? StepHebrewWordId { get; set; }
+    public int? StepGreekWordId { get; set; }
     public int Order { get; set; }
 }
 

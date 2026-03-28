@@ -50,6 +50,13 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
             return;
         }
 
+        var count = await CountByFilterAsync(new(), token);
+
+        if (count > 0)
+        {
+            return;
+        }
+
         await BulkInsertInternalNewAsync(entries, token);
     }
 
@@ -104,8 +111,6 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
 
         await _dbWriter.WriteAsync(sql, parameter);
     }
-
-
 
     private async Task BulkInsertInternalNewAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
     {

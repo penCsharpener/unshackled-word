@@ -51,6 +51,13 @@ public sealed class StepHebrewWordsRepository : IStepHebrewWordsRepository
             return;
         }
 
+        var count = await CountByFilterAsync(new(), token);
+
+        if (count > 0)
+        {
+            return;
+        }
+
         var valueList = new ColumnInsertCollection();
 
         foreach (var entry in entries)
