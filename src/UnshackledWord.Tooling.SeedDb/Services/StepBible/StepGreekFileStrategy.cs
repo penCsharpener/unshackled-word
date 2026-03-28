@@ -1,14 +1,16 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
-public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgamatedGreekEntry>>
+public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgamatedGreekEntry>>
 {
     private readonly IFileService _fileService;
     private readonly IStepGreekWordsRepository _repo;
@@ -25,7 +27,7 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
     {
         var filter = new StepGreekWordFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
-        if (count > 0)
+        if (count > 0 && false)
         {
             _logger.LogInformation("Step Greek file data already imported... {count} rows", count);
             return [];
@@ -74,7 +76,7 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 altBibleReference = null;
             }
             var positionInVerse = refParts.Length > 1 ? int.Parse(refParts[1]) : 0;
-            var type = GetAtIndex(refParts, 2);
+            var type = GetAtIndex(refParts, 2)!;
 
             var grWithTransliteration = GetAtIndex(columns, 1);
             var grParts = grWithTransliteration.Split(['(', ')'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
@@ -99,14 +101,14 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 FoundInNestleAland = type.Contains('N'),
                 FoundInTextusReceptus = type.Contains('K'),
                 FoundInOther = type.Contains('O'),
-                Greek = GetAtIndex(grParts, 0),
-                Transliteration = GetAtIndex(grParts, 1),
-                EnglishTranslation = GetAtIndex(columns, 2),
-                DisambiguatedStrongs = GetAtIndex(gramParts, 0),
-                Morphology = GetAtIndex(gramParts, 1),
-                Lemma = GetAtIndex(formParts, 0),
-                Gloss = GetAtIndex(formParts, 1),
-                Editions = GetAtIndex(columns, 5),
+                Greek = GetAtIndex(grParts, 0)!,
+                Transliteration = GetAtIndex(grParts, 1)!,
+                EnglishTranslation = GetAtIndex(columns, 2)!,
+                DisambiguatedStrongs = GetAtIndex(gramParts, 0)!,
+                Morphology = GetAtIndex(gramParts, 1)!,
+                Lemma = GetAtIndex(formParts, 0)!,
+                Gloss = GetAtIndex(formParts, 1)!,
+                Editions = GetAtIndex(columns, 5)!,
                 //EditionList = GetAtIndex(columns, 5).Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
                 MeaningVariants = GetAtIndex(columns, 6),
                 SpellingVariants = GetAtIndex(columns, 7),
@@ -117,6 +119,9 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
                 AltStrongs = GetAtIndex(columns, 12)
             };
 
+            entry.StrongsNumbers = ParseStrongsNumber(entry).ToList();
+            entry.LxxRefId = entry.BibleReference.RefId;
+
             entry.GreekNoDiacritics = entry.Greek.RemoveGreekDiacritics()!;
             entry.LemmaNoDiacritics = entry.Lemma.RemoveGreekDiacritics()!;
 
@@ -124,6 +129,40 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
         }
 
         return parsedEntries;
+    }
+
+    private IEnumerable<StrongsNumberDbo> ParseStrongsNumber(StepAmalgamatedGreekEntry entry)
+    {
+        if (entry.DisambiguatedStrongs.IsNullOrWhiteSpace())
+        {
+            yield break;
+        }
+
+        var matches = ExtractStrongs().Matches(entry.DisambiguatedStrongs);
+        if (matches.Count == 0)
+        {
+            yield break;
+        }
+
+        for (var i = 0; i < matches.Count; i++)
+        {
+            var match = matches[i];
+            var strongsNumber = new StrongsNumberDbo();
+            strongsNumber.Number = int.Parse(match.Groups[3].Value);
+            strongsNumber.LanguageId = match.Groups[2].Value switch
+            {
+                "G" => StrongsLanguage.Greek,
+                "H" => StrongsLanguage.Hebrew,
+                "A" => StrongsLanguage.Aramaic
+            };
+
+            strongsNumber.Extra = match.Groups[4].Value;
+            strongsNumber.IsRoot = match.Groups[1].Value.IsNotNullOrEmpty();
+            strongsNumber.CoversNextWord = match.Groups[6].Value.IsNotNullOrEmpty();
+            strongsNumber.Order = i + 1;
+
+            yield return strongsNumber;
+        }
     }
 
     public string? GetAtIndex(string[] columns, int index, string? defaultValue = null)
@@ -140,4 +179,7 @@ public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgam
 
         return defaultValue;
     }
+
+    [GeneratedRegex(@"({)?([HGA])(\d\d\d\d)(_?\w)?(})?(\+)?")]
+    private static partial Regex ExtractStrongs();
 }

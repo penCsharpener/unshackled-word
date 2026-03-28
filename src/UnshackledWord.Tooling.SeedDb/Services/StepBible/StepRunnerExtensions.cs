@@ -8,8 +8,11 @@ public static class StepRunnerExtensions
 {
     public static IServiceCollection AddStepRunner(this IServiceCollection services)
     {
-        services.AddScoped<StepRunner>();
-        services.AddScoped<StepDataDbImporter>();
+        services.AddScoped<StepDataStrongsImporter>();
+        services.AddScoped<StepDataBibleTextImporter>();
+        services.AddScoped<StepDataLexiconImporter>();
+        services.AddScoped<StepDataMorphologyImporter>();
+        services.AddScoped<StepDataRelationshipImporter>();
         services.AddScoped<StepGithubDownloader>();
         services.AddScoped<StepGreekFileStrategy>();
         services.AddScoped<StepHebrewFileStrategy>();

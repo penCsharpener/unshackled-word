@@ -2,6 +2,8 @@ namespace UnshackledWord.Domain.Models.Dbo.Step;
 
 public class StrongsNumberDbo
 {
+    public const string DbName = "\"unshackled-word\".\"StrongsNumbers\"";
+
     public int Id { get; set; }
     public StrongsLanguage LanguageId { get; set; }
     public int Number { get; set; }

@@ -101,20 +101,20 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
                 AlternativeVerse = altBibleReference?.Verse,
                 PositionInVerse = positionInVerse,
                 Type = type,
-                HebrewNormalised = GetAtIndex(columns, 1, string.Empty),
-                Transliteration = GetAtIndex(columns, 2, string.Empty),
-                Gloss = GetAtIndex(columns, 3, string.Empty),
-                DisambiguatedStrongs = GetAtIndex(columns, 4, string.Empty),
-                Grammar = GetAtIndex(columns, 5, string.Empty),
-                MeaningVariants = GetAtIndex(columns, 6),
-                SpellingVariants = GetAtIndex(columns, 7),
-                RootDisambiguatedStrongsInstance = GetAtIndex(columns, 8),
-                AlternativeStrongs = GetAtIndex(columns, 9),
-                ConjoinWord = GetAtIndex(columns, 10),
-                ExpandedStrongTags = GetAtIndex(columns, 11),
+                HebrewNormalised = GetAtIndex(columns, 1, string.Empty)!,
+                Transliteration = GetAtIndex(columns, 2, string.Empty)!,
+                Gloss = GetAtIndex(columns, 3, string.Empty)!,
+                DisambiguatedStrongs = GetAtIndex(columns, 4, string.Empty)!,
+                Grammar = GetAtIndex(columns, 5, string.Empty)!,
+                MeaningVariants = GetAtIndex(columns, 6)!,
+                SpellingVariants = GetAtIndex(columns, 7)!,
+                RootDisambiguatedStrongsInstance = GetAtIndex(columns, 8)!,
+                AlternativeStrongs = GetAtIndex(columns, 9)!,
+                ConjoinWord = GetAtIndex(columns, 10)!,
+                ExpandedStrongTags = GetAtIndex(columns, 11)!,
             };
 
-            entry.StrongsNumbers = GetStrongsNumbers(entry).ToList();
+            entry.StrongsNumbers = ParseStrongsNumber(entry).ToList();
 
             entry.Hebrew = DenormalizeHebrew(entry.HebrewNormalised);
             entry.HebrewNoDiacritics = entry.Hebrew.RemoveHebrewDiacritics()!;
@@ -125,24 +125,37 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
         return parsedEntries;
     }
 
-    private IEnumerable<StrongsNumberDbo> GetStrongsNumbers(StepAmalgamatedHebrewEntry entry)
+    private IEnumerable<StrongsNumberDbo> ParseStrongsNumber(StepAmalgamatedHebrewEntry entry)
     {
-        var parts = entry.DisambiguatedStrongs.Split(['/', '\\']);
-        var regex = ExtractStrongs();
-
-        foreach (var part in parts)
+        if (entry.DisambiguatedStrongs.IsNullOrWhiteSpace())
         {
-            if (part.Contains('{') || part.Contains('}'))
+            yield break;
+        }
+
+        var matches = ExtractStrongs().Matches(entry.DisambiguatedStrongs);
+        if (matches.Count == 0)
+        {
+            yield break;
+        }
+
+        for (var i = 0; i < matches.Count; i++)
+        {
+            var match = matches[i];
+            var strongsNumber = new StrongsNumberDbo();
+            strongsNumber.Number = int.Parse(match.Groups[3].Value);
+            strongsNumber.LanguageId = match.Groups[2].Value switch
             {
+                "G" => StrongsLanguage.Greek,
+                "H" => StrongsLanguage.Hebrew,
+                "A" => StrongsLanguage.Aramaic
+            };
 
-            }
+            strongsNumber.Extra = match.Groups[4].Value;
+            strongsNumber.IsRoot = match.Groups[1].Value.IsNotNullOrEmpty();
+            strongsNumber.CoversNextWord = match.Groups[6].Value.IsNotNullOrEmpty();
+            strongsNumber.Order = i + 1;
 
-            if (part.Contains('+'))
-            {
-
-            }
-
-            yield return new();
+            yield return strongsNumber;
         }
     }
 

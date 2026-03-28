@@ -1,5 +1,6 @@
 using CsvHelper.Configuration.Attributes;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo.Step;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -19,6 +20,8 @@ public class StepAmalgamatedGreekEntry
 
     [Name("Verse")]
     public int Verse { get; set; }
+
+    public int LxxRefId { get; set; }
 
     [Name("Alternative Chapter")]
     public int? AlternativeChapter { get; set; }
@@ -85,4 +88,6 @@ public class StepAmalgamatedGreekEntry
 
     [Name("Alt Strongs")]
     public string? AltStrongs { get; set; } = default!;
+
+    public List<StrongsNumberDbo> StrongsNumbers { get; set; } = default!;
 }
