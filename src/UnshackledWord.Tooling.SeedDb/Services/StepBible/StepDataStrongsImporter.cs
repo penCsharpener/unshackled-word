@@ -26,7 +26,7 @@ public sealed class StepDataStrongsImporter : IRunner
         public async Task Run(CancellationToken token = default)
     {
         var files = await _githubDownloader.DownloadFileAsync(token);
-        var totalStrongs = new List<StepStrongsDbo>();
+        var totalStrongs = new List<StepStrongsLexiconDbo>();
 
         foreach (var file in files.Where(x => x.Contains("Extended Strongs for")))
         {

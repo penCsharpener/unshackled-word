@@ -27,7 +27,7 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
     {
         var filter = new StepGreekWordFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
-        if (count > 0 && false)
+        if (count > 0)
         {
             _logger.LogInformation("Step Greek file data already imported... {count} rows", count);
             return [];
@@ -119,7 +119,8 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
                 AltStrongs = GetAtIndex(columns, 12)
             };
 
-            entry.StrongsNumbers = ParseStrongsNumber(entry).ToList();
+            var internalStrongs = StrongsRegexParser.Parse(entry.DisambiguatedStrongs).ToList();
+            entry.StrongsNumbers = internalStrongs.ToDbo(null, null).ToList();
             entry.LxxRefId = entry.BibleReference.RefId;
 
             entry.GreekNoDiacritics = entry.Greek.RemoveGreekDiacritics()!;
@@ -129,40 +130,6 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
         }
 
         return parsedEntries;
-    }
-
-    private IEnumerable<StrongsNumberDbo> ParseStrongsNumber(StepAmalgamatedGreekEntry entry)
-    {
-        if (entry.DisambiguatedStrongs.IsNullOrWhiteSpace())
-        {
-            yield break;
-        }
-
-        var matches = ExtractStrongs().Matches(entry.DisambiguatedStrongs);
-        if (matches.Count == 0)
-        {
-            yield break;
-        }
-
-        for (var i = 0; i < matches.Count; i++)
-        {
-            var match = matches[i];
-            var strongsNumber = new StrongsNumberDbo();
-            strongsNumber.Number = int.Parse(match.Groups[3].Value);
-            strongsNumber.LanguageId = match.Groups[2].Value switch
-            {
-                "G" => StrongsLanguage.Greek,
-                "H" => StrongsLanguage.Hebrew,
-                "A" => StrongsLanguage.Aramaic
-            };
-
-            strongsNumber.Extra = match.Groups[4].Value;
-            strongsNumber.IsRoot = match.Groups[1].Value.IsNotNullOrEmpty();
-            strongsNumber.CoversNextWord = match.Groups[6].Value.IsNotNullOrEmpty();
-            strongsNumber.Order = i + 1;
-
-            yield return strongsNumber;
-        }
     }
 
     public string? GetAtIndex(string[] columns, int index, string? defaultValue = null)
@@ -179,7 +146,4 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
 
         return defaultValue;
     }
-
-    [GeneratedRegex(@"({)?([HGA])(\d\d\d\d)(_?\w)?(})?(\+)?")]
-    private static partial Regex ExtractStrongs();
 }

@@ -23,8 +23,6 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
                    SELECT COUNT(*)
                    FROM {StepGreekWordDbo.DbName} AS w
                    WHERE 1=1
-                     {(filter.IncludedBibleBookIds.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.BibleBookId)}\" = ANY(@IncludedBibleBookIds)")}
-                     {(filter.IncludeChapters.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.Chapter)}\" = ANY(@IncludeChapters)")};
                    """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql, filter);
@@ -36,8 +34,6 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
                    SELECT {filter.GetSelectColumns()}
                    FROM {StepGreekWordDbo.DbName} AS w
                    WHERE 1=1
-                     {(filter.IncludedBibleBookIds.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.BibleBookId)}\" = ANY(@IncludedBibleBookIds)")}
-                     {(filter.IncludeChapters.IsNullOrEmpty() ? string.Empty : $"AND w.\"{nameof(IBibleWordOrderColumns.Chapter)}\" = ANY(@IncludeChapters)")};
                    """;
 
         return await _dbReader.ReadAsListAsync<StepGreekWordDbo>(sql, filter);
@@ -60,67 +56,12 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         await BulkInsertInternalNewAsync(entries, token);
     }
 
-    private async Task BulkInsertInternalOldAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
-    {
-        var valueList = new ColumnInsertCollection();
-
-        foreach (var entry in entries)
-        {
-            valueList.AddInt(entry.Id);
-            valueList.AddInt(entry.BibleBookId);
-            valueList.AddInt(entry.Chapter);
-            valueList.AddInt(entry.Verse);
-            valueList.AddInt(entry.LxxRefId);
-            valueList.AddInt(entry.PositionInVerse);
-            valueList.AddInt(entry.AltChapter);
-            valueList.AddInt(entry.AltVerse);
-            valueList.AddString(entry.Type);
-            valueList.AddBool(entry.IsInNestleAland);
-            valueList.AddBool(entry.IsInTextusReceptus);
-            valueList.AddBool(entry.IsInOther);
-            valueList.AddString(entry.Greek);
-            valueList.AddString(entry.GreekNoDiacritics);
-            valueList.AddString(entry.Transliteration);
-            valueList.AddString(entry.English);
-            valueList.AddString(entry.Spanish);
-            valueList.AddString(entry.DisambiguatedStrongs);
-            valueList.AddString(entry.Morphology);
-            valueList.AddString(entry.Lemma);
-            valueList.AddString(entry.LemmaNoDiacritics);
-            valueList.AddString(entry.Gloss);
-            valueList.AddString(entry.Editions);
-            valueList.AddString(entry.MeaningVariants);
-            valueList.AddString(entry.SpellingVariants);
-            valueList.AddString(entry.SubMeaning);
-            valueList.AddString(entry.ConjoinWord);
-            valueList.AddString(entry.StrongInstance);
-            valueList.AddString(entry.AltStrongs);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
-        }
-
-        var sql = $"""
-                   INSERT INTO {StepGreekWordDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
-                   """;
-
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
-    }
-
     private async Task BulkInsertInternalNewAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
     {
-        const int dataSize = 10001;
+        var dataSize = entries.Length + 1;
         var parameter = new
         {
             Id = new List<int>(dataSize),
-            BibleBookId = new List<int>(dataSize),
-            Chapter = new List<int>(dataSize),
-            Verse = new List<int>(dataSize),
             LxxRefId = new List<int>(dataSize),
             PositionInVerse = new List<int>(dataSize),
             AltChapter = new List<int?>(dataSize),
@@ -151,9 +92,6 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         foreach (var entry in entries)
         {
             parameter.Id.Add(entry.Id);
-            parameter.BibleBookId.Add(entry.BibleBookId);
-            parameter.Chapter.Add(entry.Chapter);
-            parameter.Verse.Add(entry.Verse);
             parameter.LxxRefId.Add(entry.LxxRefId);
             parameter.PositionInVerse.Add(entry.PositionInVerse);
             parameter.AltChapter.Add(entry.AltChapter);
@@ -187,6 +125,7 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
                    )
                    SELECT *
                    FROM UNNEST(@Id,@BibleBookId,@Chapter,@Verse,@LxxRefId,@PositionInVerse,@AltChapter,@AltVerse,@Type,@IsInNestleAland,@IsInTextusReceptus,@IsInOther,@Greek,@GreekNoDiacritics,@Transliteration,@English,@Spanish,@DisambiguatedStrongs,@Morphology,@Lemma,@LemmaNoDiacritics,@Gloss,@Editions,@MeaningVariants,@SpellingVariants,@SubMeaning,@ConjoinWord,@StrongInstance,@AltStrongs)
+                   ON CONFLICT DO NOTHING;
                    """;
 
 

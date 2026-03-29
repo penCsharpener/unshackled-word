@@ -114,7 +114,8 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
                 ExpandedStrongTags = GetAtIndex(columns, 11)!,
             };
 
-            entry.StrongsNumbers = ParseStrongsNumber(entry).ToList();
+            var internalStrongs = StrongsRegexParser.Parse(entry.DisambiguatedStrongs).ToList();
+            entry.StrongsNumbers = internalStrongs.ToDbo(null, null).ToList();
 
             entry.Hebrew = DenormalizeHebrew(entry.HebrewNormalised);
             entry.HebrewNoDiacritics = entry.Hebrew.RemoveHebrewDiacritics()!;
@@ -123,40 +124,6 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
         }
 
         return parsedEntries;
-    }
-
-    private IEnumerable<StrongsNumberDbo> ParseStrongsNumber(StepAmalgamatedHebrewEntry entry)
-    {
-        if (entry.DisambiguatedStrongs.IsNullOrWhiteSpace())
-        {
-            yield break;
-        }
-
-        var matches = ExtractStrongs().Matches(entry.DisambiguatedStrongs);
-        if (matches.Count == 0)
-        {
-            yield break;
-        }
-
-        for (var i = 0; i < matches.Count; i++)
-        {
-            var match = matches[i];
-            var strongsNumber = new StrongsNumberDbo();
-            strongsNumber.Number = int.Parse(match.Groups[3].Value);
-            strongsNumber.LanguageId = match.Groups[2].Value switch
-            {
-                "G" => StrongsLanguage.Greek,
-                "H" => StrongsLanguage.Hebrew,
-                "A" => StrongsLanguage.Aramaic
-            };
-
-            strongsNumber.Extra = match.Groups[4].Value;
-            strongsNumber.IsRoot = match.Groups[1].Value.IsNotNullOrEmpty();
-            strongsNumber.CoversNextWord = match.Groups[6].Value.IsNotNullOrEmpty();
-            strongsNumber.Order = i + 1;
-
-            yield return strongsNumber;
-        }
     }
 
     public string? GetAtIndex(string[] columns, int index, string? defaultValue = null)
@@ -183,7 +150,4 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
 
         return input.Replace("/", "").Replace(@"\", "");
     }
-
-    [GeneratedRegex(@"({)([HGA])(\d\d\d\d)(_\w)(})(\+)")]
-    private static partial Regex ExtractStrongs();
 }

@@ -7,9 +7,6 @@ public sealed class StepHebrewWordDbo : IBibleWordOrderColumns
     public const string DbName = "\"unshackled-word\".\"StepHebrewWords\"";
 
     public int Id { get; set; }
-    public int BibleBookId { get; set; }
-    public int Chapter { get; set; }
-    public int Verse { get; set; }
     public int LxxRefId { get; set; }
     public int PositionInVerse { get; set; }
     public int? AltChapter { get; set; }

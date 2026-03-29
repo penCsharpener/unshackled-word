@@ -1,5 +1,6 @@
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo.Step;
 
 namespace UnshackledWord.Infrastructure.Repositories.Step;
@@ -66,40 +67,51 @@ public sealed class StepPersonPlaceRepository : IStepPersonPlaceRepository
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            Name = new List<string>(dataSize),
+            LxxRefId = new List<int>(dataSize),
+            Strongs = new List<string?>(dataSize),
+            Note = new List<string?>(dataSize),
+            OriginalSpelling = new List<string?>(dataSize),
+            Tribe = new List<string?>(dataSize),
+            Gender = new List<string?>(dataSize),
+            Briefest = new List<string?>(dataSize),
+            Brief = new List<string?>(dataSize),
+            Short = new List<string?>(dataSize),
+            Article = new List<string?>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
-            valueList.AddInt(entry.Id);
-            valueList.AddString(entry.Name);
-            valueList.AddInt(entry.BibleBookId);
-            valueList.AddInt(entry.Chapter);
-            valueList.AddInt(entry.Verse);
-            valueList.AddInt(entry.LxxRefId);
-            valueList.AddString(entry.Strongs);
-            valueList.AddString(entry.Note);
-            valueList.AddString(entry.OriginalSpelling);
-            valueList.AddString(entry.Tribe);
-            valueList.AddString(entry.Gender);
-            valueList.AddString(entry.Briefest);
-            valueList.AddString(entry.Brief);
-            valueList.AddString(entry.Short);
-            valueList.AddString(entry.Article);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            parameters.Id.Add(entry.Id);
+            parameters.Name.Add(entry.Name);
+            parameters.LxxRefId.Add(entry.LxxRefId);
+            parameters.Strongs.Add(entry.Strongs);
+            parameters.Note.Add(entry.Note);
+            parameters.OriginalSpelling.Add(entry.OriginalSpelling);
+            parameters.Tribe.Add(entry.Tribe);
+            parameters.Gender.Add(entry.Gender);
+            parameters.Briefest.Add(entry.Briefest);
+            parameters.Brief.Add(entry.Brief);
+            parameters.Short.Add(entry.Short);
+            parameters.Article.Add(entry.Article);
         }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepPersonLexiconDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 
     public async Task BulkInsertAsync(StepPersonLexiconRelationsDbo[] entries, CancellationToken token = default)
@@ -109,34 +121,39 @@ public sealed class StepPersonPlaceRepository : IStepPersonPlaceRepository
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            Name = new List<string>(dataSize),
+            PersonLexiconId = new List<int>(dataSize),
+            LxxRefId = new List<int>(dataSize),
+            Strongs = new List<string?>(dataSize),
+            RelationType = new List<string>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
-            valueList.AddInt(entry.Id);
-            valueList.AddString(entry.Name);
-            valueList.AddInt(entry.PersonLexiconId);
-            valueList.AddInt(entry.BibleBookId);
-            valueList.AddInt(entry.Chapter);
-            valueList.AddInt(entry.Verse);
-            valueList.AddInt(entry.LxxRefId);
-            valueList.AddString(entry.Strongs);
-            valueList.AddString(entry.RelationType);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            parameters.Id.Add(entry.Id);
+            parameters.Name.Add(entry.Name);
+            parameters.PersonLexiconId.Add(entry.PersonLexiconId);
+            parameters.LxxRefId.Add(entry.LxxRefId);
+            parameters.Strongs.Add(entry.Strongs);
+            parameters.RelationType.Add(entry.RelationType);
         }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepPersonLexiconRelationsDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 
     public async Task BulkInsertAsync(StepPlaceLexiconDbo[] entries, CancellationToken token = default)
@@ -146,45 +163,58 @@ public sealed class StepPersonPlaceRepository : IStepPersonPlaceRepository
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            Name = new List<string>(dataSize),
+            LxxRefId = new List<int>(dataSize),
+            Strongs = new List<string>(dataSize),
+            Note = new List<string?>(dataSize),
+            Type = new List<string?>(dataSize),
+            GoogleMapsLinks = new List<string?>(dataSize),
+            PalOpenMapsLink = new List<string?>(dataSize),
+            OriginalSpelling = new List<string?>(dataSize),
+            StepBibleLink = new List<string>(dataSize),
+            Briefest = new List<string?>(dataSize),
+            Brief = new List<string?>(dataSize),
+            Short = new List<string>(dataSize),
+            Article = new List<string>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
             entry.Short ??= "";
             entry.Article ??= "";
 
-            valueList.AddInt(entry.Id);
-            valueList.AddString(entry.Name);
-            valueList.AddInt(entry.BibleBookId);
-            valueList.AddInt(entry.Chapter);
-            valueList.AddInt(entry.Verse);
-            valueList.AddInt(entry.LxxRefId);
-            valueList.AddString(entry.Strongs);
-            valueList.AddString(entry.Note);
-            valueList.AddString(entry.Type);
-            valueList.AddString(entry.GoogleMapsLinks);
-            valueList.AddString(entry.PalOpenMapsLink);
-            valueList.AddString(entry.OriginalSpelling);
-            valueList.AddString(entry.StepBibleLink);
-            valueList.AddString(entry.Briefest);
-            valueList.AddString(entry.Brief);
-            valueList.AddString(entry.Short);
-            valueList.AddString(entry.Article);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            parameters.Id.Add(entry.Id);
+            parameters.Name.Add(entry.Name);
+            parameters.LxxRefId.Add(entry.LxxRefId);
+            parameters.Strongs.Add(entry.Strongs);
+            parameters.Note.Add(entry.Note);
+            parameters.Type.Add(entry.Type);
+            parameters.GoogleMapsLinks.Add(entry.GoogleMapsLinks);
+            parameters.PalOpenMapsLink.Add(entry.PalOpenMapsLink);
+            parameters.OriginalSpelling.Add(entry.OriginalSpelling);
+            parameters.StepBibleLink.Add(entry.StepBibleLink);
+            parameters.Briefest.Add(entry.Briefest);
+            parameters.Brief.Add(entry.Brief);
+            parameters.Short.Add(entry.Short);
+            parameters.Article.Add(entry.Article);
         }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepPlaceLexiconDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 
     public async Task BulkInsertAsync(StepOtherLexiconDbo[] entries, CancellationToken token = default)
@@ -194,38 +224,50 @@ public sealed class StepPersonPlaceRepository : IStepPersonPlaceRepository
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            Name = new List<string>(dataSize),
+            LxxRefId = new List<int>(dataSize),
+            Strongs = new List<string>(dataSize),
+            Note = new List<string?>(dataSize),
+            Type = new List<string?>(dataSize),
+            OriginalSpelling = new List<string?>(dataSize),
+            StepBibleLink = new List<string>(dataSize),
+            Briefest = new List<string?>(dataSize),
+            Brief = new List<string>(dataSize),
+            Short = new List<string>(dataSize),
+            Article = new List<string>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
-            valueList.AddInt(entry.Id);
-            valueList.AddString(entry.Name);
-            valueList.AddInt(entry.BibleBookId);
-            valueList.AddInt(entry.Chapter);
-            valueList.AddInt(entry.Verse);
-            valueList.AddString(entry.Strongs);
-            valueList.AddString(entry.Note);
-            valueList.AddString(entry.Type);
-            valueList.AddString(entry.OriginalSpelling);
-            valueList.AddString(entry.StepBibleLink);
-            valueList.AddString(entry.Briefest);
-            valueList.AddString(entry.Brief);
-            valueList.AddString(entry.Short);
-            valueList.AddString(entry.Article);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            parameters.Id.Add(entry.Id);
+            parameters.Name.Add(entry.Name);
+            parameters.LxxRefId.Add(entry.LxxRefId);
+            parameters.Strongs.Add(entry.Strongs);
+            parameters.Note.Add(entry.Note);
+            parameters.Type.Add(entry.Type);
+            parameters.OriginalSpelling.Add(entry.OriginalSpelling);
+            parameters.StepBibleLink.Add(entry.StepBibleLink);
+            parameters.Briefest.Add(entry.Briefest);
+            parameters.Brief.Add(entry.Brief);
+            parameters.Short.Add(entry.Short);
+            parameters.Article.Add(entry.Article);
         }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepOtherLexiconDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 }

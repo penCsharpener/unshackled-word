@@ -13,6 +13,7 @@ using UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
+using UnshackledWord.Tooling.SeedDb.Services.LocalOnly;
 using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
 using UnshackledWord.Tooling.SeedDb.Services.SBL.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
@@ -39,6 +40,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddByzTxtServices();
         services.AddElberfelder1871Lemmatizer();
         services.AddStepRunner();
+        services.AddLocalOnlyServices();
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();

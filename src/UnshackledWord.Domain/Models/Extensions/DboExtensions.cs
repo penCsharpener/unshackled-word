@@ -4,9 +4,7 @@ public static class DboExtensions
 {
     public static IEnumerable<T> SortByBibleOrder<T>(this IEnumerable<T> source) where T : IBibleWordOrderColumns
     {
-        return source.OrderBy(x => x.BibleBookId)
-            .ThenBy(x => x.Chapter)
-            .ThenBy(x => x.Verse)
+        return source.OrderBy(x => x.LxxRefId)
             .ThenBy(x => x.PositionInVerse);
     }
 

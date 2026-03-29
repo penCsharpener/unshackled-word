@@ -13,12 +13,6 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
     private readonly ILogger<StepHebrewStrongsNormalizingStrategy> _logger;
     private static string[] _noneSuffixStrings = ["־", "׃", "׀", "׆", "a"];
 
-    /*
-    to reset and redo the seeding
-    TRUNCATE TABLE "unshackled-word"."StepHebrewWordsNormalized" RESTART IDENTITY;
-    TRUNCATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords" RESTART IDENTITY;
-    TRUNCATE TABLE "unshackled-word"."Elb1871HebrewMapping" RESTART IDENTITY;
-    */
     public StepHebrewStrongsNormalizingStrategy(IStepHebrewWordsRepository hebRepo,
         IStepHebrewWordsNormalizedRepository versesRepo,
         ILogger<StepHebrewStrongsNormalizingStrategy> logger)
@@ -42,8 +36,7 @@ public sealed class StepHebrewStrongsNormalizingStrategy : IFileParserStrategy
         var hFilter = new StepHebrewWordFilter();
         hFilter.Columns =
         [
-            nameof(StepHebrewWordDbo.Id), nameof(StepHebrewWordDbo.BibleBookId), nameof(StepHebrewWordDbo.Chapter),
-            nameof(StepHebrewWordDbo.Verse), nameof(StepHebrewWordDbo.LxxRefId), nameof(StepHebrewWordDbo.DisambiguatedStrongs),
+            nameof(StepHebrewWordDbo.Id), nameof(StepHebrewWordDbo.LxxRefId), nameof(StepHebrewWordDbo.DisambiguatedStrongs),
             nameof(StepHebrewWordDbo.Hebrew), nameof(StepHebrewWordDbo.Grammar), nameof(StepHebrewWordDbo.ExpandedStrongTags)
         ];
         var hebrewEntries = await _hebRepo.GetByFilterAsync(hFilter, token);

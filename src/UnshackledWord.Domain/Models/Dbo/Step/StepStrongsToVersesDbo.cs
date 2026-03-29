@@ -22,19 +22,3 @@ public sealed class StepStrongsToVersesDbo
 
     // has unique index on (BibleBookId, Chapter, Verse, StrongsNumber)
 }
-
-public sealed class StepDisambiguatedStrongsDbo
-{
-    public const string DbName = "\"unshackled-word\".\"StepDisambiguatedStrongs\"";
-
-    public int Id { get; set; }
-    public int StepHebrewWordId { get; set; }
-    public bool IsRoot { get; set; }
-    public string? Grammar { get; set; } = default!;
-    public string? Hebrew { get; set; } = default!;
-    public string? Gloss { get; set; } = default!;
-    public string? Name { get; set; }
-    public int? FirstOccuranceLxxRefId { get; set; }
-    public int? LastOccuranceLxxRefId { get; set; }
-    public string StrongsNumber { get; set; } = default!;
-}

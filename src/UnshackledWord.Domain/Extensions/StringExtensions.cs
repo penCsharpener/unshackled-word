@@ -31,6 +31,11 @@ public static class StringExtensions
         return string.IsNullOrEmpty(value) is false;
     }
 
+    public static string? SetNullOrValue(this string value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : value;
+    }
+
     public static IList<string> AddIfNotNull(this IList<string> list, string? value)
     {
         if (value.IsNullOrWhiteSpace())

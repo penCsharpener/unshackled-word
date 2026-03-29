@@ -1,5 +1,6 @@
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo.Step;
 
 namespace UnshackledWord.Infrastructure.Repositories.Step;
@@ -33,32 +34,39 @@ public sealed class StepHebrewWordsNormalizedRepository : IStepHebrewWordsNormal
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            IsRoot = new List<bool>(dataSize),
+            Grammar = new List<string?>(dataSize),
+            SuffixCode = new List<string?>(dataSize),
+            Hebrew = new List<string>(dataSize),
+            StrongsNumber = new List<string>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
-            valueList.AddInt(entry.Id);
-            valueList.AddBool(entry.IsRoot);
-            valueList.AddString(entry.Grammar);
-            valueList.AddString(entry.SuffixCode);
-            valueList.AddString(entry.Hebrew);
-            valueList.AddString(entry.StrongsNumber);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            parameters.Id.Add(entry.Id);
+            parameters.IsRoot.Add(entry.IsRoot);
+            parameters.Grammar.Add(entry.Grammar);
+            parameters.SuffixCode.Add(entry.SuffixCode);
+            parameters.Hebrew.Add(entry.Hebrew);
+            parameters.StrongsNumber.Add(entry.StrongsNumber);
         }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepHebrewWordsNormalizedDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
                    ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 
     public async Task BulkInsertAsync(StepHebrewWordsNormalizedToHebrewWordDbo[] entries, CancellationToken token = default)
@@ -68,28 +76,31 @@ public sealed class StepHebrewWordsNormalizedRepository : IStepHebrewWordsNormal
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            StepHebrewWordsId = new List<int>(dataSize),
+            StepHebrewWordsNormalizedId = new List<int>(dataSize),
+            PositionInWord = new List<int>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
-            valueList.AddInt(entry.StepHebrewWordsId);
-            valueList.AddInt(entry.StepHebrewWordsNormalizedId);
-            valueList.AddInt(entry.PositionInWord);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            parameters.StepHebrewWordsId.Add(entry.StepHebrewWordsId);
+            parameters.StepHebrewWordsNormalizedId.Add(entry.StepHebrewWordsNormalizedId);
+            parameters.PositionInWord.Add(entry.PositionInWord);
         }
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepHebrewWordsNormalizedToHebrewWordDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
                    ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 }

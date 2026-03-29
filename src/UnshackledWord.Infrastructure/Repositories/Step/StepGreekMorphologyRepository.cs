@@ -35,37 +35,50 @@ public sealed class StepGreekMorphologyRepository : IStepGreekMorphologyReposito
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            Code = new List<string>(dataSize),
+            PartOfSpeech = new List<string>(dataSize),
+            Voice = new List<string?>(dataSize),
+            Tense = new List<string?>(dataSize),
+            Mood = new List<string?>(dataSize),
+            Person = new List<string?>(dataSize),
+            Number = new List<string?>(dataSize),
+            Gender = new List<string?>(dataSize),
+            Degree = new List<string?>(dataSize),
+            Extras = new List<string?>(dataSize),
+            NameType = new List<string?>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
-            valueList.AddInt(entry.Id);
-
-            valueList.AddString(entry.Code);
-            valueList.AddString(entry.PartOfSpeech);
-            valueList.AddString(entry.Voice);
-            valueList.AddString(entry.Tense);
-            valueList.AddString(entry.Mood);
-            valueList.AddString(entry.Person);
-            valueList.AddString(entry.Number);
-            valueList.AddString(entry.Gender);
-            valueList.AddString(entry.Degree);
-            valueList.AddString(entry.Extras);
-            valueList.AddString(entry.NameType);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            parameters.Id.Add(entry.Id);
+            parameters.Code.Add(entry.Code);
+            parameters.PartOfSpeech.Add(entry.PartOfSpeech);
+            parameters.Voice.Add(entry.Voice);
+            parameters.Tense.Add(entry.Tense);
+            parameters.Mood.Add(entry.Mood);
+            parameters.Person.Add(entry.Person);
+            parameters.Number.Add(entry.Number);
+            parameters.Gender.Add(entry.Gender);
+            parameters.Degree.Add(entry.Degree);
+            parameters.Extras.Add(entry.Extras);
+            parameters.NameType.Add(entry.NameType);
         }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepGreekMorphologyDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 }

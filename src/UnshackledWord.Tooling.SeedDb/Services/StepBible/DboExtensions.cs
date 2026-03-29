@@ -1,3 +1,4 @@
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -11,9 +12,7 @@ public static class DboExtensions
         {
             yield return new StepGreekWordDbo
             {
-                BibleBookId = entry.BibleBook.Id,
-                Chapter = entry.Chapter,
-                Verse = entry.Verse,
+                LxxRefId = new BibleReference(entry.BibleBook.Id, entry.Chapter, entry.Verse).RefId,
                 PositionInVerse = entry.PositionInVerse,
                 AltChapter = entry.AlternativeChapter,
                 AltVerse = entry.AlternativeVerse,
@@ -49,9 +48,7 @@ public static class DboExtensions
         {
             yield return new StepHebrewWordDbo
             {
-                BibleBookId = entry.BibleBook.Id,
-                Chapter = entry.Chapter,
-                Verse = entry.Verse,
+                LxxRefId = new BibleReference(entry.BibleBook.Id, entry.Chapter, entry.Verse).RefId,
                 PositionInVerse = entry.PositionInVerse,
                 AltChapter = entry.AlternativeChapter,
                 AltVerse = entry.AlternativeVerse,
@@ -74,15 +71,17 @@ public static class DboExtensions
         }
     }
 
-    public static IEnumerable<StepStrongsDbo> ToDbo(this IEnumerable<StepGreekStrongsEntry> entries)
+    public static IEnumerable<StepStrongsLexiconDbo> ToDbo(this IEnumerable<StepGreekStrongsEntry> entries)
     {
         foreach (var entry in entries)
         {
-            yield return new StepStrongsDbo
+            yield return new StepStrongsLexiconDbo
             {
-                ExtendedStrongs = entry.ExtendedStrongs,
-                DisambiguatedStrongs = entry.DisambiguatedStrongs,
-                UnifiedStrongs = entry.UnifiedStrongs,
+                LanguageId = entry.LanguageId,
+                Number = entry.Number,
+                DisambiguatedExtra = entry.DisambiguatedExtra,
+                Extra = entry.Extra,
+                UnifiedStrongs = entry.UnifiedEntries.ToDbo().ToList(),
                 OriginalWord = entry.OriginalWord,
                 OriginalWordNoDiacritics = entry.OriginalWordNoDiacritics,
                 Transliteration = entry.Transliteration,
@@ -93,15 +92,17 @@ public static class DboExtensions
         }
     }
 
-    public static IEnumerable<StepStrongsDbo> ToDbo(this IEnumerable<StepHebrewStrongsEntry> entries)
+    public static IEnumerable<StepStrongsLexiconDbo> ToDbo(this IEnumerable<StepHebrewStrongsEntry> entries)
     {
         foreach (var entry in entries)
         {
-            yield return new StepStrongsDbo
+            yield return new StepStrongsLexiconDbo
             {
-                ExtendedStrongs = entry.ExtendedStrongs,
-                DisambiguatedStrongs = entry.DisambiguatedStrongs,
-                UnifiedStrongs = entry.UnifiedStrongs,
+                LanguageId = entry.LanguageId,
+                Number = entry.Number,
+                DisambiguatedExtra = entry.DisambiguatedExtra,
+                Extra = entry.Extra,
+                UnifiedStrongs = entry.UnifiedEntries.ToDbo().ToList(),
                 OriginalWord = entry.OriginalWord,
                 OriginalWordNoDiacritics = entry.OriginalWordNoDiacritics,
                 Transliteration = entry.Transliteration,
@@ -111,6 +112,36 @@ public static class DboExtensions
             };
         }
     }
+
+    public static IEnumerable<StrongsNumberDbo> ToDbo(this IEnumerable<StrongsNumberInternal> entries, int? hebrewWordId, int? greekWordId)
+    {
+        foreach (var entry in entries)
+        {
+            yield return new StrongsNumberDbo
+            {
+                LanguageId = entry.LanguageId,
+                Number = entry.Number,
+                Extra = entry.Extra,
+                IsRoot = entry.IsRoot,
+                CoversNextWord = entry.CoversNextWord,
+                StepGreekWordId = greekWordId,
+                StepHebrewWordId = hebrewWordId,
+                Order = entry.Order
+            };
+        }
+    }
+
+    public static IEnumerable<StepUnifiedStrongsDbo> ToDbo(this IEnumerable<StepStrongsUnifiedEntry> entries)
+    {
+        foreach (var entry in entries)
+        {
+            yield return new StepUnifiedStrongsDbo
+            {
+                LanguageId = entry.LanguageId, Extra = entry.Extra, Number = entry.Number,
+            };
+        }
+    }
+
 
     public static IEnumerable<StepHebrewMorphologyDbo> ToDbo(this IEnumerable<StepHebrewMorphologyEntry> entries)
     {

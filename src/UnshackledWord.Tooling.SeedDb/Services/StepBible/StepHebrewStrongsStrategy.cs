@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -53,11 +54,23 @@ public sealed partial class StepHebrewStrongsStrategy : IFileParserStrategy<List
 
             if (isDataLine)
             {
+                var overrideLanguage = columns[5]?.StartsWith('A') == true ? StrongsLanguage.Aramaic : default(StrongsLanguage?);
+                var extended = StrongsRegexParser.Parse(columns[0], overrideLanguage).ToList().First();
+                var disambiguated = StrongsRegexParser.Parse(columns[1], overrideLanguage).ToList().First();
+                var unified = StrongsRegexParser.Parse(columns[2]).Distinct().ToList();
+
                 var entry = new StepHebrewStrongsEntry
                 {
-                    ExtendedStrongs = columns[0],
-                    DisambiguatedStrongs = columns[1],
-                    UnifiedStrongs = columns[2],
+                    LanguageId = extended.LanguageId,
+                    Number = extended.Number,
+                    Extra = disambiguated.Extra,
+                    DisambiguatedExtra = disambiguated.DisambiguatedExtra,
+                    UnifiedEntries = unified.Select(x => new StepStrongsUnifiedEntry
+                    {
+                        Extra = x.Extra,
+                        LanguageId = x.LanguageId,
+                        Number = x.Number
+                    }).ToList(),
                     Hebrew = columns[3],
                     Transliteration = columns[4],
                     Morphology = columns[5],

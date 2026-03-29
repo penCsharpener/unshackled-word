@@ -67,6 +67,12 @@ public sealed class ColumnInsertCollection : List<string>
         return $"{InsertRows.JoinStrings($",{Environment.NewLine}")}";
     }
 
+    public string GetParameterNames()
+    {
+        var orderedColumnNames = _columnNames.OrderBy(kv => kv.Value).Select(kv => $"@{kv.Key}");
+        return $"{orderedColumnNames.JoinStrings(", ")}";
+    }
+
     private void AddColumnName(string columnName)
     {
         if (_columnNames.Keys.Count > 100)

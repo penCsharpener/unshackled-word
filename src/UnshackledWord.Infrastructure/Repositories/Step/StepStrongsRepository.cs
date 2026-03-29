@@ -20,21 +20,21 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
     {
         var sql = $"""
                    SELECT COUNT(*)
-                   FROM {StepStrongsDbo.DbName} AS s
+                   FROM {StepStrongsLexiconDbo.DbName} AS s
                    WHERE 1=1
-                     {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsDbo.ExtendedStrongs)}\" = ANY(@IncludeExtendedStrongs)")};
+                     {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsLexiconDbo.Number)}\" = ANY(@IncludeExtendedStrongs)")};
                    """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql, filter);
     }
 
-    public async Task<IEnumerable<StepStrongsDbo>> GetByFilterAsync(StepStrongsFilter filter, CancellationToken token = default)
+    public async Task<IEnumerable<StepStrongsLexiconDbo>> GetByFilterAsync(StepStrongsFilter filter, CancellationToken token = default)
     {
         var sql = $"""
                    SELECT {filter.GetSelectColumns()}
-                   FROM {StepStrongsDbo.DbName} AS s
+                   FROM {StepStrongsLexiconDbo.DbName} AS s
                    WHERE 1=1
-                     {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsDbo.ExtendedStrongs)}\" = ANY(@IncludeExtendedStrongs)")};
+                     {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsLexiconDbo.Number)}\" = ANY(@IncludeExtendedStrongs)")};
                    """;
 
         var parameter = new
@@ -42,44 +42,102 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
             filter.IncludeExtendedStrongs
         };
 
-        return await _dbReader.ReadAsListAsync<StepStrongsDbo>(sql, parameter);
+        return await _dbReader.ReadAsListAsync<StepStrongsLexiconDbo>(sql, parameter);
     }
 
-    public async Task BulkInsertAsync(StepStrongsDbo[] entries, CancellationToken token = default)
+    public async Task BulkInsertAsync(StepStrongsLexiconDbo[] entries, CancellationToken token = default)
     {
         if (entries.Length == 0)
         {
             return;
         }
 
-        var valueList = new ColumnInsertCollection();
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            LanguageId = new List<int>(dataSize),
+            Number = new List<int>(dataSize),
+            Extra = new List<string?>(dataSize),
+            DisambiguatedExtra = new List<string?>(dataSize),
+            OriginalWord = new List<string>(dataSize),
+            OriginalWordNoDiacritics = new List<string>(dataSize),
+            Transliteration = new List<string>(dataSize),
+            Morphology = new List<string>(dataSize),
+            Gloss = new List<string>(dataSize),
+            Lexicon = new List<string?>(dataSize),
+        };
 
         foreach (var entry in entries)
         {
-            valueList.AddInt(entry.Id);
-            valueList.AddString(entry.ExtendedStrongs);
-            valueList.AddString(entry.DisambiguatedStrongs);
-            valueList.AddString(entry.UnifiedStrongs);
-            valueList.AddString(entry.OriginalWord);
-            valueList.AddString(entry.OriginalWordNoDiacritics);
-            valueList.AddString(entry.Transliteration);
-            valueList.AddString(entry.Morphology);
-            valueList.AddString(entry.Gloss);
-            valueList.AddString(entry.Lexicon);
-
-            valueList.ValuesToInsertRow();
-            valueList.Clear();
+            entry.UnifiedStrongs.ForEach(x => x.StepStrongsLexiconId = entry.Id);
+            parameters.Id.Add(entry.Id);
+            parameters.LanguageId.Add((int)entry.LanguageId);
+            parameters.Number.Add(entry.Number);
+            parameters.Extra.Add(entry.Extra);
+            parameters.DisambiguatedExtra.Add(entry.DisambiguatedExtra);
+            parameters.OriginalWord.Add(entry.OriginalWord);
+            parameters.OriginalWordNoDiacritics.Add(entry.OriginalWordNoDiacritics);
+            parameters.Transliteration.Add(entry.Transliteration);
+            parameters.Morphology.Add(entry.Morphology);
+            parameters.Gloss.Add(entry.Gloss);
+            parameters.Lexicon.Add(entry.Lexicon);
         }
 
+        var names = PropertyListHelper.GetPropertyNames(parameters);
+
         var sql = $"""
-                   INSERT INTO {StepStrongsDbo.DbName} (
-                       {valueList.GetColumnNames()}
-                   ) VALUES
-                   {valueList.GetAllInsertRows()}
+                   INSERT INTO {StepStrongsLexiconDbo.DbName} (
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
                    """;
 
-        var parameter = new { };
+        await _dbWriter.WriteAsync(sql, parameters);
 
-        await _dbWriter.WriteAsync(sql, parameter);
+        await BulkInsertAsync(entries.SelectMany(x => x.UnifiedStrongs).ToArray(), token);
     }
+
+    public async Task BulkInsertAsync(StepUnifiedStrongsDbo[] entries, CancellationToken token = default)
+    {
+        if (entries.Length == 0)
+        {
+            return;
+        }
+
+        var dataSize = entries.Length + 1;
+        var parameters = new
+        {
+            Id = new List<int>(dataSize),
+            StepStrongsLexiconId = new List<int>(dataSize),
+            LanguageId = new List<int>(dataSize),
+            Number = new List<int>(dataSize),
+            Extra = new List<string?>(dataSize),
+        };
+
+        foreach (var entry in entries)
+        {
+            parameters.Id.Add(entry.Id);
+            parameters.StepStrongsLexiconId.Add(entry.StepStrongsLexiconId);
+            parameters.LanguageId.Add((int)entry.LanguageId);
+            parameters.Number.Add(entry.Number);
+            parameters.Extra.Add(entry.Extra);
+        }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
+
+        var sql = $"""
+                   INSERT INTO {StepUnifiedStrongsDbo.DbName} (
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
+                   """;
+
+        await _dbWriter.WriteAsync(sql, parameters);
+    }
+
 }

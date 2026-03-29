@@ -33,9 +33,7 @@ public static class ParserExtensions
             var dbo = new StepPersonLexiconDbo
             {
                 Article = person.Article,
-                BibleBookId = person.Entity.FirstOccurance.BookId,
-                Chapter = person.Entity.FirstOccurance.Chapter,
-                Verse = person.Entity.FirstOccurance.Verse,
+                LxxRefId = new BibleReference(person.Entity.FirstOccurance.BookId, person.Entity.FirstOccurance.Chapter, person.Entity.FirstOccurance.Verse).RefId,
                 Gender = person.Gender,
                 Briefest = person.Briefest,
                 Short = person.Short,
@@ -74,9 +72,7 @@ public static class ParserExtensions
             yield return new StepPersonLexiconRelationsDbo
             {
                 Name = person.Name,
-                BibleBookId = person.FirstOccurance.BookId,
-                Chapter = person.FirstOccurance.Chapter,
-                Verse = person.FirstOccurance.Verse,
+                LxxRefId = new BibleReference(person.FirstOccurance.BookId, person.FirstOccurance.Chapter, person.FirstOccurance.Verse).RefId,
                 Strongs = person.Strongs,
                 PersonLexiconId = parentId,
                 RelationType = type
@@ -91,9 +87,7 @@ public static class ParserExtensions
             yield return new StepPlaceLexiconDbo
             {
                 Article = place.Article,
-                BibleBookId = place.Entity.FirstOccurance.BookId,
-                Chapter = place.Entity.FirstOccurance.Chapter,
-                Verse = place.Entity.FirstOccurance.Verse,
+                LxxRefId = new BibleReference(place.Entity.FirstOccurance.BookId, place.Entity.FirstOccurance.Chapter, place.Entity.FirstOccurance.Verse).RefId,
                 Briefest = place.Briefest,
                 Short = place.Short,
                 Brief = place.Brief,
@@ -116,9 +110,7 @@ public static class ParserExtensions
             yield return new StepOtherLexiconDbo
             {
                 Article = place.Article,
-                BibleBookId = place.Entity.FirstOccurance.BookId,
-                Chapter = place.Entity.FirstOccurance.Chapter,
-                Verse = place.Entity.FirstOccurance.Verse,
+                LxxRefId = new BibleReference(place.Entity.FirstOccurance.BookId, place.Entity.FirstOccurance.Chapter, place.Entity.FirstOccurance.Verse).RefId,
                 Briefest = place.Briefest,
                 Short = place.Short,
                 Brief = place.Brief,

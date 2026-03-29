@@ -1,40 +1,53 @@
 namespace UnshackledWord.Domain.Models.Dbo.Step;
 
-public class StrongsNumberDbo : IEntityId
+public class StrongsNumberDbo : IEntityId, IEquatable<StrongsNumberDbo>
 {
     public const string DbName = "\"unshackled-word\".\"StrongsNumbers\"";
 
     public int Id { get; set; }
-    public StrongsLanguage LanguageId { get; set; }
-    public int Number { get; set; }
-    /// <summary>
-    /// when the strongs number is followed by a letter or underscore letter
-    /// </summary>
-    public string? Extra { get; set; }
-    public StrongsType StrongsType { get; set; }
-    /// <summary>
-    /// when the strongs number is surrounded by braces
-    /// </summary>
+    public StrongsLanguage LanguageId { get; init; }
+    public int Number { get; init; }
+    public string? Extra { get; init; }
     public bool IsRoot { get; set; }
-    /// <summary>
-    /// when the strongs number is followed by a +
-    /// </summary>
     public bool CoversNextWord { get; set; }
     public int? StepHebrewWordId { get; set; }
     public int? StepGreekWordId { get; set; }
     public int Order { get; set; }
-}
 
-public enum StrongsLanguage
-{
-    Hebrew = 0,
-    Aramaic = 1,
-    Greek = 2
-}
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as StrongsNumberDbo);
+    }
 
-public enum StrongsType
-{
-    Extended = 0,
-    Disambiguated = 1,
-    Unified = 2
+    public bool Equals(StrongsNumberDbo? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return LanguageId == other.LanguageId &&
+               Number == other.Number &&
+               string.Equals(Extra, other.Extra, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(LanguageId, Number, Extra?.ToLowerInvariant());
+    }
+
+    public static bool operator ==(StrongsNumberDbo? left, StrongsNumberDbo? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(StrongsNumberDbo? left, StrongsNumberDbo? right)
+    {
+        return !Equals(left, right);
+    }
 }

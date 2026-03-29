@@ -53,11 +53,22 @@ public sealed partial class StepGreekStrongsStrategy : IFileParserStrategy<List<
 
             if (isDataLine)
             {
+                var extended = StrongsRegexParser.Parse(columns[0]).ToList().First();
+                var disambiguated = StrongsRegexParser.Parse(columns[1]).ToList().First();
+                var unified = StrongsRegexParser.Parse(columns[2]).Distinct().ToList();
+
                 var entry = new StepGreekStrongsEntry
                 {
-                    ExtendedStrongs = columns[0],
-                    DisambiguatedStrongs = columns[1],
-                    UnifiedStrongs = columns[2],
+                    LanguageId = extended.LanguageId,
+                    Number = extended.Number,
+                    Extra = disambiguated.Extra,
+                    DisambiguatedExtra = disambiguated.DisambiguatedExtra,
+                    UnifiedEntries = unified.Select(x => new StepStrongsUnifiedEntry
+                    {
+                        Extra = x.Extra,
+                        LanguageId = x.LanguageId,
+                        Number = x.Number
+                    }).ToList(),
                     Greek = columns[3],
                     Transliteration = columns[4],
                     Morphology = columns[5],

@@ -5,7 +5,7 @@ namespace UnshackledWord.Application.Abstractions.Step;
 public sealed class StepStrongsFilter
 {
     public string[]? Columns { get; set; }
-    public string[]? IncludeExtendedStrongs { get; set; }
+    public int[]? IncludeExtendedStrongs { get; set; }
 
     public string GetSelectColumns()
     {
