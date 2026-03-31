@@ -113,11 +113,11 @@ public static class DboExtensions
         }
     }
 
-    public static IEnumerable<StrongsNumberDbo> ToDbo(this IEnumerable<StrongsNumberInternal> entries, int? hebrewWordId, int? greekWordId)
+    public static IEnumerable<StepStrongsToTextDbo> ToDbo(this IEnumerable<StrongsNumberInternal> entries, int? hebrewWordId, int? greekWordId)
     {
         foreach (var entry in entries)
         {
-            yield return new StrongsNumberDbo
+            yield return new StepStrongsToTextDbo
             {
                 LanguageId = entry.LanguageId,
                 Number = entry.Number,

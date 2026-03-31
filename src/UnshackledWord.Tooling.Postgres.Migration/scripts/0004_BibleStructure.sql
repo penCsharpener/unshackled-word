@@ -1,19 +1,3 @@
-CREATE TABLE "unshackled-word"."BibleStructureVerses"
-(
-    "BibleBookId"  INT NOT NULL,
-    "Chapter"      INT NOT NULL,
-    "LastVerse"    INT NOT NULL,
-    "AltChapter"   INT NULL,
-    "AltLastVerse" INT NULL
-);
-
-CREATE TABLE "unshackled-word"."BibleStructureChapters"
-(
-    "BibleBookId"    INT NOT NULL,
-    "LastChapter"    INT NOT NULL,
-    "AltLastChapter" INT NULL
-);
-
 CREATE TABLE "unshackled-word"."BibleVerseCountingMapping"
 (
     "Id"       serial4 NOT NULL,
@@ -21,3 +5,6 @@ CREATE TABLE "unshackled-word"."BibleVerseCountingMapping"
     "LxxRefId" INT     NOT NULL,
     CONSTRAINT "BibleVerseCountingMapping_PK" PRIMARY KEY ("Id")
 );
+
+CREATE UNIQUE INDEX "BibleVerseCountingMapping_Heb_Lxx_UQ" ON "unshackled-word"."BibleVerseCountingMapping" ("HebRefId", "LxxRefId");
+CREATE INDEX "BibleVerseCountingMapping_Lxx_Heb_IDX" ON "unshackled-word"."BibleVerseCountingMapping" ("LxxRefId", "HebRefId");

@@ -6,7 +6,6 @@ using UnshackledWord.Infrastructure.Services;
 using UnshackledWord.Persistence.Postgres.Services;
 using UnshackledWord.Tooling.SeedDb.Services;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
-using UnshackledWord.Tooling.SeedDb.Services.BibelKommentare;
 using UnshackledWord.Tooling.SeedDb.Services.ByzTxt.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer;
 using UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper;
@@ -29,11 +28,9 @@ public static partial class ServiceRegistrationExtensions
         services.AddInfrastructureServices();
         services.AddSingleton(configuration);
         services.AddScoped<SeedingService>();
-        services.AddScoped<IFileParserFactory, FileParserFactory>();
         services.AddScoped<ElberfelderTextRunner>();
         services.AddScoped<SrRunner>();
         services.AddScoped<ElbRunner>();
-        services.AddScoped<BkRunner>();
         services.AddScoped<TskRunner>();
         services.AddScoped<GbtRunner>();
         services.AddSblServices();
@@ -44,7 +41,6 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();
-        services.AddScoped<ElbParserStrategy>();
         services.AddScoped<Elberfelder1871Strategy>();
         services.AddScoped<BibleVerseCoutingMappingStrategy>();
         services.AddScoped<ElberfelderMergeStrategy>();
@@ -70,10 +66,6 @@ public static partial class ServiceRegistrationExtensions
                 .DownloadDomain;
             client.BaseAddress = new Uri(url);
         });
-        // services.AddHttpClient<IFileDownloader, BibelKommentareDownloader>(client => {
-        //     client.BaseAddress = new Uri("https://www.bibelkommentare.de/");
-        // });
-        services.AddScoped<IFileDownloader, BibelKommentareCopyService>();
         services.RegisterCsvServices();
 
         return services;

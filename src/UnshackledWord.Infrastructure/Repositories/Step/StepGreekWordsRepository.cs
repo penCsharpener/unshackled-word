@@ -1,7 +1,6 @@
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Domain.Models;
 using UnshackledWord.Domain.Models.Dbo.Step;
 
 namespace UnshackledWord.Infrastructure.Repositories.Step;
@@ -59,7 +58,7 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
     private async Task BulkInsertInternalNewAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
     {
         var dataSize = entries.Length + 1;
-        var parameter = new
+        var parameters = new
         {
             Id = new List<int>(dataSize),
             LxxRefId = new List<int>(dataSize),
@@ -91,44 +90,45 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
 
         foreach (var entry in entries)
         {
-            parameter.Id.Add(entry.Id);
-            parameter.LxxRefId.Add(entry.LxxRefId);
-            parameter.PositionInVerse.Add(entry.PositionInVerse);
-            parameter.AltChapter.Add(entry.AltChapter);
-            parameter.AltVerse.Add(entry.AltVerse);
-            parameter.Type.Add(entry.Type);
-            parameter.IsInNestleAland.Add(entry.IsInNestleAland);
-            parameter.IsInTextusReceptus.Add(entry.IsInTextusReceptus);
-            parameter.IsInOther.Add(entry.IsInOther);
-            parameter.Greek.Add(entry.Greek);
-            parameter.GreekNoDiacritics.Add(entry.GreekNoDiacritics);
-            parameter.Transliteration.Add(entry.Transliteration);
-            parameter.English.Add(entry.English);
-            parameter.Spanish.Add(entry.Spanish);
-            parameter.DisambiguatedStrongs.Add(entry.DisambiguatedStrongs);
-            parameter.Morphology.Add(entry.Morphology);
-            parameter.Lemma.Add(entry.Lemma);
-            parameter.LemmaNoDiacritics.Add(entry.LemmaNoDiacritics);
-            parameter.Gloss.Add(entry.Gloss);
-            parameter.Editions.Add(entry.Editions);
-            parameter.MeaningVariants.Add(entry.MeaningVariants);
-            parameter.SpellingVariants.Add(entry.SpellingVariants);
-            parameter.SubMeaning.Add(entry.SubMeaning);
-            parameter.ConjoinWord.Add(entry.ConjoinWord);
-            parameter.StrongInstance.Add(entry.StrongInstance);
-            parameter.AltStrongs.Add(entry.AltStrongs);
+            parameters.Id.Add(entry.Id);
+            parameters.LxxRefId.Add(entry.LxxRefId);
+            parameters.PositionInVerse.Add(entry.PositionInVerse);
+            parameters.AltChapter.Add(entry.AltChapter);
+            parameters.AltVerse.Add(entry.AltVerse);
+            parameters.Type.Add(entry.Type);
+            parameters.IsInNestleAland.Add(entry.IsInNestleAland);
+            parameters.IsInTextusReceptus.Add(entry.IsInTextusReceptus);
+            parameters.IsInOther.Add(entry.IsInOther);
+            parameters.Greek.Add(entry.Greek);
+            parameters.GreekNoDiacritics.Add(entry.GreekNoDiacritics);
+            parameters.Transliteration.Add(entry.Transliteration);
+            parameters.English.Add(entry.English);
+            parameters.Spanish.Add(entry.Spanish);
+            parameters.DisambiguatedStrongs.Add(entry.DisambiguatedStrongs);
+            parameters.Morphology.Add(entry.Morphology);
+            parameters.Lemma.Add(entry.Lemma);
+            parameters.LemmaNoDiacritics.Add(entry.LemmaNoDiacritics);
+            parameters.Gloss.Add(entry.Gloss);
+            parameters.Editions.Add(entry.Editions);
+            parameters.MeaningVariants.Add(entry.MeaningVariants);
+            parameters.SpellingVariants.Add(entry.SpellingVariants);
+            parameters.SubMeaning.Add(entry.SubMeaning);
+            parameters.ConjoinWord.Add(entry.ConjoinWord);
+            parameters.StrongInstance.Add(entry.StrongInstance);
+            parameters.AltStrongs.Add(entry.AltStrongs);
         }
+
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
                    INSERT INTO {StepGreekWordDbo.DbName} (
-                       "Id","BibleBookId","Chapter","Verse","LxxRefId","PositionInVerse","AltChapter","AltVerse","Type","IsInNestleAland","IsInTextusReceptus","IsInOther","Greek","GreekNoDiacritics","Transliteration","English","Spanish","DisambiguatedStrongs","Morphology","Lemma","LemmaNoDiacritics","Gloss","Editions","MeaningVariants","SpellingVariants","SubMeaning","ConjoinWord","StrongInstance","AltStrongs"
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
                    )
                    SELECT *
-                   FROM UNNEST(@Id,@BibleBookId,@Chapter,@Verse,@LxxRefId,@PositionInVerse,@AltChapter,@AltVerse,@Type,@IsInNestleAland,@IsInTextusReceptus,@IsInOther,@Greek,@GreekNoDiacritics,@Transliteration,@English,@Spanish,@DisambiguatedStrongs,@Morphology,@Lemma,@LemmaNoDiacritics,@Gloss,@Editions,@MeaningVariants,@SpellingVariants,@SubMeaning,@ConjoinWord,@StrongInstance,@AltStrongs)
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
                    ON CONFLICT DO NOTHING;
                    """;
 
-
-        await _dbWriter.WriteAsync(sql, parameter);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 }

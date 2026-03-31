@@ -34,7 +34,7 @@ public sealed class StepHebrewWordsRepository : IStepHebrewWordsRepository
                    SELECT {filter.GetSelectColumns()}
                    FROM {StepHebrewWordDbo.DbName} AS w
                    WHERE 1=1
-                   ORDER BY w."BibleBookId", w."Chapter", w."Verse", w."PositionInVerse";
+                   ORDER BY w."LxxRefId", w."PositionInVerse";
                    """;
 
         return await _dbReader.ReadAsListAsync<StepHebrewWordDbo>(sql, filter);

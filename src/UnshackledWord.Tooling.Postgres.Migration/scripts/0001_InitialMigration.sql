@@ -7,11 +7,10 @@ CREATE TABLE "unshackled-word"."Elb1871Words"
     "Chapter"         integer                     NOT NULL,
     "Verse"           integer                     NOT NULL,
     "HebRefId"        integer                     NOT NULL,
+    "PositionInVerse" integer                     NOT NULL,
     "WordInContext"   varchar COLLATE "und-x-icu" NOT NULL,
     "PlainWord"       varchar COLLATE "und-x-icu" NULL,
     "Lemma"           varchar COLLATE "und-x-icu" NULL,
-    "PositionInVerse" integer                     NOT NULL,
-    "Strongs"         varchar COLLATE "und-x-icu" NULL,
     "PartOfSpeech"    varchar COLLATE "und-x-icu" NULL,
     "GrammaticalKey"  varchar COLLATE "und-x-icu" NULL,
     CONSTRAINT "Elb1871Words_PK" PRIMARY KEY ("Id")
@@ -21,7 +20,7 @@ COMMENT
 ON COLUMN "unshackled-word"."Elb1871Words"."PlainWord" IS 'Is the same as WordInContext but clean of all special characters.';
 
 CREATE INDEX "Elb1871Words_reference_idx" ON "unshackled-word"."Elb1871Words" ("BibleBookId", "Chapter", "Verse");
-CREATE INDEX "Elb1871Words_strongs_idx" ON "unshackled-word"."Elb1871Words" ("Strongs");
+CREATE INDEX "Elb1871Words_HebRefId_idx" ON "unshackled-word"."Elb1871Words" ("HebRefId");
 ALTER TABLE "unshackled-word"."Elb1871Words" ADD CONSTRAINT "Elb1871RefAndPositions_unique" UNIQUE ("BibleBookId","Chapter","Verse","PositionInVerse");
 
 CREATE TABLE "unshackled-word"."Tsk"

@@ -17,77 +17,24 @@ public sealed class CopyBackMappingRepository
     {
         var sql = $"""
                    INSERT INTO "unshackled-word"."Elb1871GreekMapping"
-                   ("ElbWordId","StepGreekId","BookId","Chapter","Verse","HebRefId","StrongsNumber","IsAddedWord","ParentGermanWordId","WordOrderInVerse","GermanWordPart")
+                   ("ElbWordId","StepGreekId","HebRefId","StrongsNumber","IsAddedWord","ParentGermanWordId","PositionInVerse","GermanWordPart")
                    SELECT
-                       translatedData."ElbWordId"
-                       , egm."StepGreekId"
-                       , translatedData."BibleBookId"
-                       , translatedData."Chapter"
-                       , translatedData."Verse"
-                       , translatedData."HebRefId"
-                       , egm."StrongsNumber"
+                         ew."Id"                     "ElbWordId"
+                       , sgw."Id"                    "StepGreekId"
+                       , bvcm."HebRefId"
+                       , sgw."DisambiguatedStrongs"  "StrongsNumber"
                        , egm."IsAddedWord"
-                       , parentWordData."ElbWordId"
-                       , translatedData."PosIVNew"
+                       , ew3."Id"                    "ParentGermanWordId"
+                       , egm."PositionInVerse"
                        , egm."GermanWordPart"
                    FROM "unshackled-word-backup01"."Elb1871GreekMapping" egm
-                       INNER JOIN (
-                           SELECT
-                               ew."Id"
-                               , ew."HebRefId"
-                               , ew."BibleBookId"
-                               , ew."Chapter"
-                               , ew."Verse"
-                               , ew."PositionInVerse" "PosIVNew"
-                               , ew2."LxxRefId"
-                               , ew2."Id" "ElbWordId"
-                               , ew."PlainWord" "NewPlainWord"
-                               , ew2."PlainWord" "OldPlainWord"
-                               , ew2."PositionInVerse" "PosIVOld"
-                           FROM "unshackled-word"."Elb1871Words" ew
-                               INNER JOIN "unshackled-word"."BibleVerseCountingMapping" bvcm ON ew."HebRefId" = bvcm."HebRefId"
-                               INNER JOIN "unshackled-word-backup01"."Elb1871Words" ew2 ON bvcm."LxxRefId" = ew2."LxxRefId" AND ew2."PositionInVerse" = ew."PositionInVerse"
-                           WHERE 1=1
-                           --    AND ew."HebRefId" <> ew2."LxxRefId"
-                               AND ew."HebRefId" >= 40000000
-                               AND ew2."PlainWord" COLLATE "und-x-icu" = ew."PlainWord" COLLATE "und-x-icu"
-                   --            AND ew."Id" >= 590800
-                           ORDER BY ew."HebRefId", ew."PositionInVerse"
-                       ) translatedData ON egm."LxxRefId" = translatedData."LxxRefId" AND egm."WordOrderInVerse" = translatedData."PosIVNew"
-                       LEFT JOIN (
-                           SELECT
-                               ew."Id"
-                               , ew."HebRefId"
-                               , ew."BibleBookId"
-                               , ew."Chapter"
-                               , ew."Verse"
-                               , ew."PositionInVerse" "PosIVNew"
-                               , ew2."LxxRefId"
-                               , ew2."Id" "ElbWordId"
-                               , ew."PlainWord" "NewPlainWord"
-                               , ew2."PlainWord" "OldPlainWord"
-                               , ew2."PositionInVerse" "PosIVOld"
-                           FROM "unshackled-word"."Elb1871Words" ew
-                               INNER JOIN "unshackled-word"."BibleVerseCountingMapping" bvcm ON ew."HebRefId" = bvcm."HebRefId"
-                               INNER JOIN "unshackled-word-backup01"."Elb1871Words" ew2 ON bvcm."LxxRefId" = ew2."LxxRefId" AND ew2."PositionInVerse" = ew."PositionInVerse"
-                           WHERE 1=1
-                           --    AND ew."HebRefId" <> ew2."LxxRefId"
-                               AND ew."HebRefId" >= 40000000
-                               AND ew2."PlainWord" COLLATE "und-x-icu" = ew."PlainWord" COLLATE "und-x-icu"
-                           ORDER BY ew."HebRefId", ew."PositionInVerse"
-                       ) parentWordData ON parentWordData."ElbWordId" = egm."ParentGermanWordId"
-                   WHERE 1=1
-                       and egm."LxxRefId" NOT IN (
-                           SELECT problematicRefIds."LxxRefId"
-                           FROM (
-                               select count(egm."WordOrderInVerse"), egm."WordOrderInVerse", egm."LxxRefId"
-                               from "unshackled-word-backup01"."Elb1871GreekMapping" egm
-                               GROUP BY egm."WordOrderInVerse", egm."LxxRefId"
-                               having count(egm."WordOrderInVerse") > 1
-                               ORDER BY egm."LxxRefId", egm."WordOrderInVerse"
-                           ) problematicRefIds
-                       )
-                   ORDER BY translatedData."HebRefId", translatedData."PosIVNew"
+                       INNER JOIN "unshackled-word"."BibleVerseCountingMapping" bvcm ON egm."LxxRefId" = bvcm."LxxRefId"
+                       INNER JOIN "unshackled-word"."Elb1871Words" ew ON egm."LxxRefId" = ew."HebRefId"  AND egm."PositionInVerse" = ew."PositionInVerse"
+                       LEFT  JOIN "unshackled-word-backup01"."Elb1871Words" ew2 ON egm."ParentGermanWordId" = ew2."Id"
+                       LEFT  JOIN "unshackled-word"."Elb1871Words" ew3 ON ew2."LxxRefId" = ew3."HebRefId" AND ew2."PositionInVerse" = ew3."PositionInVerse"
+                       LEFT  JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepGreekId" = sgw."Id"
+                   ORDER BY egm."LxxRefId", egm."PositionInVerse"
+                   ON CONFLICT DO NOTHING;
                    """;
 
         await _dbWriter.ExecuteScalarAsync<int>(sql);

@@ -8,6 +8,7 @@
     <File Path=".env" />
     <File Path="README.md" />
     <File Path="run-api.ps1" />
+    <File Path="run-db-migration.ps1" />
     <File Path="run-db-setup.ps1" />
     <File Path="run-web.ps1" />
   </Folder>

@@ -76,7 +76,15 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
         }
 
         return $"""
-                SELECT ew."Id", ew."Verse", ew."PositionInVerse", ew."WordInContext", ew."PlainWord", egm."StrongsNumber" "Strongs", sgw."Lemma", sgw."Greek" "Original", sgw."Morphology" "GrammaticalKey"
+                SELECT ew."Id"
+                     , ew."Verse"
+                     , ew."PositionInVerse"
+                     , ew."WordInContext"
+                     , ew."PlainWord"
+                     , egm."StrongsNumber" "Strongs"
+                     , sgw."Lemma"
+                     , sgw."Greek" "Original"
+                     , sgw."Morphology" "GrammaticalKey"
                 FROM "unshackled-word"."Elb1871Words" ew
                     LEFT JOIN "unshackled-word"."Elb1871GreekMapping" egm ON ew."Id" = egm."ElbWordId"
                     LEFT JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepGreekId" = sgw."Id"

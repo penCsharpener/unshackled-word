@@ -245,7 +245,7 @@ public class GreekMappingRepository
 
         var sql = $"""
                    INSERT INTO "unshackled-word"."Elb1871GreekMapping"
-                   ("ElbWordId","StepGreekId","BookId","Chapter","Verse","IsAddedWord","ParentGermanWordId","WordOrderInVerse")
+                   ("ElbWordId","StepGreekId","BookId","Chapter","Verse","IsAddedWord","ParentGermanWordId","PositionInVerse")
                    VALUES
                    {sb.JoinStrings($",{Environment.NewLine}")}
                    ON CONFLICT ("ElbWordId") DO NOTHING

@@ -48,14 +48,14 @@ public sealed class BibleVerseCoutingMappingStrategy : IFileParserStrategy
     {
         var parameters = new
         {
-            LxxRefIds = mappings.Select(x => x.LxxRefId).ToArray(),
-            HebRefIds = mappings.Select(x => x.HebRefId).ToArray(),
+            LxxRefId = mappings.Select(x => x.LxxRefId).ToArray(),
+            HebRefId = mappings.Select(x => x.HebRefId).ToArray(),
         };
 
         var sql = $"""
                    INSERT INTO {BibleVerseCountingMappingDbo.DboName} ("HebRefId", "LxxRefId")
                    SELECT *
-                   FROM UNNEST(@HebRefIds, @LxxRefIds)
+                   FROM UNNEST(@HebRefId, @LxxRefId)
                    """;
 
         await _writer.WriteAsync(sql, parameters);

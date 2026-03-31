@@ -52,7 +52,7 @@ public sealed class StepDataBibleTextImporter : IRunner
             }
         }
 
-        var allStrongsWords = new List<StrongsNumberDbo>();
+        var allStrongsWords = new List<StepStrongsToTextDbo>();
 
         foreach (var chunk in totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(10000))
         {

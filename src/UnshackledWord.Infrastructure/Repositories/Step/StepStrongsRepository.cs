@@ -139,5 +139,4 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
 
         await _dbWriter.WriteAsync(sql, parameters);
     }
-
 }

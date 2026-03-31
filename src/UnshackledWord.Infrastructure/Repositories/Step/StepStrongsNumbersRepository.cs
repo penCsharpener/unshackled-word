@@ -23,14 +23,14 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
     {
         var sql = $"""
                    SELECT COUNT(*)
-                   FROM {StrongsNumberDbo.DbName} AS w
+                   FROM {StepStrongsToTextDbo.DbName} AS w
                    WHERE 1=1
                    """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);
     }
 
-    public async Task BulkInsertInternalNewAsync(StrongsNumberDbo[] entries, CancellationToken token = default)
+    public async Task BulkInsertInternalNewAsync(StepStrongsToTextDbo[] entries, CancellationToken token = default)
     {
         var count = await CountByFilterAsync(token);
 
@@ -69,7 +69,7 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
         var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
-                   INSERT INTO {StepStrongsLexiconDbo.DbName} (
+                   INSERT INTO {StepStrongsToTextDbo.DbName} (
                        {names.Select(x => $"\"{x}\"").JoinStrings(",")}
                    )
                    SELECT *

@@ -95,9 +95,10 @@ CREATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords"
 CREATE TABLE "unshackled-word"."StepStrongsLexicon"
 (
     "Id"                       SERIAL PRIMARY KEY,
-    "ExtendedStrongs"          VARCHAR(10) COLLATE "und-x-icu" NOT NULL,
-    "DisambiguatedStrongs"     VARCHAR(30) COLLATE "und-x-icu" NOT NULL,
-    "UnifiedStrongs"           VARCHAR(60) COLLATE "und-x-icu" NOT NULL,
+    "LanguageId"               INTEGER                         NOT NULL,
+    "Number"                   INTEGER                         NOT NULL,
+    "Extra"                    VARCHAR(5),
+    "DisambiguatedExtra"       VARCHAR(75),
     "OriginalWord"             VARCHAR(50) COLLATE "und-x-icu" NOT NULL,
     "OriginalWordNoDiacritics" VARCHAR(50) COLLATE "und-x-icu" NOT NULL,
     "Transliteration"          VARCHAR(50) COLLATE "und-x-icu" NOT NULL,
@@ -106,18 +107,35 @@ CREATE TABLE "unshackled-word"."StepStrongsLexicon"
     "Lexicon"                  TEXT COLLATE "und-x-icu"
 );
 
--- Index for Strongs lookups (high selectivity, frequently used for joins/filtering)
-CREATE INDEX "IX_StepStrongsLexicon_DisambiguatedStrongs"
-    ON "unshackled-word"."StepStrongsLexicon" ("DisambiguatedStrongs");
-
 -- Index for searching by Morphology codes (useful for grammatical analysis queries)
-CREATE INDEX "IX_StepStrongsLexicon_Morphology"
-    ON "unshackled-word"."StepStrongsLexicon" ("Morphology");
+CREATE INDEX "IX_StepStrongsLexicon_Morphology" ON "unshackled-word"."StepStrongsLexicon" ("Morphology");
 
 -- Index for Gloss (useful for prefix searches or exact matches of English meanings)
 -- Note: If you plan to do full-text search on long Glosses, consider a GIN index instead.
-CREATE INDEX "IX_StepStrongsLexicon_Gloss"
-    ON "unshackled-word"."StepStrongsLexicon" ("Gloss");
+CREATE INDEX "IX_StepStrongsLexicon_Gloss" ON "unshackled-word"."StepStrongsLexicon" ("Gloss");
+
+
+CREATE TABLE "unshackled-word"."StepUnifiedStrongs"
+(
+    "Id"                   SERIAL PRIMARY KEY,
+    "StepStrongsLexiconId" INT NOT NULL,
+    "LanguageId"           INT NOT NULL,
+    "Number"               INT NOT NULL,
+    "Extra"                VARCHAR(5)
+);
+
+CREATE TABLE "unshackled-word"."StepStrongsToText"
+(
+    "Id"               SERIAL PRIMARY KEY,
+    "LanguageId"       INT     NOT NULL,
+    "Number"           INT     NOT NULL,
+    "Extra"            VARCHAR(5),
+    "IsRoot"           BOOLEAN NOT NULL,
+    "CoversNextWord"   BOOLEAN NOT NULL,
+    "StepGreekWordId"  INT,
+    "StepHebrewWordId" INT,
+    "Order"            INT     NOT NULL
+);
 
 
 CREATE TABLE "unshackled-word"."StepHebrewMorphology"
@@ -241,7 +259,7 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
     "StrongsNumber"      VARCHAR(10) NULL,
     "IsAddedWord"        BOOLEAN DEFAULT FALSE,
     "ParentGermanWordId" INT     NULL,
-    "WordOrderInVerse"   INT     NOT NULL,
+    "PositionInVerse"    INT     NOT NULL,
     "GermanWordPart"     varchar(30) NULL,
     -- Composite Unique Key for ElbWordId and StepGreekId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
@@ -250,7 +268,6 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
 );
 
 CREATE INDEX "IdxElbGreekWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
-CREATE INDEX "IdxElbGreekVerse" ON "unshackled-word"."Elb1871GreekMapping" ("BookId", "Chapter", "Verse");
 CREATE INDEX "IdxElbGreekHebRefId" ON "unshackled-word"."Elb1871GreekMapping" ("HebRefId");
 CREATE INDEX "IdxElbGreekStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
 
@@ -264,7 +281,7 @@ CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
     "StrongsNumber"             VARCHAR(10) NULL,
     "IsAddedWord"               BOOLEAN DEFAULT FALSE,
     "ParentGermanWordId"        INT NULL,
-    "WordOrderInVerse"          INT NOT NULL,
+    "PositionInVerse"           INT NOT NULL,
     "GermanWordPart"            varchar(30) NULL,
     -- Composite Unique Key for ElbWordId and StepGreekId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
@@ -273,7 +290,6 @@ CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
 );
 
 CREATE INDEX "IdxElbHebrewWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
-CREATE INDEX "IdxElbHebrewVerse" ON "unshackled-word"."Elb1871HebrewMapping" ("BookId", "Chapter", "Verse");
 CREATE INDEX "IdxElbHebrewHebRefId" ON "unshackled-word"."Elb1871HebrewMapping" ("HebRefId");
 CREATE INDEX "IdxElbHebrewStrongs" ON "unshackled-word"."Elb1871HebrewMapping" ("StrongsNumber");
 

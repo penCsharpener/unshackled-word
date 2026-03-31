@@ -11,7 +11,6 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     private readonly IDbWriter _writer;
     private readonly IDbReader _reader;
     private readonly ILogger<Elberfelder1871Strategy> _logger;
-    private int _countVerses;
     private int _countWords;
 
     public Elberfelder1871Strategy(IFileService fileService, IDbWriter writer, IDbReader reader, ILogger<Elberfelder1871Strategy> logger)
@@ -26,16 +25,15 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
     {
         _countWords = await GetCountWordsAsync(token);
 
-        if (_countVerses > 0 || _countWords > 0)
+        if (_countWords > 0)
         {
             _logger.LogInformation("Elberfelder 1871 verses and words already exist in the database. Skipping import. " +
-                                   "{countVerses} rows of verses {countWords} rows of words ", _countVerses, _countWords);
+                                   "{countWords} rows of words ", _countWords);
             return;
         }
 
         var totalWords = new List<Elb1871WordDbo>();
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
-        var verse = "";
         var id = 1;
 
         for (var i = 0; i < lines.Length; i++)
@@ -102,18 +100,18 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
         var sql = $"""
                    INSERT INTO {Elb1871WordDbo.DboName} ("Id", "BibleBookId", "Chapter", "Verse", "HebRefId", "WordInContext", "PositionInVerse", "PlainWord")
                    SELECT *
-                   FROM UNNEST(@Ids, @BookIds, @Chapters, @Verses, @HebRefIds, @WordsInContext, @PositionInVerses, @PlainWord)
+                   FROM UNNEST(@Id, @BibleBookId, @Chapter, @Verse, @HebRefId, @WordsInContext, @PositionInVerse, @PlainWord)
                    """;
 
         var parameters = new
         {
-            Ids = batch.Select(x => x.Id).ToArray(),
-            BookIds = batch.Select(x => x.BibleBookId).ToArray(),
-            Chapters = batch.Select(x => x.Chapter).ToArray(),
-            Verses = batch.Select(x => x.Verse).ToArray(),
-            HebRefIds = batch.Select(x => x.HebRefId).ToArray(),
+            Id = batch.Select(x => x.Id).ToArray(),
+            BibleBookId = batch.Select(x => x.BibleBookId).ToArray(),
+            Chapter = batch.Select(x => x.Chapter).ToArray(),
+            Verse = batch.Select(x => x.Verse).ToArray(),
+            HebRefId = batch.Select(x => x.HebRefId).ToArray(),
             WordsInContext = batch.Select(x => x.WordInContext).ToArray(),
-            PositionInVerses = batch.Select(x => x.PositionInVerse).ToArray(),
+            PositionInVerse = batch.Select(x => x.PositionInVerse).ToArray(),
             PlainWord = batch.Select(x => x.PlainWord).ToArray()
         };
 
