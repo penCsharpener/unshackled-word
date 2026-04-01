@@ -1,6 +1,6 @@
 namespace UnshackledWord.Tooling.AiWorker.Models;
 
-internal sealed class BibleReferenceRange
+file sealed class BibleReferenceRange
 {
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }

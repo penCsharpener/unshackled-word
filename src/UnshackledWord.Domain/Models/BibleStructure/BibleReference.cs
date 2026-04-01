@@ -2,9 +2,24 @@
 
 public interface IBibleReference;
 
-public record struct BibleReference(int BookId, int Chapter, int Verse) : IBibleReference, IComparer<BibleReference>, IComparable<BibleReference>
+public record struct BibleReference : IBibleReference, IComparer<BibleReference>, IComparable<BibleReference>
 {
-    public BibleReference FromRefId(int refId)
+    public BibleReference(int bookId, int chapter, int verse)
+    {
+        BookId = bookId;
+        Chapter = chapter;
+        Verse = verse;
+    }
+
+    public BibleReference(int RefId)
+    {
+        var itself = FromRefId(RefId);
+        BookId = itself.BookId;
+        Chapter = itself.Chapter;
+        Verse = itself.Verse;
+    }
+
+    public static BibleReference FromRefId(int refId)
     {
         var verse = refId % 1000;
         var remaining = refId / 1000;
@@ -14,6 +29,9 @@ public record struct BibleReference(int BookId, int Chapter, int Verse) : IBible
         return new(bookId, chapter, verse);
     }
 
+    public int BookId { get; set; }
+    public int Chapter { get; set; }
+    public int Verse { get; set; }
     public int RefId => GetRefId();
 
     /// <summary>

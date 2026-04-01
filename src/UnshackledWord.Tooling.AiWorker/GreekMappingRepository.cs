@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.AiWorker.Models.Greek;
 
@@ -73,18 +75,19 @@ public class GreekMappingRepository
     internal async Task<BibleReference> GetLastCompletedVerseAsync()
     {
         const string sql = """
-                           select max(egm."BookId") "BibleBookId", max(egm."Chapter") "Chapter", max(egm."Verse") "Verse"
+                           select max(egm."HebRefId") "HebRefId"
                            from "unshackled-word"."Elb1871GreekMapping" egm
                            """;
 
-        var result = await _dbReader.ReadFirstOrDefaultAsync<BibleReference>(sql);
+        var resultDb = await _dbReader.ReadFirstOrDefaultAsync<BibleReference?>(sql);
 
-        if (result is null)
+        if (resultDb is null)
         {
             throw new UnreachableException("There should be something in \"unshackled-word\".\"Elb1871GreekMapping\" to continue from");
         }
 
-        var verseExists = await DoesRefExistAsync(result.BibleBookId, result.Chapter, result.Verse + 1);
+        var result = resultDb.Value;
+        var verseExists = await DoesRefExistAsync(result.BookId, result.Chapter, result.Verse + 1);
 
         if (verseExists)
         {
@@ -92,7 +95,7 @@ public class GreekMappingRepository
             return result;
         }
 
-        var doesChapterExist = await DoesRefExistAsync(result.BibleBookId, result.Chapter + 1, 1);
+        var doesChapterExist = await DoesRefExistAsync(result.BookId, result.Chapter + 1, 1);
 
         if (doesChapterExist)
         {
@@ -101,11 +104,11 @@ public class GreekMappingRepository
             return result;
         }
 
-        var doesBookExist = await DoesRefExistAsync(result.BibleBookId + 1, 1, 1);
+        var doesBookExist = await DoesRefExistAsync(result.BookId + 1, 1, 1);
 
         if (doesBookExist)
         {
-            result.BibleBookId++;
+            result.BookId++;
             result.Chapter = 1;
             result.Verse = 1;
             return result;
@@ -116,12 +119,11 @@ public class GreekMappingRepository
 
     internal async Task<bool> DoesRefExistAsync(int bookId, int chapter, int verse)
     {
+        var startRefId = new BibleReference(bookId, chapter, verse);
         var sqlValidation = $"""
                              select count(*)
                              from "unshackled-word"."Elb1871Words" ew
-                             where ew."BibleBookId" = {bookId}
-                                 and ew."Chapter" = {chapter}
-                                 and ew."Verse" = {verse}
+                             where ew."HebRefId" = {startRefId}
                              """;
 
         var result = await _dbReader.ExecuteScalarAsync<int>(sqlValidation);
@@ -131,12 +133,11 @@ public class GreekMappingRepository
 
     internal async Task<IEnumerable<ElbVerseData>> GetElbVerseDataAsync(int bookId, int chapter, int verse)
     {
+        var startRefId = new BibleReference(bookId, chapter, verse);
         var sql = $"""
                    select ew."Id", ew."WordInContext", ew."PositionInVerse"
                    from "unshackled-word"."Elb1871Words" ew
-                   where   ew."BibleBookId" = {bookId}
-                       and ew."Chapter" = {chapter}
-                       and ew."Verse" = {verse}
+                   where   ew."HebRefId" = {startRefId}
                    order by ew."PositionInVerse" asc
                    """;
 
@@ -145,12 +146,11 @@ public class GreekMappingRepository
 
     internal async Task<IEnumerable<StepGreekVerseData>> GetStepGreekVerseDataAsync(int bookId, int chapter, int verse)
     {
+        var startRefId = new BibleReference(bookId, chapter, verse);
         var sql = $"""
                    select sgw."Id", sgw."Greek", sgw."PositionInVerse", sgw."DisambiguatedStrongs"
                    from "unshackled-word"."StepGreekWords" sgw
-                   where   sgw."BibleBookId" = {bookId}
-                       and sgw."Chapter" = {chapter}
-                       and sgw."Verse" = {verse}
+                   where   sgw."LxxRefId" = {startRefId}
                    order by sgw."PositionInVerse" asc
                    """;
 
@@ -192,13 +192,13 @@ public class GreekMappingRepository
 
     internal async Task<List<VerseDataList<StepGreekVerseData>>> GetStepGreekVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
     {
+        var startRefId = new BibleReference(bookId, chapter, startVerse).RefId;
+        var endRefId = new BibleReference(bookId, chapter, endVerse).RefId;
         var sql = $"""
-                   select sgw."Id", sgw."BibleBookId", sgw."Chapter", sgw."Verse", sgw."Greek" "Word", sgw."PositionInVerse", sgw."DisambiguatedStrongs" "Strongs"
+                   select sgw."Id", sgw."LxxRefId", sgw."Greek" "Word", sgw."PositionInVerse", sgw."DisambiguatedStrongs" "Strongs"
                    from "unshackled-word"."StepGreekWords" sgw
-                   where   sgw."BibleBookId" = {bookId}
-                       and sgw."Chapter" = {chapter}
-                       and sgw."Verse" >= {startVerse}
-                       and sgw."Verse" <= {endVerse}
+                   where   sgw."LxxRefId" >= {startRefId}
+                       and sgw."LxxRefId" <= {endRefId}
                    order by sgw."PositionInVerse" asc
                    """;
 
@@ -225,29 +225,42 @@ public class GreekMappingRepository
 
     public async Task InsertMappingsAsync(IEnumerable<VerseDataList<ElbStepAiMapping>> mappings, IList<ElbVerseData> elbVerses, IList<StepGreekVerseData> stepVerses)
     {
-        var sb = new List<string>();
+        var parameters = new
+        {
+            ElbWordId = new List<int>(),
+            StepWordId = new List<int?>(),
+            HebRefId = new List<int>(),
+            IsAddedWord = new List<bool>(),
+            ParentGermanWordId = new List<int?>(),
+            PositionInVerse = new List<int>(),
+            //GermanWordPart = new List<string?>(),
+        };
 
         foreach (var mapping in mappings)
         {
             foreach (var wordMap in mapping.Data)
             {
-                var stepId = wordMap.StepWordId?.ToString() ?? "null";
-                var parentId = wordMap.ParentElbWordId?.ToString() ?? "null";
+                var refId = new BibleReference(mapping.BookId, mapping.Chapter, mapping.Verse);
                 var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
                 var elbWordOrder = foundWord?.Order ?? 999;
-                var germanWord = foundWord?.German;
-                var foundGreek = stepVerses.FirstOrDefault(x => wordMap.StepWordId is not null && x.Id == wordMap.StepWordId);
-                var greekWord = foundGreek?.Greek;
-                sb.Add($"({wordMap.ElbWordId}, {stepId}, {mapping.BookId}, {mapping.Chapter}, {mapping.Verse}, " +
-                       $"{wordMap.IsAddedWord}, {parentId}, {elbWordOrder} /* {germanWord} - {greekWord} */)");
+
+                parameters.ElbWordId.Add(wordMap.ElbWordId);
+                parameters.StepWordId.Add(wordMap.StepWordId);
+                parameters.HebRefId.Add(refId.RefId);
+                parameters.IsAddedWord.Add(wordMap.IsAddedWord);
+                parameters.ParentGermanWordId.Add(wordMap.ParentElbWordId);
+                parameters.PositionInVerse.Add(elbWordOrder);
+                //parameters.GermanWordPart.Add(germanWord);
             }
         }
 
+        var names = PropertyListHelper.GetPropertyNames(parameters);
+
         var sql = $"""
                    INSERT INTO "unshackled-word"."Elb1871GreekMapping"
-                   ("ElbWordId","StepGreekId","BookId","Chapter","Verse","IsAddedWord","ParentGermanWordId","PositionInVerse")
-                   VALUES
-                   {sb.JoinStrings($",{Environment.NewLine}")}
+                   {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
                    ON CONFLICT ("ElbWordId") DO NOTHING
                    """;
 

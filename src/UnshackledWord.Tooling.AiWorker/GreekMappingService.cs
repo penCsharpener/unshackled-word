@@ -1,3 +1,4 @@
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
@@ -22,12 +23,7 @@ public class GreekMappingService
             var structureData = await _repo.GetMissingVerseRangesAsync();
             var bRef = structureData.FirstOrDefault();
 
-            if (bRef is null)
-            {
-                break;
-            }
-
-            foreach (var verseChunk in Enumerable.Range(bRef.MinVerse, bRef.MaxVerse - bRef.MinVerse + 1).Chunk(5))
+            foreach (var verseChunk in Enumerable.Range(bRef.Start.Verse, bRef.End.Verse - bRef.Start.Verse + 1).Chunk(5))
             {
                 var minVerse = verseChunk.Min();
                 var maxVerse = verseChunk.Max();
@@ -39,11 +35,11 @@ public class GreekMappingService
 
     internal async Task MapWordsForRangeAsync(int minVerse, int maxVerse, BibleReferenceRange bRef, CancellationToken token)
     {
-        var elbWords = await _repo.GetElbVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
-        var stepWords = await _repo.GetStepGreekVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
+        var elbWords = await _repo.GetElbVerseDataAsync(bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse);
+        var stepWords = await _repo.GetStepGreekVerseDataAsync(bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse);
         var wordCount = elbWords.SelectMany(x => x.Data).Count();
 
-        _logger.LogInformation("Submitting {bookId}:{chapter}:{minVerse}-{maxVerse} of a total of {totalVerses} verses with {totalWords} words", bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse, bRef.MaxVerse, wordCount);
+        _logger.LogInformation("Submitting {bookId}:{chapter}:{minVerse}-{maxVerse} of a total of {totalVerses} verses with {totalWords} words", bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse, bRef.Start.Verse, wordCount);
 
         var response = await _client.GetElbStepMappings(elbWords, stepWords, token);
 

@@ -1,5 +1,6 @@
 using Polly;
 using UnshackledWord.Domain.Extensions;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
@@ -38,11 +39,6 @@ public class HebrewMappingService
             var structureData = await _repo.GetMissingVerseRangesAsync();
             var bRef = structureData.FirstOrDefault();
 
-            if (bRef is null)
-            {
-                break;
-            }
-
             await policy.ExecuteAsync(async () => await MapHebrewAsync(bRef, token));
         }
     }
@@ -56,7 +52,7 @@ public class HebrewMappingService
         }
 
         // 1. Get chunks of 5 verses (as you originally had)
-        var verseChunks = Enumerable.Range(bRef.MinVerse, bRef.MaxVerse - bRef.MinVerse + 1).Chunk(10);
+        var verseChunks = Enumerable.Range(bRef.Start.Verse, bRef.End.Verse - bRef.Start.Verse + 1).Chunk(10);
 
         // 2. Chunk the verse chunks into batches of 5.
         // This means we prepare up to 5 parallel requests per iteration.
@@ -71,13 +67,13 @@ public class HebrewMappingService
                     var maxVerse = verseChunk.Max();
 
                     // Optional: You can pass 'token' to these repo calls if they support it
-                    var elbWords = await _repo.GetElbVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
-                    var stepWords = await _repo.GetHebrewVerseDataAsync(bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse);
+                    var elbWords = await _repo.GetElbVerseDataAsync(bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse);
+                    var stepWords = await _repo.GetHebrewVerseDataAsync(bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse);
                     var wordCount = elbWords.SelectMany(x => x.Data).Count();
-                    var gotBookName = _booksDictionary.TryGetValue(bRef.BibleBookId, out string bookName);
+                    var gotBookName = _booksDictionary.TryGetValue(bRef.Start.BookId, out string bookName);
 
                     _logger.LogInformation("Submitting {bookId} {chapter}:{minVerse}-{maxVerse} of a total of {totalVerses} verses with {totalWords} words",
-                        gotBookName ? bookName : bRef.BibleBookId, bRef.Chapter, minVerse, maxVerse, bRef.MaxVerse, wordCount);
+                        gotBookName ? bookName : bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse, bRef.End.Verse, wordCount);
 
                     var response = await _client.GetElbStepMappings(elbWords, stepWords, token);
 
