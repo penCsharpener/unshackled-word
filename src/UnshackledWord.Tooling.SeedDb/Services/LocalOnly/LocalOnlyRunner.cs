@@ -14,6 +14,7 @@ public class LocalOnlyRunner : IRunner
 
     public async Task Run(CancellationToken token = default)
     {
-        await _repo.CopyOverGreekMapping(token);
+        // await _repo.CopyOverGreekMappingAsync(token);
+        await _repo.CopyOverHebrewMappingAsync(token);
     }
 }

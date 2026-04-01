@@ -254,44 +254,42 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
 (
     "Id"                 SERIAL PRIMARY KEY,
     "ElbWordId"          INT     NOT NULL UNIQUE,
-    "StepGreekId"        INT     NULL,
+    "StepWordId"         INT     NULL,
     "HebRefId"           INT     NOT NULL,
     "StrongsNumber"      VARCHAR(10) NULL,
     "IsAddedWord"        BOOLEAN DEFAULT FALSE,
     "ParentGermanWordId" INT     NULL,
     "PositionInVerse"    INT     NOT NULL,
     "GermanWordPart"     varchar(30) NULL,
-    -- Composite Unique Key for ElbWordId and StepGreekId
+    -- Composite Unique Key for ElbWordId and StepWordId
     -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
-    -- when there is one ElbWordId with multiple StepGreekId then each StepGreekId must have a unique GermanWordPart
-    CONSTRAINT "UqElbStepGreek" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepGreekId")
+    -- when there is one ElbWordId with multiple StepWordId then each StepWordId must have a unique GermanWordPart
+    CONSTRAINT "UqElbStepGreekMapping" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepWordId")
 );
 
-CREATE INDEX "IdxElbGreekWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
-CREATE INDEX "IdxElbGreekHebRefId" ON "unshackled-word"."Elb1871GreekMapping" ("HebRefId");
-CREATE INDEX "IdxElbGreekStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
+CREATE INDEX "IdxElbGreekMappingWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
+CREATE INDEX "IdxElbGreekMappingHebRefId" ON "unshackled-word"."Elb1871GreekMapping" ("HebRefId");
+CREATE INDEX "IdxElbGreekMappingStepWordId" ON "unshackled-word"."Elb1871GreekMapping" ("StepWordId");
+CREATE INDEX "IdxElbGreekMappingStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
 
 
 CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
 (
     "Id"                        SERIAL PRIMARY KEY,
     "ElbWordId"                 INT NOT NULL UNIQUE,
-    "StepHebrewNormalizedId"    INT NULL,
+    "StepWordId"                INT NULL,
     "HebRefId"                  INT NOT NULL,
-    "StrongsNumber"             VARCHAR(10) NULL,
     "IsAddedWord"               BOOLEAN DEFAULT FALSE,
     "ParentGermanWordId"        INT NULL,
     "PositionInVerse"           INT NOT NULL,
     "GermanWordPart"            varchar(30) NULL,
-    -- Composite Unique Key for ElbWordId and StepGreekId
-    -- Note: NULLS NOT DISTINCT requires PostgreSQL 15+
-    -- when there is one ElbWordId with multiple StepHebrewNormalizedIds then each StepHebrewNormalizedId must have a unique GermanWordPart
-    CONSTRAINT "UqElbStepHebrew" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepHebrewNormalizedId")
+    -- when there is one ElbWordId with multiple StepWordId then each StepWordId must have a unique GermanWordPart
+    CONSTRAINT "UqElbStepHebrew" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepWordId")
 );
 
-CREATE INDEX "IdxElbHebrewWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
-CREATE INDEX "IdxElbHebrewHebRefId" ON "unshackled-word"."Elb1871HebrewMapping" ("HebRefId");
-CREATE INDEX "IdxElbHebrewStrongs" ON "unshackled-word"."Elb1871HebrewMapping" ("StrongsNumber");
+CREATE INDEX "IdxElbHebrewMappingWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
+CREATE INDEX "IdxElbHebrewMappingHebRefId" ON "unshackled-word"."Elb1871HebrewMapping" ("HebRefId");
+CREATE INDEX "IdxElbHebrewMappingHebStepWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("StepWordId");
 
 
 CREATE TABLE "unshackled-word"."StrongsNumbers"
