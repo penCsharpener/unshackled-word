@@ -34,7 +34,7 @@ public class GreekMappingRepository
         return structureData;
     }
 
-    internal async Task<IEnumerable<BibleReferenceRange>> GetMissingVerseRangesAsync()
+    internal async Task<List<MappingScopeRange>> GetMissingVerseRangesAsync()
     {
         var sql = """
                   select ew."BibleBookId", ew."Chapter", MIN(ew."Verse") MinVerse, MAX(ew."Verse") MaxVerse
@@ -46,7 +46,7 @@ public class GreekMappingRepository
                   order by ew."BibleBookId", ew."Chapter"
                   """;
 
-        return await _dbReader.ReadAsListAsync<BibleReferenceRange>(sql);
+        return (await _dbReader.ReadAsListAsync<MappingScopeRange>(sql)).ToList();
     }
 
     internal async Task<IEnumerable<BibleReference>> GetGreekNtStructureByChapterAsync(int? bookId, int? chapter, int? verse)
@@ -146,11 +146,12 @@ public class GreekMappingRepository
 
     internal async Task<IEnumerable<StepGreekVerseData>> GetStepGreekVerseDataAsync(int bookId, int chapter, int verse)
     {
-        var startRefId = new BibleReference(bookId, chapter, verse);
+        var startRefId = new BibleReference(bookId, chapter, verse).RefId;
         var sql = $"""
                    select sgw."Id", sgw."Greek", sgw."PositionInVerse", sgw."DisambiguatedStrongs"
                    from "unshackled-word"."StepGreekWords" sgw
-                   where   sgw."LxxRefId" = {startRefId}
+                       inner join "unshackled-word"."BibleVerseCountingMapping" bvcm ON bvcm."LxxRefId" = sgw."LxxRefId"
+                   where   bvcm."HebRefId" = {startRefId}
                    order by sgw."PositionInVerse" asc
                    """;
 
@@ -164,8 +165,7 @@ public class GreekMappingRepository
                    from "unshackled-word"."Elb1871Words" ew
                    where   ew."BibleBookId" = {bookId}
                        and ew."Chapter" = {chapter}
-                       and ew."Verse" >= {startVerse}
-                       and ew."Verse" <= {endVerse}
+                       and ew."Verse" BETWEEN {startVerse} AND {endVerse}
                    order by ew."PositionInVerse" asc
                    """;
 
@@ -195,18 +195,18 @@ public class GreekMappingRepository
         var startRefId = new BibleReference(bookId, chapter, startVerse).RefId;
         var endRefId = new BibleReference(bookId, chapter, endVerse).RefId;
         var sql = $"""
-                   select sgw."Id", sgw."LxxRefId", sgw."Greek" "Word", sgw."PositionInVerse", sgw."DisambiguatedStrongs" "Strongs"
+                   select sgw."Id", sgw."LxxRefId" "RefId", sgw."Greek" "Word", sgw."PositionInVerse", sgw."DisambiguatedStrongs" "Strongs"
                    from "unshackled-word"."StepGreekWords" sgw
-                   where   sgw."LxxRefId" >= {startRefId}
-                       and sgw."LxxRefId" <= {endRefId}
-                   order by sgw."PositionInVerse" asc
+                       inner join "unshackled-word"."BibleVerseCountingMapping" bvcm ON bvcm."LxxRefId" = sgw."LxxRefId"
+                   where   bvcm."HebRefId" BETWEEN {startRefId} AND {endRefId}
+                   order by sgw."LxxRefId", sgw."PositionInVerse" asc
                    """;
 
         var verses = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql);
-        var list = verses.GroupBy(x => new { x.BibleBookId, x.Chapter, x.Verse })
+        var list = verses.GroupBy(x => BibleReference.FromRefId(x.RefId))
             .Select(x => new VerseDataList<StepGreekVerseData>
             {
-                BookId = x.Key.BibleBookId,
+                BookId = x.Key.BookId,
                 Chapter = x.Key.Chapter,
                 Verse = x.Key.Verse,
                 Data = x.Select(d => new StepGreekVerseData
@@ -233,7 +233,7 @@ public class GreekMappingRepository
             IsAddedWord = new List<bool>(),
             ParentGermanWordId = new List<int?>(),
             PositionInVerse = new List<int>(),
-            //GermanWordPart = new List<string?>(),
+            GermanWordPart = new List<string?>(),
         };
 
         foreach (var mapping in mappings)
@@ -250,7 +250,7 @@ public class GreekMappingRepository
                 parameters.IsAddedWord.Add(wordMap.IsAddedWord);
                 parameters.ParentGermanWordId.Add(wordMap.ParentElbWordId);
                 parameters.PositionInVerse.Add(elbWordOrder);
-                //parameters.GermanWordPart.Add(germanWord);
+                parameters.GermanWordPart.Add(wordMap.GermanWordPart);
             }
         }
 

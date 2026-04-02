@@ -25,6 +25,8 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
 
     public async Task<List<StepAmalgamatedHebrewEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        _logger.LogInformation("processing {filePath}", filePath);
+
         var filter = new StepHebrewWordFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)

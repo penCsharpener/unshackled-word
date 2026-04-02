@@ -10,7 +10,7 @@ public class HebrewMappingService
     private readonly HebrewMappingRepository _repo;
     private readonly HebrewGeminiFlashClient _client;
     private readonly ILogger<HebrewMappingService> _logger;
-    private Dictionary<int, string> _booksDictionary;
+    private Dictionary<int, string>? _booksDictionary;
 
     public HebrewMappingService(HebrewMappingRepository repo, HebrewGeminiFlashClient client, ILogger<HebrewMappingService> logger)
     {
@@ -37,7 +37,16 @@ public class HebrewMappingService
         while (!token.IsCancellationRequested)
         {
             var structureData = await _repo.GetMissingVerseRangesAsync();
-            var bRef = structureData.FirstOrDefault();
+            var scope = structureData.FirstOrDefault();
+
+            if (scope is null)
+            {
+                break;
+            }
+
+            var start = new BibleReference(scope.BibleBookId, scope.Chapter, scope.MinVerse);
+            var end = new BibleReference(scope.BibleBookId, scope.Chapter, scope.MaxVerse);
+            var bRef = new BibleReferenceRange(start, end);
 
             await policy.ExecuteAsync(async () => await MapHebrewAsync(bRef, token));
         }

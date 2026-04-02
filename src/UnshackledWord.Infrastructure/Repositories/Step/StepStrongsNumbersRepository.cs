@@ -32,9 +32,7 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
 
     public async Task BulkInsertInternalNewAsync(StepStrongsToTextDbo[] entries, CancellationToken token = default)
     {
-        var count = await CountByFilterAsync(token);
-
-        if (count > 0)
+        if (entries.Length == 0)
         {
             return;
         }

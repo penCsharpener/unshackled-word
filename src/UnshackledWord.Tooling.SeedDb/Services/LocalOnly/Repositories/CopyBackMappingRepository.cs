@@ -35,6 +35,17 @@ public sealed class CopyBackMappingRepository
                        LEFT  JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepWordId" = sgw."Id"
                    ORDER BY egm."LxxRefId", egm."PositionInVerse"
                    ON CONFLICT DO NOTHING;
+
+                   BEGIN;
+                   DELETE FROM "unshackled-word"."Elb1871GreekMapping"
+                   WHERE "HebRefId" IN (
+                       SELECT DISTINCT ew."HebRefId"
+                       FROM "unshackled-word"."Elb1871Words" ew
+                           LEFT JOIN "unshackled-word"."Elb1871GreekMapping" egm ON ew."Id" = egm."ElbWordId"
+                       WHERE egm."ElbWordId" IS NULL
+                           AND ew."HebRefId" > 40000000
+                   );
+                   COMMIT;
                    """;
 
         await _dbWriter.ExecuteScalarAsync<int>(sql);
@@ -61,6 +72,17 @@ public sealed class CopyBackMappingRepository
                        LEFT  JOIN "unshackled-word"."StepHebrewWords" shw ON ehm."StepWordId" = shw."Id"
                    ORDER BY ehm."LxxRefId", ehm."PositionInVerse"
                    ON CONFLICT DO NOTHING;
+
+                   BEGIN;
+                   DELETE FROM "unshackled-word"."Elb1871HebrewMapping"
+                   WHERE "HebRefId" IN (
+                       SELECT DISTINCT ew."HebRefId"
+                       FROM "unshackled-word"."Elb1871Words" ew
+                           LEFT JOIN "unshackled-word"."Elb1871HebrewMapping" ehm ON ew."Id" = ehm."ElbWordId"
+                       WHERE ehm."ElbWordId" IS NULL
+                           AND ew."HebRefId" < 10019000
+                   );
+                   COMMIT;
                    """;
 
         await _dbWriter.ExecuteScalarAsync<int>(sql);

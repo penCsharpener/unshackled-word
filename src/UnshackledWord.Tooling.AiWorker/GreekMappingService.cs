@@ -18,10 +18,19 @@ public class GreekMappingService
 
     public async Task RunAsync(CancellationToken token = default)
     {
-        while (true)
+        while (!token.IsCancellationRequested)
         {
             var structureData = await _repo.GetMissingVerseRangesAsync();
-            var bRef = structureData.FirstOrDefault();
+            var scope = structureData.FirstOrDefault();
+
+            if (scope is null)
+            {
+                break;
+            }
+
+            var start = new BibleReference(scope.BibleBookId, scope.Chapter, scope.MinVerse);
+            var end = new BibleReference(scope.BibleBookId, scope.Chapter, scope.MaxVerse);
+            var bRef = new BibleReferenceRange(start, end);
 
             foreach (var verseChunk in Enumerable.Range(bRef.Start.Verse, bRef.End.Verse - bRef.Start.Verse + 1).Chunk(5))
             {

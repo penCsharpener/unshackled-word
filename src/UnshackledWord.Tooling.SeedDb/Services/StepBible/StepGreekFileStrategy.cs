@@ -25,6 +25,8 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
 
     public async Task<List<StepAmalgamatedGreekEntry>> SaveToDatabase(string filePath, CancellationToken token = default)
     {
+        _logger.LogInformation("processing {filePath}", filePath);
+
         var filter = new StepGreekWordFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
         if (count > 0)

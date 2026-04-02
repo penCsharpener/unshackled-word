@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Forms;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
@@ -28,7 +29,7 @@ public class HebrewMappingRepository
         return await _dbReader.ReadAsListAsync<BibleBookName>(sql);
     }
 
-    internal async Task<IEnumerable<BibleReferenceRange>> GetMissingVerseRangesAsync()
+    internal async Task<IEnumerable<MappingScopeRange>> GetMissingVerseRangesAsync()
     {
         var sql = """
                   select ew."BibleBookId", ew."Chapter", MIN(ew."Verse") MinVerse, MAX(ew."Verse") MaxVerse
@@ -40,7 +41,7 @@ public class HebrewMappingRepository
                   order by ew."BibleBookId", ew."Chapter"
                   """;
 
-        return await _dbReader.ReadAsListAsync<BibleReferenceRange>(sql);
+        return await _dbReader.ReadAsListAsync<MappingScopeRange>(sql);
     }
 
     internal async Task<List<VerseDataList<ElbVerseData>>> GetElbVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)

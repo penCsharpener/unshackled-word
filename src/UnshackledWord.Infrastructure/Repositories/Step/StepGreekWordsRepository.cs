@@ -45,13 +45,6 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
             return;
         }
 
-        var count = await CountByFilterAsync(new(), token);
-
-        if (count > 0)
-        {
-            return;
-        }
-
         await BulkInsertInternalNewAsync(entries, token);
     }
 
