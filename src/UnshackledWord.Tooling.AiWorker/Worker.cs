@@ -1,14 +1,20 @@
+using System.Text.Json;
+using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Models.Greek;
+
 namespace UnshackledWord.Tooling.AiWorker;
 
 public class Worker : BackgroundService
 {
     private readonly GreekMappingService _gkMapping;
     private readonly HebrewMappingService _hebMapping;
+    private readonly GreekMappingRepository _greekMappingRepository;
 
-    public Worker(GreekMappingService gkMapping, HebrewMappingService hebMapping)
+    public Worker(GreekMappingService gkMapping, HebrewMappingService hebMapping, GreekMappingRepository greekMappingRepository)
     {
         _gkMapping = gkMapping;
         _hebMapping = hebMapping;
+        _greekMappingRepository = greekMappingRepository;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -22,7 +28,17 @@ public class Worker : BackgroundService
         //     MaxVerse = 30
         // };
         // await _gkMapping.MapWordsForRangeAsync(minVerse, 30, bRef, stoppingToken);
-        await _gkMapping.RunAsync(stoppingToken);
+        await InsertDataAsync();
+        // await _gkMapping.RunAsync(stoppingToken);
         //await _hebMapping.RunAsync(stoppingToken);
+    }
+
+    private async Task InsertDataAsync()
+    {
+        var mappings = JsonSerializer.Deserialize<List<VerseDataList<ElbStepAiMapping>>>(GreekTestData.TestMapping);
+        var elbVerses = JsonSerializer.Deserialize<List<ElbVerseData>>(GreekTestData.ElbVerses);
+        var stepVerses = JsonSerializer.Deserialize<List<StepGreekVerseData>>(GreekTestData.StepWords);
+
+        await _greekMappingRepository.InsertMappingsAsync(mappings, elbVerses, stepVerses);
     }
 }

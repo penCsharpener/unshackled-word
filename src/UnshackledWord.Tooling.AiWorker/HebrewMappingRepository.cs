@@ -184,16 +184,16 @@ public class HebrewMappingRepository
             }
         }
 
-        var names = PropertyListHelper.GetPropertyNames(parameters);
+        var (quotedNames, parameterNames) = PropertyListHelper.GetAllNames(parameters);
 
         var sql = $"""
                    INSERT INTO "unshackled-word"."Elb1871HebrewMapping"
-                   {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   ({quotedNames})
                    SELECT *
-                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
-                   ON CONFLICT ("ElbWordId") DO NOTHING;
+                   FROM UNNEST({parameterNames})
+                   ON CONFLICT ("ElbWordId", "StepWordId") DO NOTHING;
                    """;
 
-        await _dbWriter.WriteAsync(sql);
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 }

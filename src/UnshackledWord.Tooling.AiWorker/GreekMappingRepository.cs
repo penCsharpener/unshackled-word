@@ -49,6 +49,22 @@ public class GreekMappingRepository
         return (await _dbReader.ReadAsListAsync<MappingScopeRange>(sql)).ToList();
     }
 
+    internal async Task<List<(int HebRefId, int LxxRefId)>> GetMissingVersesAsync()
+    {
+        var sql = """
+                  select ew."HebRefId", bvcm."LxxRefId"
+                  from "unshackled-word"."Elb1871Words" ew
+                    inner join "unshackled-word"."BibleVerseCountingMapping" bvcm on ew."HebRefId" = bvcm."HebRefId"
+                    left join "unshackled-word"."Elb1871GreekMapping" egm on ew."Id" = egm."ElbWordId"
+                  where ew."HebRefId" >= 40000000
+                    and egm."ElbWordId" is null
+                  group by ew."HebRefId", bvcm."LxxRefId"
+                  order by ew."HebRefId"
+                  """;
+
+        return (await _dbReader.ReadAsListAsync<(int HebRefId, int LxxRefId)>(sql)).ToList();
+    }
+
     internal async Task<IEnumerable<BibleReference>> GetGreekNtStructureByChapterAsync(int? bookId, int? chapter, int? verse)
     {
         var sql = """
@@ -254,16 +270,20 @@ public class GreekMappingRepository
             }
         }
 
-        var names = PropertyListHelper.GetPropertyNames(parameters);
+        var (quotedNames, parameterNames) = PropertyListHelper.GetAllNames(parameters);
 
-        var sql = $"""
-                   INSERT INTO "unshackled-word"."Elb1871GreekMapping"
-                   {names.Select(x => $"\"{x}\"").JoinStrings(",")}
-                   SELECT *
-                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
-                   ON CONFLICT ("ElbWordId") DO NOTHING
-                   """;
+         var sql = $"""
+                    BEGIN;
 
-        await _dbWriter.WriteAsync(sql);
+                    INSERT INTO "unshackled-word"."Elb1871GreekMapping"
+                    ({quotedNames})
+                    SELECT *
+                    FROM UNNEST({parameterNames})
+                    ON CONFLICT ("ElbWordId", "StepWordId") DO NOTHING;
+
+                    ROLLBACK;
+                    """;
+
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 }

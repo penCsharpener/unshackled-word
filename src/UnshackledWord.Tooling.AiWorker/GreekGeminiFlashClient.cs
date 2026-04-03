@@ -24,11 +24,18 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
                                              9. COMPLETE MAPPING: Ensure that all German and Greek Words id have been mapped. Duplicate German Ids must have a value for 'GermanWordPart'.
                                              """;
 
+    private IntShrinkDictionary _elbIdMapping = new();
+    private IntShrinkDictionary _stepIdMapping = new();
+
     public GreekGeminiFlashClient(GeminiClient client, ILogger<GreekGeminiFlashClient> logger) : base(client, logger) { }
 
     public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(List<VerseDataList<ElbVerseData>> elbWords,
         List<VerseDataList<StepGreekVerseData>> stepWords, CancellationToken token = default)
     {
+        // replace original ids with smaller ints starting from 1
+        // use two dictionaries to be able to map the ids back after the response comes back
+        // this should also further reduce the costs as ids are much shorter
+
         var germanVerseJson = elbWords.Select(x => new VerseDataList<VerseDataWithoutOrder>
         {
             BookId = x.BookId,
@@ -39,7 +46,7 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
                 Id = k.Id,
                 Word = k.German
             }).ToList()
-        }).ToDelimitedString();
+        }).ReduceIds(_elbIdMapping).ToDelimitedString();
         var greekVerseJson = stepWords.Select(x => new VerseDataList<VerseDataWithoutOrder>
         {
             BookId = x.BookId,
@@ -50,7 +57,7 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
                 Id = k.Id,
                 Word = k.Greek
             }).ToList()
-        }).ToDelimitedString();
+        }).ReduceIds(_stepIdMapping).ToDelimitedString();
 
         var prompt = $"""
                       German Words: {germanVerseJson}
@@ -58,7 +65,92 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
                       """;
 
         var response = await SubmitAsync(prompt, GreekSystemInstruction, GeminiModelType.Flash2_5, token);
+        var result = response.ToTypedResponse().RestoreIds(_elbIdMapping, (dictionary, mapping) =>
+        {
+            var originalId = dictionary.GetOriginalId(mapping.ElbWordId);
+            mapping.ElbWordId = originalId;
+            if (mapping.ParentElbWordId is null)
+            {
+                return;
+            }
 
-        return [];
+            var originalParentId = dictionary.GetOriginalId(mapping.ParentElbWordId.Value);
+            mapping.ParentElbWordId = originalParentId;
+        }).RestoreIds(_stepIdMapping, (dictionary, mapping) =>
+        {
+            if (mapping.StepWordId is null)
+            {
+                return;
+            }
+
+            var originalId = dictionary.GetOriginalId(mapping.StepWordId.Value);
+            mapping.StepWordId = originalId;
+        }).ToList();
+
+        _elbIdMapping.Reset();
+        _stepIdMapping.Reset();
+
+        return result;
+    }
+}
+
+public static class VerseDataExtensions
+{
+    public static IEnumerable<VerseDataList<VerseDataWithoutOrder>> ReduceIds(this IEnumerable<VerseDataList<VerseDataWithoutOrder>> items, IntShrinkDictionary tempMapping)
+    {
+        foreach (var item in items)
+        {
+            foreach (var verse in item.Data)
+            {
+                var newId = tempMapping.AddIds(verse.Id);
+                verse.Id = newId;
+            }
+
+            yield return item;
+        }
+    }
+
+    public static IEnumerable<VerseDataList<ElbStepAiMapping>> RestoreIds(
+        this IEnumerable<VerseDataList<ElbStepAiMapping>> items, IntShrinkDictionary tempMapping, Action<IntShrinkDictionary, ElbStepAiMapping> action)
+    {
+        foreach (var item in items)
+        {
+            foreach (var verse in item.Data)
+            {
+                action(tempMapping, verse);
+            }
+
+            yield return item;
+        }
+    }
+}
+
+public sealed class IntShrinkDictionary : Dictionary<int, int>
+{
+    private Dictionary<int, int> _reverseDictionary = new();
+
+    public int Increment { get; set; } = 1;
+
+    public void Reset()
+    {
+        Increment = 1;
+        Clear();
+        _reverseDictionary.Clear();
+    }
+
+    public int AddIds(int originalId)
+    {
+        Add(originalId, Increment);
+        _reverseDictionary.Add(Increment, originalId);
+        var returnId = Increment;
+
+        Increment++;
+
+        return returnId;
+    }
+
+    public int GetOriginalId(int reducedId)
+    {
+        return _reverseDictionary[reducedId];
     }
 }
