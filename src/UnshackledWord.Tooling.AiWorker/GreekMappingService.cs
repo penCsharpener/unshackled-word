@@ -1,4 +1,6 @@
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
@@ -20,39 +22,40 @@ public class GreekMappingService
     {
         while (!token.IsCancellationRequested)
         {
-            var structureData = await _repo.GetMissingVerseRangesAsync();
-            var scope = structureData.FirstOrDefault();
-
-            if (scope is null)
+            try
             {
-                break;
+                var missingVerses = await _repo.GetMissingVersesAsync();
+
+                if (missingVerses.IsNullOrEmpty())
+                {
+                    _logger.LogWarning("no more verses left to map.");
+                    break;
+                }
+
+                foreach (var verseChunk in missingVerses.Chunk(5))
+                {
+                    await MapWordsForRangeAsync(verseChunk, token);
+                }
             }
-
-            var start = new BibleReference(scope.BibleBookId, scope.Chapter, scope.MinVerse);
-            var end = new BibleReference(scope.BibleBookId, scope.Chapter, scope.MaxVerse);
-            var bRef = new BibleReferenceRange(start, end);
-
-            foreach (var verseChunk in Enumerable.Range(bRef.Start.Verse, bRef.End.Verse - bRef.Start.Verse + 1).Chunk(5))
+            catch (Exception ex)
             {
-                var minVerse = verseChunk.Min();
-                var maxVerse = verseChunk.Max();
-
-                await MapWordsForRangeAsync(minVerse, maxVerse, bRef, token);
+                _logger.LogError(ex, "Error during processing Greek mapping");
             }
         }
     }
 
-    internal async Task MapWordsForRangeAsync(int minVerse, int maxVerse, BibleReferenceRange bRef, CancellationToken token)
+    internal async Task MapWordsForRangeAsync(BibleVerseCountingMappingDbo[] verses, CancellationToken token)
     {
-        var elbWords = await _repo.GetElbVerseDataAsync(bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse);
-        var stepWords = await _repo.GetStepGreekVerseDataAsync(bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse);
-        var wordCount = elbWords.SelectMany(x => x.Data).Count();
+        var elbWords = await _repo.GetElbVerseDataAsync(verses.Select(x => x.HebRefId).ToArray());
+        var stepWords = await _repo.GetStepGreekVerseDataAsync(verses.Select(x => x.LxxRefId).ToArray());
+        var first = verses.GetFirstReference();
+        var last = verses.GetLastReference();
 
-        _logger.LogInformation("Submitting {bookId}:{chapter}:{minVerse}-{maxVerse} of a total of {totalVerses} verses with {totalWords} words", bRef.Start.BookId, bRef.Start.Chapter, minVerse, maxVerse, bRef.Start.Verse, wordCount);
+        _logger.LogInformation("Submitting {firstRef}-{lastRef} of a total of {totalVerses} verses with {totalWords} words", first, last, verses.Length, elbWords.Count);
 
         var response = await _client.GetElbStepMappings(elbWords, stepWords, token);
 
-        response = response.Where(x => x.Data.All(d => d.ElbWordId >= 551768)).ToList();
+        _logger.LogInformation("\"HebRefId\" IN ({ids})", response.Select(x => x.RefId).JoinStrings(","));
 
         await _repo.InsertMappingsAsync(response,
             elbWords.SelectMany(x => x.Data).ToList(),

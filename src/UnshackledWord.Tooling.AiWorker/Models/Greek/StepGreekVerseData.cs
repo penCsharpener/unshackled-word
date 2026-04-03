@@ -1,8 +1,16 @@
 namespace UnshackledWord.Tooling.AiWorker.Models.Greek;
 
-public sealed class StepGreekVerseData
+public class StepGreekVerseData : VerseDataWithoutOrder
 {
-    public int Id { get; set; }
-    public string Greek { get; set; } = default!;
+    public string Greek
+    {
+        get => Word;
+        set => Word = value;
+    }
+}
+
+public sealed class StepGreekVerseDataWithOrder : StepGreekVerseData
+{
     public int Order { get; set; }
+    public int PositionInWord { get; set; }
 }

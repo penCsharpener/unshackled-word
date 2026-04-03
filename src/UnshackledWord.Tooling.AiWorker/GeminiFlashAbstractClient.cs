@@ -97,6 +97,7 @@ public abstract class GeminiFlashAbstractClient
                     ["BookId"] = new() { Type = GeminiType.Integer },
                     ["Chapter"] = new() { Type = GeminiType.Integer },
                     ["Verse"] = new() { Type = GeminiType.Integer },
+                    ["RefId"] = new() { Type = GeminiType.Integer, Description = "Is combined Integer of (BookId * 1000000) + (Chapter * 1000) + Verse" },
                     ["Data"] = new()
                     {
                         Type = GeminiType.Array,
@@ -110,8 +111,7 @@ public abstract class GeminiFlashAbstractClient
                         }
                     }
                 },
-                Required = ["BookId", "Chapter", "Verse", "Data"]
-
+                Required = ["BookId", "Chapter", "Verse", "RefId", "Data"]
             }
         };
 

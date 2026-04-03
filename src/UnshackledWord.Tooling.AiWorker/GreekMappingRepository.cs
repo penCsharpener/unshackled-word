@@ -2,6 +2,7 @@ using System.Diagnostics;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.AiWorker.Models.Greek;
@@ -49,20 +50,20 @@ public class GreekMappingRepository
         return (await _dbReader.ReadAsListAsync<MappingScopeRange>(sql)).ToList();
     }
 
-    internal async Task<List<(int HebRefId, int LxxRefId)>> GetMissingVersesAsync()
+    internal async Task<List<BibleVerseCountingMappingDbo>> GetMissingVersesAsync()
     {
-        var sql = """
-                  select ew."HebRefId", bvcm."LxxRefId"
-                  from "unshackled-word"."Elb1871Words" ew
-                    inner join "unshackled-word"."BibleVerseCountingMapping" bvcm on ew."HebRefId" = bvcm."HebRefId"
-                    left join "unshackled-word"."Elb1871GreekMapping" egm on ew."Id" = egm."ElbWordId"
-                  where ew."HebRefId" >= 40000000
-                    and egm."ElbWordId" is null
-                  group by ew."HebRefId", bvcm."LxxRefId"
-                  order by ew."HebRefId"
-                  """;
+        var sql = $"""
+                   select ew."HebRefId", bvcm."LxxRefId"
+                   from "unshackled-word"."Elb1871Words" ew
+                     inner join {BibleVerseCountingMappingDbo.DboName} bvcm on ew."HebRefId" = bvcm."HebRefId"
+                     left join "unshackled-word"."Elb1871GreekMapping" egm on ew."Id" = egm."ElbWordId"
+                   where ew."HebRefId" >= 40000000
+                     and egm."ElbWordId" is null
+                   group by ew."HebRefId", bvcm."LxxRefId"
+                   order by ew."HebRefId"
+                   """;
 
-        return (await _dbReader.ReadAsListAsync<(int HebRefId, int LxxRefId)>(sql)).ToList();
+        return (await _dbReader.ReadAsListAsync<BibleVerseCountingMappingDbo>(sql)).ToList();
     }
 
     internal async Task<IEnumerable<BibleReference>> GetGreekNtStructureByChapterAsync(int? bookId, int? chapter, int? verse)
@@ -160,6 +161,40 @@ public class GreekMappingRepository
         return await _dbReader.ReadAsListAsync<ElbVerseData>(sql);
     }
 
+    internal async Task<List<VerseDataList<ElbVerseData>>> GetElbVerseDataAsync(int[] hebRefIds)
+    {
+        var sql = $"""
+                   select ew."Id", ew."BibleBookId", ew."Chapter", ew."Verse", ew."HebRefId" "RefId", ew."PlainWord" "Word", ew."PositionInVerse"
+                   from "unshackled-word"."Elb1871Words" ew
+                   where   ew."HebRefId" > 40000000
+                       and ew."HebRefId" IN (SELECT * FROM UNNEST(@HebRefIds))
+                   order by ew."HebRefId", ew."PositionInVerse" asc
+                   """;
+
+        var parameters = new { HebRefIds = hebRefIds };
+
+        var words = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql, parameters);
+        var list = words.GroupBy(x => BibleReference.FromRefId(x.RefId))
+            .Select(x => new VerseDataList<ElbVerseData>
+            {
+                BookId = x.Key.BookId,
+                Chapter = x.Key.Chapter,
+                Verse = x.Key.Verse,
+                RefId = x.Key.RefId,
+                Data = x.Select(d => new ElbVerseData
+                {
+                    German = d.Word,
+                    Id = d.Id,
+                    Order = d.PositionInVerse
+                }).OrderBy(o => o.Order).ToList()
+            }).OrderBy(x => x.BookId)
+            .ThenBy(x => x.Chapter)
+            .ThenBy(x => x.Verse)
+            .ToList();
+
+        return list;
+    }
+
     internal async Task<IEnumerable<StepGreekVerseData>> GetStepGreekVerseDataAsync(int bookId, int chapter, int verse)
     {
         var startRefId = new BibleReference(bookId, chapter, verse).RefId;
@@ -174,6 +209,42 @@ public class GreekMappingRepository
         return await _dbReader.ReadAsListAsync<StepGreekVerseData>(sql);
     }
 
+    internal async Task<List<VerseDataList<StepGreekVerseData>>> GetStepGreekVerseDataAsync(int[] lxxRefIds)
+    {
+        var sql = $"""
+                   select bvcm."HebRefId" "RefId", sgw."PositionInVerse", sgw."Id", sgw."Greek" "Word"
+                   from "unshackled-word"."StepGreekWords" sgw
+                       inner join "unshackled-word"."BibleVerseCountingMapping" bvcm on sgw."LxxRefId" = bvcm."LxxRefId"
+                   where    sgw."LxxRefId" > 40000000
+                        and sgw."LxxRefId" IN (SELECT * FROM UNNEST(@LxxRefIds))
+                   order by sgw."LxxRefId", sgw."PositionInVerse" asc
+                   """;
+
+        var parameters = new { LxxRefIds = lxxRefIds };
+
+        var words = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql, parameters);
+        var list = words.GroupBy(x => BibleReference.FromRefId(x.RefId))
+            .Select(x => new VerseDataList<StepGreekVerseData>
+            {
+                BookId = x.Key.BookId,
+                Chapter = x.Key.Chapter,
+                Verse = x.Key.Verse,
+                RefId = x.Key.RefId,
+                Data = x.Select(d => new StepGreekVerseDataWithOrder
+                {
+                    Greek = d.Word,
+                    Id = d.Id,
+                    Order = d.PositionInVerse,
+                    PositionInWord = d.PositionInWord
+                }).OrderBy(o => o.Order).ToList()
+            }).OrderBy(x => x.BookId)
+            .ThenBy(x => x.Chapter)
+            .ThenBy(x => x.Verse)
+            .ToList();
+
+        return list;
+    }
+
     internal async Task<List<VerseDataList<ElbVerseData>>> GetElbVerseDataAsync(int bookId, int chapter, int startVerse, int endVerse)
     {
         var sql = $"""
@@ -186,12 +257,13 @@ public class GreekMappingRepository
                    """;
 
         var verses = await _dbReader.ReadAsListAsync<InternalVerseDto>(sql);
-        var list = verses.GroupBy(x => new { x.BibleBookId, x.Chapter, x.Verse })
+        var list = verses.GroupBy(x => BibleReference.FromRefId(x.RefId))
             .Select(x => new VerseDataList<ElbVerseData>
             {
-                BookId = x.Key.BibleBookId,
+                BookId = x.Key.BookId,
                 Chapter = x.Key.Chapter,
                 Verse = x.Key.Verse,
+                RefId = x.Key.RefId,
                 Data = x.Select(d => new ElbVerseData
                 {
                     German = d.Word,
@@ -225,7 +297,8 @@ public class GreekMappingRepository
                 BookId = x.Key.BookId,
                 Chapter = x.Key.Chapter,
                 Verse = x.Key.Verse,
-                Data = x.Select(d => new StepGreekVerseData
+                RefId = x.Key.RefId,
+                Data = x.Select(d => new StepGreekVerseDataWithOrder
                 {
                     Greek = d.Word,
                     Id = d.Id,
@@ -281,7 +354,7 @@ public class GreekMappingRepository
                     FROM UNNEST({parameterNames})
                     ON CONFLICT ("ElbWordId", "StepWordId") DO NOTHING;
 
-                    ROLLBACK;
+                    COMMIT;
                     """;
 
         await _dbWriter.WriteAsync(sql, parameters);

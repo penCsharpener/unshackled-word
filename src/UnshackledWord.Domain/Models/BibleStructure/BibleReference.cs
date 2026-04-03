@@ -4,35 +4,49 @@ public interface IBibleReference;
 
 public record struct BibleReference : IBibleReference, IComparer<BibleReference>, IComparable<BibleReference>
 {
-    public BibleReference(int bookId, int chapter, int verse)
+    public BibleReference(int bookId, int chapter, int verse, int? altChapter = null, int? altVerse = null)
     {
         BookId = bookId;
         Chapter = chapter;
         Verse = verse;
+        AltChapter = altChapter ?? chapter;
+        AltVerse = altVerse ?? verse;
     }
 
-    public BibleReference(int RefId)
+    public BibleReference(int RefId, int? altRefId = null)
     {
-        var itself = FromRefId(RefId);
+        var itself = FromRefId(RefId, altRefId);
         BookId = itself.BookId;
         Chapter = itself.Chapter;
         Verse = itself.Verse;
     }
 
-    public static BibleReference FromRefId(int refId)
+    public static BibleReference FromRefId(int refId, int? altRefId = null)
     {
         var verse = refId % 1000;
         var remaining = refId / 1000;
         var chapter = remaining % 1000;
         var bookId = remaining / 1000;
 
-        return new(bookId, chapter, verse);
+        if (altRefId is null)
+        {
+            return new(bookId, chapter, verse);
+        }
+
+        var altVerse = refId % 1000;
+        var altRemaining = refId / 1000;
+        var altChapter = remaining % 1000;
+
+        return new(bookId, chapter, verse, altChapter, altVerse);
     }
 
     public int BookId { get; set; }
     public int Chapter { get; set; }
+    public int AltChapter { get; init; }
     public int Verse { get; set; }
+    public int AltVerse { get; init; }
     public int RefId => GetRefId();
+    public int AltRefId => GetAltRefId();
 
     /// <summary>
     /// Generates a continuous, sortable number based on bookId, chapter and verse.
@@ -43,6 +57,13 @@ public record struct BibleReference : IBibleReference, IComparer<BibleReference>
         var bookRefId = BookId * 1000000;
         var chapterRefId = Chapter * 1000;
         return bookRefId + chapterRefId + Verse;
+    }
+
+    private int GetAltRefId()
+    {
+        var bookRefId = BookId * 1000000;
+        var chapterRefId = AltChapter * 1000;
+        return bookRefId + chapterRefId + AltVerse;
     }
 
     public int Compare(BibleReference x, BibleReference y)

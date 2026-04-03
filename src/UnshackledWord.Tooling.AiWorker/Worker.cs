@@ -28,17 +28,7 @@ public class Worker : BackgroundService
         //     MaxVerse = 30
         // };
         // await _gkMapping.MapWordsForRangeAsync(minVerse, 30, bRef, stoppingToken);
-        await InsertDataAsync();
-        // await _gkMapping.RunAsync(stoppingToken);
+        await _gkMapping.RunAsync(stoppingToken);
         //await _hebMapping.RunAsync(stoppingToken);
-    }
-
-    private async Task InsertDataAsync()
-    {
-        var mappings = JsonSerializer.Deserialize<List<VerseDataList<ElbStepAiMapping>>>(GreekTestData.TestMapping);
-        var elbVerses = JsonSerializer.Deserialize<List<ElbVerseData>>(GreekTestData.ElbVerses);
-        var stepVerses = JsonSerializer.Deserialize<List<StepGreekVerseData>>(GreekTestData.StepWords);
-
-        await _greekMappingRepository.InsertMappingsAsync(mappings, elbVerses, stepVerses);
     }
 }

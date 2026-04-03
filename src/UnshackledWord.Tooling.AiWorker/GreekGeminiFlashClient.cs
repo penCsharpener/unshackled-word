@@ -1,4 +1,5 @@
 using UnshackledWord.Application.Extensions;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.AiWorker.Models.Greek;
 using GeminiClient = Google.GenAI.Client;
@@ -21,7 +22,7 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
                                              6. VERSE INTEGRITY: Never map a German word ID to a Greek word from a different verse.
                                              7. NO MARKDOWN: Return only raw JSON.
                                              8. COLUMN COUNT: Ensure that the Data property only has strings that consist of 6 pipe delimited columns.
-                                             9. COMPLETE MAPPING: Ensure that all German and Greek Words id have been mapped. Duplicate German Ids must have a value for 'GermanWordPart'.
+                                             9. COMPLETE MAPPING: Ensure that all German and Greek Words id have been mapped. Duplicate German Ids must have a value for 'GermanWordPart'. No id can be returned as 0!
                                              """;
 
     private IntShrinkDictionary _elbIdMapping = new();
@@ -36,35 +37,15 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
         // use two dictionaries to be able to map the ids back after the response comes back
         // this should also further reduce the costs as ids are much shorter
 
-        var germanVerseJson = elbWords.Select(x => new VerseDataList<VerseDataWithoutOrder>
-        {
-            BookId = x.BookId,
-            Chapter = x.Chapter,
-            Verse = x.Verse,
-            Data = x.Data.Select(k => new VerseDataWithoutOrder
-            {
-                Id = k.Id,
-                Word = k.German
-            }).ToList()
-        }).ReduceIds(_elbIdMapping).ToDelimitedString();
-        var greekVerseJson = stepWords.Select(x => new VerseDataList<VerseDataWithoutOrder>
-        {
-            BookId = x.BookId,
-            Chapter = x.Chapter,
-            Verse = x.Verse,
-            Data = x.Data.Select(k => new VerseDataWithoutOrder
-            {
-                Id = k.Id,
-                Word = k.Greek
-            }).ToList()
-        }).ReduceIds(_stepIdMapping).ToDelimitedString();
+        var germanVerseJson = elbWords.ToWithoutOrder().ReduceIds(_elbIdMapping).ToDelimitedString();
+        var greekVerseJson = stepWords.ToWithoutOrder().ReduceIds(_stepIdMapping).ToDelimitedString();
 
         var prompt = $"""
                       German Words: {germanVerseJson}
                       Greek Words: {greekVerseJson}
                       """;
 
-        var response = await SubmitAsync(prompt, GreekSystemInstruction, GeminiModelType.Flash2_5, token);
+        var response = await SubmitAsync(prompt, GreekSystemInstruction, GeminiModelType.Flash3_1LitePreview, token);
         var result = response.ToTypedResponse().RestoreIds(_elbIdMapping, (dictionary, mapping) =>
         {
             var originalId = dictionary.GetOriginalId(mapping.ElbWordId);
@@ -90,67 +71,11 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
         _elbIdMapping.Reset();
         _stepIdMapping.Reset();
 
+        foreach (var x in result)
+        {
+            x.RefId = new BibleReference(x.BookId, x.Chapter, x.Verse).RefId;
+        }
+
         return result;
-    }
-}
-
-public static class VerseDataExtensions
-{
-    public static IEnumerable<VerseDataList<VerseDataWithoutOrder>> ReduceIds(this IEnumerable<VerseDataList<VerseDataWithoutOrder>> items, IntShrinkDictionary tempMapping)
-    {
-        foreach (var item in items)
-        {
-            foreach (var verse in item.Data)
-            {
-                var newId = tempMapping.AddIds(verse.Id);
-                verse.Id = newId;
-            }
-
-            yield return item;
-        }
-    }
-
-    public static IEnumerable<VerseDataList<ElbStepAiMapping>> RestoreIds(
-        this IEnumerable<VerseDataList<ElbStepAiMapping>> items, IntShrinkDictionary tempMapping, Action<IntShrinkDictionary, ElbStepAiMapping> action)
-    {
-        foreach (var item in items)
-        {
-            foreach (var verse in item.Data)
-            {
-                action(tempMapping, verse);
-            }
-
-            yield return item;
-        }
-    }
-}
-
-public sealed class IntShrinkDictionary : Dictionary<int, int>
-{
-    private Dictionary<int, int> _reverseDictionary = new();
-
-    public int Increment { get; set; } = 1;
-
-    public void Reset()
-    {
-        Increment = 1;
-        Clear();
-        _reverseDictionary.Clear();
-    }
-
-    public int AddIds(int originalId)
-    {
-        Add(originalId, Increment);
-        _reverseDictionary.Add(Increment, originalId);
-        var returnId = Increment;
-
-        Increment++;
-
-        return returnId;
-    }
-
-    public int GetOriginalId(int reducedId)
-    {
-        return _reverseDictionary[reducedId];
     }
 }

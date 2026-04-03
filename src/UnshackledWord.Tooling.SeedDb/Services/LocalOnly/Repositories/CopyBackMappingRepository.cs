@@ -32,7 +32,7 @@ public sealed class CopyBackMappingRepository
                        INNER JOIN "unshackled-word"."Elb1871Words" ew ON egm."LxxRefId" = ew."HebRefId"  AND egm."PositionInVerse" = ew."PositionInVerse"
                        LEFT  JOIN "unshackled-word-backup01"."Elb1871Words" ew2 ON egm."ParentGermanWordId" = ew2."Id"
                        LEFT  JOIN "unshackled-word"."Elb1871Words" ew3 ON ew2."LxxRefId" = ew3."HebRefId" AND ew2."PositionInVerse" = ew3."PositionInVerse"
-                       LEFT  JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepWordId" = sgw."Id"
+                       LEFT  JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepGreekId" = sgw."Id"
                    ORDER BY egm."LxxRefId", egm."PositionInVerse"
                    ON CONFLICT DO NOTHING;
 
