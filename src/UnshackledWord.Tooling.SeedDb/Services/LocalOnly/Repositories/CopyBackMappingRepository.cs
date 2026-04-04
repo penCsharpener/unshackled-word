@@ -87,4 +87,36 @@ public sealed class CopyBackMappingRepository
 
         await _dbWriter.ExecuteScalarAsync<int>(sql);
     }
+
+    /// <summary>
+    /// delete all verse Mappings with missing words that were not mapped
+    /// exclude verses that contain words that are empty (punctuation marks removed, empty string remains)
+    /// </summary>
+    /// <param name="token"></param>
+    public async Task RemoveIncompleteGreekMappingsAsync(CancellationToken token = default)
+    {
+        var sql = """
+                  BEGIN;
+
+                  DELETE FROM "unshackled-word"."Elb1871GreekMapping"
+                  WHERE "HebRefId" IN (
+                      SELECT DISTINCT egm2."HebRefId"
+                      FROM "unshackled-word"."Elb1871GreekMapping" egm2
+                          INNER JOIN "unshackled-word"."Elb1871Words" ew2 ON egm2."ElbWordId" = ew2."Id"
+                      WHERE egm2."HebRefId" IN (
+                            SELECT DISTINCT ew."HebRefId"
+                            FROM "unshackled-word"."Elb1871Words" ew
+                                LEFT JOIN "unshackled-word"."Elb1871GreekMapping" egm ON ew."Id" = egm."ElbWordId"
+                            WHERE egm."ElbWordId" IS NULL
+                                AND ew."HebRefId" > 40000000
+                          )
+                      OR (egm2."StepWordId" IS NULL AND egm2."ParentGermanWordId" IS NULL)
+                      AND ew2."PlainWord" <> ''
+                      );
+
+                  COMMIT;
+                  """;
+
+        await _dbWriter.ExecuteScalarAsync<int>(sql);
+    }
 }

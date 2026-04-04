@@ -15,8 +15,8 @@ public sealed class IntShrinkDictionary : Dictionary<int, int>
 
     public int AddIds(int originalId)
     {
-        Add(originalId, Increment);
-        _reverseDictionary.Add(Increment, originalId);
+        TryAdd(originalId, Increment);
+        _reverseDictionary.TryAdd(Increment, originalId);
         var returnId = Increment;
 
         Increment++;

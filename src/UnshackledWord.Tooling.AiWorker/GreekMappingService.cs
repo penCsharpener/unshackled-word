@@ -37,6 +37,10 @@ public class GreekMappingService
                     await MapWordsForRangeAsync(verseChunk, token);
                 }
             }
+            catch (KeyNotFoundException keyEx)
+            {
+                _logger.LogError(keyEx.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during processing Greek mapping");
