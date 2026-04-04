@@ -55,19 +55,12 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
                          , ew."PositionInVerse"
                          , ew."WordInContext"
                          , ew."PlainWord"
-                         , ehm."StrongsNumber" "Strongs"
-                         , shwn."Hebrew" "Lemma"
-                         , (SELECT shw."Hebrew"
-                            FROM "unshackled-word"."StepHebrewWords" shw
-                                INNER JOIN "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords" shwnthw ON shwnthw."StepHebrewWordsId" = shw."Id"
-                                                                                                                AND shw."BibleBookId" = {bookId}
-                                                                                                                AND shw."Chapter" = {chapter}
-                            WHERE shwnthw."StepHebrewWordsNormalizedId" = ehm."StepHebrewNormalizedId"
-                            LIMIT 1) "Original"
-                         , '' "GrammaticalKey"
+                         , shw."RootDisambiguatedStrongsInstance" "Strongs"
+                         , shw."Hebrew" "Original"
+                         , shw."Grammar" "GrammaticalKey"
                     FROM "unshackled-word"."Elb1871Words" ew
                         LEFT JOIN "unshackled-word"."Elb1871HebrewMapping" ehm ON ew."Id" = ehm."ElbWordId"
-                        LEFT JOIN "unshackled-word"."StepHebrewWordsNormalized" shwn ON ehm."StepHebrewNormalizedId" = shwn."Id"
+                        LEFT JOIN "unshackled-word"."StepHebrewWords" shw ON ehm."StepWordId" = shw."Id"
                     WHERE 1=1
                         AND ew."BibleBookId" = {bookId}
                         AND ew."Chapter" = {chapter}
@@ -81,13 +74,13 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
                      , ew."PositionInVerse"
                      , ew."WordInContext"
                      , ew."PlainWord"
-                     , egm."StrongsNumber" "Strongs"
+                     , sgw."DisambiguatedStrongs" "Strongs"
                      , sgw."Lemma"
                      , sgw."Greek" "Original"
                      , sgw."Morphology" "GrammaticalKey"
                 FROM "unshackled-word"."Elb1871Words" ew
                     LEFT JOIN "unshackled-word"."Elb1871GreekMapping" egm ON ew."Id" = egm."ElbWordId"
-                    LEFT JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepGreekId" = sgw."Id"
+                    LEFT JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepWordId" = sgw."Id"
                 WHERE 1=1
                     AND ew."BibleBookId" = {bookId}
                     AND ew."Chapter" = {chapter}

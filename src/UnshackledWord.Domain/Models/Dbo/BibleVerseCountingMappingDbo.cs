@@ -9,6 +9,7 @@ public sealed class BibleVerseCountingMappingDbo
     public int Id { get; set; }
     public int HebRefId { get; set; }
     public int LxxRefId { get; set; }
+    public bool AreDifferent => HebRefId != LxxRefId;
 }
 
 public static class BibleVerseCountingMappingExtensions

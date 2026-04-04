@@ -1,3 +1,4 @@
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
 using GeminiClient = Google.GenAI.Client;
@@ -6,8 +7,6 @@ namespace UnshackledWord.Tooling.AiWorker;
 
 public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
 {
-//  8. The Hebrew is normalized and the mapped StepIds will then link it back to the normal Hebrew word. Do not merge Hebrew parts.
-
     // private const string ModelName = "gemini-3-flash-preview";
     // a) if there are multiple German words possible candidates for a parent then prefer less frequent words as parent, ie. 'er gemacht hatte' the parent is 'gemacht', not 'hatte'
     private const string HebrewSystemInstruction = """
@@ -25,21 +24,57 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
                                                   9. COMPLETE MAPPING: Ensure that all German and Hebrew Words id have been mapped. Duplicate German Ids must have a value for 'GermanWordPart'.
                                                   """;
 
+    private IntShrinkDictionary _elbIdMapping = new();
+    private IntShrinkDictionary _stepIdMapping = new();
+
     public HebrewGeminiFlashClient(GeminiClient client, ILogger<GreekGeminiFlashClient> logger) : base(client, logger) { }
 
     public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
         IEnumerable<VerseDataList<StepHebrewVerseData>> stepWords, CancellationToken token = default)
     {
-        var germanVerseJson = elbWords.ToWithoutOrder().ToDelimitedString();
-        var hebrewVerseJson = stepWords.ToWithoutOrder().ToDelimitedString();
+        // replace original ids with smaller ints starting from 1
+        // use two dictionaries to be able to map the ids back after the response comes back
+        // this should also further reduce the costs as ids are much shorter
+
+        var germanVerseJson = elbWords.ToWithoutOrder().ReduceIds(_elbIdMapping).ToDelimitedString();
+        var hebrewVerseJson = stepWords.ToWithoutOrder().ReduceIds(_stepIdMapping).ToDelimitedString();
 
         var prompt = $"""
                       German Words: {germanVerseJson}
                       Hebrew Words: {hebrewVerseJson}
                       """;
 
-        var response = await SubmitAsync(prompt, HebrewSystemInstruction, GeminiModelType.Flash2_5, token);
+        var response = await SubmitAsync(prompt, HebrewSystemInstruction, GeminiModelType.Flash3_1LitePreview, token);
+        var result = response.ToTypedResponse().RestoreIds(_elbIdMapping, (dictionary, mapping) =>
+        {
+            var originalId = dictionary.GetOriginalId(mapping.ElbWordId);
+            mapping.ElbWordId = originalId;
+            if (mapping.ParentElbWordId is null)
+            {
+                return;
+            }
 
-        return response.ToTypedResponse().ToList();
+            var originalParentId = dictionary.GetOriginalId(mapping.ParentElbWordId.Value);
+            mapping.ParentElbWordId = originalParentId;
+        }).RestoreIds(_stepIdMapping, (dictionary, mapping) =>
+        {
+            if (mapping.StepWordId is null)
+            {
+                return;
+            }
+
+            var originalId = dictionary.GetOriginalId(mapping.StepWordId.Value);
+            mapping.StepWordId = originalId;
+        }).ToList();
+
+        _elbIdMapping.Reset();
+        _stepIdMapping.Reset();
+
+        foreach (var x in result)
+        {
+            x.RefId = new BibleReference(x.BookId, x.Chapter, x.Verse).RefId;
+        }
+
+        return result;
     }
 }

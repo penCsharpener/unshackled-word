@@ -80,7 +80,7 @@ public sealed class CopyBackMappingRepository
                        FROM "unshackled-word"."Elb1871Words" ew
                            LEFT JOIN "unshackled-word"."Elb1871HebrewMapping" ehm ON ew."Id" = ehm."ElbWordId"
                        WHERE ehm."ElbWordId" IS NULL
-                           AND ew."HebRefId" < 10019000
+                           AND ew."HebRefId" < 40000000
                    );
                    COMMIT;
                    """;
@@ -116,6 +116,35 @@ public sealed class CopyBackMappingRepository
 
                   COMMIT;
                   """;
+
+        await _dbWriter.ExecuteScalarAsync<int>(sql);
+    }
+
+    /// <summary>
+    /// delete all verse Mappings with missing words that were not mapped
+    /// exclude verses that contain words that are empty (punctuation marks removed, empty string remains)
+    /// </summary>
+    /// <param name="token"></param>
+    public async Task RemoveIncompleteHebrewMappingsAsync(CancellationToken token = default)
+    {
+        var sql = $"""
+                   BEGIN;
+
+                   DELETE FROM "unshackled-word"."Elb1871HebrewMapping"
+                   WHERE "HebRefId" IN (
+                         SELECT DISTINCT unmapped."HebRefId"
+                         FROM (
+                             SELECT ehm.*, ew."PlainWord", ew."WordInContext"
+                             FROM "unshackled-word"."Elb1871HebrewMapping" ehm
+                                 INNER JOIN "unshackled-word"."Elb1871Words" ew ON ehm."ElbWordId" = ew."Id"
+                             WHERE ehm."StepWordId" IS NULL
+                                 AND ehm."ParentGermanWordId" IS NULL
+                                 AND ew."PlainWord" <> ''
+                         ) unmapped
+                       );
+
+                   COMMIT;
+                   """;
 
         await _dbWriter.ExecuteScalarAsync<int>(sql);
     }
