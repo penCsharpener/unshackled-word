@@ -1,7 +1,6 @@
 using Polly;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
-using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
 

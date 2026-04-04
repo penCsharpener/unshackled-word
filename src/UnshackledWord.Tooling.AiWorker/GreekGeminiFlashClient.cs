@@ -1,4 +1,3 @@
-using UnshackledWord.Application.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.AiWorker.Models;
 using UnshackledWord.Tooling.AiWorker.Models.Greek;

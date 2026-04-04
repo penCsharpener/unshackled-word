@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Components.Forms;
 using UnshackledWord.Application.Abstractions;
-using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Tooling.AiWorker.Models;

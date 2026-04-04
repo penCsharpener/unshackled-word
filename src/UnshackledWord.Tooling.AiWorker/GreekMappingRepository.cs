@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using UnshackledWord.Application.Abstractions;
-using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Infrastructure.Repositories;

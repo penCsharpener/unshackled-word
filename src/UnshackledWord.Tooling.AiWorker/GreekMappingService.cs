@@ -1,7 +1,5 @@
 using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
-using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
 

@@ -1,7 +1,6 @@
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Domain.Models;
 using UnshackledWord.Domain.Models.Dbo.Step;
 
 namespace UnshackledWord.Infrastructure.Repositories.Step;
