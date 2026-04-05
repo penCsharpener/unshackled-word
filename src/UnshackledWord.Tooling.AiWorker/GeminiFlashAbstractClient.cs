@@ -94,9 +94,6 @@ public abstract class GeminiFlashAbstractClient
                 Type = GeminiType.Object,
                 Properties = new Dictionary<string, Schema>
                 {
-                    ["BookId"] = new() { Type = GeminiType.Integer },
-                    ["Chapter"] = new() { Type = GeminiType.Integer },
-                    ["Verse"] = new() { Type = GeminiType.Integer },
                     ["RefId"] = new() { Type = GeminiType.Integer, Description = "Is combined Integer of (BookId * 1000000) + (Chapter * 1000) + Verse" },
                     ["Data"] = new()
                     {
@@ -111,7 +108,7 @@ public abstract class GeminiFlashAbstractClient
                         }
                     }
                 },
-                Required = ["BookId", "Chapter", "Verse", "RefId", "Data"]
+                Required = ["RefId", "Data"]
             }
         };
 
@@ -122,10 +119,10 @@ public abstract class GeminiFlashAbstractClient
             // Temperature = 0.2,
             // TopP = 0.1f,
             // TopK = 1,
-            // ThinkingConfig = new ThinkingConfig
-            // {
-            //     ThinkingLevel = ThinkingLevel.Medium
-            // },
+            ThinkingConfig = new ThinkingConfig
+            {
+                ThinkingLevel = ThinkingLevel.Medium
+            },
             SystemInstruction = new Content
             {
                 Parts = new List<Part>

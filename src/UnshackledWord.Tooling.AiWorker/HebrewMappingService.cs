@@ -34,7 +34,7 @@ public class HebrewMappingService
 
         var bookNames = await _repo.GetBookNamesAsync();
         _booksDictionary = bookNames.ToDictionary(x => x.Id, x => x.Name);
-        const int versesPerTask = 10;
+        const int versesPerTask = 1;
         const int parallelTasks = 1;
 
         while (!token.IsCancellationRequested)

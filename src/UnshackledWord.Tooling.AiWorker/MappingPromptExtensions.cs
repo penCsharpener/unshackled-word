@@ -1,4 +1,6 @@
 using System.Text;
+using Google.GenAI.Types;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.AiWorker.Models;
 
 namespace UnshackledWord.Tooling.AiWorker;
@@ -32,8 +34,17 @@ public static class MappingPromptExtensions
                 BookId = verse.BookId,
                 Chapter = verse.Chapter,
                 Verse = verse.Verse,
+                RefId = verse.RefId,
                 Data = []
             };
+
+            if (result.BookId == 0 && result.RefId > 0)
+            {
+                var bRef = BibleReference.FromRefId(result.RefId);
+                result.BookId = bRef.BookId;
+                result.Chapter = bRef.Chapter;
+                result.Verse = bRef.Verse;
+            }
 
             var allData = new List<ElbStepAiMapping>();
 
