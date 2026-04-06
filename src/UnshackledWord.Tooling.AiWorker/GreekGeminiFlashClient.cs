@@ -75,6 +75,23 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
             x.RefId = new BibleReference(x.BookId, x.Chapter, x.Verse).RefId;
         }
 
-        return result;
+        return AddInternalWords(result, elbWords, stepWords);
+    }
+
+    private List<VerseDataList<ElbStepAiMapping>> AddInternalWords(List<VerseDataList<ElbStepAiMapping>> mappings,
+        List<VerseDataList<ElbVerseData>> elbWords,
+        List<VerseDataList<StepGreekVerseData>> stepWords)
+    {
+        var dictElb = elbWords.SelectMany(x => x.Data).ToDictionary(k => k.Id, v => v.German);
+        var dictStep = stepWords.SelectMany(x => x.Data).ToDictionary(k => k.Id, v => v.Greek);
+
+        foreach (var mapping in mappings.SelectMany(x => x.Data))
+        {
+            mapping.InternalElbWord = dictElb.TryGetValue(mapping.ElbWordId, out var value) ? value : null;
+            mapping.InternalParentWord = dictElb.TryGetValue(mapping.ParentElbWordId ?? 0, out var value2) ? value2 : null;
+            mapping.InternalStepWord = dictStep.TryGetValue(mapping.StepWordId ?? 0, out var value3) ? value3 : null;
+        }
+
+        return mappings;
     }
 }

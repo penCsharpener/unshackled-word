@@ -116,13 +116,9 @@ public abstract class GeminiFlashAbstractClient
         {
             ResponseMimeType = "application/json",
             ResponseSchema = responseSchema,
-            // Temperature = 0.2,
+            // Temperature = 0.1f,
             // TopP = 0.1f,
             // TopK = 1,
-            ThinkingConfig = new ThinkingConfig
-            {
-                ThinkingLevel = ThinkingLevel.Medium
-            },
             SystemInstruction = new Content
             {
                 Parts = new List<Part>

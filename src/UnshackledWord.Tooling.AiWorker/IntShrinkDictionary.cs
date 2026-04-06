@@ -1,8 +1,10 @@
+using System.Collections.Concurrent;
+
 namespace UnshackledWord.Tooling.AiWorker;
 
-public sealed class IntShrinkDictionary : Dictionary<int, int>
+public sealed class IntShrinkDictionary : ConcurrentDictionary<int, int>
 {
-    private Dictionary<int, int> _reverseDictionary = new();
+    private ConcurrentDictionary<int, int> _reverseDictionary = new();
 
     public int Increment { get; set; } = 1;
 

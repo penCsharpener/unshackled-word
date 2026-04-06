@@ -10,35 +10,51 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
     // private const string ModelName = "gemini-3-flash-preview";
     // a) if there are multiple German words possible candidates for a parent then prefer less frequent words as parent, ie. 'er gemacht hatte' the parent is 'gemacht', not 'hatte'
     // ElbWordId|StepWordId|IsAddedWord|ParentElbWordId|PartOrder|GermanWordPart
-    private const string HebrewSystemInstruction = """
-                                                  You are a linguistic expert mapping the Elberfelder 1871 German NT to STEP Bible Hebrew data.
-                                                  RULES:
-                                                  1. OUTPUT: Return a JSON object matching the provided schema.
-                                                     INPUT: The Input format is an array with an array [Ref BookId:Chapter:Verse[(Id,Word)...]] of Bible References and tuples of ids and words in the verse.
-                                                  2. SPLIT VERBS: Map split German verb parts (geht...aus') to the same StepWordId. For example a) 'עָשָׂה' to 'er', 'gemacht', 'hatte' or b) 'כָּבַשׁ' to 'machet', 'sie', 'euch', 'untertan'
-                                                  3. ADDED WORDS: If a German word has no Hebrew source, set 'IsAddedWord' true and StepWordId: null.
-                                                  4. PARENT MAPPING: For German words with IsAddedWord = true (e.g., articles, particles), set ParentElbWordId to the ElbWordId of the semantic head of the phrase. For articles and adjectives, this is the Noun. For auxiliary verbs or split particles, this is the Main Verb. If 'der' refers to 'Tisch' in 'der kleine Tisch', map 'der' to the ID of 'Tisch'.
-                                                  5. COMPOUND WORDS: If a German compound word corresponds to two distinct Hebrew words, split the German word into its constituent parts (e.g., 'Gerstenernte' into 'Gersten' for 'שְׂעֹרִֽים' and 'ernte' for 'קְצִ֥יר'.). Store them in 'GermanWordPart'. Assign each part its unique StepWordId corresponding to its source word, but maintain the original ElbWordId for both parts to ensure they can be reconstructed.
-                                                  6. VERSE INTEGRITY: Never map a ElbWordId to a Hebrew word from a different verse.
-                                                  7. NO MARKDOWN: Return only raw JSON.
-                                                  8. COLUMN COUNT: Ensure that the Data property only has strings that consist of 6 pipe delimited columns.
-                                                  9. COMPLETE MAPPING: Ensure that ALL ElbWordIds and StepWordIds have been mapped! Duplicate ElbWordIds must have a value for 'GermanWordPart'.
-                                                  """;
+    private const string HebrewSystemInstruction =
+        """
+        You are a linguistic expert specializing in mapping the German Elberfelder 1871 Bible to the Biblical Hebrew MT. Your task is to generate a precise word-level alignment in a specific JSON format.
 
-    private IntShrinkDictionary _elbIdMapping = new();
-    private IntShrinkDictionary _stepIdMapping = new();
+        ### MAPPING RULES:
+        1. SEQUENTIAL MAPPING: Map German words to Hebrew words following their appearance in the text.
+        2. MORPHOLOGICAL ALIGNMENT (Many-to-One):
+           - Map German possessive pronouns (e.g., "ihr") and their associated noun (e.g., "Vater") to the single Hebrew ID containing the suffix (e.g., "אָבִ֖יהָ").
+           - Map auxiliary verbs or phrasal verb components to the single Hebrew ID representing the action.
+        3. ADDED WORDS (IsAddedWord/ParentElbWordId):
+           - If a German word has no Hebrew equivalent (e.g., articles like "ein", "der" or supplementary particles), set IsAddedWord = 1.
+           - You MUST identify a ParentElbWordId for every IsAddedWord = 1. The parent is the primary German noun or verb the added word modifies.
+        4. UNTRANSLATED HEBREW PARTICLES:
+           - Link Hebrew untranslated markers (like 'אֶת־' or 'לְ') to the nearest semantic German noun or verb ID.
+        5. COMPOUND WORDS (PartOrder/GermanWordPart):
+           - If one German Word ID corresponds to multiple Hebrew Word IDs (e.g., "Gersten-ernte"), create two entries for that German ID.
+           - Use PartOrder (1, 2, etc.) and GermanWordPart to show the split (e.g., "Gersten" and "ernte").
+        6. DATA VALIDATION:
+           - if IsAddedWord is 1 and ParentElbWordId is set, then StepWordId MUST be null
+           - if StepWordId is set, IsAddedWord is false and ParentElbWordId null
+           - if GermanWordPart and PartOrder are set, they have the same ElbWordId, otherwise they are null
+           - GermanWordPart does not contain an ID, but the part of the German Word the Hebrew Id belongs to
+
+        ### OUTPUT FORMAT:
+        Return a JSON array of objects. Each object must contain:
+        - "RefId": Integer (BookId * 1000000 + Chapter * 1000 + Verse).
+        - "Data": An array of pipe-delimited strings: "ElbWordId|StepWordId|IsAddedWord|ParentElbWordId|PartOrder|GermanWordPart"
+
+        ### DATA CONVENTIONS:
+        - Use '1' for true, '0' for false.
+        - Use '-' for null/empty values in ParentElbWordId, PartOrder, and GermanWordPart.
+        - Ensure every Elberfelder ID provided in the input is accounted for in the output.
+        """;
 
     public HebrewGeminiFlashClient(GeminiClient client, ILogger<GreekGeminiFlashClient> logger) : base(client, logger) { }
 
-    public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(IEnumerable<VerseDataList<ElbVerseData>> elbWords,
-        IEnumerable<VerseDataList<StepHebrewVerseData>> stepWords, CancellationToken token = default)
+    public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(List<VerseDataList<ElbVerseData>> elbWords,
+        List<VerseDataList<StepHebrewVerseData>> stepWords, CancellationToken token = default)
     {
         // replace original ids with smaller ints starting from 1
         // use two dictionaries to be able to map the ids back after the response comes back
         // this should also further reduce the costs as ids are much shorter
 
-        var germanVerseJson = elbWords.ToWithoutOrder().ReduceIds(_elbIdMapping).ToDelimitedString();
-        var hebrewVerseJson = stepWords.ToWithoutOrder().ReduceIds(_stepIdMapping).ToDelimitedString();
+        var germanVerseJson = elbWords.ToWithoutOrder().ToDelimitedString();
+        var hebrewVerseJson = stepWords.ToWithoutOrder().ToDelimitedString();
 
         var prompt = $"""
                       German Words: {germanVerseJson}
@@ -46,37 +62,30 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
                       """;
 
         var response = await SubmitAsync(prompt, HebrewSystemInstruction, GeminiModelType.Flash3_1LitePreview, token);
-        var result = response.ToTypedResponse().RestoreIds(_elbIdMapping, (dictionary, mapping) =>
-        {
-            var originalId = dictionary.GetOriginalId(mapping.ElbWordId);
-            mapping.ElbWordId = originalId;
-
-            if (mapping.ParentElbWordId is null)
-            {
-                return;
-            }
-
-            var originalParentId = dictionary.GetOriginalId(mapping.ParentElbWordId.Value);
-            mapping.ParentElbWordId = originalParentId;
-        }).RestoreIds(_stepIdMapping, (dictionary, mapping) =>
-        {
-            if (mapping.StepWordId is null)
-            {
-                return;
-            }
-
-            var originalId = dictionary.GetOriginalId(mapping.StepWordId.Value);
-            mapping.StepWordId = originalId;
-        }).ToList();
-
-        _elbIdMapping.Reset();
-        _stepIdMapping.Reset();
+        var result = response.ToTypedResponse().ToList();
 
         foreach (var x in result)
         {
             x.RefId = new BibleReference(x.BookId, x.Chapter, x.Verse).RefId;
         }
 
-        return result;
+        return AddInternalWords(result, elbWords, stepWords);
+    }
+
+    private List<VerseDataList<ElbStepAiMapping>> AddInternalWords(List<VerseDataList<ElbStepAiMapping>> mappings,
+        List<VerseDataList<ElbVerseData>> elbWords,
+        List<VerseDataList<StepHebrewVerseData>> stepWords)
+    {
+        var dictElb = elbWords.SelectMany(x => x.Data).ToDictionary(k => k.Id, v => v.German);
+        var dictStep = stepWords.SelectMany(x => x.Data).ToDictionary(k => k.Id, v => v.Hebrew);
+
+        foreach (var mapping in mappings.SelectMany(x => x.Data))
+        {
+            mapping.InternalElbWord = dictElb.TryGetValue(mapping.ElbWordId, out var value) ? value : null;
+            mapping.InternalParentWord = dictElb.TryGetValue(mapping.ParentElbWordId ?? 0, out var value2) ? value2 : null;
+            mapping.InternalStepWord = dictStep.TryGetValue(mapping.StepWordId ?? 0, out var value3) ? value3 : null;
+        }
+
+        return mappings;
     }
 }

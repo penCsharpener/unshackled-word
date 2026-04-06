@@ -228,7 +228,7 @@ public class HebrewMappingRepository
                 var refId = new BibleReference(mapping.BookId, mapping.Chapter, mapping.Verse);
                 var foundWord = elbVerses.FirstOrDefault(x => x.Id == wordMap.ElbWordId);
                 var elbWordOrder = foundWord?.Order ?? 999;
-                var germanWord = foundWord?.German;
+                var germanWord = wordMap?.GermanWordPart;
 
                 parameters.ElbWordId.Add(wordMap.ElbWordId);
                 parameters.StepWordId.Add(wordMap.StepWordId);

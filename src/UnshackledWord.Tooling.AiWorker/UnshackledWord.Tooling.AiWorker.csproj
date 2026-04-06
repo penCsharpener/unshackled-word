@@ -4,6 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" />
     <PackageReference Include="Google.GenAI" />
     <PackageReference Include="Polly" />
     <PackageReference Include="Serilog.AspNetCore"/>

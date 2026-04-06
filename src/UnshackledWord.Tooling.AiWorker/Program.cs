@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Google.GenAI.Types;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -32,6 +33,7 @@ public static partial class Program
             .AddSingleton<HebrewGeminiFlashClient>()
             .AddSingleton<HebrewMappingService>()
             .AddHostedService<Worker>()
+            .AddFluentValidationAutoValidation()
             ;
         return services;
     }
