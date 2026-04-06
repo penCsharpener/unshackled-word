@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using Polly;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo;
@@ -10,12 +11,14 @@ public class HebrewMappingService
 {
     private readonly HebrewMappingRepository _repo;
     private readonly HebrewGeminiFlashClient _client;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<HebrewMappingService> _logger;
 
-    public HebrewMappingService(HebrewMappingRepository repo, HebrewGeminiFlashClient client, ILogger<HebrewMappingService> logger)
+    public HebrewMappingService(HebrewMappingRepository repo, HebrewGeminiFlashClient client, IServiceScopeFactory scopeFactory, ILogger<HebrewMappingService> logger)
     {
         _repo = repo;
         _client = client;
+        _scopeFactory = scopeFactory;
         _logger = logger;
     }
 
@@ -30,14 +33,17 @@ public class HebrewMappingService
                     _logger.LogError(ex, "Retry {retryCount} after {delay} delay.", retryCount, timeSpan.ToString(@"mm\:ss"));
                 });
 
-        var bookNames = await _repo.GetBookNamesAsync();
-        const int versesPerTask = 10;
-        const int parallelTasks = 5;
-
         while (!token.IsCancellationRequested)
         {
             try
             {
+                using var scope = _scopeFactory.CreateScope();
+                var options = scope.ServiceProvider.GetRequiredService<IOptionsMonitor<GoogleAiOptions>>()
+                    .CurrentValue;
+
+                var versesPerTask = options.VersesPerTask;
+                var parallelTasks = options.MaxParallelTasks;
+
                 var missingVerses = await _repo.GetMissingVersesAsync();
 
                 if (missingVerses.IsNullOrEmpty())
