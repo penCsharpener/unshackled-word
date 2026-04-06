@@ -52,6 +52,7 @@ public class HebrewMappingRepository
                      left join "unshackled-word"."Elb1871HebrewMapping" egm on ew."Id" = egm."ElbWordId"
                    where ew."HebRefId" <= 40000000
                      and egm."ElbWordId" is null
+                     and ew."PlainWord" <> ''
                    group by ew."HebRefId", bvcm."LxxRefId"
                    order by ew."HebRefId"
                    """;
