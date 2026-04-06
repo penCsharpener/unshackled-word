@@ -55,6 +55,11 @@ public struct AiResponseStats
             {
                 mapping.GermanWordPart = null;
             }
+
+            if (mapping.PartOrder.HasValue && mapping.GermanWordPart.IsNullOrWhiteSpace())
+            {
+                mapping.PartOrder = null;
+            }
         }
 
         var totalHebRefIdFromResponse = Results.Select(x => x.RefId).Distinct().ToList();
