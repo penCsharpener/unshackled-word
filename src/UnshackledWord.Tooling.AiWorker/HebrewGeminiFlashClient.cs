@@ -32,6 +32,7 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
            - if StepWordId is set, IsAddedWord is false and ParentElbWordId null
            - if GermanWordPart and PartOrder are set, they have the same ElbWordId, otherwise they are null
            - GermanWordPart does not contain an ID, but the part of the German Word the Hebrew Id belongs to
+           - only use Ids that have been submitted in the request
 
         ### OUTPUT FORMAT:
         Return a JSON array of objects. Each object must contain:
@@ -44,7 +45,7 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
         - Ensure every Elberfelder ID provided in the input is accounted for in the output.
         """;
 
-    public HebrewGeminiFlashClient(GeminiClient client, ILogger<GreekGeminiFlashClient> logger) : base(client, logger) { }
+    public HebrewGeminiFlashClient(GeminiClient client, ILogger<HebrewGeminiFlashClient> logger) : base(client, logger) { }
 
     public async Task<List<VerseDataList<ElbStepAiMapping>>> GetElbStepMappings(List<VerseDataList<ElbVerseData>> elbWords,
         List<VerseDataList<StepHebrewVerseData>> stepWords, CancellationToken token = default)

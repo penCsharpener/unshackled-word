@@ -17,7 +17,7 @@ public abstract class GeminiFlashAbstractClient
     protected readonly GeminiClient _client;
     protected readonly ILogger _logger;
 
-    public GeminiFlashAbstractClient(GeminiClient client, ILogger<GreekGeminiFlashClient> logger)
+    public GeminiFlashAbstractClient(GeminiClient client, ILogger<GeminiFlashAbstractClient> logger)
     {
         _client = client;
         _logger = logger;
