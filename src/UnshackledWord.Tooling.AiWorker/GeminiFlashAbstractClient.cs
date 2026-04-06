@@ -101,10 +101,10 @@ public abstract class GeminiFlashAbstractClient
                         Items = new Schema
                         {
                             Type = GeminiType.String,
-                            Description = "A pipe-delimited string (no spaces) representing these 6 fields: " +
-                                          "ElbWordId|StepWordId|IsAddedWord|ParentElbWordId|PartOrder|GermanWordPart " +
-                                          "Rules: 1=true, 0=false, '-'=null. " +
-                                          "Examples: '123|456|0|-|-|-', '123|-|1|456|-|-', '123|456|0|-|1|Gersten', '123|876|0|-|2|ernte'"
+                            // Description = "A pipe-delimited string (no spaces) representing these 6 fields: " +
+                            //               "ElbWordId|StepWordId|IsAddedWord|ParentElbWordId|PartOrder|GermanWordPart " +
+                            //               "Rules: 1=true, 0=false, '-'=null. " +
+                            //               "Examples: '123|456|0|-|-|-', '123|-|1|456|-|-', '123|456|0|-|1|Gersten', '123|876|0|-|2|ernte'"
                         }
                     }
                 },
