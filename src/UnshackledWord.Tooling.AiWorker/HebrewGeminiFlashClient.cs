@@ -77,13 +77,22 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
         List<VerseDataList<ElbVerseData>> elbWords,
         List<VerseDataList<StepHebrewVerseData>> stepWords)
     {
-        var dictElb = elbWords.SelectMany(x => x.Data).ToDictionary(k => k.Id, v => v.German);
-        var dictStep = stepWords.SelectMany(x => x.Data).ToDictionary(k => k.Id, v => v.Hebrew);
+        var dictElb = new Dictionary<int, string>();
+        foreach (var word in elbWords.SelectMany(x => x.Data))
+        {
+            dictElb.TryAdd(word.Id, word.German);
+        }
+
+        var dictStep = new Dictionary<int, string>();
+        foreach (var word in stepWords.SelectMany(x => x.Data))
+        {
+            dictStep.TryAdd(word.Id, word.Hebrew);
+        }
 
         foreach (var mapping in mappings.SelectMany(x => x.Data))
         {
             mapping.InternalElbWord = dictElb.TryGetValue(mapping.ElbWordId, out var value) ? value : null;
-            mapping.InternalParentWord = dictElb.TryGetValue(mapping.ParentElbWordId ?? 0, out var value2) ? value2 : null;
+            mapping.InternalParentWord = mapping.ParentElbWordId.HasValue && dictElb.TryGetValue(mapping.ParentElbWordId.Value, out var value2) ? value2 : null;
             mapping.InternalStepWord = dictStep.TryGetValue(mapping.StepWordId ?? 0, out var value3) ? value3 : null;
         }
 
