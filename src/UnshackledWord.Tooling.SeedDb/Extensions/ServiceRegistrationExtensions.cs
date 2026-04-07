@@ -5,6 +5,7 @@ using UnshackledWord.Infrastructure.Extensions;
 using UnshackledWord.Infrastructure.Services;
 using UnshackledWord.Persistence.Postgres.Services;
 using UnshackledWord.Tooling.SeedDb.Services;
+using UnshackledWord.Tooling.SeedDb.Services.AiMappingImport;
 using UnshackledWord.Tooling.SeedDb.Services.ByzTxt.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer;
 using UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper;
@@ -48,6 +49,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<OpenScriptureHebrewStrategy>();
         services.AddScoped<GbtCsvStrategy>();
         services.AddScoped<TskTextReader>();
+        services.AddAiMappingImportServices();
         services.RegisterElb1871SrWordMapperServices();
         services.AddScoped<IDbWriter, DbWriter>();
         services.AddScoped<IDbReader, DbReader>();
