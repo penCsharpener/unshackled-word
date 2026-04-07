@@ -30,7 +30,14 @@ public class BackupFileService
         {
             var book = BibleBook.AllBooks[bookId];
 
-            await using var writer = new StreamWriter(_file.Combine(backupPath, $"{bookId.ToString().PadLeft(2,'0')}-{book.Name}.csv"));
+            var csvPath = _file.Combine(backupPath, $"{bookId.ToString().PadLeft(2, '0')}-{book.Name}.csv");
+
+            if (_file.FileExists(csvPath))
+            {
+                _file.DeleteFile(csvPath);
+            }
+
+            await using var writer = new StreamWriter(csvPath);
             await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
             await csv.WriteRecordsAsync(mappings, token);
         }
