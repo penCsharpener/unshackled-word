@@ -1,28 +1,11 @@
-﻿using System.Data;
-
-namespace UnshackledWord.Application.Abstractions;
+﻿namespace UnshackledWord.Application.Abstractions;
 
 public interface IDbReader
 {
-    Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object param = null);
-    Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object param = null);
+    Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object? param = null);
+    Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object? param = null);
     Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null);
-}
 
-public interface IDbWriter
-{
-    Task<int> WriteAsync<T>(string sql, T parameters);
-    Task<int> WriteAsync(string sql);
-    Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null);
-}
-
-public interface IDbMigrator
-{
-}
-
-public interface IDbConnectionFactory : IDisposable, IAsyncDisposable
-{
-    public IDbConnection DbConnection { get; set; }
-
-    IDbConnection CreateDbConnection();
+    Task<List<T>> ReadMultipleAsListAsync<T>(string sql, object? param,
+        Func<IMultiDbReader, Task<List<T>>> mappingFunc, CancellationToken token = default);
 }

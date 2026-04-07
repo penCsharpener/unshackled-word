@@ -1,8 +1,6 @@
-using System.Text;
 using UnshackledWord.Application.Abstractions;
-using UnshackledWord.Application.Repositories;
-using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Domain.Models.Dbo;
+using UnshackledWord.Application.Features.Backup;
+using UnshackledWord.Domain.Models.BibleStructure;
 
 namespace UnshackledWord.Infrastructure.Repositories;
 
@@ -15,50 +13,57 @@ public class ElbDashboardRepository : IElbDashboardRepository
         _dbReader = dbReader;
     }
 
-    public async Task<Dictionary<int, string>> CreateBackupAsync(CancellationToken ct)
+    public async Task<Dictionary<int, List<ElbMappingBackup>>> CreateBackupAsync(CancellationToken ct = default)
     {
         var sql = $"""
-                  select ew."BibleBookId", ew."Chapter", ew."Verse", ew."{nameof(Elb1871WordDbo.WordInContext)}", ew."Lemma", ew."Strongs", ew."PartOfSpeech"
-                  from {Elb1871WordDbo.DboName} ew
-                  where (ew."{nameof(Elb1871WordDbo.Lemma)}" is not null or ew."{nameof(Elb1871WordDbo.Strongs)}" is not null or ew."{nameof(Elb1871WordDbo.PartOfSpeech)}" is not null)
-                  order by ew."{nameof(Elb1871WordDbo.BibleBookId)}"
-                         , ew."{nameof(Elb1871WordDbo.Chapter)}"
-                         , ew."{nameof(Elb1871WordDbo.Verse)}"
-                         , ew."{nameof(Elb1871WordDbo.PositionInVerse)}"
-                         ;
-                  """;
+                   SELECT
+                         ehm."HebRefId"
+                       , ehm."PositionInVerse"
+                       , ehm."GermanWordPart"
+                       , ew."PlainWord" "ElbWord"
+                       , shw."Hebrew" "StepWord"
+                       , ehm."IsAddedWord"
+                       , ew2."PositionInVerse" "ParentPositionInVerse"
+                       , ew2."PlainWord" "ParentWord"
+                   FROM "unshackled-word"."Elb1871HebrewMapping"     ehm
+                       LEFT JOIN "unshackled-word"."Elb1871Words"    ew  ON ehm."ElbWordId" = ew."Id"
+                       LEFT JOIN "unshackled-word"."StepHebrewWords" shw ON ehm."StepWordId" = shw."Id"
+                       LEFT JOIN "unshackled-word"."Elb1871Words"    ew2 ON ehm."ParentGermanWordId" = ew2."Id"
+                   WHERE 1=1
+                   ORDER BY
+                       ehm."HebRefId" ASC,
+                       ehm."PositionInVerse" ASC;
 
-        var records = await _dbReader.ReadAsListAsync<ElbBackupRecord>(sql, ct);
-        var dictionary = new Dictionary<int, string>();
+                   SELECT
+                         egm."HebRefId"
+                       , egm."PositionInVerse"
+                       , egm."GermanWordPart"
+                       , ew."PlainWord" "ElbWord"
+                       , sgw."Greek" "StepWord"
+                       , egm."IsAddedWord"
+                       , ew2."PositionInVerse" "ParentPositionInVerse"
+                       , ew2."PlainWord" "ParentWord"
+                   FROM "unshackled-word"."Elb1871GreekMapping"     egm
+                       LEFT JOIN "unshackled-word"."Elb1871Words"   ew  ON egm."ElbWordId" = ew."Id"
+                       LEFT JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepWordId" = sgw."Id"
+                       LEFT JOIN "unshackled-word"."Elb1871Words"   ew2 ON egm."ParentGermanWordId" = ew2."Id"
+                   WHERE 1=1
+                   ORDER BY
+                       egm."HebRefId" ASC,
+                       egm."PositionInVerse" ASC;
+                   """;
 
-        foreach (var group in records.GroupBy(x => x.BibleBookId))
+        var records = await _dbReader.ReadMultipleAsListAsync<ElbMappingBackup>(sql, null, async (reader) =>
         {
-            var sb = new StringBuilder();
+            var hebrewMappings = await reader.ReadAsync<ElbMappingBackup>();
+            var greekMappings = await reader.ReadAsync<ElbMappingBackup>();
 
-            foreach (var record in group.Select(x => x))
-            {
-                var setLemma = record.Lemma.IsNullOrWhiteSpace() ? null : $"\"{nameof(Elb1871WordDbo.Lemma)}\" = '{record.Lemma}'";
-                var setStrongs = record.Strongs.IsNullOrWhiteSpace() ? null : $"\"{nameof(Elb1871WordDbo.Strongs)}\" = '{record.Strongs}'";
-                var setPartOfSpeech = record.PartOfSpeech.IsNullOrWhiteSpace() ? null : $"\"{nameof(Elb1871WordDbo.PartOfSpeech)}\" = '{record.PartOfSpeech}'";
+            hebrewMappings.AddRange(greekMappings);
 
-                var list = new List<string>();
-                list.AddIfNotNull(setLemma)
-                    .AddIfNotNull(setStrongs)
-                    .AddIfNotNull(setPartOfSpeech);
+            return hebrewMappings;
+        }, ct);
 
-                sb.AppendLine($"UPDATE {Elb1871WordDbo.DboName} " +
-                              $"SET {list.JoinStrings(", ")} " +
-                              $"WHERE \"{nameof(record.BibleBookId)}\" = {record.BibleBookId} " +
-                              $"AND \"{nameof(record.Chapter)}\" = {record.Chapter} " +
-                              $"AND \"{nameof(record.Verse)}\" = {record.Verse} " +
-                              $"AND \"{nameof(record.WordInContext)}\" = '{record.WordInContext}';");
-            }
-
-            dictionary.Add(group.Key, sb.ToString());
-        }
-
-        return dictionary;
+        return records.GroupBy(x => BibleReference.FromRefId(x.HebRefId).BookId)
+            .ToDictionary(group => group.Key, group => group.ToList());
     }
-
-    private record ElbBackupRecord(int BibleBookId, int Chapter, int Verse, string WordInContext, string? Lemma, string? Strongs, string? PartOfSpeech);
 }

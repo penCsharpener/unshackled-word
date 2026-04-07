@@ -22,7 +22,18 @@ public sealed class SqliteDbConnectionFactory : IDbConnectionFactory
     public IDbConnection DbConnection { get; set; }
     public IDbConnection CreateDbConnection()
     {
-        return new SqliteConnection(_connectionString);
+        var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        return connection;
+    }
+
+    public async Task<IDbConnection> CreateDbConnectionAsync(CancellationToken token = default)
+    {
+        var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync(token);
+
+        return connection;
     }
 
     public void Dispose()

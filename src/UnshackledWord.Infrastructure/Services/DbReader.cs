@@ -20,7 +20,6 @@ public sealed class DbReader : IDbReader
     {
         using var connection = _factory.CreateDbConnection();
 
-        connection.Open();
         return await connection.QueryFirstOrDefaultAsync<T>(sql, param: param, commandType: CommandType.Text);
     }
 
@@ -28,8 +27,20 @@ public sealed class DbReader : IDbReader
     {
         using var connection = _factory.CreateDbConnection();
 
-        connection.Open();
         return await connection.QueryAsync<T>(sql, param: param, commandType: CommandType.Text);
+    }
+
+    public async Task<List<T>> ReadMultipleAsListAsync<T>(string sql, object? param, Func<IMultiDbReader, Task<List<T>>> mappingFunc, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        var list =  new List<T>();
+
+        await using var multi = await connection.QueryMultipleAsync(sql, param, commandType: CommandType.Text);
+        var multiDbReader = new MultiDbReader(multi);
+
+        list.AddRange(await mappingFunc(multiDbReader));
+
+        return list;
     }
 
     public async Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null)
@@ -43,7 +54,7 @@ public sealed class DbReader : IDbReader
 
         using var connection = _factory.CreateDbConnection();
 
-        connection.Open();
         return await connection.ExecuteScalarAsync<T>(sql, param: param, commandType: CommandType.Text);
     }
 }
+

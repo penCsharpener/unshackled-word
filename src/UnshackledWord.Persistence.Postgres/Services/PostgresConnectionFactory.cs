@@ -26,6 +26,14 @@ public sealed class PostgresDbConnectionFactory : IDbConnectionFactory
         return new NpgsqlConnection(_connectionString);
     }
 
+    public async Task<IDbConnection> CreateDbConnectionAsync(CancellationToken token = default)
+    {
+        var connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync(token);
+
+        return connection;
+    }
+
     public void Dispose()
     {
         DbConnection.Dispose();

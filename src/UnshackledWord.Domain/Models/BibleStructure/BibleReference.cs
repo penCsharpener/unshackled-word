@@ -47,6 +47,7 @@ public record struct BibleReference : IBibleReference, IComparer<BibleReference>
     public int AltVerse { get; init; }
     public int RefId => GetRefId();
     public int AltRefId => GetAltRefId();
+    public BibleBook BibleBook => BibleBook.AllBooks[BookId];
 
     /// <summary>
     /// Generates a continuous, sortable number based on bookId, chapter and verse.
@@ -114,12 +115,12 @@ public record struct BibleReference : IBibleReference, IComparer<BibleReference>
 
     public override string ToString()
     {
-        return $"{BibleBook.AllBooks[BookId].Abbreviations[0]} {Chapter}:{Verse}";
+        return $"{BibleBook.Abbreviations[0]} {Chapter}:{Verse}";
     }
 
     public string ToString(string bookSeparation)
     {
-        return $"{BibleBook.AllBooks[BookId].Abbreviations[0]}{bookSeparation}{Chapter}:{Verse}";
+        return $"{BibleBook.Abbreviations[0]}{bookSeparation}{Chapter}:{Verse}";
     }
 
     public static bool operator <(BibleReference left, BibleReference right) => left.CompareTo(right) < 0;

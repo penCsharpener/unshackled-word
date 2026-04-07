@@ -1,6 +1,6 @@
 ﻿namespace UnshackledWord.Domain.Models.BibleStructure;
 
-public partial record struct BibleBook
+public partial record struct BibleBook : IComparer<BibleBook>, IComparable<BibleBook>
 {
     public int Id { get; }
     public string Name { get; }
@@ -41,6 +41,16 @@ public partial record struct BibleBook
         }
 
         return VersesPerChapterLxx.Length > chapter ? VersesPerChapterHeb[index] : 0;
+    }
+
+    public int Compare(BibleBook x, BibleBook y)
+    {
+        return x.Id.CompareTo(y.Id);
+    }
+
+    public int CompareTo(BibleBook other)
+    {
+        return Id.CompareTo(other.Id);
     }
 
     public static explicit operator BibleBook?(int bookId) => AllBooks[bookId];

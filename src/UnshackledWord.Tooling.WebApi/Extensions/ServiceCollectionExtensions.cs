@@ -2,6 +2,7 @@
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Persistence.Postgres.Extensions;
 using UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.BackupElbData;
+using UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.BackupElbData.Mappings;
 using UnshackledWord.Tooling.WebApi.Models;
 
 namespace UnshackledWord.Tooling.WebApi.Extensions;
