@@ -33,6 +33,7 @@ public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
            - if GermanWordPart and PartOrder are set, they have the same ElbWordId, otherwise they are null
            - GermanWordPart does not contain an ID, but the part of the German Word the Hebrew Id belongs to
            - only use Ids that have been submitted in the request
+           - IMPORTANT: no StepId of one verse is mapped to a German word of another verse
 
         ### OUTPUT FORMAT:
         Return a JSON array of objects. Each object must contain:

@@ -12,8 +12,10 @@ public struct AiResponseStats
     public List<VerseDataList<ElbStepAiMapping>> Results { get; }
     public List<VerseDataList<ElbVerseData>> ElbWords { get; }
     public List<VerseDataList<StepHebrewVerseData>> StepWords { get; }
-    public int[] Verses { get; set; }
-    public string VerseRange { get; set; }
+    public int[] Verses { get; set; } = default!;
+    public string VerseRange { get; set; } = default!;
+    public List<(int RefId, int ElbId)> WrongElbIds { get; set; } = [];
+    public List<(int RefId, int StepId)> WrongStepIds { get; set; } = [];
 
     public AiResponseStats(List<VerseDataList<ElbStepAiMapping>> results, List<VerseDataList<ElbVerseData>> elbWords,  List<VerseDataList<StepHebrewVerseData>> stepWords)
     {
@@ -26,6 +28,44 @@ public struct AiResponseStats
         EvaluateResults();
     }
 
+    /// <summary>
+    /// Check that ids belong to one verse have not been assigned to another verse
+    /// </summary>
+    private void ValidateMappingWithinVerseBoundaries()
+    {
+        var dictResults = Results.ToDictionary(x => x.RefId, x => x.Data.ToList());
+        var dictElbWords = ElbWords.ToDictionary(x => x.RefId, x => x.Data.Select(y => y.Id).ToList());
+        var dictStepWords = StepWords.ToDictionary(x => x.RefId, x => x.Data.Select(b => b.Id).ToList());
+
+        foreach (var (refId, data) in dictResults)
+        {
+            var elbWordsInVerse = dictElbWords[refId];
+            var stepWordsInVerse = dictStepWords[refId];
+
+            foreach (var mapping in data)
+            {
+                var elbId = mapping.ElbWordId;
+                var stepId = mapping.StepWordId;
+                var parentId = mapping.ParentElbWordId;
+
+                if (!elbWordsInVerse.Contains(elbId))
+                {
+                    WrongElbIds.Add((refId, elbId));
+                }
+
+                if (stepId.HasValue && !stepWordsInVerse.Contains(stepId.Value))
+                {
+                    WrongStepIds.Add((refId, stepId.Value));
+                }
+
+                if (parentId.HasValue && !elbWordsInVerse.Contains(parentId.Value))
+                {
+                    WrongElbIds.Add((refId, parentId.Value));
+                }
+            }
+        }
+    }
+
     private void EvaluateResults()
     {
         TotalMappingEntries = _results.Count;
@@ -34,33 +74,8 @@ public struct AiResponseStats
         Verses = ElbWords.Select(x => x.RefId).OrderBy(x => x).ToArray();
         VerseRange = $"{Verses.First()}-{Verses.Last()}";
 
-        foreach (var mapping in _results)
-        {
-            if (mapping is { IsAddedWord: false, ParentElbWordId: not null })
-            {
-                mapping.ParentElbWordId = null;
-            }
-
-            if (mapping is { IsAddedWord: true, ParentElbWordId: null })
-            {
-                mapping.IsAddedWord = false;
-            }
-
-            if (mapping is { StepWordId: not null, IsAddedWord: true, ParentElbWordId: not null })
-            {
-                mapping.ParentElbWordId = null;
-            }
-
-            if (mapping.InternalElbWord == mapping.GermanWordPart)
-            {
-                mapping.GermanWordPart = null;
-            }
-
-            if (mapping.PartOrder.HasValue && mapping.GermanWordPart.IsNullOrWhiteSpace())
-            {
-                mapping.PartOrder = null;
-            }
-        }
+        FixOverMapping();
+        ValidateMappingWithinVerseBoundaries();
 
         var totalHebRefIdFromResponse = Results.Select(x => x.RefId).Distinct().ToList();
         var totalHebRefIdFromRequest = ElbWords.Select(x => x.RefId).Distinct().ToList();
@@ -97,6 +112,37 @@ public struct AiResponseStats
                     mappedEntry.PartOrder = null;
                     //WronglyAssignedGermanWordParts.Add(group.Key.ElbWordId);
                 }
+            }
+        }
+    }
+
+    private void FixOverMapping()
+    {
+        foreach (var mapping in _results)
+        {
+            if (mapping is { IsAddedWord: false, ParentElbWordId: not null })
+            {
+                mapping.ParentElbWordId = null;
+            }
+
+            if (mapping is { IsAddedWord: true, ParentElbWordId: null })
+            {
+                mapping.IsAddedWord = false;
+            }
+
+            if (mapping is { StepWordId: not null, IsAddedWord: true, ParentElbWordId: not null })
+            {
+                mapping.ParentElbWordId = null;
+            }
+
+            if (mapping.InternalElbWord == mapping.GermanWordPart)
+            {
+                mapping.GermanWordPart = null;
+            }
+
+            if (mapping.PartOrder.HasValue && mapping.GermanWordPart.IsNullOrWhiteSpace())
+            {
+                mapping.PartOrder = null;
             }
         }
     }
