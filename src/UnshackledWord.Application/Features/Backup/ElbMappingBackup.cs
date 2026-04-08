@@ -7,6 +7,7 @@ public class ElbMappingBackup
     public string? GermanWordPart {get;set;}
     public string ElbWord { get; set; } = default!;
     public string? StepWord {get;set;}
+    public int? StepPositionInVerse {get;set;}
     public bool IsAddedWord {get;set;}
     public int? ParentPositionInVerse {get;set;}
     public string? ParentWord {get;set;}
