@@ -408,6 +408,8 @@ temp/*
 *.7z
 /src/UnshackledWord.Tooling.BibleTagger/wwwroot/lib
 *.local.*
+*.local.sql
+*.local.sql2
 /git*.git
 /src/MudBlazorWebApp1
 package-lock.json
