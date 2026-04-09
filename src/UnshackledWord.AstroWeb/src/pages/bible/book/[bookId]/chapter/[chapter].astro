@@ -33,7 +33,7 @@ const wordEntries = data.words as WordResponse[];
 ---
 
 <Layout title={`${currentBook?.name} ${chapter} - Entfesseltes Word`}>
-  <BookChapterSelector />
+  <BookChapterSelector baseRoute="bible"/>
   <div class="p-5">
     <h1 class="text-4xl md:text-5xl font-medium text-slate-400 tracking-tight mt-3 text-right">
       {currentBook?.name} {chapter}

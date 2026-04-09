@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
@@ -43,6 +44,19 @@ public partial class Program
         app.UseFastEndpoints(x =>
         {
             x.Endpoints.RoutePrefix = "api";
+            x.Serializer.ResponseSerializer = (rsp, dto, cType, jCtx, ct) =>
+            {
+                rsp.ContentType = cType;
+                var options = new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                };
+                return rsp.WriteAsync(
+                    JsonSerializer.Serialize(dto, dto.GetType(), options),
+                    ct
+                );
+            };
             x.Endpoints.Configurator = ep =>
             {
                 ep.AllowAnonymous();
