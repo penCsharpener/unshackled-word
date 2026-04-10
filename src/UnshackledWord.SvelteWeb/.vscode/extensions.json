@@ -1,6 +1,8 @@
 {
 	"recommendations": [
 		"svelte.svelte-vscode",
-		"bradlc.vscode-tailwindcss"
+		"bradlc.vscode-tailwindcss",
+		"biomejs.biome",
+		"howardzuo.vscode-npm-dependency"
 	]
 }

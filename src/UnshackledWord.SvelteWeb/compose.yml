@@ -1,5 +1,5 @@
 services:
-  astro-dev:
+  svelte-dev:
     build: .
     volumes:
       - .:/workspaces/web
