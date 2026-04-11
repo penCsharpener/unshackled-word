@@ -5,7 +5,7 @@ using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 namespace UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
 /// <summary>
-/// Imports the cross references from /assets/tskxref.txt.
+/// Imports 378000 cross references from /assets/tskxref.txt.
 /// </summary>
 public sealed class TskRunner : IRunner
 {

@@ -23,7 +23,7 @@ public partial record struct BibleBook : IComparer<BibleBook>, IComparable<Bible
     {
         foreach (var book in AllBooks.Values)
         {
-            if (book.Abbreviations.Contains(abbreviation))
+            if (book.Abbreviations.Contains(abbreviation, StringComparer.OrdinalIgnoreCase))
             {
                 return book;
             }

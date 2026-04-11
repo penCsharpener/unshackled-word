@@ -2,7 +2,9 @@ using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
+using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Tooling.SeedDb.Services.Tsk.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
@@ -21,35 +23,52 @@ public class TskStrategy : IFileParserStrategy
     public async Task SaveToDatabase(string _, CancellationToken token = default)
     {
         var tskReferences = await _tskTextReader.ReadAsync(token);
-        var insertRows = new List<string>();
+
+        await InsertAsync(tskReferences, token);
+    }
+
+    public async Task InsertAsync(ICollection<TskReference> tskReferences, CancellationToken token = default)
+    {
+        var parameters = new
+        {
+            LxxRefId = new List<int>(),
+            Scope = new List<string>(),
+            RelatedStartLxxRefId = new List<int>(),
+            RelatedEndLxxRefId = new List<int?>(),
+        };
 
         foreach (var tskReference in tskReferences)
         {
             foreach (var crossRef in tskReference.CrossReferences)
             {
+                parameters.LxxRefId.Add(tskReference.Reference.RefId);
+                parameters.Scope.Add(tskReference.Words);
+
                 if (crossRef is BibleReference bibleRef)
                 {
-                    insertRows.Add($"({tskReference.Reference.RefId}, '{tskReference.Words.Replace("'", "''")}', {bibleRef.RefId}, null)");
+                    parameters.RelatedStartLxxRefId.Add(bibleRef.RefId);
+                    parameters.RelatedEndLxxRefId.Add(null);
                 }
 
                 if (crossRef is BibleReferenceRange range)
                 {
-                    insertRows.Add($"({tskReference.Reference.RefId}, '{tskReference.Words.Replace("'", "''")}', {range.Start.RefId}, {range.End.RefId})");
+                    parameters.RelatedStartLxxRefId.Add(range.Start.RefId);
+                    parameters.RelatedEndLxxRefId.Add(range.End.RefId);
                 }
             }
         }
 
-        foreach (var chunk in insertRows.Chunk(20000))
-        {
-            var insertSql = $"""
-                             INSERT INTO {TskDbo.DboName}
-                             ("LxxRefId", "Scope", "RelatedStartLxxRefId", "RelatedEndLxxRefId")
-                             VALUES
-                             {chunk.JoinStrings(delimiter)}
-                             ;
-                             """;
+        var names = PropertyListHelper.GetPropertyNames(parameters);
 
-            await _dbWriter.WriteAsync(insertSql, token);
-        }
+        var sql = $"""
+                   INSERT INTO {TskDbo.DboName} (
+                       {names.Select(x => $"\"{x}\"").JoinStrings(",")}
+                   )
+                   SELECT *
+                   FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
+                   ON CONFLICT DO NOTHING;
+                   """;
+
+        await _dbWriter.WriteAsync(sql, parameters);
     }
 }
