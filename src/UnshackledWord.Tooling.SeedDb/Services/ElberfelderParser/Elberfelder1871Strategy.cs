@@ -27,7 +27,7 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
 
         if (_countWords > 0)
         {
-            _logger.LogInformation("Elberfelder 1871 verses and words already exist in the database. Skipping import. " +
+            _logger.LogInformation("Elberfelder 1871 words already exist in the database. Skipping import. " +
                                    "{countWords} rows of words ", _countWords);
             return;
         }

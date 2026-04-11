@@ -23,6 +23,28 @@ CREATE INDEX "Elb1871Words_reference_idx" ON "unshackled-word"."Elb1871Words" ("
 CREATE INDEX "Elb1871Words_HebRefId_idx" ON "unshackled-word"."Elb1871Words" ("HebRefId");
 ALTER TABLE "unshackled-word"."Elb1871Words" ADD CONSTRAINT "Elb1871RefAndPositions_unique" UNIQUE ("BibleBookId","Chapter","Verse","PositionInVerse");
 
+
+CREATE TABLE "unshackled-word"."Elb1871Verses"
+(
+    "Id"          serial4                  NOT NULL,
+    "HebRefId"    integer                  NOT NULL,
+    "LxxRefId"    integer                  NOT NULL,
+    "VerseText"   text COLLATE "und-x-icu" NOT NULL,
+    CONSTRAINT "Elb1871Verses_PK" PRIMARY KEY ("Id")
+);
+
+CREATE INDEX "Elb1871Verses_HebRefId_idx" ON "unshackled-word"."Elb1871Verses" ("HebRefId");
+CREATE INDEX "Elb1871Verses_LxxRefId_idx" ON "unshackled-word"."Elb1871Verses" ("LxxRefId");
+ALTER TABLE "unshackled-word"."Elb1871Verses" ADD CONSTRAINT "Elb1871Verses_unique" UNIQUE ("HebRefId");
+
+-- 1. Add the generated column
+ALTER TABLE "unshackled-word"."Elb1871Verses" ADD COLUMN "SearchVector" tsvector
+        GENERATED ALWAYS AS (to_tsvector('german', "VerseText")) STORED;
+
+-- 2. Create the GIN index on that column
+CREATE INDEX "Elb1871Verses_Search_idx" ON "unshackled-word"."Elb1871Verses" USING GIN ("SearchVector");
+
+
 CREATE TABLE "unshackled-word"."Tsk"
 (
     "Id"                      serial4                  NOT NULL,
