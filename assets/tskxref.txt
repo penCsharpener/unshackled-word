@@ -330,7 +330,7 @@ book	chapter	verse	sort	words	refs
 1	8	12	1	And he	ps 27:14;ps 130:5,6;isa 8:17;isa 25:9;isa 26:8;isa 30:18;hab 2:3;jas 5:7,8
 1	8	12	2	seven	ge 8:10;ge 2:2,3
 1	8	13	1	A. M. 1657. B.C. 2347. six	ge 7:11
-1	8	14	1	And in the second month, on the seven and twentieth day of the month, was the earth dried.	ge 7:11,13,14;Ge8_16
+1	8	14	1	And in the second month, on the seven and twentieth day of the month, was the earth dried.	ge 7:11,13,14;Ge 8:16
 1	8	16	1	Go forth of the ark, thou, and thy wife, and thy sons, and thy sons' wives with thee.	ge 7:1,7,13;jos 3:17;jos 4:10,16-18;ps 91:11;ps 121:8;da 9:25,26;zec 9:11;ac 16:27,28,37-39
 1	8	17	1	Bring	ge 7:14,15
 1	8	17	2	breed	ge 1:22;ge 9:1,7;ps 107:38;ps 144:13,14;jer 31:27,28
@@ -3055,7 +3055,7 @@ book	chapter	verse	sort	words	refs
 2	12	32	2	bless me	ex 8:28;ex 9:28;ge 27:34,38
 2	12	33	1	urgent	ex 11:1;ps 105:38
 2	12	33	2	We be all	ge 20:3;nu 17:12,13
-2	12	34	1	kneading troughs	ex 8:3;Ex12_35
+2	12	34	1	kneading troughs	ex 8:3;Ex 12:35
 2	12	35	1	And the children of Israel did according to the word of Moses; and they borrowed of the Egyptians jewels of silver, and jewels of gold, and raiment:	ex 3:21,22;ex 11:2,3;ge 15:14;ps 105:37
 2	12	36	1	the Lord	ex 3:21;ex 11:3;ge 39:21;pr 16:7;da 1:9;ac 2:47;ac 7:10
 2	12	36	2	they spoiled	ex 3:22;ge 15:14;ps 105:37
@@ -4336,7 +4336,7 @@ book	chapter	verse	sort	words	refs
 2	37	7	1	And he made two cherubims of gold, beaten out of one piece made he them, on the two ends of the mercy seat;	1ki 6:23-29;ps 80:1;ps 104:4;eze 10:2
 2	37	9	1	cherubims spread	ge 3:24;ge 28:12;isa 6:2;eze 10:1-22;joh 1:51;2co 3:18;php 3:8;1ti 3:16;heb 1:14
 2	37	9	2	to the mercy seatward	ex 25:20;eph 3:10;1pe 1:12
-2	37	10	1	And he made the table of shittim wood: two cubits was the length thereof, and a cubit the breadth thereof, and a cubit and a half the height thereof:	ex 25:23-30;ex 35:13;ex 40:4,22,23;eze 40:39-42;mal 1:12;joh 1:14,16;col 1:27;Ex37_16
+2	37	10	1	And he made the table of shittim wood: two cubits was the length thereof, and a cubit the breadth thereof, and a cubit and a half the height thereof:	ex 25:23-30;ex 35:13;ex 40:4,22,23;eze 40:39-42;mal 1:12;joh 1:14,16;col 1:27;Ex 37:16
 2	37	16	1	dishes	ex 25:29;1ki 7:50;2ki 12:13;jer 52:18,19;2ti 2:20
 2	37	17	1	the candlestick of	ex 25:31-39;ex 40:24,25;le 24:4;1ch 28:15;2ch 13:11;zec 4:2,11;mt 5:15;joh 1:4-9;php 2:15;heb 9:2;re 1:12-20;re 2:1-5
 2	37	20	1	almonds	ex 25:33;nu 17:8;ec 12:5;jer 1:11
@@ -4877,7 +4877,7 @@ book	chapter	verse	sort	words	refs
 3	10	19	1	this day	le 9:8,12;heb 7:27;heb 9:8
 3	10	19	2	should	de 12:7;de 26:14;1sa 1:7,8;isa 1:11,15;jer 6:20;jer 14:12;ho 9:4;mal 1:10,13;mal 2:13;php 4:4
 3	10	20	1	he was content	2ch 30:18-20;zec 7:8,9;mt 12:3-7,20
-3	11	2	2	Speak unto the children of Israel, saying, These are the beasts which ye shall eat among all the beasts that are on the earth.	de 14:3-8;eze 4:14;da 1:8;mt 15:11;mr 7:15-19;ac 10:12,14;ro 14:2,3,14,15;1ti 4:4-6;heb 9:10;heb 13:9;Le11_3
+3	11	2	2	Speak unto the children of Israel, saying, These are the beasts which ye shall eat among all the beasts that are on the earth.	de 14:3-8;eze 4:14;da 1:8;mt 15:11;mr 7:15-19;ac 10:12,14;ro 14:2,3,14,15;1ti 4:4-6;heb 9:10;heb 13:9;Le 11:3
 3	11	3	1	parteth	ps 1:1;pr 9:6;2co 6:17
 3	11	3	2	cheweth	de 6:6,7;de 16:3-8;ps 1:2;pr 2:1,2,10;ac 17:11;1ti 4:15
 3	11	5	1	the coney	ps 104:18;pr 30:26
@@ -5031,7 +5031,7 @@ book	chapter	verse	sort	words	refs
 3	14	36	1	be not made	1co 15:33;2ti 2:17,18;heb 12:15;re 18:4
 3	14	37	1	And he shall look on the plague, and, behold, if the plague be in the walls of the house with hollow strakes, greenish or reddish, which in sight are lower than the wall;	le 13:3,19,20,42,49
 3	14	38	1	Then the priest shall go out of the house to the door of the house, and shut up the house seven days:	le 13:50
-3	14	39	1	And the priest shall come again the seventh day, and shall look: and, behold, if the plague be spread in the walls of the house;	le 13:7,8,22,27,36,51;Le14_40
+3	14	39	1	And the priest shall come again the seventh day, and shall look: and, behold, if the plague be spread in the walls of the house;	le 13:7,8,22,27,36,51;Le 14:40
 3	14	40	1	take away	ps 101:5,7,8;pr 22:10;pr 25:4,5;isa 1:25,26;mt 18:17;joh 15:2;1co 5:5,6,13;tit 3:10;2jo 1:10,11;re 2:2,6,14-16,20
 3	14	40	2	without the city	re 22:15
 3	14	41	1	into an unclean place	job 36:13,14;isa 65:4;mt 8:28;mt 24:51;1ti 1:20;re 22:15
@@ -5707,7 +5707,7 @@ book	chapter	verse	sort	words	refs
 4	1	39	1	Those that were numbered of them, even of the tribe of Dan, were threescore and two thousand and seven hundred.	nu 2:26;nu 26:43
 4	1	40	1	Of the children of Asher, by their generations, after their families, by the house of their fathers, according to the number of the names, from twenty years old and upward, all that were able to go forth to war;	ge 30:12,13;ge 46:27;ge 49:20
 4	1	41	1	Those that were numbered of them, even of the tribe of Asher, were forty and one thousand and five hundred.	nu 2:28;nu 26:47
-4	1	42	1	Naphtali	ge 30:7,8;ge 46:24;ge 49:21;Nu1_43
+4	1	42	1	Naphtali	ge 30:7,8;ge 46:24;ge 49:21;Nu 1:43
 4	1	43	1	Those that were numbered of them, even of the tribe of Naphtali, were fifty and three thousand and four hundred.	nu 2:30;nu 26:50
 4	1	44	1	These are those that were numbered, which Moses and Aaron numbered, and the princes of Israel, being twelve men: each one was for the house of his fathers.	nu 1:2-16;nu 26:64
 4	1	46	1	Even all they that were numbered were six hundred thousand and three thousand and five hundred and fifty.	nu 2:32;nu 23:10;nu 26:51;ge 12:2;ge 13:16;ge 15:5;ge 17:6;ge 22:17;ge 26:3;ge 28:14;ge 46:3,4;ex 12:37;ex 38:26;de 10:22;1ki 4:20;2sa 24:9;1ch 21:5;2ch 13:3;2ch 17:14-19;heb 11:11,12;re 7:4-9
@@ -5970,7 +5970,7 @@ book	chapter	verse	sort	words	refs
 4	7	7	1	Two wagons	nu 3:25,26;nu 4:24-28
 4	7	8	1	four wagons	nu 3:36,37;nu 4:28-33
 4	7	9	1	because	nu 3:31;nu 4:4-16;2sa 6:6,13;1ch 15:3,13;1ch 23:26
-4	7	10	1	dedicating	de 20:5;1ki 8:63;2ch 7:5,9;ezr 6:16,17;ne 12:27,43;ps 30:1;Nu7_11
+4	7	10	1	dedicating	de 20:5;1ki 8:63;2ch 7:5,9;ezr 6:16,17;ne 12:27,43;ps 30:1;Nu 7:11
 4	7	11	1	And the LORD said unto Moses, They shall offer their offering, each prince on his day, for the dedicating of the altar.	1co 14:33,40;col 2:5
 4	7	12	1	And he that offered his offering the first day was Nahshon the son of Amminadab, of the tribe of Judah:	nu 1:7;nu 2:3;nu 10:14;ge 49:8,10;ru 4:20;mt 1:4;lu 3:32
 4	7	13	1	charger	ex 25:29;ex 37:16;1ki 7:43,45;2ki 25:14,15;ezr 1:9,10;ezr 8:25;jer 52:19;da 5:2;zec 14:20;mt 14:8,11
@@ -6072,7 +6072,7 @@ book	chapter	verse	sort	words	refs
 4	9	15	1	on the day	ex 40:2,18
 4	9	15	2	the cloud	nu 14:14;ex 14:19,20,24;ex 33:9,10;ex 40:34;ne 9:12,19;ps 78:14;ps 105:39;isa 4:5;eze 10:3,4;1co 10:1
 4	9	15	3	at even	ex 13:21;ex 40:38
-4	9	16	1	So it was alway: the cloud covered it by day, and the appearance of fire by night.	nu 9:18-22;ex 13:21,22;ex 40:38;de 1:33;ne 9:12,19;ps 78:14;ps 105:39;isa 4:5,6;1co 10:1;2co 5:19;re 21:3;Nu9_17
+4	9	16	1	So it was alway: the cloud covered it by day, and the appearance of fire by night.	nu 9:18-22;ex 13:21,22;ex 40:38;de 1:33;ne 9:12,19;ps 78:14;ps 105:39;isa 4:5,6;1co 10:1;2co 5:19;re 21:3;Nu 9:17
 4	9	17	1	when the cloud	nu 10:11,33,34;ex 40:36-38;ps 80:1,2;isa 49:10;joh 10:3-5,9
 4	9	17	2	and in the	ex 33:14,15;ps 32:8;ps 73:24;joh 10:3,4,9
 4	9	18	1	and at the	nu 9:20;nu 10:13;ex 17:1;2jo 1:6
@@ -12037,7 +12037,7 @@ book	chapter	verse	sort	words	refs
 9	17	28	2	I know	1sa 16:7;ps 35:11;jude 1:10
 9	17	29	1	And David said, What have I now done? Is there not a cause?	pr 15:1;ac 11:2-4;1co 2:15;1pe 3:9
 9	17	30	1	manner	1sa 17:26,27
-9	17	31	1	sent for him	pr 22:29;1Sa17_32
+9	17	31	1	sent for him	pr 22:29;1Sa 17:32
 9	17	32	1	Let	nu 13:30;nu 14:9;de 20:1-3;isa 35:4;heb 12:12
 9	17	32	2	thy	1sa 14:6;1sa 16:18;jos 14:12;ps 3:6;ps 27:1-3
 9	17	33	1	Thou art not	nu 13:31;de 9:2;ps 11:1;re 13:4
@@ -14433,7 +14433,7 @@ book	chapter	verse	sort	words	refs
 11	6	34	1	fir tree	1ki 5:8
 11	6	34	2	the two leaves	eze 41:23-25
 11	6	36	1	the inner	ex 27:9-19;ex 38:9-20;2ch 4:9;2ch 7:7;re 11:2
-11	6	37	1	In the fourth year was the foundation of the house of the LORD laid, in the month Zif:	1ki 6:1;2ch 3:2;1Ki6_38
+11	6	37	1	In the fourth year was the foundation of the house of the LORD laid, in the month Zif:	1ki 6:1;2ch 3:2;1Ki 6:38
 11	6	38	1	finished	ezr 6:14,15;zec 4:9;zec 6:13-15
 11	6	38	2	seven years	1ki 6:1,9;1ki 7:1;ezr 3:8-13;ezr 6:15;joh 2:20
 11	7	1	3	thirteen years	1ki 9:10;2ch 8:1;ec 2:4,5;mt 6:33
@@ -40613,7 +40613,7 @@ book	chapter	verse	sort	words	refs
 26	32	27	3	but	eze 18:20;job 20:11;ps 49:14;ps 92:7,9;ps 109:18;pr 14:32;joh 8:24
 26	32	28	1	Yea, thou shalt be broken in the midst of the uncircumcised, and shalt lie with them that are slain with the sword.	da 2:34,35
 26	32	29	1	Edom	eze 25:1-17;eze 35:1-15;ge 25:30;ge 36:1-19;isa 34:1-17;isa 63:1-6;jer 49:7-22;am 1:11,12;ob 1:1,2-9;mal 1:3,4
-26	32	30	1	the princes	eze 38:6,15;exe 39:2;jer 1:14;jer 4:6
+26	32	30	1	the princes	eze 38:6,15;ex 39:2;jer 1:14;jer 4:6
 26	32	30	2	and bear	eze 32:24,25
 26	32	31	1	shall be	eze 14:22;eze 31:16;la 2:13
 26	32	32	1	For I have caused my terror in the land of the living: and he shall be laid in the midst of the uncircumcised with them that are slain with the sword, even Pharaoh and all his multitude, saith the Lord GOD.	eze 32:27;ge 35:5;job 31:23;jer 25:15-38;zep 3:6-8;2co 5:11;heb 10:31;re 6:15-17
@@ -50627,7 +50627,7 @@ book	chapter	verse	sort	words	refs
 42	24	1	4	they came	lu 24:10;lu 8:2,3;lu 23:55,56;mt 27:55,56;mr 15:40
 42	24	2	1	And they found the stone rolled away from the sepulchre.	mt 27:60-66;mt 28:2;mr 15:46,47;mr 16:3,4;joh 20:1,2
 42	24	3	1	And they entered in, and found not the body of the Lord Jesus.	lu 24:23;mt 16:5;joh 20:6,7
-42	24	4	1	two men	ge 18:2;mt 28:2-6;mr 16:5;joh 20:11,12;ac 1:10;Lu24_5
+42	24	4	1	two men	ge 18:2;mt 28:2-6;mr 16:5;joh 20:11,12;ac 1:10;Lu 24:5
 42	24	5	1	they	lu 1:12,13,29;da 8:17,18;da 10:7-12,16,19;mt 28:3-5;mr 16:5,6;ac 10:3,4
 42	24	5	2	the living	heb 7:8;re 1:18;re 2:8
 42	24	6	1	remember	lu 24:44-46;lu 9:22;lu 18:31-33;mt 12:40;mt 16:21;mt 17:22,23;mt 20:18,19;mt 27:63;mt 28:6;mr 8:31;mr 9:9,10,31,32;mr 10:33,34
@@ -55442,7 +55442,7 @@ book	chapter	verse	sort	words	refs
 45	11	11	3	for	ro 11:14;ro 10:19
 45	11	12	1	the world	ro 11:15,33;ro 9:23;eph 3:8;col 1:27
 45	11	12	2	their	ro 11:25;isa 11:11-16;isa 12:1-6;isa 60:1-22;isa 66:8-20;mic 4:1,2;mic 5:7;zec 2:11;zec 8:20-23;re 11:15-19
-45	11	13	1	the apostle	ro 15:16-19;ac 9:15;ac 13:2;ac 22:21;ac 26:17,18;ga 1:16;ga 2:2,7-9;eph 3:8;1ti 2:7;2ti 1:11,12;Ro11_14
+45	11	13	1	the apostle	ro 15:16-19;ac 9:15;ac 13:2;ac 22:21;ac 26:17,18;ga 1:16;ga 2:2,7-9;eph 3:8;1ti 2:7;2ti 1:11,12;Ro 11:14
 45	11	14	1	by	1co 7:16;1co 9:20-22;2ti 2:10
 45	11	14	2	my	ro 9:3;phm 1:12
 45	11	14	3	might	1co 7:16;1ti 4:16;jas 5:20
