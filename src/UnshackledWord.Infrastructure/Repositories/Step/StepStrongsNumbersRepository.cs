@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
@@ -19,12 +20,18 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
         _logger = logger;
     }
 
-    public async Task<int> CountByFilterAsync(CancellationToken token = default)
+    public async Task<int> CountByFilterAsync(StrongsLanguage language, CancellationToken token = default)
     {
+        var where = language switch
+        {
+            StrongsLanguage.Aramaic or StrongsLanguage.Hebrew => "WHERE w.\"StepHebrewWordId\" IS NOT NULL",
+            StrongsLanguage.Greek => "WHERE w.\"StepGreekWordId\" IS NOT NULL"
+        };
+
         var sql = $"""
                    SELECT COUNT(*)
                    FROM {StepStrongsToTextDbo.DbName} AS w
-                   WHERE 1=1
+                   {where}
                    """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);
@@ -33,6 +40,21 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
     public async Task BulkInsertInternalNewAsync(StepStrongsToTextDbo[] entries, CancellationToken token = default)
     {
         if (entries.Length == 0)
+        {
+            return;
+        }
+
+        var onlyGreek = entries.All(x => x.StepGreekWordId is not null);
+        var onlyHebrew = entries.All(x => x.StepHebrewWordId is not null);
+        var language = (onlyGreek, onlyHebrew) switch
+        {
+            (true, false) => StrongsLanguage.Greek,
+            (false, true) => StrongsLanguage.Hebrew,
+            _ => throw new UnreachableException("Unknown strongs language")
+        };
+
+        var count = await CountByFilterAsync(language, token);
+        if (count > 0)
         {
             return;
         }

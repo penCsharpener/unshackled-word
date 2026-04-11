@@ -52,11 +52,12 @@ public sealed class StepDataBibleTextImporter : IRunner
             }
         }
 
-        var allStrongsWords = new List<StepStrongsToTextDbo>();
+        var allGreekStrongsWords = new List<StepStrongsToTextDbo>();
+        var allHebrewStrongsWords = new List<StepStrongsToTextDbo>();
 
-        foreach (var chunk in totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(10000))
+        foreach (var chunk in totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(5000000))
         {
-            allStrongsWords.AddRange(chunk.SelectMany(x =>
+            allGreekStrongsWords.AddRange(chunk.SelectMany(x =>
             {
                 foreach (var str in x.StrongsNumbers)
                 {
@@ -67,9 +68,14 @@ public sealed class StepDataBibleTextImporter : IRunner
             await _stepGreekWordsRepository.BulkInsertAsync(chunk, token);
         }
 
-        foreach (var chunk in totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(10000))
+        foreach (var chunk in allGreekStrongsWords.EnumerateWithIds().Chunk(5000000))
         {
-            allStrongsWords.AddRange(chunk.SelectMany(x =>
+            await _stepStrongsNumbersRepository.BulkInsertInternalNewAsync(chunk, token);
+        }
+
+        foreach (var chunk in totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(5000000))
+        {
+            allHebrewStrongsWords.AddRange(chunk.SelectMany(x =>
             {
                 foreach (var str in x.StrongsNumbers)
                 {
@@ -80,9 +86,7 @@ public sealed class StepDataBibleTextImporter : IRunner
             await _stepHebrewWordsRepository.BulkInsertAsync(chunk, token);
         }
 
-        allStrongsWords.AddRange(totalHebrewEntries.SelectMany(x => x.StrongsNumbers));
-
-        foreach (var chunk in allStrongsWords.EnumerateWithIds().Chunk(10000))
+        foreach (var chunk in allHebrewStrongsWords.EnumerateWithIds().Chunk(5000000))
         {
             await _stepStrongsNumbersRepository.BulkInsertInternalNewAsync(chunk, token);
         }

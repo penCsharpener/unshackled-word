@@ -3,6 +3,7 @@ using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -10,12 +11,14 @@ namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
 public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgamatedGreekEntry>>
 {
+    private readonly IDbReader _reader;
     private readonly IFileService _fileService;
     private readonly IStepGreekWordsRepository _repo;
     private readonly ILogger<StepGreekFileStrategy> _logger;
 
-    public StepGreekFileStrategy(IFileService fileService, IStepGreekWordsRepository repo, ILogger<StepGreekFileStrategy> logger)
+    public StepGreekFileStrategy(IDbReader reader, IFileService fileService, IStepGreekWordsRepository repo, ILogger<StepGreekFileStrategy> logger)
     {
+        _reader = reader;
         _fileService = fileService;
         _repo = repo;
         _logger = logger;
@@ -26,10 +29,11 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
         _logger.LogInformation("processing {filePath}", filePath);
 
         var filter = new StepGreekWordFilter();
+        var gkStrongsCount = await GetStrongsCountASync();
         var count = await _repo.CountByFilterAsync(filter, token);
-        if (count > 0)
+        if (count > 0 && gkStrongsCount > count)
         {
-            _logger.LogInformation("Step Greek file data already imported... {count} rows", count);
+            _logger.LogInformation("Step Greek file data and their strongs numbers already imported... {count} rows, strong count {strongsCount}", count, gkStrongsCount);
             return [];
         }
 
@@ -145,5 +149,16 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
         }
 
         return defaultValue;
+    }
+
+    private async Task<int> GetStrongsCountASync()
+    {
+        var sql = $"""
+                   SELECT Count(*)
+                   FROM {StepStrongsToTextDbo.DbName} sstt
+                   WHERE sstt."StepGreekWordId" IS NOT NULL;
+                   """;
+
+        return await _reader.ExecuteScalarAsync<int>(sql);
     }
 }

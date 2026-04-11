@@ -46,6 +46,12 @@ public sealed class StepHebrewWordsRepository : IStepHebrewWordsRepository
             return;
         }
 
+        var count = await CountByFilterAsync(new(), token);
+        if (count > 0)
+        {
+            return;
+        }
+
         var dataSize = entries.Length + 1;
         var parameters = new
         {
