@@ -11,12 +11,10 @@ namespace UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
 public class TskTextReader
 {
-    private readonly IFileService _fileService;
     private readonly AppSettings _appSettings;
 
-    public TskTextReader(IFileService fileService, IOptions<AppSettings> appSettings)
+    public TskTextReader(IOptions<AppSettings> appSettings)
     {
-        _fileService = fileService;
         _appSettings = appSettings.Value;
     }
 

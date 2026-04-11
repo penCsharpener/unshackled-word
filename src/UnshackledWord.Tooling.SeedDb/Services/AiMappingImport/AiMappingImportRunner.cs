@@ -18,6 +18,15 @@ public sealed class AiMappingImportRunner : IRunner
 
     public async Task Run(CancellationToken token = default)
     {
+        var gkCount = await _repository.GeMappingCountAsync("Greek");
+        var hebCount = await _repository.GeMappingCountAsync("Hebrew");
+
+        if (gkCount > 0 || hebCount > 0)
+        {
+            _logger.LogWarning("Mappings are already present: Greek {gkCount} / Hebrew {hebCount}", gkCount, hebCount);
+            return;
+        }
+
         var backupRowsDict = await _repository.ReadAllBackupsAsync(token);
         var stepWords = await _repository.ReadAllStepIdsAsync(token);
         var elbWords = await _repository.ReadAllElbIdsAsync(token);

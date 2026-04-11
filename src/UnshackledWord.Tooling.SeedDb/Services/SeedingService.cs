@@ -18,6 +18,7 @@ public sealed partial class SeedingService
         typeof(StepBible.StepDataMorphologyImporter),
         typeof(StepBible.StepDataLexiconImporter),
         typeof(StepBible.StepDataRelationshipImporter),
+        typeof(AiMappingImport.AiMappingImportRunner),
     ];
 
     public SeedingService(IServiceScopeFactory scopeFactory, ILogger<SeedingService> logger)
@@ -41,7 +42,9 @@ public sealed partial class SeedingService
 
     /// <summary>
     /// method used for local selection of specific types in SeedingService.local.cs
-    /// in this method you can override or filter _runnerTypes
+    /// in this method you can override or filter _runnerTypes.
+    /// However when you want to run the setup in docker then you need to comment out our devlopment version.
+    /// Otherwise it will be compiled and included in the docker container.
     /// </summary>
     partial void FilterSeedRunnerTypes();
 }

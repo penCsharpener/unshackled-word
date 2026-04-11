@@ -5,6 +5,9 @@ using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 
+/// <summary>
+/// Imports the data for the Statistical Restoration Greek New Testament by downloading it from github.
+/// </summary>
 public class SrRunner : IRunner
 {
     private readonly ILogger<SrRunner> _logger;

@@ -39,18 +39,13 @@ public class TskStrategy : IFileParserStrategy
             }
         }
 
-        const int BatchSize = 20000;
-        var batchCount = insertRows.Count / BatchSize;
-
-        for (var i = 0; i <= batchCount; i++)
+        foreach (var chunk in insertRows.Chunk(20000))
         {
-            var batchRows = insertRows.Skip(i * BatchSize).Take(BatchSize).ToList();
-
             var insertSql = $"""
                              INSERT INTO {TskDbo.DboName}
                              ("LxxRefId", "Scope", "RelatedStartLxxRefId", "RelatedEndLxxRefId")
                              VALUES
-                             {batchRows.JoinStrings(delimiter)}
+                             {chunk.JoinStrings(delimiter)}
                              ;
                              """;
 

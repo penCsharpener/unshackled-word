@@ -10,7 +10,7 @@ COPY ["src/UnshackledWord.Application/", "src/UnshackledWord.Application/"]
 COPY ["src/UnshackledWord.Domain/", "src/UnshackledWord.Domain/"]
 COPY ["src/UnshackledWord.Infrastructure/", "src/UnshackledWord.Infrastructure/"]
 COPY ["src/UnshackledWord.Persistence.Postgres/", "src/UnshackledWord.Persistence.Postgres/"]
-COPY ["assets/", "assets/"]
+#COPY ["assets/", "assets/"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 COPY ["Directory.Packages.props", "Directory.Packages.props"]
 

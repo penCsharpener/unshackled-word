@@ -4,6 +4,9 @@ using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.SBL;
 
+/// <summary>
+/// Imports the SBL Greek Text and Apparatus from github.
+/// </summary>
 public class SblRunner : IRunner
 {
     private readonly SblTextDownloader _textDownloader;

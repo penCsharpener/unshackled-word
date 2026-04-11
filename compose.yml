@@ -1,6 +1,6 @@
 services:
   unshackledword.tooling.database:
-    image: postgres:latest
+    image: postgres:16
     container_name: postgres-test-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./temp/postgres_data:/var/lib/postgresql/data
+      - unshackled_postgres:/var/lib/postgresql/data
 
   unshackledword.tooling.db-migration:
     #image: unshackledword.migration.postgres
@@ -30,12 +30,24 @@ services:
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.SeedDb/Dockerfile
+    user: "1000:1000"
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__ELBERFELDER1871TEXTFILE=${ELBERFELDER1871TEXTFILE:-/src/assets/elberfelder1871-theword-export.txt}
       - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__GLOBALBIBLETOOLSWORDSCSVFILE=${GLOBALBIBLETOOLSWORDSCSVFILE:-/src/assets/globalbibletools-data.csv}
       - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__GLOBALBIBLETOOLSLEMMACSVFILE=${GLOBALBIBLETOOLSLEMMACSVFILE:-/src/assets/globalbibletools-lemma-form.csv}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONTEMPPATH=${SOLUTIONTEMPPATH:-/src/temp}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONASSETSPATH=${SOLUTIONASSETSPATH:-/src/assets}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__FOLDERLOCATION=${FOLDERLOCATION:-/src/temp/SeedData}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__TSKFILEPATH=${TSKFILEPATH:-/src/assets/tskxref.txt}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SBLSETTINGS__TEXTFILEPATH=${TEXTFILEPATH:-/src/temp/Sbl/text}
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SBLSETTINGS__APPARATUSFILEPATH=${APPARATUSFILEPATH:-/src/temp/Sbl/apparatus}
+    volumes:
+      - ./assets:/src/assets
+      - ./temp:/src/temp
+# docker run -it --entrypoint /bin/bash unshackledword.tooling.seed-db
+
   unshackledword.tooling.webapi:
     #image: unshackledword.tooling.webapi
     depends_on:
@@ -63,3 +75,6 @@ services:
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_APIURL=http://unshackledword.tooling.webapi:8080/api
+
+volumes:
+  unshackled_postgres:

@@ -5,6 +5,9 @@ using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 
+/// <summary>
+/// Imports the assets/elberfelder1871-theword-export.txt file and from it the Hebrew and LXX verse counting
+/// </summary>
 public class ElberfelderTextRunner : IRunner
 {
     private readonly IFileService _fileService;

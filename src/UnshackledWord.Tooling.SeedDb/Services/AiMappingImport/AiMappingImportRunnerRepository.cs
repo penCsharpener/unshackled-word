@@ -16,13 +16,16 @@ public sealed class AiMappingImportRunnerRepository
     private readonly IDbReader _dbReader;
     private readonly IDbWriter _dbWriter;
     private readonly IFileService _fileService;
+    private readonly ILogger<AiMappingImportRunnerRepository> _logger;
     private readonly DatabaseSeedSettings _options;
 
-    public AiMappingImportRunnerRepository(IDbReader dbReader, IDbWriter dbWriter, IFileService fileService, IOptions<AppSettings> options)
+    public AiMappingImportRunnerRepository(IDbReader dbReader, IDbWriter dbWriter, IFileService fileService,
+        IOptions<AppSettings> options, ILogger<AiMappingImportRunnerRepository> logger)
     {
         _dbReader = dbReader;
         _dbWriter = dbWriter;
         _fileService = fileService;
+        _logger = logger;
         _options = options.Value.DatabaseSeeding;
     }
 
@@ -35,15 +38,19 @@ public sealed class AiMappingImportRunnerRepository
             var csvFilename = $"{book.Id.ToString().PadLeft(2, '0')}-{book.Name}.csv";
             var csvPath = _fileService.Combine(_options.SolutionAssetsPath, "Elb1871Mappings", csvFilename);
 
-            if (_fileService.FileExists(csvPath))
+            if (!_fileService.FileExists(csvPath))
             {
-                using var reader = new StreamReader(csvPath);
-                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-                var mappings = csv.GetRecords<ElbMappingBackup>().ToList();
-                foreach (var group in mappings.GroupBy(x => x.HebRefId))
-                {
-                    dictionary.TryAdd(group.Key, group.Where(x => x.ElbWord.IsNotNullOrEmpty()).ToList());
-                }
+                _logger.LogWarning("Could not find csv file {path}", csvPath);
+                continue;
+            }
+
+            using var reader = new StreamReader(csvPath);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            var mappings = csv.GetRecords<ElbMappingBackup>().ToList();
+
+            foreach (var group in mappings.GroupBy(x => x.HebRefId))
+            {
+                dictionary.TryAdd(group.Key, group.Where(x => x.ElbWord.IsNotNullOrEmpty()).ToList());
             }
         }
 
@@ -79,8 +86,26 @@ public sealed class AiMappingImportRunnerRepository
             .ToDictionary(x => x.Key, y => y.ToList());
     }
 
+    public async Task<int> GeMappingCountAsync(string language)
+    {
+        var sql = $"""
+                   SELECT COUNT(*)
+                   FROM "unshackled-word"."Elb1871{language}Mapping"
+                   """;
+
+        return await _dbReader.ExecuteScalarAsync<int>(sql);
+    }
+
     public async Task InsertMappingsAsync(IEnumerable<Elb1871MappingBase> mappings, string language)
     {
+        var count = await GeMappingCountAsync(language);
+
+        if (count > 0)
+        {
+            _logger.LogWarning("{lang} mappings are already imported. {count} rows present.", language, count);
+            return;
+        }
+
         var parameters = new
         {
             ElbWordId = new List<int>(),
@@ -110,7 +135,7 @@ public sealed class AiMappingImportRunnerRepository
         var sql = $"""
                    BEGIN;
 
-                   INSERT INTO "unshackled-word"."Elb1871{language}MappingTest"
+                   INSERT INTO "unshackled-word"."Elb1871{language}Mapping"
                    ({quotedNames})
                    SELECT *
                    FROM UNNEST({parameterNames})
