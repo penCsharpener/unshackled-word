@@ -38,7 +38,6 @@ public static class DboExtensions
                 ConjoinWord = entry.ConjoinWord,
                 StrongInstance = entry.StrongInstance,
                 AltStrongs = entry.AltStrongs,
-                StrongsNumbers = entry.StrongsNumbers
             };
         }
     }
@@ -67,7 +66,6 @@ public static class DboExtensions
                 AlternativeStrongs = entry.AlternativeStrongs,
                 ConjoinWord = entry.ConjoinWord,
                 ExpandedStrongTags = entry.ExpandedStrongTags,
-                StrongsNumbers = entry.StrongsNumbers
             };
         }
     }

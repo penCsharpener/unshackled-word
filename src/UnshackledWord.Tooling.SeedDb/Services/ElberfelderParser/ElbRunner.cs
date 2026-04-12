@@ -21,19 +21,6 @@ public class ElbRunner : IRunner
     public async Task Run(CancellationToken token = default)
     {
         using var scope = _scopeFactory.CreateScope();
-        IList<ElbVerse> bkList = null!;
-        IList<Elb1871Verse> elb1871List = null!;
-
-        /*
-        var bkFilePath = _fileService.Combine(_options.SolutionTempPath, "SeedData/Elb/bible_elb_bk_mybible.xml") ;
-        if (_fileService.FileExists(bkFilePath))
-        {
-            var strategy = scope.ServiceProvider.GetRequiredService<ElbParserStrategy>();
-
-            await strategy.SaveToDatabase(bkFilePath, token);
-            bkList = strategy.ElberfelderStrongsVerses;
-        }
-        */
 
         if (_fileService.FileExists(_options.Elberfelder1871TextFile))
         {
@@ -41,9 +28,5 @@ public class ElbRunner : IRunner
 
             await strategy.SaveToDatabase(_options.Elberfelder1871TextFile, token);
         }
-
-        // var mergeStrategy = scope.ServiceProvider.GetRequiredService<ElberfelderMergeStrategy>();
-
-        // await mergeStrategy.SaveToDatabaseAsync(bkList, elb1871List, token);
     }
 }

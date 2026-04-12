@@ -20,6 +20,13 @@ public sealed class SqliteDbConnectionFactory : IDbConnectionFactory
     }
 
     public IDbConnection DbConnection { get; set; }
+
+    public Task BulkInsertAsync<T>(string tableName, string[] columns, ICollection<T> dataList, Action<IBinaryImporter, T> mapping,
+        CancellationToken token = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public IDbConnection CreateDbConnection()
     {
         var connection = new SqliteConnection(_connectionString);
