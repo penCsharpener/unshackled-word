@@ -3,6 +3,7 @@ using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
@@ -10,12 +11,14 @@ namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
 public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalgamatedHebrewEntry>>
 {
+    private readonly IDbReader _reader;
     private readonly IFileService _fileService;
     private readonly IStepHebrewWordsRepository _repo;
     private readonly ILogger<StepHebrewFileStrategy> _logger;
 
-    public StepHebrewFileStrategy(IFileService fileService, IStepHebrewWordsRepository repo, ILogger<StepHebrewFileStrategy> logger)
+    public StepHebrewFileStrategy(IDbReader reader, IFileService fileService, IStepHebrewWordsRepository repo, ILogger<StepHebrewFileStrategy> logger)
     {
+        _reader = reader;
         _fileService = fileService;
         _repo = repo;
         _logger = logger;
@@ -25,11 +28,13 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
     {
         _logger.LogInformation("processing {filePath}", filePath);
 
+        var strongsCount = await GetStrongsCountASync();
+
         var filter = new StepHebrewWordFilter();
         var count = await _repo.CountByFilterAsync(filter, token);
-        if (count > 0)
+        if (count > 0 && strongsCount > 0)
         {
-            _logger.LogInformation("Step Hebrew file data already imported... {count} rows", count);
+            _logger.LogInformation("Step Hebrew file data and strongs data already imported... {count} rows, strongs count: {strongsCount}", count, strongsCount);
             return [];
         }
 
@@ -149,5 +154,16 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
         }
 
         return input.Replace("/", "").Replace(@"\", "");
+    }
+
+    private async Task<int> GetStrongsCountASync()
+    {
+        var sql = $"""
+                   SELECT Count(*)
+                   FROM {StepStrongsToTextDbo.DbName} sstt
+                   WHERE sstt."StepHebrewWordId" IS NOT NULL;
+                   """;
+
+        return await _reader.ExecuteScalarAsync<int>(sql);
     }
 }

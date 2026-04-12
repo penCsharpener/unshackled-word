@@ -36,6 +36,7 @@ public static partial class StrongsRegexParser
             {
                 "G" => StrongsLanguage.Greek,
                 "H" => StrongsLanguage.Hebrew,
+                "A" => StrongsLanguage.Aramaic,
                 _ => throw new UnreachableException("this strongs number should be impossible")
             };
             strongsNumber.LanguageId = langOverride ?? lang;

@@ -55,40 +55,32 @@ public sealed class StepDataBibleTextImporter : IRunner
         var allGreekStrongsWords = new List<StepStrongsToTextDbo>();
         var allHebrewStrongsWords = new List<StepStrongsToTextDbo>();
 
-        foreach (var chunk in totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(5000000))
+        var greekWords = totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
+        foreach (var gkWord in greekWords)
         {
-            allGreekStrongsWords.AddRange(chunk.SelectMany(x =>
+            foreach (var strongs in gkWord.StrongsNumbers)
             {
-                foreach (var str in x.StrongsNumbers)
-                {
-                    str.StepGreekWordId = x.Id;
-                }
-                return x.StrongsNumbers;
-            }));
-            await _stepGreekWordsRepository.BulkInsertAsync(chunk, token);
+                strongs.StepGreekWordId = gkWord.Id;
+                allGreekStrongsWords.Add(strongs);
+            }
         }
 
-        foreach (var chunk in allGreekStrongsWords.EnumerateWithIds().Chunk(5000000))
-        {
-            await _stepStrongsNumbersRepository.BulkInsertInternalNewAsync(chunk, token);
-        }
+        await _stepGreekWordsRepository.BulkInsertAsync(greekWords, token);
 
-        foreach (var chunk in totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().Chunk(5000000))
+        await _stepStrongsNumbersRepository.BulkInsertInternalNewAsync(allGreekStrongsWords.EnumerateWithIds().ToArray(), token);
+
+        var hebrewWords = totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
+        foreach (var hebrewWord in hebrewWords)
         {
-            allHebrewStrongsWords.AddRange(chunk.SelectMany(x =>
+            foreach (var strongs in hebrewWord.StrongsNumbers)
             {
-                foreach (var str in x.StrongsNumbers)
-                {
-                    str.StepHebrewWordId = x.Id;
-                }
-                return x.StrongsNumbers;
-            }));
-            await _stepHebrewWordsRepository.BulkInsertAsync(chunk, token);
+                strongs.StepHebrewWordId = hebrewWord.Id;
+                allHebrewStrongsWords.Add(strongs);
+            }
         }
 
-        foreach (var chunk in allHebrewStrongsWords.EnumerateWithIds().Chunk(5000000))
-        {
-            await _stepStrongsNumbersRepository.BulkInsertInternalNewAsync(chunk, token);
-        }
+        await _stepHebrewWordsRepository.BulkInsertAsync(hebrewWords, token);
+
+        await _stepStrongsNumbersRepository.BulkInsertInternalNewAsync(allHebrewStrongsWords.EnumerateWithIds().ToList(), token);
     }
 }

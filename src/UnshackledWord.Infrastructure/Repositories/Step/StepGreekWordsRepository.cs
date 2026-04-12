@@ -38,9 +38,9 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         return await _dbReader.ReadAsListAsync<StepGreekWordDbo>(sql, filter);
     }
 
-    public async Task BulkInsertAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
+    public async Task BulkInsertAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default)
     {
-        if (entries.Length == 0)
+        if (entries.Count == 0)
         {
             return;
         }
@@ -48,7 +48,7 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         await BulkInsertInternalNewAsync(entries, token);
     }
 
-    private async Task BulkInsertInternalNewAsync(StepGreekWordDbo[] entries, CancellationToken token = default)
+    private async Task BulkInsertInternalNewAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default)
     {
         var count = await CountByFilterAsync(new(), token);
         if ( count > 0)
@@ -56,7 +56,7 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
             return;
         }
 
-        var dataSize = entries.Length + 1;
+        var dataSize = entries.Count + 1;
         var parameters = new
         {
             Id = new List<int>(dataSize),

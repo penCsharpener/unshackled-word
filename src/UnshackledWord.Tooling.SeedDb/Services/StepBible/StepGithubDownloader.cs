@@ -47,7 +47,6 @@ public sealed class StepGithubDownloader : IFileDownloader
             var savePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", fileName);
             dictionary[fileUrl] = savePath;
         }
-        //,Rom,1Co,2Co,Gal,Eph,Php,Col,1Th,2Th,1Ti,2Ti,Tit,Phm,Heb,Jas,1Pe,2Pe,1Jn,2Jn,3Jn,Jud,Rev
 
         var personPlaceFileUrl = $"{stepOptions.GithubRepoUrl}{stepOptions.PersonPlaceFile}";
         var personPlaceFileName = _fileService.GetFileName(personPlaceFileUrl).Replace("%20", " ");

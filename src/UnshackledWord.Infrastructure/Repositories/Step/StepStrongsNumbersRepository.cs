@@ -37,9 +37,9 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
         return await _dbReader.ExecuteScalarAsync<int>(sql);
     }
 
-    public async Task BulkInsertInternalNewAsync(StepStrongsToTextDbo[] entries, CancellationToken token = default)
+    public async Task BulkInsertInternalNewAsync(ICollection<StepStrongsToTextDbo> entries, CancellationToken token = default)
     {
-        if (entries.Length == 0)
+        if (entries.Count == 0)
         {
             return;
         }
@@ -59,7 +59,7 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
             return;
         }
 
-        var dataSize = entries.Length + 1;
+        var dataSize = entries.Count + 1;
         var parameters = new
         {
             Id = new List<int>(dataSize),
