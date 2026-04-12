@@ -9,7 +9,7 @@ using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
-public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgamatedGreekEntry>>
+public sealed class StepGreekFileStrategy : IFileParserStrategy<List<StepAmalgamatedGreekEntry>>
 {
     private readonly IDbReader _reader;
     private readonly IFileService _fileService;
@@ -123,10 +123,7 @@ public sealed partial class StepGreekFileStrategy : IFileParserStrategy<List<Ste
                 AltStrongs = GetAtIndex(columns, 12)
             };
 
-            var internalStrongs = StrongsRegexParser.Parse(entry.DisambiguatedStrongs).ToList();
-            entry.StrongsNumbers = internalStrongs.ToDbo(null, null).ToList();
             entry.LxxRefId = entry.BibleReference.RefId;
-
             entry.GreekNoDiacritics = entry.Greek.RemoveGreekDiacritics()!;
             entry.LemmaNoDiacritics = entry.Lemma.RemoveGreekDiacritics()!;
 

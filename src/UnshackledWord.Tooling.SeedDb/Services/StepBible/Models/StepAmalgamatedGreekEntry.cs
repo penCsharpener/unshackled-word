@@ -88,6 +88,4 @@ public class StepAmalgamatedGreekEntry
 
     [Name("Alt Strongs")]
     public string? AltStrongs { get; set; } = default!;
-
-    public List<StepStrongsToTextDbo> StrongsNumbers { get; set; } = default!;
 }

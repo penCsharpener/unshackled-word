@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo.Step;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
+namespace UnshackledWord.Tooling.SeedDb.Services.StepBible.StrongsToText;
 
 public static partial class StrongsRegexParser
 {

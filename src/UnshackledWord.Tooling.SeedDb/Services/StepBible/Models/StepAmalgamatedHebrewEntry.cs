@@ -71,6 +71,4 @@ public class StepAmalgamatedHebrewEntry
 
     [Name("Expanded Strong tags")]
     public string ExpandedStrongTags { get; set; } = default!;
-
-    public List<StepStrongsToTextDbo> StrongsNumbers { get; set; } = default!;
 }

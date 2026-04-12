@@ -55,9 +55,9 @@ public sealed partial class StepHebrewStrongsStrategy : IFileParserStrategy<List
             if (isDataLine)
             {
                 var overrideLanguage = columns[5]?.StartsWith('A') == true ? StrongsLanguage.Aramaic : default(StrongsLanguage?);
-                var extended = StrongsRegexParser.Parse(columns[0], overrideLanguage).ToList().First();
-                var disambiguated = StrongsRegexParser.Parse(columns[1], overrideLanguage).ToList().First();
-                var unified = StrongsRegexParser.Parse(columns[2]).Distinct().ToList();
+                var extended = StrongsToText.StrongsRegexParser.Parse(columns[0], overrideLanguage).ToList().First();
+                var disambiguated = StrongsToText.StrongsRegexParser.Parse(columns[1], overrideLanguage).ToList().First();
+                var unified = StrongsToText.StrongsRegexParser.Parse(columns[2]).Distinct().ToList();
 
                 var entry = new StepHebrewStrongsEntry
                 {

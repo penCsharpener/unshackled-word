@@ -9,7 +9,7 @@ using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
-public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalgamatedHebrewEntry>>
+public sealed class StepHebrewFileStrategy : IFileParserStrategy<List<StepAmalgamatedHebrewEntry>>
 {
     private readonly IDbReader _reader;
     private readonly IFileService _fileService;
@@ -118,9 +118,6 @@ public sealed partial class StepHebrewFileStrategy : IFileParserStrategy<List<St
                 ConjoinWord = GetAtIndex(columns, 10)!,
                 ExpandedStrongTags = GetAtIndex(columns, 11)!,
             };
-
-            var internalStrongs = StrongsRegexParser.Parse(entry.DisambiguatedStrongs).ToList();
-            entry.StrongsNumbers = internalStrongs.ToDbo(null, null).ToList();
 
             entry.Hebrew = DenormalizeHebrew(entry.HebrewNormalised);
             entry.HebrewNoDiacritics = entry.Hebrew.RemoveHebrewDiacritics()!;

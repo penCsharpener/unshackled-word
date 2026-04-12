@@ -18,6 +18,7 @@ public sealed partial class SeedingService
         typeof(StepBible.StepDataMorphologyImporter),
         typeof(StepBible.StepDataLexiconImporter),
         typeof(StepBible.StepDataRelationshipImporter),
+        typeof(StepBible.StrongsToText.StepStrongsImport),
         typeof(AiMappingImport.AiMappingImportRunner),
     ];
 
