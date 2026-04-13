@@ -16,7 +16,8 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
 
     public override void Configure()
     {
-        Get("elberfelder/chapterWords/bookId/{BibleBookId:int}/chapterId/{chapterId:int}");
+        Get("chapterWords/bookId/{BibleBookId:int}/chapterId/{chapterId:int}");
+        Group<RouteGroupConfig>();
     }
 
     public override async Task<GetWordsOfChapterResponse> ExecuteAsync(GetWordsOfChapterRequest req, CancellationToken ct)

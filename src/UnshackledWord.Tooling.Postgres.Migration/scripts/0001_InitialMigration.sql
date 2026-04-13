@@ -23,6 +23,22 @@ CREATE INDEX "Elb1871Words_reference_idx" ON "unshackled-word"."Elb1871Words" ("
 CREATE INDEX "Elb1871Words_HebRefId_idx" ON "unshackled-word"."Elb1871Words" ("HebRefId");
 ALTER TABLE "unshackled-word"."Elb1871Words" ADD CONSTRAINT "Elb1871RefAndPositions_unique" UNIQUE ("BibleBookId","Chapter","Verse","PositionInVerse");
 
+
+CREATE TABLE "unshackled-word"."Elb1871Verses"
+(
+    "Id"           serial4                                                                  NOT NULL,
+    "HebRefId"     int4                                                                     NOT NULL,
+    "LxxRefId"     int4                                                                     NOT NULL,
+    "VerseText"    text COLLATE "und-x-icu"                                                 NOT NULL,
+    "SearchVector" tsvector GENERATED ALWAYS AS (to_tsvector('german', "VerseText")) STORED NULL,
+    CONSTRAINT "Elb1871Verses_PK" PRIMARY KEY ("Id"),
+    CONSTRAINT "Elb1871Verses_unique" UNIQUE ("HebRefId")
+);
+CREATE INDEX "Elb1871Verses_HebRefId_idx" ON "unshackled-word"."Elb1871Verses" USING btree ("HebRefId");
+CREATE INDEX "Elb1871Verses_LxxRefId_idx" ON "unshackled-word"."Elb1871Verses" USING btree ("LxxRefId");
+CREATE INDEX "Elb1871Verses_Search_idx" ON "unshackled-word"."Elb1871Verses" USING gin ("SearchVector");
+
+
 CREATE TABLE "unshackled-word"."Tsk"
 (
     "Id"                      serial4                  NOT NULL,
