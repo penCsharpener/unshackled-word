@@ -1,6 +1,8 @@
 using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Infrastructure.Repositories.Step;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.LexiconParser;
+using UnshackledWord.Tooling.SeedDb.Services.StepBible.StrongsToText;
+using StepStrongsRepository = UnshackledWord.Infrastructure.Repositories.Step.StepStrongsRepository;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
@@ -23,6 +25,8 @@ public static class StepRunnerExtensions
         services.AddScoped<StepHebrewStrongsNormalizingStrategy>();
         services.AddScoped<StepLexiconStrategyFactory>();
         services.AddScoped<StepPersonPlaceLexiconStrategy>();
+        services.AddScoped<StepStrongsImport>();
+        services.AddScoped<StepStrongsRepository>();
         services.AddScoped<IStepHebrewWordsNormalizedRepository, StepHebrewWordsNormalizedRepository>();
         services.AddScoped<IStepStrongsToVersesRepository, StepStrongsToVersesRepository>();
         services.AddScoped<IStepGreekWordsRepository, StepGreekWordsRepository>();

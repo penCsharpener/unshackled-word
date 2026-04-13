@@ -1,0 +1,21 @@
+meta {
+  name: Keyword
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}elberfelder/search/german?keyWords=zweifelt&keyWords=Feigenbaum
+  body: none
+  auth: inherit
+}
+
+params:query {
+  keyWords: zweifelt
+  keyWords: Feigenbaum
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

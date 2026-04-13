@@ -20,18 +20,11 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
         _logger = logger;
     }
 
-    public async Task<int> CountByFilterAsync(StrongsLanguage language, CancellationToken token = default)
+    public async Task<int> CountByFilterAsync(CancellationToken token = default)
     {
-        var where = language switch
-        {
-            StrongsLanguage.Aramaic or StrongsLanguage.Hebrew => "WHERE w.\"StepHebrewWordId\" IS NOT NULL",
-            StrongsLanguage.Greek => "WHERE w.\"StepGreekWordId\" IS NOT NULL"
-        };
-
         var sql = $"""
                    SELECT COUNT(*)
                    FROM {StepStrongsToTextDbo.DbName} AS w
-                   {where}
                    """;
 
         return await _dbReader.ExecuteScalarAsync<int>(sql);
@@ -44,16 +37,7 @@ public sealed class StepStrongsNumbersRepository : IStepStrongsNumbersRepository
             return;
         }
 
-        var onlyGreek = entries.All(x => x.StepGreekWordId is not null);
-        var onlyHebrew = entries.All(x => x.StepHebrewWordId is not null);
-        var language = (onlyGreek, onlyHebrew) switch
-        {
-            (true, false) => StrongsLanguage.Greek,
-            (false, true) => StrongsLanguage.Hebrew,
-            _ => throw new UnreachableException("Unknown strongs language")
-        };
-
-        var count = await CountByFilterAsync(language, token);
+        var count = await CountByFilterAsync(token);
         if (count > 0)
         {
             return;
