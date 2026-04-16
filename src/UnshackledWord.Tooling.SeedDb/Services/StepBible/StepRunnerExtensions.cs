@@ -27,6 +27,7 @@ public static class StepRunnerExtensions
         services.AddScoped<StepPersonPlaceLexiconStrategy>();
         services.AddScoped<StepStrongsImport>();
         services.AddScoped<StepStrongsRepository>();
+        services.AddScoped<StepFullTextSearchRunner>();
         services.AddScoped<IStepHebrewWordsNormalizedRepository, StepHebrewWordsNormalizedRepository>();
         services.AddScoped<IStepStrongsToVersesRepository, StepStrongsToVersesRepository>();
         services.AddScoped<IStepGreekWordsRepository, StepGreekWordsRepository>();
