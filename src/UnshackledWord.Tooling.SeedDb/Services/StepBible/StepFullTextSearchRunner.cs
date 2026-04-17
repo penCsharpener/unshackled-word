@@ -32,14 +32,15 @@ public class StepFullTextSearchRunner : IRunner
         }
 
         var sql = """
-                  INSERT INTO "unshackled-word"."StepBibleVerses" ("HebRefId", "LxxRefId", "VerseText", "LemmaText")
-                  SELECT fts."HebRefId", fts."LxxRefId", fts."VerseText", fts."LemmaText"
+                  INSERT INTO "unshackled-word"."StepBibleVerses" ("HebRefId", "LxxRefId", "VerseText", "NonDiacriticText", "LemmaText")
+                  SELECT fts."HebRefId", fts."LxxRefId", fts."VerseText", fts."NonDiacriticText", fts."LemmaText"
                   FROM (
                       -- title: final Greek FTS data
                       SELECT
                           bvcm."HebRefId"
                           , bvcm."LxxRefId"
-                          , LOWER(STRING_AGG(sgw."GreekNoDiacritics", ' ' ORDER BY sgw."PositionInVerse")) AS "VerseText"
+                          , LOWER(STRING_AGG(sgw."Greek", ' ' ORDER BY sgw."PositionInVerse")) AS "VerseText"
+                          , LOWER(STRING_AGG(sgw."GreekNoDiacritics", ' ' ORDER BY sgw."PositionInVerse")) AS "NonDiacriticText"
                           , LOWER(STRING_AGG(sgw."LemmaNoDiacritics", ' ' ORDER BY sgw."PositionInVerse")) AS "LemmaText"
                       FROM "unshackled-word"."StepGreekWords" sgw
                           INNER JOIN "unshackled-word"."BibleVerseCountingMapping" bvcm ON bvcm."LxxRefId" = sgw."LxxRefId"
@@ -49,7 +50,8 @@ public class StepFullTextSearchRunner : IRunner
                       SELECT
                           bvcm."HebRefId"
                           , bvcm."LxxRefId"
-                          , LOWER(STRING_AGG(shw."HebrewNoDiacritics", ' ' ORDER BY shw."PositionInVerse")) AS "VerseText"
+                          , LOWER(STRING_AGG(shw."Hebrew", ' ' ORDER BY shw."PositionInVerse")) AS "VerseText"
+                          , LOWER(STRING_AGG(shw."HebrewNoDiacritics", ' ' ORDER BY shw."PositionInVerse")) AS "NonDiacriticText"
                           , LOWER(STRING_AGG(lemmas."OriginalWordNoDiacritics", ' ' ORDER BY shw."PositionInVerse")) AS "LemmaText"
                       FROM "unshackled-word"."StepHebrewWords" shw
                           INNER JOIN "unshackled-word"."BibleVerseCountingMapping" bvcm ON bvcm."LxxRefId" = shw."LxxRefId"

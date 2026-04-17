@@ -1,12 +1,15 @@
+-- DROP TABLE "unshackled-word"."StepBibleVerses"
+
 CREATE TABLE "unshackled-word"."StepBibleVerses"
 (
-    "Id"           serial4                  NOT NULL,
-    "HebRefId"     INT                      NOT NULL,
-    "LxxRefId"     INT                      NOT NULL,
-    "VerseText"    text COLLATE "und-x-icu" NOT NULL,
-    "LemmaText"    text COLLATE "und-x-icu" NOT NULL,
-    "SearchVector" tsvector GENERATED ALWAYS AS (
-        setweight(to_tsvector('simple', coalesce("VerseText", '')), 'A') ||
+    "Id"               serial4                  NOT NULL,
+    "HebRefId"         INT                      NOT NULL,
+    "LxxRefId"         INT                      NOT NULL,
+    "VerseText"        text COLLATE "und-x-icu" NOT NULL,
+    "NonDiacriticText" text COLLATE "und-x-icu" NOT NULL,
+    "LemmaText"        text COLLATE "und-x-icu" NOT NULL,
+    "SearchVector"     tsvector GENERATED ALWAYS AS (
+        setweight(to_tsvector('simple', coalesce("NonDiacriticText", '')), 'A') ||
         setweight(to_tsvector('simple', coalesce("LemmaText", '')), 'B')
         ) STORED,
     CONSTRAINT "StepBibleVerses_PK" PRIMARY KEY ("Id")
