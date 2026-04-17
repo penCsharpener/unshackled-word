@@ -16,7 +16,11 @@ public class ElberfelderTextRunner : IRunner
     private readonly ILogger<ElberfelderTextRunner> _logger;
     private readonly AppSettings _options;
 
-    public ElberfelderTextRunner(IFileService fileService, IDbReader dbReader, IServiceScopeFactory scopeFactory, IOptions<AppSettings> options, ILogger<ElberfelderTextRunner> logger)
+    public ElberfelderTextRunner(IFileService fileService,
+        IDbReader dbReader,
+        IServiceScopeFactory scopeFactory,
+        IOptions<AppSettings> options,
+        ILogger<ElberfelderTextRunner> logger)
     {
         _fileService = fileService;
         _dbReader = dbReader;

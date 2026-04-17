@@ -10,6 +10,7 @@ public sealed partial class SeedingService
     private Type[] _runnerTypes =
     [
         typeof(ElberfelderParser.ElberfelderTextRunner),
+        typeof(ElberfelderParser.Elb1871VerseRunner),
         typeof(Tsk.TskRunner),
         typeof(StatisticalRestorationGnt.SrRunner),
         typeof(SBL.SblRunner),
