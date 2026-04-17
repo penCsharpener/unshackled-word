@@ -152,4 +152,20 @@ public static class StringExtensions
         // Return to standard composed form
         return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
     }
+
+    public static string RemovePunctuation(this string word)
+    {
+        var characters = ",;:.!?\"'{}[]()’¶".ToCharArray();
+
+        var result = word.Trim();
+
+        foreach (var character in characters)
+        {
+            result = result.Replace(character.ToString(), string.Empty);
+        }
+
+        result = result.Trim('-');
+
+        return result;
+    }
 }

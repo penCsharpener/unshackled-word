@@ -1,3 +1,4 @@
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
@@ -41,26 +42,10 @@ public class ElbExportLineItem
 
         foreach (var word in words)
         {
-            var cleanedWord = CleanUpWord(word);
+            var cleanedWord = word.RemovePunctuation();
 
             yield return new Elb1871Word(new BibleReference(), orderCounter, word, cleanedWord);
             orderCounter++;
         }
-    }
-
-    private static string CleanUpWord(string word)
-    {
-        var characters = ",;:.!?\"'{}[]()’".ToCharArray();
-
-        var result = word.Trim();
-
-        foreach (var character in characters)
-        {
-            result = result.Replace(character.ToString(), string.Empty);
-        }
-
-        result = result.Trim('-');
-
-        return result;
     }
 }
