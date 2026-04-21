@@ -7,7 +7,7 @@ using UnshackledWord.Persistence.Postgres.Services;
 using UnshackledWord.Tooling.SeedDb.Services;
 using UnshackledWord.Tooling.SeedDb.Services.AiMappingImport;
 using UnshackledWord.Tooling.SeedDb.Services.ByzTxt.Extensions;
-using UnshackledWord.Tooling.SeedDb.Services.Elb1871Lemmatizer;
+using UnshackledWord.Tooling.SeedDb.Services.CsvImports;
 using UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
@@ -46,6 +46,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<TskTextReader>();
         services.AddAiMappingImportServices();
         services.RegisterElb1871SrWordMapperServices();
+        services.RegisterCsvImportServices();
         services.AddScoped<IDbWriter, DbWriter>();
         services.AddScoped<IDbReader, DbReader>();
         services.AddSingleton<IDbConnectionFactory, PostgresDbConnectionFactory>();
