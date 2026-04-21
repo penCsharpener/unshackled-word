@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
@@ -12,22 +13,25 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
 {
     private readonly IDbWriter _dbWriter;
     private readonly IDbReader _dbReader;
+    private readonly IFileService _fileService;
     private readonly ILogger<ByzTxtStrategy> _logger;
-    private readonly ByzantineSettings _options;
+    private readonly DatabaseSeedSettings _options;
     private readonly HttpClient _githubClient;
     private static string _delimiter = $",{Environment.NewLine}    ";
 
     public ByzTxtStrategy(IDbWriter dbWriter,
         IDbReader dbReader,
+        IFileService fileService,
         IHttpClientFactory clientFactory,
         IOptions<AppSettings> options,
         ILogger<ByzTxtStrategy> logger)
     {
         _dbWriter = dbWriter;
         _dbReader = dbReader;
+        _fileService = fileService;
         _logger = logger;
         _githubClient = clientFactory.CreateClient("Github");
-        _options = options.Value.DatabaseSeeding.ByzantineSettings;
+        _options = options.Value.DatabaseSeeding;
     }
 
     public async Task SaveToDatabase(string filePath, CancellationToken token = default)
@@ -115,7 +119,17 @@ public sealed class ByzTxtStrategy : IFileParserStrategy
 
     private async Task<string> DownloadFileAsync(string fileName, CancellationToken token = default)
     {
-        return await _githubClient.GetStringAsync($"{_options.TextDownloadUrl.TrimEnd('/')}/{fileName}.csv", token);
+        var byzFilename = _fileService.Combine(_options.SolutionTempPath, _options.ByzantineSettings.TextFilePath, $"{fileName}.csv");
+        if (_fileService.FileExists(byzFilename))
+        {
+            return await _fileService.ReadAllTextAsync(byzFilename, Encoding.UTF8, token);
+        }
+
+        var content = await _githubClient.GetStringAsync($"{_options.ByzantineSettings.TextDownloadUrl.TrimEnd('/')}/{fileName}.csv", token);
+
+        await _fileService.WriteAllTextAsync(byzFilename, content, Encoding.UTF8, token);
+
+        return content;
     }
 
     private async Task InsertIntoDb(List<ByzTxtWord> allWords, CancellationToken token = default)

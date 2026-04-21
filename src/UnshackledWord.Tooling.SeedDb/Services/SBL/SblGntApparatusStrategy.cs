@@ -13,14 +13,14 @@ public class SblGntApparatusStrategy : IFileParserStrategy
 {
     private readonly IFileService _fileService;
     private readonly IDbWriter _dbWriter;
-    private readonly SblSettings _options;
+    private readonly DatabaseSeedSettings _options;
     private static string _delimiter = $",{Environment.NewLine}    ";
 
     public SblGntApparatusStrategy(IFileService fileService, IDbWriter dbWriter, IOptions<AppSettings> options)
     {
         _fileService = fileService;
         _dbWriter = dbWriter;
-        _options = options.Value.DatabaseSeeding.SblSettings;
+        _options = options.Value.DatabaseSeeding;
     }
 
     public async Task SaveToDatabase(string _, CancellationToken token = default)
@@ -34,7 +34,7 @@ public class SblGntApparatusStrategy : IFileParserStrategy
 
         foreach (var fileName in Constants.SblDownloadFileNames.Keys)
         {
-            var filePath = _fileService.Combine(_options.ApparatusFilePath, $"{fileName}.txt");
+            var filePath = _fileService.Combine(_options.SolutionTempPath, _options.SblSettings.ApparatusFilePath, $"{fileName}.txt");
             var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
             var book = BibleBook.AllBooks[Constants.SblDownloadFileNames[fileName]];
 

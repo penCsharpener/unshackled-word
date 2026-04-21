@@ -21,7 +21,7 @@ public sealed class OpenScriptureHebrewDownloader : IFileDownloader
         _fileService = fileService;
         _httpClient = httpClient;
         _logger = logger;
-        _tempFolder = options.Value.DatabaseSeeding.FolderLocation;
+        _tempFolder = fileService.Combine(options.Value.DatabaseSeeding.SolutionTempPath, "SeedData");
         _options = options.Value.DatabaseSeeding.OpenScripturesGithub;
     }
 

@@ -28,7 +28,7 @@ public class GithubFileDownloader : IFileDownloader
         foreach (var file in _options.DatabaseSeeding.SRFileUrls)
         {
             var fileName = _fileService.GetFileName(file);
-            var filePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "SR",
+            var filePath = _fileService.Combine(_options.DatabaseSeeding.SolutionTempPath, "SeedData", "SR",
                 fileName.Replace("%20", " "));
 
             if (_fileService.FileExists(filePath))
@@ -56,8 +56,9 @@ public class GithubFileDownloader : IFileDownloader
 
     public void EnsurePath()
     {
-        _fileService.CreateDirectoryIfNotExists(_options.DatabaseSeeding.FolderLocation);
-        var directoryPath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "SR");
+        var seedDataPath = _fileService.Combine(_options.DatabaseSeeding.SolutionTempPath, "SeedData");
+        _fileService.CreateDirectoryIfNotExists(seedDataPath);
+        var directoryPath = _fileService.Combine(seedDataPath, "SR");
         _fileService.CreateDirectoryIfNotExists(directoryPath);
     }
 }

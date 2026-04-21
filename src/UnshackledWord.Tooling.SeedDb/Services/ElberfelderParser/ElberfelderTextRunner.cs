@@ -31,18 +31,21 @@ public class ElberfelderTextRunner : IRunner
 
     public async Task Run(CancellationToken token = default)
     {
-        if (_fileService.FileExists(_options.DatabaseSeeding.Elberfelder1871TextFile) is false)
+        var elb1871Path = _fileService.Combine(_options.DatabaseSeeding.SolutionAssetsPath,
+            _options.DatabaseSeeding.Elberfelder1871TextFile);
+
+        if (_fileService.FileExists(elb1871Path) is false)
         {
-            _logger.LogInformation("Elberfelder 1871 text file does not exist at path: {FilePath}. Skipping import.", _options.DatabaseSeeding.Elberfelder1871TextFile);
+            _logger.LogInformation("Elberfelder 1871 text file does not exist at path: {FilePath}. Skipping import.", elb1871Path);
             return;
         }
 
         using var scope = _scopeFactory.CreateScope();
 
         var strategy = scope.ServiceProvider.GetRequiredService<Elberfelder1871Strategy>();
-        await strategy.SaveToDatabase(_options.DatabaseSeeding.Elberfelder1871TextFile, token);
+        await strategy.SaveToDatabase(elb1871Path, token);
 
         var strategy2 = scope.ServiceProvider.GetRequiredService<BibleVerseCoutingMappingStrategy>();
-        await strategy2.SaveToDatabase(_options.DatabaseSeeding.Elberfelder1871TextFile, token);
+        await strategy2.SaveToDatabase(elb1871Path, token);
     }
 }

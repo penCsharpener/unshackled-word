@@ -46,6 +46,86 @@ ENVIRONMENT=Development
 Then run `docker compose up -d` in the solution root.
 If this doesn't work for you please create an issue with the details.
 
+## Development Setup
+
+### Local Postgres Database
+
+To get started with development you need a local postgres database.
+
+```
+docker run --name unshackledword.database -e POSTGRES_PASSWORD=test -p 5432:5432 -d postgres:18
+```
+
+Rather than using user secrets I prefer one secrets .json file that lives somewhere outside the solution.
+
+### Postgres Migrations
+
+The first project to run is `UnshackledWord.Tooling.Postgres.Migration`.
+Create a `Program.local.cs` right next to its `Program.cs` and add the following code to it:
+
+```csharp
+public partial class Program
+{
+    static partial void AddLocalSecrets(ConfigurationManager builder)
+    {
+        builder.AddJsonFile(@"<absolute-path-to-your-secrets-folder>\unshackled-secrets.json", true, true);
+        // builder.AddJsonFile(@"<absolute-path-to-your-secrets-folder>\unshackled-secrets-2.json", true, true);
+        // you can have multiple json files here. The later you add them the higher their priority.
+    }
+}
+```
+
+Any `.local.cs` will be excluded from git.
+In your `unshackled-secrets.json` add the following content:
+
+```json
+{
+  "ConnectionStrings": {
+    "PostgresConnection": "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=test"
+  }
+}
+```
+
+Now you can run the migration project and it will setup the schema and tables for you.
+
+### Seeding the Database
+
+Second to run is `UnshackledWord.Tooling.SeedDb`. Here follow the same steps as for the migration project to add your secrets and connection string.
+You will also need to check the appsettings.json file for any relative path and copy the settings over to your secrets file.
+Now use absolute paths in your secrets file to point to the right folders on your machine. This is easier to debug and get started.
+Important paths to override are:
+
+```
+{
+  "AppSettings": {
+    "DatabaseSeeding": {
+      "SolutionTempPath": "<absolute-path-to-solution>/temp",
+      "SolutionAssetsPath": "<absolute-path-to-solution>/assets",
+    }
+  }
+}
+```
+
+Then you can run the project and it will download the data from the various sources and import it into your local database.
+Depending on your internet connection and the performance of your machine this can take a while.
+The dataset is quite big and some of the sources need to be downloaded first.
+The downloaded files are 'cached' in the solution `temp` folder so all subsequent runs will be faster.
+
+### Web API
+
+Now that the database is setup and seeded you can run the `UnshackledWord.Tooling.WebApi` project.
+Again this will need the same secrets setup as the previous projects to connect to the database.
+
+### Web Frontend
+
+With the API running open the `src\UnshackledWord.AstroWeb` and create an `.env` file in the root of the project with the following content:
+
+```env
+PUBLIC_API_DOMAIN=http://localhost:5142/api
+```
+
+Now run `npm install` and then `npm run dev` to start the frontend.
+
 ### BibleTagger
 
 A basic .NET Blazor frontend.

@@ -13,14 +13,14 @@ public class SblGntTextStrategy : IFileParserStrategy
 {
     private readonly IFileService _fileService;
     private readonly IDbWriter _dbWriter;
-    private readonly SblSettings _options;
+    private readonly DatabaseSeedSettings _options;
     private static string _delimiter = $",{Environment.NewLine}    ";
 
     public SblGntTextStrategy(IFileService fileService, IDbWriter dbWriter, IOptions<AppSettings> options)
     {
         _fileService = fileService;
         _dbWriter = dbWriter;
-        _options = options.Value.DatabaseSeeding.SblSettings;
+        _options = options.Value.DatabaseSeeding;
     }
 
     public async Task SaveToDatabase(string _, CancellationToken token = default)
@@ -32,7 +32,7 @@ public class SblGntTextStrategy : IFileParserStrategy
     {
         foreach (var fileName in Constants.SblDownloadFileNames.Keys)
         {
-            var filePath = _fileService.Combine(_options.TextFilePath, $"{fileName}.txt");
+            var filePath = _fileService.Combine(_options.SolutionTempPath, _options.SblSettings.TextFilePath, $"{fileName}.txt");
             var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
             var insertRows = new List<string>();
 

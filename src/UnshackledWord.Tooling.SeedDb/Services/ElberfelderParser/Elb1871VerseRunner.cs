@@ -25,12 +25,15 @@ public sealed class Elb1871VerseRunner : IRunner
 
     public async Task Run(CancellationToken token = default)
     {
-        if (_fileService.FileExists(_options.DatabaseSeeding.Elberfelder1871TextFile) is false)
+        var elb1871Path = _fileService.Combine(_options.DatabaseSeeding.SolutionAssetsPath,
+            _options.DatabaseSeeding.Elberfelder1871TextFile);
+
+        if (!_fileService.FileExists(elb1871Path))
         {
-            _logger.LogInformation("Elberfelder 1871 text file does not exist at path: {FilePath}. Skipping import.", _options.DatabaseSeeding.Elberfelder1871TextFile);
+            _logger.LogInformation("Elberfelder 1871 text file does not exist at path: {FilePath}. Skipping import.", elb1871Path);
             return;
         }
 
-        await _strategy.SaveToDatabase(_options.DatabaseSeeding.Elberfelder1871TextFile, token);
+        await _strategy.SaveToDatabase(elb1871Path, token);
     }
 }

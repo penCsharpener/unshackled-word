@@ -23,12 +23,13 @@ public sealed class StepGithubDownloader : IFileDownloader
         var fileList = new List<string>();
         var stepOptions = _options.DatabaseSeeding.StepBibleData;
         var dictionary = new Dictionary<string, string>();
+        var seedDataPath = _fileService.Combine(_options.DatabaseSeeding.SolutionTempPath, "SeedData");
 
         foreach (var fileSubPath in stepOptions.AmalgamatedFiles)
         {
             var fileUrl = $"{stepOptions.GithubRepoUrl}{stepOptions.AmalgamatedSubPath}{fileSubPath}";
             var fileName = _fileService.GetFileName(fileUrl).Replace("%20", " ");
-            var savePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", fileName);
+            var savePath = _fileService.Combine(seedDataPath, "Step", fileName);
             dictionary[fileUrl] = savePath;
         }
 
@@ -36,7 +37,7 @@ public sealed class StepGithubDownloader : IFileDownloader
         {
             var fileUrl = $"{stepOptions.GithubRepoUrl}{stepOptions.StrongsLexiconSubPath}{fileSubPath}";
             var fileName = _fileService.GetFileName(fileUrl).Replace("%20", " ");
-            var savePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", fileName);
+            var savePath = _fileService.Combine(seedDataPath, "Step", fileName);
             dictionary[fileUrl] = savePath;
         }
 
@@ -44,18 +45,18 @@ public sealed class StepGithubDownloader : IFileDownloader
         {
             var fileUrl = $"{stepOptions.GithubRepoUrl}{fileSubPath}";
             var fileName = _fileService.GetFileName(fileUrl).Replace("%20", " ");
-            var savePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", fileName);
+            var savePath = _fileService.Combine(seedDataPath, "Step", fileName);
             dictionary[fileUrl] = savePath;
         }
 
         var personPlaceFileUrl = $"{stepOptions.GithubRepoUrl}{stepOptions.PersonPlaceFile}";
         var personPlaceFileName = _fileService.GetFileName(personPlaceFileUrl).Replace("%20", " ");
-        var personPlaceSavePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", personPlaceFileName);
+        var personPlaceSavePath = _fileService.Combine(seedDataPath, "Step", personPlaceFileName);
         dictionary[personPlaceFileUrl] = personPlaceSavePath;
 
         var versificationFileUrl = $"{stepOptions.GithubRepoUrl}{stepOptions.VersificationFile}";
         var versificationFileName = _fileService.GetFileName(versificationFileUrl).Replace("%20", " ");
-        var versificationSavePath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step", versificationFileName);
+        var versificationSavePath = _fileService.Combine(seedDataPath, "Step", versificationFileName);
         dictionary[versificationFileUrl] = versificationSavePath;
 
         foreach (var (fileUrl, savePath) in dictionary)
@@ -83,8 +84,9 @@ public sealed class StepGithubDownloader : IFileDownloader
 
     public void EnsurePath()
     {
-        _fileService.CreateDirectoryIfNotExists(_options.DatabaseSeeding.FolderLocation);
-        var directoryPath = _fileService.Combine(_options.DatabaseSeeding.FolderLocation, "Step");
+        var seedDataPath = _fileService.Combine(_options.DatabaseSeeding.SolutionTempPath, "SeedData");
+        _fileService.CreateDirectoryIfNotExists(seedDataPath);
+        var directoryPath = _fileService.Combine(seedDataPath, "Step");
         _fileService.CreateDirectoryIfNotExists(directoryPath);
     }
 }

@@ -14,13 +14,17 @@ public sealed class GbtCsvStrategy : IFileParserStrategy
 {
     private readonly IDbReader _dbReader;
     private readonly IDbWriter _dbWriter;
+    private readonly IFileService _fileService;
+    private readonly ILogger<GbtCsvStrategy> _logger;
     private readonly AppSettings _appSettings;
     private static string nl = Environment.NewLine;
 
-    public GbtCsvStrategy(IDbReader dbReader, IDbWriter dbWriter, IOptions<AppSettings> options)
+    public GbtCsvStrategy(IDbReader dbReader, IDbWriter dbWriter, IFileService fileService, IOptions<AppSettings> options, ILogger<GbtCsvStrategy> logger)
     {
         _dbReader = dbReader;
         _dbWriter = dbWriter;
+        _fileService = fileService;
+        _logger = logger;
         _appSettings = options.Value;
     }
 
@@ -76,7 +80,16 @@ public sealed class GbtCsvStrategy : IFileParserStrategy
             Encoding = Encoding.UTF8
         };
 
-        using var textReader = new StreamReader(_appSettings.DatabaseSeeding.GlobalBibleToolsLemmaCsvFile, Encoding.UTF8);
+        var filePath = _fileService.Combine(_appSettings.DatabaseSeeding.SolutionAssetsPath,
+            _appSettings.DatabaseSeeding.GlobalBibleToolsLemmaCsvFile);
+
+        if (!_fileService.FileExists(filePath))
+        {
+            _logger.LogInformation("Global Bible Tools lemma CSV file not found at path: '{FilePath}'", filePath);
+            return [];
+        }
+
+        using var textReader = new StreamReader(filePath, Encoding.UTF8);
         using var csvReader = new CsvHelper.CsvReader(textReader, settings);
         var list = new List<GbtLemma>();
 
@@ -100,7 +113,16 @@ public sealed class GbtCsvStrategy : IFileParserStrategy
         var gbtLemmaList = await ReadFromCsvLemmasAsync(token);
         var gbtLemmaDictionary = gbtLemmaList.ToDictionary(x => x.LemmaId, x => x);
 
-        using var textReader = new StreamReader(_appSettings.DatabaseSeeding.GlobalBibleToolsWordsCsvFile, Encoding.UTF8);
+        var filePath = _fileService.Combine(_appSettings.DatabaseSeeding.SolutionAssetsPath,
+            _appSettings.DatabaseSeeding.GlobalBibleToolsWordsCsvFile);
+
+        if (!_fileService.FileExists(filePath))
+        {
+            _logger.LogInformation("Global Bible Tools words CSV file not found at path: '{FilePath}'", filePath);
+            return [];
+        }
+
+        using var textReader = new StreamReader(filePath, Encoding.UTF8);
         using var csvReader = new CsvHelper.CsvReader(textReader, settings);
         var list = new List<GbtParsedWord>();
 
