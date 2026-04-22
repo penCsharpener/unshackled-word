@@ -3497,8 +3497,8 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 41005023,14,,Zügen,,,True,10,liegt
 41005023,15,,ich,ὅτι,6,True,17,daß
 41005023,15,,ich,,,True,16,bitte
-41005023,16,,bitte,,,True,16,bitte
 41005023,16,,bitte,παρακαλεῖ,2,True,3,bat
+41005023,16,,bitte,,,True,16,bitte
 41005023,17,,daß,ἵνα,12,False,,
 41005023,18,,du,ἐλθὼν,13,True,19,kommest
 41005023,19,,kommest,ἐλθὼν,13,False,,
