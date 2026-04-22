@@ -66,8 +66,8 @@ public class HebrewMappingService
                             _logger.LogInformation("Submitting {firstRef}-{lastRef} of a total of {totalVerses} verses with {totalWords} words", first, last, verses.Length, elbWords.Select(x => x.Data.Count()).Sum());
 
                             var response = await _client.GetElbStepMappings(elbWords, stepWords, token);
-                            var validator = new AiResponseStatsValidation();
-                            var stats = new AiResponseStats(response, elbWords, stepWords);
+                            var validator = new AiResponseStatsValidation<StepHebrewVerseData>();
+                            var stats = new AiResponseStats<StepHebrewVerseData>(response, elbWords, stepWords);
                             var validationResult = await validator.ValidateAsync(stats, token);
 
                             if (!validationResult.IsValid)

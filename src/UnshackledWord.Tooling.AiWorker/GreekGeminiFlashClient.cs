@@ -9,20 +9,41 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
 {
     // Skip thinking and provide only the direct mapping in JSON format.
 
-    private const string GreekSystemInstruction = """
-                                             You are a linguistic mapping tool mapping the Elberfelder 1871 German NT to STEP Bible Greek data.
-                                             RULES:
-                                             1. OUTPUT: Return a JSON object matching the provided schema.
-                                                INPUT: The Input format is [Ref BookId:Chapter:Verse[(wordId<Word>)(wordId<Word>)]] which is an array of Bible References containing another array with tuples of words in the verse.
-                                             2. SPLIT VERBS: Map split German verb parts (e.g., 'aus' in 'geht...aus') to the same Greek 'StepWordId' and 'Strongs'.
-                                             3. ADDED WORDS: If a German word has no Greek source, set 'IsAddedWord': true and 'StepWordId': null.
-                                             4. PARENT MAPPING: For German words where IsAddedWord is true (e.g., articles like 'der' or particles), set ParentId to the German word id of the semantic head of the phrase. For articles and adjectives, this is the Noun. For auxiliary verbs or split particles, this is the Main Verb. If 'der' refers to 'Tisch' in 'der kleine Tisch', map 'der' to the ID of 'Tisch', even if 'kleine' is in between.
-                                             5. COMPOUND WORDS: If a German compound word corresponds to two distinct Greek words, split the German word into its constituent parts (e.g., 'Gerstenernte' into 'Gersten' and 'ernte'). Assign each part a unique 'StepId' corresponding to its source word, but maintain the original 'ElbWordId' for both parts to ensure they can be reconstructed. Use the 'GermanWordPart' property to store the split fragments exactly as they appear in the compound and in the order they need to be joined back together.
-                                             6. VERSE INTEGRITY: Never map a German word ID to a Greek word from a different verse.
-                                             7. NO MARKDOWN: Return only raw JSON.
-                                             8. COLUMN COUNT: Ensure that the Data property only has strings that consist of 6 pipe delimited columns.
-                                             9. COMPLETE MAPPING: Ensure that all German and Greek Words id have been mapped. Duplicate German Ids must have a value for 'GermanWordPart'. No id can be returned as 0!
-                                             """;
+    private const string GreekSystemInstruction =
+        """
+        You are a linguistic expert specializing in mapping the German Elberfelder 1871 Bible to the Biblical Greek New Testament. Your task is to generate a precise word-level alignment in a specific JSON format.
+
+        ### MAPPING RULES:
+        1. SEQUENTIAL MAPPING: Map German words to Greek words following their appearance in the text.
+        2. MORPHOLOGICAL ALIGNMENT (Many-to-One):
+           - Map German personal pronouns (e.g., "er") and their associated verb (e.g., "ging") to the single Greek ID containing the subject morphology (e.g., "ἦλθεν").
+           - Map auxiliary verbs or phrasal verb components to the single Greek ID representing the action.
+        3. ADDED WORDS (IsAddedWord/ParentElbWordId):
+           - If a German word has no Greek equivalent (e.g., articles like "ein", "der" or supplementary particles), set IsAddedWord = 1.
+           - You MUST identify a ParentElbWordId for every IsAddedWord = 1. The parent is the primary German noun or verb the added word modifies.
+        4. UNTRANSLATED GREEK PARTICLES AND ARTICLES:
+           - Link untranslated Greek particles (like 'μέν', 'δέ', 'τε') or untranslated definite articles (e.g., 'ὁ' before proper names like Jesus) to the nearest semantic German noun or verb ID.
+        5. COMPOUND WORDS (PartOrder/GermanWordPart):
+           - If one German Word ID corresponds to multiple Greek Word IDs (e.g., "Gersten-ernte"), create two entries for that German ID.
+           - Use PartOrder (1, 2, etc.) and GermanWordPart to show the split (e.g., "Gersten" and "ernte").
+        6. DATA VALIDATION:
+           - if IsAddedWord is 1 and ParentElbWordId is set, then StepWordId MUST be null
+           - if StepWordId is set, IsAddedWord is false and ParentElbWordId null
+           - if GermanWordPart and PartOrder are set, they have the same ElbWordId, otherwise they are null
+           - GermanWordPart does not contain an ID, but the part of the German Word the Greek Id belongs to
+           - only use Ids that have been submitted in the request
+           - IMPORTANT: no StepId of one verse is mapped to a German word of another verse
+
+        ### OUTPUT FORMAT:
+        Return a JSON array of objects. Each object must contain:
+        - "RefId": Integer (BookId * 1000000 + Chapter * 1000 + Verse).
+        - "Data": An array of pipe-delimited strings: "ElbWordId|StepWordId|IsAddedWord|ParentElbWordId|PartOrder|GermanWordPart"
+
+        ### DATA CONVENTIONS:
+        - Use '1' for true, '0' for false.
+        - Use '-' for null/empty values in ParentElbWordId, PartOrder, and GermanWordPart.
+        - Ensure every Elberfelder ID provided in the input is accounted for in the output.
+        """;
 
     private IntShrinkDictionary _elbIdMapping = new();
     private IntShrinkDictionary _stepIdMapping = new();
@@ -36,8 +57,8 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
         // use two dictionaries to be able to map the ids back after the response comes back
         // this should also further reduce the costs as ids are much shorter
 
-        var germanVerseJson = elbWords.ToWithoutOrder().ReduceIds(_elbIdMapping).ToDelimitedString();
-        var greekVerseJson = stepWords.ToWithoutOrder().ReduceIds(_stepIdMapping).ToDelimitedString();
+        var germanVerseJson = elbWords.ToWithoutOrder().ToDelimitedString();
+        var greekVerseJson = stepWords.ToWithoutOrder().ToDelimitedString();
 
         var prompt = $"""
                       German Words: {germanVerseJson}
@@ -45,30 +66,7 @@ public class GreekGeminiFlashClient : GeminiFlashAbstractClient
                       """;
 
         var response = await SubmitAsync(prompt, GreekSystemInstruction, GeminiModelType.Flash3_1LitePreview, token);
-        var result = response.ToTypedResponse().RestoreIds(_elbIdMapping, (dictionary, mapping) =>
-        {
-            var originalId = dictionary.GetOriginalId(mapping.ElbWordId);
-            mapping.ElbWordId = originalId;
-            if (mapping.ParentElbWordId is null)
-            {
-                return;
-            }
-
-            var originalParentId = dictionary.GetOriginalId(mapping.ParentElbWordId.Value);
-            mapping.ParentElbWordId = originalParentId;
-        }).RestoreIds(_stepIdMapping, (dictionary, mapping) =>
-        {
-            if (mapping.StepWordId is null)
-            {
-                return;
-            }
-
-            var originalId = dictionary.GetOriginalId(mapping.StepWordId.Value);
-            mapping.StepWordId = originalId;
-        }).ToList();
-
-        _elbIdMapping.Reset();
-        _stepIdMapping.Reset();
+        var result = response.ToTypedResponse().ToList();
 
         foreach (var x in result)
         {

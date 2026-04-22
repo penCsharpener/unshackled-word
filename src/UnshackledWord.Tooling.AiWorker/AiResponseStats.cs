@@ -4,20 +4,20 @@ using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
 
 namespace UnshackledWord.Tooling.AiWorker;
 
-public struct AiResponseStats
+public struct AiResponseStats<T> where T : IVerseDataWithoutOrder
 {
     private readonly List<ElbStepAiMapping> _results;
     private readonly List<ElbVerseData> _elbWords;
-    private readonly List<StepHebrewVerseData> _stepWords;
+    private readonly List<T> _stepWords;
     public List<VerseDataList<ElbStepAiMapping>> Results { get; }
     public List<VerseDataList<ElbVerseData>> ElbWords { get; }
-    public List<VerseDataList<StepHebrewVerseData>> StepWords { get; }
+    public List<VerseDataList<T>> StepWords { get; }
     public int[] Verses { get; set; } = default!;
     public string VerseRange { get; set; } = default!;
     public List<(int RefId, int ElbId)> WrongElbIds { get; set; } = [];
     public List<(int RefId, int StepId)> WrongStepIds { get; set; } = [];
 
-    public AiResponseStats(List<VerseDataList<ElbStepAiMapping>> results, List<VerseDataList<ElbVerseData>> elbWords,  List<VerseDataList<StepHebrewVerseData>> stepWords)
+    public AiResponseStats(List<VerseDataList<ElbStepAiMapping>> results, List<VerseDataList<ElbVerseData>> elbWords,  List<VerseDataList<T>> stepWords)
     {
         Results = results;
         _results = results.SelectMany(x => x.Data).ToList();

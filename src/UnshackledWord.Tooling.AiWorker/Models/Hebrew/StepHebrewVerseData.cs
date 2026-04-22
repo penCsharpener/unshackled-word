@@ -9,7 +9,7 @@ public class StepHebrewVerseData : VerseDataWithoutOrder
     }
 }
 
-public sealed class StepHebrewVerseDataWithOrder : StepHebrewVerseData
+public sealed class StepHebrewVerseDataWithOrder : StepHebrewVerseData, IVerseDataWithOrder
 {
     public int Order { get; set; }
     public int PositionInWord { get; set; }

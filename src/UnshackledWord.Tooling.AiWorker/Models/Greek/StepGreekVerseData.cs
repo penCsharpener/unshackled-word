@@ -1,3 +1,5 @@
+using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
+
 namespace UnshackledWord.Tooling.AiWorker.Models.Greek;
 
 public class StepGreekVerseData : VerseDataWithoutOrder
@@ -9,7 +11,7 @@ public class StepGreekVerseData : VerseDataWithoutOrder
     }
 }
 
-public sealed class StepGreekVerseDataWithOrder : StepGreekVerseData
+public sealed class StepGreekVerseDataWithOrder : StepGreekVerseData, IVerseDataWithOrder
 {
     public int Order { get; set; }
     public int PositionInWord { get; set; }

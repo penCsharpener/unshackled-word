@@ -8,9 +8,3 @@ public class ElbVerseDataWithoutOrder : VerseDataWithoutOrder
         set => Word = value;
     }
 }
-
-public class VerseDataWithoutOrder
-{
-    public int Id { get; set; }
-    public string Word { get; set; } = default!;
-}
