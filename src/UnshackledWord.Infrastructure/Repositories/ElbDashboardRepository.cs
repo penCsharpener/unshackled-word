@@ -33,7 +33,8 @@ public class ElbDashboardRepository : IElbDashboardRepository
                    WHERE 1=1
                    ORDER BY
                        ehm."HebRefId" ASC,
-                       ehm."PositionInVerse" ASC;
+                       ehm."PositionInVerse" ASC,
+                       shw."PositionInVerse" ASC;
 
                    SELECT
                          egm."HebRefId"
@@ -52,7 +53,8 @@ public class ElbDashboardRepository : IElbDashboardRepository
                    WHERE 1=1
                    ORDER BY
                        egm."HebRefId" ASC,
-                       egm."PositionInVerse" ASC;
+                       egm."PositionInVerse" ASC,
+                       sgw."PositionInVerse" ASC;
                    """;
 
         var records = await _dbReader.ReadMultipleAsListAsync<ElbMappingBackup>(sql, null, async (reader) =>
