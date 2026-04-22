@@ -34,7 +34,8 @@ public class ElbDashboardRepository : IElbDashboardRepository
                    ORDER BY
                        ehm."HebRefId" ASC,
                        ehm."PositionInVerse" ASC,
-                       shw."PositionInVerse" ASC;
+                       shw."PositionInVerse" ASC,
+                       shw."Hebrew" ASC;
 
                    SELECT
                          egm."HebRefId"
