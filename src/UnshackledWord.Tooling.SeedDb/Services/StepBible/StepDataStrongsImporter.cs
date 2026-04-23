@@ -44,9 +44,6 @@ public sealed class StepDataStrongsImporter : IRunner
             }
         }
 
-        foreach (var chunk in totalStrongs.EnumerateWithIds().Chunk(5000))
-        {
-            await _stepStrongsRepository.BulkInsertAsync(chunk, token);
-        }
+        await _stepStrongsRepository.BulkInsertAsync(totalStrongs.EnumerateWithIds().ToArray(), token);
     }
 }

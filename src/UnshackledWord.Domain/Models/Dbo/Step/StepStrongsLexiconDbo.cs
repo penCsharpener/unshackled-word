@@ -2,7 +2,7 @@ namespace UnshackledWord.Domain.Models.Dbo.Step;
 
 public sealed class StepStrongsLexiconDbo : IEntityId
 {
-    public const string DbName = "\"unshackled-word\".\"StepStrongsLexicon\"";
+    public const string DboName = "\"unshackled-word\".\"StepStrongsLexicon\"";
 
     public int Id { get; set; }
     public StrongsLanguage LanguageId { get; set; }

@@ -20,7 +20,7 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
     {
         var sql = $"""
                    SELECT COUNT(*)
-                   FROM {StepStrongsLexiconDbo.DbName} AS s
+                   FROM {StepStrongsLexiconDbo.DboName} AS s
                    WHERE 1=1
                      {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsLexiconDbo.Number)}\" = ANY(@IncludeExtendedStrongs)")};
                    """;
@@ -32,7 +32,7 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
     {
         var sql = $"""
                    SELECT {filter.GetSelectColumns()}
-                   FROM {StepStrongsLexiconDbo.DbName} AS s
+                   FROM {StepStrongsLexiconDbo.DboName} AS s
                    WHERE 1=1
                      {(filter.IncludeExtendedStrongs.IsNullOrEmpty() ? string.Empty : $"AND s.\"{nameof(StepStrongsLexiconDbo.Number)}\" = ANY(@IncludeExtendedStrongs)")};
                    """;
@@ -87,7 +87,7 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
         var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
-                   INSERT INTO {StepStrongsLexiconDbo.DbName} (
+                   INSERT INTO {StepStrongsLexiconDbo.DboName} (
                        {names.Select(x => $"\"{x}\"").JoinStrings(",")}
                    )
                    SELECT *
@@ -117,19 +117,21 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
             Extra = new List<string?>(dataSize),
         };
 
+        var i = 1;
         foreach (var entry in entries)
         {
-            parameters.Id.Add(entry.Id);
+            parameters.Id.Add(i);
             parameters.StepStrongsLexiconId.Add(entry.StepStrongsLexiconId);
             parameters.LanguageId.Add((int)entry.LanguageId);
             parameters.Number.Add(entry.Number);
             parameters.Extra.Add(entry.Extra);
+            i++;
         }
 
         var names = PropertyListHelper.GetPropertyNames(parameters);
 
         var sql = $"""
-                   INSERT INTO {StepUnifiedStrongsDbo.DbName} (
+                   INSERT INTO {StepUnifiedStrongsDbo.DboName} (
                        {names.Select(x => $"\"{x}\"").JoinStrings(",")}
                    )
                    SELECT *
