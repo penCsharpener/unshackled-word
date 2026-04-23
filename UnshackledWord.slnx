@@ -21,11 +21,9 @@
     <Project Path="src\UnshackledWord.Domain\UnshackledWord.Domain.csproj" />
     <Project Path="src\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" />
     <Project Path="src\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj" />
-    <Project Path="src\UnshackledWord.Persistence.Sqlite\UnshackledWord.Persistence.Sqlite.csproj" />
     <Project Path="src\UnshackledWord.Tooling.Postgres.Migration\UnshackledWord.Tooling.Postgres.Migration.csproj" />
     <Project Path="src\UnshackledWord.Tooling.SeedDb.TestRunner\UnshackledWord.Tooling.SeedDb.TestRunner.csproj" />
     <Project Path="src\UnshackledWord.Tooling.SeedDb\UnshackledWord.Tooling.SeedDb.csproj" />
-    <Project Path="src\UnshackledWord.Tooling.Sqlite.Migration\UnshackledWord.Tooling.Sqlite.Migration.csproj" />
     <Project Path="src\UnshackledWord.Tooling.WebApi\UnshackledWord.Tooling.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/">
