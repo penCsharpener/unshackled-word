@@ -5,7 +5,7 @@ using GeminiClient = Google.GenAI.Client;
 
 namespace UnshackledWord.Tooling.AiWorker.Mapping.Hebrew;
 
-public class HebrewGeminiFlashClient : GeminiFlashAbstractClient
+public class HebrewGeminiFlashClient : GeminiMappingBaseClient
 {
     // private const string ModelName = "gemini-3-flash-preview";
     // a) if there are multiple German words possible candidates for a parent then prefer less frequent words as parent, ie. 'er gemacht hatte' the parent is 'gemacht', not 'hatte'

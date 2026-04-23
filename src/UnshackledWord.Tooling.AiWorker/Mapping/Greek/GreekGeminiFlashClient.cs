@@ -5,7 +5,7 @@ using GeminiClient = Google.GenAI.Client;
 
 namespace UnshackledWord.Tooling.AiWorker.Mapping.Greek;
 
-public class GreekGeminiFlashClient : GeminiFlashAbstractClient
+public class GreekGeminiFlashClient : GeminiMappingBaseClient
 {
     // Skip thinking and provide only the direct mapping in JSON format.
 
