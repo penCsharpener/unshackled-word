@@ -5,7 +5,7 @@ using Google.GenAI.Types;
 using Polly;
 using Polly.Retry;
 using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
 using GeminiClient = Google.GenAI.Client;
 using GeminiType = Google.GenAI.Types.Type;
 

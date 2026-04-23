@@ -2,10 +2,10 @@ using Microsoft.Extensions.Options;
 using Polly;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo;
-using UnshackledWord.Tooling.AiWorker.Models;
-using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models.Hebrew;
 
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping.Hebrew;
 
 public class HebrewMappingService
 {

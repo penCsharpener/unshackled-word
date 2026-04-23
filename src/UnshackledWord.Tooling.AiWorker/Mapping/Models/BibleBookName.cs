@@ -1,4 +1,4 @@
-namespace UnshackledWord.Tooling.AiWorker.Models;
+namespace UnshackledWord.Tooling.AiWorker.Mapping.Models;
 
 internal sealed class BibleBookName
 {

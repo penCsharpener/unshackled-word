@@ -2,7 +2,9 @@ using FluentValidation.AspNetCore;
 using Google.GenAI.Types;
 using Microsoft.Extensions.Options;
 using Serilog;
-using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Mapping.Greek;
+using UnshackledWord.Tooling.AiWorker.Mapping.Hebrew;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
 using UnshackledWord.Tooling.WebApi.Extensions;
 using GeminiClient = Google.GenAI.Client;
 

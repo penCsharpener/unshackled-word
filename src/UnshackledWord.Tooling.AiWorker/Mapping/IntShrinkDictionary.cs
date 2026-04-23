@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping;
 
 public sealed class IntShrinkDictionary : ConcurrentDictionary<int, int>
 {

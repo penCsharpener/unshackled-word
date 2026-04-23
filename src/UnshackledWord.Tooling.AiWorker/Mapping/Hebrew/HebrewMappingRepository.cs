@@ -2,10 +2,10 @@ using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Infrastructure.Repositories;
-using UnshackledWord.Tooling.AiWorker.Models;
-using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models.Hebrew;
 
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping.Hebrew;
 
 public class HebrewMappingRepository
 {

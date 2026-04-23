@@ -1,9 +1,9 @@
 using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
 
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping;
 
 public sealed class AiResponseStatsValidation<T> : Validator<AiResponseStats<T>> where T : IVerseDataWithoutOrder
 {

@@ -1,7 +1,7 @@
-using UnshackledWord.Tooling.AiWorker.Models.Greek;
-using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models.Greek;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models.Hebrew;
 
-namespace UnshackledWord.Tooling.AiWorker.Models;
+namespace UnshackledWord.Tooling.AiWorker.Mapping.Models;
 
 public static class VerseDataExtensions
 {

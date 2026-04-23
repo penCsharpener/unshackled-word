@@ -1,6 +1,6 @@
-using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models.Hebrew;
 
-namespace UnshackledWord.Tooling.AiWorker.Models.Greek;
+namespace UnshackledWord.Tooling.AiWorker.Mapping.Models.Greek;
 
 public class StepGreekVerseData : VerseDataWithoutOrder
 {

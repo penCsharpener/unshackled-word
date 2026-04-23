@@ -1,4 +1,4 @@
-namespace UnshackledWord.Tooling.AiWorker.Models.Hebrew;
+namespace UnshackledWord.Tooling.AiWorker.Mapping.Models.Hebrew;
 
 public class StepHebrewVerseData : VerseDataWithoutOrder
 {

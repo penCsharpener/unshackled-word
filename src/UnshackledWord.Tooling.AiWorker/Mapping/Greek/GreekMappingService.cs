@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Options;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo;
-using UnshackledWord.Tooling.AiWorker.Models;
-using UnshackledWord.Tooling.AiWorker.Models.Greek;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models.Greek;
 
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping.Greek;
 
 public class GreekMappingService
 {

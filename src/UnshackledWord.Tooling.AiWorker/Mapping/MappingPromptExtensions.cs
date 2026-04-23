@@ -1,9 +1,8 @@
 using System.Text;
-using Google.GenAI.Types;
 using UnshackledWord.Domain.Models.BibleStructure;
-using UnshackledWord.Tooling.AiWorker.Models;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
 
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping;
 
 public static class MappingPromptExtensions
 {

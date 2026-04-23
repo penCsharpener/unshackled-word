@@ -1,4 +1,4 @@
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping;
 
 public sealed class ElbStepAiMapping
 {

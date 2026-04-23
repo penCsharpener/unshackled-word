@@ -1,3 +1,6 @@
+using UnshackledWord.Tooling.AiWorker.Mapping.Greek;
+using UnshackledWord.Tooling.AiWorker.Mapping.Hebrew;
+
 namespace UnshackledWord.Tooling.AiWorker;
 
 public class Worker : BackgroundService

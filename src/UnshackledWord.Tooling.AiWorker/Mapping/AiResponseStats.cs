@@ -1,8 +1,7 @@
 using UnshackledWord.Domain.Extensions;
-using UnshackledWord.Tooling.AiWorker.Models;
-using UnshackledWord.Tooling.AiWorker.Models.Hebrew;
+using UnshackledWord.Tooling.AiWorker.Mapping.Models;
 
-namespace UnshackledWord.Tooling.AiWorker;
+namespace UnshackledWord.Tooling.AiWorker.Mapping;
 
 public struct AiResponseStats<T> where T : IVerseDataWithoutOrder
 {
