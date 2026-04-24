@@ -413,3 +413,4 @@ temp/*
 /git*.git
 /src/MudBlazorWebApp1
 package-lock.json
+docker/dwd-smor/data/elberfelder_1871.tsv

@@ -1,0 +1,8 @@
+services:
+  morphology-engine:
+    build: .
+    volumes:
+      - ./data:/app/data
+    # We pipe the input file to the script and redirect output to a new file
+    command: >
+      sh -c "python /app/data/process.py < /app/data/elberfelder_1871.tsv > /app/data/elberfelder_1871_analyzed.tsv"
