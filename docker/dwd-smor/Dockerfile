@@ -3,12 +3,9 @@ FROM python:3.12-slim
 # Install system dependencies for SFST and DWDSmor
 RUN apt-get update && apt-get install -y default-jdk libsaxonhe-java sfst && rm -rf /var/lib/apt/lists/*
 
-# Install the Open Edition of DWDSmor
+# Install spaCy with large model
 RUN pip install --upgrade pip
-RUN pip install dwdsmor
 RUN pip install spacy
-RUN python -m spacy download de_core_news_sm
-RUN python -m spacy download de_core_news_md
 RUN python -m spacy download de_core_news_lg
 
 WORKDIR /app
