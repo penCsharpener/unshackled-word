@@ -1,6 +1,6 @@
 import csv
 import sys
-import dwdsmor
+import spacy
 
 def clear_linguistic_data(data_row):
     keys = ["lemma", "part_of_speech", "morphology", "degree", "nonfinite", 
@@ -9,63 +9,67 @@ def clear_linguistic_data(data_row):
     data_row.update(dict.fromkeys(keys, ""))
     return data_row
 
-
 def process_stream():
-    # Initialize the lemmatizer
-    lemmatizer = dwdsmor.lemmatizer()
+    # Load German model
+    # Note: Ensure you have run 'python -m spacy download de_core_news_sm'
+    try:
+        nlp = spacy.load("de_core_news_md")
+    except OSError:
+        sys.stderr.write("ERROR: German model not found. Run: python -m spacy download de_core_news_sm\n")
+        return
 
-    # Process stdin/stdout as TSV
     reader = csv.DictReader(sys.stdin, delimiter="\t")
-
-    # Prepare the output with the requested columns
-    fieldnames = reader.fieldnames + ["lemma", "part_of_speech", "morphology", "degree", "nonfinite", "function" ,"category", "tense", "person", "number", "mood", "case", "gender"]
+    
+    fieldnames = (reader.fieldnames or []) + [
+        "lemma", "part_of_speech", "morphology", "degree", "nonfinite", 
+        "function", "category", "tense", "person", "number", 
+        "mood", "case", "gender"
+    ]
+    
     writer = csv.DictWriter(
         sys.stdout, delimiter="\t", fieldnames=fieldnames, quoting=csv.QUOTE_MINIMAL
     )
-
     writer.writeheader()
 
-    # enumerate starts at 1 to count rows easily
     for i, row in enumerate(reader, 1):
-        # ABORT after 10 lines for testing
-        if i > 100:
-            sys.stderr.write("DEBUG: reached 10 line limit. Aborting.\n")
+        if i > 10000:
+            sys.stderr.write("DEBUG: reached 10000 line limit. Aborting.\n")
             break
 
-        word = row.get("PlainWord", "")
+        word = row.get("PlainWord", "").strip()
+
+        if not word:
+            writer.writerow(clear_linguistic_data(row))
+            continue
 
         try:
-            # lemmatizer returns a Traversal object
-            trav = lemmatizer(str(word))
+            # Process the single word
+            doc = nlp(word)
+            
+            if len(doc) > 0:
+                token = doc[0]
+                morph = token.morph.to_dict()
 
-            if trav is None:
-                trav = lemmatizer(str(word), pos={"N"})
-
-            if trav:
-                # Use getattr to safely retrieve attributes from the analysis result
-                row["lemma"] = trav.analysis
-                row["part_of_speech"] = trav.pos
-                row["degree"] = trav.degree
-                row["nonfinite"] = trav.nonfinite
-                row["function"] = trav.function
-                row["category"] = trav.category
-                row["tense"] = trav.tense
-                row["person"] = trav.person
-                row["number"] = trav.number
-                row["mood"] = trav.mood
-                row["case"] = trav.case
-                row["gender"] = trav.gender
+                row["lemma"] = token.lemma_
+                row["part_of_speech"] = token.pos_
+                row["morphology"] = str(token.morph)
+                
+                # Map spaCy morphology keys to your columns
+                row["degree"] = morph.get("Degree", "")
+                row["nonfinite"] = morph.get("VerbForm", "") # SpaCy uses VerbForm for non-finite info
+                row["function"] = "" # SpaCy doesn't provide 'function' in the same way as dwdsmor
+                row["category"] = token.tag_
+                row["tense"] = morph.get("Tense", "")
+                row["person"] = morph.get("Person", "")
+                row["number"] = morph.get("Number", "")
+                row["mood"] = morph.get("Mood", "")
+                row["case"] = morph.get("Case", "")
+                row["gender"] = morph.get("Gender", "")
             else:
                 clear_linguistic_data(row)
             
-        except StopIteration:
-            sys.stderr.write(f"INFO: No analysis found for '{word}'\n")
-            clear_linguistic_data(row)
-            
         except Exception as e:
-            sys.stderr.write(
-                f"ERROR: Failed to process '{word}'. Reason: {type(e).__name__}: {e}\n"
-            )
+            sys.stderr.write(f"ERROR: Failed to process '{word}'. {type(e).__name__}: {e}\n")
             clear_linguistic_data(row)
 
         writer.writerow(row)
