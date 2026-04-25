@@ -27,15 +27,11 @@ public sealed class Endpoint : Ep.Req<GetVerseForElbGrammarRequest>.Res<GetVerse
         var result = elbWords.Select(x => new Elb1871WordGrammarDto
         {
             Id = x.Id,
-            Lemma = x.Lemma,
             PlainWord = x.PlainWord,
             BibleBookId = x.BibleBookId,
             Chapter = x.Chapter,
             Verse = x.Verse,
-            GrammaticalKey = x.GrammaticalKey,
-            PartOfSpeech = x.PartOfSpeech,
             PositionInVerse = x.PositionInVerse,
-            Strongs = x.Strongs,
             WordInContext = x.WordInContext,
         }).ToList();
 

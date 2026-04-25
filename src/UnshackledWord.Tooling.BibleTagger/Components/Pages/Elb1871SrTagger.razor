@@ -24,9 +24,6 @@
                 <div class="word-item" @key="word.ElbWord.Id" @onclick="() => ToggleSelection(word)">
                     <input type="checkbox" class="word-checkbox" @bind="@word.Selected" />
                     <span class="word-text">@word.ElbWord.PlainWord</span>
-                    <span class="word-lemma">@word.ElbWord.Lemma</span>
-                    <span class="word-strongs">@word.ElbWord.Strongs</span>
-                    <span class="part-of-speech">@word.ElbWord.PartOfSpeech</span>
                     <span class="word-id" style="display:none;">@word.ElbWord.Id</span>
                 </div>
             }

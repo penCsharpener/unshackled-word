@@ -22,7 +22,7 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
 
     public override async Task<GetWordsOfChapterResponse> ExecuteAsync(GetWordsOfChapterRequest req, CancellationToken ct)
     {
-        var verses = await _reader.ReadAsListAsync<Elb1871WordDbo>(SqlFactory(req.BibleBookId, req.ChapterId));
+        var verses = await _reader.ReadAsListAsync<WordResponse>(SqlFactory(req.BibleBookId, req.ChapterId));
 
         return new GetWordsOfChapterResponse
         {

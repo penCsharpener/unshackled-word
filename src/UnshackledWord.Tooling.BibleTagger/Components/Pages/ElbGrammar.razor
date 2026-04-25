@@ -34,29 +34,8 @@
       <MudTd DataLabel="Word">
         <MudText>@rowContext.ElbWord.PlainWord</MudText>
       </MudTd>
-      <MudTd DataLabel="Lemma">
-        <MudTextField @bind-Value="@rowContext.ElbWord.Lemma" Margin="Margin.Dense" Variant="Variant.Outlined" />
-      </MudTd>
       <MudTd DataLabel="Other Forms">
         <MudTextField @bind-Value="@rowContext.ElbWord.OptionalForms" Margin="Margin.Dense" Variant="Variant.Outlined" />
-      </MudTd>
-      <MudTd DataLabel="Part of Speech">
-        @* Set T to the actual Enum type *@
-        <MudSelect T="string?"
-                   @bind-Value="@rowContext.ElbWord.PartOfSpeech"
-                   Margin="Margin.Dense"
-                   Variant="Variant.Outlined"
-                   Dense="true">
-
-          @* The null/empty option must also be cast to the Enum type *@
-          <MudSelectItem T="string?" Value="null">None</MudSelectItem>
-
-          @foreach (var (pos, text) in PartOfSpeechOptions)
-          {
-            @* Ensure Value matches the Enum type exactly *@
-            <MudSelectItem T="string?" Value="@text">@text</MudSelectItem>
-          }
-        </MudSelect>
       </MudTd>
     </RowTemplate>
   </MudTable>

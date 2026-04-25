@@ -9,12 +9,7 @@ public class Elb1871WordDbo
     public int Chapter { get; set; }
     public int Verse { get; set; }
     public int HebRefId { get; set; }
+    public int PositionInVerse { get; set; }
     public string WordInContext { get; set; } = default!;
     public string? PlainWord { get; set; }
-    public string? Lemma { get; set; }
-    public string? Original { get; set; }
-    public int PositionInVerse { get; set; }
-    public string? Strongs { get; set; }
-    public string? PartOfSpeech { get; set; }
-    public string? GrammaticalKey { get; set; }
 }
