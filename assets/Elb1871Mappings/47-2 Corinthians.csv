@@ -1947,10 +1947,10 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 47005013,13,,Gott,θεῷ·,4,False,,
 47005013,14,,sei,εἴτε,5,False,,
 47005013,15,,es,,,True,14,sei
-47005013,16,,daß,,,True,19,sind-euch
-47005013,17,,wir,,,True,19,sind-euch
-47005013,18,,vernünftig,,,True,19,sind-euch
-47005013,19,,sind-euch,"σωφρονοῦμεν,",6,False,,
+47005013,16,,daß,,,True,19,sind
+47005013,17,,wir,,,True,19,sind
+47005013,18,,vernünftig,,,True,19,sind
+47005013,19,,sind,"σωφρονοῦμεν,",6,False,,
 47005014,1,,Denn,γὰρ,2,False,,
 47005014,2,,die,ἡ,1,False,,
 47005014,3,,Liebe,ἀγάπη,3,False,,

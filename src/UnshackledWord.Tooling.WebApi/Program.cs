@@ -2,13 +2,14 @@ using System.Text.Json;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
+using UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.BackupElbData.Mappings;
 using UnshackledWord.Tooling.WebApi.Extensions;
 
 namespace UnshackledWord.Tooling.WebApi;
 
 public partial class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,12 @@ public partial class Program
 
         var app = builder.Build();
 
+#if DEBUG
+        var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+        using var scope = scopeFactory.CreateScope();
+        var backup = scope.ServiceProvider.GetRequiredService<BackupFileService>();
+        await backup.WriteBackupAsync(CancellationToken.None);
+#endif
 
         if (app.Environment.IsDevelopment())
         {

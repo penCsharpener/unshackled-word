@@ -1585,10 +1585,10 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 39003022,13,,ganz,כָּל־,10,False,,
 39003022,14,,Israel,יִשְׂרָאֵ֔ל,11,False,,
 39003022,15,,geboten,צִוִּ֨יתִי,6,False,,
-39003022,16,Satzungen,habe-Satzungen,חֻקִּ֖ים,12,True,,
-39003022,16,,habe-Satzungen,וּמִשְׁפָּטִֽים׃,13,False,,
-39003022,17,,und,,,True,16,habe-Satzungen
-39003022,18,,Rechte,וּמִשְׁפָּטִֽים׃,13,False,,
+39003022,16,Satzungen,habe,חֻקִּ֖ים,12,True,,
+39003022,16,,habe,וּמִשְׁפָּטִֽים׃,13,False,,
+39003022,19,,und,,,True,16,habe
+39003022,20,,Rechte,וּמִשְׁפָּטִֽים׃,13,False,,
 39003023,1,,Siehe,הִנֵּ֤ה,1,False,,
 39003023,2,,ich,אָֽנֹכִי֙,2,False,,
 39003023,3,,sende,שֹׁלֵ֣חַ,3,False,,
