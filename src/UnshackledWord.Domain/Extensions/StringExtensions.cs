@@ -155,7 +155,7 @@ public static class StringExtensions
 
     public static string RemovePunctuation(this string word)
     {
-        var characters = ",;:.!?\"'{}[]()’¶".ToCharArray();
+        var characters = ",;:.!?\"'{}[]()’¶…".ToCharArray();
 
         var result = word.Trim();
 
