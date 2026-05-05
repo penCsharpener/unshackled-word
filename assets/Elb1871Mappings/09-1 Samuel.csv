@@ -940,10 +940,14 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 9002009,20,,die,יִגְבַּר־,10,True,,
 9002009,21,,Oberhand,יִגְבַּר־,10,False,,
 9002010,1,,Jahwe,יְהוָ֞ה,1,False,,
+9002010,2,,,,,True,1,Jahwe
+9002010,3,,es,,,True,5,zerschmettert
 9002010,4,,werden,יֵחַ֣תּוּ,2,False,,
 9002010,5,,zerschmettert,יֵחַ֣תּוּ,2,False,,
 9002010,6,,werden,יֵחַ֣תּוּ,2,False,,
+9002010,6,,werden,,,True,5,zerschmettert
 9002010,7,,die,מְרִיבָ֗יו,3,True,,
+9002010,7,,die,,,True,10,hadern
 9002010,8,,mit,מְרִיבָ֗יו,3,True,,
 9002010,9,,ihm,מְרִיבָ֗יו,3,False,,
 9002010,10,,hadern,מְרִיבָ֗יו,3,False,,
@@ -973,6 +977,7 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 9002010,34,,seines,מְשִׁיחֽוֹ׃ פ,16,False,,
 9002010,35,,Gesalbten,מְשִׁיחֽוֹ׃ פ,16,False,,
 9002010,36,,,מְשִׁיחֽוֹ׃ פ,16,True,,
+9002010,36,,,,,True,35,Gesalbten
 9002011,1,,Und,וַיֵּ֧לֶךְ,1,False,,
 9002011,2,,Elkana,אֶלְקָנָ֛ה,2,False,,
 9002011,3,,ging,וַיֵּ֧לֶךְ,1,False,,

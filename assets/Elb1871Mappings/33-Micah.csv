@@ -2439,6 +2439,8 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 33007009,10,,gegen,ל֑וֹ,6,False,,
 33007009,11,,ihn,ל֑וֹ,6,False,,
 33007009,12,,gesündigt,חָטָ֖אתִי,5,False,,
+33007009,13,,,עַד֩,7,True,,
+33007009,14,,bis,עַד֩,7,False,,
 33007009,15,,er,אֲשֶׁ֨ר,8,False,,
 33007009,16,,meinen,רִיבִי֙,10,False,,
 33007009,17,,Rechtsstreit,רִיבִי֙,10,False,,

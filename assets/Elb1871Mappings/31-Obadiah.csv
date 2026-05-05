@@ -109,6 +109,8 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 31001005,7,,wenn,אִם־,5,False,,
 31001005,8,,nächtliche,לַ֔יְלָה,7,False,,
 31001005,9,,Räuber,שׁ֣וֹדְדֵי,6,False,,
+31001005,10,,,הֲל֥וֹא,10,False,,
+31001005,11,,wie,אֵ֣יךְ,8,False,,
 31001005,12,,bist,אֵ֣יךְ,8,False,,
 31001005,12,,bist,נִדְמֵ֔יתָה,9,False,,
 31001005,13,,du,נִדְמֵ֔יתָה,9,False,,

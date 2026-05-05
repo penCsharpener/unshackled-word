@@ -185,11 +185,16 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 57001011,11,,nützlich,"εὔχρηστον,",11,False,,
 57001011,12,,ist,,,True,11,nützlich
 57001012,1,,den,ὃν,1,False,,
+57001012,2,,ich,ἀνέπεμψά,2,False,,
 57001012,2,,ich,,,True,5,zurückgesandt
+57001012,3,,zu,ἀνέπεμψά,2,True,,
 57001012,3,,zu,,,True,4,dir
 57001012,4,,dir,σοι,3,False,,
 57001012,5,,zurückgesandt,ἀνέπεμψά,2,False,,
+57001012,6,,habe,ἀνέπεμψά,2,False,,
 57001012,6,,habe,"αὐτόν,",5,False,,
+57001012,7,,,δὲ,4,True,,
+57001012,8,,ihn,"αὐτόν,",5,False,,
 57001012,9,,das,τοῦτ᾽,6,False,,
 57001012,10,,ist,ἔστιν,7,False,,
 57001012,11,,mein,ἐμὰ,9,False,,

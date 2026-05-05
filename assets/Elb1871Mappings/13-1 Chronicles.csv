@@ -4206,6 +4206,8 @@ HebRefId,PositionInVerse,GermanWordPart,ElbWord,StepWord,StepPositionInVerse,IsA
 13006055,14,,und,וְאֶת־,10,False,,
 13006055,15,,seine,מִגְרָשֶׁ֑יהָ,11,False,,
 13006055,16,,Bezirke,מִגְרָשֶׁ֑יהָ,11,False,,
+13006055,17,,,אֶת־,4,True,,
+13006055,18,,den,לְמִשְׁפַּ֥חַת,12,True,,
 13006055,19,,Familien,לְמִשְׁפַּ֥חַת,12,False,,
 13006055,20,,der,לִבְנֵי־,13,False,,
 13006055,21,,übrigen,הַנּוֹתָרִֽים׃ פ,15,False,,
