@@ -41,27 +41,27 @@ public sealed class Elberfelder1871Strategy : IFileParserStrategy
             var lineItem = new ElbExportLineItem(lines[i]);
             var wordDbos = new List<Elb1871WordDbo>(120);
 
+            wordDbos = lineItem.Words.Select(x =>
+            {
+                var word = new Elb1871WordDbo
+                {
+                    Id = id,
+                    BibleBookId = lineItem.HebRefId.BookId,
+                    Chapter = lineItem.HebRefId.Chapter,
+                    Verse = lineItem.HebRefId.Verse,
+                    HebRefId = lineItem.HebRefId.RefId,
+                    WordInContext = x.InContext,
+                    PlainWord = x.PlainWord,
+                    PositionInVerse = x.Order
+                };
+                id++;
+
+                return word;
+            }).ToList();
+
             if (i < lines.Length - 1)
             {
                 var nextLineItem = new ElbExportLineItem(lines[i + 1]);
-
-                wordDbos = lineItem.Words.Select(x =>
-                {
-                    var word = new Elb1871WordDbo
-                    {
-                        Id = id,
-                        BibleBookId = lineItem.HebRefId.BookId,
-                        Chapter = lineItem.HebRefId.Chapter,
-                        Verse = lineItem.HebRefId.Verse,
-                        HebRefId = lineItem.HebRefId.RefId,
-                        WordInContext = x.InContext,
-                        PlainWord = x.PlainWord,
-                        PositionInVerse = x.Order
-                    };
-                    id++;
-
-                    return word;
-                }).ToList();
 
                 if (lineItem.HebRefId.RefId == nextLineItem.HebRefId.RefId)
                 {

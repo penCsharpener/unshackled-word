@@ -26,14 +26,12 @@ public sealed class Elberfelder1871VerseStrategy : IFileParserStrategy
     {
         var count = await GetVersesCountAsync(token);
 
-        #if RELEASE
         if (count > 0)
         {
             _logger.LogInformation("Elberfelder 1871 verses already exist in the database. Skipping import. " +
                                    "{count} rows of words ", count);
             return;
         }
-        #endif
 
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
         var id = 1;
