@@ -8,7 +8,6 @@ def get_linguistic_data(token):
     return {
         "lemma": token.lemma_,
         "part_of_speech": token.pos_,
-        "morphology": str(token.morph),
         "degree": morph.get("Degree", ""),
         "nonfinite": morph.get("VerbForm", ""),
         "category": token.tag_,
@@ -30,7 +29,7 @@ def process_stream():
 
     reader = csv.DictReader(sys.stdin, delimiter="\t")
     fieldnames = (reader.fieldnames or []) + [
-        "lemma", "part_of_speech", "morphology", "degree", "nonfinite", 
+        "lemma", "part_of_speech", "degree", "nonfinite", 
         "category", "tense", "person", "number", 
         "mood", "case", "gender"
     ]
