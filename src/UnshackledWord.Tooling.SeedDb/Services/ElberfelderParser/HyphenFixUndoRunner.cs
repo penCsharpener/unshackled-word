@@ -28,7 +28,7 @@ public class HyphenFixUndoRunner : IRunner
         await RestoreFromBackupAsync<Elb1871WordDbo>("_Elb1871Words__20260427.tsv", RestoreElbWords, token);
         await RestoreFromBackupAsync<Elb1871GreekMappingDbo>("_Elb1871GreekMapping__20260427.tsv", RestoreElbGreekMappings, token);
         await RestoreFromBackupAsync<Elb1871HebrewMappingDbo>("_Elb1871HebrewMapping__20260427.tsv", RestoreElbHebrewMappings, token);
-        await RestoreFromBackupAsync<ElbMorphologyRawDbo>("_ElbMorphologyRaw__20260427.tsv", RestoreElbMorph, token);
+        await RestoreFromBackupAsync<Elb1871MorphologyDbo>("_ElbMorphologyRaw__20260427.tsv", RestoreElbMorph, token);
         await RestoreFromBackupAsync<Elb1871VersesDbo>("_Elb1871Verses__20260503.tsv", RestoreElbVerses, token);
 
         await ResetIdsAsync(token);
@@ -154,7 +154,7 @@ public class HyphenFixUndoRunner : IRunner
         await _writer.WriteAsync(sql, parameters);
     }
 
-    private async Task RestoreElbMorph(ICollection<ElbMorphologyRawDbo> list, CancellationToken token = default)
+    private async Task RestoreElbMorph(ICollection<Elb1871MorphologyDbo> list, CancellationToken token = default)
     {
         var capacity = list.Count;
 
@@ -185,7 +185,7 @@ public class HyphenFixUndoRunner : IRunner
             parameters.PartOfSpeech.Add(item.PartOfSpeech);
             parameters.Degree.Add(item.Degree);
             parameters.VerbForm.Add(item.VerbForm);
-            parameters.Category.Add(item.Category);
+            parameters.Category.Add(item.Stts);
             parameters.Tense.Add(item.Tense);
             parameters.Person.Add(item.Person);
             parameters.Number.Add(item.Number);

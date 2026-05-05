@@ -10,6 +10,7 @@ using UnshackledWord.Tooling.SeedDb.Services.ByzTxt.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.CsvImports;
 using UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+using UnshackledWord.Tooling.SeedDb.Services.ElbMorphology;
 using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
 using UnshackledWord.Tooling.SeedDb.Services.LocalOnly;
@@ -45,6 +46,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<GbtCsvStrategy>();
         services.AddScoped<TskTextReader>();
         services.AddAiMappingImportServices();
+        services.AddElbMorphology();
         services.RegisterElb1871SrWordMapperServices();
         services.RegisterCsvImportServices();
         services.AddScoped<IDbWriter, DbWriter>();
