@@ -1,4 +1,5 @@
 using System.Text;
+using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Tooling.AiWorker.Mapping.Models;
 
@@ -52,7 +53,7 @@ public static class MappingPromptExtensions
                 var mapping = new ElbStepAiMapping();
 
                 var parts = item.Split("|", StringSplitOptions.TrimEntries | StringSplitOptions.TrimEntries);
-                mapping.ElbWordId = int.Parse(parts[0]);
+                mapping.ElbWordId = int.TryParse(parts[0], out var i) ? i : -1;
                 mapping.StepWordId = ParseNullableInt(parts[1]);
                 mapping.IsAddedWord = ParseBoolean(parts[2]);
                 mapping.ParentElbWordId = ParseNullableInt(parts[3]);
@@ -70,7 +71,7 @@ public static class MappingPromptExtensions
 
     private static bool ParseBoolean(string value)
     {
-        var boolInt = int.Parse(value);
+        var boolInt = int.TryParse(value, out var i) ? i : -1;
 
         return boolInt == 1;
     }
