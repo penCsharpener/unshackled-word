@@ -11,7 +11,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ElberfelderTextRunner>();
         services.AddScoped<HyphenTypoDetectionService>();
         services.AddScoped<HyphenFixRunner>();
-        services.AddScoped<HyphenFixRunnerV2>();
         services.AddScoped<HyphenFixUndoRunner>();
         services.AddScoped<HyphenFixVerseRunner>();
         return services;

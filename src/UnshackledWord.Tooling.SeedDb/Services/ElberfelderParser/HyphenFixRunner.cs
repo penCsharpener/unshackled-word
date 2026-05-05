@@ -1,44 +1,38 @@
-using System.Text;
-using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
-using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
 
 public class HyphenFixRunner : IRunner
 {
-    private readonly IFileService _fileService;
     private readonly IDbWriter _writer;
     private readonly IDbReader _reader;
-    private readonly DatabaseSeedSettings _options;
+    private readonly HyphenTypoDetectionService _typoService;
     private readonly ILogger<HyphenFixRunner> _logger;
-    private static string[] _hyphenIgnoreWords = new[] { "Beth-Horon", "Eglath-Schelischija", "Hazar-Enon" };
 
-    public HyphenFixRunner(IFileService fileService, IDbWriter writer, IDbReader reader, IOptions<AppSettings> options, ILogger<HyphenFixRunner> logger)
+    public HyphenFixRunner(IDbWriter writer, IDbReader reader, HyphenTypoDetectionService typoService,
+        ILogger<HyphenFixRunner> logger)
     {
-        _fileService = fileService;
         _writer = writer;
         _reader = reader;
-        _options = options.Value.DatabaseSeeding;
+        _typoService = typoService;
         _logger = logger;
     }
 
     public async Task Run(CancellationToken token = default)
     {
-        var filePath = _fileService.Combine(_options.SolutionAssetsPath, "elberfelder1871-theword-export_corrections.txt");
+        var verseFindings = await _typoService.GetHyphenWordsAsync(token);
 
         var totalWords = new List<Elb1871WordDbo>();
-        var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
         var id = 1;
         var newElbId = 999999;
 
-        foreach (var line in lines)
+        foreach (var verseFinding in verseFindings)
         {
-            var lineItem = new ElbExportLineItem(line);
+            var lineItem = new ElbExportLineItem(verseFinding.HebRefId, verseFinding.OriginalVerse);
             var wordDbos = lineItem.Words.Select(x =>
             {
                 var word = new Elb1871WordDbo
@@ -60,10 +54,9 @@ public class HyphenFixRunner : IRunner
             totalWords.AddRange(wordDbos);
         }
 
-        _logger.LogInformation(totalWords.Select(x => x.HebRefId.ToString()).Distinct().JoinStrings(","));
-
         foreach (var verse in totalWords.GroupBy(x => x.HebRefId))
         {
+            var findings = verseFindings.FirstOrDefault(x => x.HebRefId == verse.Key);
             var hyphenedWords = await GetWordsFromDbAsync(verse.Key, token);
 
             if (hyphenedWords.Count == 0)
@@ -72,31 +65,61 @@ public class HyphenFixRunner : IRunner
                 continue;
             }
 
-            var fixedWords = verse.OrderByDescending(x => x.PositionInVerse).ToList();
-
-            if (hyphenedWords.Count >= fixedWords.Count)
+            if (findings is null)
             {
-                _logger.LogWarning("fixed words must be at least one word longer than the original verses with hyphened words.");
+                _logger.LogWarning("No wrongly hyphened words found for HebRefId {HebRefId}. Skipping.", verse.Key);
                 continue;
             }
 
             var onlyHyphenedWords = hyphenedWords
                 .Where(word => word.WordInContext.Contains('-')
-                               && !_hyphenIgnoreWords.Contains(word.PlainWord)
+                               && word.PlainWord.IsNotNullOrEmpty()
+                               && !ValidHyphenWords.NonPlaceNames.Contains(word.PlainWord)
                                && word.WordInContext.Length > 1).ToList();
+
+            if (onlyHyphenedWords.Count != findings.HyphenFindings.Count(x => !x.IsPlaceName))
+            {
+                _logger.LogWarning(
+                    "Mismatch in the number of hyphened words found in the database and the number of findings for HebRefId {HebRefId}. Found {DbCount} hyphened words in DB and {FindingCount} findings.",
+                    verse.Key, onlyHyphenedWords.Count, findings.HyphenFindings.Count);
+                throw new Exception();
+            }
 
             foreach (var word in onlyHyphenedWords)
             {
-                _logger.LogInformation("Processing word '{word}' in HebRefId {HebRefId} at position {PositionInVerse}.", word.WordInContext, word.HebRefId, word.PositionInVerse);
+                var wordFinding = findings?.HyphenFindings.FirstOrDefault(x => x.HyphenPlainWord == word.PlainWord);
+
+                if (wordFinding is null)
+                {
+                    _logger.LogWarning(
+                        "No finding found for word '{word}' in HebRefId {HebRefId} at position {PositionInVerse}. Skipping.",
+                        word.WordInContext, word.HebRefId, word.PositionInVerse);
+                    throw new Exception();
+                }
+
+                if (word.WordInContext.Count(x => x == '-') == 1)
+                {
+                    if (word.WordInContext.StartsWith('-'))
+                    {
+                        continue;
+                    }
+
+                    if (word.WordInContext.EndsWith('-'))
+                    {
+                        continue;
+                    }
+                }
+
+                _logger.LogInformation("Processing word '{word}' in HebRefId {HebRefId} at position {PositionInVerse}.",
+                    word.WordInContext, word.HebRefId, word.PositionInVerse);
 
                 await IncrementPositionInLaterVersesAsync(word, hyphenedWords, 2);
 
                 var parts = word.WordInContext
                     .Replace("Beth-Horon", "Beth_Horon")
-                    .Replace("Eglath-Schelischija", "Eglath_Schelischija")
-                    .Replace("Hazar-Enon", "Hazar_Enon")
+                    .Replace("-:", ": ")
                     .Replace("-", " - ").Split(' ',
-                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                 if (parts.Length > 3)
                 {
@@ -116,33 +139,35 @@ public class HyphenFixRunner : IRunner
                                         AND "PositionInVerse" = @PositionInVerse;
                                       """;
 
-                var wordPart = parts[0].Replace("Beth_Horon", "Beth-Horon")
-                    .Replace("Eglath_Schelischija", "Eglath-Schelischija")
-                    .Replace("Hazar_Enon", "Hazar-Enon");
+                var wordPart = parts[0].Replace("Beth_Horon", "Beth-Horon");
 
                 var updateFirstParameters = new
                 {
-                    word.HebRefId, word.PositionInVerse, WordInContext = wordPart, PlainWord = wordPart.RemovePunctuation()
+                    word.HebRefId,
+                    word.PositionInVerse,
+                    WordInContext = wordPart,
+                    PlainWord = wordPart.RemovePunctuation()
                 };
 
                 _logger.LogDebug(
                     "Updating word {word} in HebRefId {HebRefId} at position {oldPosition} to new WordInContext '{WordInContext}' and PlainWord '{PlainWord}'.",
-                    word.WordInContext, word.HebRefId, word.PositionInVerse, updateFirstParameters.WordInContext, updateFirstParameters.PlainWord);
+                    word.WordInContext, word.HebRefId, word.PositionInVerse, updateFirstParameters.WordInContext,
+                    updateFirstParameters.PlainWord);
 
                 await WriteAsync(updateFirstPart, updateFirstParameters);
 
                 var bibRef = BibleReference.FromRefId(word.HebRefId);
 
-                for (int i = 0; i < parts.Skip(1).Count(); i++)
+                for (var i = 0; i < parts.Skip(1).Count(); i++)
                 {
                     newElbId++;
                     var part = parts[i + 1];
                     var parameter = new
                     {
-                        HebRefId = word.HebRefId,
+                        word.HebRefId,
                         BibleBookId = bibRef.BookId,
-                        Chapter = bibRef.Chapter,
-                        Verse = bibRef.Verse,
+                        bibRef.Chapter,
+                        bibRef.Verse,
                         WordInContext = part,
                         PlainWord = part.RemovePunctuation(),
                         PositionInVerse = word.PositionInVerse + i + 1,
@@ -159,30 +184,12 @@ public class HyphenFixRunner : IRunner
 
                     await WriteAsync(sqlInsertElbWords, parameter);
 
-//                     var sqlInsertGreekMapping = $"""
-//                                              INSERT INTO "unshackled-word"."Elb1871GreekMapping"
-//                                              ("HebRefId", "PositionInVerse", "ElbWordId")
-//                                              VALUES
-//                                              (@HebRefId,@PositionInVerse,@ElbWordId);
-//                                              """;
-//
-//                     await WriteAsync(sqlInsertGreekMapping, parameter);
-
-//                     var sqlInsertHebrewMapping = $"""
-//                                                   INSERT INTO "unshackled-word"."Elb1871HebrewMapping"
-//                                                   ("HebRefId", "PositionInVerse", "ElbWordId")
-//                                                   VALUES
-//                                                   (@HebRefId,@PositionInVerse,@ElbWordId);
-//                                                   """;
-//
-//                     await WriteAsync(sqlInsertHebrewMapping, parameter);
-
                     var sqlInsertMorphology = $"""
-                                                  INSERT INTO "unshackled-word"."ElbMorphologyRaw"
-                                                  ("HebRefId", "PositionInVerse", "Lemma", "PartOfSpeech")
-                                                  VALUES
-                                                  (@HebRefId,@PositionInVerse,@Lemma,@PartOfSpeech);
-                                                  """;
+                                               INSERT INTO "unshackled-word"."ElbMorphologyRaw"
+                                               ("HebRefId", "PositionInVerse", "Lemma", "PartOfSpeech")
+                                               VALUES
+                                               (@HebRefId,@PositionInVerse,@Lemma,@PartOfSpeech);
+                                               """;
 
                     await WriteAsync(sqlInsertMorphology, parameter);
 
@@ -195,7 +202,8 @@ public class HyphenFixRunner : IRunner
         }
     }
 
-    private async Task IncrementPositionInLaterVersesAsync(Elb1871WordDbo wordWithHyphen, ICollection<Elb1871WordDbo> wordsInVerse, int offset)
+    private async Task IncrementPositionInLaterVersesAsync(Elb1871WordDbo wordWithHyphen,
+        ICollection<Elb1871WordDbo> wordsInVerse, int offset)
     {
         var wordsToUpdate = wordsInVerse.Where(x => x.PositionInVerse > wordWithHyphen.PositionInVerse)
             .OrderByDescending(x => x.PositionInVerse).ToList();
@@ -226,22 +234,25 @@ public class HyphenFixRunner : IRunner
             await WriteAsync(shiftGreekMapping, shiftParameters);
 
             var shiftHebrewMapping = """
-                                    UPDATE "unshackled-word"."Elb1871HebrewMapping"
-                                    SET "PositionInVerse" = @NewPosition
-                                    WHERE "HebRefId" = @HebRefId
-                                      AND "PositionInVerse" = @PositionInVerse;
-                                    """;
+                                     UPDATE "unshackled-word"."Elb1871HebrewMapping"
+                                     SET "PositionInVerse" = @NewPosition
+                                     WHERE "HebRefId" = @HebRefId
+                                       AND "PositionInVerse" = @PositionInVerse;
+                                     """;
             await WriteAsync(shiftHebrewMapping, shiftParameters);
 
             var shiftMorphology = """
-                                    UPDATE "unshackled-word"."ElbMorphologyRaw"
-                                    SET "PositionInVerse" = @NewPosition
-                                    WHERE "HebRefId" = @HebRefId
-                                      AND "PositionInVerse" = @PositionInVerse;
-                                    """;
+                                  UPDATE "unshackled-word"."ElbMorphologyRaw"
+                                  SET "PositionInVerse" = @NewPosition
+                                  WHERE "HebRefId" = @HebRefId
+                                    AND "PositionInVerse" = @PositionInVerse;
+                                  """;
             await WriteAsync(shiftMorphology, shiftParameters);
 
-            _logger.LogDebug("Shifting word {word} with Id {WordId} in HebRefId {HebRefId} at position {oldPosition} to new position {newPosition}.", wordToUpdate.WordInContext, wordToUpdate.Id, shiftParameters.HebRefId, shiftParameters.PositionInVerse, shiftParameters.NewPosition);
+            _logger.LogDebug(
+                "Shifting word {word} with Id {WordId} in HebRefId {HebRefId} at position {oldPosition} to new position {newPosition}.",
+                wordToUpdate.WordInContext, wordToUpdate.Id, shiftParameters.HebRefId, shiftParameters.PositionInVerse,
+                shiftParameters.NewPosition);
             wordToUpdate.PositionInVerse += offset;
         }
     }
