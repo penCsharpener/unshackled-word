@@ -10,6 +10,7 @@ public interface IFileService
     bool DirectoryExists(string path);
     Task<string> ReadAllTextAsync(string path, Encoding encoding, CancellationToken token = default);
     Task WriteAllTextAsync(string path, string content, Encoding encoding, CancellationToken token = default);
+    Task SafelyOverwriteAllTextAsync(string path, string content, Encoding encoding, CancellationToken token = default);
     Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, CancellationToken token = default);
     Task WriteAllBytesAsync(string path, byte[] bytes, CancellationToken token = default);
     IAsyncEnumerable<string> ReadLinesAsync(string path, CancellationToken token = default);

@@ -31,7 +31,7 @@ public partial class Program
         var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
         using var scope = scopeFactory.CreateScope();
         var backup = scope.ServiceProvider.GetRequiredService<BackupFileService>();
-        await backup.WriteBackupAsync(CancellationToken.None);
+        await backup.WriteMappingBackupAsync(CancellationToken.None);
 #endif
 
         if (app.Environment.IsDevelopment())

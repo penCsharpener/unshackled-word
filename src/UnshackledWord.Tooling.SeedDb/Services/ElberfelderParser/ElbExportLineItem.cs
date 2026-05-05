@@ -23,6 +23,14 @@ public class ElbExportLineItem
         Words = SplitAndSaveIndividualWords(verse).ToList();
     }
 
+    public ElbExportLineItem(int hebRefId, string verse)
+    {
+        HebRefId = BibleReference.FromRefId(hebRefId);
+        LxxRefId = HebRefId;
+        Verse = verse;
+        Words = SplitAndSaveIndividualWords(verse).ToList();
+    }
+
     private BibleReference ParseBibleReference(string stringReference)
     {
         var bookRef = stringReference.Split("$");

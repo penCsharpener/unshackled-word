@@ -1,0 +1,23 @@
+meta {
+  name: Elb Word Details
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}elberfelder/bookId/:bookId/chapterId/:chapter/verse/:verse/position/:position
+  body: none
+  auth: inherit
+}
+
+params:path {
+  position: 17
+  verse: 25
+  bookId: 41
+  chapter: 8
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

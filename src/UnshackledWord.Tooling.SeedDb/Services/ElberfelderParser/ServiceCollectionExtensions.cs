@@ -9,6 +9,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Elb1871VerseRunner>();
         services.AddScoped<Elberfelder1871VerseStrategy>();
         services.AddScoped<ElberfelderTextRunner>();
+        services.AddScoped<HyphenTypoDetectionService>();
+        services.AddScoped<HyphenFixRunner>();
+        services.AddScoped<HyphenFixRunnerV2>();
+        services.AddScoped<HyphenFixUndoRunner>();
+        services.AddScoped<HyphenFixVerseRunner>();
         return services;
     }
 }

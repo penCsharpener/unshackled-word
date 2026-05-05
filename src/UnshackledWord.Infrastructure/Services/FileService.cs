@@ -39,6 +39,31 @@ public class FileService : IFileService
         return File.WriteAllTextAsync(path, content, encoding, token);
     }
 
+    public async Task SafelyOverwriteAllTextAsync(string path, string content, Encoding encoding, CancellationToken token = default)
+    {
+        var directoryPath = Path.GetDirectoryName(path);
+
+        if (directoryPath.IsNullOrWhiteSpace())
+        {
+            throw new ArgumentException($"The directory path {path} does not exist.");
+        }
+
+        var orgFilename = new FileInfo(path).Name;
+        var extension = Path.GetExtension(orgFilename);
+        var fileWithoutExtension = Path.GetFileNameWithoutExtension(orgFilename);
+        var backupName = $"{fileWithoutExtension}_{Guid.NewGuid().ToString().ToLower().Replace("-", "")[..8]}{extension}";
+        var backupPath = Path.Combine(directoryPath, backupName);
+
+        if (FileExists(path))
+        {
+            File.Move(path, backupPath);
+        }
+
+        await WriteAllTextAsync(path, content, encoding, token);
+
+        File.Delete(backupPath);
+    }
+
     public async Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, CancellationToken token = default)
     {
         return await File.ReadAllLinesAsync(path, token);

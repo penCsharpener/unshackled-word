@@ -26,31 +26,42 @@ public sealed class Elberfelder1871VerseStrategy : IFileParserStrategy
     {
         var count = await GetVersesCountAsync(token);
 
+        #if RELEASE
         if (count > 0)
         {
             _logger.LogInformation("Elberfelder 1871 verses already exist in the database. Skipping import. " +
                                    "{count} rows of words ", count);
             return;
         }
+        #endif
 
         var lines = await _fileService.ReadAllLinesAsync(filePath, Encoding.UTF8, token);
-        var i = 1;
+        var id = 1;
         var verses = new List<Elb1871VersesDbo>();
 
-        foreach (var line in lines)
+        for (var i = 0; i < lines.Length; i++)
         {
+            var line = lines[i];
+            var nextLine = i < lines.Length - 1 ? lines[i + 1] : null;
             var lineItem = new ElbExportLineItem(line);
+            var nextLineItem = nextLine is not null ? new ElbExportLineItem(nextLine) : null;
 
             var elbVerse = new Elb1871VersesDbo
             {
-                Id = i,
+                Id = id,
                 HebRefId = lineItem.HebRefId.RefId,
                 LxxRefId = lineItem.LxxRefId.RefId,
                 VerseText = lineItem.Verse
             };
 
+            if (nextLineItem is { HebRefId: { RefId: var nextHebRefId } } && nextHebRefId == elbVerse.HebRefId)
+            {
+                elbVerse.VerseText = elbVerse.VerseText.TrimEnd(' ') + " " + nextLineItem.Verse;
+                i++;
+            }
+
             verses.Add(elbVerse);
-            i++;
+            id++;
         }
 
         var parameters = new
@@ -77,7 +88,6 @@ public sealed class Elberfelder1871VerseStrategy : IFileParserStrategy
                    )
                    SELECT *
                    FROM UNNEST({names.Select(x => $"@{x}").JoinStrings(",")})
-                   ON CONFLICT DO NOTHING;
                    """;
 
         await _writer.WriteAsync(sql, parameters);
