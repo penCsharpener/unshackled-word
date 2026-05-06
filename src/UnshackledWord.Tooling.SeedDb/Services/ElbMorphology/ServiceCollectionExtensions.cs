@@ -5,6 +5,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddElbMorphology(this IServiceCollection services)
     {
         services.AddScoped<ElbMorphologyRunner>();
+        services.AddScoped<ElbMorphologyBackupImporter>();
 
         return services;
     }
