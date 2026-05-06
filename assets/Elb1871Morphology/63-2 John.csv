@@ -1,0 +1,289 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+63001001	1	der	DET	ART					S		Nom	M
+63001001	2	Älteste	ADJ	ADJA	Sup				S		Nom	F
+63001001	3	der	DET	ART					S		Nom	M
+63001001	4	auserwählt	VERB	ADJA		Fin	Past	3	P	Ind		
+63001001	5	Frau	NOUN	NN					S		Nom	F
+63001001	6	und	CCONJ	KON								
+63001001	7	ihr	DET	PPOSAT					S		Acc	M
+63001001	8	Kind	NOUN	NN					P		Dat	N
+63001001	9	der	DET	ART					S		Nom	F
+63001001	10	ich	PRON	PPER				1	S		Nom	
+63001001	11	Liebe	VERB	NN		Fin	Pres	3	S	Sub		
+63001001	12	in	ADP	APPR								
+63001001	13	der	DET	ART					S		Nom	M
+63001001	14	Wahrheit	NOUN	NN					S		Nom	F
+63001001	15	und	CCONJ	KON								
+63001001	16	nicht	PART	PTKNEG								
+63001001	17	ich	PRON	PPER				1	S		Nom	
+63001001	18	allein	ADV	ADV								
+63001001	19	sondern	CCONJ	KON								
+63001001	20	auch	ADV	ADV								
+63001001	21	aller	PRON	PIS					P		Nom	
+63001001	22	welcher	DET	PWAT					S		Nom	F
+63001001	23	der	DET	ART					S		Nom	F
+63001001	24	Wahrheit	NOUN	NN					S		Nom	F
+63001001	25	erkennen	VERB	VVPP		Part						
+63001001	26	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+63001002	1	um	ADP	APPR								
+63001002	2	der	DET	ART					S		Nom	M
+63001002	3	Wahrheit	NOUN	NN					S		Nom	F
+63001002	4	Wille	ADP	APZR								
+63001002	5	der	DET	ART					S		Nom	F
+63001002	6	in	ADP	APPR								
+63001002	7	uns	PRON	PPER				1	P		Acc	
+63001002	8	bleiben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001002	9	und	CCONJ	KON								
+63001002	10	mit	ADP	APPR								
+63001002	11	uns	PRON	PPER				1	P		Acc	
+63001002	12	sein	AUX	VAINF		Inf						
+63001002	13	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+63001002	14	in	ADP	APPR								
+63001002	15	Ewigkeit	NOUN	NN					S		Nom	F
+63001003	1	es	PRON	PPER				3	S		Nom	N
+63001003	2	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+63001003	3	mit	ADP	APPR								
+63001003	4	euch	PRON	PPER				2	P		Dat	
+63001003	5	sein	AUX	VAINF		Inf						
+63001003	6	Gnade	NOUN	NN					S		Nom	F
+63001003	7	Barmherzigkeit	NOUN	NN					S		Nom	F
+63001003	8	Friede	NOUN	NN					S		Nom	M
+63001003	9	von	ADP	APPR								
+63001003	10	Gott	NOUN	NN					S		Nom	M
+63001003	11	der	DET	ART					S		Dat	M
+63001003	12	Vater	NOUN	NN					S		Nom	M
+63001003	13	und	CCONJ	KON								
+63001003	14	von	ADP	APPR								
+63001003	15	der	DET	ART					S		Dat	M
+63001003	16	Herr	NOUN	NN					S		Acc	M
+63001003	17	Jesu	PROPN	NE					S		Gen	
+63001003	18	Christo	PROPN	NE					S		Nom	M
+63001003	19	der	DET	ART					S		Dat	M
+63001003	20	Sohn	NOUN	NN					S		Acc	M
+63001003	21	der	DET	ART					S		Gen	M
+63001003	22	Vater	NOUN	NN					S		Gen	M
+63001003	23	in	ADP	APPR								
+63001003	24	Wahrheit	NOUN	NN					S		Nom	F
+63001003	25	und	CCONJ	KON								
+63001003	26	Liebe	NOUN	NN					S		Nom	F
+63001004	1	ich	PRON	PPER				1	S		Nom	
+63001004	2	freuen	VERB	VVFIN		Fin	Past	3	S	Ind		
+63001004	3	mich	PRON	PPER				1	S		Acc	
+63001004	4	sehr	ADV	ADV								
+63001004	5	daß	SCONJ	KOUS								
+63001004	6	ich	PRON	PPER				1	S		Nom	
+63001004	7	einiger	PRON	PIS					P		Nom	
+63001004	8	von	ADP	APPR								
+63001004	9	dein	DET	PPOSAT					S		Acc	M
+63001004	10	Kind	NOUN	NN					P		Dat	N
+63001004	11	in	ADP	APPR								
+63001004	12	der	DET	ART					S		Nom	M
+63001004	13	Wahrheit	NOUN	NN					S		Nom	F
+63001004	14	wandelnd	ADV	ADJD	Pos							
+63001004	15	finden	VERB	VVPP		Part						
+63001004	16	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+63001004	17	wie	ADP	KOKOM								
+63001004	18	wir	PRON	PPER				1	P		Nom	
+63001004	19	von	ADP	APPR								
+63001004	20	der	DET	ART					S		Dat	M
+63001004	21	Vater	NOUN	NN					S		Nom	M
+63001004	22	ein	DET	ART					S		Nom	N
+63001004	23	Gebot	NOUN	NN					S		Nom	N
+63001004	24	empfangen	VERB	VVPP		Part						
+63001004	25	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+63001005	1	und	CCONJ	KON								
+63001005	2	nun	ADV	ADV								
+63001005	3	bitte	ADV	ADV								
+63001005	4	ich	PRON	PPER				1	S		Nom	
+63001005	5	dich	PRON	PPER				2	S		Acc	
+63001005	6	Frau	NOUN	NN					S		Nom	F
+63001005	7	nicht	PART	PTKNEG								
+63001005	8	als	ADP	KOKOM								
+63001005	9	ob	SCONJ	KOUS								
+63001005	10	ich	PRON	PPER				1	S		Nom	
+63001005	11	ein	DET	ART					S		Nom	N
+63001005	12	neu	ADJ	ADJA	Pos				S		Nom	N
+63001005	13	Gebot	NOUN	NN					S		Nom	N
+63001005	14	dir	PRON	PPER				2	S		Dat	
+63001005	15	schrieben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+63001005	16	sondern	CCONJ	KON								
+63001005	17	der	DET	ART					S		Nom	N
+63001005	18	welcher	DET	PWAT					S		Acc	N
+63001005	19	wir	PRON	PPER				1	P		Nom	
+63001005	20	von	ADP	APPR								
+63001005	21	Anfang	NOUN	NN					S			M
+63001005	22	haben	VERB	VAPP		Part						
+63001005	23	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+63001005	24	daß	SCONJ	KOUS								
+63001005	25	wir	PRON	PPER				1	P		Nom	
+63001005	26	sich	PRON	PRF				3	P		Dat	
+63001005	27	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+63001005	28	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+63001006	1	und	CCONJ	KON								
+63001006	2	dieser	PRON	PDS					S		Nom	N
+63001006	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+63001006	4	der	DET	ART					S		Nom	F
+63001006	5	Liebe	NOUN	NN					S		Nom	F
+63001006	6	daß	SCONJ	KOUS								
+63001006	7	wir	PRON	PPER				1	P		Nom	
+63001006	8	nach	ADP	APPR								
+63001006	9	sein	DET	PPOSAT					S		Acc	M
+63001006	10	Gebot	NOUN	NN					P		Dat	M
+63001006	11	wandeln	VERB	VVINF		Inf						
+63001006	12	dieser	PRON	PDS					S		Nom	N
+63001006	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+63001006	14	der	DET	ART					S		Nom	N
+63001006	15	Gebot	NOUN	NN					S		Nom	N
+63001006	16	wie	ADP	KOKOM								
+63001006	17	ihr	PRON	PPOSAT				3	S		Dat	F
+63001006	18	von	ADP	APPR								
+63001006	19	Anfang	NOUN	NN					S			M
+63001006	20	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001006	21	habben	VERB	VAFIN				2	P	Imp		
+63001006	22	daß	SCONJ	KOUS								
+63001006	23	ihr	PRON	PPOSAT				3	S		Dat	F
+63001006	24	darin	ADV	PROAV								
+63001006	25	wandeln	VERB	VVINF		Inf						
+63001006	26	sollten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+63001007	1	denn	CCONJ	KON								
+63001007	2	vieler	PRON	PIS					P		Nom	
+63001007	3	Verführer	NOUN	NN					S		Nom	M
+63001007	4	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+63001007	5	in	ADP	APPR								
+63001007	6	der	DET	ART					S		Nom	F
+63001007	7	Welt	NOUN	NN					S		Nom	F
+63001007	8	ausgehen	VERB	VVPP		Part						
+63001007	9	der	DET	ART					S		Nom	F
+63001007	10	nicht	PART	PTKNEG								
+63001007	11	Jesum	PROPN	XY					S		Nom	M
+63001007	12	Christum	NOUN	NN					S		Nom	N
+63001007	13	in	ADP	APPRART					S		Dat	N
+63001007	14	Fleisch	NOUN	NN					S		Nom	N
+63001007	15	kommend	ADV	ADJD	Pos							
+63001007	16	bekennen	VERB	VVINF		Inf						
+63001007	17	dieser	PRON	PDS					S		Nom	N
+63001007	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+63001007	19	der	DET	ART					S		Nom	M
+63001007	20	Verführer	NOUN	NN					S		Nom	M
+63001007	21	und	CCONJ	KON								
+63001007	22	der	DET	ART					S		Nom	M
+63001007	23	Antichrist	PROPN	NE					S		Nom	
+63001008	1	sehet	VERB	VVIMP		Fin	Pres	3	S	Ind		
+63001008	2	auf	ADP	PTKVZ								
+63001008	3	euch	PRON	PPER				2	P		Dat	
+63001008	4	selbst	ADV	ADV								
+63001008	5	auf	ADP	PTKVZ								
+63001008	6	daß	SCONJ	KOUS								
+63001008	7	wir	PRON	PPER				1	P		Nom	
+63001008	8	nicht	PART	PTKNEG								
+63001008	9	verlieren	VERB	VVINF		Inf						
+63001008	10	was	PRON	PWS					S		Nom	N
+63001008	11	wir	PRON	PPER				1	P		Nom	
+63001008	12	erarbeiten	VERB	VVPP		Part						
+63001008	13	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+63001008	14	sondern	CCONJ	KON								
+63001008	15	voll	ADJ	ADJA	Pos				S		Acc	M
+63001008	16	Lohn	NOUN	NN					S		Nom	M
+63001008	17	empfangen	VERB	VVPP		Part						
+63001009	1	jeder	PRON	PIS					S		Nom	M
+63001009	2	der	DET	ART					S		Nom	M
+63001009	3	weitergehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001009	4	und	CCONJ	KON								
+63001009	5	nicht	PART	PTKNEG								
+63001009	6	bleiben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001009	7	in	ADP	APPR								
+63001009	8	der	DET	ART					S		Nom	M
+63001009	9	Lehre	NOUN	NN					S		Nom	F
+63001009	10	der	DET	ART					S		Gen	M
+63001009	11	Christus	PROPN	NE					S		Nom	M
+63001009	12	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+63001009	13	Gott	NOUN	NN					S		Nom	M
+63001009	14	nicht	PART	PTKNEG								
+63001009	15	wer	PRON	PWS					S		Nom	M
+63001009	16	in	ADP	APPR								
+63001009	17	der	DET	ART					S		Nom	M
+63001009	18	Lehre	NOUN	NN					S		Nom	F
+63001009	19	bleiben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001009	20	dieser	PRON	PDAT					S		Nom	M
+63001009	21	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+63001009	22	sowohl	CCONJ	KON								
+63001009	23	der	DET	ART					S		Acc	M
+63001009	24	Vater	NOUN	NN					S		Nom	M
+63001009	25	als	ADP	KOKOM								
+63001009	26	auch	ADV	ADV								
+63001009	27	der	DET	ART					S		Acc	M
+63001009	28	Sohn	NOUN	NN					S		Nom	M
+63001010	1	wenn	SCONJ	KOUS								
+63001010	2	jemand	PRON	PIS					S		Nom	M
+63001010	3	zu	ADP	PTKVZ								
+63001010	4	euch	PRON	PPER				2	P		Dat	
+63001010	5	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001010	6	und	CCONJ	KON								
+63001010	7	dieser	DET	PDAT					S		Nom	F
+63001010	8	Lehre	NOUN	NN					S		Nom	F
+63001010	9	nicht	PART	PTKNEG								
+63001010	10	bringen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001010	11	so	ADV	ADV								
+63001010	12	nehmeen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001010	13	ihn	PRON	PPER				3	S		Acc	M
+63001010	14	nicht	PART	PTKNEG								
+63001010	15	in	ADP	APPRART					S		Acc	N
+63001010	16	Haus	NOUN	NN					S		Nom	N
+63001010	17	auf	ADP	PTKVZ								
+63001010	18	und	CCONJ	KON								
+63001010	19	Grüßet	NOUN	NN					S		Nom	F
+63001010	20	ihn	PRON	PPER				3	S		Acc	M
+63001010	21	nicht	PART	PTKNEG								
+63001011	1	denn	CCONJ	KON								
+63001011	2	wer	PRON	PWS					S		Nom	M
+63001011	3	ihn	PRON	PPER				3	S		Acc	M
+63001011	4	grüßen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001011	5	nehmen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+63001011	6	Teil	NOUN	PTKVZ					S		Nom	M
+63001011	7	an	ADP	PTKVZ								
+63001011	8	sein	DET	PPOSAT					S		Acc	M
+63001011	9	böse	ADJ	PIS	Pos				S		Acc	M
+63001011	10	Werk	NOUN	NN					P		Dat	N
+63001012	1	da	SCONJ	KOUS								
+63001012	2	ich	PRON	PPER				1	S		Nom	
+63001012	3	euch	PRON	PPER				2	P		Dat	
+63001012	4	viele	PRON	PIS					S		Nom	N
+63001012	5	zu	ADP	PTKVZ								
+63001012	6	schreiben	VERB	VVINF		Inf						
+63001012	7	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+63001012	8	wollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+63001012	9	ich	PRON	PPER				1	S		Nom	
+63001012	10	es	PRON	PPER				3	S		Nom	N
+63001012	11	nicht	PART	PTKNEG								
+63001012	12	mit	ADP	APPR								
+63001012	13	Papier	NOUN	NN					S		Nom	N
+63001012	14	und	CCONJ	KON								
+63001012	15	Tinte	NOUN	NN					S		Nom	F
+63001012	16	tun	VERB	VVINF		Inf						
+63001012	17	sondern	CCONJ	KON								
+63001012	18	ich	PRON	PPER				1	S		Nom	
+63001012	19	hoffen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+63001012	20	zu	ADP	PTKVZ								
+63001012	21	euch	PRON	PPER				2	P		Dat	
+63001012	22	zu	ADP	PTKVZ								
+63001012	23	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+63001012	24	und	CCONJ	KON								
+63001012	25	mündlich	ADV	ADJD	Pos							
+63001012	26	mit	ADP	APPR								
+63001012	27	euch	PRON	PPER				2	P		Dat	
+63001012	28	zu	ADP	PTKVZ								
+63001012	29	reden	VERB	VVINF		Inf						
+63001012	30	auf	ADP	PTKVZ								
+63001012	31	daß	SCONJ	KOUS								
+63001012	32	unser	DET	PPOSAT					S		Nom	F
+63001012	33	Freude	NOUN	NN					S		Nom	F
+63001012	34	völlig	ADV	ADJD	Pos							
+63001012	35	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+63001013	1	es	PRON	PPER				3	S		Nom	N
+63001013	2	grüßen	VERB	VVINF		Inf						
+63001013	3	dich	PRON	PPER				2	S		Acc	
+63001013	4	der	DET	ART					S		Nom	F
+63001013	5	Kind	NOUN	NN					P		Nom	N
+63001013	6	dein	DET	PPOSAT					S		Dat	F
+63001013	7	auserwählt	VERB	ADJA		Fin	Past	3	P	Ind		
+63001013	8	Schwester	NOUN	NN					S		Nom	F

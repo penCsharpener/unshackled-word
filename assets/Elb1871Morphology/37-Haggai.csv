@@ -1,0 +1,994 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+37001001	1	in	ADP	APPRART					S		Dat	M
+37001001	2	zweiter	ADJ	ADJA	Pos				S		Dat	M
+37001001	3	Jahr	NOUN	NN					P		Nom	N
+37001001	4	der	DET	ART					S		Gen	M
+37001001	5	König	PROPN	NE					S		Nom	
+37001001	6	Darius	PROPN	NE					S		Nom	M
+37001001	7	in	ADP	APPRART					S		Dat	N
+37001001	8	sechster	ADJ	ADJA	Pos				S		Acc	M
+37001001	9	Monat	NOUN	NN					S		Nom	M
+37001001	10	an	ADP	APPRART					S		Dat	M
+37001001	11	erster	ADJ	ADJA	Pos				S		Dat	M
+37001001	12	Tag	NOUN	NN					P		Nom	M
+37001001	13	der	DET	ART					S		Gen	M
+37001001	14	Monat	NOUN	NN					S		Nom	M
+37001001	15	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37001001	16	der	DET	ART					S		Nom	N
+37001001	17	Wort	NOUN	NN					S		Nom	N
+37001001	18	Jahwe	PROPN	NE					S		Gen	
+37001001	19	durch	ADP	APPR								
+37001001	20	der	DET	ART					S		Acc	M
+37001001	21	Prophet	NOUN	NN					P		Nom	M
+37001001	22	Haggai	PROPN	NE					S		Nom	
+37001001	23	zu	ADP	PTKVZ								
+37001001	24	Serubbabel	NOUN	NN					S		Nom	M
+37001001	25	der	DET	ART					S		Dat	M
+37001001	26	Sohn	NOUN	NN					S		Acc	M
+37001001	27	Schealtiel	PROPN	NE					S		Nom	
+37001001	28	der	DET	ART					S		Dat	M
+37001001	29	Landpfleger	NOUN	NN					P		Nom	M
+37001001	30	von	ADP	APPR								
+37001001	31	Juda	PROPN	NE					S		Nom	M
+37001001	32	und	CCONJ	KON								
+37001001	33	zu	ADP	PTKVZ								
+37001001	34	Josua	PROPN	NE					S		Nom	M
+37001001	35	der	DET	ART					S		Dat	M
+37001001	36	Sohn	NOUN	NN					S		Acc	M
+37001001	37	Jozadak	PROPN	NE					S		Gen	
+37001001	38	der	DET	ART					S		Dat	M
+37001001	39	Hohenpriester	NOUN	NN					P		Nom	M
+37001001	40	also	ADV	ADV								
+37001002	1	so	ADV	ADV								
+37001002	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001002	3	Jahwe	NOUN	NN					S		Nom	M
+37001002	4	der	DET	ART					S		Nom	M
+37001002	5	Heerschare	NOUN	NN					P		Nom	F
+37001002	6	und	CCONJ	KON								
+37001002	7	sagen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001002	8	dieser	PRON	PDS					S		Nom	N
+37001002	9	Volk	NOUN	NN					S		Nom	N
+37001002	10	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001002	11	der	DET	ART					S		Nom	F
+37001002	12	Zeit	NOUN	NN					S		Nom	F
+37001002	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37001002	14	nicht	PART	PTKNEG								
+37001002	15	kommen	VERB	VVPP		Part						
+37001002	16	der	DET	ART					S		Nom	F
+37001002	17	Zeit	NOUN	NN					S		Nom	F
+37001002	18	daß	SCONJ	KOUS								
+37001002	19	der	DET	ART					S		Nom	N
+37001002	20	Haus	NOUN	NN					S		Nom	N
+37001002	21	Jahwe	PROPN	NE					S		Gen	
+37001002	22	bauen	VERB	VVPP		Part						
+37001002	23	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37001003	1	und	CCONJ	KON								
+37001003	2	der	DET	ART					S		Nom	N
+37001003	3	Wort	NOUN	NN					S		Nom	N
+37001003	4	Jahwe	PROPN	NE					S		Gen	
+37001003	5	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37001003	6	durch	ADP	APPR								
+37001003	7	der	DET	ART					S		Acc	M
+37001003	8	Prophet	NOUN	NN					P		Nom	M
+37001003	9	Haggai	PROPN	NE					S		Nom	
+37001003	10	also	ADV	ADV								
+37001004	1	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37001004	2	es	PRON	PPER				3	S		Nom	N
+37001004	3	für	ADP	APPR								
+37001004	4	euch	PRON	PPER				2	P		Dat	
+37001004	5	selbst	ADV	ADV								
+37001004	6	Zeit	NOUN	NN					S		Nom	F
+37001004	7	in	ADP	APPR								
+37001004	8	euren	DET	PPOSAT					S		Acc	M
+37001004	9	getäfelten	VERB	ADJA		Fin	Past	3	P	Ind		
+37001004	10	Haus	NOUN	NN					P		Dat	N
+37001004	11	zu	ADP	PTKVZ								
+37001004	12	wohnen	VERB	VVINF		Inf						
+37001004	13	während	SCONJ	KOUS								
+37001004	14	dieser	DET	PDAT					S		Nom	N
+37001004	15	Haus	NOUN	NN					S		Nom	N
+37001004	16	wüst	ADV	ADJD	Pos							
+37001004	17	liegen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001005	1	und	CCONJ	KON								
+37001005	2	nun	ADV	ADV								
+37001005	3	so	ADV	ADV								
+37001005	4	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001005	5	Jahwe	NOUN	NN					S		Nom	M
+37001005	6	der	DET	ART					S		Nom	M
+37001005	7	Heerschare	NOUN	NN					P		Nom	F
+37001005	8	Richten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001005	9	eurer	PRON	PPOSAT							Gen	
+37001005	10	Herz	NOUN	NN					S		Nom	N
+37001005	11	auf	ADP	PTKVZ								
+37001005	12	eure	DET	PPOSAT					S		Nom	F
+37001005	13	Weg	NOUN	NN					P		Acc	M
+37001006	1	ihr	PRON	PPER				2	P		Nom	
+37001006	2	habben	VERB	VAFIN				2	P	Imp		
+37001006	3	viel	PRON	PIS								
+37001006	4	säen	VERB	VVPP		Part						
+37001006	5	und	CCONJ	KON								
+37001006	6	wenig	PRON	PIS								
+37001006	7	einbringen	VERB	VVPP		Part						
+37001006	8	ihr	PRON	PPOSAT				3	S		Dat	F
+37001006	9	Esset	X	FM								
+37001006	10	aber	CCONJ	KON								
+37001006	11	nicht	PART	PTKNEG								
+37001006	12	zu	ADP	APPRART					S		Dat	F
+37001006	13	Sättigung	NOUN	NN					S		Nom	F
+37001006	14	ihr	PRON	PPOSAT				3	S		Dat	F
+37001006	15	trinket	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001006	16	aber	CCONJ	KON								
+37001006	17	nicht	PART	PTKNEG								
+37001006	18	zu	ADP	APPRART					S		Dat	F
+37001006	19	Genüge	NOUN	NN					S		Nom	F
+37001006	20	ihr	PRON	PPOSAT				3	S		Dat	F
+37001006	21	kleiden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001006	22	euch	PRON	PPER				2	P		Dat	
+37001006	23	aber	CCONJ	KON								
+37001006	24	es	PRON	PPER				3	S		Nom	N
+37001006	25	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37001006	26	kein	DET	PIS					S		Dat	M
+37001006	27	warm	ADV	ADJD	Pos							
+37001006	28	und	CCONJ	KON								
+37001006	29	der	DET	ART					S		Nom	M
+37001006	30	Lohnarbeiter	NOUN	NN					P		Nom	M
+37001006	31	erwerben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001006	32	Lohn	NOUN	NN					S		Nom	M
+37001006	33	für	ADP	APPR								
+37001006	34	ein	DET	ART					S		Acc	M
+37001006	35	durchlöchern	VERB	VVFIN		Fin	Past	3	P	Ind		
+37001006	36	Beutel	NOUN	NN					S		Nom	M
+37001007	1	so	ADV	ADV								
+37001007	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001007	3	Jahwe	NOUN	NN					S		Nom	M
+37001007	4	der	DET	ART					S		Nom	M
+37001007	5	Heerschare	NOUN	NN					P		Nom	F
+37001007	6	Richten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001007	7	euer	DET	PPOSAT					S		Nom	M
+37001007	8	Herz	NOUN	NN					S		Nom	N
+37001007	9	auf	ADP	PTKVZ								
+37001007	10	eure	DET	PPOSAT					S		Nom	F
+37001007	11	Weg	NOUN	NN					P		Acc	M
+37001008	1	Steiget	NOUN	NE					S		Nom	N
+37001008	2	auf	ADP	PTKVZ								
+37001008	3	der	DET	ART					S		Nom	N
+37001008	4	Gebirge	NOUN	NN					S		Nom	N
+37001008	5	und	CCONJ	KON								
+37001008	6	Bringet	NOUN	VVFIN					S		Nom	N
+37001008	7	Holz	NOUN	NN					S		Nom	N
+37001008	8	herbei	ADV	PTKVZ								
+37001008	9	und	CCONJ	KON								
+37001008	10	Bauet	VERB	FM		Fin	Past	3	S	Sub		
+37001008	11	der	DET	ART					S		Nom	N
+37001008	12	Haus	NOUN	NN					S		Nom	N
+37001008	13	so	ADV	ADV								
+37001008	14	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37001008	15	ich	PRON	PPER				1	S		Nom	
+37001008	16	Wohlgefallen	NOUN	NN					S		Nom	N
+37001008	17	daran	ADV	PROAV								
+37001008	18	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+37001008	19	und	CCONJ	KON								
+37001008	20	verherrlichen	VERB	VVPP		Part						
+37001008	21	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+37001008	22	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001008	23	Jahwe	NOUN	NN					S		Nom	M
+37001009	1	ihr	PRON	PPER				2	P		Nom	
+37001009	2	habben	VERB	VAFIN				2	P	Imp		
+37001009	3	nach	ADP	APPR								
+37001009	4	vieler	PRON	PIS					S		Dat	N
+37001009	5	ausschauen	VERB	VVPP		Part						
+37001009	6	und	CCONJ	KON								
+37001009	7	sehen	VERB	VVIMP				2	S	Imp		
+37001009	8	es	PRON	PPER				3	S		Nom	N
+37001009	9	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+37001009	10	wenig	PRON	PIS								
+37001009	11	und	CCONJ	KON								
+37001009	12	brachten	VERB	VVPP		Part						
+37001009	13	ihr	PRON	PPOSAT				3	S		Dat	F
+37001009	14	es	PRON	PPER				3	S		Nom	N
+37001009	15	Heim	PROPN	NE					S		Nom	N
+37001009	16	so	ADV	ADV								
+37001009	17	blies	VERB	VVFIN		Fin	Past	3	S	Ind		
+37001009	18	ich	PRON	PPER				1	S		Nom	
+37001009	19	darein	ADV	PROAV								
+37001009	20	weshalb	SCONJ	PWAV								
+37001009	21	der	DET	ART					S		Nom	N
+37001009	22	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001009	23	Jahwe	NOUN	NN					S		Nom	M
+37001009	24	der	DET	ART					S		Nom	M
+37001009	25	Heerschare	NOUN	NN					P		Nom	F
+37001009	26	wegen	ADP	APPR								
+37001009	27	meiner	DET	PPOSAT					S		Gen	N
+37001009	28	Haus	NOUN	NN					S		Gen	N
+37001009	29	der	DET	ART					S		Nom	N
+37001009	30	wüst	ADV	ADJD	Pos							
+37001009	31	liegen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001009	32	während	SCONJ	KOUS								
+37001009	33	ihr	PRON	PPOSAT				3	S		Dat	F
+37001009	34	Laufet	PROPN	ADV					S		Nom	N
+37001009	35	ein	DET	ART					S		Nom	N
+37001009	36	jeder	PRON	PIS					S		Nom	M
+37001009	37	für	ADP	APPR								
+37001009	38	sein	AUX	VAINF		Inf						
+37001009	39	eigen	ADJ	ADJA	Pos				S		Nom	N
+37001009	40	Haus	NOUN	NN					S		Nom	N
+37001010	1	darum	ADV	PROAV								
+37001010	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37001010	3	der	DET	ART					S		Nom	M
+37001010	4	Himmel	NOUN	NN					S		Nom	M
+37001010	5	der	DET	ART					S		Acc	M
+37001010	6	Tau	PROPN	NE					S		Nom	
+37001010	7	über	ADP	APPR								
+37001010	8	euch	PRON	PPER				2	P		Dat	
+37001010	9	zurückhalten	VERB	VVPP		Part						
+37001010	10	und	CCONJ	KON								
+37001010	11	der	DET	ART					S		Nom	F
+37001010	12	Erde	NOUN	NN					S		Nom	F
+37001010	13	ihr	DET	PPOSAT					S		Acc	M
+37001010	14	Ertrag	NOUN	NN					S		Nom	M
+37001010	15	zurückhalten	VERB	VVPP		Part						
+37001011	1	und	CCONJ	KON								
+37001011	2	ich	PRON	PPER				1	S		Nom	
+37001011	3	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37001011	4	ein	DET	ART					S		Nom	F
+37001011	5	Dürre	NOUN	NN					S		Nom	F
+37001011	6	rufen	VERB	VVPP		Part						
+37001011	7	über	ADP	APPR								
+37001011	8	der	DET	ART					S		Nom	N
+37001011	9	Land	NOUN	NN					S		Nom	N
+37001011	10	und	CCONJ	KON								
+37001011	11	über	ADP	APPR								
+37001011	12	der	DET	ART					S		Nom	F
+37001011	13	Berg	NOUN	NN					P		Nom	M
+37001011	14	und	CCONJ	KON								
+37001011	15	über	ADP	APPR								
+37001011	16	der	DET	ART					S		Nom	N
+37001011	17	Korn	NOUN	NN					S		Nom	N
+37001011	18	und	CCONJ	KON								
+37001011	19	über	ADP	APPR								
+37001011	20	der	DET	ART					S		Acc	M
+37001011	21	Most	NOUN	FM					S		Nom	M
+37001011	22	und	CCONJ	KON								
+37001011	23	über	ADP	APPR								
+37001011	24	der	DET	ART					S		Nom	N
+37001011	25	Öl	NOUN	NN					S		Nom	N
+37001011	26	und	CCONJ	KON								
+37001011	27	über	ADP	APPR								
+37001011	28	der	DET	ART					S		Nom	N
+37001011	29	was	PRON	PWS					S		Nom	N
+37001011	30	der	DET	ART					S		Nom	M
+37001011	31	Erdboden	NOUN	NN					S		Nom	M
+37001011	32	hervorbringen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001011	33	und	CCONJ	KON								
+37001011	34	über	ADP	APPR								
+37001011	35	der	DET	ART					S		Nom	F
+37001011	36	Mensch	NOUN	NN					P		Nom	M
+37001011	37	und	CCONJ	KON								
+37001011	38	über	ADP	APPR								
+37001011	39	der	DET	ART					S		Nom	N
+37001011	40	Vieh	NOUN	NN					S		Nom	N
+37001011	41	und	CCONJ	KON								
+37001011	42	über	ADP	APPR								
+37001011	43	aller	PRON	PIS					P		Nom	
+37001011	44	Arbeit	NOUN	NN					S		Nom	F
+37001011	45	der	DET	ART					S		Nom	M
+37001011	46	Hand	NOUN	NN					P		Nom	F
+37001012	1	und	CCONJ	KON								
+37001012	2	Serubbabel	NOUN	NN					S		Nom	M
+37001012	3	der	DET	ART					S		Nom	M
+37001012	4	Sohn	NOUN	NN					S		Nom	M
+37001012	5	Schealtiel	PROPN	NE					S		Nom	
+37001012	6	und	CCONJ	KON								
+37001012	7	Josua	PROPN	NE					S		Nom	M
+37001012	8	der	DET	ART					S		Nom	M
+37001012	9	Sohn	NOUN	NN					S		Nom	M
+37001012	10	Jozadak	PROPN	NE					S		Gen	
+37001012	11	der	DET	ART					S		Nom	M
+37001012	12	Hohepriester	NOUN	NN					P		Nom	M
+37001012	13	und	CCONJ	KON								
+37001012	14	der	DET	ART					S		Nom	M
+37001012	15	ganz	ADJ	ADJA	Pos				S		Nom	F
+37001012	16	Überrest	NOUN	NN					S		Nom	M
+37001012	17	der	DET	ART					S		Gen	M
+37001012	18	Volk	NOUN	NN					S		Gen	N
+37001012	19	hören	VERB	VVFIN		Fin	Past	3	P	Ind		
+37001012	20	auf	ADP	PTKVZ								
+37001012	21	der	DET	ART					S		Nom	F
+37001012	22	Stimme	NOUN	NN					S		Nom	F
+37001012	23	Jahwe	PROPN	NE					S		Gen	
+37001012	24	ihr	DET	PPOSAT					S		Gen	M
+37001012	25	Gott	NOUN	NN					S		Gen	M
+37001012	26	und	CCONJ	KON								
+37001012	27	auf	ADP	PTKVZ								
+37001012	28	der	DET	ART					S		Nom	F
+37001012	29	Wort	NOUN	NN					P		Nom	N
+37001012	30	der	DET	ART					S		Gen	M
+37001012	31	Prophet	NOUN	NN					P		Nom	M
+37001012	32	Haggai	PROPN	NE					S		Nom	
+37001012	33	so	ADV	ADV								
+37001012	34	wie	ADP	KOKOM								
+37001012	35	Jahwe	NOUN	NN					S		Nom	M
+37001012	36	ihr	PRON	PPOSAT				3	S		Dat	F
+37001012	37	Gott	NOUN	NN					S		Nom	M
+37001012	38	ihn	PRON	PPER				3	S		Acc	M
+37001012	39	gesandt	VERB	VVPP		Part						
+37001012	40	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+37001012	41	und	CCONJ	KON								
+37001012	42	der	DET	ART					S		Nom	N
+37001012	43	Volk	NOUN	NN					S		Nom	N
+37001012	44	fürchten	VERB	VVFIN		Fin	Past	3	S	Ind		
+37001012	45	sich	PRON	PRF				3	S		Acc	
+37001012	46	vor	ADP	APPR								
+37001012	47	Jahwe	NOUN	NN					S		Nom	M
+37001013	1	da	SCONJ	KOUS								
+37001013	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37001013	3	Haggai	PROPN	NE					S		Nom	
+37001013	4	der	DET	ART					S		Nom	M
+37001013	5	Bote	NOUN	NN					S		Nom	M
+37001013	6	Jahwe	PROPN	NE					S		Gen	
+37001013	7	vermögen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+37001013	8	der	DET	ART					S		Nom	M
+37001013	9	Botschaft	NOUN	NN					S		Nom	F
+37001013	10	Jahwe	PROPN	NE					S		Gen	
+37001013	11	zu	ADP	PTKVZ								
+37001013	12	der	DET	ART					S		Dat	M
+37001013	13	Volke	NOUN	NN					S		Nom	M
+37001013	14	und	CCONJ	KON								
+37001013	15	sagen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37001013	16	ich	PRON	PPER				1	S		Nom	
+37001013	17	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+37001013	18	mit	ADP	APPR								
+37001013	19	euch	PRON	PPER				2	P		Dat	
+37001013	20	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37001013	21	Jahwe	NOUN	NN					S		Nom	M
+37001014	1	und	CCONJ	KON								
+37001014	2	Jahwe	NOUN	NN					S		Nom	M
+37001014	3	erwecken	VERB	VVFIN		Fin	Past	3	S	Ind		
+37001014	4	der	DET	ART					S		Acc	M
+37001014	5	Geist	NOUN	NN					S		Nom	M
+37001014	6	Serubbabel	PROPN	NE					S		Gen	
+37001014	7	der	DET	ART					S		Gen	M
+37001014	8	Sohn	PROPN	NE					S		Gen	M
+37001014	9	Schealtiel	PROPN	NE					S		Nom	
+37001014	10	der	DET	ART					S		Gen	M
+37001014	11	Landpfleger	PROPN	NN					S		Gen	
+37001014	12	von	ADP	APPR								
+37001014	13	Juda	PROPN	NE					S		Nom	M
+37001014	14	und	CCONJ	KON								
+37001014	15	der	DET	ART					S		Acc	M
+37001014	16	Geist	NOUN	NN					S		Nom	M
+37001014	17	Josua	PROPN	NE					S		Gen	N
+37001014	18	der	DET	ART					S		Gen	M
+37001014	19	Sohn	PROPN	NE					S		Gen	M
+37001014	20	Jozadak	PROPN	NE					S		Gen	
+37001014	21	der	DET	ART					S		Gen	M
+37001014	22	Hohenpriester	PROPN	NE					S		Gen	M
+37001014	23	und	CCONJ	KON								
+37001014	24	der	DET	ART					S		Acc	M
+37001014	25	Geist	NOUN	NN					S		Nom	M
+37001014	26	der	DET	ART					S		Gen	M
+37001014	27	ganz	PRON	ADJA					S		Nom	M
+37001014	28	Überrest	NOUN	NN					S		Nom	N
+37001014	29	der	DET	ART					S		Gen	M
+37001014	30	Volk	NOUN	NN					S		Gen	N
+37001014	31	und	CCONJ	KON								
+37001014	32	sie	PRON	PPER				3	P		Nom	
+37001014	33	kommen	VERB	VVFIN		Fin	Past	3	P	Ind		
+37001014	34	und	CCONJ	KON								
+37001014	35	arbeiten	VERB	VVFIN		Fin	Past	3	P	Ind		
+37001014	36	an	ADP	APPRART					S		Dat	M
+37001014	37	Haus	NOUN	NN					P		Nom	N
+37001014	38	Jahwe	PROPN	NE					S		Gen	
+37001014	39	der	DET	ART					S		Nom	M
+37001014	40	Heerschare	NOUN	NN					P		Nom	F
+37001014	41	ihr	DET	PPOSAT					S		Gen	M
+37001014	42	Gott	NOUN	NN					S		Gen	M
+37001015	1	an	ADP	APPRART					S		Dat	M
+37001015	2	24	NUM	CARD								
+37001015	3	Tag	NOUN	NN					P		Nom	M
+37001015	4	der	DET	ART					S		Gen	M
+37001015	5	sechster	ADJ	ADJA	Pos				S		Acc	M
+37001015	6	Monat	NOUN	NN					S		Nom	M
+37001015	7	in	ADP	APPRART					S		Dat	N
+37001015	8	zweiter	ADJ	ADJA	Pos				S		Dat	M
+37001015	9	Jahr	NOUN	NN					P		Nom	N
+37001015	10	der	DET	ART					S		Gen	M
+37001015	11	König	PROPN	NE					S		Nom	
+37001015	12	Darius	PROPN	NE					S		Nom	M
+37002001	1	in	ADP	APPRART					S		Dat	M
+37002001	2	siebter	ADJ	ADJA	Pos				S		Acc	M
+37002001	3	Monat	NOUN	NN					S		Nom	M
+37002001	4	an	ADP	APPRART					S		Dat	M
+37002001	5	21	NUM	CARD								
+37002001	6	der	DET	ART					S		Gen	M
+37002001	7	Monat	NOUN	NN					S		Nom	M
+37002001	8	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002001	9	der	DET	ART					S		Nom	N
+37002001	10	Wort	NOUN	NN					S		Nom	N
+37002001	11	Jahwe	PROPN	NE					S		Gen	
+37002001	12	durch	ADP	APPR								
+37002001	13	der	DET	ART					S		Acc	M
+37002001	14	Prophet	NOUN	NN					P		Nom	M
+37002001	15	Haggai	PROPN	NE					S		Nom	
+37002001	16	also	ADV	ADV								
+37002002	1	Rede	NOUN	NN					S		Nom	F
+37002002	2	doch	CCONJ	KON								
+37002002	3	zu	ADP	PTKVZ								
+37002002	4	Serubbabel	NOUN	NN					S		Nom	M
+37002002	5	der	DET	ART					S		Dat	M
+37002002	6	Sohn	NOUN	NN					S		Acc	M
+37002002	7	Schealtiel	PROPN	NE					S		Nom	
+37002002	8	der	DET	ART					S		Dat	M
+37002002	9	Landpfleger	NOUN	NN					P		Nom	M
+37002002	10	von	ADP	APPR								
+37002002	11	Juda	PROPN	NE					S		Nom	M
+37002002	12	und	CCONJ	KON								
+37002002	13	zu	ADP	PTKVZ								
+37002002	14	Josua	PROPN	NE					S		Nom	M
+37002002	15	der	DET	ART					S		Dat	M
+37002002	16	Sohn	NOUN	NN					S		Acc	M
+37002002	17	Jozadak	PROPN	NE					S		Gen	
+37002002	18	der	DET	ART					S		Dat	M
+37002002	19	Hohenpriester	NOUN	NN					P		Nom	M
+37002002	20	und	CCONJ	KON								
+37002002	21	zu	ADP	PTKVZ								
+37002002	22	der	DET	ART					S		Dat	M
+37002002	23	Überrest	NOUN	NN					S		Nom	M
+37002002	24	der	DET	ART					S		Gen	M
+37002002	25	Volk	NOUN	NN					S		Gen	N
+37002002	26	und	CCONJ	KON								
+37002002	27	sprich	ADV	ADV								
+37002003	1	wer	PRON	PWS					S		Nom	M
+37002003	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002003	3	unter	ADP	APPR								
+37002003	4	euch	PRON	PPER				2	P		Dat	
+37002003	5	übrigbleiben	VERB	VVPP		Part						
+37002003	6	der	DET	ART					S		Nom	M
+37002003	7	dieser	DET	PDAT					S		Nom	N
+37002003	8	Haus	NOUN	NN					S		Nom	N
+37002003	9	in	ADP	APPR								
+37002003	10	sein	DET	PPOSAT					S		Dat	F
+37002003	11	früh	ADJ	ADJA	Cmp				S		Gen	N
+37002003	12	Herrlichkeit	NOUN	NN					S		Nom	F
+37002003	13	sehen	VERB	VVPP		Part						
+37002003	14	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002003	15	und	CCONJ	KON								
+37002003	16	wie	ADP	KOKOM								
+37002003	17	seheen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002003	18	ihr	PRON	PPOSAT				3	S		Dat	F
+37002003	19	es	PRON	PPER				3	S		Nom	N
+37002003	20	jetzt	ADV	ADV								
+37002003	21	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002003	22	es	PRON	PPER				3	S		Nom	N
+37002003	23	nicht	PART	PTKNEG								
+37002003	24	wie	ADP	KOKOM								
+37002003	25	nichts	PRON	PIS								N
+37002003	26	in	ADP	APPR								
+37002003	27	euren	DET	PPOSAT					S		Acc	M
+37002003	28	Auge	NOUN	NN					P		Nom	N
+37002004	1	und	CCONJ	KON								
+37002004	2	nun	ADV	ADV								
+37002004	3	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002004	4	stark	ADV	ADJD	Pos							
+37002004	5	Serubbabel	NOUN	NN					S		Nom	M
+37002004	6	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002004	7	Jahwe	NOUN	NN					S		Nom	M
+37002004	8	und	CCONJ	KON								
+37002004	9	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002004	10	stark	ADV	ADJD	Pos							
+37002004	11	Josua	PROPN	NE					S		Nom	M
+37002004	12	Sohn	NOUN	NN					S		Nom	M
+37002004	13	Jozadak	PROPN	NE					S		Gen	
+37002004	14	du	PRON	PPER				2	S		Nom	
+37002004	15	Hoherpriester	NOUN	NN					S		Nom	M
+37002004	16	und	CCONJ	KON								
+37002004	17	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+37002004	18	stark	ADV	ADJD	Pos							
+37002004	19	alle	PRON	PIS					S		Nom	N
+37002004	20	Volk	NOUN	NN					S		Nom	N
+37002004	21	der	DET	ART					S		Gen	M
+37002004	22	Land	NOUN	NN					S		Gen	N
+37002004	23	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002004	24	Jahwe	NOUN	NN					S		Nom	M
+37002004	25	und	CCONJ	KON								
+37002004	26	arbeiten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002004	27	denn	CCONJ	KON								
+37002004	28	ich	PRON	PPER				1	S		Nom	
+37002004	29	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+37002004	30	mit	ADP	APPR								
+37002004	31	euch	PRON	PPER				2	P		Dat	
+37002004	32	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002004	33	Jahwe	NOUN	NN					S		Nom	M
+37002004	34	der	DET	ART					S		Nom	M
+37002004	35	Heerschare	NOUN	NN					P		Nom	F
+37002005	1	der	DET	ART					S		Nom	N
+37002005	2	Wort	NOUN	NN					S		Nom	N
+37002005	3	welcher	DET	PWAT					S		Acc	N
+37002005	4	ich	PRON	PPER				1	S		Nom	
+37002005	5	mit	ADP	APPR								
+37002005	6	euch	PRON	PPER				2	P		Dat	
+37002005	7	eingehen	VERB	VVPP		Part						
+37002005	8	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+37002005	9	als	ADP	KOKOM								
+37002005	10	ihr	PRON	PPOSAT				3	S		Dat	F
+37002005	11	aus	ADP	PTKVZ								
+37002005	12	Ägypten	PROPN	NE					S		Nom	N
+37002005	13	Zoget	NOUN	NN					S		Nom	N
+37002005	14	und	CCONJ	KON								
+37002005	15	mein	DET	PPOSAT					S		Nom	N
+37002005	16	Geist	NOUN	NN					S		Nom	M
+37002005	17	bestehen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+37002005	18	in	ADP	APPR								
+37002005	19	eurer	PRON	PPOSAT							Gen	
+37002005	20	Mitte	NOUN	NN					S		Nom	F
+37002005	21	Fürchten	VERB	VVPP		Part						
+37002005	22	euch	PRON	PPER				2	P		Dat	
+37002005	23	nicht	PART	PTKNEG								
+37002006	1	denn	CCONJ	KON								
+37002006	2	so	ADV	ADV								
+37002006	3	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002006	4	Jahwe	NOUN	NN					S		Nom	M
+37002006	5	der	DET	ART					S		Nom	M
+37002006	6	Heerschare	NOUN	NN					P		Nom	F
+37002006	7	noch	ADV	ADV								
+37002006	8	einmal	ADV	ADV								
+37002006	9	ein	DET	ART					S		Nom	F
+37002006	10	klein	ADJ	ADJA	Pos				S		Nom	F
+37002006	11	Weile	NOUN	NN					S		Nom	F
+37002006	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002006	13	es	PRON	PPER				3	S		Nom	N
+37002006	14	da	ADV	ADV								
+37002006	15	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002006	16	ich	PRON	PPER				1	S		Nom	
+37002006	17	der	DET	ART					S		Acc	M
+37002006	18	Himmel	NOUN	NN					S		Nom	M
+37002006	19	erschüttern	VERB	VVINF		Inf						
+37002006	20	und	CCONJ	KON								
+37002006	21	der	DET	ART					S		Nom	F
+37002006	22	Erde	NOUN	NN					S		Nom	F
+37002006	23	und	CCONJ	KON								
+37002006	24	der	DET	ART					S		Nom	N
+37002006	25	Meer	NOUN	NN					S		Nom	N
+37002006	26	und	CCONJ	KON								
+37002006	27	der	DET	ART					S		Nom	N
+37002006	28	trockene	NOUN	ADV					P		Nom	
+37002007	1	und	CCONJ	KON								
+37002007	2	ich	PRON	PPER				1	S		Nom	
+37002007	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002007	4	aller	PRON	PIS					P		Nom	
+37002007	5	Nation	NOUN	NN					P		Nom	F
+37002007	6	erschüttern	VERB	VVINF		Inf						
+37002007	7	und	CCONJ	KON								
+37002007	8	der	DET	ART					S		Nom	N
+37002007	9	Ersehnt	NOUN	NN					P		Nom	N
+37002007	10	aller	DET	PIAT					P		Gen	
+37002007	11	Nation	NOUN	NN					P		Nom	F
+37002007	12	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002007	13	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+37002007	14	und	CCONJ	KON								
+37002007	15	ich	PRON	PPER				1	S		Nom	
+37002007	16	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002007	17	dieser	DET	PDAT					S		Nom	N
+37002007	18	Haus	NOUN	NN					S		Nom	N
+37002007	19	mit	ADP	APPR								
+37002007	20	Herrlichkeit	NOUN	NN					S		Nom	F
+37002007	21	füllen	VERB	VVINF		Inf						
+37002007	22	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002007	23	Jahwe	NOUN	NN					S		Nom	M
+37002007	24	der	DET	ART					S		Nom	M
+37002007	25	Heerschare	NOUN	NN					P		Nom	F
+37002008	1	mein	PRON	PPOSAT				2	P		Nom	
+37002008	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002008	3	der	DET	ART					S		Nom	N
+37002008	4	Silber	NOUN	NN					S		Nom	N
+37002008	5	und	CCONJ	KON								
+37002008	6	mein	DET	PPOSAT					S		Nom	N
+37002008	7	der	DET	ART					S		Nom	N
+37002008	8	Gold	NOUN	NN					S		Nom	N
+37002008	9	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002008	10	Jahwe	NOUN	NN					S		Nom	M
+37002008	11	der	DET	ART					S		Nom	M
+37002008	12	Heerschare	NOUN	NN					P		Nom	F
+37002009	1	der	DET	ART					S		Nom	F
+37002009	2	letzter	ADJ	ADJA	Pos				S		Nom	F
+37002009	3	Herrlichkeit	NOUN	NN					S		Nom	F
+37002009	4	dieser	DET	PDAT					S		Nom	N
+37002009	5	Haus	NOUN	NN					S		Gen	N
+37002009	6	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002009	7	groß	ADV	ADJD	Cmp							
+37002009	8	sein	AUX	VAINF		Inf						
+37002009	9	als	ADP	KOKOM								
+37002009	10	der	DET	ART					S		Nom	F
+37002009	11	erster	ADJ	ADJA	Pos				S		Nom	F
+37002009	12	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002009	13	Jahwe	NOUN	NN					S		Nom	M
+37002009	14	der	DET	ART					S		Nom	M
+37002009	15	Heerschare	NOUN	NN					P		Nom	F
+37002009	16	und	CCONJ	KON								
+37002009	17	an	ADP	PTKVZ								
+37002009	18	dieser	DET	PDAT					S		Dat	N
+37002009	19	Ort	NOUN	NN					P		Nom	M
+37002009	20	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+37002009	21	ich	PRON	PPER				1	S		Nom	
+37002009	22	Frieden	NOUN	NN					S		Nom	M
+37002009	23	geben	VERB	VVINF		Inf						
+37002009	24	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002009	25	Jahwe	NOUN	NN					S		Nom	M
+37002009	26	der	DET	ART					S		Nom	M
+37002009	27	Heerschare	NOUN	NN					P		Nom	F
+37002010	1	an	ADP	APPRART					S		Dat	M
+37002010	2	24	NUM	CARD								
+37002010	3	der	DET	ART					S		Gen	M
+37002010	4	neunter	ADV	ADJA								
+37002010	5	Monat	NOUN	NN					S		Nom	M
+37002010	6	in	ADP	APPRART					S		Dat	N
+37002010	7	zweiter	ADJ	ADJA	Pos				S		Dat	M
+37002010	8	Jahr	NOUN	NN					P		Nom	N
+37002010	9	der	DET	ART					S		Gen	M
+37002010	10	Darius	PROPN	NE					S		Nom	M
+37002010	11	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002010	12	der	DET	ART					S		Nom	N
+37002010	13	Wort	NOUN	NN					S		Nom	N
+37002010	14	Jahwe	PROPN	NE					S		Gen	
+37002010	15	zu	ADP	PTKVZ								
+37002010	16	der	DET	ART					S		Dat	M
+37002010	17	Prophet	NOUN	NN					P		Nom	M
+37002010	18	Haggai	PROPN	NE					S		Nom	
+37002010	19	also	ADV	ADV								
+37002011	1	so	ADV	ADV								
+37002011	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002011	3	Jahwe	NOUN	NN					S		Nom	M
+37002011	4	der	DET	ART					S		Nom	M
+37002011	5	Heerschare	NOUN	NN					P		Nom	F
+37002011	6	Frage	NOUN	NN					S		Nom	F
+37002011	7	doch	CCONJ	KON								
+37002011	8	der	DET	ART					S		Nom	F
+37002011	9	Priester	NOUN	NN					P		Nom	M
+37002011	10	über	ADP	APPR								
+37002011	11	der	DET	ART					S		Nom	N
+37002011	12	Gesetz	NOUN	NN					S		Nom	N
+37002011	13	und	CCONJ	KON								
+37002011	14	sprich	ADV	ADV								
+37002012	1	sehen	VERB	VVIMP				2	S	Imp		
+37002012	2	tragen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002012	3	jemand	PRON	PIS					S		Nom	M
+37002012	4	heilig	ADJ	ADJA	Pos				S		Nom	N
+37002012	5	Fleisch	NOUN	NN					S		Nom	N
+37002012	6	in	ADP	APPRART					S		Dat	N
+37002012	7	Zipfel	NOUN	NN					S		Nom	M
+37002012	8	sein	DET	PPOSAT					S		Gen	M
+37002012	9	Kleide	NOUN	NN					S		Gen	N
+37002012	10	und	CCONJ	KON								
+37002012	11	er	PRON	PPER				3	S		Nom	M
+37002012	12	berühren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002012	13	mit	ADP	APPR								
+37002012	14	sein	DET	PPOSAT					S		Dat	M
+37002012	15	Zipfel	NOUN	NN					S		Nom	M
+37002012	16	Brot	NOUN	NN					S		Nom	N
+37002012	17	oder	CCONJ	KON								
+37002012	18	Gekochtes	NOUN	NN					S		Nom	N
+37002012	19	oder	CCONJ	KON								
+37002012	20	Wein	NOUN	NN					S		Nom	M
+37002012	21	oder	CCONJ	KON								
+37002012	22	Öl	NOUN	NN					S		Nom	N
+37002012	23	oder	CCONJ	KON								
+37002012	24	irgend	ADV	ADV								
+37002012	25	ein	DET	ART					S		Nom	F
+37002012	26	Speise	NOUN	NN					S		Nom	F
+37002012	27	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002012	28	es	PRON	PPER				3	S		Nom	N
+37002012	29	heilig	ADV	ADJD	Pos							
+37002012	30	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+37002012	31	und	CCONJ	KON								
+37002012	32	der	DET	ART					S		Nom	F
+37002012	33	Priester	NOUN	NN					P		Nom	M
+37002012	34	antworten	VERB	VVFIN		Fin	Past	3	P	Ind		
+37002012	35	und	CCONJ	KON								
+37002012	36	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+37002012	37	nein	PART	PTKANT								
+37002013	1	und	CCONJ	KON								
+37002013	2	Haggai	PROPN	NE					S		Nom	
+37002013	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002013	4	wenn	SCONJ	KOUS								
+37002013	5	ein	DET	ART					S		Nom	N
+37002013	6	wegen	ADP	APPR								
+37002013	7	ein	PRON	ART					S		Nom	M
+37002013	8	Leiche	NOUN	NN					S		Nom	F
+37002013	9	Verunreinigter	NOUN	NE					S		Nom	
+37002013	10	alle	PRON	PIS					S		Nom	N
+37002013	11	dieser	DET	PDAT					S		Nom	N
+37002013	12	anrühren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002013	13	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002013	14	es	PRON	PPER				3	S		Nom	N
+37002013	15	unrein	ADV	ADJD	Pos							
+37002013	16	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+37002013	17	und	CCONJ	KON								
+37002013	18	der	DET	ART					S		Nom	F
+37002013	19	Priester	NOUN	NN					P		Nom	M
+37002013	20	antworten	VERB	VVFIN		Fin	Past	3	P	Ind		
+37002013	21	und	CCONJ	KON								
+37002013	22	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+37002013	23	es	PRON	PPER				3	S		Nom	N
+37002013	24	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002013	25	unrein	ADV	ADJD	Pos							
+37002013	26	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+37002014	1	da	SCONJ	KOUS								
+37002014	2	antworten	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002014	3	Haggai	PROPN	NE					S		Nom	
+37002014	4	und	CCONJ	KON								
+37002014	5	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002014	6	also	ADV	ADV								
+37002014	7	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002014	8	dieser	DET	PDAT					S		Nom	N
+37002014	9	Volk	NOUN	NN					S		Nom	N
+37002014	10	und	CCONJ	KON								
+37002014	11	also	ADV	ADV								
+37002014	12	dieser	DET	PDAT					S		Nom	F
+37002014	13	Nation	NOUN	NN					S		Nom	F
+37002014	14	vor	ADP	APPR								
+37002014	15	mir	PRON	PPER				1	S		Dat	
+37002014	16	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002014	17	Jahwe	NOUN	NN					S		Nom	M
+37002014	18	und	CCONJ	KON								
+37002014	19	also	ADV	ADV								
+37002014	20	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002014	21	alle	PRON	PIS					S		Nom	N
+37002014	22	Werk	NOUN	NN					S		Nom	N
+37002014	23	ihr	DET	PPOSAT					S		Dat	F
+37002014	24	Hand	NOUN	NN					P		Nom	F
+37002014	25	und	CCONJ	KON								
+37002014	26	was	PRON	PWS					S		Nom	N
+37002014	27	sie	PRON	PPER				3	P		Nom	
+37002014	28	daselbst	ADV	PROAV								
+37002014	29	darbringen	VERB	VVINF		Inf						
+37002014	30	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002014	31	unrein	ADV	ADJD	Pos							
+37002015	1	und	CCONJ	KON								
+37002015	2	nun	ADV	ADV								
+37002015	3	richten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002015	4	doch	CCONJ	KON								
+37002015	5	euer	DET	PPOSAT					S		Nom	M
+37002015	6	Herz	NOUN	NN					S		Nom	N
+37002015	7	auf	ADP	PTKVZ								
+37002015	8	der	DET	ART					S		Nom	F
+37002015	9	Zeit	NOUN	NN					S		Nom	F
+37002015	10	von	ADP	APPR								
+37002015	11	dieser	DET	PDAT					S		Dat	N
+37002015	12	Tag	NOUN	NN					P		Nom	M
+37002015	13	an	ADP	PTKVZ								
+37002015	14	und	CCONJ	KON								
+37002015	15	aufwärts	ADV	ADV								
+37002015	16	--	X	XY								
+37002015	17	Stein	NOUN	NN					S		Nom	M
+37002015	18	auf	ADP	PTKVZ								
+37002015	19	Stein	NOUN	NN					S		Nom	M
+37002015	20	legen	VERB	VVPP		Part						
+37002015	21	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+37002015	22	an	ADP	APPRART					S		Dat	M
+37002015	23	Tempel	NOUN	NN					S		Nom	M
+37002015	24	Jahwe	PROPN	NE					S		Gen	
+37002016	1	bevor	SCONJ	KOUS								
+37002016	2	dieser	DET	PDAT					S		Nom	N
+37002016	3	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002016	4	Kam	PROPN	NE					S		Nom	
+37002016	5	man	PRON	PIS					S		Nom	
+37002016	6	zu	ADP	PTKVZ								
+37002016	7	ein	DET	ART					S		Dat	M
+37002016	8	Garbenhaufe	NOUN	NN					P		Nom	M
+37002016	9	von	ADP	APPR								
+37002016	10	zwanzig	NUM	CARD								
+37002016	11	Maß	NOUN	NN					S		Nom	N
+37002016	12	so	ADV	ADV								
+37002016	13	werden	AUX	VAFIN		Fin	Past	3	P	Ind		
+37002016	14	es	PRON	PPER				3	S		Nom	N
+37002016	15	zehn	NUM	CARD								
+37002016	16	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002016	17	man	PRON	PIS					S		Nom	
+37002016	18	zu	ADP	PTKVZ								
+37002016	19	der	DET	ART					S		Nom	M
+37002016	20	Kufe	NOUN	NN					S		Nom	F
+37002016	21	um	ADP	APPR								
+37002016	22	fünfzig	NUM	CARD								
+37002016	23	Eimer	NOUN	NN					S		Nom	M
+37002016	24	zu	ADP	PTKVZ								
+37002016	25	schöpfen	VERB	VVINF		Inf						
+37002016	26	so	ADV	ADV								
+37002016	27	werden	AUX	VAFIN		Fin	Past	3	P	Ind		
+37002016	28	es	PRON	PPER				3	S		Nom	N
+37002016	29	zwanzig	NUM	CARD								
+37002017	1	ich	PRON	PPER				1	S		Nom	
+37002017	2	schlagen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002017	3	euch	PRON	PPER				2	P		Dat	
+37002017	4	mit	ADP	APPR								
+37002017	5	Kornbrand	PROPN	NE					S		Nom	N
+37002017	6	und	CCONJ	KON								
+37002017	7	mit	ADP	APPR								
+37002017	8	Vergilben	NOUN	NN					P		Nom	F
+37002017	9	und	CCONJ	KON								
+37002017	10	mit	ADP	APPR								
+37002017	11	Hagel	PROPN	NE					S		Nom	M
+37002017	12	aller	PRON	PIS					P		Nom	
+37002017	13	Arbeit	NOUN	NN					S		Nom	F
+37002017	14	eurer	PRON	PPOSAT							Gen	
+37002017	15	Hand	NOUN	NN					P		Nom	F
+37002017	16	und	CCONJ	KON								
+37002017	17	ihr	PRON	PPOSAT				3	S		Dat	F
+37002017	18	kehrten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002017	19	nicht	PART	PTKNEG								
+37002017	20	zu	ADP	PTKVZ								
+37002017	21	mir	PRON	PPER				1	S		Dat	
+37002017	22	um	ADP	APPR								
+37002017	23	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002017	24	Jahwe	NOUN	NN					S		Nom	M
+37002018	1	Richten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002018	2	doch	CCONJ	KON								
+37002018	3	euer	DET	PPOSAT					S		Nom	M
+37002018	4	Herz	NOUN	NN					S		Nom	N
+37002018	5	auf	ADP	PTKVZ								
+37002018	6	der	DET	ART					S		Nom	F
+37002018	7	Zeit	NOUN	NN					S		Nom	F
+37002018	8	von	ADP	APPR								
+37002018	9	dieser	DET	PDAT					S		Dat	N
+37002018	10	Tag	NOUN	NN					P		Nom	M
+37002018	11	an	ADP	PTKVZ								
+37002018	12	und	CCONJ	KON								
+37002018	13	aufwärts	ADV	ADV								
+37002018	14	von	ADP	APPR								
+37002018	15	der	DET	ART					S		Dat	M
+37002018	16	24	NUM	CARD								
+37002018	17	Tag	NOUN	NN					P		Nom	M
+37002018	18	der	DET	ART					S		Gen	M
+37002018	19	neunter	ADV	ADJA								
+37002018	20	Monat	NOUN	NN					S		Nom	M
+37002018	21	an	ADP	PTKVZ								
+37002018	22	von	ADP	APPR								
+37002018	23	der	DET	ART					S		Dat	M
+37002018	24	Tag	NOUN	NN					P		Nom	M
+37002018	25	an	ADP	PTKVZ								
+37002018	26	da	ADV	ADV								
+37002018	27	der	DET	ART					S		Nom	M
+37002018	28	Tempel	NOUN	NN					S		Nom	M
+37002018	29	Jahwe	PROPN	NE					S		Gen	
+37002018	30	gründen	VERB	VVPP		Part						
+37002018	31	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+37002018	32	richten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002018	33	euer	DET	PPOSAT					S		Nom	M
+37002018	34	Herz	NOUN	NN					S		Nom	N
+37002018	35	darauf	ADV	PROAV								
+37002019	1	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+37002019	2	noch	CCONJ	KON								
+37002019	3	der	DET	ART					S		Nom	F
+37002019	4	Saat	NOUN	NN					S		Nom	F
+37002019	5	auf	ADP	PTKVZ								
+37002019	6	der	DET	ART					S		Dat	M
+37002019	7	Speicher	NOUN	NN					S		Nom	M
+37002019	8	ja	ADV	ADV								
+37002019	9	sogar	ADV	ADV								
+37002019	10	der	DET	ART					S		Nom	M
+37002019	11	Weinstock	NOUN	XY					S		Nom	M
+37002019	12	und	CCONJ	KON								
+37002019	13	der	DET	ART					S		Nom	M
+37002019	14	Feigenbaum	NOUN	NN					S		Nom	M
+37002019	15	und	CCONJ	KON								
+37002019	16	der	DET	ART					S		Nom	M
+37002019	17	Granatbaum	NOUN	NN					S		Nom	M
+37002019	18	und	CCONJ	KON								
+37002019	19	der	DET	ART					S		Nom	M
+37002019	20	Olivenbaum	NOUN	NN					S		Nom	M
+37002019	21	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+37002019	22	nichts	PRON	PIS								N
+37002019	23	tragen	VERB	VVPP		Part						
+37002019	24	von	ADP	APPR								
+37002019	25	dieser	DET	PDAT					S		Dat	N
+37002019	26	Tag	NOUN	NN					P		Nom	M
+37002019	27	an	ADP	PTKVZ								
+37002019	28	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+37002019	29	ich	PRON	PPER				1	S		Nom	
+37002019	30	segnen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+37002020	1	und	CCONJ	KON								
+37002020	2	der	DET	ART					S		Nom	N
+37002020	3	Wort	NOUN	NN					S		Nom	N
+37002020	4	Jahwe	PROPN	NE					S		Gen	
+37002020	5	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+37002020	6	zu	ADP	APPRART					S		Dat	N
+37002020	7	zweiter	ADJ	ADJA	Pos				S		Dat	M
+37002020	8	Mal	NOUN	NN					P		Nom	N
+37002020	9	zu	ADP	PTKVZ								
+37002020	10	Haggai	PROPN	NE					S		Nom	
+37002020	11	an	ADP	APPRART					S		Dat	M
+37002020	12	24	NUM	CARD								
+37002020	13	der	DET	ART					S		Gen	M
+37002020	14	Monat	NOUN	NN					S		Nom	M
+37002020	15	also	ADV	ADV								
+37002021	1	Rede	NOUN	NN					S		Nom	F
+37002021	2	zu	ADP	PTKVZ								
+37002021	3	Serubbabel	NOUN	NN					S		Nom	M
+37002021	4	der	DET	ART					S		Dat	M
+37002021	5	Landpfleger	NOUN	NN					P		Nom	M
+37002021	6	von	ADP	APPR								
+37002021	7	Juda	PROPN	NE					S		Nom	M
+37002021	8	und	CCONJ	KON								
+37002021	9	sprich	ADV	ADV								
+37002021	10	ich	PRON	PPER				1	S		Nom	
+37002021	11	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002021	12	der	DET	ART					S		Acc	M
+37002021	13	Himmel	NOUN	NN					S		Nom	M
+37002021	14	und	CCONJ	KON								
+37002021	15	der	DET	ART					S		Nom	F
+37002021	16	Erde	NOUN	NN					S		Nom	F
+37002021	17	erschüttern	VERB	VVINF		Inf						
+37002022	1	und	CCONJ	KON								
+37002022	2	ich	PRON	PPER				1	S		Nom	
+37002022	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002022	4	der	DET	ART					S		Acc	M
+37002022	5	Thron	NOUN	NN					S		Nom	M
+37002022	6	der	DET	ART					S		Nom	M
+37002022	7	Königreich	NOUN	NN					P		Nom	N
+37002022	8	umstürzen	VERB	VVINF		Inf						
+37002022	9	und	CCONJ	KON								
+37002022	10	der	DET	ART					S		Nom	F
+37002022	11	Macht	NOUN	NN					S		Nom	F
+37002022	12	der	DET	ART					S		Nom	M
+37002022	13	Königreich	NOUN	NN					P		Nom	N
+37002022	14	der	DET	ART					S		Nom	M
+37002022	15	Nation	NOUN	NN					P		Nom	F
+37002022	16	vernichten	VERB	VVINF		Inf						
+37002022	17	und	CCONJ	KON								
+37002022	18	ich	PRON	PPER				1	S		Nom	
+37002022	19	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002022	20	der	DET	ART					S		Nom	F
+37002022	21	Streitwagen	NOUN	NN					S		Nom	M
+37002022	22	umstürzen	VERB	VVINF		Inf						
+37002022	23	und	CCONJ	KON								
+37002022	24	der	DET	ART					S		Nom	F
+37002022	25	darauf	ADV	PROAV								
+37002022	26	fahren	VERB	VVINF		Fin	Pres	3	P	Ind		
+37002022	27	und	CCONJ	KON								
+37002022	28	der	DET	ART					S		Nom	F
+37002022	29	Roß	NOUN	NN					P		Nom	M
+37002022	30	und	CCONJ	KON								
+37002022	31	ihr	DET	PPOSAT					S		Nom	F
+37002022	32	Reiter	NOUN	NN					S		Nom	M
+37002022	33	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+37002022	34	hinfallen	VERB	VVINF		Fin	Pres	3	P	Ind		
+37002022	35	ein	DET	ART					S		Nom	N
+37002022	36	jeder	PRON	PIS					S		Nom	M
+37002022	37	durch	ADP	APPR								
+37002022	38	der	DET	ART					S		Nom	N
+37002022	39	Schwert	NOUN	NN					S		Nom	N
+37002022	40	der	DET	ART					S		Gen	M
+37002022	41	anderer	PRON	PIS					P		Dat	
+37002023	1	an	ADP	APPR								
+37002023	2	jener	DET	PDAT					S		Dat	N
+37002023	3	Tag	NOUN	NN					P		Nom	M
+37002023	4	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002023	5	Jahwe	NOUN	NN					S		Nom	M
+37002023	6	der	DET	ART					S		Nom	M
+37002023	7	Heerschare	NOUN	NN					P		Nom	F
+37002023	8	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002023	9	ich	PRON	PPER				1	S		Nom	
+37002023	10	dich	PRON	PPER				2	S		Acc	
+37002023	11	nehmen	VERB	VVINF		Inf						
+37002023	12	Serubbabel	NOUN	NN					S		Nom	M
+37002023	13	Sohn	NOUN	NN					S		Nom	M
+37002023	14	Schealtiel	PROPN	NE					S		Nom	
+37002023	15	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+37002023	16	Knecht	NOUN	NN					S		Nom	M
+37002023	17	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002023	18	Jahwe	NOUN	NN					S		Nom	M
+37002023	19	und	CCONJ	KON								
+37002023	20	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002023	21	dich	PRON	PPER				2	S		Acc	
+37002023	22	wie	ADP	KOKOM								
+37002023	23	ein	DET	ART					S		Acc	M
+37002023	24	Siegelring	PROPN	NE					S		Nom	
+37002023	25	machen	VERB	VVINF		Inf						
+37002023	26	denn	CCONJ	KON								
+37002023	27	ich	PRON	PPER				1	S		Nom	
+37002023	28	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+37002023	29	dich	PRON	PPER				2	S		Acc	
+37002023	30	erwählen	VERB	VVPP		Part						
+37002023	31	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+37002023	32	Jahwe	NOUN	NN					S		Nom	M
+37002023	33	der	DET	ART					S		Nom	M
+37002023	34	Heerschare	NOUN	NN					P		Nom	F

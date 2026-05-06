@@ -1,0 +1,1427 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+61001001	1	Simon	PROPN	NE					S		Nom	M
+61001001	2	Petrus	PROPN	FM					S		Nom	M
+61001001	3	Knecht	NOUN	NN					S		Nom	M
+61001001	4	und	CCONJ	KON								
+61001001	5	Apostel	NOUN	NN					P		Nom	M
+61001001	6	Jesu	PROPN	NE					S		Gen	
+61001001	7	Christi	PROPN	NE					S		Nom	
+61001001	8	der	PRON	PDS					P		Dat	
+61001001	9	der	DET	ART					S		Nom	F
+61001001	10	ein	DET	ART					S		Acc	M
+61001001	11	gleich	ADV	ADV	Pos							
+61001001	12	kostbar	ADJ	ADJA	Pos				S		Acc	M
+61001001	13	Glaube	NOUN	NN					S		Acc	M
+61001001	14	mit	ADP	APPR								
+61001001	15	uns	PRON	PPER				1	P		Acc	
+61001001	16	empfangen	VERB	VVPP		Part						
+61001001	17	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61001001	18	durch	ADP	APPR								
+61001001	19	der	DET	ART					S		Nom	F
+61001001	20	Gerechtigkeit	NOUN	NN					S		Nom	F
+61001001	21	unser	DET	PPOSAT					S		Gen	M
+61001001	22	Gott	NOUN	NN					S		Gen	M
+61001001	23	und	CCONJ	KON								
+61001001	24	Heilande	NOUN	NN					P		Nom	N
+61001001	25	Jesus	PROPN	PPER					S		Nom	M
+61001001	26	Christus	PROPN	NE					S		Nom	M
+61001002	1	Gnade	NOUN	NN					S		Nom	F
+61001002	2	und	CCONJ	KON								
+61001002	3	Friede	NOUN	NN					S		Nom	M
+61001002	4	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+61001002	5	euch	PRON	PPER				2	P		Dat	
+61001002	6	vermehren	ADV	ADJD	Pos							
+61001002	7	in	ADP	APPR								
+61001002	8	der	DET	ART					S		Nom	M
+61001002	9	Erkenntnis	NOUN	NN					S		Nom	F
+61001002	10	Gott	NOUN	NN					S		Gen	M
+61001002	11	und	CCONJ	KON								
+61001002	12	Jesu	PROPN	NE					S		Gen	
+61001002	13	unser	DET	PPOSAT					S		Gen	M
+61001002	14	Herr	NOUN	NN					S		Acc	M
+61001003	1	da	SCONJ	KOUS								
+61001003	2	sein	DET	PPOSAT					S		Nom	F
+61001003	3	göttlich	ADJ	ADJA	Pos				S		Nom	F
+61001003	4	Kraft	NOUN	NN					S		Nom	F
+61001003	5	uns	PRON	PPER				1	P		Acc	
+61001003	6	alle	PRON	PIS					S		Nom	N
+61001003	7	in	ADP	APPR								
+61001003	8	Betreff	PROPN	NN					S		Nom	
+61001003	9	der	DET	ART					S		Gen	M
+61001003	10	Leben	NOUN	NN					S		Gen	N
+61001003	11	und	CCONJ	KON								
+61001003	12	der	DET	ART					S		Nom	M
+61001003	13	Gottseligkeit	NOUN	NN					S		Nom	F
+61001003	14	schenken	VERB	VVPP		Part						
+61001003	15	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001003	16	durch	ADP	APPR								
+61001003	17	der	DET	ART					S		Nom	F
+61001003	18	Erkenntnis	NOUN	NN					S		Nom	F
+61001003	19	der	PRON	PDS					S		Gen	
+61001003	20	der	DET	ART					S		Nom	M
+61001003	21	uns	PRON	PPER				1	P		Acc	
+61001003	22	berufen	VERB	VVPP		Part						
+61001003	23	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001003	24	durch	ADP	APPR								
+61001003	25	Herrlichkeit	NOUN	NN					S		Nom	F
+61001003	26	und	CCONJ	KON								
+61001003	27	Tugend	NOUN	NN					S		Nom	F
+61001004	1	durch	ADP	APPR								
+61001004	2	welcher	DET	PWAT					S		Nom	F
+61001004	3	er	PRON	PPER				3	S		Nom	M
+61001004	4	uns	PRON	PPER				1	P		Acc	
+61001004	5	der	DET	ART					S		Nom	F
+61001004	6	groß	ADJ	ADJA	Sup				S		Acc	M
+61001004	7	und	CCONJ	KON								
+61001004	8	kostbar	ADJ	ADJA	Pos				S		Acc	M
+61001004	9	Verheißung	NOUN	NN					P		Nom	F
+61001004	10	schenken	VERB	VVPP		Part						
+61001004	11	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001004	12	auf	ADP	PTKVZ								
+61001004	13	daß	SCONJ	KOUS								
+61001004	14	ihr	PRON	PPOSAT				3	S		Dat	F
+61001004	15	durch	ADP	APPR								
+61001004	16	dieser	DET	PDAT					S		Nom	F
+61001004	17	Teilhaber	NOUN	NN					S		Nom	M
+61001004	18	der	DET	ART					S		Nom	M
+61001004	19	göttlich	ADJ	ADJA	Pos				S		Acc	M
+61001004	20	Natur	NOUN	NN					S		Nom	F
+61001004	21	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001004	22	indem	SCONJ	KOUS								
+61001004	23	ihr	PRON	PPOSAT				3	S		Dat	F
+61001004	24	entflohen	VERB	VVPP		Part						
+61001004	25	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+61001004	26	der	DET	ART					S		Dat	M
+61001004	27	verderben	NOUN	NN					S		Nom	N
+61001004	28	der	DET	ART					S		Nom	N
+61001004	29	in	ADP	APPR								
+61001004	30	der	DET	ART					S		Nom	M
+61001004	31	Welt	NOUN	NN					S		Nom	F
+61001004	32	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001004	33	durch	ADP	APPR								
+61001004	34	der	DET	ART					S		Nom	F
+61001004	35	Lust	NOUN	NN					S		Nom	F
+61001005	1	Ebendeshalb	PROPN	NE					S		Nom	
+61001005	2	Reichet	PROPN	NE					S		Nom	
+61001005	3	aber	CCONJ	KON								
+61001005	4	auch	ADV	ADV								
+61001005	5	dar	ADV	PTKVZ								
+61001005	6	indem	SCONJ	KOUS								
+61001005	7	ihr	PRON	PPOSAT				3	S		Dat	F
+61001005	8	aller	DET	PIS					P		Dat	
+61001005	9	Fleiß	NOUN	NN					S		Acc	M
+61001005	10	anwenden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001005	11	in	ADP	APPR								
+61001005	12	eurer	DET	PPOSAT					S		Dat	M
+61001005	13	Glaube	NOUN	NN					S		Acc	M
+61001005	14	der	DET	ART					S		Nom	F
+61001005	15	Tugend	NOUN	NN					S		Nom	F
+61001005	16	in	ADP	APPR								
+61001005	17	der	DET	ART					S		Nom	M
+61001005	18	Tugend	NOUN	NN					S		Nom	F
+61001005	19	aber	CCONJ	KON								
+61001005	20	der	DET	ART					S		Nom	F
+61001005	21	Erkenntnis	NOUN	NN					S		Nom	F
+61001006	1	in	ADP	APPR								
+61001006	2	der	DET	ART					S		Nom	M
+61001006	3	Erkenntnis	NOUN	NN					S		Nom	F
+61001006	4	aber	CCONJ	KON								
+61001006	5	der	DET	ART					S		Nom	F
+61001006	6	Enthaltsamkeit	NOUN	NN					S		Nom	F
+61001006	7	in	ADP	APPR								
+61001006	8	der	DET	ART					S		Nom	M
+61001006	9	Enthaltsamkeit	NOUN	NN					S		Nom	F
+61001006	10	aber	CCONJ	KON								
+61001006	11	der	DET	ART					S		Nom	N
+61001006	12	ausharren	NOUN	NN					S		Nom	N
+61001006	13	in	ADP	APPR								
+61001006	14	der	DET	ART					S		Dat	M
+61001006	15	ausharren	NOUN	NN					S		Nom	N
+61001006	16	aber	CCONJ	KON								
+61001006	17	der	DET	ART					S		Nom	F
+61001006	18	Gottseligkeit	NOUN	NN					S		Nom	F
+61001007	1	in	ADP	APPR								
+61001007	2	der	DET	ART					S		Nom	M
+61001007	3	Gottseligkeit	NOUN	NN					S		Nom	F
+61001007	4	aber	CCONJ	KON								
+61001007	5	der	DET	ART					S		Nom	F
+61001007	6	Bruderliebe	NOUN	NN					P		Nom	M
+61001007	7	in	ADP	APPR								
+61001007	8	der	DET	ART					S		Nom	M
+61001007	9	Bruderliebe	NOUN	NN					P		Nom	M
+61001007	10	aber	CCONJ	KON								
+61001007	11	der	DET	ART					S		Nom	F
+61001007	12	Liebe	NOUN	NN					S		Nom	F
+61001008	1	denn	CCONJ	KON								
+61001008	2	wenn	SCONJ	KOUS								
+61001008	3	dieser	DET	PDAT					S		Nom	F
+61001008	4	Ding	NOUN	NN					P		Nom	N
+61001008	5	bei	ADP	APPR								
+61001008	6	euch	PRON	PPER				2	P		Dat	
+61001008	7	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61001008	8	und	CCONJ	KON								
+61001008	9	reichlich	ADV	ADJD	Pos							
+61001008	10	vorhanden	ADV	ADJD	Pos							
+61001008	11	so	ADV	ADV								
+61001008	12	stellen	VERB	VVINF		Inf						
+61001008	13	sie	PRON	PPER				3	P		Nom	
+61001008	14	euch	PRON	PPER				2	P		Dat	
+61001008	15	nicht	PART	PTKNEG								
+61001008	16	träge	ADV	ADJD	Pos							
+61001008	17	noch	CCONJ	KON								
+61001008	18	Fruchtleer	PROPN	NN					S		Nom	
+61001008	19	in	ADP	APPR								
+61001008	20	Bezug	NOUN	NN					S		Acc	M
+61001008	21	auf	ADP	PTKVZ								
+61001008	22	der	DET	ART					S		Nom	F
+61001008	23	Erkenntnis	NOUN	NN					S		Nom	F
+61001008	24	unser	DET	PPOSAT					S		Gen	M
+61001008	25	Herr	NOUN	NN					S		Acc	M
+61001008	26	Jesu	PROPN	NE					S		Gen	
+61001008	27	Christi	PROPN	NE					S		Nom	
+61001009	1	denn	CCONJ	KON								
+61001009	2	bei	ADP	APPR								
+61001009	3	welcher	DET	PWAT					S		Dat	N
+61001009	4	dieser	DET	PDAT					S		Nom	F
+61001009	5	Ding	NOUN	NN					P		Nom	N
+61001009	6	nicht	PART	PTKNEG								
+61001009	7	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61001009	8	der	DET	ART					S		Nom	M
+61001009	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001009	10	blind	ADV	ADJD	Pos							
+61001009	11	kurzsichtig	ADV	ADJD	Pos							
+61001009	12	und	CCONJ	KON								
+61001009	13	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001009	14	der	DET	ART					S		Nom	F
+61001009	15	Reinigung	NOUN	NN					S		Nom	F
+61001009	16	sein	DET	PPOSAT					S		Dat	F
+61001009	17	vorig	ADJ	ADJA	Pos				S		Gen	M
+61001009	18	Sünde	NOUN	NN					P		Nom	F
+61001009	19	vergessen	VERB	VVPP		Part						
+61001010	1	darum	ADV	PROAV								
+61001010	2	Bruder	NOUN	NN					P		Nom	M
+61001010	3	Befleißiget	NOUN	NN					S		Nom	N
+61001010	4	euch	PRON	PPER				2	P		Dat	
+61001010	5	um	ADP	APPR								
+61001010	6	so	ADV	ADV								
+61001010	7	mehr	ADV	ADV								
+61001010	8	eure	DET	PPOSAT					S		Nom	F
+61001010	9	Berufung	NOUN	NN					S		Nom	F
+61001010	10	und	CCONJ	KON								
+61001010	11	Erwählung	NOUN	NN					S		Nom	F
+61001010	12	fest	ADV	PTKVZ								
+61001010	13	zu	ADP	PTKVZ								
+61001010	14	machen	VERB	VVINF		Inf						
+61001010	15	denn	CCONJ	KON								
+61001010	16	wenn	SCONJ	KOUS								
+61001010	17	ihr	PRON	PPOSAT				3	S		Dat	F
+61001010	18	dieser	DET	PDAT					S		Nom	F
+61001010	19	Ding	NOUN	NN					P		Nom	N
+61001010	20	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001010	21	so	ADV	ADV								
+61001010	22	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001010	23	ihr	PRON	PPOSAT				3	S		Dat	F
+61001010	24	niemals	ADV	ADV								
+61001010	25	straucheln	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61001011	1	denn	CCONJ	KON								
+61001011	2	also	ADV	ADV								
+61001011	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001011	4	euch	PRON	PPER				2	P		Dat	
+61001011	5	reichlich	ADV	ADJD	Pos							
+61001011	6	dargereichen	VERB	VVPP		Part						
+61001011	7	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61001011	8	der	DET	ART					S		Nom	M
+61001011	9	Eingang	NOUN	NN					S		Nom	M
+61001011	10	in	ADP	APPR								
+61001011	11	der	DET	ART					S		Nom	N
+61001011	12	ewig	ADJ	ADJA	Pos				P		Nom	F
+61001011	13	Reich	NOUN	NE					S		Nom	N
+61001011	14	unser	DET	PPOSAT					S		Gen	M
+61001011	15	Herr	NOUN	NN					S		Acc	M
+61001011	16	und	CCONJ	KON								
+61001011	17	Heilande	NOUN	NN					P		Nom	N
+61001011	18	Jesus	PROPN	PPER					S		Nom	M
+61001011	19	Christus	PROPN	NE					S		Nom	M
+61001012	1	deshalb	ADV	PROAV								
+61001012	2	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+61001012	3	ich	PRON	PPER				1	S		Nom	
+61001012	4	Sorge	NOUN	NN					S		Nom	F
+61001012	5	tragen	VERB	VVINF		Inf						
+61001012	6	euch	PRON	PPER				2	P		Dat	
+61001012	7	immer	ADV	ADV								
+61001012	8	an	ADP	PTKVZ								
+61001012	9	dieser	DET	PDAT					S		Nom	F
+61001012	10	Ding	NOUN	NN					P		Nom	N
+61001012	11	zu	ADP	PTKVZ								
+61001012	12	erinnern	VERB	VVINF		Fin	Pres	3	P	Ind		
+61001012	13	wiewohl	SCONJ	KOUS								
+61001012	14	ihr	PRON	PPOSAT				3	S		Dat	F
+61001012	15	sie	PRON	PPER				3	P		Nom	
+61001012	16	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001012	17	und	CCONJ	KON								
+61001012	18	in	ADP	APPR								
+61001012	19	der	DET	ART					S		Nom	M
+61001012	20	gegenwärtig	PRON	ADJA							Gen	
+61001012	21	Wahrheit	NOUN	NN					S		Nom	F
+61001012	22	befestigen	VERB	VVPP		Part						
+61001012	23	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+61001013	1	ich	PRON	PPER				1	S		Nom	
+61001013	2	halten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+61001013	3	es	PRON	PPER				3	S		Nom	N
+61001013	4	aber	CCONJ	KON								
+61001013	5	für	ADP	APPR								
+61001013	6	Recht	NOUN	NN					S		Acc	N
+61001013	7	solange	SCONJ	KOUS								
+61001013	8	ich	PRON	PPER				1	S		Nom	
+61001013	9	in	ADP	APPR								
+61001013	10	dieser	PRON	PDAT					S		Nom	M
+61001013	11	Hütte	NOUN	NN					S		Nom	F
+61001013	12	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+61001013	13	euch	PRON	PPER				2	P		Dat	
+61001013	14	durch	ADP	APPR								
+61001013	15	Erinnerung	NOUN	NN					S		Nom	F
+61001013	16	aufwecken	VERB	VVIZU		Inf						
+61001014	1	da	ADV	ADV								
+61001014	2	ich	PRON	PPER				1	S		Nom	
+61001014	3	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001014	4	daß	SCONJ	KOUS								
+61001014	5	der	DET	ART					S		Nom	N
+61001014	6	ablegen	NOUN	NN					S		Nom	N
+61001014	7	mein	DET	PPOSAT					S		Dat	F
+61001014	8	Hütte	NOUN	NN					S		Nom	F
+61001014	9	bald	ADV	ADV								
+61001014	10	geschehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001014	11	wie	ADP	KOKOM								
+61001014	12	auch	ADV	ADV								
+61001014	13	unser	DET	PPOSAT					S		Nom	N
+61001014	14	Herr	NOUN	NN					S		Nom	M
+61001014	15	Jesus	PROPN	PPER					S		Nom	M
+61001014	16	Christus	PROPN	NE					S		Nom	M
+61001014	17	mir	PRON	PPER				1	S		Dat	
+61001014	18	kundtun	VERB	VVPP		Part						
+61001014	19	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001015	1	ich	PRON	PPER				1	S		Nom	
+61001015	2	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+61001015	3	mich	PRON	PPER				1	S		Acc	
+61001015	4	aber	CCONJ	KON								
+61001015	5	befleißig	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61001015	6	daß	SCONJ	KOUS								
+61001015	7	ihr	PRON	PPOSAT				3	S		Dat	F
+61001015	8	auch	ADV	ADV								
+61001015	9	zu	ADP	PTKVZ								
+61001015	10	jeder	PRON	PIS					S		Nom	M
+61001015	11	Zeit	NOUN	NN					S		Nom	F
+61001015	12	nach	ADP	APPR								
+61001015	13	mein	DET	PPOSAT					S		Dat	M
+61001015	14	Abschied	NOUN	NN					P		Nom	M
+61001015	15	imstande	ADV	ADV								
+61001015	16	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+61001015	17	euch	PRON	PPER				2	P		Dat	
+61001015	18	dieser	DET	PDAT					S		Nom	F
+61001015	19	Ding	NOUN	NN					P		Nom	N
+61001015	20	in	ADP	APPRART					S		Acc	N
+61001015	21	Gedächtnis	NOUN	NN					S		Nom	N
+61001015	22	zu	ADP	PTKVZ								
+61001015	23	rufen	VERB	VVINF		Inf						
+61001016	1	denn	CCONJ	KON								
+61001016	2	wir	PRON	PPER				1	P		Nom	
+61001016	3	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61001016	4	euch	PRON	PPER				2	P		Dat	
+61001016	5	der	DET	ART					S		Nom	F
+61001016	6	Macht	NOUN	NN					S		Nom	F
+61001016	7	und	CCONJ	KON								
+61001016	8	Ankunft	NOUN	NN					S		Nom	F
+61001016	9	unser	DET	PPOSAT					S		Gen	M
+61001016	10	Herr	NOUN	NN					S		Acc	M
+61001016	11	Jesus	PROPN	PPER					S		Nom	M
+61001016	12	Christus	PROPN	NE					S		Nom	M
+61001016	13	nicht	PART	PTKNEG								
+61001016	14	kundtun	VERB	VVPP		Part						
+61001016	15	indem	SCONJ	KOUS								
+61001016	16	wir	PRON	PPER				1	P		Nom	
+61001016	17	künstlich	ADV	ADJD	Pos							
+61001016	18	erdichteten	VERB	VVFIN		Fin	Past	3	P	Sub		
+61001016	19	Fabel	NOUN	NN					P		Nom	F
+61001016	20	folgen	VERB	VVFIN		Fin	Past	3	P	Ind		
+61001016	21	sondern	CCONJ	KON								
+61001016	22	als	ADP	KOKOM								
+61001016	23	der	DET	ART					S		Nom	F
+61001016	24	da	ADV	ADV								
+61001016	25	Augenzeuge	NOUN	NN					P		Nom	M
+61001016	26	sein	DET	PPOSAT					S		Dat	F
+61001016	27	herrlich	ADJ	ADJA	Pos				S		Acc	M
+61001016	28	Größe	NOUN	NN					S		Nom	F
+61001016	29	sein	AUX	VAPP		Part						
+61001016	30	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61001017	1	denn	CCONJ	KON								
+61001017	2	er	PRON	PPER				3	S		Nom	M
+61001017	3	empfangen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61001017	4	von	ADP	APPR								
+61001017	5	Gott	NOUN	NN					S		Nom	M
+61001017	6	der	DET	ART					S		Dat	M
+61001017	7	Vater	NOUN	NN					S		Nom	M
+61001017	8	Ehre	NOUN	NN					S		Nom	F
+61001017	9	und	CCONJ	KON								
+61001017	10	Herrlichkeit	NOUN	NN					S		Nom	F
+61001017	11	als	ADP	KOKOM								
+61001017	12	von	ADP	APPR								
+61001017	13	der	DET	ART					S		Nom	M
+61001017	14	prachtvoll	ADJ	ADJA	Pos				S		Gen	M
+61001017	15	Herrlichkeit	NOUN	NN					S		Nom	F
+61001017	16	ein	DET	ART					S		Nom	F
+61001017	17	solcher	DET	PIS					S		Nom	F
+61001017	18	Stimme	NOUN	NN					S		Nom	F
+61001017	19	an	ADP	PTKVZ								
+61001017	20	ihn	PRON	PPER				3	S		Acc	M
+61001017	21	ergehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61001017	22	dieser	PRON	PDS					S		Nom	M
+61001017	23	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001017	24	mein	DET	PPOSAT					S		Nom	N
+61001017	25	geliebt	ADJ	ADJA	Pos				S		Nom	M
+61001017	26	Sohn	NOUN	NN					S		Nom	M
+61001017	27	an	ADP	PTKVZ								
+61001017	28	welcher	DET	PWAT					S		Dat	N
+61001017	29	ich	PRON	PPER				1	S		Nom	
+61001017	30	Wohlgefallen	NOUN	NN					S		Nom	N
+61001017	31	finden	VERB	VVPP		Part						
+61001017	32	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+61001018	1	und	CCONJ	KON								
+61001018	2	dieser	DET	PDAT					S		Nom	F
+61001018	3	Stimme	NOUN	NN					S		Nom	F
+61001018	4	hören	VERB	VVFIN		Fin	Past	3	P	Ind		
+61001018	5	wir	PRON	PPER				1	P		Nom	
+61001018	6	von	ADP	APPRART					S		Dat	N
+61001018	7	Himmel	NOUN	NN					S		Nom	M
+61001018	8	her	ADV	ADV								
+61001018	9	erlassen	VERB	VVPP		Part						
+61001018	10	als	ADP	KOKOM								
+61001018	11	wir	PRON	PPER				1	P		Nom	
+61001018	12	mit	ADP	APPR								
+61001018	13	ihm	PRON	PPER				3	S		Dat	M
+61001018	14	auf	ADP	PTKVZ								
+61001018	15	der	DET	ART					S		Dat	M
+61001018	16	heilig	ADJ	ADJA	Pos				S		Acc	M
+61001018	17	Berg	NOUN	NN					P		Nom	M
+61001018	18	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+61001019	1	und	CCONJ	KON								
+61001019	2	so	ADV	ADV								
+61001019	3	besitzen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61001019	4	wir	PRON	PPER				1	P		Nom	
+61001019	5	der	DET	ART					S		Nom	N
+61001019	6	prophetisch	ADJ	ADJA	Pos				S		Nom	F
+61001019	7	Wort	NOUN	NN					S		Nom	N
+61001019	8	befestigen	VERB	VVPP		Part						
+61001019	9	auf	ADP	PTKVZ								
+61001019	10	welcher	DET	PWAT					S		Acc	N
+61001019	11	zu	ADP	PTKVZ								
+61001019	12	achten	VERB	VVINF		Inf						
+61001019	13	ihr	PRON	PPOSAT				3	S		Dat	F
+61001019	14	wohl	ADV	ADV								
+61001019	15	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001019	16	als	ADP	KOKOM								
+61001019	17	auf	ADP	PTKVZ								
+61001019	18	ein	DET	ART					S		Nom	F
+61001019	19	Lampe	NOUN	NN					S		Nom	F
+61001019	20	welcher	DET	PWAT					S		Nom	F
+61001019	21	an	ADP	PTKVZ								
+61001019	22	ein	DET	ART					S		Dat	M
+61001019	23	dunkel	ADJ	ADJA	Pos				S		Gen	M
+61001019	24	Ort	NOUN	NN					P		Nom	M
+61001019	25	leuchten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001019	26	bis	CCONJ	KON								
+61001019	27	der	DET	ART					S		Nom	M
+61001019	28	Tag	NOUN	NN					S		Nom	M
+61001019	29	anbrech	ADJ	ADJA	Pos				S		Nom	F
+61001019	30	und	CCONJ	KON								
+61001019	31	der	DET	ART					S		Nom	M
+61001019	32	Morgenster	NOUN	NN					P		Dat	M
+61001019	33	aufgehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+61001019	34	in	ADP	APPR								
+61001019	35	euren	DET	PPOSAT					S		Acc	M
+61001019	36	Herz	NOUN	NN					S		Nom	N
+61001020	1	indem	SCONJ	KOUS								
+61001020	2	ihr	PRON	PPOSAT				3	S		Dat	F
+61001020	3	dieser	PRON	PDS					S		Nom	N
+61001020	4	zuerst	ADV	ADV								
+61001020	5	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61001020	6	daß	SCONJ	KOUS								
+61001020	7	kein	DET	PIAT					S		Nom	F
+61001020	8	Weissagung	NOUN	NN					S		Nom	F
+61001020	9	der	DET	ART					S		Nom	M
+61001020	10	Schrift	NOUN	NN					S		Nom	F
+61001020	11	von	ADP	APPR								
+61001020	12	eigen	ADJ	ADJA	Pos				S		Nom	M
+61001020	13	Auslegung	NOUN	NN					S		Nom	F
+61001020	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61001021	1	denn	CCONJ	KON								
+61001021	2	der	DET	ART					S		Nom	F
+61001021	3	Weissagung	NOUN	NN					S		Nom	F
+61001021	4	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+61001021	5	niemals	ADV	ADV								
+61001021	6	durch	ADP	APPR								
+61001021	7	der	DET	ART					S		Acc	M
+61001021	8	Wille	NOUN	NN					S		Acc	M
+61001021	9	der	DET	ART					S		Gen	M
+61001021	10	Mensch	NOUN	NN					P		Nom	M
+61001021	11	hervorbringen	VERB	VVPP		Part						
+61001021	12	sondern	CCONJ	KON								
+61001021	13	heilig	ADJ	ADJA	Pos				S		Nom	F
+61001021	14	Mann	NOUN	NN					P		Nom	M
+61001021	15	Gott	NOUN	NN					S		Gen	M
+61001021	16	reden	VERB	VVFIN		Fin	Past	3	P	Ind		
+61001021	17	treiben	VERB	VVPP		Part						
+61001021	18	von	ADP	APPRART					S		Dat	N
+61001021	19	heilig	NOUN	NN					P		Dat	
+61001021	20	Geist	NOUN	NN					P		Nom	M
+61002001	1	es	PRON	PPER				3	S		Nom	N
+61002001	2	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+61002001	3	aber	CCONJ	KON								
+61002001	4	auch	ADV	ADV								
+61002001	5	falsch	ADJ	ADJA	Pos				S		Nom	F
+61002001	6	Prophet	NOUN	NN					P		Nom	M
+61002001	7	unter	ADP	APPR								
+61002001	8	der	DET	ART					S		Dat	M
+61002001	9	Volke	NOUN	NN					S		Nom	M
+61002001	10	wie	ADP	KOKOM								
+61002001	11	auch	ADV	ADV								
+61002001	12	unter	ADP	APPR								
+61002001	13	euch	PRON	PPER				2	P		Dat	
+61002001	14	falsch	ADJ	ADJA	Pos				S		Nom	F
+61002001	15	Lehrer	NOUN	NN					P		Nom	M
+61002001	16	sein	AUX	VAINF		Inf						
+61002001	17	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002001	18	welcher	DET	PWAT					S		Nom	F
+61002001	19	verderblich	ADJ	ADJA	Pos				S		Nom	F
+61002001	20	Sekte	NOUN	NN					P		Nom	F
+61002001	21	Nebeneinführ	VERB	VVFIN		Fin	Past	3	P	Ind		
+61002001	22	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002001	23	und	CCONJ	KON								
+61002001	24	der	DET	ART					S		Acc	M
+61002001	25	Gebieter	NOUN	NN					P		Nom	M
+61002001	26	verleugnen	VERB	VVINF		Inf						
+61002001	27	der	DET	ART					S		Nom	M
+61002001	28	sie	PRON	PPER				3	P		Nom	
+61002001	29	erkaufen	VERB	VVPP		Part						
+61002001	30	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61002001	31	und	CCONJ	KON								
+61002001	32	sich	PRON	PRF				3	S		Acc	
+61002001	33	selbst	ADV	ADV								
+61002001	34	schnell	ADJ	ADJA	Pos				S		Nom	N
+61002001	35	verderben	NOUN	NN					S		Nom	N
+61002001	36	zuziehen	VERB	VVINF		Inf						
+61002002	1	und	CCONJ	KON								
+61002002	2	vieler	PRON	PIS					P		Nom	
+61002002	3	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002002	4	ihr	DET	PPOSAT					S		Acc	M
+61002002	5	Ausschweifung	NOUN	NN					P		Nom	F
+61002002	6	nachfolgen	VERB	VVFIN		Inf						
+61002002	7	um	ADP	APPR								
+61002002	8	welcher	PRON	PWAT					S		Nom	M
+61002002	9	Wille	ADP	APZR								
+61002002	10	der	DET	ART					S		Nom	M
+61002002	11	Weg	NOUN	NN					S		Nom	M
+61002002	12	der	DET	ART					S		Nom	M
+61002002	13	Wahrheit	NOUN	NN					S		Nom	F
+61002002	14	verlästern	VERB	VVPP		Part						
+61002002	15	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002002	16	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61002003	1	und	CCONJ	KON								
+61002003	2	durch	ADP	APPR								
+61002003	3	Habsucht	NOUN	NN					S		Nom	F
+61002003	4	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002003	5	sie	PRON	PPER				3	P		Nom	
+61002003	6	euch	PRON	PPER				2	P		Dat	
+61002003	7	verhandeln	VERB	VVINF		Inf						
+61002003	8	mit	ADP	APPR								
+61002003	9	Erkünstelt	VERB	VVFIN		Fin	Past	3	P	Ind		
+61002003	10	Wort	NOUN	NN					P		Dat	N
+61002003	11	welcher	DET	PWAT					S		Acc	M
+61002003	12	der	DET	ART					S		Nom	N
+61002003	13	Gericht	NOUN	NN					S		Nom	N
+61002003	14	von	ADP	APPR								
+61002003	15	alters	ADV	ADV								
+61002003	16	her	ADV	ADV								
+61002003	17	nicht	PART	PTKNEG								
+61002003	18	zögern	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61002003	19	und	CCONJ	KON								
+61002003	20	ihr	PRON	PPOSAT				3	S		Dat	F
+61002003	21	verderben	NOUN	NN					S		Nom	N
+61002003	22	schlummern	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61002003	23	nicht	PART	PTKNEG								
+61002004	1	denn	CCONJ	KON								
+61002004	2	wenn	SCONJ	KOUS								
+61002004	3	Gott	NOUN	NN					S		Nom	M
+61002004	4	Engel	NOUN	NN					S		Nom	M
+61002004	5	welcher	DET	PWAT					S		Nom	F
+61002004	6	sündigen	VERB	VVPP		Part						
+61002004	7	haben	AUX	VAFIN		Fin	Past	3	P	Ind		
+61002004	8	nicht	PART	PTKNEG								
+61002004	9	verschonn	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002004	10	sondern	CCONJ	KON								
+61002004	11	sie	PRON	PPER				3	P		Nom	
+61002004	12	in	ADP	APPR								
+61002004	13	der	DET	ART					S		Acc	M
+61002004	14	tief	ADV	ADJD	Sup							
+61002004	15	Abgrund	NOUN	NN					S		Nom	M
+61002004	16	hinabstürzend	ADV	ADJD	Pos							
+61002004	17	Kette	NOUN	NN					P		Nom	F
+61002004	18	der	DET	ART					S		Nom	M
+61002004	19	Finsternis	NOUN	NN					S		Nom	F
+61002004	20	überliefern	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002004	21	um	ADP	APPR								
+61002004	22	aufbewahren	VERB	VVPP		Part						
+61002004	23	zu	ADP	PTKVZ								
+61002004	24	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002004	25	für	ADP	APPR								
+61002004	26	der	DET	ART					S		Nom	N
+61002004	27	Gericht	NOUN	NN					S		Nom	N
+61002005	1	und	CCONJ	KON								
+61002005	2	der	DET	ART					S		Nom	F
+61002005	3	alt	ADJ	ADJA	Pos				S		Nom	F
+61002005	4	Welt	NOUN	NN					S		Nom	F
+61002005	5	nicht	PART	PTKNEG								
+61002005	6	verschonn	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002005	7	sondern	CCONJ	KON								
+61002005	8	nur	ADV	ADV								
+61002005	9	Noah	PROPN	NE					S		Nom	M
+61002005	10	der	DET	ART					S		Acc	M
+61002005	11	Prediger	NOUN	NN					S		Nom	M
+61002005	12	der	DET	ART					S		Nom	M
+61002005	13	Gerechtigkeit	NOUN	NN					S		Nom	F
+61002005	14	Selbacht	NOUN	NN					S		Nom	F
+61002005	15	erhalten	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002005	16	als	ADP	KOKOM								
+61002005	17	er	PRON	PPER				3	S		Nom	M
+61002005	18	der	DET	ART					S		Nom	F
+61002005	19	Flut	NOUN	NN					S		Nom	F
+61002005	20	über	ADP	APPR								
+61002005	21	der	DET	ART					S		Nom	F
+61002005	22	Welt	NOUN	NN					S		Nom	F
+61002005	23	der	DET	ART					S		Nom	M
+61002005	24	Gottlosen	NOUN	NN					S		Acc	M
+61002005	25	bringen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002006	1	und	CCONJ	KON								
+61002006	2	der	DET	ART					S		Nom	F
+61002006	3	Stadt	NOUN	NN					P		Nom	F
+61002006	4	Sodom	PROPN	NE					S		Nom	
+61002006	5	und	CCONJ	KON								
+61002006	6	Gomorra	PROPN	NE					S		Nom	
+61002006	7	einäscheren	VERB	ADJA		Fin	Past	3	S	Ind		
+61002006	8	und	CCONJ	KON								
+61002006	9	zu	ADP	APPRART					S		Dat	F
+61002006	10	Zerstörung	NOUN	NN					S		Nom	F
+61002006	11	verurteilen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002006	12	indem	SCONJ	KOUS								
+61002006	13	er	PRON	PPER				3	S		Nom	M
+61002006	14	sie	PRON	PPER				3	P		Nom	
+61002006	15	der	PRON	PDS					P		Dat	
+61002006	16	welcher	DET	PWAT					S		Nom	F
+61002006	17	gottlos	ADV	ADJD	Pos							
+61002006	18	leben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61002006	19	werden	AUX	VAFIN		Fin	Past	3	P	Sub		
+61002006	20	als	ADP	KOKOM								
+61002006	21	Beispiel	NOUN	NN					S		Nom	N
+61002006	22	hinstellen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002007	1	und	CCONJ	KON								
+61002007	2	der	DET	ART					S		Acc	M
+61002007	3	gerecht	ADJ	ADJA	Pos				S		Acc	M
+61002007	4	Lot	PROPN	NE					S		Nom	N
+61002007	5	retten	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002007	6	der	DET	ART					S		Nom	M
+61002007	7	von	ADP	APPR								
+61002007	8	der	DET	ART					S		Dat	M
+61002007	9	ausschweifend	VERB	ADJA		Fin	Pres	3	P	Ind		
+61002007	10	Wandel	NOUN	NN					S		Nom	M
+61002007	11	der	DET	ART					S		Nom	M
+61002007	12	Ruchlos	NOUN	NN					P		Dat	M
+61002007	13	quälen	VERB	VVPP		Part						
+61002007	14	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+61002008	1	denn	CCONJ	KON								
+61002008	2	der	DET	ART					S		Nom	M
+61002008	3	unter	ADP	APPR								
+61002008	4	ihnen	PRON	PPER				3	P		Dat	
+61002008	5	wohnend	ADJ	ADJA	Pos				S		Nom	F
+61002008	6	gerechte	NOUN	NN					P		Nom	
+61002008	7	quälen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002008	8	durch	ADP	APPR								
+61002008	9	der	DET	ART					S		Nom	N
+61002008	10	was	PRON	PWS					S		Nom	N
+61002008	11	er	PRON	PPER				3	S		Nom	M
+61002008	12	sehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002008	13	und	CCONJ	KON								
+61002008	14	hören	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002008	15	Tag	NOUN	NN					S		Nom	M
+61002008	16	für	ADP	APPR								
+61002008	17	Tag	NOUN	NN					S		Nom	M
+61002008	18	sein	DET	PPOSAT					S		Nom	F
+61002008	19	gerecht	ADJ	ADJA	Pos				S		Nom	F
+61002008	20	Seele	NOUN	NN					S		Nom	F
+61002008	21	mit	ADP	APPR								
+61002008	22	ihr	DET	PPOSAT					S		Acc	M
+61002008	23	gesetzlosen	NOUN	NN					P		Dat	M
+61002008	24	Werk	NOUN	NN					P		Dat	N
+61002009	1	der	DET	ART					S		Nom	M
+61002009	2	Herr	NOUN	NN					S		Nom	M
+61002009	3	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61002009	4	der	DET	ART					S		Nom	F
+61002009	5	Gottseligen	NOUN	NN					S		Nom	M
+61002009	6	aus	ADP	PTKVZ								
+61002009	7	der	DET	ART					S		Nom	M
+61002009	8	Versuchung	NOUN	NN					S		Nom	F
+61002009	9	zu	ADP	PTKVZ								
+61002009	10	retten	VERB	VVINF		Inf						
+61002009	11	der	DET	ART					S		Nom	F
+61002009	12	ungerechten	NOUN	NN					P		Nom	
+61002009	13	aber	CCONJ	KON								
+61002009	14	aufbewahren	VERB	VVIZU		Inf						
+61002009	15	auf	ADP	PTKVZ								
+61002009	16	der	DET	ART					S		Acc	M
+61002009	17	Tag	NOUN	NN					S		Nom	M
+61002009	18	der	DET	ART					S		Gen	M
+61002009	19	Gericht	NOUN	NN					P		Nom	N
+61002009	20	um	ADP	APPR								
+61002009	21	bestrafen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61002009	22	zu	ADP	PTKVZ								
+61002009	23	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002010	1	besonders	ADV	ADV								
+61002010	2	aber	CCONJ	KON								
+61002010	3	der	DET	ART					S		Nom	F
+61002010	4	welcher	DET	PWAT					S		Nom	F
+61002010	5	in	ADP	APPR								
+61002010	6	der	DET	ART					S		Nom	M
+61002010	7	Lust	NOUN	NN					S		Nom	F
+61002010	8	der	DET	ART					S		Nom	M
+61002010	9	Befleckung	NOUN	NN					S		Nom	F
+61002010	10	der	DET	ART					S		Dat	M
+61002010	11	Fleisch	NOUN	NN					S		Nom	N
+61002010	12	Nachwandel	VERB	VVINF		Fin	Past	3	P	Ind		
+61002010	13	und	CCONJ	KON								
+61002010	14	der	DET	ART					S		Nom	F
+61002010	15	Herrschaft	NOUN	NN					S		Nom	F
+61002010	16	verachten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61002010	17	Verwegen	NOUN	NN					S		Nom	F
+61002010	18	eigenmächtige	ADV	ADV								
+61002010	19	sie	PRON	PPER				3	P		Nom	
+61002010	20	erzittern	VERB	VVINF		Inf						
+61002010	21	nicht	PART	PTKNEG								
+61002010	22	Herrlichkeit	NOUN	NN					P		Nom	F
+61002010	23	zu	ADP	PTKVZ								
+61002010	24	lästern	VERB	VVINF		Fin	Pres	3	P	Ind		
+61002011	1	während	SCONJ	KOUS								
+61002011	2	Engel	NOUN	NN					S		Nom	M
+61002011	3	der	DET	ART					S		Nom	F
+61002011	4	an	ADP	PTKVZ								
+61002011	5	Stärke	NOUN	NN					S		Nom	F
+61002011	6	und	CCONJ	KON								
+61002011	7	Macht	NOUN	NN					S		Nom	F
+61002011	8	groß	ADV	ADJD	Cmp							
+61002011	9	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002011	10	nicht	PART	PTKNEG								
+61002011	11	ein	DET	ART					S		Nom	N
+61002011	12	Lästerndes	NOUN	NN					P		Nom	M
+61002011	13	Urteil	NOUN	NN					S		Nom	N
+61002011	14	wider	ADP	PTKVZ								
+61002011	15	sie	PRON	PPER				3	P		Nom	
+61002011	16	bei	ADP	APPRART					S		Dat	M
+61002011	17	Herr	NOUN	NN					S		Acc	M
+61002011	18	vorbringen	VERB	VVINF		Inf						
+61002012	1	dieser	DET	PDAT					S		Nom	F
+61002012	2	aber	CCONJ	KON								
+61002012	3	wie	ADP	KOKOM								
+61002012	4	unvernünftig	ADJ	ADJA	Pos				S		Nom	F
+61002012	5	natürlich	ADJ	ADJA	Pos				S		Nom	F
+61002012	6	Tier	NOUN	NN					P		Nom	N
+61002012	7	schaffen	VERB	VVPP		Part						
+61002012	8	zu	ADP	APPRART					S		Dat	N
+61002012	9	Fang	NOUN	NN					S		Nom	M
+61002012	10	und	CCONJ	KON								
+61002012	11	verderben	NOUN	NN					S		Nom	N
+61002012	12	lästernd	ADV	ADJD	Pos							
+61002012	13	über	ADP	APPR								
+61002012	14	der	DET	ART					S		Nom	N
+61002012	15	was	PRON	PWS					S		Nom	N
+61002012	16	sie	PRON	PPER				3	P		Nom	
+61002012	17	nicht	PART	PTKNEG								
+61002012	18	wissen	VERB	VVINF		Inf						
+61002012	19	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002012	20	auch	ADV	ADV								
+61002012	21	in	ADP	APPR								
+61002012	22	ihr	DET	PPOSAT					S		Dat	N
+61002012	23	eigen	ADJ	ADJA	Pos				S		Acc	M
+61002012	24	verderben	NOUN	NN					S		Nom	N
+61002012	25	umkommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61002013	1	indem	SCONJ	KOUS								
+61002013	2	sie	PRON	PPER				3	P		Nom	
+61002013	3	der	DET	ART					S		Acc	M
+61002013	4	Lohn	NOUN	NN					S		Nom	M
+61002013	5	der	DET	ART					S		Nom	M
+61002013	6	Ungerechtigkeit	NOUN	NN					S		Nom	F
+61002013	7	empfangen	VERB	VVPP		Part						
+61002013	8	welcher	DET	PWAT					S		Nom	F
+61002013	9	ein	DET	ART					S		Nom	F
+61002013	10	eintägig	ADJ	ADJA	Pos				S		Nom	F
+61002013	11	Schwelgerei	NOUN	NN					S		Nom	F
+61002013	12	für	ADP	APPR								
+61002013	13	vergnügen	NOUN	NN					S		Nom	N
+61002013	14	achten	VERB	VVINF		Inf						
+61002013	15	Flecken	NOUN	NN					P		Nom	M
+61002013	16	und	CCONJ	KON								
+61002013	17	Schandflecke	NOUN	NN					S		Nom	F
+61002013	18	der	DET	ART					S		Nom	F
+61002013	19	in	ADP	APPR								
+61002013	20	ihr	DET	PPOSAT					S		Acc	M
+61002013	21	eigen	ADJ	ADJA	Pos				S		Acc	M
+61002013	22	Betrügereie	NOUN	NN					P		Nom	F
+61002013	23	schwelgen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61002013	24	und	CCONJ	KON								
+61002013	25	festessen	NOUN	NN					S		Nom	N
+61002013	26	mit	ADP	APPR								
+61002013	27	euch	PRON	PPER				2	P		Dat	
+61002013	28	halten	VERB	VVINF		Fin	Pres	3	P	Ind		
+61002014	1	welcher	DET	PWAT					S		Nom	F
+61002014	2	Auge	NOUN	NN					P		Nom	N
+61002014	3	voll	ADV	ADJD	Pos							
+61002014	4	Ehebruch	NOUN	NN					S		Nom	M
+61002014	5	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002014	6	und	CCONJ	KON								
+61002014	7	von	ADP	APPR								
+61002014	8	der	DET	ART					S		Nom	M
+61002014	9	Sünde	NOUN	NN					S		Nom	F
+61002014	10	nicht	PART	PTKNEG								
+61002014	11	ablassen	VERB	VVINF		Inf						
+61002014	12	indem	SCONJ	KOUS								
+61002014	13	sie	PRON	PPER				3	P		Nom	
+61002014	14	unbefestigt	VERB	ADJA		Fin	Past	3	S	Ind		
+61002014	15	Seele	NOUN	NN					P		Nom	F
+61002014	16	anlocken	VERB	VVINF		Inf						
+61002014	17	der	DET	ART					S		Nom	F
+61002014	18	ein	DET	ART					S		Nom	N
+61002014	19	Herz	NOUN	NN					S		Nom	N
+61002014	20	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002014	21	in	ADP	APPR								
+61002014	22	Habsucht	NOUN	NN					S		Nom	F
+61002014	23	üben	VERB	VVPP		Part						
+61002014	24	Kind	NOUN	NN					P		Nom	N
+61002014	25	der	DET	ART					S		Gen	M
+61002014	26	Fluch	NOUN	NN					S		Nom	N
+61002014	27	welcher	DET	PWAT					S		Nom	F
+61002015	1	da	ADV	ADV								
+61002015	2	sie	PRON	PPER				3	P		Nom	
+61002015	3	der	DET	ART					S		Acc	M
+61002015	4	gerade	PRON	PIS								
+61002015	5	Weg	NOUN	NN					S		Nom	M
+61002015	6	verlassen	VERB	VVINF		Inf						
+61002015	7	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002015	8	abgeirren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61002015	9	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002015	10	indem	SCONJ	KOUS								
+61002015	11	sie	PRON	PPER				3	P		Nom	
+61002015	12	der	DET	ART					S		Dat	M
+61002015	13	Weg	NOUN	NN					P		Acc	M
+61002015	14	der	DET	ART					S		Gen	M
+61002015	15	Balaam	PROPN	NE					S		Nom	
+61002015	16	nachfolgen	VERB	VVFIN		Fin	Past	3	P	Ind		
+61002015	17	der	DET	ART					S		Gen	M
+61002015	18	Sohn	PROPN	NE					S		Gen	M
+61002015	19	Bosor	PROPN	NE					S		Gen	
+61002015	20	der	DET	ART					S		Nom	M
+61002015	21	der	DET	ART					S		Acc	M
+61002015	22	Lohn	NOUN	NN					S		Nom	M
+61002015	23	der	DET	ART					S		Nom	M
+61002015	24	Ungerechtigkeit	NOUN	NN					S		Nom	F
+61002015	25	lieben	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002016	1	aber	CCONJ	KON								
+61002016	2	ein	DET	ART					S		Nom	F
+61002016	3	Zurechtweisung	NOUN	NN					S		Nom	F
+61002016	4	sein	DET	PPOSAT					S		Dat	F
+61002016	5	eigen	ADJ	ADJA	Pos				S		Acc	M
+61002016	6	Verkehrtheit	NOUN	NN					S		Nom	F
+61002016	7	empfangen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002016	8	ein	DET	ART					S		Nom	N
+61002016	9	sprachloses	PROPN	NE					S		Gen	
+61002016	10	Lasttier	NOUN	NN					S		Nom	N
+61002016	11	mit	ADP	APPR								
+61002016	12	Menschenstimm	NOUN	NN					P		Nom	N
+61002016	13	redend	ADV	ADJD	Pos							
+61002016	14	wehren	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002016	15	der	DET	ART					S		Nom	M
+61002016	16	Torheit	NOUN	NN					S		Nom	F
+61002016	17	der	DET	ART					S		Gen	M
+61002016	18	Prophet	NOUN	NN					P		Nom	M
+61002017	1	dieser	DET	PDAT					S		Nom	F
+61002017	2	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002017	3	Brunnen	NOUN	NN					S		Nom	M
+61002017	4	ohne	ADP	APPR								
+61002017	5	Wasser	NOUN	NN					S		Nom	N
+61002017	6	und	CCONJ	KON								
+61002017	7	Nebel	NOUN	NN					S		Nom	M
+61002017	8	von	ADP	APPRART					S		Dat	N
+61002017	9	Sturmwind	NOUN	NN					S		Nom	M
+61002017	10	treiben	VERB	VVPP		Part						
+61002017	11	welcher	DET	PWAT					S		Acc	M
+61002017	12	der	DET	ART					S		Nom	N
+61002017	13	Dunkel	NOUN	NN					S		Nom	N
+61002017	14	der	DET	ART					S		Nom	M
+61002017	15	Finsternis	NOUN	NN					S		Nom	F
+61002017	16	aufbewahren	VERB	VVPP		Part						
+61002017	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61002017	18	in	ADP	APPR								
+61002017	19	Ewigkeit	NOUN	NN					S		Nom	F
+61002018	1	denn	CCONJ	KON								
+61002018	2	stolz	ADJ	ADJA	Pos				S		Nom	N
+61002018	3	nichtig	ADJ	ADJA	Pos				S		Nom	F
+61002018	4	Rede	NOUN	NN					P		Nom	F
+61002018	5	führend	ADV	ADJD	Pos							
+61002018	6	locken	VERB	VVINF		Inf						
+61002018	7	sie	PRON	PPER				3	P		Nom	
+61002018	8	mit	ADP	APPR								
+61002018	9	fleischlich	ADJ	ADJA	Pos				P		Dat	F
+61002018	10	Lüst	NOUN	NN					P		Nom	M
+61002018	11	durch	ADP	APPR								
+61002018	12	Ausschweifung	NOUN	NN					P		Nom	F
+61002018	13	derjenige	PRON	PDS					P		Nom	
+61002018	14	an	ADP	PTKVZ								
+61002018	15	welcher	DET	PWAT					S		Nom	F
+61002018	16	eben	ADV	ADV								
+61002018	17	entflohen	VERB	VVPP		Part						
+61002018	18	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002018	19	der	PRON	PDS					P		Dat	
+61002018	20	der	DET	ART					S		Nom	F
+61002018	21	in	ADP	APPRART					S		Dat	N
+61002018	22	Irrtum	NOUN	NN					S		Nom	M
+61002018	23	wandeln	VERB	VVINF		Inf						
+61002019	1	ihnen	PRON	PPER				3	P		Dat	
+61002019	2	Freiheit	NOUN	NN					S		Nom	F
+61002019	3	versprechend	ADV	ADJD	Pos							
+61002019	4	während	SCONJ	KOUS								
+61002019	5	sie	PRON	PPER				3	P		Nom	
+61002019	6	selbst	ADV	ADV								
+61002019	7	Sklave	NOUN	NN					P		Nom	M
+61002019	8	der	DET	ART					S		Gen	M
+61002019	9	Verderben	NOUN	NN					S		Gen	N
+61002019	10	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002019	11	denn	CCONJ	KON								
+61002019	12	von	ADP	APPR								
+61002019	13	wem	PRON	PWS					S		Dat	M
+61002019	14	jemand	PRON	PIS					S		Nom	M
+61002019	15	überwältigen	VERB	VVPP		Part						
+61002019	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61002019	17	dieser	DET	PDAT					S		Dat	N
+61002019	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61002019	19	er	PRON	PPER				3	S		Nom	M
+61002019	20	auch	ADV	ADV								
+61002019	21	als	ADP	KOKOM								
+61002019	22	Sklave	NOUN	NN					S		Nom	M
+61002019	23	unterwerfen	VERB	VVPP		Part						
+61002020	1	denn	CCONJ	KON								
+61002020	2	wenn	SCONJ	KOUS								
+61002020	3	sie	PRON	PPER				3	P		Nom	
+61002020	4	entflohen	VERB	VVPP		Part						
+61002020	5	der	DET	ART					S		Acc	M
+61002020	6	Befleckunge	NOUN	NN					P		Nom	F
+61002020	7	der	DET	ART					S		Nom	M
+61002020	8	Welt	NOUN	NN					S		Nom	F
+61002020	9	durch	ADP	APPR								
+61002020	10	der	DET	ART					S		Nom	F
+61002020	11	Erkenntnis	NOUN	NN					S		Nom	F
+61002020	12	der	DET	ART					S		Gen	M
+61002020	13	Herr	NOUN	NN					S		Acc	M
+61002020	14	und	CCONJ	KON								
+61002020	15	Heilande	NOUN	NN					P		Nom	N
+61002020	16	Jesu	PROPN	NE					S		Gen	
+61002020	17	Christi	PROPN	NE					S		Nom	
+61002020	18	aber	CCONJ	KON								
+61002020	19	wiederum	ADV	ADV								
+61002020	20	in	ADP	APPR								
+61002020	21	dieser	DET	PDAT					S		Nom	F
+61002020	22	verwickeln	VERB	VVPP		Part						
+61002020	23	überwältigen	VERB	VVPP		Part						
+61002020	24	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002020	25	so	ADV	ADV								
+61002020	26	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61002020	27	ihr	PRON	PPOSAT				3	S		Dat	F
+61002020	28	letzter	DET	ADJA					S		Nom	N
+61002020	29	Ärger	NOUN	NN					S		Nom	M
+61002020	30	werden	AUX	VAPP		Part						
+61002020	31	als	ADP	KOKOM								
+61002020	32	der	DET	ART					S		Nom	N
+61002020	33	erster	PRON	PIS					S		Nom	N
+61002021	1	denn	CCONJ	KON								
+61002021	2	es	PRON	PPER				3	S		Nom	N
+61002021	3	sein	AUX	VAFIN		Fin	Past	3	S	Sub		
+61002021	4	ihnen	PRON	PPER				3	P		Dat	
+61002021	5	gut	ADV	ADJD	Cmp							
+61002021	6	der	DET	ART					S		Acc	M
+61002021	7	Weg	NOUN	NN					S		Nom	M
+61002021	8	der	DET	ART					S		Nom	M
+61002021	9	Gerechtigkeit	NOUN	NN					S		Nom	F
+61002021	10	nicht	PART	PTKNEG								
+61002021	11	erkennen	VERB	VVPP		Part						
+61002021	12	zu	ADP	PTKVZ								
+61002021	13	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002021	14	als	ADP	KOKOM								
+61002021	15	nachdem	SCONJ	KOUS								
+61002021	16	sie	PRON	PPER				3	P		Nom	
+61002021	17	ihn	PRON	PPER				3	S		Acc	M
+61002021	18	erkennen	VERB	VVPP		Part						
+61002021	19	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61002021	20	umkehren	VERB	VVIZU		Inf						
+61002021	21	von	ADP	APPR								
+61002021	22	der	DET	ART					S		Dat	M
+61002021	23	ihnen	PRON	PPER				3	P		Dat	
+61002021	24	überliefert	ADJ	ADJA	Pos				S		Acc	M
+61002021	25	heilig	ADJ	ADJA	Pos				S		Acc	M
+61002021	26	Gebot	NOUN	NN					S		Nom	N
+61002022	1	es	PRON	PPER				3	S		Nom	N
+61002022	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61002022	3	ihnen	PRON	PPER				3	P		Dat	
+61002022	4	aber	CCONJ	KON								
+61002022	5	nach	ADP	APPR								
+61002022	6	der	DET	ART					S		Dat	M
+61002022	7	wahr	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61002022	8	Sprichwort	NOUN	NN					S		Nom	N
+61002022	9	ergehen	VERB	VVPP		Part						
+61002022	10	der	DET	ART					S		Nom	M
+61002022	11	Hund	NOUN	NN					S		Nom	M
+61002022	12	kehren	VERB	VVFIN		Fin	Past	3	S	Ind		
+61002022	13	um	ADP	APPR								
+61002022	14	zu	ADP	PTKVZ								
+61002022	15	sein	DET	PPOSAT					S		Dat	M
+61002022	16	eigen	ADJ	ADJA	Pos				S		Acc	M
+61002022	17	Gespei	NOUN	NE					S		Nom	N
+61002022	18	und	CCONJ	KON								
+61002022	19	der	DET	ART					S		Nom	F
+61002022	20	gewaschen	ADJ	ADJA	Pos				S		Nom	N
+61002022	21	Sau	NOUN	NN					S		Nom	F
+61002022	22	zu	ADP	APPRART					S		Dat	N
+61002022	23	Wälzen	NOUN	NN					S		Nom	N
+61002022	24	in	ADP	APPRART					S		Dat	N
+61002022	25	Kot	NOUN	NN					S		Nom	M
+61003001	1	dieser	PRON	PDAT					S		Acc	M
+61003001	2	zweiter	ADJ	ADJA	Pos				S		Dat	M
+61003001	3	Brief	NOUN	NN					S		Nom	M
+61003001	4	Geliebte	NOUN	NN					S		Nom	F
+61003001	5	schreiben	VERB	VVIMP		Fin	Pres	3	S	Sub		
+61003001	6	ich	PRON	PPER				1	S		Nom	
+61003001	7	euch	PRON	PPER				2	P		Dat	
+61003001	8	bereits	ADV	ADV								
+61003001	9	in	ADP	APPR								
+61003001	10	welcher	DET	PWAT					S		Acc	M
+61003001	11	beide	PRON	PIAT					P		Nom	
+61003001	12	ich	PRON	PPER				1	S		Nom	
+61003001	13	durch	ADP	APPR								
+61003001	14	Erinnerung	NOUN	NN					S		Nom	F
+61003001	15	eure	DET	PPOSAT					S		Nom	F
+61003001	16	lautere	ADJ	VVFIN	Cmp				S		Nom	F
+61003001	17	Gesinnung	NOUN	NN					S		Nom	F
+61003001	18	Aufwecke	NOUN	NN					S		Nom	F
+61003002	1	damit	ADV	PROAV								
+61003002	2	ihr	PRON	PPOSAT				3	S		Dat	F
+61003002	3	Gedenket	NOUN	NN					S		Nom	N
+61003002	4	der	DET	ART					S		Nom	M
+61003002	5	von	ADP	APPR								
+61003002	6	der	DET	ART					S		Acc	M
+61003002	7	heilig	ADJ	ADJA	Pos				S		Acc	M
+61003002	8	Prophet	NOUN	NN					P		Nom	M
+61003002	9	zuvor	ADV	ADV								
+61003002	10	gesprochen	ADJ	ADJA	Pos				S		Dat	M
+61003002	11	Wort	NOUN	NN					P		Nom	N
+61003002	12	und	CCONJ	KON								
+61003002	13	der	DET	ART					S		Gen	M
+61003002	14	Gebot	NOUN	NN					S		Gen	N
+61003002	15	der	DET	ART					S		Gen	M
+61003002	16	Herr	NOUN	NN					S		Acc	M
+61003002	17	und	CCONJ	KON								
+61003002	18	Heilande	NOUN	NN					P		Nom	N
+61003002	19	durch	ADP	APPR								
+61003002	20	eure	DET	PPOSAT					S		Nom	F
+61003002	21	Apostel	NOUN	NN					P		Nom	M
+61003003	1	zuerst	ADV	ADV								
+61003003	2	dieser	DET	PDAT					S		Nom	N
+61003003	3	wissend	ADV	ADJD	Pos							
+61003003	4	daß	SCONJ	KOUS								
+61003003	5	in	ADP	APPR								
+61003003	6	der	DET	ART					S		Acc	M
+61003003	7	letzter	ADJ	ADJA	Pos				S		Acc	M
+61003003	8	Tag	NOUN	NN					P		Dat	M
+61003003	9	Spötter	NOUN	NN					P		Nom	M
+61003003	10	mit	ADP	APPR								
+61003003	11	Spötterei	NOUN	NN					S		Nom	F
+61003003	12	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61003003	13	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003003	14	der	DET	ART					S		Nom	F
+61003003	15	nach	ADP	APPR								
+61003003	16	ihr	DET	PPOSAT					S		Acc	M
+61003003	17	eigen	ADJ	ADJA	Pos				S		Acc	M
+61003003	18	Lüst	NOUN	NN					P		Nom	M
+61003003	19	wandeln	VERB	VVINF		Inf						
+61003004	1	und	CCONJ	KON								
+61003004	2	sagen	VERB	VVINF		Inf						
+61003004	3	wo	SCONJ	PWAV								
+61003004	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61003004	5	der	DET	ART					S		Nom	F
+61003004	6	Verheißung	NOUN	NN					S		Nom	F
+61003004	7	sein	DET	PPOSAT					S		Dat	F
+61003004	8	Ankunft	NOUN	NN					S		Nom	F
+61003004	9	denn	CCONJ	KON								
+61003004	10	seitdem	ADV	PROAV								
+61003004	11	der	DET	ART					S		Nom	F
+61003004	12	Vater	NOUN	NN					P		Nom	M
+61003004	13	entschlafen	VERB	VVINF		Inf						
+61003004	14	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003004	15	bleiben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003004	16	alle	PRON	PIS					S		Nom	N
+61003004	17	so	ADV	ADV								
+61003004	18	von	ADP	APPR								
+61003004	19	Anfang	NOUN	NN					S			M
+61003004	20	der	DET	ART					S		Nom	M
+61003004	21	Schöpfung	NOUN	NN					S		Nom	F
+61003004	22	an	ADP	PTKVZ								
+61003005	1	denn	CCONJ	KON								
+61003005	2	nach	ADP	APPR								
+61003005	3	ihr	DET	PPOSAT					S		Dat	N
+61003005	4	eigen	ADJ	ADJA	Pos				S		Acc	M
+61003005	5	Wille	NOUN	NN					S		Acc	M
+61003005	6	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61003005	7	ihnen	PRON	PPER				3	P		Dat	
+61003005	8	dieser	PRON	PDS					S		Nom	N
+61003005	9	verbergen	VERB	VVPP		Part						
+61003005	10	daß	SCONJ	KOUS								
+61003005	11	von	ADP	APPR								
+61003005	12	alters	ADV	ADV								
+61003005	13	her	ADV	ADV								
+61003005	14	Himmel	NOUN	NN					S		Nom	M
+61003005	15	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+61003005	16	und	CCONJ	KON								
+61003005	17	ein	DET	ART					S		Nom	F
+61003005	18	Erde	NOUN	NN					S		Nom	F
+61003005	19	entstehend	ADV	ADJD	Pos							
+61003005	20	aus	ADP	PTKVZ								
+61003005	21	Wasser	NOUN	NN					S		Nom	N
+61003005	22	und	CCONJ	KON								
+61003005	23	in	ADP	APPRART					S		Dat	N
+61003005	24	Wasser	NOUN	NN					S		Nom	N
+61003005	25	durch	ADP	APPR								
+61003005	26	der	DET	ART					S		Nom	N
+61003005	27	Wort	NOUN	NN					S		Nom	N
+61003005	28	Gott	NOUN	NN					S		Gen	M
+61003006	1	durch	ADP	APPR								
+61003006	2	welcher	DET	PWAT					S		Nom	F
+61003006	3	der	DET	ART					S		Nom	F
+61003006	4	damalig	ADJ	ADJA	Pos				S		Nom	F
+61003006	5	Welt	NOUN	NN					S		Nom	F
+61003006	6	von	ADP	APPRART					S		Dat	N
+61003006	7	Wasser	NOUN	NN					S		Nom	N
+61003006	8	überschwemmen	VERB	VVPP		Part						
+61003006	9	untergehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+61003007	1	der	DET	ART					S		Nom	F
+61003007	2	jetzig	ADJ	ADJA	Pos				S		Acc	M
+61003007	3	Himmel	NOUN	NN					S		Nom	M
+61003007	4	aber	CCONJ	KON								
+61003007	5	und	CCONJ	KON								
+61003007	6	der	DET	ART					S		Nom	F
+61003007	7	Erde	NOUN	NN					S		Nom	F
+61003007	8	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003007	9	durch	ADP	APPR								
+61003007	10	sein	AUX	VAINF		Inf						
+61003007	11	Wort	NOUN	NN					S		Nom	N
+61003007	12	aufbewahren	VERB	VVPP		Part						
+61003007	13	für	ADP	APPR								
+61003007	14	der	DET	ART					S		Nom	N
+61003007	15	Feuer	NOUN	NN					S		Nom	N
+61003007	16	behalten	VERB	VVINF		Inf						
+61003007	17	auf	ADP	PTKVZ								
+61003007	18	der	DET	ART					S		Acc	M
+61003007	19	Tag	NOUN	NN					S		Nom	M
+61003007	20	der	DET	ART					S		Gen	M
+61003007	21	Gericht	NOUN	NN					P		Nom	N
+61003007	22	und	CCONJ	KON								
+61003007	23	der	DET	ART					S		Gen	M
+61003007	24	Verderben	NOUN	NN					S		Gen	N
+61003007	25	der	DET	ART					S		Nom	M
+61003007	26	gottlos	ADJ	ADJA	Pos				S		Acc	M
+61003007	27	Mensch	NOUN	NN					P		Nom	M
+61003008	1	dieser	PRON	PDS					S		Nom	N
+61003008	2	ein	DET	ART					S		Nom	F
+61003008	3	aber	CCONJ	KON								
+61003008	4	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+61003008	5	euch	PRON	PPER				2	P		Dat	
+61003008	6	nicht	PART	PTKNEG								
+61003008	7	verbergen	VERB	VVPP		Part						
+61003008	8	Geliebte	NOUN	NN					S		Nom	F
+61003008	9	daß	SCONJ	KOUS								
+61003008	10	ein	DET	ART					S		Nom	N
+61003008	11	Tag	NOUN	NN					S		Nom	M
+61003008	12	bei	ADP	APPR								
+61003008	13	der	DET	ART					S		Dat	M
+61003008	14	Herr	NOUN	NN					S		Acc	M
+61003008	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61003008	16	wie	ADP	KOKOM								
+61003008	17	tausend	NUM	CARD								
+61003008	18	Jahr	NOUN	NN					P		Nom	N
+61003008	19	und	CCONJ	KON								
+61003008	20	tausend	NUM	CARD								
+61003008	21	Jahr	NOUN	NN					P		Nom	N
+61003008	22	wie	ADP	KOKOM								
+61003008	23	ein	DET	ART					S		Nom	N
+61003008	24	Tag	NOUN	NN					S		Nom	M
+61003009	1	der	DET	ART					S		Nom	M
+61003009	2	Herr	NOUN	NN					S		Nom	M
+61003009	3	verziehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003009	4	nicht	PART	PTKNEG								
+61003009	5	der	DET	ART					S		Nom	F
+61003009	6	Verheißung	NOUN	NN					S		Nom	F
+61003009	7	wie	ADP	KOKOM								
+61003009	8	es	PRON	PPER				3	S		Nom	N
+61003009	9	etlicher	PRON	PIS					P		Nom	
+61003009	10	für	ADP	APPR								
+61003009	11	ein	DET	ART					S		Acc	M
+61003009	12	Verzug	NOUN	NN					S		Acc	M
+61003009	13	achten	VERB	VVINF		Inf						
+61003009	14	sondern	CCONJ	KON								
+61003009	15	er	PRON	PPER				3	S		Nom	M
+61003009	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61003009	17	langmütig	ADV	ADJD	Pos							
+61003009	18	gegen	ADP	APPR								
+61003009	19	euch	PRON	PPER				2	P		Dat	
+61003009	20	da	ADV	ADV								
+61003009	21	er	PRON	PPER				3	S		Nom	M
+61003009	22	nicht	PART	PTKNEG								
+61003009	23	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+61003009	24	daß	SCONJ	KOUS								
+61003009	25	irgend	ADV	ADV								
+61003009	26	welcher	DET	PWAT					S		Nom	F
+61003009	27	verlieren	VERB	VVPP		Part						
+61003009	28	gehen	VERB	VVINF		Inf						
+61003009	29	sondern	CCONJ	KON								
+61003009	30	daß	SCONJ	KOUS								
+61003009	31	aller	PRON	PIS					P		Nom	
+61003009	32	zu	ADP	APPRART					S		Dat	F
+61003009	33	Buße	NOUN	NN					S		Nom	F
+61003009	34	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61003010	1	es	PRON	PPER				3	S		Nom	N
+61003010	2	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61003010	3	aber	CCONJ	KON								
+61003010	4	der	DET	ART					S		Nom	M
+61003010	5	Tag	NOUN	NN					S		Nom	M
+61003010	6	der	DET	ART					S		Gen	M
+61003010	7	Herr	NOUN	NN					S		Acc	M
+61003010	8	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+61003010	9	wie	ADP	KOKOM								
+61003010	10	ein	DET	ART					S		Nom	N
+61003010	11	Dieb	NOUN	NN					S		Nom	M
+61003010	12	an	ADP	PTKVZ								
+61003010	13	welcher	DET	PWAT					S		Dat	N
+61003010	14	der	DET	ART					S		Nom	F
+61003010	15	Himmel	NOUN	NN					S		Nom	M
+61003010	16	vergehen	VERB	VVINF		Inf						
+61003010	17	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003010	18	mit	ADP	APPR								
+61003010	19	gewaltig	ADJ	ADJA	Pos				S		Dat	M
+61003010	20	Geräusch	NOUN	NN					S		Nom	N
+61003010	21	der	DET	ART					S		Nom	F
+61003010	22	Element	NOUN	NN					P		Nom	N
+61003010	23	aber	CCONJ	KON								
+61003010	24	in	ADP	APPRART					S		Dat	N
+61003010	25	Brande	NOUN	NN					P		Nom	M
+61003010	26	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003010	27	auflösen	VERB	VVPP		Part						
+61003010	28	und	CCONJ	KON								
+61003010	29	der	DET	ART					S		Nom	F
+61003010	30	Erde	NOUN	NN					S		Nom	F
+61003010	31	und	CCONJ	KON								
+61003010	32	der	DET	ART					S		Nom	F
+61003010	33	Werk	NOUN	NN					P		Nom	N
+61003010	34	auf	ADP	PTKVZ								
+61003010	35	ihr	PRON	PPOSAT				3	S		Dat	F
+61003010	36	verbrennen	VERB	VVPP		Part						
+61003010	37	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003011	1	da	SCONJ	KOUS								
+61003011	2	nun	ADV	ADV								
+61003011	3	dieser	PRON	PDS					S		Nom	N
+61003011	4	alle	PRON	PIS					S		Nom	N
+61003011	5	auflösen	VERB	VVPP		Part						
+61003011	6	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61003011	7	welcher	DET	PWAT					S		Nom	F
+61003011	8	sollten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+61003011	9	ihr	PRON	PPOSAT				3	S		Dat	F
+61003011	10	dann	ADV	ADV								
+61003011	11	sein	AUX	VAINF		Inf						
+61003011	12	in	ADP	APPR								
+61003011	13	heilig	ADJ	ADJA	Pos				S		Dat	M
+61003011	14	Wandel	NOUN	NN					S		Nom	M
+61003011	15	und	CCONJ	KON								
+61003011	16	Gottseligkeit	NOUN	NN					S		Nom	F
+61003012	1	indem	SCONJ	KOUS								
+61003012	2	ihr	PRON	PPOSAT				3	S		Dat	F
+61003012	3	erwarten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003012	4	und	CCONJ	KON								
+61003012	5	Beschleuniget	VERB	VVFIN		Fin	Past	3	S	Ind		
+61003012	6	der	DET	ART					S		Nom	F
+61003012	7	Ankunft	NOUN	NN					S		Nom	F
+61003012	8	der	DET	ART					S		Gen	M
+61003012	9	Tag	NOUN	NN					S		Gen	M
+61003012	10	Gott	NOUN	NN					S		Gen	M
+61003012	11	Dessentwegen	ADV	PROAV								
+61003012	12	der	DET	ART					S		Nom	F
+61003012	13	Himmel	NOUN	NN					S		Nom	M
+61003012	14	in	ADP	APPR								
+61003012	15	Feuer	NOUN	NN					S		Nom	N
+61003012	16	geraten	VERB	VVPP		Part						
+61003012	17	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003012	18	auflösen	VERB	VVPP		Part						
+61003012	19	und	CCONJ	KON								
+61003012	20	der	DET	ART					S		Nom	F
+61003012	21	Element	NOUN	NN					P		Nom	N
+61003012	22	in	ADP	APPRART					S		Dat	N
+61003012	23	Brande	NOUN	NN					P		Nom	M
+61003012	24	zerschmelzen	VERB	VVINF		Inf						
+61003012	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003013	1	wir	PRON	PPER				1	P		Nom	
+61003013	2	erwarten	VERB	VVINF		Fin	Pres	3	P	Ind		
+61003013	3	aber	CCONJ	KON								
+61003013	4	nach	ADP	APPR								
+61003013	5	sein	DET	PPOSAT					S		Dat	F
+61003013	6	Verheißung	NOUN	NN					S		Nom	F
+61003013	7	neu	ADJ	ADJA	Pos				P		Nom	F
+61003013	8	Himmel	NOUN	NN					S		Nom	M
+61003013	9	und	CCONJ	KON								
+61003013	10	ein	DET	ART					S		Nom	F
+61003013	11	neu	ADJ	ADJA	Pos				P		Nom	F
+61003013	12	Erde	NOUN	NN					S		Nom	F
+61003013	13	in	ADP	APPR								
+61003013	14	welcher	DET	PWAT					S		Acc	M
+61003013	15	Gerechtigkeit	NOUN	NN					S		Nom	F
+61003013	16	wohnen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003014	1	deshalb	ADV	PROAV								
+61003014	2	Geliebte	NOUN	NN					S		Nom	F
+61003014	3	da	ADV	ADV								
+61003014	4	ihr	PRON	PPOSAT				3	S		Dat	F
+61003014	5	dieser	PRON	PDS					S		Nom	N
+61003014	6	erwarten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003014	7	so	ADV	ADV								
+61003014	8	Befleißiget	NOUN	NN					S		Nom	N
+61003014	9	euch	PRON	PPER				2	P		Dat	
+61003014	10	ohne	ADP	APPR								
+61003014	11	Flecken	NOUN	NN					P		Nom	M
+61003014	12	und	CCONJ	KON								
+61003014	13	tadellos	ADV	ADJD	Pos							
+61003014	14	von	ADP	APPR								
+61003014	15	ihm	PRON	PPER				3	S		Dat	M
+61003014	16	erfinden	VERB	VVPP		Part						
+61003014	17	zu	ADP	PTKVZ								
+61003014	18	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003014	19	in	ADP	APPR								
+61003014	20	Frieden	NOUN	NN					S		Nom	M
+61003015	1	und	CCONJ	KON								
+61003015	2	achten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003015	3	der	DET	ART					S		Nom	F
+61003015	4	Langmut	PROPN	NE					S		Nom	
+61003015	5	unser	DET	PPOSAT					S		Gen	M
+61003015	6	Herr	NOUN	NN					S		Acc	M
+61003015	7	für	ADP	APPR								
+61003015	8	Errettung	NOUN	NN					S		Nom	F
+61003015	9	so	ADV	ADV								
+61003015	10	wie	ADP	KOKOM								
+61003015	11	auch	ADV	ADV								
+61003015	12	unser	DET	PPOSAT					S		Nom	N
+61003015	13	geliebt	ADJ	ADJA	Pos				S		Nom	M
+61003015	14	Bruder	NOUN	NN					S		Nom	M
+61003015	15	Paulus	PROPN	NE					S		Nom	M
+61003015	16	nach	ADP	APPR								
+61003015	17	der	DET	ART					S		Nom	M
+61003015	18	ihm	PRON	PPER				3	S		Dat	M
+61003015	19	gegeben	ADJ	ADJA	Pos				S		Acc	M
+61003015	20	Weisheit	NOUN	NN					S		Nom	F
+61003015	21	euch	PRON	PPER				2	P		Dat	
+61003015	22	schreiben	VERB	VVPP		Part						
+61003015	23	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+61003016	1	wie	ADP	KOKOM								
+61003016	2	auch	ADV	ADV								
+61003016	3	in	ADP	APPR								
+61003016	4	aller	DET	PIS					P		Dat	
+61003016	5	sein	DET	PPOSAT					S		Acc	M
+61003016	6	Brief	NOUN	NN					P		Dat	M
+61003016	7	wenn	SCONJ	KOUS								
+61003016	8	er	PRON	PPER				3	S		Nom	M
+61003016	9	in	ADP	APPR								
+61003016	10	derselbe	PRON	PDS					P		Dat	
+61003016	11	von	ADP	APPR								
+61003016	12	dieser	DET	PDAT					S		Acc	M
+61003016	13	Ding	NOUN	NN					P		Dat	N
+61003016	14	reden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003016	15	von	ADP	APPR								
+61003016	16	der	PRON	PDS					P		Dat	
+61003016	17	etlicher	PRON	PIS					P		Nom	
+61003016	18	schwer	ADV	ADJD	Pos							
+61003016	19	zu	ADP	PTKVZ								
+61003016	20	verstehen	VERB	VVINF		Inf						
+61003016	21	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+61003016	22	welcher	DET	PWAT					S		Nom	F
+61003016	23	der	DET	ART					S		Nom	F
+61003016	24	unwissenden	NOUN	NN					P		Dat	
+61003016	25	und	CCONJ	KON								
+61003016	26	Unbefestigt	NOUN	NN					P		Nom	F
+61003016	27	verdrehen	VERB	VVINF		Inf						
+61003016	28	wie	ADP	KOKOM								
+61003016	29	auch	ADV	ADV								
+61003016	30	der	DET	ART					S		Nom	F
+61003016	31	übrig	ADJ	ADJA	Pos				S		Dat	N
+61003016	32	Schrift	NOUN	NN					P		Nom	F
+61003016	33	zu	ADP	PTKVZ								
+61003016	34	ihr	DET	PPOSAT					S		Dat	N
+61003016	35	eigen	ADJ	ADJA	Pos				S		Acc	M
+61003016	36	verderben	NOUN	NN					S		Nom	N
+61003017	1	ihr	PRON	PPER				2	P		Nom	
+61003017	2	nun	ADV	ADV								
+61003017	3	Geliebte	NOUN	NN					S		Nom	F
+61003017	4	da	ADV	ADV								
+61003017	5	ihr	PRON	PPOSAT				3	S		Dat	F
+61003017	6	es	PRON	PPER				3	S		Nom	N
+61003017	7	vorher	ADV	ADV								
+61003017	8	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003017	9	so	ADV	ADV								
+61003017	10	hüten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+61003017	11	euch	PRON	PPER				2	P		Dat	
+61003017	12	daß	SCONJ	KOUS								
+61003017	13	ihr	PRON	PPOSAT				3	S		Dat	F
+61003017	14	nicht	PART	PTKNEG								
+61003017	15	durch	ADP	APPR								
+61003017	16	der	DET	ART					S		Acc	M
+61003017	17	Irrwahn	NOUN	NN					S		Nom	M
+61003017	18	der	DET	ART					S		Nom	M
+61003017	19	Ruchlos	NOUN	NN					P		Dat	M
+61003017	20	mit	ADP	APPR								
+61003017	21	fortrissen	VERB	VVPP		Part						
+61003017	22	aus	ADP	PTKVZ								
+61003017	23	eurer	PRON	PPOSAT							Gen	
+61003017	24	eigen	ADJ	ADJA	Pos				S		Acc	M
+61003017	25	Festigkeit	NOUN	NN					S		Nom	F
+61003017	26	Fallet	PROPN	NN					S		Nom	N
+61003018	1	Wachset	X	NE								
+61003018	2	aber	CCONJ	KON								
+61003018	3	in	ADP	APPR								
+61003018	4	der	DET	ART					S		Nom	M
+61003018	5	Gnade	NOUN	NN					S		Nom	F
+61003018	6	und	CCONJ	KON								
+61003018	7	Erkenntnis	NOUN	NN					S		Nom	F
+61003018	8	unser	DET	PPOSAT					S		Gen	M
+61003018	9	Herr	NOUN	NN					S		Acc	M
+61003018	10	und	CCONJ	KON								
+61003018	11	Heilande	NOUN	NN					P		Nom	N
+61003018	12	Jesu	PROPN	NE					S		Gen	
+61003018	13	Christi	PROPN	NE					S		Nom	
+61003018	14	ihm	PRON	PPER				3	S		Dat	M
+61003018	15	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+61003018	16	der	DET	ART					S		Nom	F
+61003018	17	Herrlichkeit	NOUN	NN					S		Nom	F
+61003018	18	sowohl	CCONJ	KON								
+61003018	19	jetzt	ADV	ADV								
+61003018	20	als	ADP	KOKOM								
+61003018	21	auch	ADV	ADV								
+61003018	22	auf	ADP	PTKVZ								
+61003018	23	der	DET	ART					S		Acc	M
+61003018	24	Tag	NOUN	NN					S		Nom	M
+61003018	25	der	DET	ART					S		Nom	M
+61003018	26	Ewigkeit	NOUN	NN					S		Nom	F
+61003018	27	Amen	NOUN	NN					S		Nom	N

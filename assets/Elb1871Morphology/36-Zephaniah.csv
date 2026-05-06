@@ -1,0 +1,1384 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+36001001	1	der	DET	ART					S		Nom	N
+36001001	2	Wort	NOUN	NN					S		Nom	N
+36001001	3	Jahwe	PROPN	NE					S		Gen	
+36001001	4	welcher	DET	PWAT					S		Acc	N
+36001001	5	zu	ADP	PTKVZ								
+36001001	6	Zephanja	PROPN	NE					S		Nom	
+36001001	7	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+36001001	8	der	DET	ART					S		Dat	M
+36001001	9	Sohn	NOUN	NN					S		Acc	M
+36001001	10	Kuschi	PROPN	NE					S		Gen	
+36001001	11	der	DET	ART					S		Gen	M
+36001001	12	Sohn	PROPN	NE					S		Gen	M
+36001001	13	Gedaljas	NOUN	NN					S		Nom	F
+36001001	14	der	DET	ART					S		Gen	M
+36001001	15	Sohn	PROPN	NE					S		Gen	M
+36001001	16	Amarjas	NOUN	NN					S		Nom	F
+36001001	17	der	DET	ART					S		Gen	M
+36001001	18	Sohn	PROPN	NE					S		Gen	M
+36001001	19	Hiskijas	NOUN	NN					S		Nom	F
+36001001	20	in	ADP	APPR								
+36001001	21	der	DET	ART					S		Acc	M
+36001001	22	Tag	NOUN	NN					P		Dat	M
+36001001	23	Josia	PROPN	NE					S		Gen	M
+36001001	24	der	DET	ART					S		Gen	M
+36001001	25	Sohn	PROPN	NE					S		Gen	M
+36001001	26	Amon	PRON	NE					S		Nom	N
+36001001	27	der	DET	ART					S		Gen	M
+36001001	28	König	PROPN	NE					S		Nom	
+36001001	29	von	ADP	APPR								
+36001001	30	Juda	PROPN	NE					S		Nom	M
+36001002	1	ich	PRON	PPER				1	S		Nom	
+36001002	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001002	3	alle	PRON	PIS					S		Nom	N
+36001002	4	von	ADP	APPR								
+36001002	5	der	DET	ART					S		Nom	M
+36001002	6	Fläche	NOUN	NN					S		Nom	F
+36001002	7	der	DET	ART					S		Gen	M
+36001002	8	Erdboden	NOUN	NN					S		Gen	M
+36001002	9	gänzlich	ADV	ADJD	Pos							
+36001002	10	Wegraff	NOUN	NN					P		Nom	F
+36001002	11	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001002	12	Jahwe	NOUN	NN					S		Nom	M
+36001003	1	ich	PRON	PPER				1	S		Nom	
+36001003	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001003	3	Mensch	NOUN	NN					P		Nom	M
+36001003	4	und	CCONJ	KON								
+36001003	5	Vieh	NOUN	NN					S		Nom	N
+36001003	6	Wegraff	NOUN	NN					P		Nom	F
+36001003	7	ich	PRON	PPER				1	S		Nom	
+36001003	8	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001003	9	Wegraff	NOUN	NN					P		Nom	F
+36001003	10	der	DET	ART					S		Nom	F
+36001003	11	Vogel	NOUN	NN					P		Nom	M
+36001003	12	der	DET	ART					S		Gen	M
+36001003	13	Himmel	NOUN	NN					S		Gen	M
+36001003	14	und	CCONJ	KON								
+36001003	15	der	DET	ART					S		Nom	F
+36001003	16	Fisch	NOUN	NN					P		Nom	M
+36001003	17	der	DET	ART					S		Gen	M
+36001003	18	Meer	NOUN	NN					S		Nom	N
+36001003	19	und	CCONJ	KON								
+36001003	20	der	DET	ART					S		Nom	F
+36001003	21	Ärgernis	NOUN	NN					P		Nom	N
+36001003	22	samt	ADP	APPR								
+36001003	23	der	DET	ART					S		Acc	M
+36001003	24	Gesetzlose	NOUN	NN					P		Dat	
+36001003	25	und	CCONJ	KON								
+36001003	26	ich	PRON	PPER				1	S		Nom	
+36001003	27	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001003	28	der	DET	ART					S		Nom	F
+36001003	29	Mensch	NOUN	NN					P		Nom	M
+36001003	30	ausrotten	VERB	VVINF		Inf						
+36001003	31	von	ADP	APPR								
+36001003	32	der	DET	ART					S		Nom	M
+36001003	33	Fläche	NOUN	NN					S		Nom	F
+36001003	34	der	DET	ART					S		Gen	M
+36001003	35	Erdboden	NOUN	NN					S		Gen	M
+36001003	36	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001003	37	Jahwe	NOUN	NN					S		Nom	M
+36001004	1	und	CCONJ	KON								
+36001004	2	ich	PRON	PPER				1	S		Nom	
+36001004	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001004	4	mein	DET	PPOSAT					S		Nom	F
+36001004	5	Hand	NOUN	NN					S		Nom	F
+36001004	6	ausstrecken	VERB	VVINF		Inf						
+36001004	7	wider	ADP	PTKVZ								
+36001004	8	Juda	PROPN	NE					S		Nom	M
+36001004	9	und	CCONJ	KON								
+36001004	10	wider	ADP	PTKVZ								
+36001004	11	aller	PRON	PIS					P		Nom	
+36001004	12	Bewohner	NOUN	NN					P		Nom	M
+36001004	13	von	ADP	APPR								
+36001004	14	Jerusalem	PROPN	NE					S		Nom	N
+36001004	15	und	CCONJ	KON								
+36001004	16	ich	PRON	PPER				1	S		Nom	
+36001004	17	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001004	18	aus	ADP	PTKVZ								
+36001004	19	dieser	DET	PDAT					S		Dat	N
+36001004	20	Ort	NOUN	NN					P		Nom	M
+36001004	21	der	DET	ART					S		Acc	M
+36001004	22	Überrest	NOUN	NN					S		Nom	M
+36001004	23	der	DET	ART					S		Gen	M
+36001004	24	Baal	PROPN	NE					S		Nom	M
+36001004	25	der	DET	ART					S		Acc	M
+36001004	26	Name	NOUN	NN					P		Nom	M
+36001004	27	der	DET	ART					S		Nom	M
+36001004	28	Götzenpriest	NOUN	NN					P		Nom	M
+36001004	29	samt	ADP	APPR								
+36001004	30	der	DET	ART					S		Acc	M
+36001004	31	Priester	NOUN	NN					P		Dat	M
+36001004	32	ausrotten	VERB	VVINF		Inf						
+36001005	1	und	CCONJ	KON								
+36001005	2	der	DET	ART					S		Nom	F
+36001005	3	auf	ADP	PTKVZ								
+36001005	4	der	DET	ART					S		Acc	M
+36001005	5	Dach	NOUN	NN					P		Dat	N
+36001005	6	der	DET	ART					S		Nom	N
+36001005	7	Heer	NOUN	NN					S		Nom	N
+36001005	8	der	DET	ART					S		Gen	M
+36001005	9	Himmel	NOUN	NN					S		Gen	M
+36001005	10	anbeten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001005	11	und	CCONJ	KON								
+36001005	12	der	DET	ART					S		Nom	F
+36001005	13	Anbetende	NOUN	NE					P		Nom	F
+36001005	14	welcher	DET	PWAT					S		Nom	F
+36001005	15	der	DET	ART					S		Dat	M
+36001005	16	Jahwe	NOUN	NN					S		Nom	M
+36001005	17	schwören	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001005	18	und	CCONJ	KON								
+36001005	19	bei	ADP	APPR								
+36001005	20	ihr	DET	PPOSAT					S		Dat	N
+36001005	21	König	NOUN	NN					S		Nom	M
+36001005	22	schwören	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001006	1	und	CCONJ	KON								
+36001006	2	der	DET	ART					S		Nom	F
+36001006	3	von	ADP	APPR								
+36001006	4	Jahwe	NOUN	NN					S		Nom	M
+36001006	5	zurückweichen	VERB	VVINF		Inf						
+36001006	6	und	CCONJ	KON								
+36001006	7	der	DET	ART					S		Nom	F
+36001006	8	Jahwe	NOUN	NN					S		Nom	M
+36001006	9	nicht	PART	PTKNEG								
+36001006	10	suchen	VERB	VVINF		Inf						
+36001006	11	noch	CCONJ	KON								
+36001006	12	nach	ADP	APPR								
+36001006	13	ihm	PRON	PPER				3	S		Dat	M
+36001006	14	fragen	VERB	VVINF		Inf						
+36001007	1	still	ADV	ADJD	Pos							
+36001007	2	vor	ADP	APPR								
+36001007	3	der	DET	ART					S		Dat	M
+36001007	4	Herr	NOUN	NN					S		Acc	M
+36001007	5	Jahwe	NOUN	NN					S		Nom	M
+36001007	6	denn	CCONJ	KON								
+36001007	7	nah	ADP	APPR								
+36001007	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001007	9	der	DET	ART					S		Nom	M
+36001007	10	Tag	NOUN	NN					S		Nom	M
+36001007	11	Jahwe	PROPN	NE					S		Gen	
+36001007	12	denn	CCONJ	KON								
+36001007	13	Jahwe	NOUN	NN					S		Nom	M
+36001007	14	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001007	15	ein	DET	ART					S		Nom	N
+36001007	16	Schlachtopfer	NOUN	NN					S		Nom	M
+36001007	17	bereiten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001007	18	er	PRON	PPER				3	S		Nom	M
+36001007	19	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001007	20	sein	DET	PPOSAT					S		Nom	F
+36001007	21	geladener	NOUN	NN					P		Nom	
+36001007	22	heiligen	VERB	VVPP		Part						
+36001008	1	und	CCONJ	KON								
+36001008	2	es	PRON	PPER				3	S		Nom	N
+36001008	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001008	4	geschehen	VERB	VVPP		Part						
+36001008	5	an	ADP	PTKVZ								
+36001008	6	der	DET	ART					S		Dat	M
+36001008	7	Tag	NOUN	NN					P		Nom	M
+36001008	8	der	DET	ART					S		Gen	M
+36001008	9	Schlachtopfer	PROPN	NE					S		Gen	
+36001008	10	Jahwe	PROPN	NE					S		Gen	
+36001008	11	da	ADV	ADV								
+36001008	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001008	13	ich	PRON	PPER				1	S		Nom	
+36001008	14	der	DET	ART					S		Nom	F
+36001008	15	Fürst	NOUN	NN					P		Nom	M
+36001008	16	und	CCONJ	KON								
+36001008	17	der	DET	ART					S		Nom	F
+36001008	18	Königssöhne	NOUN	NN					S		Nom	F
+36001008	19	heimsuchen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001008	20	und	CCONJ	KON								
+36001008	21	aller	PRON	PIS					P		Nom	
+36001008	22	der	DET	ART					S		Nom	F
+36001008	23	sich	PRON	PRF				3	S		Acc	
+36001008	24	mit	ADP	APPR								
+36001008	25	fremd	ADJ	ADJA	Pos				S		Nom	M
+36001008	26	Kleidung	NOUN	NN					S		Nom	F
+36001008	27	bekleiden	VERB	VVINF		Inf						
+36001009	1	und	CCONJ	KON								
+36001009	2	an	ADP	PTKVZ								
+36001009	3	jener	DET	PDAT					S		Dat	N
+36001009	4	Tag	NOUN	NN					P		Nom	M
+36001009	5	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001009	6	ich	PRON	PPER				1	S		Nom	
+36001009	7	ein	DET	ART					S		Acc	M
+36001009	8	jeder	DET	PIS					S		Acc	M
+36001009	9	heimsuchen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001009	10	der	DET	ART					S		Nom	M
+36001009	11	über	ADP	APPR								
+36001009	12	der	DET	ART					S		Nom	F
+36001009	13	Schwelle	NOUN	NN					S		Nom	F
+36001009	14	springen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001009	15	aller	PRON	PIS					P		Nom	
+36001009	16	der	DET	ART					S		Nom	F
+36001009	17	der	DET	ART					S		Nom	N
+36001009	18	Haus	NOUN	NN					S		Nom	N
+36001009	19	ihr	DET	PPOSAT					S		Gen	M
+36001009	20	Herr	NOUN	NN					S		Acc	M
+36001009	21	mit	ADP	APPR								
+36001009	22	Gewalttat	NOUN	NN					S		Nom	F
+36001009	23	und	CCONJ	KON								
+36001009	24	Betrug	NOUN	NN					S		Nom	M
+36001009	25	erfüllen	VERB	VVINF		Inf						
+36001010	1	und	CCONJ	KON								
+36001010	2	an	ADP	PTKVZ								
+36001010	3	jener	DET	PDAT					S		Dat	N
+36001010	4	Tag	NOUN	NN					P		Nom	M
+36001010	5	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001010	6	Jahwe	NOUN	NN					S		Nom	M
+36001010	7	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001010	8	ein	DET	ART					S		Nom	N
+36001010	9	Geschrei	NOUN	NN					S		Nom	N
+36001010	10	erschallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001010	11	von	ADP	APPRART					S		Dat	N
+36001010	12	Fischtore	NOUN	NN					S		Nom	F
+36001010	13	her	ADV	ADV								
+36001010	14	und	CCONJ	KON								
+36001010	15	ein	DET	ART					S		Nom	N
+36001010	16	Geheul	NOUN	NN					S		Nom	N
+36001010	17	von	ADP	APPR								
+36001010	18	der	DET	ART					S		Nom	M
+36001010	19	Unterstadt	NOUN	NN					S		Nom	F
+36001010	20	und	CCONJ	KON								
+36001010	21	laut	ADJ	ADJA	Pos				S		Nom	N
+36001010	22	jammern	NOUN	NN					S		Nom	N
+36001010	23	von	ADP	APPR								
+36001010	24	der	DET	ART					S		Acc	M
+36001010	25	Hügel	NOUN	NN					P		Dat	M
+36001010	26	her	ADV	ADV								
+36001011	1	Heulet	PROPN	NE					S		Nom	
+36001011	2	ihr	PRON	PPOSAT				3	S		Dat	F
+36001011	3	Bewohner	NOUN	NN					P		Nom	M
+36001011	4	von	ADP	APPR								
+36001011	5	maktesch	PROPN	NE					S		Nom	
+36001011	6	denn	CCONJ	KON								
+36001011	7	alle	PRON	PIS					S		Nom	N
+36001011	8	Krämervolk	NOUN	NE					S		Nom	N
+36001011	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001011	10	vernichten	VERB	VVPP		Part						
+36001011	11	aller	PRON	PIS					P		Nom	
+36001011	12	mit	ADP	APPR								
+36001011	13	Silber	NOUN	NN					S		Nom	N
+36001011	14	beladener	NOUN	NN					P		Nom	
+36001011	15	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001011	16	ausrotten	VERB	VVPP		Part						
+36001012	1	und	CCONJ	KON								
+36001012	2	es	PRON	PPER				3	S		Nom	N
+36001012	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001012	4	geschehen	VERB	VVPP		Part						
+36001012	5	zu	ADP	PTKVZ								
+36001012	6	jener	DET	PDAT					S		Nom	M
+36001012	7	Zeit	NOUN	NN					S		Nom	F
+36001012	8	da	ADV	ADV								
+36001012	9	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001012	10	ich	PRON	PPER				1	S		Nom	
+36001012	11	Jerusalem	PROPN	NE					S		Nom	N
+36001012	12	mit	ADP	APPR								
+36001012	13	leuchten	NOUN	NN					P		Nom	N
+36001012	14	durchsuchen	VERB	VVINF		Inf						
+36001012	15	und	CCONJ	KON								
+36001012	16	ich	PRON	PPER				1	S		Nom	
+36001012	17	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001012	18	der	DET	ART					S		Nom	F
+36001012	19	Mann	NOUN	NN					P		Nom	M
+36001012	20	heimsuchen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001012	21	welcher	DET	PWAT					S		Nom	F
+36001012	22	auf	ADP	PTKVZ								
+36001012	23	ihr	DET	PPOSAT					S		Acc	M
+36001012	24	Hefen	NOUN	NN					P		Nom	M
+36001012	25	liegen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001012	26	der	DET	ART					S		Nom	F
+36001012	27	in	ADP	APPR								
+36001012	28	ihr	DET	PPOSAT					S		Dat	N
+36001012	29	Herz	NOUN	NN					S		Nom	N
+36001012	30	sprechen	VERB	VVINF		Fin	Pres	3	P	Ind		
+36001012	31	Jahwe	NOUN	NN					S		Nom	M
+36001012	32	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001012	33	nichts	PRON	PIS								N
+36001012	34	gute	NOUN	NN					S		Nom	N
+36001012	35	und	CCONJ	KON								
+36001012	36	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001012	37	nichts	PRON	PIS								N
+36001012	38	böse	NOUN	PIAT					S		Nom	N
+36001013	1	und	CCONJ	KON								
+36001013	2	ihr	PRON	PPOSAT				3	S		Dat	F
+36001013	3	Vermögen	NOUN	NN					S		Nom	N
+36001013	4	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001013	5	zu	ADP	APPRART					S		Dat	N
+36001013	6	Raube	NOUN	NN					S		Nom	F
+36001013	7	und	CCONJ	KON								
+36001013	8	ihr	DET	PPOSAT					S		Nom	F
+36001013	9	Haus	NOUN	NN					P		Nom	N
+36001013	10	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001013	11	zu	ADP	APPRART					S		Dat	F
+36001013	12	Wüste	NOUN	NN					S		Nom	F
+36001013	13	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001013	14	und	CCONJ	KON								
+36001013	15	sie	PRON	PPER				3	P		Nom	
+36001013	16	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001013	17	Haus	NOUN	NN					P		Nom	N
+36001013	18	bauen	VERB	VVINF		Inf						
+36001013	19	und	CCONJ	KON								
+36001013	20	sie	PRON	PPER				3	P		Nom	
+36001013	21	nicht	PART	PTKNEG								
+36001013	22	bewohnen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001013	23	und	CCONJ	KON								
+36001013	24	Weinberg	NOUN	NN					P		Nom	M
+36001013	25	Pflanze	NOUN	VVFIN					P		Nom	F
+36001013	26	und	CCONJ	KON								
+36001013	27	der	PRON	PDS							Gen	
+36001013	28	Wein	NOUN	NN					S		Nom	M
+36001013	29	nicht	PART	PTKNEG								
+36001013	30	trinken	VERB	VVINF		Inf						
+36001014	1	nahe	X	FM								
+36001014	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001014	3	der	DET	ART					S		Nom	M
+36001014	4	groß	ADJ	ADJA	Pos				S		Nom	F
+36001014	5	Tag	NOUN	NN					S		Nom	M
+36001014	6	Jahwe	PROPN	NE					S		Gen	
+36001014	7	er	PRON	PPER				3	S		Nom	M
+36001014	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001014	9	nah	ADP	APPR								
+36001014	10	und	CCONJ	KON								
+36001014	11	eilen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001014	12	sehr	ADV	ADV								
+36001014	13	Horch	PROPN	NE					S		Nom	
+36001014	14	der	DET	ART					S		Nom	M
+36001014	15	Tag	NOUN	NN					S		Nom	M
+36001014	16	Jahwe	PROPN	NE					S		Gen	
+36001014	17	bitterlich	ADV	ADJD	Pos							
+36001014	18	schreien	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36001014	19	dort	ADV	ADV								
+36001014	20	der	DET	ART					S		Nom	M
+36001014	21	Held	NOUN	NN					S		Nom	M
+36001015	1	ein	DET	ART					S		Nom	M
+36001015	2	Tag	NOUN	NN					S		Nom	M
+36001015	3	der	DET	ART					S		Gen	M
+36001015	4	Grimmes	NOUN	NN					S		Nom	N
+36001015	5	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001015	6	dieser	PRON	PDAT					S		Nom	M
+36001015	7	Tag	NOUN	NN					S		Nom	M
+36001015	8	ein	DET	ART					S		Nom	N
+36001015	9	Tag	NOUN	NN					S		Nom	M
+36001015	10	der	DET	ART					S		Nom	M
+36001015	11	drangsal	PROPN	NE					S		Nom	
+36001015	12	und	CCONJ	KON								
+36001015	13	der	DET	ART					S		Nom	M
+36001015	14	Bedrängnis	NOUN	NN					S		Nom	F
+36001015	15	ein	DET	ART					S		Nom	N
+36001015	16	Tag	NOUN	NN					S		Nom	M
+36001015	17	der	DET	ART					S		Gen	M
+36001015	18	Verwüsten	PROPN	NE					S		Gen	F
+36001015	19	und	CCONJ	KON								
+36001015	20	der	DET	ART					S		Nom	M
+36001015	21	Verwüstung	NOUN	NN					S		Nom	F
+36001015	22	ein	DET	ART					S		Nom	N
+36001015	23	Tag	NOUN	NN					S		Nom	M
+36001015	24	der	DET	ART					S		Nom	M
+36001015	25	Finsternis	NOUN	NN					S		Nom	F
+36001015	26	und	CCONJ	KON								
+36001015	27	der	DET	ART					S		Nom	M
+36001015	28	Dunkelheit	NOUN	NN					S		Nom	F
+36001015	29	ein	DET	ART					S		Nom	N
+36001015	30	Tag	NOUN	NN					S		Nom	M
+36001015	31	der	DET	ART					S		Gen	M
+36001015	32	Gewölk	NOUN	NN					P		Nom	N
+36001015	33	und	CCONJ	KON								
+36001015	34	der	DET	ART					S		Gen	M
+36001015	35	Wolkendunkel	PROPN	NE					S		Gen	
+36001016	1	ein	DET	ART					S		Nom	N
+36001016	2	Tag	NOUN	NN					S		Nom	M
+36001016	3	der	DET	ART					S		Nom	M
+36001016	4	Posaune	PROPN	NE					S		Nom	
+36001016	5	und	CCONJ	KON								
+36001016	6	der	DET	ART					S		Gen	M
+36001016	7	Kriegsgeschreis	PROPN	NE					S		Nom	M
+36001016	8	wider	ADP	PTKVZ								
+36001016	9	der	DET	ART					S		Nom	F
+36001016	10	fest	ADJ	ADJA	Pos				S		Acc	M
+36001016	11	Stadt	NOUN	NN					P		Nom	F
+36001016	12	und	CCONJ	KON								
+36001016	13	wider	ADP	PTKVZ								
+36001016	14	der	DET	ART					S		Nom	F
+36001016	15	hoch	ADJ	ADJA	Pos				S		Acc	M
+36001016	16	Zinne	NOUN	NN					P		Nom	F
+36001017	1	und	CCONJ	KON								
+36001017	2	ich	PRON	PPER				1	S		Nom	
+36001017	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36001017	4	der	DET	ART					S		Nom	F
+36001017	5	Mensch	NOUN	NN					P		Nom	M
+36001017	6	ängstig	VERB	VVINF		Inf						
+36001017	7	und	CCONJ	KON								
+36001017	8	sie	PRON	PPER				3	P		Nom	
+36001017	9	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001017	10	einhergehen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36001017	11	wie	ADP	KOKOM								
+36001017	12	der	DET	ART					S		Nom	F
+36001017	13	blinden	NOUN	NN					P		Nom	
+36001017	14	weil	SCONJ	KOUS								
+36001017	15	sie	PRON	PPER				3	P		Nom	
+36001017	16	gegen	ADP	APPR								
+36001017	17	Jahwe	NOUN	NN					S		Nom	M
+36001017	18	sündigen	VERB	VVPP		Part						
+36001017	19	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001017	20	und	CCONJ	KON								
+36001017	21	ihr	PRON	PPOSAT				3	S		Dat	F
+36001017	22	Blut	NOUN	NN					S		Nom	N
+36001017	23	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001017	24	verschütten	VERB	VVPP		Part						
+36001017	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001017	26	wie	ADP	KOKOM								
+36001017	27	Staub	NOUN	NN					S		Nom	M
+36001017	28	und	CCONJ	KON								
+36001017	29	ihr	PRON	PPOSAT				3	S		Dat	F
+36001017	30	Fleisch	NOUN	NN					S		Nom	N
+36001017	31	wie	ADP	KOKOM								
+36001017	32	Kot	NOUN	NN					S		Nom	M
+36001018	1	auch	ADV	ADV								
+36001018	2	ihr	PRON	PPOSAT				3	S		Dat	F
+36001018	3	Silber	NOUN	NN					S		Nom	N
+36001018	4	auch	ADV	ADV								
+36001018	5	ihr	PRON	PPOSAT				3	S		Dat	F
+36001018	6	Gold	NOUN	NN					S		Nom	N
+36001018	7	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001018	8	sie	PRON	PPER				3	P		Nom	
+36001018	9	nicht	PART	PTKNEG								
+36001018	10	erretten	VERB	VVINF		Inf						
+36001018	11	können	AUX	VMFIN		Fin	Pres	3	P	Ind		
+36001018	12	an	ADP	APPRART					S		Dat	M
+36001018	13	Tag	NOUN	NN					P		Nom	M
+36001018	14	der	DET	ART					S		Gen	M
+36001018	15	Grimmes	NOUN	NN					S		Nom	N
+36001018	16	Jahwe	PROPN	NE					S		Gen	
+36001018	17	und	CCONJ	KON								
+36001018	18	durch	ADP	APPR								
+36001018	19	der	DET	ART					S		Nom	N
+36001018	20	Feuer	NOUN	NN					S		Nom	N
+36001018	21	sein	DET	PPOSAT					S		Gen	M
+36001018	22	Eifer	NOUN	NN					S		Gen	M
+36001018	23	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001018	24	der	DET	ART					S		Nom	N
+36001018	25	ganz	ADJ	ADJA	Pos				S		Nom	F
+36001018	26	Land	NOUN	NN					S		Nom	N
+36001018	27	verzehren	VERB	VVPP		Part						
+36001018	28	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36001018	29	denn	CCONJ	KON								
+36001018	30	ein	DET	ART					S		Nom	N
+36001018	31	Ende	NOUN	NN					S		Nom	N
+36001018	32	ja	ADV	ADV								
+36001018	33	ein	DET	ART					S		Nom	N
+36001018	34	plötzlich	ADJ	ADJA	Pos				S		Nom	N
+36001018	35	Ende	NOUN	NN					S		Nom	N
+36001018	36	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36001018	37	er	PRON	PPER				3	S		Nom	M
+36001018	38	machen	VERB	VVINF		Inf						
+36001018	39	mit	ADP	APPR								
+36001018	40	aller	DET	PIS					P		Dat	
+36001018	41	Bewohner	NOUN	NN					P		Dat	M
+36001018	42	der	DET	ART					S		Gen	M
+36001018	43	Land	NOUN	NN					S		Gen	N
+36002001	1	gehet	ADV	PROAV								
+36002001	2	in	ADP	APPR								
+36002001	3	euch	PRON	PPER				2	P		Dat	
+36002001	4	und	CCONJ	KON								
+36002001	5	sammeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002001	6	euch	PRON	PPER				2	P		Dat	
+36002001	7	du	PRON	PPER				2	S		Nom	
+36002001	8	Nation	NOUN	NN					S		Nom	F
+36002001	9	ohne	ADP	APPR								
+36002001	10	Scham	NOUN	NN					S		Nom	F
+36002002	1	--	X	XY								
+36002002	2	der	DET	ART					S		Nom	M
+36002002	3	Beschluß	NOUN	NN					S		Nom	M
+36002002	4	gebieren	VERB	VVPP		Part						
+36002002	5	wie	ADP	KOKOM								
+36002002	6	Spreu	NOUN	NN					S		Nom	F
+36002002	7	fahren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002002	8	der	DET	ART					S		Nom	M
+36002002	9	Tag	NOUN	NN					S		Nom	M
+36002002	10	daher	ADV	PROAV								
+36002002	12	--	X	XY								
+36002002	13	denn	CCONJ	KON								
+36002002	14	über	ADP	APPR								
+36002002	15	euch	PRON	PPER				2	P		Dat	
+36002002	16	kommen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+36002002	17	der	DET	ART					S		Nom	F
+36002002	18	Glut	NOUN	NN					S		Nom	F
+36002002	19	der	DET	ART					S		Gen	M
+36002002	20	Zorn	NOUN	NN					S		Nom	N
+36002002	21	Jahwe	PROPN	NE					S		Gen	
+36002002	22	--	X	XY								
+36002002	23	denn	CCONJ	KON								
+36002002	24	über	ADP	APPR								
+36002002	25	euch	PRON	PPER				2	P		Dat	
+36002002	26	kommen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+36002002	27	der	DET	ART					S		Nom	M
+36002002	28	Tag	NOUN	NN					S		Nom	M
+36002002	29	der	DET	ART					S		Gen	M
+36002002	30	Zorn	NOUN	NN					S		Nom	N
+36002002	31	Jahwe	PROPN	NE					S		Gen	
+36002003	1	suchet	PROPN	NE					S		Nom	
+36002003	2	Jahwe	NOUN	NN					S		Nom	M
+36002003	3	aller	PRON	PIS					P		Nom	
+36002003	4	ihr	PRON	PPOSAT				3	S		Dat	F
+36002003	5	sanftmütigen	NOUN	NN					P		Nom	F
+36002003	6	der	DET	ART					S		Gen	M
+36002003	7	Land	NOUN	NN					S		Gen	N
+36002003	8	der	DET	ART					S		Nom	F
+36002003	9	ihr	PRON	PPOSAT				3	S		Dat	F
+36002003	10	sein	AUX	VAINF		Inf						
+36002003	11	Recht	NOUN	NN					S		Nom	N
+36002003	12	wirken	VERB	VVPP		Part						
+36002003	13	habben	VERB	VAFIN				2	P	Imp		
+36002003	14	sucheen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002003	15	Gerechtigkeit	NOUN	NN					S		Nom	F
+36002003	16	sucheen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002003	17	Demut	NOUN	NN					S		Nom	F
+36002003	18	vielleicht	ADV	ADV								
+36002003	19	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002003	20	ihr	PRON	PPOSAT				3	S		Dat	F
+36002003	21	bergen	VERB	VVPP		Part						
+36002003	22	an	ADP	APPRART					S		Dat	M
+36002003	23	Tag	NOUN	NN					P		Nom	M
+36002003	24	der	DET	ART					S		Gen	M
+36002003	25	Zorn	NOUN	NN					S		Nom	N
+36002003	26	Jahwe	PROPN	NE					S		Gen	
+36002004	1	denn	CCONJ	KON								
+36002004	2	Gasa	PROPN	NE					S		Nom	
+36002004	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002004	4	verlassen	VERB	VVINF		Inf						
+36002004	5	und	CCONJ	KON								
+36002004	6	Askelon	PROPN	NE					S		Nom	
+36002004	7	ein	DET	ART					S		Nom	F
+36002004	8	Wüste	NOUN	NN					S		Nom	F
+36002004	9	sein	AUX	VAINF		Inf						
+36002004	10	Asdod	PROPN	NE					S		Nom	F
+36002004	11	an	ADP	APPRART					S		Dat	M
+36002004	12	hell	VERB	VVINF		Inf						
+36002004	13	Mittag	NOUN	NN					S		Nom	M
+36002004	14	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002004	15	man	PRON	PIS					S		Nom	
+36002004	16	es	PRON	PPER				3	S		Nom	N
+36002004	17	vertreiben	VERB	VVINF		Inf						
+36002004	18	und	CCONJ	KON								
+36002004	19	Ekron	PROPN	NE					S		Nom	
+36002004	20	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002004	21	entwurzeln	VERB	VVPP		Part						
+36002004	22	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002005	1	Wehe	NOUN	NN					S		Nom	F
+36002005	2	der	DET	ART					S		Acc	M
+36002005	3	Bewohner	NOUN	NN					P		Dat	M
+36002005	4	der	DET	ART					S		Gen	M
+36002005	5	Landstrich	NOUN	NN					S		Gen	M
+36002005	6	an	ADP	APPRART					S		Dat	M
+36002005	7	Meer	NOUN	NN					P		Nom	N
+36002005	8	der	DET	ART					S		Nom	M
+36002005	9	Nation	NOUN	NN					S		Nom	F
+36002005	10	der	DET	ART					S		Nom	M
+36002005	11	Kerethiter	NOUN	NN					S		Nom	M
+36002005	12	der	DET	ART					S		Nom	N
+36002005	13	Wort	NOUN	NN					S		Nom	N
+36002005	14	Jahwe	PROPN	NE					S		Gen	
+36002005	15	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002005	16	über	ADP	APPR								
+36002005	17	euch	PRON	PPER				2	P		Dat	
+36002005	18	Kanaan	PROPN	NE					S		Nom	M
+36002005	19	Land	NOUN	NN					S		Nom	N
+36002005	20	der	DET	ART					S		Nom	M
+36002005	21	Philister	NOUN	NN					S		Nom	M
+36002005	22	und	CCONJ	KON								
+36002005	23	ich	PRON	PPER				1	S		Nom	
+36002005	24	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36002005	25	dich	PRON	PPER				2	S		Acc	
+36002005	26	vernichten	VERB	VVINF		Inf						
+36002005	27	daß	SCONJ	KOUS								
+36002005	28	kein	DET	PIAT					S		Nom	N
+36002005	29	Bewohner	NOUN	NN					P		Nom	M
+36002005	30	mehr	ADV	ADV								
+36002005	31	bleiben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002006	1	und	CCONJ	KON								
+36002006	2	der	DET	ART					S		Nom	M
+36002006	3	Landstrich	NOUN	NN					S		Nom	M
+36002006	4	an	ADP	APPRART					S		Dat	M
+36002006	5	Meer	NOUN	NN					P		Nom	N
+36002006	6	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002006	7	zu	ADP	PTKVZ								
+36002006	8	Trift	NOUN	NN					P		Nom	F
+36002006	9	voll	ADV	ADJD	Pos							
+36002006	10	Hirtencistern	NOUN	NN					P		Nom	F
+36002006	11	und	CCONJ	KON								
+36002006	12	Kleinviehhürde	NOUN	NN					P		Nom	F
+36002006	13	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002007	1	und	CCONJ	KON								
+36002007	2	es	PRON	PPER				3	S		Nom	N
+36002007	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002007	4	ein	DET	ART					S		Nom	N
+36002007	5	Landstrich	NOUN	NN					S		Nom	M
+36002007	6	sein	AUX	VAINF		Inf						
+36002007	7	für	ADP	APPR								
+36002007	8	der	DET	ART					S		Acc	M
+36002007	9	Überrest	NOUN	NN					S		Nom	M
+36002007	10	der	DET	ART					S		Gen	M
+36002007	11	Haus	NOUN	NN					S		Gen	N
+36002007	12	Juda	PROPN	NE					S		Nom	M
+36002007	13	sie	PRON	PPER				3	P		Nom	
+36002007	14	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002007	15	darauf	ADV	PROAV								
+36002007	16	weiden	VERB	VVINF		Inf						
+36002007	17	und	CCONJ	KON								
+36002007	18	an	ADP	APPRART					S		Dat	M
+36002007	19	Abend	NOUN	NN					S		Nom	M
+36002007	20	sich	PRON	PRF				3	S		Acc	
+36002007	21	lagern	VERB	VVINF		Inf						
+36002007	22	in	ADP	APPR								
+36002007	23	der	DET	ART					S		Acc	M
+36002007	24	Haus	NOUN	NN					P		Dat	N
+36002007	25	Askelon	PROPN	NE					S		Gen	N
+36002007	26	denn	CCONJ	KON								
+36002007	27	Jahwe	NOUN	NN					S		Nom	M
+36002007	28	ihr	PRON	PPOSAT				3	S		Dat	F
+36002007	29	Gott	NOUN	NN					S		Nom	M
+36002007	30	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002007	31	sich	PRON	PRF				3	S		Acc	
+36002007	32	ihr	DET	PPOSAT					S		Dat	F
+36002007	33	annehmen	VERB	VVINF		Inf						
+36002007	34	und	CCONJ	KON								
+36002007	35	ihr	DET	PPOSAT					S		Nom	F
+36002007	36	Gefangenschaft	NOUN	NN					S		Nom	F
+36002007	37	wenden	VERB	VVINF		Inf						
+36002008	1	ich	PRON	PPER				1	S		Nom	
+36002008	2	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36002008	3	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002008	4	der	DET	ART					S		Nom	F
+36002008	5	Schmähung	NOUN	NN					S		Nom	F
+36002008	6	Moabs	PROPN	NE					S		Nom	
+36002008	7	und	CCONJ	KON								
+36002008	8	der	DET	ART					S		Nom	F
+36002008	9	Lästerung	NOUN	NN					P		Nom	F
+36002008	10	der	DET	ART					S		Nom	M
+36002008	11	Kind	NOUN	NN					P		Nom	N
+36002008	12	Ammon	PROPN	NE					S		Nom	
+36002008	13	womit	SCONJ	PWAV								
+36002008	14	sie	PRON	PPER				3	P		Nom	
+36002008	15	mein	DET	PPOSAT					S		Nom	N
+36002008	16	Volk	NOUN	NN					S		Nom	N
+36002008	17	schmähen	VERB	VVPP		Part						
+36002008	18	und	CCONJ	KON								
+36002008	19	Großgetan	NOUN	NN					S		Nom	N
+36002008	20	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002008	21	wider	ADP	PTKVZ								
+36002008	22	der	PRON	PDS					S		Gen	
+36002008	23	Gebiet	NOUN	NN					S		Nom	N
+36002009	1	darum	ADV	PROAV								
+36002009	2	so	ADV	ADV								
+36002009	3	wahr	ADV	ADJD	Pos							
+36002009	4	ich	PRON	PPER				1	S		Nom	
+36002009	5	leben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+36002009	6	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002009	7	Jahwe	NOUN	NN					S		Nom	M
+36002009	8	der	DET	ART					S		Nom	M
+36002009	9	Heerschare	NOUN	NN					P		Nom	F
+36002009	10	der	DET	ART					S		Nom	M
+36002009	11	Gott	NOUN	NN					S		Nom	M
+36002009	12	Israel	PROPN	NE					S		Gen	N
+36002009	13	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+36002009	14	Moab	PROPN	NE					S		Nom	
+36002009	15	gewißlich	ADV	ADJD	Pos							
+36002009	16	wie	ADP	KOKOM								
+36002009	17	Sodom	PROPN	NE					S		Nom	
+36002009	18	und	CCONJ	KON								
+36002009	19	der	DET	ART					S		Nom	F
+36002009	20	Kind	NOUN	NN					P		Nom	N
+36002009	21	Ammon	PROPN	NE					S		Nom	
+36002009	22	wie	ADP	KOKOM								
+36002009	23	Gomorra	PROPN	NE					S		Nom	
+36002009	24	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002009	25	ein	DET	ART					S		Nom	N
+36002009	26	Besitztum	NOUN	NN					S		Nom	N
+36002009	27	der	DET	ART					S		Nom	M
+36002009	28	Brennessel	NOUN	NN					S		Nom	N
+36002009	29	und	CCONJ	KON								
+36002009	30	ein	DET	ART					S		Nom	F
+36002009	31	Salzgrube	NOUN	NN					S		Nom	F
+36002009	32	und	CCONJ	KON								
+36002009	33	ein	DET	ART					S		Nom	F
+36002009	34	Wüste	NOUN	NN					S		Nom	F
+36002009	35	ewiglich	ADV	ADJD	Pos							
+36002009	36	der	DET	ART					S		Nom	M
+36002009	37	Überrest	NOUN	NN					S		Nom	M
+36002009	38	meiner	DET	PPOSAT					S		Gen	N
+36002009	39	Volk	NOUN	NN					S		Gen	N
+36002009	40	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002009	41	sie	PRON	PPER				3	P		Nom	
+36002009	42	berauben	VERB	VVINF		Inf						
+36002009	43	und	CCONJ	KON								
+36002009	44	der	DET	ART					S		Nom	N
+36002009	45	Überbleibsel	NOUN	NN					P		Nom	M
+36002009	46	mein	DET	PPOSAT					S		Dat	F
+36002009	47	Nation	NOUN	NN					S		Nom	F
+36002009	48	sie	PRON	PPER				3	P		Nom	
+36002009	49	beerben	VERB	VVINF		Inf						
+36002010	1	Solcher	DET	PIAT					S		Nom	N
+36002010	2	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002010	3	ihnen	PRON	PPER				3	P		Dat	
+36002010	4	für	ADP	APPR								
+36002010	5	ihr	DET	PPOSAT					S		Acc	M
+36002010	6	Hochmut	NOUN	NN					S		Nom	M
+36002010	7	zuteil	ADV	PTKVZ								
+36002010	8	weil	SCONJ	KOUS								
+36002010	9	sie	PRON	PPER				3	P		Nom	
+36002010	10	der	DET	ART					S		Nom	N
+36002010	11	Volk	NOUN	NN					S		Nom	N
+36002010	12	Jahwe	PROPN	NE					S		Gen	
+36002010	13	der	DET	ART					S		Nom	M
+36002010	14	Heerschare	NOUN	NN					P		Nom	F
+36002010	15	schmähen	VERB	VVPP		Part						
+36002010	16	und	CCONJ	KON								
+36002010	17	wider	ADP	PTKVZ								
+36002010	18	Dasselbe	DET	PDAT					S		Nom	N
+36002010	19	Großgetan	NOUN	NN					S		Nom	N
+36002010	20	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002011	1	furchtbar	ADV	ADJD	Pos							
+36002011	2	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002011	3	Jahwe	NOUN	NN					S		Nom	M
+36002011	4	wider	ADP	PTKVZ								
+36002011	5	sie	PRON	PPER				3	P		Nom	
+36002011	6	sein	AUX	VAINF		Inf						
+36002011	7	denn	CCONJ	KON								
+36002011	8	er	PRON	PPER				3	S		Nom	M
+36002011	9	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002011	10	Hinschwind	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36002011	11	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+36002011	12	aller	PRON	PIS					P		Nom	
+36002011	13	Götter	NOUN	NN					P		Nom	M
+36002011	14	der	DET	ART					S		Nom	M
+36002011	15	Erde	NOUN	NN					S		Nom	F
+36002011	16	und	CCONJ	KON								
+36002011	17	aller	PRON	PIS					P		Nom	
+36002011	18	Insel	NOUN	NN					P		Nom	F
+36002011	19	der	DET	ART					S		Nom	M
+36002011	20	Nation	NOUN	NN					P		Nom	F
+36002011	21	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002011	22	ihn	PRON	PPER				3	S		Acc	M
+36002011	23	anbeten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36002011	24	ein	DET	ART					S		Nom	N
+36002011	25	jeder	PRON	PIS					S		Nom	M
+36002011	26	von	ADP	APPR								
+36002011	27	sein	DET	PPOSAT					S		Dat	F
+36002011	28	Stätte	NOUN	NN					S		Nom	F
+36002011	29	aus	ADP	PTKVZ								
+36002012	1	auch	ADV	ADV								
+36002012	2	ihr	PRON	PPOSAT				3	S		Dat	F
+36002012	3	Äthiopier	NOUN	NN					S		Nom	M
+36002012	4	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002012	5	Erschlagene	NOUN	NN					S		Nom	F
+36002012	6	meiner	DET	PPOSAT					S		Gen	N
+36002012	7	Schwertes	ADJ	NN	Pos				S		Nom	N
+36002012	8	sein	AUX	VAINF		Inf						
+36002013	1	und	CCONJ	KON								
+36002013	2	er	PRON	PPER				3	S		Nom	M
+36002013	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002013	4	sein	DET	PPOSAT					S		Nom	F
+36002013	5	Hand	NOUN	NN					S		Nom	F
+36002013	6	gegen	ADP	APPR								
+36002013	7	Norden	NOUN	NN					S		Nom	M
+36002013	8	ausstrecken	VERB	VVINF		Inf						
+36002013	9	und	CCONJ	KON								
+36002013	10	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002013	11	Assyr	PROPN	NE					S		Nom	N
+36002013	12	vernichten	VERB	VVINF		Inf						
+36002013	13	und	CCONJ	KON								
+36002013	14	Ninive	NOUN	NN					S		Nom	F
+36002013	15	zu	ADP	APPRART					S		Dat	F
+36002013	16	Wüste	NOUN	NN					S		Nom	F
+36002013	17	machen	VERB	VVINF		Inf						
+36002013	18	dürr	ADV	ADJD	Pos							
+36002013	19	wie	ADP	KOKOM								
+36002013	20	der	DET	ART					S		Nom	F
+36002013	21	Steppe	NOUN	NN					S		Nom	F
+36002014	1	und	CCONJ	KON								
+36002014	2	in	ADP	APPR								
+36002014	3	sein	DET	PPOSAT					S		Dat	F
+36002014	4	Mitte	NOUN	NN					S		Nom	F
+36002014	5	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002014	6	Herde	NOUN	NN					P		Nom	F
+36002014	7	sich	PRON	PRF				3	S		Acc	
+36002014	8	lagern	VERB	VVINF		Inf						
+36002014	9	allerlei	DET	PIAT								
+36002014	10	Tier	NOUN	NN					P		Nom	N
+36002014	11	in	ADP	APPR								
+36002014	12	Menge	NOUN	NN					S		Nom	F
+36002014	13	auch	ADV	ADV								
+36002014	14	Pelikane	PROPN	NE					S		Nom	
+36002014	15	auch	ADV	ADV								
+36002014	16	Igel	NOUN	NE					S		Nom	M
+36002014	17	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002014	18	auf	ADP	PTKVZ								
+36002014	19	sein	DET	PPOSAT					S		Acc	M
+36002014	20	Säulenknäufe	NOUN	NN					P		Nom	M
+36002014	21	übernachten	VERB	VVINF		Inf						
+36002014	22	ein	DET	ART					S		Nom	F
+36002014	23	Stimme	NOUN	NN					S		Nom	F
+36002014	24	singen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002014	25	in	ADP	APPRART					S		Dat	N
+36002014	26	Fenster	NOUN	NN					S		Nom	N
+36002014	27	Trumm	NOUN	NN					P		Nom	
+36002014	28	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36002014	29	auf	ADP	PTKVZ								
+36002014	30	der	DET	ART					S		Nom	M
+36002014	31	Schwelle	NOUN	NN					S		Nom	F
+36002014	32	denn	CCONJ	KON								
+36002014	33	er	PRON	PPER				3	S		Nom	M
+36002014	34	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002014	35	der	DET	ART					S		Nom	N
+36002014	36	Cederngetäfel	PROPN	NE					S		Nom	
+36002014	37	bloßgelegen	VERB	VVPP		Fin	Pres	3	S	Ind		
+36002015	1	der	DET	ART					S		Nom	N
+36002015	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002015	3	der	DET	ART					S		Nom	F
+36002015	4	frohlockend	ADJ	ADJA	Pos				S		Nom	F
+36002015	5	Stadt	NOUN	NN					S		Nom	F
+36002015	6	der	DET	ART					S		Nom	F
+36002015	7	in	ADP	APPR								
+36002015	8	Sicherheit	NOUN	NN					S		Nom	F
+36002015	9	wohnen	VERB	VVFIN		Fin	Past	3	S	Ind		
+36002015	10	der	DET	ART					S		Nom	F
+36002015	11	in	ADP	APPR								
+36002015	12	ihr	DET	PPOSAT					S		Dat	N
+36002015	13	Herz	NOUN	NN					S		Nom	N
+36002015	14	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+36002015	15	ich	PRON	PPER				1	S		Nom	
+36002015	16	Bins	PROPN	VVFIN					S		Nom	
+36002015	17	und	CCONJ	KON								
+36002015	18	gar	ADV	ADV								
+36002015	19	kein	DET	PIAT					S		Nom	F
+36002015	20	sonst	ADV	ADV								
+36002015	21	wie	ADV	PWAV								
+36002015	22	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002015	23	sie	PRON	PPER				3	P		Nom	
+36002015	24	zu	ADP	APPRART					S		Dat	F
+36002015	25	Wüste	NOUN	NN					S		Nom	F
+36002015	26	werden	AUX	VAPP		Part						
+36002015	27	zu	ADP	APPRART					S		Dat	N
+36002015	28	Lagerplatz	NOUN	NN					S		Nom	M
+36002015	29	der	DET	ART					S		Nom	M
+36002015	30	wild	ADJ	ADJA	Pos				S		Acc	M
+36002015	31	Tier	NOUN	NN					P		Nom	N
+36002015	32	ein	DET	ART					S		Nom	M
+36002015	33	jeder	PRON	PIS					S		Nom	M
+36002015	34	der	DET	ART					S		Nom	M
+36002015	35	an	ADP	PTKVZ								
+36002015	36	ihr	PRON	PPOSAT				3	S		Dat	F
+36002015	37	vorüberziehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36002015	38	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002015	39	zischen	VERB	VVFIN		Fin	Past	3	P	Ind		
+36002015	40	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36002015	41	sein	DET	PPOSAT					S		Nom	F
+36002015	42	Hand	NOUN	NN					S		Nom	F
+36002015	43	schwenken	VERB	VVINF		Inf						
+36003001	1	Wehe	NOUN	NN					S		Nom	F
+36003001	2	der	DET	ART					S		Nom	M
+36003001	3	widerspenstige	NOUN	NN					P		Nom	
+36003001	4	und	CCONJ	KON								
+36003001	5	Befleckte	NOUN	NN					P		Nom	F
+36003001	6	der	DET	ART					S		Nom	M
+36003001	7	bedrückend	ADJ	ADJA	Pos				S		Dat	M
+36003001	8	Stadt	NOUN	NN					S		Nom	F
+36003002	1	sie	PRON	PPER				3	P		Nom	
+36003002	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003002	3	auf	ADP	PTKVZ								
+36003002	4	kein	DET	PIAT					S		Nom	F
+36003002	5	Stimme	NOUN	NN					S		Nom	F
+36003002	6	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003002	7	kein	DET	PIAT					S		Nom	F
+36003002	8	Zucht	NOUN	NN					S		Nom	F
+36003002	9	annehmen	VERB	VVPP		Part						
+36003002	10	auf	ADP	PTKVZ								
+36003002	11	Jahwe	NOUN	NN					S		Nom	M
+36003002	12	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003002	13	sie	PRON	PPER				3	P		Nom	
+36003002	14	nicht	PART	PTKNEG								
+36003002	15	vertraut	ADV	ADJD	Pos							
+36003002	16	ihr	DET	PPOSAT					S		Dat	N
+36003002	17	Gott	NOUN	NN					S		Nom	M
+36003002	18	sich	PRON	PRF				3	S		Acc	
+36003002	19	nicht	PART	PTKNEG								
+36003002	20	nahen	VERB	VVPP		Part						
+36003003	1	ihr	DET	PPOSAT					S		Acc	F
+36003003	2	Fürst	NOUN	NN					P		Nom	M
+36003003	3	in	ADP	APPR								
+36003003	4	ihr	DET	PPOSAT					S		Dat	F
+36003003	5	Mitte	NOUN	NN					S		Nom	F
+36003003	6	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003003	7	brüllend	ADJ	ADJA	Pos				S		Nom	F
+36003003	8	Löwe	NOUN	NN					S		Nom	M
+36003003	9	ihr	DET	PPOSAT					S		Nom	F
+36003003	10	Richter	NOUN	NN					S		Nom	M
+36003003	11	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003003	12	Abendwölfe	NOUN	NN					S		Nom	F
+36003003	13	der	DET	ART					S		Nom	F
+36003003	14	nichts	PRON	PIS								N
+36003003	15	für	ADP	APPR								
+36003003	16	der	DET	ART					S		Acc	M
+36003003	17	Morgen	ADV	NN								
+36003003	18	übriglassen	VERB	VVINF		Inf						
+36003004	1	ihr	DET	PPOSAT					S		Acc	F
+36003004	2	Prophet	NOUN	NN					P		Nom	M
+36003004	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003004	4	Prahler	NOUN	NN					S		Nom	M
+36003004	5	treulos	ADJ	ADJA	Pos				P		Nom	M
+36003004	6	Mann	NOUN	NN					P		Nom	M
+36003004	7	ihr	DET	PPOSAT					S		Nom	F
+36003004	8	Priester	NOUN	NN					P		Nom	M
+36003004	9	entweihen	VERB	VVINF		Inf						
+36003004	10	der	DET	ART					S		Nom	N
+36003004	11	Heiligtum	NOUN	NN					S		Nom	N
+36003004	12	tun	VERB	VVINF		Inf						
+36003004	13	der	DET	ART					S		Dat	M
+36003004	14	Gesetz	NOUN	NN					P		Nom	N
+36003004	15	Gewalt	NOUN	NN					S		Nom	F
+36003004	16	an	ADP	PTKVZ								
+36003005	1	Jahwe	NOUN	NN					S		Nom	M
+36003005	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003005	3	gerecht	ADV	ADJD	Pos							
+36003005	4	in	ADP	APPR								
+36003005	5	ihr	DET	PPOSAT					S		Dat	F
+36003005	6	Mitte	NOUN	NN					S		Nom	F
+36003005	7	er	PRON	PPER				3	S		Nom	M
+36003005	8	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003005	9	kein	DET	PIAT					S		Nom	N
+36003005	10	Unrecht	NOUN	NN					S		Nom	N
+36003005	11	Morgen	ADV	NN								
+36003005	12	für	ADP	APPR								
+36003005	13	Morgen	ADV	NN								
+36003005	14	stellen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003005	15	er	PRON	PPER				3	S		Nom	M
+36003005	16	sein	AUX	VAINF		Inf						
+36003005	17	Recht	NOUN	NN					S		Nom	N
+36003005	18	an	ADP	APPRART					S		Acc	N
+36003005	19	Licht	NOUN	NN					S		Nom	N
+36003005	20	ohne	ADP	APPR								
+36003005	21	zu	ADP	PTKVZ								
+36003005	22	fehlen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36003005	23	aber	CCONJ	KON								
+36003005	24	der	DET	ART					S		Nom	M
+36003005	25	ungerecht	ADJ	ADJA	Pos				S		Nom	F
+36003005	26	kennen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003005	27	kein	DET	PIAT					S		Nom	F
+36003005	28	Scham	NOUN	NN					S		Nom	F
+36003006	1	ich	PRON	PPER				1	S		Nom	
+36003006	2	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003006	3	Nation	NOUN	NN					P		Nom	F
+36003006	4	ausrotten	VERB	VVPP		Part						
+36003006	5	ihr	DET	PPOSAT					S		Nom	F
+36003006	6	Zinne	NOUN	NN					P		Nom	F
+36003006	7	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003006	8	veröden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003006	9	ich	PRON	PPER				1	S		Nom	
+36003006	10	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003006	11	ihr	DET	PPOSAT					S		Nom	F
+36003006	12	Straße	NOUN	NN					P		Nom	F
+36003006	13	verwüsten	VERB	VVPP		Part						
+36003006	14	daß	SCONJ	KOUS								
+36003006	15	niemand	PRON	PIS					S		Nom	M
+36003006	16	darüber	ADV	PROAV								
+36003006	17	ziehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003006	18	ihr	DET	PPOSAT					S		Nom	F
+36003006	19	Stadt	NOUN	NN					P		Nom	F
+36003006	20	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003006	21	verheern	VERB	VVPP		Part						
+36003006	22	daß	SCONJ	KOUS								
+36003006	23	niemand	PRON	PIS					S		Nom	M
+36003006	24	da	ADV	ADV								
+36003006	25	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003006	26	kein	DET	PIAT					S		Nom	N
+36003006	27	Bewohner	NOUN	NN					P		Nom	M
+36003006	28	mehr	ADV	ADV								
+36003007	1	ich	PRON	PPER				1	S		Nom	
+36003007	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+36003007	3	Möchtest	CCONJ	KON								
+36003007	4	du	PRON	PPER				2	S		Nom	
+36003007	5	mich	PRON	PPER				1	S		Acc	
+36003007	6	nur	ADV	ADV								
+36003007	7	fürchten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36003007	8	Möchtest	AUX	VMFIN		Fin	Pres	3	S	Ind		
+36003007	9	du	PRON	PPER				2	S		Nom	
+36003007	10	Zucht	NOUN	NN					S		Nom	F
+36003007	11	annehmen	VERB	VVINF		Inf						
+36003007	12	und	CCONJ	KON								
+36003007	13	ihr	DET	PPOSAT					S		Nom	F
+36003007	14	Wohnung	NOUN	NN					S		Nom	F
+36003007	15	werden	AUX	VAFIN		Fin	Past	3	S	Sub		
+36003007	16	nicht	PART	PTKNEG								
+36003007	17	ausrotten	VERB	VVPP		Part						
+36003007	18	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003007	19	alle	PRON	PIS					S		Nom	N
+36003007	20	was	PRON	PWS					S		Nom	N
+36003007	21	ich	PRON	PPER				1	S		Nom	
+36003007	22	über	ADP	APPR								
+36003007	23	sie	PRON	PPER				3	P		Nom	
+36003007	24	verhängen	VERB	VVPP		Part						
+36003007	25	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003007	26	allein	ADV	ADV								
+36003007	27	sie	PRON	PPER				3	P		Nom	
+36003007	28	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003007	29	sich	PRON	PRF				3	S		Acc	
+36003007	30	früh	ADV	ADJD	Pos							
+36003007	31	aufmachen	VERB	VVPP		Part						
+36003007	32	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003007	33	aller	PRON	PIS					P		Nom	
+36003007	34	ihr	DET	PPOSAT					S		Nom	F
+36003007	35	Handlung	NOUN	NN					P		Nom	F
+36003007	36	verderben	VERB	VVPP		Part						
+36003008	1	darum	ADV	PROAV								
+36003008	2	Harret	VERB	PTKVZ		Inf						
+36003008	3	auf	ADP	PTKVZ								
+36003008	4	mich	PRON	PPER				1	S		Acc	
+36003008	5	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003008	6	Jahwe	NOUN	NN					S		Nom	M
+36003008	7	auf	ADP	PTKVZ								
+36003008	8	der	DET	ART					S		Acc	M
+36003008	9	Tag	NOUN	NN					S		Nom	M
+36003008	10	da	ADV	ADV								
+36003008	11	ich	PRON	PPER				1	S		Nom	
+36003008	12	mich	PRON	PPER				1	S		Acc	
+36003008	13	aufmachen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+36003008	14	zu	ADP	APPRART					S		Dat	F
+36003008	15	Beute	NOUN	NN					S		Nom	F
+36003008	16	denn	CCONJ	KON								
+36003008	17	mein	DET	PPOSAT					S		Nom	N
+36003008	18	Rechtsspruch	NOUN	NN					S		Nom	M
+36003008	19	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003008	20	der	DET	ART					S		Nom	F
+36003008	21	Nation	NOUN	NN					P		Nom	F
+36003008	22	zu	ADP	PTKVZ								
+36003008	23	versammeln	VERB	VVINF		Fin	Pres	3	P	Ind		
+36003008	24	der	DET	ART					S		Nom	F
+36003008	25	Königreich	NOUN	NN					P		Nom	N
+36003008	26	zusammenzubringen	VERB	VVIZU		Inf						
+36003008	27	um	ADP	APPR								
+36003008	28	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+36003008	29	Grimm	PROPN	NE					S		Nom	M
+36003008	30	über	ADP	APPR								
+36003008	31	sie	PRON	PPER				3	P		Nom	
+36003008	32	auszugießen	VERB	VVIZU		Inf						
+36003008	33	der	DET	ART					S		Nom	F
+36003008	34	ganz	ADJ	ADJA	Pos				S		Nom	F
+36003008	35	Glut	NOUN	NN					S		Nom	F
+36003008	36	meiner	DET	PPOSAT					S		Gen	N
+36003008	37	Zorn	NOUN	NN					S		Nom	N
+36003008	38	denn	CCONJ	KON								
+36003008	39	durch	ADP	APPR								
+36003008	40	der	DET	ART					S		Nom	N
+36003008	41	Feuer	NOUN	NN					S		Nom	N
+36003008	42	meiner	DET	PPOSAT					S		Gen	N
+36003008	43	Eifer	NOUN	NN					S		Gen	M
+36003008	44	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003008	45	der	DET	ART					S		Nom	F
+36003008	46	ganz	ADJ	ADJA	Pos				S		Nom	F
+36003008	47	Erde	NOUN	NN					S		Nom	F
+36003008	48	verzehren	VERB	VVPP		Part						
+36003008	49	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003009	1	denn	CCONJ	KON								
+36003009	2	alsdann	ADV	ADV								
+36003009	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003009	4	ich	PRON	PPER				1	S		Nom	
+36003009	5	der	DET	ART					S		Nom	F
+36003009	6	Lippe	NOUN	NN					P		Nom	F
+36003009	7	der	DET	ART					S		Nom	M
+36003009	8	Volk	NOUN	NN					P		Nom	N
+36003009	9	in	ADP	APPR								
+36003009	10	rein	ADJ	ADJA	Pos				S		Nom	F
+36003009	11	Lippe	NOUN	NN					P		Nom	F
+36003009	12	umwandeln	VERB	VVINF		Inf						
+36003009	13	damit	ADV	PROAV								
+36003009	14	sie	PRON	PPER				3	P		Nom	
+36003009	15	aller	PRON	PIS					P		Nom	
+36003009	16	der	DET	ART					S		Acc	M
+36003009	17	Name	NOUN	NN					P		Nom	M
+36003009	18	Jahwe	PROPN	NE					S		Gen	
+36003009	19	anrufen	VERB	VVINF		Inf						
+36003009	20	und	CCONJ	KON								
+36003009	21	ihm	PRON	PPER				3	S		Dat	M
+36003009	22	einmütig	ADV	ADJD	Pos							
+36003009	23	dienen	VERB	VVINF		Inf						
+36003010	1	von	ADP	APPR								
+36003010	2	jenseit	ADV	APPR								
+36003010	3	der	DET	ART					S		Nom	M
+36003010	4	Strom	NOUN	NN					P		Nom	M
+36003010	5	Äthiopien	PROPN	NE					S		Gen	N
+36003010	6	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003010	7	sie	PRON	PPER				3	P		Nom	
+36003010	8	mein	DET	PPOSAT					S		Nom	F
+36003010	9	Flehende	NOUN	NN					P		Nom	F
+36003010	10	mein	DET	PPOSAT					S		Nom	F
+36003010	11	zerstreuen	VERB	VVFIN		Fin	Past	3	S	Ind		
+36003010	12	Schar	NOUN	NN					S		Nom	F
+36003010	13	mir	PRON	PPER				1	S		Dat	
+36003010	14	als	ADP	KOKOM								
+36003010	15	Opfergabe	NOUN	NN					S		Nom	F
+36003010	16	darbringen	VERB	VVINF		Inf						
+36003011	1	an	ADP	APPR								
+36003011	2	jener	DET	PDAT					S		Dat	N
+36003011	3	Tag	NOUN	NN					P		Nom	M
+36003011	4	wersten	AUX	VAFIN		Fin	Pres	2	S	Ind		
+36003011	5	du	PRON	PPER				2	S		Nom	
+36003011	6	dich	PRON	PPER				2	S		Acc	
+36003011	7	nicht	PART	PTKNEG								
+36003011	8	mehr	ADV	ADV								
+36003011	9	all	DET	PIAT								
+36003011	10	dein	DET	PPOSAT					S		Dat	F
+36003011	11	Handlung	NOUN	NN					P		Nom	F
+36003011	12	schämen	VERB	VVINF		Fin	Pres	3	P	Ind		
+36003011	13	müssen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+36003011	14	womit	SCONJ	PWAV								
+36003011	15	du	PRON	PPER				2	S		Nom	
+36003011	16	wider	ADP	PTKVZ								
+36003011	17	mich	PRON	PPER				1	S		Acc	
+36003011	18	übertreten	VERB	VVINF		Inf						
+36003011	19	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+36003011	20	denn	CCONJ	KON								
+36003011	21	alsdann	ADV	ADV								
+36003011	22	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003011	23	ich	PRON	PPER				1	S		Nom	
+36003011	24	dein	DET	PPOSAT					S		Nom	F
+36003011	25	stolz	ADV	ADJD	Pos							
+36003011	26	Frohlockenden	NOUN	NN					S		Nom	N
+36003011	27	aus	ADP	PTKVZ								
+36003011	28	dein	DET	PPOSAT					S		Dat	F
+36003011	29	Mitte	NOUN	NN					S		Nom	F
+36003011	30	wegnehmen	VERB	VVINF		Inf						
+36003011	31	und	CCONJ	KON								
+36003011	32	du	PRON	PPER				2	S		Nom	
+36003011	33	wersten	AUX	VAFIN		Fin	Pres	2	S	Ind		
+36003011	34	fortan	ADV	ADV								
+36003011	35	nicht	PART	PTKNEG								
+36003011	36	mehr	ADV	ADV								
+36003011	37	hoffärtig	ADV	ADJD	Pos							
+36003011	38	sein	AUX	VAINF		Inf						
+36003011	39	auf	ADP	PTKVZ								
+36003011	40	mein	DET	PPOSAT					S		Dat	M
+36003011	41	heilig	ADJ	ADJA	Pos				S		Acc	M
+36003011	42	Berg	NOUN	NN					P		Nom	M
+36003012	1	und	CCONJ	KON								
+36003012	2	ich	PRON	PPER				1	S		Nom	
+36003012	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003012	4	in	ADP	APPR								
+36003012	5	dein	DET	PPOSAT					S		Dat	F
+36003012	6	Mitte	NOUN	NN					S		Nom	F
+36003012	7	ein	DET	ART					S		Nom	N
+36003012	8	elend	ADJ	ADJA	Pos				S		Nom	N
+36003012	9	und	CCONJ	KON								
+36003012	10	arm	ADJ	ADJA	Pos				S		Nom	N
+36003012	11	Volk	NOUN	NN					S		Nom	N
+36003012	12	übriglassen	VERB	VVINF		Inf						
+36003012	13	und	CCONJ	KON								
+36003012	14	sie	PRON	PPER				3	P		Nom	
+36003012	15	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003012	16	auf	ADP	PTKVZ								
+36003012	17	der	DET	ART					S		Acc	M
+36003012	18	Name	NOUN	NN					P		Nom	M
+36003012	19	Jahwe	PROPN	NE					S		Gen	
+36003012	20	vertrauen	VERB	VVINF		Inf						
+36003013	1	der	DET	ART					S		Nom	M
+36003013	2	Überrest	NOUN	NN					S		Nom	M
+36003013	3	Israel	PROPN	NE					S		Gen	N
+36003013	4	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003013	5	kein	DET	PIAT					S		Nom	N
+36003013	6	Unrecht	NOUN	NN					S		Nom	N
+36003013	7	tun	VERB	VVINF		Inf						
+36003013	8	und	CCONJ	KON								
+36003013	9	kein	DET	PIAT					S		Nom	F
+36003013	10	Lüge	NOUN	NN					S		Nom	F
+36003013	11	reden	VERB	VVINF		Inf						
+36003013	12	und	CCONJ	KON								
+36003013	13	in	ADP	APPR								
+36003013	14	ihr	DET	PPOSAT					S		Dat	N
+36003013	15	Mund	NOUN	NN					S		Acc	M
+36003013	16	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003013	17	kein	DET	PIAT					S		Nom	F
+36003013	18	Zunge	NOUN	NN					S		Nom	F
+36003013	19	der	DET	ART					S		Gen	M
+36003013	20	Truge	NOUN	NN					S		Nom	M
+36003013	21	finden	VERB	VVPP		Part						
+36003013	22	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003013	23	denn	CCONJ	KON								
+36003013	24	sie	PRON	PPER				3	P		Nom	
+36003013	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003013	26	weiden	VERB	VVINF		Inf						
+36003013	27	und	CCONJ	KON								
+36003013	28	lagern	VERB	VVINF		Inf						
+36003013	29	und	CCONJ	KON								
+36003013	30	niemand	PRON	PIS					S		Nom	M
+36003013	31	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003013	32	sie	PRON	PPER				3	P		Nom	
+36003013	33	aufschrecken	VERB	VVINF		Inf						
+36003014	1	Jubele	NOUN	NN					P		Nom	N
+36003014	2	Tochter	NOUN	NN					S		Nom	F
+36003014	3	Zion	PROPN	NE					S		Nom	F
+36003014	4	Jauchze	PROPN	NE					S		Nom	F
+36003014	5	Israel	PROPN	NE					S		Nom	N
+36003014	6	freuen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+36003014	7	dich	PRON	PPER				2	S		Acc	
+36003014	8	und	CCONJ	KON								
+36003014	9	Frohlocke	NOUN	NN					P		Nom	M
+36003014	10	von	ADP	APPR								
+36003014	11	ganzem	PRON	VVPP					S		Dat	M
+36003014	12	Herz	NOUN	NN					S		Nom	N
+36003014	13	Tochter	NOUN	NN					S		Nom	F
+36003014	14	Jerusalem	PROPN	NE					S		Nom	N
+36003015	1	Jahwe	NOUN	NN					S		Nom	M
+36003015	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003015	3	dein	DET	PPOSAT					S		Nom	F
+36003015	4	Gericht	NOUN	NN					P		Nom	N
+36003015	5	wegnehmen	VERB	VVPP		Part						
+36003015	6	dein	DET	PPOSAT					S		Acc	M
+36003015	7	Feind	NOUN	NN					S		Nom	M
+36003015	8	wegfegen	VERB	VVPP		Part						
+36003015	9	der	DET	ART					S		Nom	M
+36003015	10	König	NOUN	NN					S		Nom	M
+36003015	11	Israel	PROPN	NE					S		Gen	N
+36003015	12	Jahwe	NOUN	NN					S		Nom	M
+36003015	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003015	14	in	ADP	APPR								
+36003015	15	dein	DET	PPOSAT					S		Dat	F
+36003015	16	Mitte	NOUN	NN					S		Nom	F
+36003015	17	du	PRON	PPER				2	S		Nom	
+36003015	18	wersten	AUX	VAFIN		Fin	Pres	2	S	Ind		
+36003015	19	kein	DET	PIAT					S		Nom	N
+36003015	20	Unglück	NOUN	NN					S		Nom	N
+36003015	21	mehr	ADV	ADV								
+36003015	22	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+36003016	1	an	ADP	APPR								
+36003016	2	jener	DET	PDAT					S		Dat	N
+36003016	3	Tag	NOUN	NN					P		Nom	M
+36003016	4	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003016	5	zu	ADP	PTKVZ								
+36003016	6	Jerusalem	PROPN	NE					S		Nom	N
+36003016	7	sagen	VERB	VVPP		Part						
+36003016	8	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+36003016	9	Fürchte	VERB	NN		Fin	Pres	3	S	Sub		
+36003016	10	dich	PRON	PPER				2	S		Acc	
+36003016	11	nicht	PART	PTKNEG								
+36003016	12	Zion	PROPN	NE					S		Nom	F
+36003016	13	laß	VERB	VVIMP				2	S	Imp		
+36003016	14	dein	DET	PPOSAT					S		Nom	F
+36003016	15	Hand	NOUN	NN					P		Nom	F
+36003016	16	nicht	PART	PTKNEG								
+36003016	17	erschlaffen	VERB	VVINF		Inf						
+36003017	1	Jahwe	NOUN	NN					S		Nom	M
+36003017	2	dein	DET	PPER					S		Nom	N
+36003017	3	Gott	NOUN	NN					S		Nom	M
+36003017	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+36003017	5	in	ADP	APPR								
+36003017	6	dein	DET	PPOSAT					S		Dat	F
+36003017	7	Mitte	NOUN	NN					S		Nom	F
+36003017	8	ein	DET	ART					S		Nom	N
+36003017	9	rettend	ADJ	ADJA	Pos				S		Nom	M
+36003017	10	Held	NOUN	NN					S		Nom	M
+36003017	11	er	PRON	PPER				3	S		Nom	M
+36003017	12	freuen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003017	13	sich	PRON	PRF				3	S		Acc	
+36003017	14	über	ADP	APPR								
+36003017	15	dich	PRON	PPER				2	S		Acc	
+36003017	16	mit	ADP	APPR								
+36003017	17	Wonne	NOUN	NN					S		Nom	F
+36003017	18	er	PRON	PPER				3	S		Nom	M
+36003017	19	schweigen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003017	20	in	ADP	APPR								
+36003017	21	sein	DET	PPOSAT					S		Dat	F
+36003017	22	Liebe	NOUN	NN					S		Nom	F
+36003017	23	frohlocken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003017	24	über	ADP	APPR								
+36003017	25	dich	PRON	PPER				2	S		Acc	
+36003017	26	mit	ADP	APPR								
+36003017	27	Jubel	NOUN	NN					S		Nom	M
+36003018	1	der	DET	ART					S		Nom	F
+36003018	2	wegen	ADP	APPR								
+36003018	3	der	DET	ART					S		Nom	M
+36003018	4	Festversammlung	NOUN	NN					S		Nom	F
+36003018	5	Trauernden	NOUN	NN					P		Nom	
+36003018	6	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003018	7	ich	PRON	PPER				1	S		Nom	
+36003018	8	sammeln	VERB	VVINF		Inf						
+36003018	9	sie	PRON	PPER				3	P		Nom	
+36003018	10	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+36003018	11	aus	ADP	PTKVZ								
+36003018	12	dir	PRON	PPER				2	S		Dat	
+36003018	13	Schmach	NOUN	NN					S		Nom	M
+36003018	14	lasten	VERB	VVFIN		Fin	Past	3	S	Ind		
+36003018	15	auf	ADP	PTKVZ								
+36003018	16	ihnen	PRON	PPER				3	P		Dat	
+36003019	1	sehen	VERB	VVIMP				2	S	Imp		
+36003019	2	ich	PRON	PPER				1	S		Nom	
+36003019	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003019	4	zu	ADP	PTKVZ								
+36003019	5	jener	DET	PDAT					S		Nom	M
+36003019	6	Zeit	NOUN	NN					S		Nom	F
+36003019	7	handeln	VERB	VVINF		Inf						
+36003019	8	mit	ADP	APPR								
+36003019	9	aller	DET	PIS					P		Dat	
+36003019	10	dein	DET	PPOSAT					S		Acc	M
+36003019	11	Bedrücker	NOUN	NN					P		Nom	F
+36003019	12	und	CCONJ	KON								
+36003019	13	der	DET	ART					S		Nom	F
+36003019	14	Hinkende	NOUN	NN					P		Nom	F
+36003019	15	retten	VERB	VVINF		Inf						
+36003019	16	und	CCONJ	KON								
+36003019	17	der	DET	ART					S		Nom	F
+36003019	18	vertriebener	NOUN	NN					P		Nom	
+36003019	19	sammeln	VERB	VVINF		Inf						
+36003019	20	und	CCONJ	KON								
+36003019	21	ich	PRON	PPER				1	S		Nom	
+36003019	22	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003019	23	sie	PRON	PPER				3	P		Nom	
+36003019	24	zu	ADP	APPRART					S		Dat	N
+36003019	25	Lobe	PROPN	NN					S		Nom	
+36003019	26	und	CCONJ	KON								
+36003019	27	zu	ADP	APPRART					S		Dat	N
+36003019	28	Name	NOUN	NN					P		Nom	M
+36003019	29	machen	VERB	VVINF		Inf						
+36003019	30	in	ADP	APPR								
+36003019	31	aller	DET	PIS					P		Dat	
+36003019	32	Land	NOUN	NN					P		Dat	N
+36003019	33	ihr	DET	PPOSAT					S		Dat	F
+36003019	34	Schmach	NOUN	NN					S		Nom	M
+36003020	1	in	ADP	APPR								
+36003020	2	jener	DET	PDAT					S		Nom	M
+36003020	3	Zeit	NOUN	NN					S		Nom	F
+36003020	4	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003020	5	ich	PRON	PPER				1	S		Nom	
+36003020	6	euch	PRON	PPER				2	P		Dat	
+36003020	7	Herbeibringe	NOUN	NN					P		Nom	F
+36003020	8	und	CCONJ	KON								
+36003020	9	zu	ADP	PTKVZ								
+36003020	10	der	DET	ART					S		Nom	M
+36003020	11	Zeit	NOUN	NN					S		Nom	F
+36003020	12	euch	PRON	PPER				2	P		Dat	
+36003020	13	sammeln	VERB	VVINF		Inf						
+36003020	14	denn	CCONJ	KON								
+36003020	15	ich	PRON	PPER				1	S		Nom	
+36003020	16	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003020	17	euch	PRON	PPER				2	P		Dat	
+36003020	18	zu	ADP	APPRART					S		Dat	N
+36003020	19	Name	NOUN	NN					P		Nom	M
+36003020	20	und	CCONJ	KON								
+36003020	21	zu	ADP	APPRART					S		Dat	N
+36003020	22	Lobe	PROPN	NN					S		Nom	
+36003020	23	machen	VERB	VVINF		Inf						
+36003020	24	unter	ADP	APPR								
+36003020	25	aller	DET	PIS					P		Dat	
+36003020	26	Volk	NOUN	NN					P		Dat	N
+36003020	27	der	DET	ART					S		Nom	M
+36003020	28	Erde	NOUN	NN					S		Nom	F
+36003020	29	wenn	SCONJ	KOUS								
+36003020	30	ich	PRON	PPER				1	S		Nom	
+36003020	31	eure	DET	PPOSAT					S		Nom	F
+36003020	32	Gefangenschaft	NOUN	NN					S		Nom	F
+36003020	33	vor	ADP	APPR								
+36003020	34	euren	DET	PPOSAT					S		Acc	M
+36003020	35	Auge	NOUN	NN					P		Nom	N
+36003020	36	wenden	VERB	VVINF		Inf						
+36003020	37	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+36003020	38	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+36003020	39	Jahwe	NOUN	NN					S		Nom	M

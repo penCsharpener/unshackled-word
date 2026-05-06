@@ -1,0 +1,1763 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+29001001	1	der	DET	ART					S		Nom	N
+29001001	2	Wort	NOUN	NN					S		Nom	N
+29001001	3	Jahwe	PROPN	NE					S		Gen	
+29001001	4	welcher	DET	PWAT					S		Acc	N
+29001001	5	zu	ADP	PTKVZ								
+29001001	6	Joel	PROPN	NE					S		Nom	M
+29001001	7	der	DET	ART					S		Dat	M
+29001001	8	Sohn	NOUN	NN					S		Acc	M
+29001001	9	Pethuel	PROPN	NN					S		Gen	
+29001001	10	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+29001002	1	höret	NOUN	NN					S		Nom	N
+29001002	2	dieser	DET	PDAT					S		Nom	N
+29001002	3	ihr	PRON	PPOSAT				3	S		Dat	F
+29001002	4	alte	NOUN	ADJA					P		Nom	
+29001002	5	und	CCONJ	KON								
+29001002	6	nehmeen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001002	7	es	PRON	PPER				3	S		Nom	N
+29001002	8	zu	ADP	PTKVZ								
+29001002	9	Ohr	NOUN	NN					P		Nom	N
+29001002	10	aller	PRON	PIS					P		Nom	
+29001002	11	ihr	PRON	PPOSAT				3	S		Dat	F
+29001002	12	Bewohner	NOUN	NN					P		Nom	M
+29001002	13	der	DET	ART					S		Gen	M
+29001002	14	Land	NOUN	NN					S		Gen	N
+29001002	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001002	16	solcher	DET	PIAT					S		Nom	N
+29001002	17	in	ADP	APPR								
+29001002	18	euren	DET	PPOSAT					S		Acc	M
+29001002	19	Tag	NOUN	NN					P		Dat	M
+29001002	20	geschehen	VERB	VVPP		Part						
+29001002	21	oder	CCONJ	KON								
+29001002	22	in	ADP	APPR								
+29001002	23	der	DET	ART					S		Acc	M
+29001002	24	Tag	NOUN	NN					P		Dat	M
+29001002	25	eurer	PRON	PPOSAT							Gen	
+29001002	26	Vater	NOUN	NN					P		Nom	M
+29001003	1	Erzählet	PROPN	NE					S		Nom	
+29001003	2	davon	ADV	PROAV								
+29001003	3	euren	DET	PPOSAT					S		Acc	M
+29001003	4	Kind	NOUN	NN					P		Dat	N
+29001003	5	und	CCONJ	KON								
+29001003	6	eure	DET	PPOSAT					S		Nom	F
+29001003	7	Kind	NOUN	NN					P		Nom	N
+29001003	8	ihr	DET	PPOSAT					S		Acc	M
+29001003	9	Kind	NOUN	NN					P		Dat	N
+29001003	10	und	CCONJ	KON								
+29001003	11	ihr	DET	PPOSAT					S		Nom	F
+29001003	12	Kind	NOUN	NN					P		Nom	N
+29001003	13	der	DET	ART					S		Dat	M
+29001003	14	folgend	ADJ	ADJA	Pos				S		Acc	M
+29001003	15	Geschlecht	NOUN	NN					S		Nom	N
+29001004	1	was	PRON	PWS					S		Nom	N
+29001004	2	der	DET	ART					S		Nom	M
+29001004	3	Nager	NOUN	NN					P		Nom	M
+29001004	4	übriggelassen	VERB	VVPP		Part						
+29001004	5	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+29001004	6	fraß	VERB	VVFIN		Fin	Past	3	S	Ind		
+29001004	7	der	DET	ART					S		Nom	F
+29001004	8	Heuschrecke	NOUN	NN					S		Nom	F
+29001004	9	und	CCONJ	KON								
+29001004	10	was	PRON	PWS					S		Nom	N
+29001004	11	der	DET	ART					S		Nom	F
+29001004	12	Heuschrecke	NOUN	NN					S		Nom	F
+29001004	13	übriggelassen	VERB	VVPP		Part						
+29001004	14	fraß	VERB	VVFIN		Fin	Past	3	S	Ind		
+29001004	15	der	DET	ART					S		Nom	M
+29001004	16	Abfresser	X	FM								
+29001004	17	und	CCONJ	KON								
+29001004	18	was	PRON	PWS					S		Nom	N
+29001004	19	der	DET	ART					S		Nom	M
+29001004	20	Abfresser	X	FM								
+29001004	21	übriggelassen	VERB	VVPP		Part						
+29001004	22	fraß	VERB	VVFIN		Fin	Past	3	S	Ind		
+29001004	23	der	DET	ART					S		Nom	M
+29001004	24	Vertilger	PROPN	NE					S		Nom	M
+29001005	1	Wachet	PROPN	NE					S		Nom	F
+29001005	2	auf	ADP	PTKVZ								
+29001005	3	ihr	PRON	PPOSAT				3	S		Dat	F
+29001005	4	Trunken	NOUN	NN					P		Nom	F
+29001005	5	und	CCONJ	KON								
+29001005	6	weinet	ADV	ADJD	Pos							
+29001005	7	und	CCONJ	KON								
+29001005	8	Heulet	PROPN	NE					S		Nom	
+29001005	9	aller	PRON	PIS					P		Nom	
+29001005	10	ihr	PRON	PPOSAT				3	S		Dat	F
+29001005	11	Weinsäufer	PROPN	NE					S		Nom	
+29001005	12	über	ADP	APPR								
+29001005	13	der	DET	ART					S		Acc	M
+29001005	14	Most	NOUN	FM					S		Nom	M
+29001005	15	weil	SCONJ	KOUS								
+29001005	16	er	PRON	PPER				3	S		Nom	M
+29001005	17	wegnehmen	VERB	VVPP		Part						
+29001005	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001005	19	von	ADP	APPR								
+29001005	20	eurer	DET	PPOSAT					S		Dat	M
+29001005	21	Mund	NOUN	NN					S		Acc	M
+29001006	1	denn	CCONJ	KON								
+29001006	2	ein	DET	ART					S		Nom	F
+29001006	3	Nation	NOUN	NN					S		Nom	F
+29001006	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001006	5	über	ADP	APPR								
+29001006	6	mein	DET	PPOSAT					S		Nom	N
+29001006	7	Land	NOUN	NN					S		Nom	N
+29001006	8	Heraufgezog	NOUN	NN					P		Nom	M
+29001006	9	mächtig	ADV	ADJD	Pos							
+29001006	10	und	CCONJ	KON								
+29001006	11	ohne	ADP	APPR								
+29001006	12	Zahl	NOUN	NN					S		Nom	F
+29001006	13	ihr	DET	PPOSAT					S		Nom	F
+29001006	14	Zahn	NOUN	NN					P		Nom	M
+29001006	15	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001006	16	Löwenzähne	NOUN	NN					S		Nom	F
+29001006	17	und	CCONJ	KON								
+29001006	18	sie	PRON	PPER				3	P		Nom	
+29001006	19	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001006	20	der	DET	ART					S		Nom	N
+29001006	21	Gebiß	NOUN	NN					S		Nom	N
+29001006	22	ein	PRON	ART					S		Nom	M
+29001006	23	Löwin	PROPN	NE					S		Nom	F
+29001007	1	sie	PRON	PPER				3	P		Nom	
+29001007	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001007	3	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29001007	4	Weinstock	NOUN	XY					S		Nom	M
+29001007	5	zu	ADP	PTKVZ								
+29001007	6	ein	PRON	ART					S		Nom	M
+29001007	7	Wüste	NOUN	NN					S		Nom	F
+29001007	8	machen	VERB	VVPP		Part						
+29001007	9	und	CCONJ	KON								
+29001007	10	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29001007	11	Feigenbaum	NOUN	NN					S		Nom	M
+29001007	12	zerknickt	VERB	VVPP		Part						
+29001007	13	sie	PRON	PPER				3	P		Nom	
+29001007	14	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001007	15	ihn	PRON	PPER				3	S		Acc	M
+29001007	16	gänzlich	ADV	ADJD	Pos							
+29001007	17	abgeschalten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001007	18	und	CCONJ	KON								
+29001007	19	hinwerfen	VERB	VVPP		Part						
+29001007	20	sein	DET	PPOSAT					S		Nom	F
+29001007	21	Ranke	NOUN	NN					P		Nom	F
+29001007	22	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001007	23	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001007	24	werden	AUX	VAPP		Part						
+29001008	1	Wehklage	NOUN	NN					S		Nom	F
+29001008	2	wie	ADP	KOKOM								
+29001008	3	ein	DET	ART					S		Nom	F
+29001008	4	Jungfrau	NOUN	NN					S		Nom	F
+29001008	5	der	DET	ART					S		Nom	F
+29001008	6	mit	ADP	APPR								
+29001008	7	Sacktuch	NOUN	NE					S		Nom	N
+29001008	8	umgürten	VERB	VVPP		Part						
+29001008	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001008	10	wegen	ADP	APPR								
+29001008	11	der	DET	ART					S		Gen	M
+29001008	12	Gatt	NOUN	NN					P		Nom	M
+29001008	13	ihr	DET	PPOSAT					S		Dat	F
+29001008	14	Jugend	NOUN	NN					S		Nom	F
+29001009	1	Speisopfer	NOUN	NN					P		Nom	N
+29001009	2	und	CCONJ	KON								
+29001009	3	Trankopfer	NOUN	NN					P		Nom	N
+29001009	4	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001009	5	wegnehmen	VERB	VVPP		Part						
+29001009	6	von	ADP	APPRART					S		Dat	N
+29001009	7	Haus	NOUN	NN					P		Nom	N
+29001009	8	Jahwe	PROPN	NE					S		Gen	
+29001009	9	es	PRON	PPER				3	S		Nom	N
+29001009	10	trauern	VERB	VVINF		Inf						
+29001009	11	der	DET	ART					S		Nom	F
+29001009	12	Priester	NOUN	NN					P		Nom	M
+29001009	13	der	DET	ART					S		Nom	F
+29001009	14	Diener	NOUN	NN					P		Nom	M
+29001009	15	Jahwe	PROPN	NE					S		Gen	
+29001010	1	der	DET	ART					S		Nom	N
+29001010	2	Feld	NOUN	NN					S		Nom	N
+29001010	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001010	4	verwüsten	VERB	VVPP		Part						
+29001010	5	es	PRON	PPER				3	S		Nom	N
+29001010	6	trauern	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001010	7	der	DET	ART					S		Nom	M
+29001010	8	Erdboden	NOUN	NN					S		Nom	M
+29001010	9	denn	CCONJ	KON								
+29001010	10	der	DET	ART					S		Nom	N
+29001010	11	Korn	NOUN	NN					S		Nom	N
+29001010	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001010	13	verwüsten	VERB	VVPP		Part						
+29001010	14	der	DET	ART					S		Nom	M
+29001010	15	Most	NOUN	FM					S		Nom	M
+29001010	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001010	17	vertrocknen	ADV	ADJD	Pos							
+29001010	18	verwelkn	VERB	VVPP		Fin	Pres	3	S	Ind		
+29001010	19	der	DET	ART					S		Nom	N
+29001010	20	Öl	NOUN	NN					S		Nom	N
+29001011	1	Seid	NOUN	VAFIN					S		Acc	N
+29001011	2	beschämt	ADV	ADJD	Pos							
+29001011	3	ihr	PRON	PPOSAT				3	S		Dat	F
+29001011	4	Ackerleute	NOUN	NN					P		Nom	
+29001011	5	Heulet	PROPN	NE					S		Nom	
+29001011	6	ihr	PRON	PPOSAT				3	S		Dat	F
+29001011	7	Winzer	NOUN	NN					P		Nom	M
+29001011	8	über	ADP	APPR								
+29001011	9	der	DET	ART					S		Acc	M
+29001011	10	weizen	NOUN	NN					S		Nom	M
+29001011	11	und	CCONJ	KON								
+29001011	12	über	ADP	APPR								
+29001011	13	der	DET	ART					S		Nom	F
+29001011	14	Gerste	NOUN	ADV					S		Nom	F
+29001011	15	denn	CCONJ	KON								
+29001011	16	der	DET	ART					S		Nom	F
+29001011	17	Ernte	NOUN	NN					S		Nom	F
+29001011	18	der	DET	ART					S		Gen	M
+29001011	19	Felde	NOUN	NE					S		Nom	N
+29001011	20	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001011	21	zu	ADP	PTKVZ								
+29001011	22	Grund	NOUN	NN					S		Nom	M
+29001011	23	gehen	VERB	VVPP		Part						
+29001012	1	der	DET	ART					S		Nom	M
+29001012	2	Weinstock	NOUN	XY					S		Nom	M
+29001012	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001012	4	verdorren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001012	5	und	CCONJ	KON								
+29001012	6	der	DET	ART					S		Nom	M
+29001012	7	Feigenbaum	NOUN	NN					S		Nom	M
+29001012	8	verwelkn	VERB	VVPP		Fin	Pres	3	S	Ind		
+29001012	9	Granate	NOUN	NN					S		Nom	F
+29001012	10	auch	ADV	ADV								
+29001012	11	Palme	NOUN	NN					S		Nom	F
+29001012	12	und	CCONJ	KON								
+29001012	13	Apfelbaum	NOUN	NN					S		Nom	M
+29001012	14	aller	PRON	PIS					P		Nom	
+29001012	15	Baum	NOUN	NN					P		Nom	M
+29001012	16	der	DET	ART					S		Gen	M
+29001012	17	Felde	NOUN	NE					S		Nom	N
+29001012	18	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001012	19	verdorren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001012	20	ja	ADV	ADV								
+29001012	21	verdorren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001012	22	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001012	23	der	DET	ART					S		Nom	F
+29001012	24	Freude	NOUN	NN					S		Nom	F
+29001012	25	von	ADP	APPR								
+29001012	26	der	DET	ART					S		Acc	M
+29001012	27	Menschenkindern	NOUN	NN					P		Dat	M
+29001013	1	umgürtet	VERB	VVPP		Part						
+29001013	2	euch	PRON	PPER				2	P		Dat	
+29001013	3	und	CCONJ	KON								
+29001013	4	Wehklaget	NOUN	NN					S		Nom	N
+29001013	5	ihr	PRON	PPOSAT				3	S		Dat	F
+29001013	6	Priester	NOUN	NN					P		Nom	M
+29001013	7	Heulet	PROPN	NE					S		Nom	
+29001013	8	ihr	PRON	PPOSAT				3	S		Dat	F
+29001013	9	Diener	NOUN	NN					P		Nom	M
+29001013	10	der	DET	ART					S		Gen	M
+29001013	11	Altar	NOUN	NN					P		Nom	N
+29001013	12	kommet	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29001013	13	übernachten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001013	14	in	ADP	APPR								
+29001013	15	Sacktuch	NOUN	NE					S		Nom	N
+29001013	16	ihr	PRON	PPOSAT				3	S		Dat	F
+29001013	17	Diener	NOUN	NN					P		Nom	M
+29001013	18	meiner	DET	PPOSAT					S		Gen	N
+29001013	19	Gott	NOUN	NN					S		Gen	M
+29001013	20	denn	CCONJ	KON								
+29001013	21	Speisopfer	NOUN	NN					P		Nom	N
+29001013	22	und	CCONJ	KON								
+29001013	23	Trankopfer	NOUN	NN					P		Nom	N
+29001013	24	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001013	25	der	DET	ART					S		Dat	M
+29001013	26	Haus	NOUN	NN					P		Nom	N
+29001013	27	eures	DET	PPOSAT					S		Nom	N
+29001013	28	Gott	NOUN	NN					S		Gen	M
+29001013	29	entziehen	VERB	VVPP		Part						
+29001014	1	Heiliget	NOUN	NN					S		Nom	N
+29001014	2	ein	DET	ART					S		Nom	N
+29001014	3	Fasten	NOUN	NN					S		Nom	N
+29001014	4	Rufet	NOUN	NN					S		Nom	N
+29001014	5	ein	DET	ART					S		Nom	F
+29001014	6	Festversammlung	NOUN	NN					S		Nom	F
+29001014	7	aus	ADP	PTKVZ								
+29001014	8	versammeln	VERB	VVPP		Part						
+29001014	9	der	DET	ART					S		Nom	F
+29001014	10	Ältesten	NOUN	NN					P		Nom	M
+29001014	11	aller	PRON	PIS					P		Nom	
+29001014	12	Bewohner	NOUN	NN					P		Nom	M
+29001014	13	der	DET	ART					S		Gen	M
+29001014	14	Land	NOUN	NN					S		Gen	N
+29001014	15	zu	ADP	APPRART					S		Dat	N
+29001014	16	Haus	NOUN	NN					P		Nom	N
+29001014	17	Jahwe	PROPN	NE					S		Gen	
+29001014	18	eures	DET	PPOSAT					S		Nom	N
+29001014	19	Gott	NOUN	NN					S		Gen	M
+29001014	20	und	CCONJ	KON								
+29001014	21	Schreiet	NOUN	NN					S		Nom	N
+29001014	22	zu	ADP	PTKVZ								
+29001014	23	Jahwe	NOUN	NN					S		Nom	M
+29001015	1	ach	INTJ	ITJ								
+29001015	2	über	ADP	APPR								
+29001015	3	der	DET	ART					S		Acc	M
+29001015	4	Tag	NOUN	NN					S		Nom	M
+29001015	5	denn	CCONJ	KON								
+29001015	6	nah	ADP	APPR								
+29001015	7	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001015	8	der	DET	ART					S		Nom	M
+29001015	9	Tag	NOUN	NN					S		Nom	M
+29001015	10	Jahwe	PROPN	NE					S		Gen	
+29001015	11	und	CCONJ	KON								
+29001015	12	er	PRON	PPER				3	S		Nom	M
+29001015	13	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001015	14	wie	ADP	KOKOM								
+29001015	15	ein	DET	ART					S		Nom	F
+29001015	16	Verwüstung	NOUN	NN					S		Nom	F
+29001015	17	von	ADP	APPRART					S		Dat	N
+29001015	18	allmächtige	NOUN	NN					P		Nom	
+29001016	1	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001016	2	nicht	PART	PTKNEG								
+29001016	3	der	DET	ART					S		Nom	F
+29001016	4	Speise	NOUN	NN					S		Nom	F
+29001016	5	vor	ADP	APPR								
+29001016	6	unser	DET	PPOSAT					S		Acc	M
+29001016	7	Auge	NOUN	NN					P		Nom	N
+29001016	8	wegnehmen	VERB	VVPP		Part						
+29001016	9	Freude	NOUN	NN					S		Nom	F
+29001016	10	und	CCONJ	KON								
+29001016	11	frohlocken	NOUN	NN					S		Nom	N
+29001016	12	von	ADP	APPR								
+29001016	13	der	DET	ART					S		Dat	M
+29001016	14	Haus	NOUN	NN					P		Nom	N
+29001016	15	unser	DET	PPOSAT					S		Gen	M
+29001016	16	Gott	NOUN	NN					S		Gen	M
+29001017	1	vermodert	PROPN	NE					S		Nom	
+29001017	2	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001017	3	der	DET	ART					S		Nom	F
+29001017	4	Samenkörner	NOUN	NN					P		Nom	N
+29001017	5	unter	ADP	APPR								
+29001017	6	ihr	DET	PPOSAT					S		Acc	M
+29001017	7	Scholle	NOUN	NN					P		Nom	F
+29001017	8	veröden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001017	9	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001017	10	der	DET	ART					S		Nom	F
+29001017	11	Vorratshäuser	PROPN	NE					S		Nom	
+29001017	12	zerfallen	VERB	VVINF		Inf						
+29001017	13	der	DET	ART					S		Nom	F
+29001017	14	Scheune	NOUN	NN					P		Nom	F
+29001017	15	denn	CCONJ	KON								
+29001017	16	der	DET	ART					S		Nom	N
+29001017	17	Korn	NOUN	NN					S		Nom	N
+29001017	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001017	19	verdorren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001018	1	wie	ADV	PWAV								
+29001018	2	stöhnen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29001018	3	der	DET	ART					S		Nom	N
+29001018	4	Vieh	NOUN	NN					S		Nom	N
+29001018	5	der	DET	ART					S		Nom	F
+29001018	6	Rinderherde	NOUN	NN					P		Nom	F
+29001018	7	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001018	8	bestürzt	ADV	ADJD	Pos							
+29001018	9	weil	SCONJ	KOUS								
+29001018	10	sie	PRON	PPER				3	P		Nom	
+29001018	11	kein	DET	PIAT					S		Nom	F
+29001018	12	Weide	NOUN	NN					S		Nom	F
+29001018	13	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001018	14	auch	ADV	ADV								
+29001018	15	der	DET	ART					S		Nom	F
+29001018	16	Kleinviehherden	NOUN	NN					P		Nom	M
+29001018	17	büßen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29001019	1	zu	ADP	APPR								
+29001019	2	dir	PRON	PPER				2	S		Dat	
+29001019	3	Jahwe	NOUN	NN					S		Nom	M
+29001019	4	rufen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29001019	5	ich	PRON	PPER				1	S		Nom	
+29001019	6	denn	CCONJ	KON								
+29001019	7	ein	DET	ART					S		Nom	N
+29001019	8	Feuer	NOUN	NN					S		Nom	N
+29001019	9	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001019	10	der	DET	ART					S		Nom	F
+29001019	11	Aue	NOUN	NN					P		Nom	F
+29001019	12	der	DET	ART					S		Nom	M
+29001019	13	Steppe	NOUN	NN					S		Nom	F
+29001019	14	verzehren	VERB	VVPP		Part						
+29001019	15	und	CCONJ	KON								
+29001019	16	ein	DET	ART					S		Nom	F
+29001019	17	Flamme	NOUN	NN					S		Nom	F
+29001019	18	aller	PRON	PIS					P		Nom	
+29001019	19	Baum	NOUN	NN					P		Nom	M
+29001019	20	der	DET	ART					S		Gen	M
+29001019	21	Felde	NOUN	NE					S		Nom	N
+29001019	22	versengen	VERB	VVPP		Part						
+29001020	1	auch	ADV	ADV								
+29001020	2	der	DET	ART					S		Nom	F
+29001020	3	Tier	NOUN	NN					P		Nom	N
+29001020	4	der	DET	ART					S		Gen	M
+29001020	5	Felde	NOUN	NE					S		Nom	N
+29001020	6	schreien	VERB	VVINF		Inf						
+29001020	7	lechzend	ADV	ADJD	Pos							
+29001020	8	zu	ADP	PTKVZ								
+29001020	9	dir	PRON	PPER				2	S		Dat	
+29001020	10	denn	CCONJ	KON								
+29001020	11	vertrocknen	ADV	ADJD	Pos							
+29001020	12	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29001020	13	der	DET	ART					S		Nom	F
+29001020	14	wasserbäche	NOUN	NN					S		Nom	F
+29001020	15	und	CCONJ	KON								
+29001020	16	ein	DET	ART					S		Nom	N
+29001020	17	Feuer	NOUN	NN					S		Nom	N
+29001020	18	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29001020	19	der	DET	ART					S		Nom	F
+29001020	20	Aue	NOUN	NN					P		Nom	F
+29001020	21	der	DET	ART					S		Nom	M
+29001020	22	Steppe	NOUN	NN					S		Nom	F
+29001020	23	verzehren	VERB	VVPP		Part						
+29002001	1	Stoßet	NOUN	NN					S		Nom	F
+29002001	2	in	ADP	APPR								
+29002001	3	der	DET	ART					S		Nom	F
+29002001	4	Posaune	PROPN	NE					S		Nom	
+29002001	5	auf	ADP	PTKVZ								
+29002001	6	Zion	PROPN	NE					S		Nom	F
+29002001	7	und	CCONJ	KON								
+29002001	8	Blaset	PROPN	NE					S		Nom	
+29002001	9	Lärm	NOUN	NN					S		Nom	M
+29002001	10	auf	ADP	PTKVZ								
+29002001	11	mein	DET	PPOSAT					S		Dat	M
+29002001	12	heilig	ADJ	ADJA	Pos				S		Acc	M
+29002001	13	Berg	NOUN	NN					P		Nom	M
+29002001	14	beben	NOUN	NN					S		Nom	N
+29002001	15	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+29002001	16	aller	PRON	PIS					P		Nom	
+29002001	17	Bewohner	NOUN	NN					P		Nom	M
+29002001	18	der	DET	ART					S		Gen	M
+29002001	19	Land	NOUN	NN					S		Gen	N
+29002001	20	denn	CCONJ	KON								
+29002001	21	es	PRON	PPER				3	S		Nom	N
+29002001	22	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002001	23	der	DET	ART					S		Nom	M
+29002001	24	Tag	NOUN	NN					S		Nom	M
+29002001	25	Jahwe	PROPN	NE					S		Gen	
+29002001	26	denn	CCONJ	KON								
+29002001	27	er	PRON	PPER				3	S		Nom	M
+29002001	28	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002001	29	nah	ADP	APPR								
+29002002	1	ein	DET	ART					S		Nom	N
+29002002	2	Tag	NOUN	NN					S		Nom	M
+29002002	3	der	DET	ART					S		Nom	M
+29002002	4	Finsternis	NOUN	NN					S		Nom	F
+29002002	5	und	CCONJ	KON								
+29002002	6	der	DET	ART					S		Nom	M
+29002002	7	Dunkelheit	NOUN	NN					S		Nom	F
+29002002	8	ein	DET	ART					S		Nom	N
+29002002	9	Tag	NOUN	NN					S		Nom	M
+29002002	10	der	DET	ART					S		Gen	M
+29002002	11	Gewölk	NOUN	NN					P		Nom	N
+29002002	12	und	CCONJ	KON								
+29002002	13	der	DET	ART					S		Nom	M
+29002002	14	Wolkennacht	NOUN	NN					S		Nom	N
+29002002	15	wie	ADV	PWAV								
+29002002	16	der	DET	ART					S		Nom	F
+29002002	17	Morgendämmerung	NOUN	NN					S		Nom	F
+29002002	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002002	19	es	PRON	PPER				3	S		Nom	N
+29002002	20	ausbreiten	VERB	VVPP		Part						
+29002002	21	über	ADP	APPR								
+29002002	22	der	DET	ART					S		Nom	F
+29002002	23	Berg	NOUN	NN					P		Nom	M
+29002002	24	ein	DET	ART					S		Nom	N
+29002002	25	groß	ADJ	ADJA	Pos				S		Nom	N
+29002002	26	und	CCONJ	KON								
+29002002	27	mächtig	ADJ	ADJA	Pos				S		Nom	N
+29002002	28	Volk	NOUN	NN					S		Nom	N
+29002002	29	desgleichen	ADV	PROAV								
+29002002	30	von	ADP	APPR								
+29002002	31	Ewigkeit	NOUN	NN					S		Nom	F
+29002002	32	her	ADV	ADV								
+29002002	33	nicht	PART	PTKNEG								
+29002002	34	sein	AUX	VAPP		Part						
+29002002	35	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002002	36	und	CCONJ	KON								
+29002002	37	nach	ADP	APPR								
+29002002	38	ihm	PRON	PPER				3	S		Dat	M
+29002002	39	nicht	PART	PTKNEG								
+29002002	40	mehr	ADV	ADV								
+29002002	41	sein	AUX	VAINF		Inf						
+29002002	42	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002002	43	bis	CCONJ	KON								
+29002002	44	in	ADP	APPR								
+29002002	45	der	DET	ART					S		Nom	F
+29002002	46	Jahr	NOUN	NN					P		Nom	N
+29002002	47	der	DET	ART					S		Nom	M
+29002002	48	Geschlecht	NOUN	NN					P		Nom	N
+29002002	49	und	CCONJ	KON								
+29002002	50	Geschlecht	NOUN	NN					P		Nom	N
+29002003	1	vor	ADP	APPR								
+29002003	2	ihm	PRON	PPER				3	S		Dat	M
+29002003	3	her	ADV	ADV								
+29002003	4	verzehren	VERB	VVPP		Part						
+29002003	5	der	DET	ART					S		Nom	N
+29002003	6	Feuer	NOUN	NN					S		Nom	N
+29002003	7	und	CCONJ	KON								
+29002003	8	nach	ADP	APPR								
+29002003	9	ihm	PRON	PPER				3	S		Dat	M
+29002003	10	lodern	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002003	11	der	DET	ART					S		Nom	F
+29002003	12	Flamme	NOUN	NN					S		Nom	F
+29002003	13	vor	ADP	APPR								
+29002003	14	ihm	PRON	PPER				3	S		Dat	M
+29002003	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002003	16	der	DET	ART					S		Nom	N
+29002003	17	Land	NOUN	NN					S		Nom	N
+29002003	18	wie	ADP	KOKOM								
+29002003	19	der	DET	ART					S		Nom	M
+29002003	20	Garten	NOUN	NN					S		Nom	M
+29002003	21	Eden	PROPN	NE					S		Nom	
+29002003	22	und	CCONJ	KON								
+29002003	23	nach	ADP	APPR								
+29002003	24	ihm	PRON	PPER				3	S		Dat	M
+29002003	25	ein	DET	ART					S		Nom	F
+29002003	26	öde	ADV	ADJD	Pos							
+29002003	27	Wüste	NOUN	NN					S		Nom	F
+29002003	28	und	CCONJ	KON								
+29002003	29	auch	ADV	ADV								
+29002003	30	kein	DET	PIAT					S		Nom	F
+29002003	31	Entronnen	NOUN	NN					S		Nom	N
+29002003	32	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002003	33	es	PRON	PPER				3	S		Nom	N
+29002003	34	übrig	ADP	PTKVZ								
+29002004	1	sein	DET	PPOSAT					S		Nom	N
+29002004	2	Aussehen	NOUN	NN					S		Nom	N
+29002004	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002004	4	wie	ADP	KOKOM								
+29002004	5	der	DET	ART					S		Nom	N
+29002004	6	Aussehen	NOUN	NN					S		Nom	N
+29002004	7	von	ADP	APPR								
+29002004	8	rossen	NOUN	NN					S		Nom	N
+29002004	9	und	CCONJ	KON								
+29002004	10	wie	ADP	KOKOM								
+29002004	11	Reitpferd	NOUN	NN					P		Nom	N
+29002004	12	also	ADV	ADV								
+29002004	13	rennen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29002004	14	sie	PRON	PPER				3	P		Nom	
+29002005	1	gleich	ADV	ADV								
+29002005	2	Wagengerassel	NOUN	NN					S		Nom	N
+29002005	3	hüpfen	VERB	VVINF		Inf						
+29002005	4	sie	PRON	PPER				3	P		Nom	
+29002005	5	auf	ADP	PTKVZ								
+29002005	6	der	DET	ART					S		Acc	M
+29002005	7	Gipfel	NOUN	NN					P		Dat	M
+29002005	8	der	DET	ART					S		Nom	M
+29002005	9	Berg	NOUN	NN					P		Nom	M
+29002005	10	gleich	ADV	ADV	Pos							
+29002005	11	der	DET	ART					S		Dat	M
+29002005	12	prasseln	NOUN	NN					S		Nom	N
+29002005	13	der	DET	ART					S		Nom	M
+29002005	14	Feuerflamm	NOUN	NN					P		Nom	N
+29002005	15	welcher	DET	PWAT					S		Nom	F
+29002005	16	Stoppel	NOUN	NN					P		Nom	F
+29002005	17	verzehren	VERB	VVPP		Part						
+29002005	18	sie	PRON	PPER				3	P		Nom	
+29002005	19	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29002005	20	wie	ADP	KOKOM								
+29002005	21	ein	DET	ART					S		Nom	N
+29002005	22	mächtig	ADJ	ADJA	Pos				S		Nom	N
+29002005	23	Volk	NOUN	NN					S		Nom	N
+29002005	24	zu	ADP	APPRART					S		Dat	N
+29002005	25	Kampfe	NOUN	PPER					S		Nom	M
+29002005	26	rüsten	VERB	VVPP		Part						
+29002006	1	vor	ADP	APPR								
+29002006	2	ihm	PRON	PPER				3	S		Dat	M
+29002006	3	zittern	VERB	VVINF		Inf						
+29002006	4	der	DET	ART					S		Nom	F
+29002006	5	Volk	NOUN	NN					P		Nom	N
+29002006	6	aller	PRON	PIS					P		Nom	
+29002006	7	Angesichter	NOUN	NN					S		Nom	F
+29002006	8	erblassen	VERB	VVINF		Inf						
+29002007	1	sie	PRON	PPER				3	P		Nom	
+29002007	2	rennen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29002007	3	wie	ADP	KOKOM								
+29002007	4	Held	NOUN	NN					P		Nom	M
+29002007	5	wie	ADP	KOKOM								
+29002007	6	Kriegsleut	NOUN	NN					P		Nom	M
+29002007	7	ersteigen	VERB	VVINF		Inf						
+29002007	8	sie	PRON	PPER				3	P		Nom	
+29002007	9	der	DET	ART					S		Nom	F
+29002007	10	Mauer	NOUN	NN					S		Nom	F
+29002007	11	und	CCONJ	KON								
+29002007	12	sie	PRON	PPER				3	P		Nom	
+29002007	13	ziehen	VERB	VVINF		Inf						
+29002007	14	ein	DET	ART					S		Nom	N
+29002007	15	jeder	PRON	PIS					S		Nom	M
+29002007	16	auf	ADP	PTKVZ								
+29002007	17	sein	DET	PPOSAT					S		Dat	M
+29002007	18	Weg	NOUN	NN					P		Acc	M
+29002007	19	und	CCONJ	KON								
+29002007	20	ihr	DET	PPOSAT					S		Nom	F
+29002007	21	Pfad	NOUN	NN					P		Nom	M
+29002007	22	wechseln	VERB	VVINF		Inf						
+29002007	23	sie	PRON	PPER				3	P		Nom	
+29002007	24	nicht	PART	PTKNEG								
+29002008	1	und	CCONJ	KON								
+29002008	2	keiner	PRON	PIS					S		Nom	M
+29002008	3	drängen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002008	4	der	DET	ART					S		Acc	M
+29002008	5	anderer	PRON	PIS					P		Dat	
+29002008	6	sie	PRON	PPER				3	P		Nom	
+29002008	7	ziehen	VERB	VVINF		Inf						
+29002008	8	jeder	PRON	PIS					S		Nom	M
+29002008	9	einzeln	ADV	ADJD	Pos							
+29002008	10	auf	ADP	PTKVZ								
+29002008	11	sein	DET	PPOSAT					S		Dat	F
+29002008	12	Bahn	NOUN	NN					S		Nom	F
+29002008	13	und	CCONJ	KON								
+29002008	14	sie	PRON	PPER				3	P		Nom	
+29002008	15	stürzen	VERB	VVINF		Inf						
+29002008	16	zwischen	ADP	APPR								
+29002008	17	der	DET	ART					S		Acc	M
+29002008	18	Waffe	NOUN	NN					P		Nom	F
+29002008	19	Hindurch	ADV	PROAV								
+29002008	20	und	CCONJ	KON								
+29002008	21	verwinden	VERB	VVPP		Part						
+29002008	22	sich	PRON	PRF				3	S		Acc	
+29002008	23	nicht	PART	PTKNEG								
+29002009	1	sie	PRON	PPER				3	P		Nom	
+29002009	2	laufen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002009	3	in	ADP	APPR								
+29002009	4	der	DET	ART					S		Nom	M
+29002009	5	Stadt	NOUN	NN					S		Nom	F
+29002009	6	umher	ADP	PTKVZ								
+29002009	7	rennen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29002009	8	auf	ADP	PTKVZ								
+29002009	9	der	DET	ART					S		Nom	F
+29002009	10	Mauer	NOUN	NN					S		Nom	F
+29002009	11	steigen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002009	12	in	ADP	APPR								
+29002009	13	der	DET	ART					S		Nom	F
+29002009	14	Haus	NOUN	NN					P		Nom	N
+29002009	15	durch	ADP	APPR								
+29002009	16	der	DET	ART					S		Nom	F
+29002009	17	Fenster	NOUN	NN					S		Nom	N
+29002009	18	dringen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002009	19	sie	PRON	PPER				3	P		Nom	
+29002009	20	ein	DET	ART					S		Nom	N
+29002009	21	wie	ADP	KOKOM								
+29002009	22	der	DET	ART					S		Nom	M
+29002009	23	Dieb	NOUN	NN					S		Nom	M
+29002010	1	vor	ADP	APPR								
+29002010	2	ihnen	PRON	PPER				3	P		Dat	
+29002010	3	erbeben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002010	4	der	DET	ART					S		Nom	F
+29002010	5	Erde	NOUN	NN					S		Nom	F
+29002010	6	erzittern	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002010	7	der	DET	ART					S		Nom	M
+29002010	8	Himmel	NOUN	NN					S		Nom	M
+29002010	9	Sonne	NOUN	NN					S		Nom	F
+29002010	10	und	CCONJ	KON								
+29002010	11	Mond	NOUN	NN					S		Nom	M
+29002010	12	verfinstern	VERB	VVINF		Inf						
+29002010	13	sich	PRON	PRF				3	S		Acc	
+29002010	14	und	CCONJ	KON								
+29002010	15	der	DET	ART					S		Nom	F
+29002010	16	Stern	NOUN	NN					P		Nom	M
+29002010	17	verhalten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002010	18	ihr	DET	PPOSAT					S		Acc	M
+29002010	19	Glanz	NOUN	NN					S		Acc	M
+29002011	1	und	CCONJ	KON								
+29002011	2	Jahwe	NOUN	NN					S		Nom	M
+29002011	3	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002011	4	vor	ADP	APPR								
+29002011	5	sein	DET	PPOSAT					S		Dat	M
+29002011	6	Heer	NOUN	NN					P		Nom	M
+29002011	7	her	ADV	ADV								
+29002011	8	sein	DET	PPOSAT					S		Nom	F
+29002011	9	Stimme	NOUN	NN					S		Nom	F
+29002011	10	erschallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002011	11	denn	CCONJ	KON								
+29002011	12	sein	AUX	VAINF		Inf						
+29002011	13	Heerlager	NOUN	NN					S		Nom	N
+29002011	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002011	15	sehr	ADV	ADV								
+29002011	16	groß	ADV	ADJD	Pos							
+29002011	17	denn	CCONJ	KON								
+29002011	18	der	DET	ART					S		Nom	M
+29002011	19	Vollstrecker	NOUN	NN					S		Nom	M
+29002011	20	sein	DET	PPOSAT					S		Gen	M
+29002011	21	Wort	NOUN	NN					S		Gen	N
+29002011	22	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002011	23	mächtig	ADV	ADJD	Pos							
+29002011	24	denn	CCONJ	KON								
+29002011	25	groß	ADV	ADJD	Pos							
+29002011	26	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002011	27	der	DET	ART					S		Nom	M
+29002011	28	Tag	NOUN	NN					S		Nom	M
+29002011	29	Jahwe	PROPN	NE					S		Gen	
+29002011	30	und	CCONJ	KON								
+29002011	31	sehr	ADV	ADV								
+29002011	32	furchtbar	ADV	ADJD	Pos							
+29002011	33	und	CCONJ	KON								
+29002011	34	wer	PRON	PWS					S		Nom	M
+29002011	35	können	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29002011	36	ihn	PRON	PPER				3	S		Acc	M
+29002011	37	ertragen	VERB	VVINF		Inf						
+29002012	1	aber	CCONJ	KON								
+29002012	2	auch	ADV	ADV								
+29002012	3	jetzt	ADV	ADV								
+29002012	4	noch	CCONJ	KON								
+29002012	5	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002012	6	Jahwe	NOUN	NN					S		Nom	M
+29002012	7	Kehret	PROPN	NE					S		Nom	M
+29002012	8	um	ADP	APPR								
+29002012	9	zu	ADP	PTKVZ								
+29002012	10	mir	PRON	PPER				1	S		Dat	
+29002012	11	mit	ADP	APPR								
+29002012	12	eurer	DET	PPOSAT					S		Dat	M
+29002012	13	ganz	PRON	ADJA					S		Nom	M
+29002012	14	Herz	NOUN	NN					S		Nom	N
+29002012	15	und	CCONJ	KON								
+29002012	16	mit	ADP	APPR								
+29002012	17	Fasten	NOUN	NN					S		Nom	N
+29002012	18	und	CCONJ	KON								
+29002012	19	mit	ADP	APPR								
+29002012	20	Weinen	NOUN	NN					P		Dat	M
+29002012	21	und	CCONJ	KON								
+29002012	22	mit	ADP	APPR								
+29002012	23	Klage	NOUN	NN					P		Nom	F
+29002013	1	und	CCONJ	KON								
+29002013	2	zerreißet	NOUN	NN					S		Nom	F
+29002013	3	euer	DET	PPOSAT					S		Nom	M
+29002013	4	Herz	NOUN	NN					S		Nom	N
+29002013	5	und	CCONJ	KON								
+29002013	6	nicht	PART	PTKNEG								
+29002013	7	eure	DET	PPOSAT					S		Nom	F
+29002013	8	Kleid	NOUN	NN					P		Nom	N
+29002013	9	und	CCONJ	KON								
+29002013	10	Kehret	PROPN	NE					S		Nom	M
+29002013	11	um	ADP	APPR								
+29002013	12	zu	ADP	PTKVZ								
+29002013	13	Jahwe	NOUN	NN					S		Nom	M
+29002013	14	eurer	DET	PPOSAT					S		Dat	M
+29002013	15	Gott	NOUN	NN					S		Nom	M
+29002013	16	denn	CCONJ	KON								
+29002013	17	er	PRON	PPER				3	S		Nom	M
+29002013	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002013	19	gnädig	ADV	ADJD	Pos							
+29002013	20	und	CCONJ	KON								
+29002013	21	barmherzig	ADV	ADJD	Pos							
+29002013	22	langsam	ADV	ADJD	Pos							
+29002013	23	zu	ADP	APPRART					S		Dat	N
+29002013	24	Zorn	NOUN	NN					S		Nom	M
+29002013	25	und	CCONJ	KON								
+29002013	26	groß	ADV	ADJD	Pos							
+29002013	27	an	ADP	PTKVZ								
+29002013	28	Güte	NOUN	NN					S		Nom	F
+29002013	29	und	CCONJ	KON								
+29002013	30	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002013	31	sich	PRON	PRF				3	S		Acc	
+29002013	32	der	DET	ART					S		Gen	M
+29002013	33	Übel	NOUN	NE					S		Gen	N
+29002013	34	gereuen	VERB	VVPP		Part						
+29002014	1	wer	PRON	PWS					S		Nom	M
+29002014	2	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002014	3	er	PRON	PPER				3	S		Nom	M
+29002014	4	möchten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29002014	5	umkehren	VERB	VVINF		Inf						
+29002014	6	und	CCONJ	KON								
+29002014	7	es	PRON	PPER				3	S		Nom	N
+29002014	8	sich	PRON	PRF				3	S		Acc	
+29002014	9	gereuen	VERB	VVPP		Part						
+29002014	10	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29002014	11	und	CCONJ	KON								
+29002014	12	er	PRON	PPER				3	S		Nom	M
+29002014	13	möchten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29002014	14	Segen	NOUN	NN					S		Acc	M
+29002014	15	hinter	ADP	APPR								
+29002014	16	sich	PRON	PRF				3	S		Acc	
+29002014	17	zurücklassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29002014	18	Speisopfer	NOUN	NN					P		Nom	N
+29002014	19	und	CCONJ	KON								
+29002014	20	Trankopfer	NOUN	NN					P		Nom	N
+29002014	21	für	ADP	APPR								
+29002014	22	Jahwe	NOUN	NN					S		Nom	M
+29002014	23	euren	DET	PPOSAT					S		Acc	M
+29002014	24	Gott	NOUN	NN					S		Nom	M
+29002015	1	Stoßet	NOUN	NN					S		Nom	F
+29002015	2	in	ADP	APPR								
+29002015	3	der	DET	ART					S		Nom	F
+29002015	4	Posaune	PROPN	NE					S		Nom	
+29002015	5	auf	ADP	PTKVZ								
+29002015	6	Zion	PROPN	NE					S		Nom	F
+29002015	7	Heiliget	ADV	VVFIN	Pos							
+29002015	8	ein	DET	ART					S		Nom	N
+29002015	9	Fasten	NOUN	NN					S		Nom	N
+29002015	10	Rufet	NOUN	NN					S		Nom	N
+29002015	11	ein	DET	ART					S		Nom	F
+29002015	12	Festversammlung	NOUN	NN					S		Nom	F
+29002015	13	aus	ADP	PTKVZ								
+29002016	1	versammeln	VERB	NN		Part						
+29002016	2	der	DET	ART					S		Nom	N
+29002016	3	Volk	NOUN	NN					S		Nom	N
+29002016	4	Heiliget	ADV	VVFIN	Pos							
+29002016	5	ein	DET	ART					S		Nom	F
+29002016	6	Versammlung	NOUN	NN					S		Nom	F
+29002016	7	Bringet	NOUN	VVFIN					S		Nom	N
+29002016	8	der	DET	ART					S		Nom	F
+29002016	9	Ältesten	NOUN	NN					P		Nom	M
+29002016	10	zusammen	ADV	PTKVZ								
+29002016	11	versammeln	VERB	VVPP		Part						
+29002016	12	der	DET	ART					S		Nom	F
+29002016	13	Kind	NOUN	NN					P		Nom	N
+29002016	14	und	CCONJ	KON								
+29002016	15	der	DET	ART					S		Nom	F
+29002016	16	Säugling	NOUN	NN					P		Nom	M
+29002016	17	an	ADP	PTKVZ								
+29002016	18	der	DET	ART					S		Acc	M
+29002016	19	Brüst	NOUN	NN					P		Nom	F
+29002016	20	der	DET	ART					S		Nom	M
+29002016	21	Bräutigam	PROPN	NE					S		Nom	
+29002016	22	treten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29002016	23	aus	ADP	PTKVZ								
+29002016	24	sein	DET	PPOSAT					S		Dat	F
+29002016	25	Kammer	NOUN	NN					S		Nom	F
+29002016	26	und	CCONJ	KON								
+29002016	27	der	DET	ART					S		Nom	F
+29002016	28	Braut	NOUN	NN					S		Nom	F
+29002016	29	aus	ADP	PTKVZ								
+29002016	30	ihr	DET	PPOSAT					S		Dat	N
+29002016	31	Gemach	NOUN	NN					S		Nom	N
+29002017	1	der	DET	ART					S		Nom	F
+29002017	2	Priester	NOUN	NN					P		Nom	M
+29002017	3	der	DET	ART					S		Nom	F
+29002017	4	Diener	NOUN	NN					P		Nom	M
+29002017	5	Jahwe	PROPN	NE					S		Gen	
+29002017	6	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+29002017	7	weinen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29002017	8	zwischen	ADP	APPR								
+29002017	9	der	DET	ART					S		Nom	M
+29002017	10	Halle	NOUN	NE					S		Nom	F
+29002017	11	und	CCONJ	KON								
+29002017	12	der	DET	ART					S		Dat	M
+29002017	13	Altar	NOUN	NN					S		Nom	M
+29002017	14	und	CCONJ	KON								
+29002017	15	sprechen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29002017	16	schone	PROPN	NE					S		Nom	
+29002017	17	Jahwe	NOUN	NN					S		Nom	M
+29002017	18	dein	DET	PPOSAT					S		Gen	N
+29002017	19	Volk	NOUN	NN					S		Gen	N
+29002017	20	und	CCONJ	KON								
+29002017	21	gib	VERB	VVIMP				2	S	Imp		
+29002017	22	nicht	PART	PTKNEG								
+29002017	23	dein	DET	PPER					S		Nom	N
+29002017	24	Erbteil	NOUN	NN					S		Nom	M
+29002017	25	der	DET	ART					S		Nom	M
+29002017	26	Schmähung	NOUN	NN					S		Nom	F
+29002017	27	hin	ADV	ADV								
+29002017	28	daß	SCONJ	KOUS								
+29002017	29	sie	PRON	PPER				3	P		Nom	
+29002017	30	der	DET	ART					S		Acc	M
+29002017	31	Nation	NOUN	NN					P		Nom	F
+29002017	32	zu	ADP	APPRART					S		Dat	F
+29002017	33	Spottrede	NOUN	NN					S		Nom	F
+29002017	34	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+29002017	35	warum	ADV	PWAV								
+29002017	36	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29002017	37	man	PRON	PIS					S		Nom	
+29002017	38	unter	ADP	APPR								
+29002017	39	der	DET	ART					S		Acc	M
+29002017	40	Volk	NOUN	NN					P		Dat	N
+29002017	41	sagen	VERB	VVINF		Inf						
+29002017	42	wo	SCONJ	PWAV								
+29002017	43	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002017	44	ihr	PRON	PPOSAT				3	S		Dat	F
+29002017	45	Gott	NOUN	NN					S		Nom	M
+29002018	1	dann	ADV	ADV								
+29002018	2	eifern	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002018	3	Jahwe	NOUN	NN					S		Nom	M
+29002018	4	für	ADP	APPR								
+29002018	5	sein	AUX	VAINF		Inf						
+29002018	6	Land	NOUN	NN					S		Nom	N
+29002018	7	und	CCONJ	KON								
+29002018	8	er	PRON	PPER				3	S		Nom	M
+29002018	9	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002018	10	Mitleid	NOUN	NN					S		Nom	N
+29002018	11	mit	ADP	APPR								
+29002018	12	sein	DET	PPOSAT					S		Dat	M
+29002018	13	Volke	NOUN	NN					S		Nom	M
+29002019	1	und	CCONJ	KON								
+29002019	2	Jahwe	NOUN	NN					S		Nom	M
+29002019	3	antworten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002019	4	und	CCONJ	KON								
+29002019	5	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002019	6	zu	ADP	PTKVZ								
+29002019	7	sein	DET	PPOSAT					S		Dat	M
+29002019	8	Volke	NOUN	NN					S		Nom	M
+29002019	9	sehen	VERB	VVIMP				2	S	Imp		
+29002019	10	ich	PRON	PPER				1	S		Nom	
+29002019	11	senden	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29002019	12	euch	PRON	PPER				2	P		Dat	
+29002019	13	der	DET	ART					S		Nom	N
+29002019	14	Korn	NOUN	NN					S		Nom	N
+29002019	15	und	CCONJ	KON								
+29002019	16	der	DET	ART					S		Acc	M
+29002019	17	Most	NOUN	FM					S		Nom	M
+29002019	18	und	CCONJ	KON								
+29002019	19	der	DET	ART					S		Nom	N
+29002019	20	Öl	NOUN	NN					S		Nom	N
+29002019	21	daß	SCONJ	KOUS								
+29002019	22	ihr	PRON	PPOSAT				3	S		Dat	F
+29002019	23	davon	ADV	PROAV								
+29002019	24	satt	ADV	ADJD	Pos							
+29002019	25	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002019	26	und	CCONJ	KON								
+29002019	27	ich	PRON	PPER				1	S		Nom	
+29002019	28	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29002019	29	euch	PRON	PPER				2	P		Dat	
+29002019	30	nicht	PART	PTKNEG								
+29002019	31	mehr	ADV	ADV								
+29002019	32	zu	ADP	APPRART					S		Dat	N
+29002019	33	hohn	NOUN	NN					S		Nom	F
+29002019	34	machen	VERB	VVINF		Inf						
+29002019	35	unter	ADP	APPR								
+29002019	36	der	DET	ART					S		Acc	M
+29002019	37	Nation	NOUN	NN					P		Nom	F
+29002020	1	und	CCONJ	KON								
+29002020	2	ich	PRON	PPER				1	S		Nom	
+29002020	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29002020	4	der	DET	ART					S		Acc	M
+29002020	5	von	ADP	APPR								
+29002020	6	Norden	NOUN	NN					S		Nom	M
+29002020	7	Kommenden	ADJ	ADJA	Pos				S		Dat	M
+29002020	8	von	ADP	APPR								
+29002020	9	euch	PRON	PPER				2	P		Dat	
+29002020	10	entfernen	VERB	VVINF		Inf						
+29002020	11	und	CCONJ	KON								
+29002020	12	ihn	PRON	PPER				3	S		Acc	M
+29002020	13	in	ADP	APPR								
+29002020	14	ein	DET	ART					S		Nom	N
+29002020	15	dürr	ADJ	ADJA	Pos				S		Nom	N
+29002020	16	und	CCONJ	KON								
+29002020	17	wüst	ADJ	ADJA	Pos				S		Nom	N
+29002020	18	Land	NOUN	NN					S		Nom	N
+29002020	19	vertreiben	VERB	VVINF		Inf						
+29002020	20	sein	DET	PPOSAT					S		Acc	M
+29002020	21	Vortrab	NOUN	NN					S		Nom	M
+29002020	22	in	ADP	APPR								
+29002020	23	der	DET	ART					S		Nom	N
+29002020	24	vorderer	ADV	ADV								
+29002020	25	Meer	NOUN	NN					S		Nom	N
+29002020	26	und	CCONJ	KON								
+29002020	27	sein	DET	PPOSAT					S		Acc	M
+29002020	28	Nachtrab	NOUN	NN					S		Nom	M
+29002020	29	in	ADP	APPR								
+29002020	30	der	DET	ART					S		Nom	N
+29002020	31	hinterer	ADJ	ADJA	Pos				S		Nom	F
+29002020	32	Meer	NOUN	NN					S		Nom	N
+29002020	33	und	CCONJ	KON								
+29002020	34	sein	AUX	VAINF		Inf						
+29002020	35	Gestank	NOUN	NN					S		Nom	M
+29002020	36	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002020	37	aufsteigen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002020	38	und	CCONJ	KON								
+29002020	39	aufsteigen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002020	40	sein	AUX	VAINF		Inf						
+29002020	41	übel	ADV	ADJD	Cmp							
+29002020	42	Geruch	NOUN	NN					S		Nom	M
+29002020	43	weil	SCONJ	KOUS								
+29002020	44	er	PRON	PPER				3	S		Nom	M
+29002020	45	groß	ADJ	VVPP	Pos				S		Nom	N
+29002020	46	tun	VERB	VVPP		Part						
+29002020	47	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002021	1	Fürchte	VERB	NN		Fin	Pres	3	S	Sub		
+29002021	2	dich	PRON	PPER				2	S		Acc	
+29002021	3	nicht	PART	PTKNEG								
+29002021	4	Erde	NOUN	NN					S		Nom	F
+29002021	5	Frohlocke	NOUN	NN					P		Nom	M
+29002021	6	und	CCONJ	KON								
+29002021	7	freuen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29002021	8	dich	PRON	PPER				2	S		Acc	
+29002021	9	denn	CCONJ	KON								
+29002021	10	Jahwe	NOUN	NN					S		Nom	M
+29002021	11	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002021	12	groß	ADJ	VVPP	Pos				S		Nom	N
+29002022	1	Fürchten	VERB	VVPP		Part						
+29002022	2	euch	PRON	PPER				2	P		Dat	
+29002022	3	nicht	PART	PTKNEG								
+29002022	4	ihr	PRON	PPOSAT				3	S		Dat	F
+29002022	5	Tier	NOUN	NN					P		Nom	N
+29002022	6	der	DET	ART					S		Gen	M
+29002022	7	Felde	NOUN	NE					S		Nom	N
+29002022	8	denn	CCONJ	KON								
+29002022	9	es	PRON	PPER				3	S		Nom	N
+29002022	10	grün	ADJ	ADJA	Pos				S		Acc	M
+29002022	11	der	DET	ART					S		Nom	F
+29002022	12	Aue	NOUN	NN					P		Nom	F
+29002022	13	der	DET	ART					S		Nom	M
+29002022	14	Steppe	NOUN	NN					S		Nom	F
+29002022	15	denn	CCONJ	KON								
+29002022	16	der	DET	ART					S		Nom	M
+29002022	17	Baum	NOUN	NN					S		Nom	M
+29002022	18	tragen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002022	19	sein	DET	PPOSAT					S		Nom	F
+29002022	20	Frucht	NOUN	NN					S		Nom	F
+29002022	21	der	DET	ART					S		Nom	M
+29002022	22	Feigenbaum	NOUN	NN					S		Nom	M
+29002022	23	und	CCONJ	KON								
+29002022	24	der	DET	ART					S		Nom	M
+29002022	25	Weinstock	NOUN	XY					S		Nom	M
+29002022	26	geben	VERB	VVINF		Inf						
+29002022	27	ihr	DET	PPOSAT					S		Acc	M
+29002022	28	Ertrag	NOUN	NN					S		Nom	M
+29002023	1	und	CCONJ	KON								
+29002023	2	ihr	PRON	PPOSAT				3	S		Dat	F
+29002023	3	Kind	NOUN	NN					P		Nom	N
+29002023	4	Zions	X	FM								
+29002023	5	Frohlocket	NOUN	NN					S		Nom	N
+29002023	6	und	CCONJ	KON								
+29002023	7	freueen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002023	8	euch	PRON	PPER				2	P		Dat	
+29002023	9	in	ADP	APPR								
+29002023	10	Jahwe	NOUN	NN					S		Nom	M
+29002023	11	eurer	DET	PPOSAT					S		Dat	M
+29002023	12	Gott	NOUN	NN					S		Nom	M
+29002023	13	denn	CCONJ	KON								
+29002023	14	er	PRON	PPER				3	S		Nom	M
+29002023	15	geben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002023	16	euch	PRON	PPER				2	P		Dat	
+29002023	17	der	DET	ART					S		Acc	M
+29002023	18	Frührege	NOUN	NN					P		Nom	F
+29002023	19	nach	ADP	APPR								
+29002023	20	recht	ADJ	ADJA	Pos				S		Dat	M
+29002023	21	Maß	NOUN	NN					S		Nom	N
+29002023	22	und	CCONJ	KON								
+29002023	23	er	PRON	PPER				3	S		Nom	M
+29002023	24	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29002023	25	euch	PRON	PPER				2	P		Dat	
+29002023	26	Regen	NOUN	NN					S		Nom	M
+29002023	27	herabkommen	VERB	VVINF		Inf						
+29002023	28	Frührege	NOUN	NN					P		Nom	F
+29002023	29	und	CCONJ	KON								
+29002023	30	Spätrege	NOUN	NN					P		Nom	F
+29002023	31	wie	ADP	KOKOM								
+29002023	32	zuvor	ADV	ADV								
+29002024	1	und	CCONJ	KON								
+29002024	2	der	DET	ART					S		Nom	F
+29002024	3	Tenne	NOUN	NN					P		Nom	F
+29002024	4	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29002024	5	voll	ADV	ADJD	Pos							
+29002024	6	Getreide	NOUN	NN					S		Nom	N
+29002024	7	sein	AUX	VAINF		Inf						
+29002024	8	und	CCONJ	KON								
+29002024	9	der	DET	ART					S		Nom	F
+29002024	10	Kufe	NOUN	NN					P		Nom	F
+29002024	11	überfließen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002024	12	von	ADP	APPR								
+29002024	13	Most	NOUN	FM					S		Nom	M
+29002024	14	und	CCONJ	KON								
+29002024	15	Öl	NOUN	NN					S		Nom	N
+29002025	1	und	CCONJ	KON								
+29002025	2	ich	PRON	PPER				1	S		Nom	
+29002025	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29002025	4	euch	PRON	PPER				2	P		Dat	
+29002025	5	der	DET	ART					S		Nom	F
+29002025	6	Jahr	NOUN	NN					P		Nom	N
+29002025	7	erstatten	VERB	VVFIN		Fin	Past	3	P	Ind		
+29002025	8	welcher	DET	PWAT					S		Nom	F
+29002025	9	der	DET	ART					S		Nom	F
+29002025	10	Heuschrecke	NOUN	NN					S		Nom	F
+29002025	11	der	DET	ART					S		Nom	M
+29002025	12	Abfresser	X	FM								
+29002025	13	und	CCONJ	KON								
+29002025	14	der	DET	ART					S		Nom	M
+29002025	15	Vertilger	PROPN	NE					S		Nom	M
+29002025	16	und	CCONJ	KON								
+29002025	17	der	DET	ART					S		Nom	M
+29002025	18	Nager	NOUN	NN					P		Nom	M
+29002025	19	fressen	VERB	VVPP		Part						
+29002025	20	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29002025	22	mein	DET	PPOSAT					S		Nom	N
+29002025	23	groß	ADJ	ADJA	Pos				S		Nom	N
+29002025	24	Heer	NOUN	NN					S		Nom	N
+29002025	25	der	DET	ART					S		Nom	N
+29002025	26	ich	PRON	PPER				1	S		Nom	
+29002025	27	unter	ADP	APPR								
+29002025	28	euch	PRON	PPER				2	P		Dat	
+29002025	29	gesandt	VERB	VVPP		Part						
+29002025	30	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29002026	1	und	CCONJ	KON								
+29002026	2	ihr	PRON	PPOSAT				3	S		Dat	F
+29002026	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002026	4	essen	VERB	VVINF		Inf						
+29002026	5	essen	VERB	VVINF		Inf						
+29002026	6	und	CCONJ	KON								
+29002026	7	satt	ADV	ADJD	Pos							
+29002026	8	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29002026	9	und	CCONJ	KON								
+29002026	10	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002026	11	der	DET	ART					S		Acc	M
+29002026	12	Name	NOUN	NN					P		Nom	M
+29002026	13	Jahwe	PROPN	NE					S		Gen	
+29002026	14	eures	DET	PPOSAT					S		Nom	N
+29002026	15	Gott	NOUN	NN					S		Gen	M
+29002026	16	preisen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29002026	17	der	DET	ART					S		Nom	M
+29002026	18	Wunderbares	NOUN	NN					S		Nom	N
+29002026	19	an	ADP	PTKVZ								
+29002026	20	euch	PRON	PPER				2	P		Dat	
+29002026	21	tun	VERB	VVPP		Part						
+29002026	22	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002026	23	und	CCONJ	KON								
+29002026	24	mein	DET	PPOSAT					S		Nom	N
+29002026	25	Volk	NOUN	NN					S		Nom	N
+29002026	26	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29002026	27	nimmermehr	ADV	ADV								
+29002026	28	beschämt	ADV	ADJD	Pos							
+29002026	29	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29002027	1	und	CCONJ	KON								
+29002027	2	ihr	PRON	PPOSAT				3	S		Dat	F
+29002027	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29002027	4	wissen	VERB	VVINF		Inf						
+29002027	5	daß	SCONJ	KOUS								
+29002027	6	ich	PRON	PPER				1	S		Nom	
+29002027	7	in	ADP	APPR								
+29002027	8	Israel	PROPN	NE					S		Gen	N
+29002027	9	Mitte	NOUN	NN					S		Nom	F
+29002027	10	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+29002027	11	und	CCONJ	KON								
+29002027	12	daß	SCONJ	KOUS								
+29002027	13	ich	PRON	PPER				1	S		Nom	
+29002027	14	Jahwe	NOUN	NN					S		Nom	M
+29002027	15	euer	DET	PPOSAT					S		Nom	M
+29002027	16	Gott	NOUN	NN					S		Nom	M
+29002027	17	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+29002027	18	und	CCONJ	KON								
+29002027	19	keiner	PRON	PIS					S		Nom	M
+29002027	20	sonst	ADV	ADV								
+29002027	21	und	CCONJ	KON								
+29002027	22	mein	DET	PPOSAT					S		Nom	N
+29002027	23	Volk	NOUN	NN					S		Nom	N
+29002027	24	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29002027	25	nimmermehr	ADV	ADV								
+29002027	26	beschämt	ADV	ADJD	Pos							
+29002027	27	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29003001	1	und	CCONJ	KON								
+29003001	2	danach	ADV	PROAV								
+29003001	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29003001	4	es	PRON	PPER				3	S		Nom	N
+29003001	5	geschehen	VERB	VVPP		Part						
+29003001	6	daß	SCONJ	KOUS								
+29003001	7	ich	PRON	PPER				1	S		Nom	
+29003001	8	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29003001	9	Geist	NOUN	NN					S		Nom	M
+29003001	10	ausgießen	VERB	VVINF		Inf						
+29003001	11	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29003001	12	über	ADP	APPR								
+29003001	13	alle	PRON	PIS					S		Nom	N
+29003001	14	Fleisch	NOUN	NN					S		Nom	N
+29003001	15	und	CCONJ	KON								
+29003001	16	eure	DET	PPOSAT					S		Nom	F
+29003001	17	Sohn	NOUN	NN					P		Nom	M
+29003001	18	und	CCONJ	KON								
+29003001	19	eure	DET	PPOSAT					S		Nom	F
+29003001	20	Tochter	NOUN	NN					P		Nom	F
+29003001	21	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29003001	22	weissagen	VERB	VVINF		Inf						
+29003001	23	eure	DET	PPOSAT					S		Nom	F
+29003001	24	Greis	NOUN	NN					P		Nom	M
+29003001	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29003001	26	Traum	NOUN	NN					P		Nom	M
+29003001	27	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29003001	28	eure	DET	PPOSAT					S		Nom	F
+29003001	29	Jünglinge	NOUN	NN					P		Nom	M
+29003001	30	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29003001	31	Gesicht	NOUN	NN					P		Nom	N
+29003001	32	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29003002	1	und	CCONJ	KON								
+29003002	2	selbst	ADV	ADV								
+29003002	3	über	ADP	APPR								
+29003002	4	der	DET	ART					S		Nom	F
+29003002	5	Knecht	NOUN	NN					P		Nom	M
+29003002	6	und	CCONJ	KON								
+29003002	7	über	ADP	APPR								
+29003002	8	der	DET	ART					S		Nom	F
+29003002	9	Mägd	NOUN	NN					P		Nom	N
+29003002	10	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29003002	11	ich	PRON	PPER				1	S		Nom	
+29003002	12	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29003002	13	Geist	NOUN	NN					S		Nom	M
+29003002	14	ausgießen	VERB	VVINF		Inf						
+29003002	15	in	ADP	APPR								
+29003002	16	jener	PRON	PDAT					P		Dat	
+29003002	17	Tag	NOUN	NN					P		Dat	M
+29003003	1	und	CCONJ	KON								
+29003003	2	ich	PRON	PPER				1	S		Nom	
+29003003	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29003003	4	Wunder	NOUN	NN					S		Nom	N
+29003003	5	geben	VERB	VVINF		Inf						
+29003003	6	in	ADP	APPRART					S		Dat	N
+29003003	7	Himmel	NOUN	NN					S		Nom	M
+29003003	8	und	CCONJ	KON								
+29003003	9	auf	ADP	PTKVZ								
+29003003	10	der	DET	ART					S		Nom	M
+29003003	11	Erde	NOUN	NN					S		Nom	F
+29003003	12	Blut	NOUN	NN					S		Nom	N
+29003003	13	und	CCONJ	KON								
+29003003	14	Feuer	NOUN	NN					S		Nom	N
+29003003	15	und	CCONJ	KON								
+29003003	16	Rauchsäule	NOUN	NN					P		Nom	F
+29003004	1	der	DET	ART					S		Nom	F
+29003004	2	Sonne	NOUN	NN					S		Nom	F
+29003004	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29003004	4	sich	PRON	PRF				3	S		Acc	
+29003004	5	in	ADP	APPR								
+29003004	6	Finsternis	NOUN	NN					S		Nom	F
+29003004	7	verwandeln	VERB	VVINF		Inf						
+29003004	8	und	CCONJ	KON								
+29003004	9	der	DET	ART					S		Nom	M
+29003004	10	Mond	NOUN	NN					S		Nom	M
+29003004	11	in	ADP	APPR								
+29003004	12	Blut	NOUN	NN					S		Nom	N
+29003004	13	--	X	XY								
+29003004	14	der	DET	ART					S		Nom	M
+29003004	15	Tag	NOUN	NN					S		Nom	M
+29003004	16	Jahwe	PROPN	NE					S		Gen	
+29003004	17	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29003004	18	der	DET	ART					S		Nom	M
+29003004	19	groß	ADJ	ADJA	Pos				S		Nom	F
+29003004	20	und	CCONJ	KON								
+29003004	21	furchtbar	ADJ	ADJA	Pos				S		Nom	F
+29003005	1	und	CCONJ	KON								
+29003005	2	es	PRON	PPER				3	S		Nom	N
+29003005	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29003005	4	geschehen	VERB	VVPP		Part						
+29003005	5	ein	DET	ART					S		Nom	N
+29003005	6	jeder	PRON	PIS					S		Nom	M
+29003005	7	der	DET	ART					S		Nom	M
+29003005	8	der	DET	ART					S		Acc	M
+29003005	9	Name	NOUN	NN					P		Nom	M
+29003005	10	Jahwe	PROPN	NE					S		Gen	
+29003005	11	anrufen	VERB	VVINF		Inf						
+29003005	12	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29003005	13	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29003005	14	erretten	VERB	VVPP		Part						
+29003005	15	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29003005	16	denn	CCONJ	KON								
+29003005	17	auf	ADP	PTKVZ								
+29003005	18	der	DET	ART					S		Dat	M
+29003005	19	Berg	NOUN	NN					P		Nom	M
+29003005	20	Zion	PROPN	NE					S		Nom	F
+29003005	21	und	CCONJ	KON								
+29003005	22	in	ADP	APPR								
+29003005	23	Jerusalem	PROPN	NE					S		Nom	N
+29003005	24	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29003005	25	Errettung	NOUN	NN					S		Nom	F
+29003005	26	sein	AUX	VAINF		Inf						
+29003005	27	wie	ADP	KOKOM								
+29003005	28	Jahwe	NOUN	NN					S		Nom	M
+29003005	29	sprechen	VERB	VVPP		Part						
+29003005	30	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29003005	31	und	CCONJ	KON								
+29003005	32	unter	ADP	APPR								
+29003005	33	der	DET	ART					S		Acc	M
+29003005	34	übriggebliebenen	NOUN	NN					P		Nom	F
+29003005	35	welcher	DET	PWAT					S		Nom	F
+29003005	36	Jahwe	NOUN	NN					S		Nom	M
+29003005	37	berufen	VERB	VVPP		Part						
+29003005	38	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004001	1	denn	CCONJ	KON								
+29004001	2	sehen	VERB	VVIMP				2	S	Imp		
+29004001	3	in	ADP	APPR								
+29004001	4	jener	PRON	PDAT					P		Dat	
+29004001	5	Tag	NOUN	NN					P		Dat	M
+29004001	6	und	CCONJ	KON								
+29004001	7	zu	ADP	PTKVZ								
+29004001	8	jener	DET	PDAT					S		Nom	M
+29004001	9	Zeit	NOUN	NN					S		Nom	F
+29004001	10	wenn	SCONJ	KOUS								
+29004001	11	ich	PRON	PPER				1	S		Nom	
+29004001	12	der	DET	ART					S		Nom	F
+29004001	13	Gefangenschaft	NOUN	NN					S		Nom	F
+29004001	14	Judas	PROPN	NE					S		Nom	M
+29004001	15	und	CCONJ	KON								
+29004001	16	Jerusalem	PROPN	NE					S		Gen	N
+29004001	17	wenden	VERB	VVINF		Inf						
+29004001	18	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29004002	1	dann	ADV	ADV								
+29004002	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29004002	3	ich	PRON	PPER				1	S		Nom	
+29004002	4	aller	PRON	PIS					P		Nom	
+29004002	5	Nation	NOUN	NN					P		Nom	F
+29004002	6	versammeln	VERB	VVINF		Fin	Pres	3	P	Ind		
+29004002	7	und	CCONJ	KON								
+29004002	8	sie	PRON	PPER				3	P		Nom	
+29004002	9	in	ADP	APPR								
+29004002	10	der	DET	ART					S		Nom	N
+29004002	11	Tal	NOUN	NN					S		Nom	N
+29004002	12	Josaphat	PROPN	NE								
+29004002	13	hinabführen	NOUN	VVFIN					P		Nom	N
+29004002	14	und	CCONJ	KON								
+29004002	15	ich	PRON	PPER				1	S		Nom	
+29004002	16	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29004002	17	daselbst	ADV	PROAV								
+29004002	18	mit	ADP	APPR								
+29004002	19	ihnen	PRON	PPER				3	P		Dat	
+29004002	20	rechter	ADJ	ADJA	Pos				S		Dat	N
+29004002	21	über	ADP	APPR								
+29004002	22	mein	DET	PPOSAT					S		Nom	N
+29004002	23	Volk	NOUN	NN					S		Nom	N
+29004002	24	und	CCONJ	KON								
+29004002	25	mein	DET	PPOSAT					S		Nom	N
+29004002	26	Erbteil	NOUN	NN					S		Nom	M
+29004002	27	Israel	PROPN	NE					S		Nom	N
+29004002	28	welcher	DET	PWAT					S		Acc	N
+29004002	29	sie	PRON	PPER				3	P		Nom	
+29004002	30	unter	ADP	APPR								
+29004002	31	der	DET	ART					S		Nom	F
+29004002	32	Nation	NOUN	NN					P		Nom	F
+29004002	33	zerstreuen	VERB	VVPP		Part						
+29004002	34	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004003	1	und	CCONJ	KON								
+29004003	2	mein	DET	PPOSAT					S		Nom	N
+29004003	3	Land	NOUN	NN					S		Nom	N
+29004003	4	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004003	5	sie	PRON	PPER				3	P		Nom	
+29004003	6	teilen	VERB	VVPP		Part						
+29004003	7	und	CCONJ	KON								
+29004003	8	über	ADP	APPR								
+29004003	9	mein	DET	PPOSAT					S		Nom	N
+29004003	10	Volk	NOUN	NN					S		Nom	N
+29004003	11	der	DET	ART					S		Nom	N
+29004003	12	Los	NOUN	NE					S		Nom	N
+29004003	13	werfen	VERB	VVPP		Part						
+29004003	14	und	CCONJ	KON								
+29004003	15	der	DET	ART					S		Acc	M
+29004003	16	Knabe	NOUN	NN					P		Nom	F
+29004003	17	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004003	18	sie	PRON	PPER				3	P		Nom	
+29004003	19	um	ADP	APPR								
+29004003	20	ein	DET	ART					S		Nom	F
+29004003	21	Hure	NOUN	NN					S		Nom	F
+29004003	22	geben	VERB	VVPP		Part						
+29004003	23	und	CCONJ	KON								
+29004003	24	der	DET	ART					S		Nom	N
+29004003	25	Mädchen	NOUN	NN					P		Nom	N
+29004003	26	um	ADP	APPR								
+29004003	27	Wein	NOUN	NN					S		Nom	M
+29004003	28	verkaufen	VERB	VVPP		Part						
+29004003	29	der	DET	ART					S		Acc	M
+29004003	30	sie	PRON	PPER				3	P		Nom	
+29004003	31	trinken	VERB	VVPP		Part						
+29004003	32	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004004	1	und	CCONJ	KON								
+29004004	2	auch	ADV	ADV								
+29004004	3	ihr	PRON	PPOSAT				3	S		Dat	F
+29004004	4	was	PRON	PWS					S		Nom	N
+29004004	5	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29004004	6	ihr	PRON	PPOSAT				3	S		Dat	F
+29004004	7	mir	PRON	PPER				1	S		Dat	
+29004004	8	Tyrus	PROPN	NE					S		Nom	M
+29004004	9	und	CCONJ	KON								
+29004004	10	Zidon	PROPN	NN					S		Nom	N
+29004004	11	und	CCONJ	KON								
+29004004	12	aller	PRON	PIS					P		Nom	
+29004004	13	ihr	PRON	PPOSAT				3	S		Dat	F
+29004004	14	Bezirk	NOUN	NN					P		Nom	M
+29004004	15	Philistäa	NOUN	NN					P		Nom	M
+29004004	16	wollen	AUX	VMFIN		Fin	Pres	2	P	Ind		
+29004004	17	ihr	PRON	PPOSAT				3	S		Dat	F
+29004004	18	mir	PRON	PPER				1	S		Dat	
+29004004	19	ein	DET	ART					S		Nom	F
+29004004	20	Tat	NOUN	NN					S		Nom	F
+29004004	21	vergelten	VERB	VVFIN		Fin	Past	3	P	Ind		
+29004004	22	oder	CCONJ	KON								
+29004004	23	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29004004	24	ihr	PRON	PPOSAT				3	S		Dat	F
+29004004	25	mir	PRON	PPER				1	S		Dat	
+29004004	26	etwas	PRON	PIS								N
+29004004	27	antun	VERB	VVINF		Inf						
+29004004	28	schnell	ADV	ADJD	Pos							
+29004004	29	eilends	ADV	ADV								
+29004004	30	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29004004	31	ich	PRON	PPER				1	S		Nom	
+29004004	32	euer	DET	PPOSAT					S		Nom	M
+29004004	33	tun	NOUN	NN					S		Nom	N
+29004004	34	auf	ADP	PTKVZ								
+29004004	35	euren	DET	PPOSAT					S		Acc	M
+29004004	36	Kopf	NOUN	NN					S		Nom	M
+29004004	37	zurückbringen	VERB	VVINF		Inf						
+29004005	1	daß	SCONJ	KOUS								
+29004005	2	ihr	PRON	PPOSAT				3	S		Dat	F
+29004005	3	mein	DET	PPOSAT					S		Nom	N
+29004005	4	Silber	NOUN	NN					S		Nom	N
+29004005	5	und	CCONJ	KON								
+29004005	6	mein	DET	PPOSAT					S		Nom	N
+29004005	7	Gold	NOUN	NN					S		Nom	N
+29004005	8	wegnehmen	VERB	VVPP		Part						
+29004005	9	und	CCONJ	KON								
+29004005	10	mein	DET	PPOSAT					S		Nom	F
+29004005	11	gut	ADV	ADJD	Sup							
+29004005	12	Kleinode	NOUN	NN					S		Nom	F
+29004005	13	in	ADP	APPR								
+29004005	14	eure	DET	PPOSAT					S		Nom	F
+29004005	15	Tempel	NOUN	NN					S		Nom	M
+29004005	16	bringen	VERB	VVPP		Part						
+29004006	1	und	CCONJ	KON								
+29004006	2	der	DET	ART					S		Nom	F
+29004006	3	Kind	NOUN	NN					P		Nom	N
+29004006	4	Judas	PROPN	NE					S		Nom	M
+29004006	5	und	CCONJ	KON								
+29004006	6	der	DET	ART					S		Nom	F
+29004006	7	Kind	NOUN	NN					P		Nom	N
+29004006	8	Jerusalem	PROPN	NE					S		Gen	N
+29004006	9	der	DET	ART					S		Acc	M
+29004006	10	Kind	NOUN	NN					P		Dat	N
+29004006	11	der	DET	ART					S		Nom	M
+29004006	12	Grieche	NOUN	NN					P		Nom	M
+29004006	13	verkaufen	VERB	VVPP		Part						
+29004006	14	habben	VERB	VAFIN				2	P	Imp		
+29004006	15	um	ADP	APPR								
+29004006	16	sie	PRON	PPER				3	P		Nom	
+29004006	17	weit	ADV	ADJD	Pos							
+29004006	18	von	ADP	APPR								
+29004006	19	ihr	DET	PPOSAT					S		Dat	F
+29004006	20	Grenze	NOUN	NN					S		Nom	F
+29004006	21	zu	ADP	PTKVZ								
+29004006	22	entfernen	VERB	VVINF		Inf						
+29004007	1	sehen	VERB	VVIMP				2	S	Imp		
+29004007	2	ich	PRON	PPER				1	S		Nom	
+29004007	3	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29004007	4	sie	PRON	PPER				3	P		Nom	
+29004007	5	erwecken	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004007	6	von	ADP	APPR								
+29004007	7	der	DET	ART					S		Dat	M
+29004007	8	Ort	NOUN	NN					P		Nom	M
+29004007	9	wohin	ADV	PWAV								
+29004007	10	ihr	PRON	PPOSAT				3	S		Dat	F
+29004007	11	sie	PRON	PPER				3	P		Nom	
+29004007	12	verkaufen	VERB	VVPP		Part						
+29004007	13	habben	VERB	VAFIN				2	P	Imp		
+29004007	14	und	CCONJ	KON								
+29004007	15	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29004007	16	euer	DET	PPOSAT					S		Nom	M
+29004007	17	tun	NOUN	NN					S		Nom	N
+29004007	18	auf	ADP	PTKVZ								
+29004007	19	euren	DET	PPOSAT					S		Acc	M
+29004007	20	Kopf	NOUN	NN					S		Nom	M
+29004007	21	zurückbringen	VERB	VVINF		Inf						
+29004008	1	und	CCONJ	KON								
+29004008	2	ich	PRON	PPER				1	S		Nom	
+29004008	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29004008	4	eure	DET	PPOSAT					S		Nom	F
+29004008	5	Sohn	NOUN	NN					P		Nom	M
+29004008	6	und	CCONJ	KON								
+29004008	7	eure	DET	PPOSAT					S		Nom	F
+29004008	8	Tochter	NOUN	NN					P		Nom	F
+29004008	9	in	ADP	APPR								
+29004008	10	der	DET	ART					S		Nom	F
+29004008	11	Hand	NOUN	NN					S		Nom	F
+29004008	12	der	DET	ART					S		Nom	M
+29004008	13	Kind	NOUN	NN					P		Nom	N
+29004008	14	Judas	PROPN	NE					S		Nom	M
+29004008	15	verkaufen	VERB	VVINF		Inf						
+29004008	16	und	CCONJ	KON								
+29004008	17	dieser	DET	PDAT					S		Nom	F
+29004008	18	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004008	19	sie	PRON	PPER				3	P		Nom	
+29004008	20	an	ADP	PTKVZ								
+29004008	21	der	DET	ART					S		Nom	F
+29004008	22	Sabäer	NOUN	NN					S		Nom	M
+29004008	23	verkaufen	VERB	VVINF		Inf						
+29004008	24	an	ADP	PTKVZ								
+29004008	25	ein	DET	ART					S		Nom	F
+29004008	26	fernen	ADJ	ADJA	Pos				S		Nom	F
+29004008	27	Nation	NOUN	NN					S		Nom	F
+29004008	28	denn	CCONJ	KON								
+29004008	29	Jahwe	NOUN	NN					S		Nom	M
+29004008	30	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004008	31	reden	VERB	VVPP		Part						
+29004009	1	Rufet	NOUN	NN					S		Nom	N
+29004009	2	dieser	DET	PDAT					S		Nom	N
+29004009	3	aus	ADP	PTKVZ								
+29004009	4	unter	ADP	APPR								
+29004009	5	der	DET	ART					S		Acc	M
+29004009	6	Nation	NOUN	NN					P		Nom	F
+29004009	7	Heiliget	ADV	VVFIN	Pos							
+29004009	8	ein	DET	ART					S		Acc	M
+29004009	9	Krieg	NOUN	NN					S		Nom	M
+29004009	10	Erwecket	NOUN	NN					S		Nom	N
+29004009	11	der	DET	ART					S		Nom	F
+29004009	12	Held	NOUN	NN					P		Nom	M
+29004009	13	es	PRON	PPER				3	S		Nom	N
+29004009	14	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+29004009	15	herankommen	VERB	VVINF		Inf						
+29004009	16	und	CCONJ	KON								
+29004009	17	heraufziehen	VERB	VVINF		Inf						
+29004009	18	aller	PRON	PIS					P		Nom	
+29004009	19	Kriegsmänner	NOUN	NN					P		Nom	M
+29004010	1	schmiedet	PROPN	NE					S		Nom	
+29004010	2	eure	DET	PPOSAT					S		Nom	F
+29004010	3	Pflugmesser	PROPN	NE					S		Nom	
+29004010	4	zu	ADP	PTKVZ								
+29004010	5	Schwert	NOUN	NN					P		Dat	N
+29004010	6	und	CCONJ	KON								
+29004010	7	eure	DET	PPOSAT					S		Nom	F
+29004010	8	Winzermesser	PROPN	NE					S		Nom	F
+29004010	9	zu	ADP	PTKVZ								
+29004010	10	Speer	NOUN	NN					P		Dat	M
+29004010	11	der	DET	ART					S		Nom	M
+29004010	12	schwach	ADJ	ADJA	Pos				S		Nom	F
+29004010	13	sagen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29004010	14	ich	PRON	PPER				1	S		Nom	
+29004010	15	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+29004010	16	ein	DET	ART					S		Nom	N
+29004010	17	Held	NOUN	NN					S		Nom	M
+29004011	1	Eilet	NOUN	NE					S		Nom	F
+29004011	2	und	CCONJ	KON								
+29004011	3	kommet	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29004011	4	her	ADV	ADV								
+29004011	5	aller	PRON	PIS					P		Nom	
+29004011	6	ihr	PRON	PPOSAT				3	S		Dat	F
+29004011	7	Nation	NOUN	NN					P		Nom	F
+29004011	8	ringsum	ADV	ADV								
+29004011	9	und	CCONJ	KON								
+29004011	10	versammeln	VERB	VVPP		Part						
+29004011	11	euch	PRON	PPER				2	P		Dat	
+29004011	12	dahin	ADV	PROAV								
+29004011	13	Jahwe	NOUN	NN					S		Nom	M
+29004011	14	senden	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29004011	15	dein	DET	PPOSAT					S		Nom	F
+29004011	16	Held	NOUN	NN					P		Nom	M
+29004011	17	Hinab	ADV	PTKVZ								
+29004012	1	der	DET	ART					S		Nom	F
+29004012	2	Nation	NOUN	NN					P		Nom	F
+29004012	3	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+29004012	4	sich	PRON	PRF				3	S		Acc	
+29004012	5	aufmachen	VERB	VVINF		Inf						
+29004012	6	und	CCONJ	KON								
+29004012	7	Hinabziehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+29004012	8	in	ADP	APPR								
+29004012	9	der	DET	ART					S		Nom	N
+29004012	10	Tal	NOUN	NN					S		Nom	N
+29004012	11	Josaphat	PROPN	NE								
+29004012	12	denn	CCONJ	KON								
+29004012	13	dort	ADV	ADV								
+29004012	14	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29004012	15	ich	PRON	PPER				1	S		Nom	
+29004012	16	sitzen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004012	17	um	ADP	APPR								
+29004012	18	aller	PRON	PIS					P		Nom	
+29004012	19	Nation	NOUN	NN					P		Nom	F
+29004012	20	ringsum	ADV	ADV								
+29004012	21	zu	ADP	PTKVZ								
+29004012	22	richten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004013	1	Leget	NOUN	NE					S		Nom	N
+29004013	2	der	DET	ART					S		Nom	F
+29004013	3	Sichel	NOUN	NN					S		Nom	F
+29004013	4	an	ADP	PTKVZ								
+29004013	5	denn	CCONJ	KON								
+29004013	6	der	DET	ART					S		Nom	F
+29004013	7	Ernte	NOUN	NN					S		Nom	F
+29004013	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004013	9	reif	ADV	ADJD	Pos							
+29004013	10	kommet	VERB	VVFIN		Fin	Pres	3	S	Sub		
+29004013	11	Stampfet	NOUN	NN					S		Nom	N
+29004013	12	denn	CCONJ	KON								
+29004013	13	der	DET	ART					S		Nom	F
+29004013	14	Kelter	NOUN	NN					S		Nom	M
+29004013	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004013	16	voll	ADV	ADJD	Pos							
+29004013	17	der	DET	ART					S		Nom	F
+29004013	18	Kufe	NOUN	NN					P		Nom	F
+29004013	19	fließen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004013	20	über	ADP	APPR								
+29004013	21	denn	CCONJ	KON								
+29004013	22	groß	ADV	ADJD	Pos							
+29004013	23	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004013	24	ihr	DET	PPOSAT					S		Nom	F
+29004013	25	Bosheit	NOUN	NN					S		Nom	F
+29004014	1	Getümmel	NOUN	NN					S		Nom	N
+29004014	2	Getümmel	NOUN	NN					S		Nom	N
+29004014	3	in	ADP	APPRART					S		Dat	N
+29004014	4	Tal	PROPN	NN					S		Nom	
+29004014	5	der	DET	ART					S		Nom	M
+29004014	6	Entscheidung	NOUN	NN					S		Nom	F
+29004014	7	denn	CCONJ	KON								
+29004014	8	nah	ADP	APPR								
+29004014	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004014	10	der	DET	ART					S		Nom	M
+29004014	11	Tag	NOUN	NN					S		Nom	M
+29004014	12	Jahwe	PROPN	NE					S		Gen	
+29004014	13	in	ADP	APPRART					S		Dat	N
+29004014	14	Tal	PROPN	NN					S		Nom	
+29004014	15	der	DET	ART					S		Nom	M
+29004014	16	Entscheidung	NOUN	NN					S		Nom	F
+29004015	1	der	DET	ART					S		Nom	F
+29004015	2	Sonne	NOUN	NN					S		Nom	F
+29004015	3	und	CCONJ	KON								
+29004015	4	der	DET	ART					S		Nom	M
+29004015	5	Mond	NOUN	NN					S		Nom	M
+29004015	6	verfinstern	VERB	VVINF		Inf						
+29004015	7	sich	PRON	PRF				3	S		Acc	
+29004015	8	und	CCONJ	KON								
+29004015	9	der	DET	ART					S		Nom	F
+29004015	10	Stern	NOUN	NN					P		Nom	M
+29004015	11	verhalten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004015	12	ihr	DET	PPOSAT					S		Acc	M
+29004015	13	Glanz	NOUN	NN					S		Acc	M
+29004016	1	und	CCONJ	KON								
+29004016	2	Jahwe	NOUN	NN					S		Nom	M
+29004016	3	brüllen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29004016	4	aus	ADP	PTKVZ								
+29004016	5	Zion	PROPN	NE					S		Nom	F
+29004016	6	und	CCONJ	KON								
+29004016	7	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29004016	8	aus	ADP	PTKVZ								
+29004016	9	Jerusalem	PROPN	NE					S		Nom	N
+29004016	10	sein	DET	PPOSAT					S		Nom	F
+29004016	11	Stimme	NOUN	NN					S		Nom	F
+29004016	12	erschallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004016	13	und	CCONJ	KON								
+29004016	14	Himmel	NOUN	NN					S		Nom	M
+29004016	15	und	CCONJ	KON								
+29004016	16	Erde	NOUN	NN					S		Nom	F
+29004016	17	erbeben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004016	18	und	CCONJ	KON								
+29004016	19	Jahwe	NOUN	NN					S		Nom	M
+29004016	20	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004016	21	ein	DET	ART					S		Nom	F
+29004016	22	Zuflucht	NOUN	NN					S		Nom	F
+29004016	23	für	ADP	APPR								
+29004016	24	sein	AUX	VAINF		Inf						
+29004016	25	Volk	NOUN	NN					S		Nom	N
+29004016	26	und	CCONJ	KON								
+29004016	27	ein	DET	ART					S		Nom	F
+29004016	28	Fest	NOUN	NN					P		Nom	N
+29004016	29	für	ADP	APPR								
+29004016	30	der	DET	ART					S		Nom	F
+29004016	31	Kind	NOUN	NN					P		Nom	N
+29004016	32	Israel	PROPN	NE					S		Nom	N
+29004017	1	und	CCONJ	KON								
+29004017	2	ihr	PRON	PPOSAT				3	S		Dat	F
+29004017	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004017	4	erkennen	VERB	VVINF		Inf						
+29004017	5	daß	SCONJ	KOUS								
+29004017	6	ich	PRON	PPER				1	S		Nom	
+29004017	7	Jahwe	NOUN	NN					S		Nom	M
+29004017	8	euer	DET	PPOSAT					S		Nom	M
+29004017	9	Gott	NOUN	NN					S		Nom	M
+29004017	10	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+29004017	11	der	DET	ART					S		Nom	M
+29004017	12	auf	ADP	PTKVZ								
+29004017	13	Zion	PROPN	NE					S		Nom	F
+29004017	14	wohnen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29004017	15	mein	DET	PPOSAT					S		Dat	M
+29004017	16	heilig	ADJ	ADJA	Pos				S		Acc	M
+29004017	17	Berg	NOUN	NN					P		Nom	M
+29004017	18	und	CCONJ	KON								
+29004017	19	Jerusalem	PROPN	NE					S		Nom	N
+29004017	20	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004017	21	heilig	ADV	ADJD	Pos							
+29004017	22	sein	AUX	VAINF		Inf						
+29004017	23	und	CCONJ	KON								
+29004017	24	Fremde	NOUN	NN					P		Nom	
+29004017	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004017	26	es	PRON	PPER				3	S		Nom	N
+29004017	27	nicht	PART	PTKNEG								
+29004017	28	mehr	ADV	ADV								
+29004017	29	durchziehen	VERB	VVINF		Inf						
+29004018	1	und	CCONJ	KON								
+29004018	2	es	PRON	PPER				3	S		Nom	N
+29004018	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004018	4	geschehen	VERB	VVPP		Part						
+29004018	5	an	ADP	PTKVZ								
+29004018	6	jener	DET	PDAT					S		Dat	N
+29004018	7	Tag	NOUN	NN					P		Nom	M
+29004018	8	da	ADV	ADV								
+29004018	9	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004018	10	der	DET	ART					S		Nom	F
+29004018	11	Berg	NOUN	NN					P		Nom	M
+29004018	12	von	ADP	APPR								
+29004018	13	Most	NOUN	FM					S		Nom	M
+29004018	14	triefen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004018	15	und	CCONJ	KON								
+29004018	16	der	DET	ART					S		Nom	F
+29004018	17	Hügel	NOUN	NN					S		Nom	M
+29004018	18	von	ADP	APPR								
+29004018	19	Milch	NOUN	NN					S		Nom	F
+29004018	20	fließen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004018	21	und	CCONJ	KON								
+29004018	22	aller	PRON	PIS					P		Nom	
+29004018	23	Bach	NOUN	NN					P		Nom	M
+29004018	24	Judas	PROPN	NE					S		Nom	M
+29004018	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004018	26	von	ADP	APPR								
+29004018	27	Wasser	NOUN	NN					S		Nom	N
+29004018	28	fließen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+29004018	29	und	CCONJ	KON								
+29004018	30	ein	DET	ART					S		Nom	F
+29004018	31	Quelle	NOUN	NN					S		Nom	F
+29004018	32	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004018	33	aus	ADP	PTKVZ								
+29004018	34	der	DET	ART					S		Dat	M
+29004018	35	Haus	NOUN	NN					P		Nom	N
+29004018	36	Jahwe	PROPN	NE					S		Gen	
+29004018	37	hervorbrechen	VERB	VVINF		Inf						
+29004018	38	und	CCONJ	KON								
+29004018	39	der	DET	ART					S		Nom	N
+29004018	40	Tal	NOUN	NN					S		Nom	N
+29004018	41	Sittim	NOUN	NE					P		Nom	N
+29004018	42	bewässern	VERB	VVINF		Inf						
+29004019	1	Ägypten	PROPN	NE					S		Nom	N
+29004019	2	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004019	3	zu	ADP	APPRART					S		Dat	F
+29004019	4	Einöde	NOUN	NN					S		Nom	F
+29004019	5	und	CCONJ	KON								
+29004019	6	Edom	PROPN	NE					S		Nom	
+29004019	7	zu	ADP	PTKVZ								
+29004019	8	ein	PRON	ART					S		Nom	M
+29004019	9	öde	ADJ	ADJA	Pos				S		Acc	M
+29004019	10	Wüste	NOUN	NN					S		Nom	F
+29004019	11	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004019	12	wegen	ADP	APPR								
+29004019	13	der	DET	ART					S		Nom	M
+29004019	14	Gewalttat	NOUN	NN					S		Nom	F
+29004019	15	an	ADP	PTKVZ								
+29004019	16	der	DET	ART					S		Acc	M
+29004019	17	Kind	NOUN	NN					P		Dat	N
+29004019	18	Judas	PROPN	NE					S		Nom	M
+29004019	19	weil	SCONJ	KOUS								
+29004019	20	sie	PRON	PPER				3	P		Nom	
+29004019	21	in	ADP	APPR								
+29004019	22	ihr	DET	PPOSAT					S		Dat	N
+29004019	23	Land	NOUN	NN					P		Nom	N
+29004019	24	unschuldig	ADJ	ADJD	Pos				S		Nom	N
+29004019	25	Blut	NOUN	NN					S		Nom	N
+29004019	26	vergießen	VERB	VVPP		Part						
+29004019	27	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004020	1	aber	CCONJ	KON								
+29004020	2	Juda	PROPN	NE					S		Nom	M
+29004020	3	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+29004020	4	ewiglich	ADV	ADJD	Pos							
+29004020	5	bewohnen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+29004020	6	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+29004020	7	und	CCONJ	KON								
+29004020	8	Jerusalem	PROPN	NE					S		Nom	N
+29004020	9	von	ADP	APPR								
+29004020	10	Geschlecht	NOUN	NN					S		Nom	N
+29004020	11	zu	ADP	PTKVZ								
+29004020	12	Geschlecht	NOUN	NN					S		Nom	N
+29004021	1	und	CCONJ	KON								
+29004021	2	ich	PRON	PPER				1	S		Nom	
+29004021	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+29004021	4	sie	PRON	PPER				3	P		Nom	
+29004021	5	von	ADP	APPR								
+29004021	6	ihr	DET	PPOSAT					S		Dat	N
+29004021	7	Blut	NOUN	NN					S		Nom	N
+29004021	8	reinigen	VERB	VVINF		Inf						
+29004021	9	von	ADP	APPR								
+29004021	10	der	DET	ART					S		Dat	M
+29004021	11	ich	PRON	PPER				1	S		Nom	
+29004021	12	sie	PRON	PPER				3	P		Nom	
+29004021	13	nicht	PART	PTKNEG								
+29004021	14	reinigen	VERB	VVPP		Part						
+29004021	15	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+29004021	16	und	CCONJ	KON								
+29004021	17	Jahwe	NOUN	NN					S		Nom	M
+29004021	18	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+29004021	19	in	ADP	APPR								
+29004021	20	Zion	PROPN	NE					S		Nom	F
+29004021	21	wohnen	VERB	VVINF		Inf						

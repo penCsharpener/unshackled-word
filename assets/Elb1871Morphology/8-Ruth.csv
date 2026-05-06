@@ -1,0 +1,2386 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+8001001	1	und	CCONJ	KON								
+8001001	2	es	PRON	PPER				3	S		Nom	N
+8001001	3	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001001	4	in	ADP	APPR								
+8001001	5	der	DET	ART					S		Acc	M
+8001001	6	Tag	NOUN	NN					P		Dat	M
+8001001	7	als	ADP	KOKOM								
+8001001	8	der	DET	ART					S		Nom	F
+8001001	9	Richter	NOUN	NN					S		Nom	M
+8001001	10	richten	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001001	11	da	ADV	ADV								
+8001001	12	entstehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001001	13	ein	DET	ART					S		Nom	F
+8001001	14	Hungersnot	NOUN	NN					S		Nom	F
+8001001	15	in	ADP	APPRART					S		Dat	N
+8001001	16	Land	NOUN	NN					P		Nom	N
+8001001	17	und	CCONJ	KON								
+8001001	18	ein	DET	ART					S		Nom	N
+8001001	19	Mann	NOUN	NN					S		Nom	M
+8001001	20	von	ADP	APPR								
+8001001	21	Bethlehem-Juda	PROPN	NE					S		Nom	M
+8001001	22	ziehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001001	23	hin	ADV	ADV								
+8001001	24	um	ADP	APPR								
+8001001	25	sich	PRON	PRF				3	S		Acc	
+8001001	26	in	ADP	APPR								
+8001001	27	der	DET	ART					S		Acc	M
+8001001	28	Gefilde	NOUN	NN							Nom	M
+8001001	29	Moabs	PROPN	NE					S		Nom	
+8001001	30	aufhalten	VERB	VVIZU		Inf						
+8001001	31	er	PRON	PPER				3	S		Nom	M
+8001001	32	und	CCONJ	KON								
+8001001	33	sein	AUX	VAINF		Inf						
+8001001	34	Weib	NOUN	NN					S		Nom	N
+8001001	35	und	CCONJ	KON								
+8001001	36	sein	DET	PPOSAT					S		Nom	F
+8001001	37	beide	PRON	PIAT					P		Nom	
+8001001	38	Sohn	NOUN	NN					P		Nom	M
+8001002	1	und	CCONJ	KON								
+8001002	2	der	DET	ART					S		Nom	M
+8001002	3	Name	NOUN	NN					S		Nom	M
+8001002	4	der	DET	ART					S		Gen	M
+8001002	5	Mann	NOUN	NN					S		Gen	M
+8001002	6	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8001002	7	Elimelech	NOUN	NN					S		Nom	M
+8001002	8	und	CCONJ	KON								
+8001002	9	der	DET	ART					S		Nom	M
+8001002	10	Name	NOUN	NN					S		Nom	M
+8001002	11	sein	DET	PPOSAT					S		Gen	M
+8001002	12	Weibe	NOUN	NN					S		Gen	N
+8001002	13	Noomi	PROPN	NE					S		Nom	F
+8001002	14	und	CCONJ	KON								
+8001002	15	der	DET	ART					S		Nom	F
+8001002	16	Name	NOUN	NN					P		Nom	M
+8001002	17	sein	DET	PPOSAT					S		Dat	F
+8001002	18	beide	PRON	PIAT					P		Nom	
+8001002	19	Sohn	NOUN	NN					P		Nom	M
+8001002	20	Machlon	PROPN	NE					S		Nom	M
+8001002	21	und	CCONJ	KON								
+8001002	22	Kiljon	PROPN	NE					S		Nom	
+8001002	23	Ephratiter	NOUN	NN					S		Nom	M
+8001002	24	von	ADP	APPR								
+8001002	25	Bethlehem-Juda	PROPN	NE					S		Nom	M
+8001002	26	und	CCONJ	KON								
+8001002	27	sie	PRON	PPER				3	P		Nom	
+8001002	28	kommen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001002	29	in	ADP	APPR								
+8001002	30	der	DET	ART					S		Nom	F
+8001002	31	Gefilde	NOUN	NN					P		Nom	N
+8001002	32	Moabs	PROPN	NE					S		Nom	
+8001002	33	und	CCONJ	KON								
+8001002	34	bleiben	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001002	35	daselbst	ADV	PROAV								
+8001003	1	und	CCONJ	KON								
+8001003	2	Elimelech	NOUN	NN					S		Nom	M
+8001003	3	der	DET	ART					S		Nom	M
+8001003	4	Mann	NOUN	NN					S		Nom	M
+8001003	5	Noomi	PROPN	NE					S		Gen	
+8001003	6	sterben	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001003	7	und	CCONJ	KON								
+8001003	8	sie	PRON	PPER				3	P		Nom	
+8001003	9	bleiben	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001003	10	mit	ADP	APPR								
+8001003	11	ihr	DET	PPOSAT					S		Acc	M
+8001003	12	beide	PRON	PIAT					P		Nom	
+8001003	13	Söhn	NOUN	NN					P		Dat	M
+8001003	14	übrig	ADP	PTKVZ								
+8001004	1	und	CCONJ	KON								
+8001004	2	sie	PRON	PPER				3	P		Nom	
+8001004	3	nehmen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001004	4	sich	PRON	PRF				3	S		Acc	
+8001004	5	Moabitische	NOUN	NN					S		Nom	F
+8001004	6	Weiber	NOUN	NN					P		Nom	M
+8001004	7	der	DET	ART					S		Nom	M
+8001004	8	Name	NOUN	NN					S		Nom	M
+8001004	9	der	DET	ART					S		Nom	M
+8001004	10	ein	DET	ART					S		Acc	M
+8001004	11	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8001004	12	Orpa	PROPN	NE					S		Nom	
+8001004	13	und	CCONJ	KON								
+8001004	14	der	DET	ART					S		Nom	M
+8001004	15	Name	NOUN	NN					S		Nom	M
+8001004	16	der	DET	ART					S		Nom	M
+8001004	17	anderer	PRON	PIS					P		Dat	
+8001004	18	Ruth	PROPN	NE					S		Nom	F
+8001004	19	und	CCONJ	KON								
+8001004	20	sie	PRON	PPER				3	P		Nom	
+8001004	21	wohnen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001004	22	daselbst	ADV	PROAV								
+8001004	23	bei	ADP	APPR								
+8001004	24	zehn	NUM	CARD								
+8001004	25	Jahr	NOUN	NN					P		Dat	N
+8001005	1	da	SCONJ	KOUS								
+8001005	2	sterben	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001005	3	auch	ADV	ADV								
+8001005	4	der	DET	ART					S		Nom	F
+8001005	5	beide	PRON	PIAT					P		Nom	
+8001005	6	Machlon	PROPN	NE					S		Nom	M
+8001005	7	und	CCONJ	KON								
+8001005	8	Kiljon	PROPN	NE					S		Nom	
+8001005	9	und	CCONJ	KON								
+8001005	10	der	DET	ART					S		Nom	N
+8001005	11	Weib	NOUN	NN					S		Nom	N
+8001005	12	bleiben	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001005	13	allein	ADV	ADV								
+8001005	14	übrig	ADP	PTKVZ								
+8001005	15	von	ADP	APPR								
+8001005	16	ihr	DET	PPOSAT					S		Acc	M
+8001005	17	beide	PRON	PIAT					P		Nom	
+8001005	18	Söhn	NOUN	NN					P		Dat	M
+8001005	19	und	CCONJ	KON								
+8001005	20	von	ADP	APPR								
+8001005	21	ihr	DET	PPOSAT					S		Dat	N
+8001005	22	Manne	NOUN	NN					S		Nom	M
+8001006	1	und	CCONJ	KON								
+8001006	2	sie	PRON	PPER				3	P		Nom	
+8001006	3	machen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001006	4	sich	PRON	PRF				3	S		Acc	
+8001006	5	auf	ADP	PTKVZ								
+8001006	6	sie	PRON	PPER				3	P		Nom	
+8001006	7	und	CCONJ	KON								
+8001006	8	ihr	DET	PPOSAT					S		Nom	F
+8001006	9	Schwiegertöchter	NOUN	NN					P		Nom	M
+8001006	10	und	CCONJ	KON								
+8001006	11	kehren	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001006	12	aus	ADP	PTKVZ								
+8001006	13	der	DET	ART					S		Acc	M
+8001006	14	Gefilde	NOUN	NN							Nom	M
+8001006	15	Moabs	PROPN	NE					S		Nom	
+8001006	16	zurück	ADV	PTKVZ								
+8001006	17	denn	CCONJ	KON								
+8001006	18	sie	PRON	PPER				3	P		Nom	
+8001006	19	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8001006	20	in	ADP	APPRART					S		Dat	N
+8001006	21	Gefilde	NOUN	NN					P		Nom	N
+8001006	22	Moabs	PROPN	NE					S		Nom	
+8001006	23	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8001006	24	daß	SCONJ	KOUS								
+8001006	25	Jahwe	NOUN	NN					S		Nom	M
+8001006	26	sein	AUX	VAINF		Inf						
+8001006	27	Volk	NOUN	NN					S		Nom	N
+8001006	28	heimsuchen	VERB	VVPP		Part						
+8001006	29	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8001006	30	um	ADP	APPR								
+8001006	31	ihnen	PRON	PPER				3	P		Dat	
+8001006	32	Brot	NOUN	NN					S		Nom	N
+8001006	33	zu	ADP	PTKVZ								
+8001006	34	geben	VERB	VVINF		Inf						
+8001007	1	und	CCONJ	KON								
+8001007	2	sie	PRON	PPER				3	P		Nom	
+8001007	3	ziehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001007	4	aus	ADP	PTKVZ								
+8001007	5	von	ADP	APPR								
+8001007	6	der	DET	ART					S		Dat	M
+8001007	7	Ort	NOUN	NN					P		Nom	M
+8001007	8	wo	SCONJ	PWAV								
+8001007	9	sie	PRON	PPER				3	P		Nom	
+8001007	10	sein	AUX	VAPP		Part						
+8001007	11	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8001007	12	und	CCONJ	KON								
+8001007	13	ihr	DET	PPOSAT					S		Nom	F
+8001007	14	beide	PRON	PIAT					P		Nom	
+8001007	15	Schwiegertöchter	NOUN	NN					P		Nom	M
+8001007	16	mit	ADP	APPR								
+8001007	17	ihr	PRON	PPOSAT				3	S		Dat	F
+8001007	18	und	CCONJ	KON								
+8001007	19	sie	PRON	PPER				3	P		Nom	
+8001007	20	ziehen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001007	21	der	DET	ART					S		Gen	M
+8001007	22	Weg	NOUN	NN					S		Gen	M
+8001007	23	um	ADP	APPR								
+8001007	24	in	ADP	APPR								
+8001007	25	der	DET	ART					S		Nom	N
+8001007	26	Land	NOUN	NN					S		Nom	N
+8001007	27	Juda	PROPN	NE					S		Nom	M
+8001007	28	zurückkehren	VERB	VVIZU		Inf						
+8001008	1	da	SCONJ	KOUS								
+8001008	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001008	3	Noomi	PROPN	NE					S		Nom	F
+8001008	4	zu	ADP	PTKVZ								
+8001008	5	ihr	DET	PPOSAT					S		Acc	M
+8001008	6	beide	PRON	PIAT					P		Nom	
+8001008	7	Schwiegertöchter	NOUN	NN					P		Dat	M
+8001008	8	gehet	ADV	PROAV								
+8001008	9	Kehret	PROPN	NE					S		Nom	M
+8001008	10	um	ADP	APPR								
+8001008	11	ein	DET	ART					S		Nom	F
+8001008	12	jeder	DET	PIAT					S		Nom	F
+8001008	13	zu	ADP	APPRART					S		Dat	N
+8001008	14	Haus	NOUN	NN					P		Nom	N
+8001008	15	ihr	DET	PPOSAT					S		Dat	F
+8001008	16	Mutter	NOUN	NN					S		Nom	F
+8001008	17	Jahwe	NOUN	NN					S		Nom	M
+8001008	18	erweisen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8001008	19	Güte	NOUN	NN					S		Nom	F
+8001008	20	an	ADP	PTKVZ								
+8001008	21	euch	PRON	PPER				2	P		Dat	
+8001008	22	so	ADV	ADV								
+8001008	23	wie	ADP	KOKOM								
+8001008	24	ihr	PRON	PPOSAT				3	S		Dat	F
+8001008	25	sie	PRON	PPER				3	P		Nom	
+8001008	26	an	ADP	PTKVZ								
+8001008	27	der	DET	ART					S		Acc	M
+8001008	28	verstorbener	NOUN	NN					P		Nom	
+8001008	29	und	CCONJ	KON								
+8001008	30	an	ADP	PTKVZ								
+8001008	31	mir	PRON	PPER				1	S		Dat	
+8001008	32	erweisen	VERB	VVPP		Part						
+8001008	33	habben	VERB	VAFIN				2	P	Imp		
+8001009	1	Jahwe	NOUN	NN					S		Nom	M
+8001009	2	geben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8001009	3	euch	PRON	PPER				2	P		Dat	
+8001009	4	daß	SCONJ	KOUS								
+8001009	5	ihr	PRON	PPOSAT				3	S		Dat	F
+8001009	6	Ruhe	NOUN	NN					S		Nom	F
+8001009	7	finden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8001009	8	ein	DET	ART					S		Nom	F
+8001009	9	jeder	DET	PIAT					S		Nom	F
+8001009	10	in	ADP	APPR								
+8001009	11	der	DET	ART					S		Dat	M
+8001009	12	Haus	NOUN	NN					P		Nom	N
+8001009	13	ihr	DET	PPOSAT					S		Gen	M
+8001009	14	Mann	NOUN	NN					S		Gen	M
+8001009	15	und	CCONJ	KON								
+8001009	16	sie	PRON	PPER				3	P		Nom	
+8001009	17	küßen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001009	18	sie	PRON	PPER				3	P		Nom	
+8001009	19	und	CCONJ	KON								
+8001009	20	sie	PRON	PPER				3	P		Nom	
+8001009	21	erheben	VERB	VVPP		Fin	Past	3	P	Ind		
+8001009	22	ihr	DET	PPOSAT					S		Nom	F
+8001009	23	Stimme	NOUN	NN					S		Nom	F
+8001009	24	und	CCONJ	KON								
+8001009	25	weinen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001010	1	und	CCONJ	KON								
+8001010	2	sie	PRON	PPER				3	P		Nom	
+8001010	3	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001010	4	zu	ADP	PTKVZ								
+8001010	5	ihr	PRON	PPOSAT				3	S		Dat	F
+8001010	6	doch	CCONJ	KON								
+8001010	7	wir	PRON	PPER				1	P		Nom	
+8001010	8	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+8001010	9	mit	ADP	APPR								
+8001010	10	dir	PRON	PPER				2	S		Dat	
+8001010	11	zu	ADP	PTKVZ								
+8001010	12	dein	DET	PPOSAT					S		Dat	M
+8001010	13	Volke	NOUN	NN					S		Nom	M
+8001010	14	zurückkehren	VERB	VVINF		Inf						
+8001011	1	und	CCONJ	KON								
+8001011	2	Noomi	PROPN	NE					S		Nom	F
+8001011	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001011	4	Kehret	NOUN	NE					S		Nom	N
+8001011	5	um	ADP	APPR								
+8001011	6	mein	DET	PPOSAT					S		Nom	F
+8001011	7	Tochter	NOUN	NN					P		Nom	F
+8001011	8	warum	ADV	PWAV								
+8001011	9	wollten	VERB	VMFIN		Fin	Pres	3	S	Ind		
+8001011	10	ihr	PRON	PPOSAT				3	S		Dat	F
+8001011	11	mit	ADP	APPR								
+8001011	12	mir	PRON	PPER				1	S		Dat	
+8001011	13	gehen	VERB	VVINF		Inf						
+8001011	14	Habe	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8001011	15	ich	PRON	PPER				1	S		Nom	
+8001011	16	noch	CCONJ	KON								
+8001011	17	Sohn	NOUN	NN					P		Nom	M
+8001011	18	in	ADP	APPR								
+8001011	19	mein	DET	PPOSAT					S		Dat	M
+8001011	20	Leib	NOUN	NN					S		Nom	M
+8001011	21	daß	SCONJ	KOUS								
+8001011	22	sie	PRON	PPER				3	P		Nom	
+8001011	23	euch	PRON	PPER				2	P		Dat	
+8001011	24	zu	ADP	PTKVZ								
+8001011	25	Mann	NOUN	NN					P		Dat	M
+8001011	26	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+8001011	27	können	AUX	VMFIN		Fin	Past	3	P	Sub		
+8001012	1	Kehret	NOUN	NE					S		Nom	N
+8001012	2	um	ADP	APPR								
+8001012	3	mein	DET	PPOSAT					S		Nom	F
+8001012	4	Tochter	NOUN	NN					P		Nom	F
+8001012	5	heen	VERB	VVPP		Part						
+8001012	6	denn	CCONJ	KON								
+8001012	7	ich	PRON	PPER				1	S		Nom	
+8001012	8	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+8001012	9	zu	ADP	PTKVZ								
+8001012	10	alt	ADV	ADJD	Pos							
+8001012	11	um	ADP	APPR								
+8001012	12	ein	PRON	ART					S		Nom	N
+8001012	13	Mann	NOUN	NN					S		Gen	M
+8001012	14	zu	ADP	PTKVZ								
+8001012	15	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+8001012	16	wenn	SCONJ	KOUS								
+8001012	17	ich	PRON	PPER				1	S		Nom	
+8001012	18	spräche	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001012	19	ich	PRON	PPER				1	S		Nom	
+8001012	20	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8001012	21	Hoffnung	NOUN	NN					S		Nom	F
+8001012	22	wenn	SCONJ	KOUS								
+8001012	23	ich	PRON	PPER				1	S		Nom	
+8001012	24	selbst	ADV	ADV								
+8001012	25	dieser	DET	PDAT					S		Nom	F
+8001012	26	Nacht	NOUN	NN					S		Nom	F
+8001012	27	ein	PRON	ART					S		Nom	N
+8001012	28	Mann	NOUN	NN					S		Gen	M
+8001012	29	werden	AUX	VAFIN		Fin	Past	3	S	Sub		
+8001012	30	und	CCONJ	KON								
+8001012	31	sogar	ADV	ADV								
+8001012	32	Sohn	NOUN	NN					P		Nom	M
+8001012	33	gebären	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8001012	34	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+8001013	1	wollten	VERB	VMFIN		Fin	Pres	3	S	Ind		
+8001013	2	ihr	PRON	PPOSAT				3	S		Dat	F
+8001013	3	deshalb	ADV	PROAV								
+8001013	4	warten	VERB	VVINF		Inf						
+8001013	5	bis	CCONJ	KON								
+8001013	6	sie	PRON	PPER				3	P		Nom	
+8001013	7	groß	ADV	ADJD	Pos							
+8001013	8	werden	AUX	VAFIN		Fin	Past	3	P	Sub		
+8001013	9	wollten	VERB	VMFIN		Fin	Pres	3	S	Ind		
+8001013	10	ihr	PRON	PPOSAT				3	S		Dat	F
+8001013	11	deshalb	ADV	PROAV								
+8001013	12	euch	PRON	PPER				2	P		Dat	
+8001013	13	abschließen	VERB	VVINF		Inf						
+8001013	14	daß	SCONJ	KOUS								
+8001013	15	ihr	PRON	PPOSAT				3	S		Dat	F
+8001013	16	keiner	PRON	PIAT					S		Nom	N
+8001013	17	Mann	NOUN	NN					S		Gen	M
+8001013	18	würdet	AUX	VMFIN		Fin	Past	3	S	Sub		
+8001013	19	nicht	PART	PTKNEG								
+8001013	20	doch	CCONJ	KON								
+8001013	21	mein	DET	PPOSAT					S		Nom	F
+8001013	22	Tochter	NOUN	NN					P		Nom	F
+8001013	23	denn	CCONJ	KON								
+8001013	24	mir	PRON	PPER				1	S		Dat	
+8001013	25	ergehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8001013	26	es	PRON	PPER				3	S		Nom	N
+8001013	27	viel	PRON	PIS								
+8001013	28	bitter	ADV	PIS	Cmp							
+8001013	29	als	ADP	KOKOM								
+8001013	30	euch	PRON	PPER				2	P		Dat	
+8001013	31	denn	CCONJ	KON								
+8001013	32	der	DET	ART					S		Nom	F
+8001013	33	Hand	NOUN	NN					S		Nom	F
+8001013	34	Jahwe	PROPN	NE					S		Gen	
+8001013	35	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001013	36	wider	ADP	PTKVZ								
+8001013	37	mich	PRON	PPER				1	S		Acc	
+8001013	38	ausgehen	VERB	VVPP		Part						
+8001014	1	da	SCONJ	KOUS								
+8001014	2	erheben	VERB	VVPP		Fin	Past	3	P	Ind		
+8001014	3	sie	PRON	PPER				3	P		Nom	
+8001014	4	ihr	DET	PPOSAT					S		Nom	F
+8001014	5	Stimme	NOUN	NN					S		Nom	F
+8001014	6	und	CCONJ	KON								
+8001014	7	weinen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001014	8	wiederum	ADV	ADV								
+8001014	9	und	CCONJ	KON								
+8001014	10	Orpa	PROPN	NE					S		Nom	
+8001014	11	küßen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001014	12	ihr	DET	PPOSAT					S		Nom	F
+8001014	13	Schwiegermutter	NOUN	NN					S		Nom	F
+8001014	14	Ruth	PROPN	NE					S		Nom	F
+8001014	15	aber	CCONJ	KON								
+8001014	16	hehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001014	17	ihr	PRON	PPOSAT				3	S		Dat	F
+8001014	18	an	ADP	PTKVZ								
+8001015	1	und	CCONJ	KON								
+8001015	2	sie	PRON	PPER				3	P		Nom	
+8001015	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001015	4	sehen	VERB	VVIMP				2	S	Imp		
+8001015	5	dein	DET	PPOSAT					S		Nom	F
+8001015	6	Schwägerin	NOUN	NN					S		Nom	F
+8001015	7	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001015	8	zu	ADP	PTKVZ								
+8001015	9	ihr	DET	PPOSAT					S		Dat	N
+8001015	10	Volke	NOUN	NN					S		Nom	M
+8001015	11	und	CCONJ	KON								
+8001015	12	zu	ADP	PTKVZ								
+8001015	13	ihr	DET	PPOSAT					S		Acc	M
+8001015	14	Götter	NOUN	NN					P		Dat	M
+8001015	15	zurückkehren	VERB	VVPP		Part						
+8001015	16	kehren	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8001015	17	um	ADP	APPR								
+8001015	18	dein	DET	PPOSAT					S		Dat	F
+8001015	19	Schwägerin	NOUN	NN					S		Nom	F
+8001015	20	nach	ADP	APPR								
+8001016	1	aber	CCONJ	KON								
+8001016	2	Ruth	PROPN	NE					S		Nom	F
+8001016	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001016	4	Dring	NOUN	NN					P		Nom	M
+8001016	5	nicht	PART	PTKNEG								
+8001016	6	in	ADP	APPR								
+8001016	7	mich	PRON	PPER				1	S		Acc	
+8001016	8	dich	PRON	PPER				2	S		Acc	
+8001016	9	zu	ADP	PTKVZ								
+8001016	10	verlassen	VERB	VVINF		Inf						
+8001016	11	hinter	ADP	APPR								
+8001016	12	dir	PRON	PPER				2	S		Dat	
+8001016	13	Weg	ADV	PTKVZ								
+8001016	14	umkehren	VERB	VVIZU		Inf						
+8001016	15	denn	CCONJ	KON								
+8001016	16	wohin	ADV	PWAV								
+8001016	17	du	PRON	PPER				2	S		Nom	
+8001016	18	gehst	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8001016	19	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8001016	20	ich	PRON	PPER				1	S		Nom	
+8001016	21	gehen	VERB	VVINF		Inf						
+8001016	22	und	CCONJ	KON								
+8001016	23	wo	SCONJ	PWAV								
+8001016	24	du	PRON	PPER				2	S		Nom	
+8001016	25	weiln	NOUN	PWAV					S		Nom	F
+8001016	26	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8001016	27	ich	PRON	PPER				1	S		Nom	
+8001016	28	weilen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8001016	29	dein	DET	PPER					S		Nom	N
+8001016	30	Volk	NOUN	NN					S		Nom	N
+8001016	31	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001016	32	mein	DET	PPOSAT					S		Nom	N
+8001016	33	Volk	NOUN	NN					S		Nom	N
+8001016	34	und	CCONJ	KON								
+8001016	35	dein	DET	PPER					S		Nom	N
+8001016	36	Gott	NOUN	NN					S		Nom	M
+8001016	37	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001016	38	mein	DET	PPOSAT					S		Nom	N
+8001016	39	Gott	NOUN	NN					S		Nom	M
+8001017	1	wo	SCONJ	PWAV								
+8001017	2	du	PRON	PPER				2	S		Nom	
+8001017	3	Stirbst	VERB	FM		Fin	Pres	2	S	Ind		
+8001017	4	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8001017	5	ich	PRON	PPER				1	S		Nom	
+8001017	6	sterben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8001017	7	und	CCONJ	KON								
+8001017	8	daselbst	ADV	PROAV								
+8001017	9	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8001017	10	ich	PRON	PPER				1	S		Nom	
+8001017	11	begraben	VERB	VVPP		Part						
+8001017	12	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+8001017	13	so	ADV	ADV								
+8001017	14	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8001017	15	mir	PRON	PPER				1	S		Dat	
+8001017	16	Jahwe	NOUN	NN					S		Nom	M
+8001017	17	tun	VERB	VVINF		Inf						
+8001017	18	und	CCONJ	KON								
+8001017	19	so	ADV	ADV								
+8001017	20	hinzufügen	VERB	VVINF		Inf						
+8001017	21	nur	ADV	ADV								
+8001017	22	der	DET	ART					S		Nom	M
+8001017	23	Tod	NOUN	NN					S		Nom	M
+8001017	24	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8001017	25	scheiden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8001017	26	zwischen	ADP	APPR								
+8001017	27	mir	PRON	PPER				1	S		Dat	
+8001017	28	und	CCONJ	KON								
+8001017	29	dir	PRON	PPER				2	S		Dat	
+8001018	1	und	CCONJ	KON								
+8001018	2	als	ADP	KOKOM								
+8001018	3	sie	PRON	PPER				3	P		Nom	
+8001018	4	sehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001018	5	daß	SCONJ	KOUS								
+8001018	6	sie	PRON	PPER				3	P		Nom	
+8001018	7	fest	ADV	PTKVZ								
+8001018	8	darauf	ADV	PROAV								
+8001018	9	bestehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001018	10	mit	ADP	APPR								
+8001018	11	ihr	PRON	PPOSAT				3	S		Dat	F
+8001018	12	zu	ADP	PTKVZ								
+8001018	13	gehen	VERB	VVINF		Inf						
+8001018	14	da	ADV	ADV								
+8001018	15	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001018	16	sie	PRON	PPER				3	P		Nom	
+8001018	17	ab	ADP	PTKVZ								
+8001018	18	ihr	PRON	PPOSAT				3	S		Dat	F
+8001018	19	zuzureden	NOUN	NN					P		Nom	F
+8001019	1	und	CCONJ	KON								
+8001019	2	so	ADV	ADV								
+8001019	3	gehen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001019	4	beide	PRON	PIS					P		Nom	
+8001019	5	bis	CCONJ	KON								
+8001019	6	sie	PRON	PPER				3	P		Nom	
+8001019	7	nach	ADP	APPR								
+8001019	8	Bethlehem	PROPN	NE					S		Nom	N
+8001019	9	kommen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001019	10	und	CCONJ	KON								
+8001019	11	es	PRON	PPER				3	S		Nom	N
+8001019	12	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001019	13	als	ADP	KOKOM								
+8001019	14	sie	PRON	PPER				3	P		Nom	
+8001019	15	nach	ADP	APPR								
+8001019	16	Bethlehem	PROPN	NE					S		Nom	N
+8001019	17	kommen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001019	18	da	ADV	ADV								
+8001019	19	geraten	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001019	20	der	DET	ART					S		Nom	F
+8001019	21	ganz	ADJ	ADJA	Pos				S		Nom	F
+8001019	22	Stadt	NOUN	NN					S		Nom	F
+8001019	23	ihretwegen	ADV	PROAV								
+8001019	24	in	ADP	APPR								
+8001019	25	Bewegung	NOUN	NN					S		Nom	F
+8001019	26	und	CCONJ	KON								
+8001019	27	sie	PRON	PPER				3	P		Nom	
+8001019	28	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001019	29	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001019	30	der	DET	ART					S		Nom	N
+8001019	31	Noomi	PROPN	NE					S		Nom	F
+8001020	1	und	CCONJ	KON								
+8001020	2	sie	PRON	PPER				3	P		Nom	
+8001020	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001020	4	zu	ADP	PTKVZ								
+8001020	5	ihnen	PRON	PPER				3	P		Dat	
+8001020	6	Nennet	NOUN	NN					S		Nom	N
+8001020	7	mich	PRON	PPER				1	S		Acc	
+8001020	8	nicht	PART	PTKNEG								
+8001020	9	Noomi	PROPN	NE					S		Nom	F
+8001020	10	nennen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8001020	11	mich	PRON	PPER				1	S		Acc	
+8001020	12	Mara	PROPN	NE					S		Nom	F
+8001020	13	denn	CCONJ	KON								
+8001020	14	der	DET	ART					S		Nom	M
+8001020	15	allmächtige	NOUN	ADJA					P		Nom	
+8001020	16	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001020	17	es	PRON	PPER				3	S		Nom	N
+8001020	18	mir	PRON	PPER				1	S		Dat	
+8001020	19	sehr	ADV	ADV								
+8001020	20	bitter	ADV	ADJD	Pos							
+8001020	21	machen	VERB	VVPP		Part						
+8001021	1	voll	ADP	APPR								
+8001021	2	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+8001021	3	ich	PRON	PPER				1	S		Nom	
+8001021	4	gehen	VERB	VVPP		Part						
+8001021	5	und	CCONJ	KON								
+8001021	6	leer	ADV	ADJD	Pos							
+8001021	7	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001021	8	mich	PRON	PPER				1	S		Acc	
+8001021	9	Jahwe	NOUN	NN					S		Nom	M
+8001021	10	zurückkehren	VERB	VVINF		Inf						
+8001021	11	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+8001021	12	warum	ADV	PWAV								
+8001021	13	nennen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8001021	14	ihr	PRON	PPOSAT				3	S		Dat	F
+8001021	15	mich	PRON	PPER				1	S		Acc	
+8001021	16	Noomi	PROPN	NE					S		Nom	F
+8001021	17	da	ADV	ADV								
+8001021	18	Jahwe	NOUN	NN					S		Nom	M
+8001021	19	gegen	ADP	APPR								
+8001021	20	mich	PRON	PPER				1	S		Acc	
+8001021	21	zeugen	VERB	VVPP		Part						
+8001021	22	und	CCONJ	KON								
+8001021	23	der	DET	ART					S		Nom	M
+8001021	24	allmächtige	NOUN	ADJA					P		Nom	
+8001021	25	mir	PRON	PPER				1	S		Dat	
+8001021	26	Übles	PROPN	NE					S		Nom	M
+8001021	27	tun	VERB	VVPP		Part						
+8001021	28	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8001022	1	und	CCONJ	KON								
+8001022	2	so	ADV	ADV								
+8001022	3	kehren	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001022	4	Noomi	PROPN	NE					S		Nom	F
+8001022	5	zurück	ADV	PTKVZ								
+8001022	6	und	CCONJ	KON								
+8001022	7	Ruth	PROPN	NE					S		Nom	F
+8001022	8	der	DET	ART					S		Nom	F
+8001022	9	Moabitin	NOUN	NN					S		Nom	F
+8001022	10	ihr	DET	PPOSAT					S		Nom	F
+8001022	11	Schwiegertochter	NOUN	NN					S		Nom	F
+8001022	12	mit	ADP	APPR								
+8001022	13	ihr	PRON	PPOSAT				3	S		Dat	F
+8001022	14	welcher	DET	PWAT					S		Nom	F
+8001022	15	aus	ADP	PTKVZ								
+8001022	16	der	DET	ART					S		Acc	M
+8001022	17	Gefilde	NOUN	NN							Nom	M
+8001022	18	Moabs	PROPN	NE					S		Nom	
+8001022	19	zurückkehren	VERB	VVFIN		Fin	Past	3	S	Ind		
+8001022	20	und	CCONJ	KON								
+8001022	21	sie	PRON	PPER				3	P		Nom	
+8001022	22	kommen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8001022	23	nach	ADP	APPR								
+8001022	24	Bethlehem	PROPN	NE					S		Nom	N
+8001022	25	bei	ADP	APPRART					S		Dat	M
+8001022	26	Beginn	NOUN	NN					S		Nom	M
+8001022	27	der	DET	ART					S		Nom	M
+8001022	28	Gerstenernt	NOUN	NN					P		Nom	N
+8002001	1	und	CCONJ	KON								
+8002001	2	Noomi	PROPN	NE					S		Nom	F
+8002001	3	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002001	4	ein	DET	ART					S		Acc	M
+8002001	5	verwandte	NOUN	NN					P		Nom	
+8002001	6	ihr	DET	PPOSAT					S		Gen	M
+8002001	7	Mann	NOUN	NN					S		Gen	M
+8002001	8	ein	DET	ART					S		Acc	M
+8002001	9	vermögend	ADJ	ADJA	Pos				S		Acc	M
+8002001	10	Mann	NOUN	NN					S		Nom	M
+8002001	11	aus	ADP	PTKVZ								
+8002001	12	der	DET	ART					S		Dat	M
+8002001	13	Geschlecht	NOUN	NN					S		Nom	N
+8002001	14	Elimelech	PROPN	NE					S		Gen	
+8002001	15	und	CCONJ	KON								
+8002001	16	sein	AUX	VAINF		Inf						
+8002001	17	Name	NOUN	NN					S		Nom	M
+8002001	18	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002001	19	Boas	PROPN	NE					S		Nom	
+8002002	1	und	CCONJ	KON								
+8002002	2	Ruth	PROPN	NE					S		Nom	F
+8002002	3	der	DET	ART					S		Nom	F
+8002002	4	Moabitin	NOUN	NN					S		Nom	F
+8002002	5	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002002	6	zu	ADP	PTKVZ								
+8002002	7	Noomi	PROPN	NE					S		Nom	F
+8002002	8	Laß	VERB	NE				2	S	Imp		
+8002002	9	mich	PRON	PPER				1	S		Acc	
+8002002	10	doch	CCONJ	KON								
+8002002	11	auf	ADP	APPRART					S		Acc	N
+8002002	12	Feld	NOUN	NN					S		Nom	N
+8002002	13	gehen	VERB	VVINF		Inf						
+8002002	14	und	CCONJ	KON								
+8002002	15	unter	ADP	APPR								
+8002002	16	der	DET	ART					S		Acc	M
+8002002	17	Ähre	NOUN	NN					P		Nom	F
+8002002	18	lesen	VERB	VVINF		Inf						
+8002002	19	hinter	ADP	APPR								
+8002002	20	der	DET	ART					S		Dat	M
+8002002	21	her	ADV	ADV								
+8002002	22	in	ADP	APPR								
+8002002	23	der	PRON	PDS					S		Gen	
+8002002	24	Auge	NOUN	NN					P		Nom	N
+8002002	25	ich	PRON	PPER				1	S		Nom	
+8002002	26	Gnade	NOUN	NN					S		Nom	F
+8002002	27	finden	VERB	VVINF		Fin	Pres	3	P	Ind		
+8002002	28	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002002	29	und	CCONJ	KON								
+8002002	30	sie	PRON	PPER				3	P		Nom	
+8002002	31	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002002	32	zu	ADP	PTKVZ								
+8002002	33	ihr	PRON	PPOSAT				3	S		Dat	F
+8002002	34	Gehe	VERB	VVIMP				2	S	Imp		
+8002002	35	hin	ADV	ADV								
+8002002	36	mein	DET	PPOSAT					S		Nom	F
+8002002	37	Tochter	NOUN	NN					S		Nom	F
+8002003	1	und	CCONJ	KON								
+8002003	2	sie	PRON	PPER				3	P		Nom	
+8002003	3	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002003	4	hin	ADV	ADV								
+8002003	5	und	CCONJ	KON								
+8002003	6	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002003	7	und	CCONJ	KON								
+8002003	8	lesen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002003	9	auf	ADP	PTKVZ								
+8002003	10	der	DET	ART					S		Dat	M
+8002003	11	Feld	NOUN	NN					S		Nom	N
+8002003	12	hinter	ADP	APPR								
+8002003	13	der	DET	ART					S		Acc	M
+8002003	14	Schnitter	NOUN	NN					P		Dat	N
+8002003	15	her	ADV	ADV								
+8002003	16	und	CCONJ	KON								
+8002003	17	sie	PRON	PPER				3	P		Nom	
+8002003	18	treffen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002003	19	zufällig	ADV	ADJD	Pos							
+8002003	20	der	DET	ART					S		Nom	N
+8002003	21	Feldstück	NOUN	NN					S		Nom	N
+8002003	22	der	DET	ART					S		Gen	M
+8002003	23	Boas	PROPN	NE					S		Nom	
+8002003	24	der	DET	ART					S		Nom	M
+8002003	25	aus	ADP	PTKVZ								
+8002003	26	der	DET	ART					S		Dat	M
+8002003	27	Geschlecht	NOUN	NN					S		Nom	N
+8002003	28	Elimelech	PROPN	NE					S		Gen	
+8002003	29	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002004	1	und	CCONJ	KON								
+8002004	2	sehen	VERB	VVIMP				2	S	Imp		
+8002004	3	Boas	PROPN	NE					S		Nom	
+8002004	4	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002004	5	von	ADP	APPR								
+8002004	6	Bethlehem	PROPN	NE					S		Nom	N
+8002004	7	und	CCONJ	KON								
+8002004	8	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002004	9	zu	ADP	PTKVZ								
+8002004	10	der	DET	ART					S		Acc	M
+8002004	11	Schnitter	NOUN	NN					P		Dat	N
+8002004	12	Jahwe	NOUN	NN					S		Nom	M
+8002004	13	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002004	14	mit	ADP	APPR								
+8002004	15	euch	PRON	PPER				2	P		Dat	
+8002004	16	und	CCONJ	KON								
+8002004	17	sie	PRON	PPER				3	P		Nom	
+8002004	18	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8002004	19	zu	ADP	PTKVZ								
+8002004	20	ihm	PRON	PPER				3	S		Dat	M
+8002004	21	Jahwe	NOUN	NN					S		Nom	M
+8002004	22	segnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8002004	23	dich	PRON	PPER				2	S		Acc	
+8002005	1	und	CCONJ	KON								
+8002005	2	Boas	PROPN	NE					S		Nom	
+8002005	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002005	4	zu	ADP	PTKVZ								
+8002005	5	sein	DET	PPOSAT					S		Dat	M
+8002005	6	Knecht	NOUN	NN					P		Nom	M
+8002005	7	der	DET	ART					S		Nom	M
+8002005	8	über	ADP	APPR								
+8002005	9	der	DET	ART					S		Nom	F
+8002005	10	Schnitter	NOUN	NN					P		Nom	N
+8002005	11	bestellen	VERB	VVPP		Part						
+8002005	12	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002005	13	wessen	NOUN	FM					S		Nom	N
+8002005	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002005	15	dieser	DET	PDAT					S		Nom	F
+8002005	16	Dirne	NOUN	NN					S		Nom	F
+8002006	1	und	CCONJ	KON								
+8002006	2	der	DET	ART					S		Nom	M
+8002006	3	Knecht	NOUN	NN					S		Nom	M
+8002006	4	der	DET	ART					S		Nom	M
+8002006	5	über	ADP	APPR								
+8002006	6	der	DET	ART					S		Nom	F
+8002006	7	Schnitter	NOUN	NN					P		Nom	N
+8002006	8	bestellen	VERB	VVPP		Part						
+8002006	9	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002006	10	antworten	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002006	11	und	CCONJ	KON								
+8002006	12	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002006	13	es	PRON	PPER				3	S		Nom	N
+8002006	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002006	15	ein	DET	ART					S		Nom	F
+8002006	16	Moabitische	NOUN	NN					S		Nom	F
+8002006	17	Dirne	NOUN	NN					S		Nom	F
+8002006	18	der	DET	ART					S		Nom	F
+8002006	19	mit	ADP	APPR								
+8002006	20	Noomi	PROPN	NE					S		Nom	F
+8002006	21	aus	ADP	PTKVZ								
+8002006	22	der	DET	ART					S		Acc	M
+8002006	23	Gefilde	NOUN	NN							Nom	M
+8002006	24	Moabs	PROPN	NE					S		Nom	
+8002006	25	zurückkehren	VERB	VVPP		Part						
+8002006	26	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002007	1	und	CCONJ	KON								
+8002007	2	sie	PRON	PPER				3	P		Nom	
+8002007	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002007	4	Laß	VERB	NE				2	S	Imp		
+8002007	5	mich	PRON	PPER				1	S		Acc	
+8002007	6	doch	CCONJ	KON								
+8002007	7	auflesen	VERB	VVINF		Inf						
+8002007	8	und	CCONJ	KON								
+8002007	9	unter	ADP	APPR								
+8002007	10	der	DET	ART					S		Acc	M
+8002007	11	Garbe	NOUN	NN					P		Nom	F
+8002007	12	sammeln	VERB	VVINF		Inf						
+8002007	13	hinter	ADP	APPR								
+8002007	14	der	DET	ART					S		Acc	M
+8002007	15	Schnitter	NOUN	NN					P		Dat	N
+8002007	16	her	ADV	ADV								
+8002007	17	und	CCONJ	KON								
+8002007	18	so	ADV	ADV								
+8002007	19	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002007	20	sie	PRON	PPER				3	P		Nom	
+8002007	21	kommen	VERB	VVPP		Part						
+8002007	22	und	CCONJ	KON								
+8002007	23	dageblieben	VERB	VVFIN		Fin	Past	3	P	Ind		
+8002007	24	von	ADP	APPRART					S		Dat	N
+8002007	25	Morgen	ADV	NN								
+8002007	26	an	ADP	PTKVZ								
+8002007	27	bis	CCONJ	KON								
+8002007	28	jetzt	ADV	ADV								
+8002007	29	was	PRON	PWS					S		Nom	N
+8002007	30	sie	PRON	PPER				3	P		Nom	
+8002007	31	in	ADP	APPRART					S		Dat	N
+8002007	32	Haus	NOUN	NN					P		Nom	N
+8002007	33	sitzen	VERB	VVPP		Part						
+8002007	34	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002007	35	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002007	36	wenig	PRON	PIS								
+8002008	1	und	CCONJ	KON								
+8002008	2	Boas	PROPN	NE					S		Nom	
+8002008	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002008	4	zu	ADP	PTKVZ								
+8002008	5	Ruth	PROPN	NE					S		Nom	F
+8002008	6	Hörst	PROPN	NE					S		Nom	
+8002008	7	du	PRON	PPER				2	S		Nom	
+8002008	8	mein	DET	PPOSAT					S		Nom	F
+8002008	9	Tochter	NOUN	NN					S		Nom	F
+8002008	10	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8002008	11	nicht	PART	PTKNEG								
+8002008	12	um	ADP	APPR								
+8002008	13	auf	ADP	PTKVZ								
+8002008	14	ein	DET	ART					S		Dat	M
+8002008	15	anderer	PRON	PIS					P		Dat	
+8002008	16	Feld	NOUN	NN					S		Nom	N
+8002008	17	auflesen	VERB	VVIZU		Inf						
+8002008	18	und	CCONJ	KON								
+8002008	19	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8002008	20	auch	ADV	ADV								
+8002008	21	nicht	PART	PTKNEG								
+8002008	22	von	ADP	APPR								
+8002008	23	Hinnen	VERB	NE		Inf						
+8002008	24	sondern	CCONJ	KON								
+8002008	25	halten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8002008	26	dich	PRON	PPER				2	S		Acc	
+8002008	27	hier	ADV	ADV								
+8002008	28	zu	ADP	PTKVZ								
+8002008	29	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8002008	30	Mägde	NOUN	NN					P		Dat	M
+8002009	1	Deine	DET	PPOSAT					S		Nom	F
+8002009	2	Auge	NOUN	NN					P		Nom	N
+8002009	3	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+8002009	4	auf	ADP	PTKVZ								
+8002009	5	der	DET	ART					S		Nom	N
+8002009	6	Feld	NOUN	NN					S		Nom	N
+8002009	7	richten	VERB	VVPP		Part						
+8002009	8	welcher	DET	PWAT					S		Acc	N
+8002009	9	man	PRON	PIS					S		Nom	
+8002009	10	schneiden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8002009	11	und	CCONJ	KON								
+8002009	12	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8002009	13	hinter	ADP	APPR								
+8002009	14	ihnen	PRON	PPER				3	P		Dat	
+8002009	15	her	ADV	ADV								
+8002009	16	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002009	17	ich	PRON	PPER				1	S		Nom	
+8002009	18	nicht	PART	PTKNEG								
+8002009	19	der	DET	ART					S		Acc	M
+8002009	20	Knabe	NOUN	NN					P		Nom	F
+8002009	21	gebieten	VERB	VVPP		Part						
+8002009	22	dich	PRON	PPER				2	S		Acc	
+8002009	23	nicht	PART	PTKNEG								
+8002009	24	anzutasten	VERB	VVIZU		Inf						
+8002009	25	und	CCONJ	KON								
+8002009	26	wenn	SCONJ	KOUS								
+8002009	27	dich	PRON	PPER				2	S		Acc	
+8002009	28	dürsten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8002009	29	so	ADV	ADV								
+8002009	30	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8002009	31	zu	ADP	PTKVZ								
+8002009	32	der	DET	ART					S		Acc	M
+8002009	33	Gefäße	NOUN	NN					P		Dat	N
+8002009	34	und	CCONJ	KON								
+8002009	35	trinken	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8002009	36	von	ADP	APPR								
+8002009	37	der	DET	ART					S		Dat	M
+8002009	38	was	PRON	PWS					S		Nom	N
+8002009	39	der	DET	ART					S		Nom	F
+8002009	40	Knabe	NOUN	NN					P		Nom	F
+8002009	41	schöpfen	VERB	VVINF		Inf						
+8002010	1	da	SCONJ	KOUS								
+8002010	2	fallen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002010	3	sie	PRON	PPER				3	P		Nom	
+8002010	4	auf	ADP	PTKVZ								
+8002010	5	ihr	PRON	PPOSAT				3	S		Dat	F
+8002010	6	Angesicht	NOUN	NN					S		Nom	F
+8002010	7	und	CCONJ	KON								
+8002010	8	beugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002010	9	sich	PRON	PRF				3	S		Acc	
+8002010	10	zu	ADP	APPRART					S		Dat	F
+8002010	11	Erde	NOUN	NN					S		Nom	F
+8002010	12	nieder	ADV	PTKVZ								
+8002010	13	und	CCONJ	KON								
+8002010	14	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002010	15	zu	ADP	PTKVZ								
+8002010	16	ihm	PRON	PPER				3	S		Dat	M
+8002010	17	warum	ADV	PWAV								
+8002010	18	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002010	19	ich	PRON	PPER				1	S		Nom	
+8002010	20	Gnade	NOUN	NN					S		Nom	F
+8002010	21	finden	VERB	VVPP		Part						
+8002010	22	in	ADP	APPR								
+8002010	23	dein	DET	PPOSAT					S		Acc	M
+8002010	24	Auge	NOUN	NN					P		Nom	N
+8002010	25	daß	SCONJ	KOUS								
+8002010	26	du	PRON	PPER				2	S		Nom	
+8002010	27	mich	PRON	PPER				1	S		Acc	
+8002010	28	Beachtest	PROPN	VVFIN					S		Nom	N
+8002010	29	da	ADV	ADV								
+8002010	30	ich	PRON	PPER				1	S		Nom	
+8002010	31	doch	CCONJ	KON								
+8002010	32	ein	DET	ART					S		Nom	F
+8002010	33	Fremde	NOUN	NN					P		Nom	
+8002010	34	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+8002011	1	und	CCONJ	KON								
+8002011	2	Boas	PROPN	NE					S		Nom	
+8002011	3	antworten	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002011	4	und	CCONJ	KON								
+8002011	5	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002011	6	zu	ADP	PTKVZ								
+8002011	7	ihr	PRON	PPOSAT				3	S		Dat	F
+8002011	8	es	PRON	PPER				3	S		Nom	N
+8002011	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002011	10	mir	PRON	PPER				1	S		Dat	
+8002011	11	alle	PRON	PIS					S		Nom	N
+8002011	12	wohl	ADV	ADV								
+8002011	13	berichten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8002011	14	werden	AUX	VAPP		Part						
+8002011	15	was	PRON	PWS					S		Nom	N
+8002011	16	du	PRON	PPER				2	S		Nom	
+8002011	17	an	ADP	PTKVZ								
+8002011	18	dein	DET	PPOSAT					S		Dat	F
+8002011	19	Schwiegermutter	NOUN	NN					S		Nom	F
+8002011	20	tun	VERB	VVPP		Part						
+8002011	21	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002011	22	nach	ADP	APPR								
+8002011	23	der	DET	ART					S		Dat	M
+8002011	24	Tod	NOUN	NN					S		Nom	M
+8002011	25	dein	DET	PPOSAT					S		Gen	N
+8002011	26	Mann	NOUN	NN					S		Gen	M
+8002011	27	indem	SCONJ	KOUS								
+8002011	28	du	PRON	PPER				2	S		Nom	
+8002011	29	dein	DET	PPOSAT					S		Acc	M
+8002011	30	Vater	NOUN	NN					S		Nom	M
+8002011	31	und	CCONJ	KON								
+8002011	32	dein	DET	PPOSAT					S		Nom	F
+8002011	33	Mutter	NOUN	NN					S		Nom	F
+8002011	34	und	CCONJ	KON								
+8002011	35	der	DET	ART					S		Nom	N
+8002011	36	Land	NOUN	NN					S		Nom	N
+8002011	37	dein	DET	PPOSAT					S		Dat	F
+8002011	38	Geburt	NOUN	NN					S		Nom	F
+8002011	39	verlassen	VERB	VVINF		Inf						
+8002011	40	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002011	41	und	CCONJ	KON								
+8002011	42	zu	ADP	PTKVZ								
+8002011	43	ein	DET	ART					S		Dat	M
+8002011	44	Volke	NOUN	NN					S		Nom	M
+8002011	45	ziehen	VERB	VVPP		Part						
+8002011	46	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002011	47	der	DET	ART					S		Nom	N
+8002011	48	du	PRON	PPER				2	S		Nom	
+8002011	49	früh	ADV	ADJD	Cmp							
+8002011	50	nicht	PART	PTKNEG								
+8002011	51	kanntest	NOUN	ADJD					S		Nom	M
+8002012	1	Jahwe	NOUN	NN					S		Nom	M
+8002012	2	vergelte	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002012	3	dir	PRON	PPER				2	S		Dat	
+8002012	4	dein	DET	PPER					S		Nom	N
+8002012	5	tun	NOUN	NN					S		Nom	N
+8002012	6	und	CCONJ	KON								
+8002012	7	voll	ADV	ADJD	Pos							
+8002012	8	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002012	9	dein	DET	PPER					S		Nom	N
+8002012	10	Lohn	NOUN	NN					S		Nom	M
+8002012	11	von	ADP	APPR								
+8002012	12	Jahwe	NOUN	NN					S		Nom	M
+8002012	13	der	DET	ART					S		Dat	M
+8002012	14	Gott	NOUN	NN					S		Nom	M
+8002012	15	Israel	PROPN	NE					S		Gen	N
+8002012	16	unter	ADP	APPR								
+8002012	17	der	PRON	PDS					S		Gen	
+8002012	18	Flügel	NOUN	NN					P		Dat	M
+8002012	19	Zuflucht	NOUN	NN					S		Nom	F
+8002012	20	zu	ADP	PTKVZ								
+8002012	21	suchen	VERB	VVINF		Inf						
+8002012	22	du	PRON	PPER				2	S		Nom	
+8002012	23	kommen	VERB	VVPP		Part						
+8002012	24	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002013	1	und	CCONJ	KON								
+8002013	2	sie	PRON	PPER				3	P		Nom	
+8002013	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002013	4	Möge	VERB	VVFIN				2	S	Imp		
+8002013	5	ich	PRON	PPER				1	S		Nom	
+8002013	6	Gnade	NOUN	NN					S		Nom	F
+8002013	7	finden	VERB	VVINF		Fin	Pres	3	P	Ind		
+8002013	8	in	ADP	APPR								
+8002013	9	dein	DET	PPOSAT					S		Acc	M
+8002013	10	Auge	NOUN	NN					P		Nom	N
+8002013	11	mein	DET	PPOSAT					S		Nom	N
+8002013	12	Herr	NOUN	NN					S		Nom	M
+8002013	13	denn	CCONJ	KON								
+8002013	14	du	PRON	PPER				2	S		Nom	
+8002013	15	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002013	16	mich	PRON	PPER				1	S		Acc	
+8002013	17	trösten	VERB	VVPP		Part						
+8002013	18	und	CCONJ	KON								
+8002013	19	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002013	20	zu	ADP	APPRART					S		Dat	N
+8002013	21	Herz	NOUN	NN					S		Nom	N
+8002013	22	dein	DET	PPOSAT					S		Dat	F
+8002013	23	Magd	NOUN	NN					S		Nom	F
+8002013	24	reden	VERB	VVPP		Part						
+8002013	25	und	CCONJ	KON								
+8002013	26	doch	CCONJ	KON								
+8002013	27	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+8002013	28	ich	PRON	PPER				1	S		Nom	
+8002013	29	nicht	PART	PTKNEG								
+8002013	30	wie	ADP	KOKOM								
+8002013	31	ein	DET	ART					S		Nom	F
+8002013	32	dein	DET	PPOSAT					S		Dat	F
+8002013	33	Mägd	NOUN	NN					P		Nom	N
+8002014	1	und	CCONJ	KON								
+8002014	2	Boas	PROPN	NE					S		Nom	
+8002014	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002014	4	zu	ADP	PTKVZ								
+8002014	5	ihr	PRON	PPOSAT				3	S		Dat	F
+8002014	6	zu	ADP	APPRART					S		Dat	F
+8002014	7	Zeit	NOUN	NN					S		Nom	F
+8002014	8	der	DET	ART					S		Gen	M
+8002014	9	Essen	NOUN	NE					S		Gen	N
+8002014	10	Tritt	NOUN	NN					S		Acc	M
+8002014	11	hierher	ADV	PROAV								
+8002014	12	und	CCONJ	KON								
+8002014	13	iß	ADP	PTKVZ								
+8002014	14	von	ADP	APPR								
+8002014	15	der	DET	ART					S		Dat	M
+8002014	16	Brot	NOUN	NN					P		Nom	N
+8002014	17	und	CCONJ	KON								
+8002014	18	Tunke	PROPN	NE					S		Nom	F
+8002014	19	dein	DET	PPOSAT					S		Acc	M
+8002014	20	Bissen	NOUN	NN					S		Acc	M
+8002014	21	in	ADP	APPR								
+8002014	22	der	DET	ART					S		Acc	M
+8002014	23	Essig	NOUN	NN					S		Nom	M
+8002014	24	da	SCONJ	KOUS								
+8002014	25	setzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002014	26	sie	PRON	PPER				3	P		Nom	
+8002014	27	sich	PRON	PRF				3	S		Acc	
+8002014	28	zu	ADP	APPRART					S		Dat	F
+8002014	29	Seite	NOUN	NN					S		Nom	F
+8002014	30	der	DET	ART					S		Nom	M
+8002014	31	Schnitter	NOUN	NN					P		Nom	N
+8002014	32	und	CCONJ	KON								
+8002014	33	er	PRON	PPER				3	S		Nom	M
+8002014	34	reichen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002014	35	ihr	PRON	PPOSAT				3	S		Dat	F
+8002014	36	geröstet	VERB	ADJA		Fin	Past	3	S	Ind		
+8002014	37	Korn	NOUN	NE					P		Nom	N
+8002014	38	und	CCONJ	KON								
+8002014	39	sie	PRON	PPER				3	P		Nom	
+8002014	40	aß	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002014	41	und	CCONJ	KON								
+8002014	42	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002014	43	satt	ADV	ADJD	Pos							
+8002014	44	und	CCONJ	KON								
+8002014	45	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002014	46	übrig	ADP	PTKVZ								
+8002015	1	und	CCONJ	KON								
+8002015	2	sie	PRON	PPER				3	P		Nom	
+8002015	3	stehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002015	4	auf	ADP	PTKVZ								
+8002015	5	um	ADP	APPR								
+8002015	6	auflesen	VERB	VVIZU		Inf						
+8002015	7	und	CCONJ	KON								
+8002015	8	Boas	PROPN	NE					S		Nom	
+8002015	9	Gebot	NOUN	NN					S		Nom	N
+8002015	10	sein	DET	PPOSAT					S		Acc	M
+8002015	11	Knabe	NOUN	NN					P		Nom	F
+8002015	12	und	CCONJ	KON								
+8002015	13	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002015	14	auch	ADV	ADV								
+8002015	15	zwischen	ADP	APPR								
+8002015	16	der	DET	ART					S		Acc	M
+8002015	17	Garbe	NOUN	NN					P		Nom	F
+8002015	18	mögen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8002015	19	sie	PRON	PPER				3	P		Nom	
+8002015	20	auflesen	VERB	VVINF		Inf						
+8002015	21	und	CCONJ	KON								
+8002015	22	ihr	PRON	PPOSAT				3	S		Dat	F
+8002015	23	sollten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8002015	24	sie	PRON	PPER				3	P		Nom	
+8002015	25	nicht	PART	PTKNEG								
+8002015	26	beschämen	VERB	VVINF		Inf						
+8002016	1	und	CCONJ	KON								
+8002016	2	auch	ADV	ADV								
+8002016	3	sollten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8002016	4	ihr	PRON	PPOSAT				3	S		Dat	F
+8002016	5	selbst	ADV	ADV								
+8002016	6	aus	ADP	PTKVZ								
+8002016	7	der	DET	ART					S		Acc	M
+8002016	8	bündeln	NOUN	NN					S		Nom	N
+8002016	9	Ähre	NOUN	NN					P		Nom	F
+8002016	10	für	ADP	APPR								
+8002016	11	sie	PRON	PPER				3	P		Nom	
+8002016	12	herausziehen	VERB	VVINF		Inf						
+8002016	13	und	CCONJ	KON								
+8002016	14	sie	PRON	PPER				3	P		Nom	
+8002016	15	liegen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8002016	16	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+8002016	17	damit	ADV	PROAV								
+8002016	18	sie	PRON	PPER				3	P		Nom	
+8002016	19	sie	PRON	PPER				3	P		Nom	
+8002016	20	Auflese	NOUN	NN					S		Nom	F
+8002016	21	und	CCONJ	KON								
+8002016	22	sollten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8002016	23	sie	PRON	PPER				3	P		Nom	
+8002016	24	nicht	PART	PTKNEG								
+8002016	25	schelten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8002017	1	und	CCONJ	KON								
+8002017	2	sie	PRON	PPER				3	P		Nom	
+8002017	3	lesen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002017	4	auf	ADP	PTKVZ								
+8002017	5	der	DET	ART					S		Dat	M
+8002017	6	Feld	NOUN	NN					S		Nom	N
+8002017	7	auf	ADP	PTKVZ								
+8002017	8	bis	CCONJ	KON								
+8002017	9	zu	ADP	APPRART					S		Dat	N
+8002017	10	Abend	NOUN	NN					S		Nom	M
+8002017	11	und	CCONJ	KON								
+8002017	12	sie	PRON	PPER				3	P		Nom	
+8002017	13	schlagen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002017	14	aus	ADP	PTKVZ								
+8002017	15	was	PRON	PWS					S		Nom	N
+8002017	16	sie	PRON	PPER				3	P		Nom	
+8002017	17	aufgelesen	VERB	VVPP		Part						
+8002017	18	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002017	19	und	CCONJ	KON								
+8002017	20	es	PRON	PPER				3	S		Nom	N
+8002017	21	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002017	22	bei	ADP	APPR								
+8002017	23	ein	DET	ART					S		Dat	M
+8002017	24	Epha	PROPN	NE					S		Nom	
+8002017	25	Gerste	NOUN	ADV					S		Nom	F
+8002018	1	und	CCONJ	KON								
+8002018	2	sie	PRON	PPER				3	P		Nom	
+8002018	3	nehmen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002018	4	es	PRON	PPER				3	S		Nom	N
+8002018	5	auf	ADP	PTKVZ								
+8002018	6	und	CCONJ	KON								
+8002018	7	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002018	8	in	ADP	APPR								
+8002018	9	der	DET	ART					S		Nom	F
+8002018	10	Stadt	NOUN	NN					S		Nom	F
+8002018	11	und	CCONJ	KON								
+8002018	12	ihr	DET	PPOSAT					S		Nom	F
+8002018	13	Schwiegermutter	NOUN	NN					S		Nom	F
+8002018	14	sehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002018	15	was	PRON	PWS					S		Nom	N
+8002018	16	sie	PRON	PPER				3	P		Nom	
+8002018	17	aufgelesen	VERB	VVPP		Part						
+8002018	18	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002018	19	und	CCONJ	KON								
+8002018	20	sie	PRON	PPER				3	P		Nom	
+8002018	21	ziehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002018	22	hervor	ADV	PTKVZ								
+8002018	23	und	CCONJ	KON								
+8002018	24	geben	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002018	25	ihr	PRON	PPOSAT				3	S		Dat	F
+8002018	26	was	PRON	PWS					S		Nom	N
+8002018	27	sie	PRON	PPER				3	P		Nom	
+8002018	28	übriggelassen	VERB	VVPP		Part						
+8002018	29	nachdem	SCONJ	KOUS								
+8002018	30	sie	PRON	PPER				3	P		Nom	
+8002018	31	sich	PRON	PRF				3	S		Acc	
+8002018	32	sättigen	VERB	VVPP		Part						
+8002018	33	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002019	1	da	SCONJ	KOUS								
+8002019	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002019	3	ihr	DET	PPOSAT					S		Nom	F
+8002019	4	Schwiegermutter	NOUN	NN					S		Nom	F
+8002019	5	zu	ADP	PTKVZ								
+8002019	6	ihr	PRON	PPOSAT				3	S		Dat	F
+8002019	7	wo	SCONJ	PWAV								
+8002019	8	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002019	9	du	PRON	PPER				2	S		Nom	
+8002019	10	heute	ADV	ADV								
+8002019	11	aufgelesen	VERB	VVPP		Part						
+8002019	12	und	CCONJ	KON								
+8002019	13	wo	SCONJ	PWAV								
+8002019	14	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8002019	15	du	PRON	PPER				2	S		Nom	
+8002019	16	arbeiten	VERB	VVPP		Part						
+8002019	17	Gesegnet	VERB	VVPP		Part						
+8002019	18	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002019	19	der	DET	ART					S		Nom	M
+8002019	20	dich	PRON	PPER				2	S		Acc	
+8002019	21	beachten	VERB	VVPP		Part						
+8002019	22	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002019	23	und	CCONJ	KON								
+8002019	24	sie	PRON	PPER				3	P		Nom	
+8002019	25	tun	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002019	26	ihr	DET	PPOSAT					S		Dat	F
+8002019	27	Schwiegermutter	NOUN	NN					S		Nom	F
+8002019	28	kund	ADV	PTKVZ								
+8002019	29	bei	ADP	APPR								
+8002019	30	wem	PRON	PWS					S		Dat	M
+8002019	31	sie	PRON	PPER				3	P		Nom	
+8002019	32	arbeiten	VERB	VVPP		Part						
+8002019	33	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8002019	34	und	CCONJ	KON								
+8002019	35	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002019	36	der	DET	ART					S		Nom	M
+8002019	37	Name	NOUN	NN					S		Nom	M
+8002019	38	der	DET	ART					S		Gen	M
+8002019	39	Mann	NOUN	NN					S		Gen	M
+8002019	40	bei	ADP	APPR								
+8002019	41	der	DET	ART					S		Dat	M
+8002019	42	ich	PRON	PPER				1	S		Nom	
+8002019	43	heute	ADV	ADV								
+8002019	44	arbeiten	VERB	VVPP		Part						
+8002019	45	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002019	46	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002019	47	Boas	PROPN	NE					S		Nom	
+8002020	1	da	SCONJ	KOUS								
+8002020	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002020	3	Noomi	PROPN	NE					S		Nom	F
+8002020	4	zu	ADP	PTKVZ								
+8002020	5	ihr	DET	PPOSAT					S		Dat	F
+8002020	6	Schwiegertochter	NOUN	NN					S		Nom	F
+8002020	7	Gesegnet	VERB	VVPP		Part						
+8002020	8	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8002020	9	er	PRON	PPER				3	S		Nom	M
+8002020	10	von	ADP	APPR								
+8002020	11	Jahwe	NOUN	NN					S		Nom	M
+8002020	12	der	PRON	PDS					S		Gen	
+8002020	13	Güte	NOUN	NN					S		Nom	F
+8002020	14	nicht	PART	PTKNEG								
+8002020	15	ablassen	VERB	VVPP		Part						
+8002020	16	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002020	17	von	ADP	APPR								
+8002020	18	der	DET	ART					S		Acc	M
+8002020	19	lebend	NOUN	NN					P		Nom	
+8002020	20	und	CCONJ	KON								
+8002020	21	von	ADP	APPR								
+8002020	22	der	DET	ART					S		Acc	M
+8002020	23	tote	NOUN	NN					P		Nom	
+8002020	24	und	CCONJ	KON								
+8002020	25	Noomi	PROPN	NE					S		Nom	F
+8002020	26	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002020	27	zu	ADP	PTKVZ								
+8002020	28	ihr	PRON	PPOSAT				3	S		Dat	F
+8002020	29	der	DET	ART					S		Nom	M
+8002020	30	Mann	NOUN	NN					S		Nom	M
+8002020	31	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002020	32	uns	PRON	PPER				1	P		Acc	
+8002020	33	nah	ADP	APPR								
+8002020	34	verwanden	VERB	VVPP		Part						
+8002020	35	er	PRON	PPER				3	S		Nom	M
+8002020	36	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002020	37	ein	PRON	ART					S		Nom	M
+8002020	38	von	ADP	APPR								
+8002020	39	unser	DET	PPOSAT					S		Acc	M
+8002020	40	Blutsverwandt	NOUN	NN					P		Nom	
+8002021	1	und	CCONJ	KON								
+8002021	2	Ruth	PROPN	NE					S		Nom	F
+8002021	3	der	DET	ART					S		Nom	F
+8002021	4	Moabitin	NOUN	NN					S		Nom	F
+8002021	5	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002021	6	er	PRON	PPER				3	S		Nom	M
+8002021	7	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002021	8	auch	ADV	ADV								
+8002021	9	zu	ADP	PTKVZ								
+8002021	10	mir	PRON	PPER				1	S		Dat	
+8002021	11	sagen	VERB	VVPP		Part						
+8002021	12	du	PRON	PPER				2	S		Nom	
+8002021	13	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8002021	14	dich	PRON	PPER				2	S		Acc	
+8002021	15	zu	ADP	PTKVZ								
+8002021	16	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8002021	17	Leute	NOUN	NN					P		Dat	
+8002021	18	halten	VERB	VVINF		Fin	Pres	3	P	Ind		
+8002021	19	bis	CCONJ	KON								
+8002021	20	sie	PRON	PPER				3	P		Nom	
+8002021	21	mein	DET	PPOSAT					S		Nom	F
+8002021	22	ganz	ADJ	ADJA	Pos				S		Nom	F
+8002021	23	Ernte	NOUN	NN					S		Nom	F
+8002021	24	beendigen	VERB	VVPP		Part						
+8002021	25	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+8002022	1	und	CCONJ	KON								
+8002022	2	Noomi	PROPN	NE					S		Nom	F
+8002022	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002022	4	zu	ADP	PTKVZ								
+8002022	5	Ruth	PROPN	NE					S		Nom	F
+8002022	6	ihr	DET	PPOSAT					S		Dat	F
+8002022	7	Schwiegertochter	NOUN	NN					S		Nom	F
+8002022	8	es	PRON	PPER				3	S		Nom	N
+8002022	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8002022	10	gut	ADV	ADJD	Pos							
+8002022	11	mein	DET	PPOSAT					S		Nom	F
+8002022	12	Tochter	NOUN	NN					S		Nom	F
+8002022	13	daß	SCONJ	KOUS								
+8002022	14	du	PRON	PPER				2	S		Nom	
+8002022	15	mit	ADP	APPR								
+8002022	16	sein	DET	PPOSAT					S		Acc	M
+8002022	17	Dirne	NOUN	NN					P		Nom	F
+8002022	18	ausgehst	X	VVFIN								
+8002022	19	daß	SCONJ	KOUS								
+8002022	20	man	PRON	PIS					S		Nom	
+8002022	21	dich	PRON	PPER				2	S		Acc	
+8002022	22	nicht	PART	PTKNEG								
+8002022	23	anfallen	VERB	NN		Fin	Pres	3	S	Sub		
+8002022	24	auf	ADP	PTKVZ								
+8002022	25	ein	DET	ART					S		Dat	M
+8002022	26	anderer	PRON	PIS					P		Dat	
+8002022	27	Feld	NOUN	NN					S		Nom	N
+8002023	1	und	CCONJ	KON								
+8002023	2	so	ADV	ADV								
+8002023	3	halten	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002023	4	sie	PRON	PPER				3	P		Nom	
+8002023	5	sich	PRON	PRF				3	S		Acc	
+8002023	6	zu	ADP	PTKVZ								
+8002023	7	der	DET	ART					S		Acc	M
+8002023	8	Dirne	NOUN	NN					P		Nom	F
+8002023	9	der	DET	ART					S		Gen	M
+8002023	10	Boas	PROPN	NE					S		Nom	
+8002023	11	um	ADP	APPR								
+8002023	12	auflesen	VERB	VVIZU		Inf						
+8002023	13	bis	CCONJ	KON								
+8002023	14	der	DET	ART					S		Nom	F
+8002023	15	Gerstenernt	NOUN	NN					P		Nom	N
+8002023	16	und	CCONJ	KON								
+8002023	17	der	DET	ART					S		Nom	F
+8002023	18	Weizenernte	NOUN	NN					S		Nom	F
+8002023	19	beendigen	VERB	VVPP		Part						
+8002023	20	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+8002023	21	und	CCONJ	KON								
+8002023	22	sie	PRON	PPER				3	P		Nom	
+8002023	23	wohnen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8002023	24	bei	ADP	APPR								
+8002023	25	ihr	DET	PPOSAT					S		Dat	F
+8002023	26	Schwiegermutter	NOUN	NN					S		Nom	F
+8003001	1	und	CCONJ	KON								
+8003001	2	Noomi	PROPN	NE					S		Nom	F
+8003001	3	ihr	DET	PPOSAT					S		Nom	F
+8003001	4	Schwiegermutter	NOUN	NN					S		Nom	F
+8003001	5	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003001	6	zu	ADP	PTKVZ								
+8003001	7	ihr	PRON	PPOSAT				3	S		Dat	F
+8003001	8	mein	DET	PPOSAT					S		Nom	F
+8003001	9	Tochter	NOUN	NN					S		Nom	F
+8003001	10	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+8003001	11	ich	PRON	PPER				1	S		Nom	
+8003001	12	dir	PRON	PPER				2	S		Dat	
+8003001	13	nicht	PART	PTKNEG								
+8003001	14	Ruhe	NOUN	NN					S		Nom	F
+8003001	15	suchen	VERB	VVINF		Inf						
+8003001	16	daß	SCONJ	KOUS								
+8003001	17	es	PRON	PPER				3	S		Nom	N
+8003001	18	dir	PRON	PPER				2	S		Dat	
+8003001	19	wohl	ADV	ADV								
+8003001	20	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003002	1	und	CCONJ	KON								
+8003002	2	nun	ADV	ADV								
+8003002	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8003002	4	nicht	PART	PTKNEG								
+8003002	5	Boas	PROPN	NE					S		Nom	
+8003002	6	bei	ADP	APPR								
+8003002	7	der	PRON	PDS					S		Gen	
+8003002	8	Dirne	NOUN	NN					P		Nom	F
+8003002	9	du	PRON	PPER				2	S		Nom	
+8003002	10	sein	AUX	VAPP		Part						
+8003002	11	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8003002	12	unser	DET	PPOSAT					S		Nom	N
+8003002	13	verwandt	NOUN	NN					S		Nom	M
+8003002	14	sehen	VERB	VVIMP				2	S	Imp		
+8003002	15	er	PRON	PPER				3	S		Nom	M
+8003002	16	worfeln	VERB	VVPP		Part						
+8003002	17	dieser	DET	PDAT					S		Nom	F
+8003002	18	Nacht	NOUN	NN					S		Nom	F
+8003002	19	auf	ADP	PTKVZ								
+8003002	20	der	DET	ART					S		Nom	M
+8003002	21	Gerstentenn	NOUN	NN					P		Nom	M
+8003003	1	so	ADV	ADV								
+8003003	2	baden	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003003	3	dich	PRON	PPER				2	S		Acc	
+8003003	4	und	CCONJ	KON								
+8003003	5	Salbe	NOUN	NN					S		Nom	F
+8003003	6	dich	PRON	PPER				2	S		Acc	
+8003003	7	und	CCONJ	KON								
+8003003	8	legen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003003	9	dein	DET	PPOSAT					S		Nom	F
+8003003	10	Kleid	NOUN	NN					P		Nom	N
+8003003	11	an	ADP	PTKVZ								
+8003003	12	und	CCONJ	KON								
+8003003	13	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003003	14	zu	ADP	APPRART					S		Dat	F
+8003003	15	Tenne	NOUN	NN					S		Nom	F
+8003003	16	Hinab	ADV	PTKVZ								
+8003003	17	laß	VERB	VVIMP				2	S	Imp		
+8003003	18	dich	PRON	PPER				2	S		Acc	
+8003003	19	nicht	PART	PTKNEG								
+8003003	20	von	ADP	APPR								
+8003003	21	der	DET	ART					S		Dat	M
+8003003	22	Manne	NOUN	NN					S		Nom	M
+8003003	23	bemerken	VERB	VVINF		Inf						
+8003003	24	bis	CCONJ	KON								
+8003003	25	er	PRON	PPER				3	S		Nom	M
+8003003	26	fertig	ADV	ADJD	Pos							
+8003003	27	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8003003	28	mit	ADP	APPR								
+8003003	29	essen	PROPN	NE					S		Nom	N
+8003003	30	und	CCONJ	KON								
+8003003	31	trinken	NOUN	NN					S		Nom	N
+8003004	1	und	CCONJ	KON								
+8003004	2	es	PRON	PPER				3	S		Nom	N
+8003004	3	geschehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003004	4	wenn	SCONJ	KOUS								
+8003004	5	er	PRON	PPER				3	S		Nom	M
+8003004	6	sich	PRON	PRF				3	S		Acc	
+8003004	7	niederlegen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8003004	8	so	ADV	ADV								
+8003004	9	merken	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003004	10	der	DET	ART					S		Acc	M
+8003004	11	Ort	NOUN	NN					S		Nom	M
+8003004	12	wo	SCONJ	PWAV								
+8003004	13	er	PRON	PPER				3	S		Nom	M
+8003004	14	sich	PRON	PRF				3	S		Acc	
+8003004	15	hinlegen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8003004	16	und	CCONJ	KON								
+8003004	17	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003004	18	und	CCONJ	KON								
+8003004	19	decken	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003004	20	auf	ADP	PTKVZ								
+8003004	21	zu	ADP	PTKVZ								
+8003004	22	sein	DET	PPOSAT					S		Acc	M
+8003004	23	Fuß	NOUN	NN					P		Dat	M
+8003004	24	und	CCONJ	KON								
+8003004	25	legen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003004	26	dich	PRON	PPER				2	S		Acc	
+8003004	27	hin	ADV	ADV								
+8003004	28	er	PRON	PPER				3	S		Nom	M
+8003004	29	aber	CCONJ	KON								
+8003004	30	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8003004	31	dir	PRON	PPER				2	S		Dat	
+8003004	32	kundtun	VERB	VVINF		Inf						
+8003004	33	was	PRON	PWS					S		Nom	N
+8003004	34	du	PRON	PPER				2	S		Nom	
+8003004	35	tun	VERB	VVINF		Inf						
+8003004	36	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8003005	1	und	CCONJ	KON								
+8003005	2	sie	PRON	PPER				3	P		Nom	
+8003005	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003005	4	zu	ADP	PTKVZ								
+8003005	5	ihr	PRON	PPOSAT				3	S		Dat	F
+8003005	6	alle	PRON	PIS					S		Nom	N
+8003005	7	was	PRON	PWS					S		Nom	N
+8003005	8	du	PRON	PPER				2	S		Nom	
+8003005	9	sagen	VERB	VVFIN		Fin	Pres	2	S	Ind		
+8003005	10	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8003005	11	ich	PRON	PPER				1	S		Nom	
+8003005	12	tun	VERB	VVINF		Inf						
+8003006	1	und	CCONJ	KON								
+8003006	2	sie	PRON	PPER				3	P		Nom	
+8003006	3	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003006	4	zu	ADP	APPRART					S		Dat	F
+8003006	5	Tenne	NOUN	NN					S		Nom	F
+8003006	6	Hinab	ADV	PTKVZ								
+8003006	7	und	CCONJ	KON								
+8003006	8	tun	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003006	9	nach	ADP	APPR								
+8003006	10	alle	PRON	PIS					S		Dat	N
+8003006	11	was	PRON	PWS					S		Nom	N
+8003006	12	ihr	DET	PPOSAT					S		Nom	F
+8003006	13	Schwiegermutter	NOUN	NN					S		Nom	F
+8003006	14	ihr	PRON	PPOSAT				3	S		Dat	F
+8003006	15	gebieten	VERB	VVPP		Part						
+8003006	16	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8003007	1	und	CCONJ	KON								
+8003007	2	Boas	PROPN	NE					S		Nom	
+8003007	3	aß	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003007	4	und	CCONJ	KON								
+8003007	5	trank	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003007	6	und	CCONJ	KON								
+8003007	7	sein	AUX	VAINF		Inf						
+8003007	8	Herz	NOUN	NN					S		Nom	N
+8003007	9	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+8003007	10	fröhlich	ADV	ADJD	Pos							
+8003007	11	und	CCONJ	KON								
+8003007	12	er	PRON	PPER				3	S		Nom	M
+8003007	13	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003007	14	um	ADP	APPR								
+8003007	15	sich	PRON	PRF				3	S		Acc	
+8003007	16	an	ADP	PTKVZ								
+8003007	17	der	DET	ART					S		Dat	M
+8003007	18	Ende	NOUN	NN					S		Nom	N
+8003007	19	der	DET	ART					S		Gen	M
+8003007	20	Getreidehaufen	PROPN	NE					S		Gen	
+8003007	21	niederlegen	VERB	VVIZU		Inf						
+8003007	22	da	SCONJ	KOUS								
+8003007	23	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003007	24	sie	PRON	PPER				3	P		Nom	
+8003007	25	leise	ADV	ADJD	Pos							
+8003007	26	und	CCONJ	KON								
+8003007	27	decken	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003007	28	zu	ADP	PTKVZ								
+8003007	29	sein	DET	PPOSAT					S		Acc	M
+8003007	30	Fuß	NOUN	NN					P		Dat	M
+8003007	31	auf	ADP	PTKVZ								
+8003007	32	und	CCONJ	KON								
+8003007	33	legen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003007	34	sich	PRON	PRF				3	S		Acc	
+8003007	35	hin	ADV	ADV								
+8003008	1	und	CCONJ	KON								
+8003008	2	es	PRON	PPER				3	S		Nom	N
+8003008	3	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003008	4	um	ADP	APPR								
+8003008	5	Mitternacht	NOUN	NN					S		Nom	F
+8003008	6	da	ADV	ADV								
+8003008	7	Schrak	VERB	NE		Fin	Past	3	S	Ind		
+8003008	8	der	DET	ART					S		Nom	M
+8003008	9	Mann	NOUN	NN					S		Nom	M
+8003008	10	auf	ADP	PTKVZ								
+8003008	11	und	CCONJ	KON								
+8003008	12	beugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003008	13	sich	PRON	PRF				3	S		Acc	
+8003008	14	hin	ADV	ADV								
+8003008	15	und	CCONJ	KON								
+8003008	16	sehen	VERB	VVIMP				2	S	Imp		
+8003008	17	ein	DET	ART					S		Nom	N
+8003008	18	Weib	NOUN	NN					S		Nom	N
+8003008	19	liegen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003008	20	zu	ADP	PTKVZ								
+8003008	21	sein	DET	PPOSAT					S		Acc	M
+8003008	22	Fuß	NOUN	NN					P		Dat	M
+8003009	1	und	CCONJ	KON								
+8003009	2	er	PRON	PPER				3	S		Nom	M
+8003009	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003009	4	wer	PRON	PWS					S		Nom	M
+8003009	5	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8003009	6	du	PRON	PPER				2	S		Nom	
+8003009	7	und	CCONJ	KON								
+8003009	8	sie	PRON	PPER				3	P		Nom	
+8003009	9	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003009	10	ich	PRON	PPER				1	S		Nom	
+8003009	11	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+8003009	12	Ruth	PROPN	NE					S		Nom	F
+8003009	13	dein	DET	PPOSAT					S		Nom	F
+8003009	14	Magd	NOUN	NN					S		Nom	F
+8003009	15	so	ADV	ADV								
+8003009	16	breit	ADJ	ADJA	Pos				S		Nom	F
+8003009	17	dein	DET	PPOSAT					S		Nom	F
+8003009	18	Flügel	NOUN	NN					P		Nom	M
+8003009	19	aus	ADP	PTKVZ								
+8003009	20	über	ADP	APPR								
+8003009	21	dein	DET	PPOSAT					S		Nom	F
+8003009	22	Magd	NOUN	NN					S		Nom	F
+8003009	23	denn	CCONJ	KON								
+8003009	24	du	PRON	PPER				2	S		Nom	
+8003009	25	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8003009	26	ein	DET	ART					S		Nom	N
+8003009	27	Blutsverwandter	NOUN	NN					S		Nom	M
+8003010	1	und	CCONJ	KON								
+8003010	2	er	PRON	PPER				3	S		Nom	M
+8003010	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003010	4	Gesegnet	VERB	VVPP		Part						
+8003010	5	Seiest	AUX	VVIMP		Fin	Pres	3	S	Sub		
+8003010	6	du	PRON	PPER				2	S		Nom	
+8003010	7	von	ADP	APPR								
+8003010	8	Jahwe	NOUN	NN					S		Nom	M
+8003010	9	mein	DET	PPOSAT					S		Nom	F
+8003010	10	Tochter	NOUN	NN					S		Nom	F
+8003010	11	du	PRON	PPER				2	S		Nom	
+8003010	12	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8003010	13	dein	DET	PPOSAT					S		Nom	F
+8003010	14	letzter	ADJ	ADJA	Pos				S		Nom	F
+8003010	15	Güte	NOUN	NN					S		Nom	F
+8003010	16	noch	CCONJ	KON								
+8003010	17	gut	ADV	ADJD	Cmp							
+8003010	18	erweisen	VERB	VVPP		Part						
+8003010	19	als	ADP	KOKOM								
+8003010	20	der	DET	ART					S		Nom	F
+8003010	21	erster	ADJ	ADJA	Pos				S		Nom	F
+8003010	22	indem	SCONJ	KOUS								
+8003010	23	du	PRON	PPER				2	S		Nom	
+8003010	24	nicht	PART	PTKNEG								
+8003010	25	der	DET	ART					S		Acc	M
+8003010	26	Jünglinge	NOUN	NN					P		Nom	F
+8003010	27	nachgehen	VERB	VVPP		Part						
+8003010	28	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8003010	29	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8003010	30	es	PRON	PPER				3	S		Nom	N
+8003010	31	arme	NOUN	NN					P		Nom	F
+8003010	32	oder	CCONJ	KON								
+8003010	33	reichen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8003011	1	und	CCONJ	KON								
+8003011	2	nun	ADV	ADV								
+8003011	3	mein	DET	PPOSAT					S		Nom	F
+8003011	4	Tochter	NOUN	NN					S		Nom	F
+8003011	5	fürchten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003011	6	dich	PRON	PPER				2	S		Acc	
+8003011	7	nicht	PART	PTKNEG								
+8003011	8	alle	PRON	PIS					S		Nom	N
+8003011	9	was	PRON	PWS					S		Nom	N
+8003011	10	du	PRON	PPER				2	S		Nom	
+8003011	11	sagen	VERB	VVFIN		Fin	Pres	2	S	Ind		
+8003011	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8003011	13	ich	PRON	PPER				1	S		Nom	
+8003011	14	dir	PRON	PPER				2	S		Dat	
+8003011	15	tun	VERB	VVINF		Inf						
+8003011	16	denn	CCONJ	KON								
+8003011	17	der	DET	ART					S		Nom	N
+8003011	18	ganz	ADJ	ADJA	Pos				S		Nom	F
+8003011	19	Tor	NOUN	NN					S		Nom	N
+8003011	20	meiner	DET	PPOSAT					S		Gen	N
+8003011	21	Volk	NOUN	NN					S		Gen	N
+8003011	22	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8003011	23	daß	SCONJ	KOUS								
+8003011	24	du	PRON	PPER				2	S		Nom	
+8003011	25	ein	DET	ART					S		Nom	N
+8003011	26	wack	ADJ	ADJA	Pos				S		Nom	N
+8003011	27	Weib	NOUN	NN					S		Nom	N
+8003011	28	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8003012	1	und	CCONJ	KON								
+8003012	2	nun	ADV	ADV								
+8003012	3	wahrlich	ADV	ADV								
+8003012	4	ich	PRON	PPER				1	S		Nom	
+8003012	5	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+8003012	6	ein	DET	ART					S		Nom	N
+8003012	7	Blutsverwandter	NOUN	NN					S		Nom	M
+8003012	8	doch	CCONJ	KON								
+8003012	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8003012	10	auch	ADV	ADV								
+8003012	11	ein	DET	ART					S		Nom	N
+8003012	12	näh	ADV	PIS	Cmp							
+8003012	13	Blutsverwandter	NOUN	NN					S		Nom	M
+8003012	14	da	ADV	ADV								
+8003012	15	als	ADP	KOKOM								
+8003012	16	ich	PRON	PPER				1	S		Nom	
+8003013	1	Bleibe	NOUN	NN					S		Nom	F
+8003013	2	dieser	DET	PDAT					S		Nom	F
+8003013	3	Nacht	NOUN	NN					S		Nom	F
+8003013	4	und	CCONJ	KON								
+8003013	5	es	PRON	PPER				3	S		Nom	N
+8003013	6	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8003013	7	an	ADP	APPRART					S		Dat	M
+8003013	8	Morgen	ADV	NN								
+8003013	9	geschehen	VERB	VVPP		Part						
+8003013	10	wenn	SCONJ	KOUS								
+8003013	11	er	PRON	PPER				3	S		Nom	M
+8003013	12	dich	PRON	PPER				2	S		Acc	
+8003013	13	lösen	VERB	VVINF		Inf						
+8003013	14	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8003013	15	gut	ADV	ADJD	Pos							
+8003013	16	so	ADV	ADV								
+8003013	17	mögen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8003013	18	er	PRON	PPER				3	S		Nom	M
+8003013	19	lösen	VERB	VVINF		Inf						
+8003013	20	wenn	SCONJ	KOUS								
+8003013	21	er	PRON	PPER				3	S		Nom	M
+8003013	22	aber	CCONJ	KON								
+8003013	23	kein	DET	PIAT					S		Nom	F
+8003013	24	Lust	NOUN	NN					S		Nom	F
+8003013	25	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8003013	26	dich	PRON	PPER				2	S		Acc	
+8003013	27	zu	ADP	PTKVZ								
+8003013	28	lösen	VERB	VVINF		Inf						
+8003013	29	so	ADV	ADV								
+8003013	30	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8003013	31	ich	PRON	PPER				1	S		Nom	
+8003013	32	dich	PRON	PPER				2	S		Acc	
+8003013	33	lösen	VERB	VVINF		Inf						
+8003013	34	so	ADV	ADV								
+8003013	35	wahr	ADV	ADJD	Pos							
+8003013	36	Jahwe	NOUN	NN					S		Nom	M
+8003013	37	leben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8003013	38	Liege	NOUN	NN					S		Nom	F
+8003013	39	bis	CCONJ	KON								
+8003013	40	zu	ADP	APPRART					S		Dat	N
+8003013	41	Morgen	ADV	NN								
+8003014	1	und	CCONJ	KON								
+8003014	2	sie	PRON	PPER				3	P		Nom	
+8003014	3	liegen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003014	4	zu	ADP	PTKVZ								
+8003014	5	sein	DET	PPOSAT					S		Acc	M
+8003014	6	Fuß	NOUN	NN					P		Dat	M
+8003014	7	bis	CCONJ	KON								
+8003014	8	zu	ADP	APPRART					S		Dat	N
+8003014	9	Morgen	ADV	NN								
+8003014	10	und	CCONJ	KON								
+8003014	11	sie	PRON	PPER				3	P		Nom	
+8003014	12	stehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003014	13	auf	ADP	PTKVZ								
+8003014	14	--	X	XY								
+8003014	15	ein	PRON	ART					S		Nom	M
+8003014	16	der	DET	ART					S		Acc	M
+8003014	17	anderer	PRON	PIS					P		Dat	
+8003014	18	erkennen	VERB	VVINF		Inf						
+8003014	19	können	AUX	VMFIN		Fin	Past	3	S	Ind		
+8003014	20	denn	CCONJ	KON								
+8003014	21	er	PRON	PPER				3	S		Nom	M
+8003014	22	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003014	23	es	PRON	PPER				3	S		Nom	N
+8003014	24	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8003014	25	nicht	PART	PTKNEG								
+8003014	26	kund	ADV	PTKVZ								
+8003014	27	daß	SCONJ	KOUS								
+8003014	28	ein	DET	ART					S		Nom	N
+8003014	29	Weib	NOUN	NN					S		Nom	N
+8003014	30	auf	ADP	PTKVZ								
+8003014	31	der	DET	ART					S		Nom	F
+8003014	32	Tenne	NOUN	NN					S		Nom	F
+8003014	33	kommen	VERB	VVPP		Part						
+8003014	34	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8003015	1	und	CCONJ	KON								
+8003015	2	er	PRON	PPER				3	S		Nom	M
+8003015	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003015	4	Gib	ADV	ADJD	Pos							
+8003015	5	der	DET	ART					S		Acc	M
+8003015	6	Mantel	NOUN	NN					S		Nom	M
+8003015	7	her	ADV	ADV								
+8003015	8	der	DET	ART					S		Acc	M
+8003015	9	du	PRON	PPER				2	S		Nom	
+8003015	10	anhasten	VERB	VVFIN				2	S	Imp		
+8003015	11	und	CCONJ	KON								
+8003015	12	halten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8003015	13	ihn	PRON	PPER				3	S		Acc	M
+8003015	14	und	CCONJ	KON								
+8003015	15	sie	PRON	PPER				3	P		Nom	
+8003015	16	halten	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003015	17	ihn	PRON	PPER				3	S		Acc	M
+8003015	18	und	CCONJ	KON								
+8003015	19	er	PRON	PPER				3	S		Nom	M
+8003015	20	Maß	NOUN	NN					S		Nom	N
+8003015	21	sechs	NUM	CARD								
+8003015	22	Maß	NOUN	NN					S		Nom	N
+8003015	23	Gerste	NOUN	ADV					S		Nom	F
+8003015	24	und	CCONJ	KON								
+8003015	25	legen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003015	26	sie	PRON	PPER				3	P		Nom	
+8003015	27	ihr	PRON	PPOSAT				3	S		Dat	F
+8003015	28	auf	ADP	PTKVZ								
+8003015	29	und	CCONJ	KON								
+8003015	30	er	PRON	PPER				3	S		Nom	M
+8003015	31	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003015	32	in	ADP	APPR								
+8003015	33	der	DET	ART					S		Nom	F
+8003015	34	Stadt	NOUN	NN					S		Nom	F
+8003016	1	und	CCONJ	KON								
+8003016	2	sie	PRON	PPER				3	P		Nom	
+8003016	3	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003016	4	zu	ADP	PTKVZ								
+8003016	5	ihr	DET	PPOSAT					S		Dat	F
+8003016	6	Schwiegermutter	NOUN	NN					S		Nom	F
+8003016	7	und	CCONJ	KON								
+8003016	8	sie	PRON	PPER				3	P		Nom	
+8003016	9	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003016	10	wie	ADV	PWAV								
+8003016	11	stehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8003016	12	es	PRON	PPER				3	S		Nom	N
+8003016	13	mit	ADP	APPR								
+8003016	14	dir	PRON	PPER				2	S		Dat	
+8003016	15	mein	DET	PPOSAT					S		Nom	F
+8003016	16	Tochter	NOUN	NN					S		Nom	F
+8003016	17	und	CCONJ	KON								
+8003016	18	sie	PRON	PPER				3	P		Nom	
+8003016	19	berichten	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003016	20	ihr	PRON	PPOSAT				3	S		Dat	F
+8003016	21	alle	PRON	PIS					S		Nom	N
+8003016	22	was	PRON	PWS					S		Nom	N
+8003016	23	der	DET	ART					S		Nom	M
+8003016	24	Mann	NOUN	NN					S		Nom	M
+8003016	25	ihr	PRON	PPOSAT				3	S		Dat	F
+8003016	26	tun	VERB	VVPP		Part						
+8003016	27	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8003017	1	und	CCONJ	KON								
+8003017	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003017	3	dieser	DET	PDAT					S		Nom	F
+8003017	4	sechs	NUM	CARD								
+8003017	5	Maß	NOUN	NN					S		Nom	N
+8003017	6	Gerste	NOUN	ADV					S		Nom	F
+8003017	7	geben	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003017	8	er	PRON	PPER				3	S		Nom	M
+8003017	9	mir	PRON	PPER				1	S		Dat	
+8003017	10	denn	CCONJ	KON								
+8003017	11	er	PRON	PPER				3	S		Nom	M
+8003017	12	sagen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003017	13	du	PRON	PPER				2	S		Nom	
+8003017	14	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8003017	15	nicht	PART	PTKNEG								
+8003017	16	leer	ADV	ADJD	Pos							
+8003017	17	zu	ADP	PTKVZ								
+8003017	18	dein	DET	PPOSAT					S		Dat	F
+8003017	19	Schwiegermutter	NOUN	NN					S		Nom	F
+8003017	20	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8003018	1	und	CCONJ	KON								
+8003018	2	sie	PRON	PPER				3	P		Nom	
+8003018	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8003018	4	Bleibe	NOUN	NN					S		Nom	F
+8003018	5	mein	DET	PPOSAT					S		Nom	F
+8003018	6	Tochter	NOUN	NN					S		Nom	F
+8003018	7	bis	CCONJ	KON								
+8003018	8	du	PRON	PPER				2	S		Nom	
+8003018	9	weißen	VERB	VVFIN		Fin	Pres	2	S	Ind		
+8003018	10	wie	ADP	KOKOM								
+8003018	11	der	DET	ART					S		Nom	F
+8003018	12	Sache	NOUN	NN					S		Nom	F
+8003018	13	ausfallen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8003018	14	denn	CCONJ	KON								
+8003018	15	der	DET	ART					S		Nom	M
+8003018	16	Mann	NOUN	NN					S		Nom	M
+8003018	17	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8003018	18	nicht	PART	PTKNEG								
+8003018	19	ruhen	VERB	VVINF		Inf						
+8003018	20	er	PRON	PPER				3	S		Nom	M
+8003018	21	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8003018	22	denn	CCONJ	KON								
+8003018	23	der	DET	ART					S		Nom	F
+8003018	24	Sache	NOUN	NN					S		Nom	F
+8003018	25	heute	ADV	ADV								
+8003018	26	zu	ADP	PTKVZ								
+8003018	27	Ende	NOUN	NN					S		Nom	N
+8003018	28	führen	VERB	VVPP		Part						
+8004001	1	und	CCONJ	KON								
+8004001	2	Boas	PROPN	NE					S		Nom	
+8004001	3	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004001	4	zu	ADP	APPRART					S		Dat	N
+8004001	5	Tor	NOUN	NN					P		Nom	N
+8004001	6	hinauf	ADV	PTKVZ								
+8004001	7	und	CCONJ	KON								
+8004001	8	setzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004001	9	sich	PRON	PRF				3	S		Acc	
+8004001	10	daselbst	ADV	PROAV								
+8004001	11	und	CCONJ	KON								
+8004001	12	sehen	VERB	VVIMP				2	S	Imp		
+8004001	13	der	DET	ART					S		Nom	M
+8004001	14	Blutsverwandter	NOUN	NN					P		Nom	
+8004001	15	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004001	16	vorüber	ADV	ADV								
+8004001	17	von	ADP	APPR								
+8004001	18	der	DET	ART					S		Dat	M
+8004001	19	Boas	PROPN	NE					S		Nom	
+8004001	20	reden	VERB	VVPP		Part						
+8004001	21	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+8004001	22	da	SCONJ	KOUS								
+8004001	23	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004001	24	er	PRON	PPER				3	S		Nom	M
+8004001	25	Komm	ADV	FM								
+8004001	26	her	ADV	ADV								
+8004001	27	setzen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8004001	28	dich	PRON	PPER				2	S		Acc	
+8004001	29	hierher	ADV	PROAV								
+8004001	30	du	PRON	PPER				2	S		Nom	
+8004001	31	der	DET	ART					S		Nom	M
+8004001	32	und	CCONJ	KON								
+8004001	33	der	DET	ART					S		Nom	M
+8004001	34	und	CCONJ	KON								
+8004001	35	er	PRON	PPER				3	S		Nom	M
+8004001	36	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004001	37	herzu	ADV	PTKVZ								
+8004001	38	und	CCONJ	KON								
+8004001	39	setzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004001	40	sich	PRON	PRF				3	S		Acc	
+8004002	1	und	CCONJ	KON								
+8004002	2	Boas	PROPN	NE					S		Nom	
+8004002	3	nehmen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004002	4	zehn	NUM	CARD								
+8004002	5	Mann	NOUN	NN					P		Nom	M
+8004002	6	von	ADP	APPR								
+8004002	7	der	DET	ART					S		Acc	M
+8004002	8	Ältesten	NOUN	NN					P		Nom	M
+8004002	9	der	DET	ART					S		Nom	M
+8004002	10	Stadt	NOUN	NN					S		Nom	F
+8004002	11	und	CCONJ	KON								
+8004002	12	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004002	13	Setzet	NOUN	NN					S		Nom	M
+8004002	14	euch	PRON	PPER				2	P		Dat	
+8004002	15	hierher	ADV	PROAV								
+8004002	16	und	CCONJ	KON								
+8004002	17	sie	PRON	PPER				3	P		Nom	
+8004002	18	setzen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8004002	19	sich	PRON	PRF				3	S		Acc	
+8004003	1	und	CCONJ	KON								
+8004003	2	er	PRON	PPER				3	S		Nom	M
+8004003	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004003	4	zu	ADP	PTKVZ								
+8004003	5	der	DET	ART					S		Dat	M
+8004003	6	Blutsverwandt	NOUN	NN					P		Nom	
+8004003	7	Noomi	PROPN	NE					S		Nom	F
+8004003	8	der	DET	ART					S		Nom	F
+8004003	9	aus	ADP	PTKVZ								
+8004003	10	der	DET	ART					S		Dat	M
+8004003	11	Gefilde	NOUN	NN					P		Nom	N
+8004003	12	Moabs	PROPN	NE					S		Nom	
+8004003	13	zurückkehren	VERB	VVPP		Part						
+8004003	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004003	15	verkaufen	VERB	VVPP		Part						
+8004003	16	der	DET	ART					S		Nom	N
+8004003	17	Feldstück	NOUN	NN					S		Nom	N
+8004003	18	welcher	DET	PWAT					S		Acc	N
+8004003	19	unser	DET	PPOSAT					S		Dat	N
+8004003	20	Bruder	NOUN	NN					S		Nom	M
+8004003	21	Elimelech	NOUN	NN					S		Nom	M
+8004003	22	gehören	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004004	1	so	ADV	ADV								
+8004004	2	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004004	3	ich	PRON	PPER				1	S		Nom	
+8004004	4	nun	ADV	ADV								
+8004004	5	denken	VERB	VVPP		Part						
+8004004	6	ich	PRON	PPER				1	S		Nom	
+8004004	7	wollen	AUX	VMFIN		Fin	Pres	3	S	Sub		
+8004004	8	es	PRON	PPER				3	S		Nom	N
+8004004	9	dein	DET	PPOSAT					S		Dat	M
+8004004	10	Ohr	NOUN	NN					S		Nom	N
+8004004	11	eröffnen	VERB	VVINF		Inf						
+8004004	12	und	CCONJ	KON								
+8004004	13	dir	PRON	PPER				2	S		Dat	
+8004004	14	sagen	VERB	VVINF		Inf						
+8004004	15	Kaufe	NOUN	NN					P		Nom	M
+8004004	16	es	PRON	PPER				3	S		Nom	N
+8004004	17	vor	ADP	APPR								
+8004004	18	der	DET	ART					S		Acc	M
+8004004	19	Einwohner	NOUN	NN					P		Nom	M
+8004004	20	und	CCONJ	KON								
+8004004	21	vor	ADP	APPR								
+8004004	22	der	DET	ART					S		Acc	M
+8004004	23	Ältesten	NOUN	NN					P		Nom	M
+8004004	24	meiner	DET	PPOSAT					S		Gen	N
+8004004	25	Volk	NOUN	NN					S		Gen	N
+8004004	26	wenn	SCONJ	KOUS								
+8004004	27	du	PRON	PPER				2	S		Nom	
+8004004	28	lösen	VERB	VVINF		Inf						
+8004004	29	willst	PROPN	VMFIN					S		Nom	
+8004004	30	lösen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8004004	31	und	CCONJ	KON								
+8004004	32	wenn	SCONJ	KOUS								
+8004004	33	du	PRON	PPER				2	S		Nom	
+8004004	34	nicht	PART	PTKNEG								
+8004004	35	lösen	VERB	VVINF		Inf						
+8004004	36	willst	PROPN	VMFIN					S		Nom	
+8004004	37	so	ADV	ADV								
+8004004	38	tun	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8004004	39	Mir	PROPN	VAFIN					S		Gen	
+8004004	40	kund	ADV	PTKVZ								
+8004004	41	daß	SCONJ	KOUS								
+8004004	42	ich	PRON	PPER				1	S		Nom	
+8004004	43	es	PRON	PPER				3	S		Nom	N
+8004004	44	wissen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8004004	45	denn	CCONJ	KON								
+8004004	46	da	ADV	ADV								
+8004004	47	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004004	48	niemand	PRON	PIS					S		Nom	M
+8004004	49	außer	ADP	APPR								
+8004004	50	dir	PRON	PPER				2	S		Dat	
+8004004	51	zu	ADP	APPRART					S		Dat	N
+8004004	52	lösen	NOUN	ADJD					S		Nom	N
+8004004	53	und	CCONJ	KON								
+8004004	54	ich	PRON	PPER				1	S		Nom	
+8004004	55	kommen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8004004	56	nach	ADP	APPR								
+8004004	57	dir	PRON	PPER				2	S		Dat	
+8004004	58	und	CCONJ	KON								
+8004004	59	er	PRON	PPER				3	S		Nom	M
+8004004	60	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004004	61	ich	PRON	PPER				1	S		Nom	
+8004004	62	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8004004	63	lösen	VERB	VVINF		Inf						
+8004005	1	da	SCONJ	KOUS								
+8004005	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004005	3	Boas	PROPN	NE					S		Nom	
+8004005	4	an	ADP	APPR								
+8004005	5	der	DET	ART					S		Dat	M
+8004005	6	Tag	NOUN	NN					P		Nom	M
+8004005	7	da	ADV	ADV								
+8004005	8	du	PRON	PPER				2	S		Nom	
+8004005	9	der	DET	ART					S		Nom	N
+8004005	10	Feld	NOUN	NN					S		Nom	N
+8004005	11	aus	ADP	PTKVZ								
+8004005	12	der	DET	ART					S		Nom	M
+8004005	13	Hand	NOUN	NN					S		Nom	F
+8004005	14	Noomi	PROPN	NE					S		Gen	
+8004005	15	kaufst	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8004005	16	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+8004005	17	du	PRON	PPER				2	S		Nom	
+8004005	18	es	PRON	PPER				3	S		Nom	N
+8004005	19	auch	ADV	ADV								
+8004005	20	von	ADP	APPR								
+8004005	21	Ruth	PROPN	NE					S		Nom	F
+8004005	22	der	DET	ART					S		Nom	M
+8004005	23	Moabitin	NOUN	NN					S		Nom	F
+8004005	24	der	DET	ART					S		Dat	M
+8004005	25	Weibe	NOUN	NN					S		Nom	F
+8004005	26	der	DET	ART					S		Gen	M
+8004005	27	verstorbener	NOUN	NN					P		Nom	
+8004005	28	kaufen	VERB	VVPP		Part						
+8004005	29	um	ADP	APPR								
+8004005	30	der	DET	ART					S		Acc	M
+8004005	31	Name	NOUN	NN					P		Nom	M
+8004005	32	der	DET	ART					S		Gen	M
+8004005	33	verstorbener	NOUN	NN					P		Nom	
+8004005	34	auf	ADP	PTKVZ								
+8004005	35	sein	DET	PPOSAT					S		Dat	M
+8004005	36	Erbteil	NOUN	NN					S		Nom	M
+8004005	37	zu	ADP	PTKVZ								
+8004005	38	erwecken	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8004006	1	da	SCONJ	KOUS								
+8004006	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004006	3	der	DET	ART					S		Nom	M
+8004006	4	Blutsverwandter	NOUN	NN					P		Nom	
+8004006	5	ich	PRON	PPER				1	S		Nom	
+8004006	6	können	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8004006	7	nicht	PART	PTKNEG								
+8004006	8	für	ADP	APPR								
+8004006	9	mich	PRON	PPER				1	S		Acc	
+8004006	10	lösen	VERB	VVINF		Inf						
+8004006	11	daß	SCONJ	KOUS								
+8004006	12	ich	PRON	PPER				1	S		Nom	
+8004006	13	mein	DET	PPOSAT					S		Nom	N
+8004006	14	Erbteil	NOUN	NN					S		Nom	M
+8004006	15	nicht	PART	PTKNEG								
+8004006	16	Verderbe	NOUN	NN					P		Nom	N
+8004006	17	Löse	VERB	ADV				2	S	Imp		
+8004006	18	du	PRON	PPER				2	S		Nom	
+8004006	19	für	ADP	APPR								
+8004006	20	dich	PRON	PPER				2	S		Acc	
+8004006	21	was	PRON	PWS					S		Nom	N
+8004006	22	ich	PRON	PPER				1	S		Nom	
+8004006	23	lösen	VERB	VVINF		Inf						
+8004006	24	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+8004006	25	denn	CCONJ	KON								
+8004006	26	ich	PRON	PPER				1	S		Nom	
+8004006	27	können	AUX	VMFIN		Fin	Pres	3	S	Ind		
+8004006	28	nicht	PART	PTKNEG								
+8004006	29	lösen	VERB	VVINF		Inf						
+8004007	1	dieser	PRON	PDS					S		Nom	N
+8004007	2	aber	CCONJ	KON								
+8004007	3	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004007	4	vordem	ADV	PROAV								
+8004007	5	in	ADP	APPR								
+8004007	6	Israel	PROPN	NE					S		Nom	N
+8004007	7	bei	ADP	APPR								
+8004007	8	ein	PRON	ART					S		Nom	M
+8004007	9	Lösung	NOUN	NN					S		Nom	F
+8004007	10	und	CCONJ	KON								
+8004007	11	bei	ADP	APPR								
+8004007	12	ein	DET	ART					S		Dat	M
+8004007	13	Tausche	VERB	NN		Fin	Pres	3	S	Sub		
+8004007	14	um	ADP	APPR								
+8004007	15	jeder	DET	PIAT					S		Nom	F
+8004007	16	Sache	NOUN	NN					S		Nom	F
+8004007	17	zu	ADP	PTKVZ								
+8004007	18	bestätigen	VERB	VVINF		Inf						
+8004007	19	der	DET	ART					S		Nom	M
+8004007	20	ein	DET	ART					S		Nom	F
+8004007	21	ziehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004007	22	sein	DET	PPOSAT					S		Acc	M
+8004007	23	Schuh	NOUN	NN					S		Nom	M
+8004007	24	aus	ADP	PTKVZ								
+8004007	25	und	CCONJ	KON								
+8004007	26	geben	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004007	27	ihn	PRON	PPER				3	S		Acc	M
+8004007	28	der	DET	ART					S		Dat	M
+8004007	29	anderer	PRON	PIS					P		Dat	
+8004007	30	und	CCONJ	KON								
+8004007	31	der	DET	ART					S		Nom	N
+8004007	32	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8004007	33	der	DET	ART					S		Nom	F
+8004007	34	Art	NOUN	NN					S		Nom	F
+8004007	35	der	DET	ART					S		Nom	M
+8004007	36	Bezeugung	NOUN	NN					S		Nom	F
+8004007	37	in	ADP	APPR								
+8004007	38	Israel	PROPN	NE					S		Nom	N
+8004008	1	und	CCONJ	KON								
+8004008	2	der	DET	ART					S		Nom	M
+8004008	3	Blutsverwandter	NOUN	NN					P		Nom	
+8004008	4	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004008	5	zu	ADP	PTKVZ								
+8004008	6	Boas	PROPN	NE					S		Nom	
+8004008	7	Kaufe	NOUN	NN					P		Nom	M
+8004008	8	für	ADP	APPR								
+8004008	9	dich	PRON	PPER				2	S		Acc	
+8004008	10	und	CCONJ	KON								
+8004008	11	er	PRON	PPER				3	S		Nom	M
+8004008	12	ziehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004008	13	sein	DET	PPOSAT					S		Acc	M
+8004008	14	Schuh	NOUN	NN					S		Nom	M
+8004008	15	aus	ADP	PTKVZ								
+8004009	1	da	SCONJ	KOUS								
+8004009	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004009	3	Boas	PROPN	NE					S		Nom	
+8004009	4	zu	ADP	PTKVZ								
+8004009	5	der	DET	ART					S		Acc	M
+8004009	6	Ältesten	NOUN	NN					P		Nom	M
+8004009	7	und	CCONJ	KON								
+8004009	8	zu	ADP	PTKVZ								
+8004009	9	alle	PRON	PIS					S		Dat	N
+8004009	10	Volke	NOUN	NN					S		Nom	M
+8004009	11	ihr	PRON	PPER				2	P		Nom	
+8004009	12	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+8004009	13	heute	ADV	ADV								
+8004009	14	Zeuge	NOUN	NN					P		Nom	M
+8004009	15	daß	SCONJ	KOUS								
+8004009	16	ich	PRON	PPER				1	S		Nom	
+8004009	17	aus	ADP	PTKVZ								
+8004009	18	der	DET	ART					S		Nom	M
+8004009	19	Hand	NOUN	NN					S		Nom	F
+8004009	20	Noomi	PROPN	NE					S		Gen	
+8004009	21	alle	PRON	PIS					S		Nom	N
+8004009	22	kaufen	VERB	VVPP		Part						
+8004009	23	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004009	24	was	PRON	PWS					S		Nom	N
+8004009	25	Elimelech	NOUN	NN					S		Nom	M
+8004009	26	und	CCONJ	KON								
+8004009	27	alle	PRON	PIS					S		Nom	N
+8004009	28	was	PRON	PWS					S		Nom	N
+8004009	29	Kiljon	PROPN	NE					S		Nom	
+8004009	30	und	CCONJ	KON								
+8004009	31	Machlon	PROPN	NE					S		Nom	M
+8004009	32	gehören	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004010	1	und	CCONJ	KON								
+8004010	2	auch	ADV	ADV								
+8004010	3	Ruth	PROPN	NE					S		Nom	F
+8004010	4	der	DET	ART					S		Nom	F
+8004010	5	Moabitin	NOUN	NN					S		Nom	F
+8004010	6	der	DET	ART					S		Nom	N
+8004010	7	Weib	NOUN	NN					S		Nom	N
+8004010	8	Machlon	PROPN	NE					S		Gen	
+8004010	9	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004010	10	ich	PRON	PPER				1	S		Nom	
+8004010	11	mir	PRON	PPER				1	S		Dat	
+8004010	12	zu	ADP	APPRART					S		Dat	N
+8004010	13	Weibe	NOUN	NN					S		Nom	F
+8004010	14	kaufen	VERB	VVPP		Part						
+8004010	15	um	ADP	APPR								
+8004010	16	der	DET	ART					S		Acc	M
+8004010	17	Name	NOUN	NN					P		Nom	M
+8004010	18	der	DET	ART					S		Gen	M
+8004010	19	verstorbener	NOUN	NN					P		Nom	
+8004010	20	auf	ADP	PTKVZ								
+8004010	21	sein	DET	PPOSAT					S		Dat	M
+8004010	22	Erbteil	NOUN	NN					S		Nom	M
+8004010	23	zu	ADP	PTKVZ								
+8004010	24	erwecken	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8004010	25	daß	SCONJ	KOUS								
+8004010	26	nicht	PART	PTKNEG								
+8004010	27	der	DET	ART					S		Nom	M
+8004010	28	Name	NOUN	NN					S		Nom	M
+8004010	29	der	DET	ART					S		Gen	M
+8004010	30	verstorbener	NOUN	NN					P		Nom	
+8004010	31	ausrotten	VERB	VVPP		Part						
+8004010	32	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004010	33	unter	ADP	APPR								
+8004010	34	sein	DET	PPOSAT					S		Acc	M
+8004010	35	Brüdern	NOUN	NN					P		Dat	M
+8004010	36	und	CCONJ	KON								
+8004010	37	aus	ADP	PTKVZ								
+8004010	38	der	DET	ART					S		Dat	M
+8004010	39	Tor	NOUN	NN					P		Nom	N
+8004010	40	sein	DET	PPOSAT					S		Gen	M
+8004010	41	Ort	NOUN	NN					S		Gen	M
+8004010	42	ihr	PRON	PPER				2	P		Nom	
+8004010	43	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+8004010	44	heute	ADV	ADV								
+8004010	45	Zeuge	NOUN	NN					P		Nom	M
+8004011	1	und	CCONJ	KON								
+8004011	2	alle	PRON	PIS					S		Nom	N
+8004011	3	Volk	NOUN	NN					S		Nom	N
+8004011	4	der	DET	ART					S		Nom	N
+8004011	5	in	ADP	APPRART					S		Dat	N
+8004011	6	Tor	NOUN	NN					P		Nom	N
+8004011	7	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+8004011	8	und	CCONJ	KON								
+8004011	9	der	DET	ART					S		Nom	F
+8004011	10	Ältesten	NOUN	NN					P		Nom	M
+8004011	11	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8004011	12	wir	PRON	PPER				1	P		Nom	
+8004011	13	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+8004011	14	Zeuge	NOUN	NN					P		Nom	M
+8004011	15	Jahwe	NOUN	NN					S		Nom	M
+8004011	16	machen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+8004011	17	der	DET	ART					S		Nom	N
+8004011	18	Weib	NOUN	NN					S		Nom	N
+8004011	19	der	DET	ART					S		Nom	N
+8004011	20	in	ADP	APPR								
+8004011	21	dein	DET	PPER					S		Nom	N
+8004011	22	Haus	NOUN	NN					S		Nom	N
+8004011	23	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8004011	24	wie	ADP	KOKOM								
+8004011	25	Rahel	PROPN	NE					S		Nom	F
+8004011	26	und	CCONJ	KON								
+8004011	27	wie	ADP	KOKOM								
+8004011	28	Lea	PROPN	NE					S		Nom	F
+8004011	29	welcher	DET	PWAT					S		Nom	F
+8004011	30	beide	PRON	PIS					P		Nom	
+8004011	31	der	DET	ART					S		Nom	N
+8004011	32	Haus	NOUN	NN					S		Nom	N
+8004011	33	Israel	PROPN	NE					S		Nom	N
+8004011	34	erbauen	VERB	VVPP		Part						
+8004011	35	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+8004011	36	und	CCONJ	KON								
+8004011	37	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004011	38	mächtig	ADV	ADJD	Pos							
+8004011	39	in	ADP	APPR								
+8004011	40	Ephrata	NOUN	NN					S		Nom	M
+8004011	41	und	CCONJ	KON								
+8004011	42	Stift	NOUN	NN					P		Nom	M
+8004011	43	ein	DET	ART					S		Acc	M
+8004011	44	Name	NOUN	NN					P		Nom	M
+8004011	45	in	ADP	APPR								
+8004011	46	Bethlehem	PROPN	NE					S		Nom	N
+8004012	1	und	CCONJ	KON								
+8004012	2	von	ADP	APPR								
+8004012	3	der	DET	ART					S		Dat	M
+8004012	4	Same	NOUN	NN					P		Nom	M
+8004012	5	der	DET	ART					S		Acc	M
+8004012	6	Jahwe	NOUN	NN					S		Nom	M
+8004012	7	dir	PRON	PPER				2	S		Dat	
+8004012	8	von	ADP	APPR								
+8004012	9	dieser	DET	PDAT					S		Dat	N
+8004012	10	jung	ADJ	ADJA	Pos				P		Dat	M
+8004012	11	Weibe	NOUN	NN					S		Nom	F
+8004012	12	geben	VERB	VVINF		Inf						
+8004012	13	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004012	14	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004012	15	dein	DET	PPER					S		Nom	N
+8004012	16	Haus	NOUN	NN					S		Nom	N
+8004012	17	wie	ADP	KOKOM								
+8004012	18	der	DET	ART					S		Nom	N
+8004012	19	Haus	NOUN	NN					S		Nom	N
+8004012	20	der	DET	ART					S		Gen	M
+8004012	21	Perez	PROPN	NE					S		Nom	
+8004012	22	welcher	DET	PWAT					S		Acc	M
+8004012	23	Tamar	PROPN	NE					S		Nom	
+8004012	24	der	DET	ART					S		Dat	M
+8004012	25	Juda	PROPN	NE					S		Nom	M
+8004012	26	gebären	VERB	VVPP		Part						
+8004012	27	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004013	1	und	CCONJ	KON								
+8004013	2	Boas	PROPN	NE					S		Nom	
+8004013	3	nehmen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004013	4	Ruth	PROPN	NE					S		Nom	F
+8004013	5	und	CCONJ	KON								
+8004013	6	sie	PRON	PPER				3	P		Nom	
+8004013	7	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+8004013	8	sein	AUX	VAINF		Inf						
+8004013	9	Weib	NOUN	NN					S		Nom	N
+8004013	10	und	CCONJ	KON								
+8004013	11	er	PRON	PPER				3	S		Nom	M
+8004013	12	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004013	13	zu	ADP	PTKVZ								
+8004013	14	ihr	PRON	PPOSAT				3	S		Dat	F
+8004013	15	ein	DET	ART					S		Nom	N
+8004013	16	und	CCONJ	KON								
+8004013	17	Jahwe	NOUN	NN					S		Nom	M
+8004013	18	verlieh	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004013	19	ihr	PRON	PPOSAT				3	S		Dat	F
+8004013	20	Schwangerschaft	NOUN	NN					S		Nom	F
+8004013	21	und	CCONJ	KON								
+8004013	22	sie	PRON	PPER				3	P		Nom	
+8004013	23	gebar	VERB	ADJD		Fin	Past	3	S	Ind		
+8004013	24	ein	DET	ART					S		Acc	M
+8004013	25	Sohn	NOUN	NN					S		Nom	M
+8004014	1	und	CCONJ	KON								
+8004014	2	der	DET	ART					S		Nom	F
+8004014	3	Weiber	NOUN	NN					P		Nom	M
+8004014	4	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8004014	5	zu	ADP	PTKVZ								
+8004014	6	Noomi	PROPN	NE					S		Nom	F
+8004014	7	Gepriesen	ADV	ADJD	Pos							
+8004014	8	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004014	9	Jahwe	NOUN	NN					S		Nom	M
+8004014	10	der	DET	ART					S		Nom	M
+8004014	11	es	PRON	PPER				3	S		Nom	N
+8004014	12	dir	PRON	PPER				2	S		Dat	
+8004014	13	heute	ADV	ADV								
+8004014	14	nicht	PART	PTKNEG								
+8004014	15	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004014	16	fehlen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+8004014	17	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+8004014	18	an	ADP	PTKVZ								
+8004014	19	ein	DET	ART					S		Dat	M
+8004014	20	Löser	PROPN	NE					S		Nom	M
+8004014	21	und	CCONJ	KON								
+8004014	22	sein	AUX	VAINF		Inf						
+8004014	23	Name	NOUN	NN					S		Nom	M
+8004014	24	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+8004014	25	rühmen	VERB	VVPP		Part						
+8004014	26	in	ADP	APPR								
+8004014	27	Israel	PROPN	NE					S		Nom	N
+8004015	1	und	CCONJ	KON								
+8004015	2	er	PRON	PPER				3	S		Nom	M
+8004015	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004015	4	dir	PRON	PPER				2	S		Dat	
+8004015	5	ein	DET	ART					S		Nom	N
+8004015	6	Erquicker	PROPN	NE					S		Nom	
+8004015	7	der	DET	ART					S		Nom	M
+8004015	8	Seele	NOUN	NN					S		Nom	F
+8004015	9	sein	AUX	VAINF		Inf						
+8004015	10	und	CCONJ	KON								
+8004015	11	ein	DET	ART					S		Nom	N
+8004015	12	Versorger	NOUN	NN					S		Nom	M
+8004015	13	dein	DET	PPOSAT					S		Gen	N
+8004015	14	Alter	NOUN	NN					S		Gen	N
+8004015	15	denn	CCONJ	KON								
+8004015	16	dein	DET	PPOSAT					S		Nom	F
+8004015	17	Schwiegertochter	NOUN	NN					S		Nom	F
+8004015	18	der	DET	ART					S		Nom	F
+8004015	19	dich	PRON	PPER				2	S		Acc	
+8004015	20	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+8004015	21	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004015	22	ihn	PRON	PPER				3	S		Acc	M
+8004015	23	gebären	VERB	VVPP		Part						
+8004015	24	sie	PRON	PPER				3	P		Nom	
+8004015	25	der	DET	ART					S		Nom	F
+8004015	26	dir	PRON	PPER				2	S		Dat	
+8004015	27	gut	ADV	ADJD	Cmp							
+8004015	28	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004015	29	als	ADP	KOKOM								
+8004015	30	sieben	NUM	CARD								
+8004015	31	Sohn	NOUN	NN					P		Nom	M
+8004016	1	und	CCONJ	KON								
+8004016	2	Noomi	PROPN	NE					S		Nom	F
+8004016	3	nehmen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004016	4	der	DET	ART					S		Nom	N
+8004016	5	Kind	NOUN	NN					S		Nom	N
+8004016	6	und	CCONJ	KON								
+8004016	7	legen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004016	8	es	PRON	PPER				3	S		Nom	N
+8004016	9	auf	ADP	PTKVZ								
+8004016	10	ihr	DET	PPOSAT					S		Acc	M
+8004016	11	schoß	NOUN	PTKVZ					S		Acc	M
+8004016	12	und	CCONJ	KON								
+8004016	13	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+8004016	14	sein	DET	PPOSAT					S		Nom	F
+8004016	15	Wärterin	NOUN	NN					S		Nom	F
+8004017	1	und	CCONJ	KON								
+8004017	2	der	DET	ART					S		Nom	F
+8004017	3	Nachbarin	NOUN	NN					P		Nom	F
+8004017	4	geben	VERB	VVFIN		Fin	Past	3	P	Ind		
+8004017	5	ihm	PRON	PPER				3	S		Dat	M
+8004017	6	ein	DET	ART					S		Acc	M
+8004017	7	Name	NOUN	NN					P		Nom	M
+8004017	8	indem	SCONJ	KOUS								
+8004017	9	sie	PRON	PPER				3	P		Nom	
+8004017	10	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+8004017	11	ein	DET	ART					S		Nom	M
+8004017	12	Sohn	NOUN	NN					S		Nom	M
+8004017	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004017	14	der	DET	ART					S		Nom	M
+8004017	15	Noomi	PROPN	NE					S		Nom	F
+8004017	16	gebären	VERB	VVPP		Part						
+8004017	17	und	CCONJ	KON								
+8004017	18	sie	PRON	PPER				3	P		Nom	
+8004017	19	geben	VERB	VVFIN		Fin	Past	3	P	Ind		
+8004017	20	ihm	PRON	PPER				3	S		Dat	M
+8004017	21	der	DET	ART					S		Acc	M
+8004017	22	Name	NOUN	NN					P		Nom	M
+8004017	23	Obed	PROPN	NE					S		Nom	
+8004017	24	er	PRON	PPER				3	S		Nom	M
+8004017	25	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+8004017	26	der	DET	ART					S		Nom	M
+8004017	27	Vater	NOUN	NN					S		Nom	M
+8004017	28	isais	NOUN	NN					S		Nom	N
+8004017	29	der	DET	ART					S		Gen	M
+8004017	30	Vater	NOUN	NN					S		Gen	M
+8004017	31	David	PROPN	NE					S		Gen	M
+8004018	1	und	CCONJ	KON								
+8004018	2	dieser	PRON	PDS					S		Nom	N
+8004018	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+8004018	4	der	DET	ART					S		Nom	F
+8004018	5	Geschlecht	NOUN	NN					P		Nom	N
+8004018	6	der	DET	ART					S		Gen	M
+8004018	7	Perez	PROPN	NE					S		Nom	
+8004018	8	Perez	PROPN	NE					S		Nom	
+8004018	9	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004018	10	Hezron	PROPN	NE					S		Nom	
+8004019	1	und	CCONJ	KON								
+8004019	2	Hezron	PROPN	NE					S		Nom	
+8004019	3	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004019	4	Ram	PROPN	NE					S		Nom	
+8004019	5	und	CCONJ	KON								
+8004019	6	Ram	PROPN	NE					S		Nom	
+8004019	7	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004019	8	Amminadab	PROPN	NE					S		Nom	
+8004020	1	und	CCONJ	KON								
+8004020	2	Amminadab	PROPN	NE					S		Nom	
+8004020	3	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004020	4	Nachschon	X	FM								
+8004020	5	und	CCONJ	KON								
+8004020	6	Nachschon	X	FM								
+8004020	7	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004020	8	Salma	PROPN	NE					S		Nom	F
+8004021	1	und	CCONJ	KON								
+8004021	2	Salmon	PROPN	NE					S		Nom	
+8004021	3	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004021	4	Boas	PROPN	NE					S		Nom	
+8004021	5	und	CCONJ	KON								
+8004021	6	Boas	PROPN	NE					S		Nom	
+8004021	7	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004021	8	Obed	PROPN	NE					S		Nom	
+8004022	1	und	CCONJ	KON								
+8004022	2	Obed	PROPN	NE					S		Nom	
+8004022	3	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004022	4	Isai	PROPN	NE					S		Nom	
+8004022	5	und	CCONJ	KON								
+8004022	6	Isai	PROPN	NE					S		Nom	
+8004022	7	zeugen	VERB	VVFIN		Fin	Past	3	S	Ind		
+8004022	8	David	PROPN	NE					S		Nom	M

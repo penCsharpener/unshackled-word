@@ -1,0 +1,1248 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+32001001	1	und	CCONJ	KON								
+32001001	2	der	DET	ART					S		Nom	N
+32001001	3	Wort	NOUN	NN					S		Nom	N
+32001001	4	Jahwe	PROPN	NE					S		Gen	
+32001001	5	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001001	6	zu	ADP	PTKVZ								
+32001001	7	Jona	PROPN	NE					S		Nom	M
+32001001	8	der	DET	ART					S		Dat	M
+32001001	9	Sohn	NOUN	NN					S		Acc	M
+32001001	10	Amittai	PROPN	NE					S		Nom	N
+32001001	11	also	ADV	ADV								
+32001002	1	Mache	VERB	VVIMP				2	S	Imp		
+32001002	2	dich	PRON	PPER				2	S		Acc	
+32001002	3	auf	ADP	PTKVZ								
+32001002	4	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32001002	5	nach	ADP	APPR								
+32001002	6	Ninive	NOUN	NN					S		Nom	F
+32001002	7	der	DET	ART					S		Nom	M
+32001002	8	groß	ADJ	ADJA	Pos				S		Acc	M
+32001002	9	Stadt	NOUN	NN					S		Nom	F
+32001002	10	und	CCONJ	KON								
+32001002	11	predigen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32001002	12	wider	ADP	PTKVZ								
+32001002	13	sie	PRON	PPER				3	P		Nom	
+32001002	14	denn	CCONJ	KON								
+32001002	15	ihr	DET	PPOSAT					S		Nom	F
+32001002	16	Bosheit	NOUN	NN					S		Nom	F
+32001002	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001002	18	vor	ADP	APPR								
+32001002	19	mich	PRON	PPER				1	S		Acc	
+32001002	20	Heraufgestieg	NOUN	NN					P		Nom	N
+32001003	1	aber	CCONJ	KON								
+32001003	2	Jona	PROPN	NE					S		Nom	M
+32001003	3	machen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001003	4	sich	PRON	PRF				3	S		Acc	
+32001003	5	auf	ADP	PTKVZ								
+32001003	6	um	ADP	APPR								
+32001003	7	von	ADP	APPR								
+32001003	8	der	DET	ART					S		Dat	M
+32001003	9	Angesicht	NOUN	NN					S		Nom	F
+32001003	10	Jahwe	PROPN	NE					S		Gen	
+32001003	11	hinweg	ADP	APZR								
+32001003	12	nach	ADP	APPR								
+32001003	13	Tarsis	NOUN	NN					S		Nom	F
+32001003	14	zu	ADP	PTKVZ								
+32001003	15	fliehen	VERB	VVINF		Inf						
+32001003	16	und	CCONJ	KON								
+32001003	17	er	PRON	PPER				3	S		Nom	M
+32001003	18	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001003	19	nach	ADP	APPR								
+32001003	20	Japho	PROPN	NE					S		Gen	
+32001003	21	Hinab	ADV	PTKVZ								
+32001003	22	und	CCONJ	KON								
+32001003	23	finden	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001003	24	ein	DET	ART					S		Nom	N
+32001003	25	Schiff	NOUN	NN					S		Nom	N
+32001003	26	der	DET	ART					S		Nom	N
+32001003	27	nach	ADP	APPR								
+32001003	28	Tarsis	NOUN	NN					S		Nom	F
+32001003	29	fahren	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001003	30	und	CCONJ	KON								
+32001003	31	er	PRON	PPER				3	S		Nom	M
+32001003	32	geben	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001003	33	sein	AUX	VAINF		Inf						
+32001003	34	Fährgeld	NOUN	NN					S		Nom	N
+32001003	35	und	CCONJ	KON								
+32001003	36	steigen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001003	37	in	ADP	APPR								
+32001003	38	Dasselbe	DET	PDAT					S		Nom	N
+32001003	39	Hinab	ADV	PTKVZ								
+32001003	40	um	ADP	APPR								
+32001003	41	mit	ADP	APPR								
+32001003	42	ihnen	PRON	PPER				3	P		Dat	
+32001003	43	nach	ADP	APPR								
+32001003	44	Tarsis	NOUN	NN					S		Nom	F
+32001003	45	zu	ADP	PTKVZ								
+32001003	46	fahren	VERB	VVINF		Fin	Pres	3	P	Ind		
+32001003	47	von	ADP	APPR								
+32001003	48	der	DET	ART					S		Dat	M
+32001003	49	Angesicht	NOUN	NN					S		Nom	F
+32001003	50	Jahwe	PROPN	NE					S		Gen	
+32001003	51	hinweg	ADP	APZR								
+32001004	1	da	SCONJ	KOUS								
+32001004	2	werfen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001004	3	Jahwe	NOUN	NN					S		Nom	M
+32001004	4	ein	DET	ART					S		Acc	M
+32001004	5	heftig	ADJ	ADJA	Pos				S		Acc	M
+32001004	6	Wind	NOUN	NN					S		Nom	M
+32001004	7	auf	ADP	PTKVZ								
+32001004	8	der	DET	ART					S		Nom	N
+32001004	9	Meer	NOUN	NN					S		Nom	N
+32001004	10	und	CCONJ	KON								
+32001004	11	es	PRON	PPER				3	S		Nom	N
+32001004	12	entstehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001004	13	ein	DET	ART					S		Nom	N
+32001004	14	groß	ADJ	ADJA	Pos				S		Nom	M
+32001004	15	Sturm	NOUN	NN					S		Nom	M
+32001004	16	auf	ADP	PTKVZ								
+32001004	17	der	DET	ART					S		Dat	M
+32001004	18	Meer	NOUN	NN					P		Nom	N
+32001004	19	so	ADV	ADV								
+32001004	20	daß	SCONJ	KOUS								
+32001004	21	der	DET	ART					S		Nom	N
+32001004	22	Schiff	NOUN	NN					S		Nom	N
+32001004	23	zu	ADP	PTKVZ								
+32001004	24	zerbrechen	VERB	VVINF		Inf						
+32001004	25	drohen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001005	1	und	CCONJ	KON								
+32001005	2	der	DET	ART					S		Nom	F
+32001005	3	Seeleute	NOUN	NN					P		Nom	
+32001005	4	fürchten	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001005	5	sich	PRON	PRF				3	S		Acc	
+32001005	6	und	CCONJ	KON								
+32001005	7	schrieen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001005	8	ein	DET	ART					S		Nom	N
+32001005	9	jeder	PRON	PIS					S		Nom	M
+32001005	10	zu	ADP	PTKVZ								
+32001005	11	sein	DET	PPOSAT					S		Dat	M
+32001005	12	Gott	NOUN	NN					S		Nom	M
+32001005	13	und	CCONJ	KON								
+32001005	14	sie	PRON	PPER				3	P		Nom	
+32001005	15	werfen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001005	16	der	DET	ART					S		Nom	F
+32001005	17	Gerät	NOUN	NN					P		Nom	N
+32001005	18	welcher	DET	PWAT					S		Nom	F
+32001005	19	in	ADP	APPRART					S		Dat	N
+32001005	20	Schiff	NOUN	NN					P		Nom	N
+32001005	21	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+32001005	22	in	ADP	APPRART					S		Acc	N
+32001005	23	Meer	NOUN	NN					S		Nom	N
+32001005	24	um	ADP	APPR								
+32001005	25	sich	PRON	PRF				3	S		Acc	
+32001005	26	zu	ADP	PTKVZ								
+32001005	27	erleichtern	VERB	VVINF		Inf						
+32001005	28	Jona	PROPN	NE					S		Nom	M
+32001005	29	aber	CCONJ	KON								
+32001005	30	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+32001005	31	in	ADP	APPR								
+32001005	32	der	DET	ART					S		Acc	M
+32001005	33	unterer	PRON	ADJA					P		Dat	
+32001005	34	Schiffsraum	NOUN	NN					S		Nom	M
+32001005	35	hinabgestiegen	VERB	VVPP		Part						
+32001005	36	und	CCONJ	KON								
+32001005	37	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+32001005	38	sich	PRON	PRF				3	S		Acc	
+32001005	39	hinlegen	VERB	VVPP		Part						
+32001005	40	und	CCONJ	KON								
+32001005	41	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+32001005	42	in	ADP	APPR								
+32001005	43	tief	ADJ	ADJA	Pos				S		Acc	M
+32001005	44	Schlaf	NOUN	NN					S		Nom	M
+32001005	45	sinken	VERB	VVPP		Part						
+32001006	1	und	CCONJ	KON								
+32001006	2	der	DET	ART					S		Nom	M
+32001006	3	Obersteuermann	PROPN	NE					S		Nom	
+32001006	4	treten	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001006	5	zu	ADP	PTKVZ								
+32001006	6	ihm	PRON	PPER				3	S		Dat	M
+32001006	7	hin	ADV	ADV								
+32001006	8	und	CCONJ	KON								
+32001006	9	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001006	10	zu	ADP	PTKVZ								
+32001006	11	ihm	PRON	PPER				3	S		Dat	M
+32001006	12	was	PRON	PWS					S		Nom	N
+32001006	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001006	14	mit	ADP	APPR								
+32001006	15	dir	PRON	PPER				2	S		Dat	
+32001006	16	du	PRON	PPER				2	S		Nom	
+32001006	17	Schläfer	NOUN	NN					P		Nom	M
+32001006	18	stehe	VERB	VVIMP		Fin	Pres	3	S	Sub		
+32001006	19	auf	ADP	PTKVZ								
+32001006	20	rufen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32001006	21	dein	DET	PPOSAT					S		Acc	M
+32001006	22	Gott	NOUN	NN					S		Nom	M
+32001006	23	an	ADP	PTKVZ								
+32001006	24	vielleicht	ADV	ADV								
+32001006	25	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001006	26	der	DET	ART					S		Nom	M
+32001006	27	Gott	NOUN	NN					S		Nom	M
+32001006	28	unser	DET	PPOSAT					S		Nom	N
+32001006	29	gedenken	VERB	VVINF		Inf						
+32001006	30	daß	SCONJ	KOUS								
+32001006	31	wir	PRON	PPER				1	P		Nom	
+32001006	32	nicht	PART	PTKNEG								
+32001006	33	umkommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+32001007	1	und	CCONJ	KON								
+32001007	2	sie	PRON	PPER				3	P		Nom	
+32001007	3	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001007	4	ein	PRON	ART					S		Nom	M
+32001007	5	zu	ADP	APPRART					S		Dat	N
+32001007	6	anderer	PRON	PIS					P		Dat	
+32001007	7	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32001007	8	und	CCONJ	KON								
+32001007	9	lassen	VERB	VVIMP				2	P	Imp		
+32001007	10	uns	PRON	PPER				1	P		Acc	
+32001007	11	Lose	NOUN	NN					P		Nom	M
+32001007	12	werfen	VERB	VVINF		Inf						
+32001007	13	damit	ADV	PROAV								
+32001007	14	wir	PRON	PPER				1	P		Nom	
+32001007	15	erfahren	VERB	VVINF		Inf						
+32001007	16	um	ADP	APPR								
+32001007	17	Wessentwill	NOUN	VVPP					P		Nom	F
+32001007	18	dieser	DET	PDAT					S		Nom	N
+32001007	19	Unglück	NOUN	NN					S		Nom	N
+32001007	20	uns	PRON	PPER				1	P		Acc	
+32001007	21	treffen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32001007	22	und	CCONJ	KON								
+32001007	23	sie	PRON	PPER				3	P		Nom	
+32001007	24	werfen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001007	25	Lose	NOUN	NN					P		Nom	M
+32001007	26	und	CCONJ	KON								
+32001007	27	der	DET	ART					S		Nom	N
+32001007	28	Los	NOUN	NE					S		Nom	N
+32001007	29	fallen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001007	30	auf	ADP	PTKVZ								
+32001007	31	Jona	PROPN	NE					S		Nom	M
+32001008	1	da	SCONJ	KOUS								
+32001008	2	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001008	3	sie	PRON	PPER				3	P		Nom	
+32001008	4	zu	ADP	PTKVZ								
+32001008	5	ihm	PRON	PPER				3	S		Dat	M
+32001008	6	Tue	ADV	FM								
+32001008	7	uns	PRON	PPER				1	P		Acc	
+32001008	8	doch	CCONJ	KON								
+32001008	9	kund	ADV	PTKVZ								
+32001008	10	um	ADP	APPR								
+32001008	11	Wessentwill	NOUN	VVPP					P		Nom	F
+32001008	12	dieser	DET	PDAT					S		Nom	N
+32001008	13	Unglück	NOUN	NN					S		Nom	N
+32001008	14	uns	PRON	PPER				1	P		Acc	
+32001008	15	treffen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32001008	16	was	PRON	PWS					S		Nom	N
+32001008	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001008	18	dein	DET	PPER					S		Nom	N
+32001008	19	Geschäft	NOUN	NN					S		Nom	N
+32001008	20	und	CCONJ	KON								
+32001008	21	woher	SCONJ	PWAV								
+32001008	22	kommst	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32001008	23	du	PRON	PPER				2	S		Nom	
+32001008	24	welcher	DET	PWS					S		Nom	N
+32001008	25	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001008	26	dein	DET	PPER					S		Nom	N
+32001008	27	Land	NOUN	NN					S		Nom	N
+32001008	28	und	CCONJ	KON								
+32001008	29	von	ADP	APPR								
+32001008	30	welcher	DET	PWAT					S		Dat	N
+32001008	31	Volke	NOUN	NN					S		Nom	M
+32001008	32	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+32001008	33	du	PRON	PPER				2	S		Nom	
+32001009	1	und	CCONJ	KON								
+32001009	2	er	PRON	PPER				3	S		Nom	M
+32001009	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001009	4	zu	ADP	PTKVZ								
+32001009	5	ihnen	PRON	PPER				3	P		Dat	
+32001009	6	ich	PRON	PPER				1	S		Nom	
+32001009	7	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+32001009	8	ein	DET	ART					S		Nom	N
+32001009	9	Hebräer	NOUN	NN					S		Nom	M
+32001009	10	und	CCONJ	KON								
+32001009	11	ich	PRON	PPER				1	S		Nom	
+32001009	12	fürchten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32001009	13	Jahwe	NOUN	NN					S		Nom	M
+32001009	14	der	DET	ART					S		Acc	M
+32001009	15	Gott	NOUN	NN					S		Nom	M
+32001009	16	der	DET	ART					S		Gen	M
+32001009	17	Himmel	NOUN	NN					S		Gen	M
+32001009	18	der	DET	ART					S		Nom	M
+32001009	19	der	DET	ART					S		Nom	N
+32001009	20	Meer	NOUN	NN					S		Nom	N
+32001009	21	und	CCONJ	KON								
+32001009	22	der	DET	ART					S		Nom	N
+32001009	23	trockene	NOUN	ADV					P		Nom	
+32001009	24	machen	VERB	VVPP		Part						
+32001009	25	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001010	1	da	SCONJ	KOUS								
+32001010	2	fürchten	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001010	3	sich	PRON	PRF				3	S		Acc	
+32001010	4	der	DET	ART					S		Nom	F
+32001010	5	Mann	NOUN	NN					P		Nom	M
+32001010	6	mit	ADP	APPR								
+32001010	7	groß	ADJ	ADJA	Pos				S		Nom	M
+32001010	8	Furcht	NOUN	NN					S		Nom	F
+32001010	9	und	CCONJ	KON								
+32001010	10	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001010	11	zu	ADP	PTKVZ								
+32001010	12	ihm	PRON	PPER				3	S		Dat	M
+32001010	13	was	PRON	PWS					S		Nom	N
+32001010	14	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+32001010	15	du	PRON	PPER				2	S		Nom	
+32001010	16	da	ADV	ADV								
+32001010	17	tun	VERB	VVPP		Part						
+32001010	18	denn	CCONJ	KON								
+32001010	19	der	DET	ART					S		Nom	F
+32001010	20	Mann	NOUN	NN					P		Nom	M
+32001010	21	wissen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001010	22	daß	SCONJ	KOUS								
+32001010	23	er	PRON	PPER				3	S		Nom	M
+32001010	24	von	ADP	APPR								
+32001010	25	der	DET	ART					S		Dat	M
+32001010	26	Angesicht	NOUN	NN					S		Nom	F
+32001010	27	Jahwe	PROPN	NE					S		Gen	
+32001010	28	Hinwegfloh	PROPN	VVPP					S		Nom	N
+32001010	29	denn	CCONJ	KON								
+32001010	30	er	PRON	PPER				3	S		Nom	M
+32001010	31	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+32001010	32	es	PRON	PPER				3	S		Nom	N
+32001010	33	ihnen	PRON	PPER				3	P		Dat	
+32001010	34	kundtun	VERB	VVPP		Part						
+32001011	1	und	CCONJ	KON								
+32001011	2	sie	PRON	PPER				3	P		Nom	
+32001011	3	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001011	4	zu	ADP	PTKVZ								
+32001011	5	ihm	PRON	PPER				3	S		Dat	M
+32001011	6	was	PRON	PWS					S		Nom	N
+32001011	7	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+32001011	8	wir	PRON	PPER				1	P		Nom	
+32001011	9	dir	PRON	PPER				2	S		Dat	
+32001011	10	tun	VERB	VVINF		Inf						
+32001011	11	damit	ADV	PROAV								
+32001011	12	der	DET	ART					S		Nom	N
+32001011	13	Meer	NOUN	NN					S		Nom	N
+32001011	14	sich	PRON	PRF				3	S		Acc	
+32001011	15	gegen	ADP	APPR								
+32001011	16	uns	PRON	PPER				1	P		Acc	
+32001011	17	beruhigen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32001011	18	denn	CCONJ	KON								
+32001011	19	der	DET	ART					S		Nom	N
+32001011	20	Meer	NOUN	NN					S		Nom	N
+32001011	21	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+32001011	22	immer	ADV	ADV								
+32001011	23	stürmisch	ADJ	ADJA	Pos				S		Nom	M
+32001012	1	und	CCONJ	KON								
+32001012	2	er	PRON	PPER				3	S		Nom	M
+32001012	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001012	4	zu	ADP	PTKVZ								
+32001012	5	ihnen	PRON	PPER				3	P		Dat	
+32001012	6	nehmet	NOUN	NE					S		Nom	N
+32001012	7	mich	PRON	PPER				1	S		Acc	
+32001012	8	und	CCONJ	KON								
+32001012	9	Werfet	PROPN	NE					S		Nom	N
+32001012	10	mich	PRON	PPER				1	S		Acc	
+32001012	11	in	ADP	APPRART					S		Acc	N
+32001012	12	Meer	NOUN	NN					S		Nom	N
+32001012	13	so	ADV	ADV								
+32001012	14	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001012	15	der	DET	ART					S		Nom	N
+32001012	16	Meer	NOUN	NN					S		Nom	N
+32001012	17	sich	PRON	PRF				3	S		Acc	
+32001012	18	gegen	ADP	APPR								
+32001012	19	euch	PRON	PPER				2	P		Dat	
+32001012	20	beruhigen	VERB	VVINF		Inf						
+32001012	21	denn	CCONJ	KON								
+32001012	22	ich	PRON	PPER				1	S		Nom	
+32001012	23	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32001012	24	daß	SCONJ	KOUS								
+32001012	25	dieser	PRON	PDAT					S		Nom	M
+32001012	26	groß	ADJ	ADJA	Pos				S		Nom	F
+32001012	27	Sturm	NOUN	NN					S		Nom	M
+32001012	28	um	ADP	APPR								
+32001012	29	meinetwillen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+32001012	30	über	ADP	APPR								
+32001012	31	euch	PRON	PPER				2	P		Dat	
+32001012	32	kommen	VERB	VVPP		Part						
+32001012	33	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001013	1	und	CCONJ	KON								
+32001013	2	der	DET	ART					S		Nom	F
+32001013	3	Mann	NOUN	NN					P		Nom	M
+32001013	4	ruderen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001013	5	hart	ADV	ADJD	Pos							
+32001013	6	um	ADP	APPR								
+32001013	7	der	DET	ART					S		Nom	N
+32001013	8	Schiff	NOUN	NN					S		Nom	N
+32001013	9	an	ADP	APPRART					S		Acc	N
+32001013	10	Land	NOUN	NN					S		Nom	N
+32001013	11	zurückführen	VERB	VVIZU		Inf						
+32001013	12	aber	CCONJ	KON								
+32001013	13	sie	PRON	PPER				3	P		Nom	
+32001013	14	vermochten	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001013	15	es	PRON	PPER				3	S		Nom	N
+32001013	16	nicht	PART	PTKNEG								
+32001013	17	weil	SCONJ	KOUS								
+32001013	18	der	DET	ART					S		Nom	N
+32001013	19	Meer	NOUN	NN					S		Nom	N
+32001013	20	immer	ADV	ADV								
+32001013	21	stürmisch	ADJ	ADJA	Pos				S		Nom	M
+32001013	22	gegen	ADP	APPR								
+32001013	23	sie	PRON	PPER				3	P		Nom	
+32001013	24	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+32001014	1	da	SCONJ	KOUS								
+32001014	2	rufen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001014	3	sie	PRON	PPER				3	P		Nom	
+32001014	4	zu	ADP	PTKVZ								
+32001014	5	Jahwe	NOUN	NN					S		Nom	M
+32001014	6	und	CCONJ	KON								
+32001014	7	sprechen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001014	8	ach	INTJ	ITJ								
+32001014	9	Jahwe	NOUN	NN					S		Nom	M
+32001014	10	laß	VERB	VVIMP				2	S	Imp		
+32001014	11	uns	PRON	PPER				1	P		Acc	
+32001014	12	doch	CCONJ	KON								
+32001014	13	nicht	PART	PTKNEG								
+32001014	14	umkommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+32001014	15	um	ADP	APPR								
+32001014	16	der	DET	ART					S		Nom	M
+32001014	17	Seele	NOUN	NN					S		Nom	F
+32001014	18	dieser	DET	PDAT					S		Nom	N
+32001014	19	Mann	NOUN	NN					S		Gen	M
+32001014	20	Wille	ADP	APZR								
+32001014	21	und	CCONJ	KON								
+32001014	22	legen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32001014	23	nicht	PART	PTKNEG								
+32001014	24	unschuldig	ADJ	ADJD	Pos				S		Nom	N
+32001014	25	Blut	NOUN	NN					S		Nom	N
+32001014	26	auf	ADP	PTKVZ								
+32001014	27	uns	PRON	PPER				1	P		Acc	
+32001014	28	denn	CCONJ	KON								
+32001014	29	du	PRON	PPER				2	S		Nom	
+32001014	30	Jahwe	NOUN	NN					S		Nom	M
+32001014	31	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+32001014	32	tun	VERB	VVPP		Part						
+32001014	33	wie	ADP	KOKOM								
+32001014	34	es	PRON	PPER				3	S		Nom	N
+32001014	35	dir	PRON	PPER				2	S		Dat	
+32001014	36	fallen	VERB	VVPP		Part						
+32001014	37	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32001015	1	und	CCONJ	KON								
+32001015	2	sie	PRON	PPER				3	P		Nom	
+32001015	3	nehmen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001015	4	Jona	PROPN	NE					S		Nom	M
+32001015	5	und	CCONJ	KON								
+32001015	6	werfen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001015	7	ihn	PRON	PPER				3	S		Acc	M
+32001015	8	in	ADP	APPRART					S		Acc	N
+32001015	9	Meer	NOUN	NN					S		Nom	N
+32001015	10	da	SCONJ	KOUS								
+32001015	11	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32001015	12	der	DET	ART					S		Nom	N
+32001015	13	Meer	NOUN	NN					S		Nom	N
+32001015	14	ab	ADP	PTKVZ								
+32001015	15	von	ADP	APPR								
+32001015	16	sein	DET	PPOSAT					S		Dat	M
+32001015	17	Wüten	NOUN	NN					S		Nom	N
+32001016	1	und	CCONJ	KON								
+32001016	2	der	DET	ART					S		Nom	F
+32001016	3	Mann	NOUN	NN					P		Nom	M
+32001016	4	fürchten	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001016	5	sich	PRON	PRF				3	S		Acc	
+32001016	6	vor	ADP	APPR								
+32001016	7	Jahwe	NOUN	NN					S		Nom	M
+32001016	8	mit	ADP	APPR								
+32001016	9	groß	ADJ	ADJA	Pos				S		Nom	M
+32001016	10	Furcht	NOUN	NN					S		Nom	F
+32001016	11	und	CCONJ	KON								
+32001016	12	sie	PRON	PPER				3	P		Nom	
+32001016	13	schlachteen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001016	14	Schlachtopfer	NOUN	NN					S		Nom	M
+32001016	15	und	CCONJ	KON								
+32001016	16	tun	VERB	VVFIN		Fin	Past	3	P	Ind		
+32001016	17	Gelübde	NOUN	NN					S		Nom	N
+32001016	18	der	DET	ART					S		Dat	M
+32001016	19	Jahwe	NOUN	NN					S		Nom	M
+32002001	1	und	CCONJ	KON								
+32002001	2	Jahwe	NOUN	NN					S		Nom	M
+32002001	3	bestellen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002001	4	ein	DET	ART					S		Acc	M
+32002001	5	groß	ADJ	ADJA	Pos				S		Acc	M
+32002001	6	Fisch	NOUN	NN					S		Nom	M
+32002001	7	um	ADP	APPR								
+32002001	8	Jona	PROPN	NE					S		Nom	M
+32002001	9	zu	ADP	PTKVZ								
+32002001	10	verschlingen	VERB	VVINF		Inf						
+32002001	11	und	CCONJ	KON								
+32002001	12	Jona	PROPN	NE					S		Nom	M
+32002001	13	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+32002001	14	in	ADP	APPRART					S		Dat	N
+32002001	15	Bauch	NOUN	NN					S		Nom	F
+32002001	16	der	DET	ART					S		Gen	M
+32002001	17	Fisch	ADJ	NN	Pos				S		Nom	N
+32002001	18	drei	NUM	CARD								
+32002001	19	Tag	NOUN	NN					P		Nom	M
+32002001	20	und	CCONJ	KON								
+32002001	21	drei	NUM	CARD								
+32002001	22	Nacht	NOUN	NN					P		Nom	F
+32002002	1	und	CCONJ	KON								
+32002002	2	Jona	PROPN	NE					S		Nom	M
+32002002	3	beten	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002002	4	zu	ADP	PTKVZ								
+32002002	5	Jahwe	NOUN	NN					S		Nom	M
+32002002	6	sein	DET	PPOSAT					S		Dat	M
+32002002	7	Gott	NOUN	NN					S		Nom	M
+32002002	8	aus	ADP	PTKVZ								
+32002002	9	der	DET	ART					S		Dat	M
+32002002	10	Bauch	NOUN	NN					S		Nom	F
+32002002	11	der	DET	ART					S		Gen	M
+32002002	12	Fisch	ADJ	NN	Pos				S		Nom	N
+32002002	13	und	CCONJ	KON								
+32002002	14	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002003	1	ich	PRON	PPER				1	S		Nom	
+32002003	2	rufen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002003	3	aus	ADP	PTKVZ								
+32002003	4	mein	DET	PPOSAT					S		Dat	F
+32002003	5	Bedrängnis	NOUN	NN					S		Nom	F
+32002003	6	zu	ADP	PTKVZ								
+32002003	7	Jahwe	NOUN	NN					S		Nom	M
+32002003	8	und	CCONJ	KON								
+32002003	9	er	PRON	PPER				3	S		Nom	M
+32002003	10	antworten	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002003	11	mir	PRON	PPER				1	S		Dat	
+32002003	12	ich	PRON	PPER				1	S		Nom	
+32002003	13	schreien	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002003	14	aus	ADP	PTKVZ								
+32002003	15	der	DET	ART					S		Dat	M
+32002003	16	Schoß	PROPN	NN					S		Nom	
+32002003	17	der	DET	ART					S		Gen	M
+32002003	18	Scheols	PROPN	NE					S		Nom	
+32002003	19	du	PRON	PPER				2	S		Nom	
+32002003	20	Hörtest	NOUN	VVFIN					S		Nom	M
+32002003	21	mein	DET	PPOSAT					S		Nom	F
+32002003	22	Stimme	NOUN	NN					S		Nom	F
+32002004	1	denn	CCONJ	KON								
+32002004	2	du	PRON	PPER				2	S		Nom	
+32002004	3	hatteben	VERB	VAFIN		Fin	Pres	2	S	Ind		
+32002004	4	mich	PRON	PPER				1	S		Acc	
+32002004	5	in	ADP	APPR								
+32002004	6	der	DET	ART					S		Nom	F
+32002004	7	Tiefe	NOUN	NN					S		Nom	F
+32002004	8	in	ADP	APPR								
+32002004	9	der	DET	ART					S		Nom	N
+32002004	10	Herz	NOUN	NN					S		Nom	N
+32002004	11	der	DET	ART					S		Nom	M
+32002004	12	Meer	NOUN	NN					P		Nom	N
+32002004	13	werfen	VERB	VVPP		Part						
+32002004	14	und	CCONJ	KON								
+32002004	15	der	DET	ART					S		Nom	M
+32002004	16	Strom	NOUN	NN					S		Nom	M
+32002004	17	umschließen	VERB	ADJD		Fin	Past	3	S	Ind		
+32002004	18	mich	PRON	PPER				1	S		Acc	
+32002004	19	aller	PRON	PIS					P		Nom	
+32002004	20	dein	DET	PPOSAT					S		Nom	F
+32002004	21	Woge	NOUN	NN					P		Nom	F
+32002004	22	und	CCONJ	KON								
+32002004	23	dein	DET	PPOSAT					S		Nom	F
+32002004	24	Welle	NOUN	NN					P		Nom	F
+32002004	25	fahren	VERB	VVFIN		Fin	Past	3	P	Ind		
+32002004	26	über	ADP	APPR								
+32002004	27	mich	PRON	PPER				1	S		Acc	
+32002004	28	hin	ADV	ADV								
+32002005	1	und	CCONJ	KON								
+32002005	2	ich	PRON	PPER				1	S		Nom	
+32002005	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002005	4	verstoßen	VERB	VVPP		Part						
+32002005	5	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+32002005	6	ich	PRON	PPER				1	S		Nom	
+32002005	7	aus	ADP	PTKVZ								
+32002005	8	dein	DET	PPOSAT					S		Acc	M
+32002005	9	Auge	NOUN	NN					P		Nom	N
+32002005	10	dennoch	ADV	ADV								
+32002005	11	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+32002005	12	ich	PRON	PPER				1	S		Nom	
+32002005	13	wieder	ADV	ADV								
+32002005	14	hinschauen	VERB	VVINF		Inf						
+32002005	15	nach	ADP	APPR								
+32002005	16	dein	DET	PPOSAT					S		Dat	M
+32002005	17	heilig	ADJ	ADJA	Pos				S		Acc	M
+32002005	18	Tempel	NOUN	NN					S		Nom	M
+32002006	1	der	DET	ART					S		Nom	F
+32002006	2	Wasser	NOUN	NN					S		Nom	N
+32002006	3	umfingen	ADV	ADJD	Pos							
+32002006	4	mich	PRON	PPER				1	S		Acc	
+32002006	5	bis	CCONJ	KON								
+32002006	6	an	ADP	PTKVZ								
+32002006	7	der	DET	ART					S		Nom	F
+32002006	8	Seele	NOUN	NN					S		Nom	F
+32002006	9	der	DET	ART					S		Nom	F
+32002006	10	Tiefe	NOUN	NN					S		Nom	F
+32002006	11	umschließen	VERB	ADJD		Fin	Past	3	S	Ind		
+32002006	12	mich	PRON	PPER				1	S		Acc	
+32002006	13	der	DET	ART					S		Nom	N
+32002006	14	Meergra	NOUN	NN					S		Nom	N
+32002006	15	Schlang	VERB	ADJD		Fin	Past	3	S	Ind		
+32002006	16	sich	PRON	PRF				3	S		Acc	
+32002006	17	um	ADP	APPR								
+32002006	18	mein	DET	PPOSAT					S		Nom	N
+32002006	19	Haupt	NOUN	NN					S		Nom	N
+32002007	1	ich	PRON	PPER				1	S		Nom	
+32002007	2	fahren	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002007	3	Hinab	ADV	PTKVZ								
+32002007	4	zu	ADP	PTKVZ								
+32002007	5	der	DET	ART					S		Acc	M
+32002007	6	Grund	NOUN	NN					P		Dat	M
+32002007	7	der	DET	ART					S		Nom	M
+32002007	8	Berg	NOUN	NN					P		Nom	M
+32002007	9	der	DET	ART					S		Nom	M
+32002007	10	Erde	NOUN	NN					S		Nom	F
+32002007	11	Riegel	NOUN	NN					S		Nom	M
+32002007	12	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+32002007	13	hinter	ADP	APPR								
+32002007	14	mir	PRON	PPER				1	S		Dat	
+32002007	15	auf	ADP	PTKVZ								
+32002007	16	ewig	ADV	ADJD	Pos							
+32002007	17	da	SCONJ	KOUS								
+32002007	18	Führtest	NOUN	NN					S		Nom	M
+32002007	19	du	PRON	PPER				2	S		Nom	
+32002007	20	mein	DET	PPOSAT					S		Nom	N
+32002007	21	Leben	NOUN	NN					S		Nom	N
+32002007	22	aus	ADP	PTKVZ								
+32002007	23	der	DET	ART					S		Nom	M
+32002007	24	Grube	NOUN	NN					S		Nom	F
+32002007	25	herauf	ADV	PTKVZ								
+32002007	26	Jahwe	NOUN	NN					S		Nom	M
+32002007	27	mein	DET	PPOSAT					S		Nom	N
+32002007	28	Gott	NOUN	NN					S		Nom	M
+32002008	1	als	ADP	APPR								
+32002008	2	mein	DET	PPOSAT					S		Nom	F
+32002008	3	Seele	NOUN	NN					S		Nom	F
+32002008	4	in	ADP	APPR								
+32002008	5	mir	PRON	PPER				1	S		Dat	
+32002008	6	verschmachten	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002008	7	gedachen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002008	8	ich	PRON	PPER				1	S		Nom	
+32002008	9	Jahwe	PROPN	NE					S		Gen	
+32002008	10	und	CCONJ	KON								
+32002008	11	zu	ADP	PTKVZ								
+32002008	12	dir	PRON	PPER				2	S		Dat	
+32002008	13	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002008	14	mein	DET	PPOSAT					S		Nom	N
+32002008	15	Gebet	NOUN	NN					S		Nom	N
+32002008	16	in	ADP	APPR								
+32002008	17	dein	DET	PPOSAT					S		Acc	M
+32002008	18	heilig	ADJ	ADJA	Pos				S		Acc	M
+32002008	19	Tempel	NOUN	NN					S		Nom	M
+32002009	1	der	DET	ART					S		Nom	F
+32002009	2	auf	ADP	PTKVZ								
+32002009	3	nichtig	ADJ	ADJA	Pos				S		Nom	F
+32002009	4	Götze	NOUN	NN					P		Nom	M
+32002009	5	achten	VERB	VVINF		Inf						
+32002009	6	verlassen	VERB	VVINF		Inf						
+32002009	7	ihr	DET	PPOSAT					S		Nom	F
+32002009	8	Gnade	NOUN	NN					S		Nom	F
+32002010	1	ich	PRON	PPER				1	S		Nom	
+32002010	2	aber	CCONJ	KON								
+32002010	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+32002010	4	dir	PRON	PPER				2	S		Dat	
+32002010	5	opfern	VERB	VVINF		Inf						
+32002010	6	mit	ADP	APPR								
+32002010	7	der	DET	ART					S		Nom	M
+32002010	8	Stimme	NOUN	NN					S		Nom	F
+32002010	9	der	DET	ART					S		Gen	M
+32002010	10	lobe	NOUN	NN					S		Nom	N
+32002010	11	was	PRON	PWS					S		Nom	N
+32002010	12	ich	PRON	PPER				1	S		Nom	
+32002010	13	loben	VERB	VVPP		Part						
+32002010	14	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+32002010	15	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+32002010	16	ich	PRON	PPER				1	S		Nom	
+32002010	17	bezahlen	VERB	VVINF		Inf						
+32002010	18	bei	ADP	APPR								
+32002010	19	Jahwe	NOUN	NN					S		Nom	M
+32002010	20	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32002010	21	der	DET	ART					S		Nom	F
+32002010	22	Rettung	NOUN	NN					S		Nom	F
+32002011	1	und	CCONJ	KON								
+32002011	2	Jahwe	NOUN	NN					S		Nom	M
+32002011	3	befehlen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002011	4	der	DET	ART					S		Dat	M
+32002011	5	Fisch	NOUN	NN					P		Nom	M
+32002011	6	und	CCONJ	KON								
+32002011	7	er	PRON	PPER				3	S		Nom	M
+32002011	8	spieen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32002011	9	Jona	PROPN	NE					S		Nom	M
+32002011	10	an	ADP	PTKVZ								
+32002011	11	der	DET	ART					S		Nom	N
+32002011	12	Land	NOUN	NN					S		Nom	N
+32002011	13	aus	ADP	PTKVZ								
+32003001	1	und	CCONJ	KON								
+32003001	2	der	DET	ART					S		Nom	N
+32003001	3	Wort	NOUN	NN					S		Nom	N
+32003001	4	Jahwe	PROPN	NE					S		Gen	
+32003001	5	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003001	6	zu	ADP	APPRART					S		Dat	N
+32003001	7	zweiter	ADJ	ADJA	Pos				S		Dat	M
+32003001	8	Mal	NOUN	NN					P		Nom	N
+32003001	9	zu	ADP	PTKVZ								
+32003001	10	Jona	PROPN	NE					S		Nom	M
+32003001	11	also	ADV	ADV								
+32003002	1	Mache	VERB	VVIMP				2	S	Imp		
+32003002	2	dich	PRON	PPER				2	S		Acc	
+32003002	3	auf	ADP	PTKVZ								
+32003002	4	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32003002	5	nach	ADP	APPR								
+32003002	6	Ninive	NOUN	NN					S		Nom	F
+32003002	7	der	DET	ART					S		Nom	M
+32003002	8	groß	ADJ	ADJA	Pos				S		Acc	M
+32003002	9	Stadt	NOUN	NN					S		Nom	F
+32003002	10	und	CCONJ	KON								
+32003002	11	rufen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32003002	12	ihr	PRON	PPOSAT				3	S		Dat	F
+32003002	13	der	DET	ART					S		Nom	F
+32003002	14	Botschaft	NOUN	NN					S		Nom	F
+32003002	15	aus	ADP	PTKVZ								
+32003002	16	der	DET	ART					S		Nom	F
+32003002	17	ich	PRON	PPER				1	S		Nom	
+32003002	18	dir	PRON	PPER				2	S		Dat	
+32003002	19	sagen	VERB	VVINF		Inf						
+32003002	20	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+32003003	1	da	SCONJ	KOUS								
+32003003	2	machen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003003	3	sich	PRON	PRF				3	S		Acc	
+32003003	4	Jona	PROPN	NE					S		Nom	M
+32003003	5	auf	ADP	PTKVZ								
+32003003	6	und	CCONJ	KON								
+32003003	7	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003003	8	nach	ADP	APPR								
+32003003	9	Ninive	NOUN	NN					S		Nom	F
+32003003	10	nach	ADP	APPR								
+32003003	11	der	DET	ART					S		Dat	M
+32003003	12	Wort	NOUN	NN					P		Nom	N
+32003003	13	Jahwe	PROPN	NE					S		Gen	
+32003003	14	Ninive	NOUN	NN					S		Nom	F
+32003003	15	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+32003003	16	aber	CCONJ	KON								
+32003003	17	ein	DET	ART					S		Nom	F
+32003003	18	außerordentlich	ADV	ADJD	Pos							
+32003003	19	groß	ADJ	ADJA	Pos				S		Nom	F
+32003003	20	Stadt	NOUN	NN					S		Nom	F
+32003003	21	von	ADP	APPR								
+32003003	22	drei	NUM	CARD								
+32003003	23	Tagereisen	PROPN	NE					S		Nom	
+32003004	1	und	CCONJ	KON								
+32003004	2	Jona	PROPN	NE					S		Nom	M
+32003004	3	beginnen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003004	4	in	ADP	APPR								
+32003004	5	der	DET	ART					S		Nom	F
+32003004	6	Stadt	NOUN	NN					S		Nom	F
+32003004	7	hineinzugehen	VERB	VVIZU		Inf						
+32003004	8	ein	DET	ART					S		Nom	F
+32003004	9	Tagereis	NOUN	NN					S		Nom	M
+32003004	10	weit	ADV	ADJD	Pos							
+32003004	11	und	CCONJ	KON								
+32003004	12	er	PRON	PPER				3	S		Nom	M
+32003004	13	rufen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003004	14	und	CCONJ	KON								
+32003004	15	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003004	16	noch	ADV	ADV								
+32003004	17	vierzig	NUM	CARD								
+32003004	18	Tag	NOUN	NN					P		Nom	M
+32003004	19	so	ADV	ADV								
+32003004	20	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32003004	21	Ninive	NOUN	NN					S		Nom	F
+32003004	22	umgekehrt	ADV	ADJD	Pos							
+32003005	1	und	CCONJ	KON								
+32003005	2	der	DET	ART					S		Nom	F
+32003005	3	Leute	NOUN	NN					P		Nom	
+32003005	4	von	ADP	APPR								
+32003005	5	Ninive	NOUN	NN					S		Nom	F
+32003005	6	glauben	VERB	VVFIN		Fin	Past	3	P	Ind		
+32003005	7	Gott	NOUN	NN					S		Nom	M
+32003005	8	und	CCONJ	KON								
+32003005	9	sie	PRON	PPER				3	P		Nom	
+32003005	10	rufen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32003005	11	ein	DET	ART					S		Nom	N
+32003005	12	Fasten	NOUN	NN					S		Nom	N
+32003005	13	aus	ADP	PTKVZ								
+32003005	14	und	CCONJ	KON								
+32003005	15	kleideen	VERB	VVFIN		Fin	Past	3	P	Ind		
+32003005	16	sich	PRON	PRF				3	S		Acc	
+32003005	17	in	ADP	APPR								
+32003005	18	Sacktuch	NOUN	NE					S		Nom	N
+32003005	19	von	ADP	APPR								
+32003005	20	ihr	DET	PPOSAT					S		Dat	N
+32003005	21	Größten	ADJ	ADJA	Sup				P		Dat	
+32003005	22	bis	CCONJ	KON								
+32003005	23	zu	ADP	PTKVZ								
+32003005	24	ihr	DET	PPOSAT					S		Dat	N
+32003005	25	Kleinstum	NOUN	NN					S		Nom	
+32003006	1	und	CCONJ	KON								
+32003006	2	der	DET	ART					S		Nom	N
+32003006	3	Wort	NOUN	NN					S		Nom	N
+32003006	4	gelangen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003006	5	an	ADP	PTKVZ								
+32003006	6	der	DET	ART					S		Acc	M
+32003006	7	König	NOUN	NN					S		Nom	M
+32003006	8	von	ADP	APPR								
+32003006	9	Ninive	NOUN	NN					S		Nom	F
+32003006	10	und	CCONJ	KON								
+32003006	11	er	PRON	PPER				3	S		Nom	M
+32003006	12	stehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003006	13	von	ADP	APPR								
+32003006	14	sein	DET	PPOSAT					S		Dat	M
+32003006	15	Throne	NOUN	NN					S		Nom	F
+32003006	16	auf	ADP	PTKVZ								
+32003006	17	und	CCONJ	KON								
+32003006	18	legen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003006	19	sein	DET	PPOSAT					S		Acc	M
+32003006	20	Mantel	NOUN	NN					S		Nom	M
+32003006	21	ab	ADP	PTKVZ								
+32003006	22	und	CCONJ	KON								
+32003006	23	hülln	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003006	24	sich	PRON	PRF				3	S		Acc	
+32003006	25	in	ADP	APPR								
+32003006	26	Sacktuch	NOUN	NE					S		Nom	N
+32003006	27	und	CCONJ	KON								
+32003006	28	setzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003006	29	sich	PRON	PRF				3	S		Acc	
+32003006	30	in	ADP	APPR								
+32003006	31	der	DET	ART					S		Nom	F
+32003006	32	Asche	NOUN	NN					S		Nom	F
+32003007	1	und	CCONJ	KON								
+32003007	2	er	PRON	PPER				3	S		Nom	M
+32003007	3	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003007	4	in	ADP	APPR								
+32003007	5	Ninive	NOUN	NN					S		Nom	F
+32003007	6	auf	ADP	PTKVZ								
+32003007	7	Befehl	NOUN	NN					S		Nom	M
+32003007	8	der	DET	ART					S		Gen	M
+32003007	9	König	PROPN	NE					S		Nom	
+32003007	10	und	CCONJ	KON								
+32003007	11	sein	DET	PPOSAT					S		Dat	F
+32003007	12	große	NOUN	NN					P		Nom	
+32003007	13	ausrufen	VERB	VVINF		Inf						
+32003007	14	und	CCONJ	KON								
+32003007	15	sagen	VERB	VVINF		Inf						
+32003007	16	Mensch	NOUN	NN					P		Nom	M
+32003007	17	und	CCONJ	KON								
+32003007	18	Vieh	NOUN	NN					S		Nom	N
+32003007	19	Rind	NOUN	NN					P		Nom	N
+32003007	20	und	CCONJ	KON								
+32003007	21	Kleinvieh	NOUN	NN					S		Nom	N
+32003007	22	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+32003007	23	gar	ADV	ADV								
+32003007	24	nichts	PRON	PIS								N
+32003007	25	Kosten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+32003007	26	sie	PRON	PPER				3	P		Nom	
+32003007	27	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+32003007	28	nicht	PART	PTKNEG								
+32003007	29	weiden	VERB	VVINF		Inf						
+32003007	30	und	CCONJ	KON								
+32003007	31	kein	DET	PIAT					S		Nom	N
+32003007	32	Wasser	NOUN	NN					S		Nom	N
+32003007	33	trinken	VERB	VVINF		Inf						
+32003008	1	und	CCONJ	KON								
+32003008	2	Mensch	NOUN	NN					P		Nom	M
+32003008	3	und	CCONJ	KON								
+32003008	4	Vieh	NOUN	NN					S		Nom	N
+32003008	5	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+32003008	6	mit	ADP	APPR								
+32003008	7	Sacktuch	NOUN	NE					S		Nom	N
+32003008	8	bedeckt	ADV	ADJD	Pos							
+32003008	9	sein	AUX	VAINF		Inf						
+32003008	10	und	CCONJ	KON								
+32003008	11	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+32003008	12	heftig	ADV	ADJD	Pos							
+32003008	13	zu	ADP	PTKVZ								
+32003008	14	Gott	NOUN	NN					S		Nom	M
+32003008	15	rufen	VERB	VVINF		Inf						
+32003008	16	und	CCONJ	KON								
+32003008	17	sie	PRON	PPER				3	P		Nom	
+32003008	18	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+32003008	19	umkehren	VERB	VVINF		Inf						
+32003008	20	ein	DET	ART					S		Nom	N
+32003008	21	jeder	PRON	PIS					S		Nom	M
+32003008	22	von	ADP	APPR								
+32003008	23	sein	DET	PPOSAT					S		Dat	M
+32003008	24	böse	ADJ	PIS	Pos				S		Acc	M
+32003008	25	Weg	NOUN	NN					P		Acc	M
+32003008	26	und	CCONJ	KON								
+32003008	27	von	ADP	APPR								
+32003008	28	der	DET	ART					S		Dat	M
+32003008	29	Unrecht	NOUN	NN					S		Nom	N
+32003008	30	der	DET	ART					S		Nom	N
+32003008	31	in	ADP	APPR								
+32003008	32	ihr	DET	PPOSAT					S		Acc	M
+32003008	33	Hand	NOUN	NN					P		Nom	F
+32003008	34	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32003009	1	wer	PRON	PWS					S		Nom	M
+32003009	2	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32003009	3	Gott	NOUN	NN					S		Nom	M
+32003009	4	möchten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+32003009	5	sich	PRON	PRF				3	S		Acc	
+32003009	6	wenden	VERB	VVINF		Inf						
+32003009	7	und	CCONJ	KON								
+32003009	8	es	PRON	PPER				3	S		Nom	N
+32003009	9	sich	PRON	PRF				3	S		Acc	
+32003009	10	gereuen	VERB	VVPP		Part						
+32003009	11	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+32003009	12	und	CCONJ	KON								
+32003009	13	umkehren	VERB	VVINF		Inf						
+32003009	14	von	ADP	APPR								
+32003009	15	der	DET	ART					S		Nom	M
+32003009	16	Glut	NOUN	NN					S		Nom	F
+32003009	17	sein	DET	PPOSAT					S		Gen	M
+32003009	18	Zorn	NOUN	NN					S		Nom	N
+32003009	19	daß	SCONJ	KOUS								
+32003009	20	wir	PRON	PPER				1	P		Nom	
+32003009	21	nicht	PART	PTKNEG								
+32003009	22	umkommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+32003010	1	und	CCONJ	KON								
+32003010	2	Gott	NOUN	NN					S		Nom	M
+32003010	3	sehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003010	4	ihr	DET	PPOSAT					S		Nom	F
+32003010	5	Werk	NOUN	NN					P		Nom	N
+32003010	6	daß	SCONJ	KOUS								
+32003010	7	sie	PRON	PPER				3	P		Nom	
+32003010	8	von	ADP	APPR								
+32003010	9	ihr	DET	PPOSAT					S		Dat	N
+32003010	10	böse	ADJ	PIS	Pos				S		Acc	M
+32003010	11	Weg	NOUN	NN					P		Acc	M
+32003010	12	umgekehrt	ADV	ADJD	Pos							
+32003010	13	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+32003010	14	und	CCONJ	KON								
+32003010	15	Gott	NOUN	NN					S		Nom	M
+32003010	16	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003010	17	sich	PRON	PRF				3	S		Acc	
+32003010	18	der	DET	ART					S		Gen	M
+32003010	19	Übel	NOUN	NE					S		Gen	N
+32003010	20	gereuen	VERB	VVPP		Part						
+32003010	21	wovon	ADV	PWAV								
+32003010	22	er	PRON	PPER				3	S		Nom	M
+32003010	23	reden	VERB	VVPP		Part						
+32003010	24	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+32003010	25	daß	SCONJ	KOUS								
+32003010	26	er	PRON	PPER				3	S		Nom	M
+32003010	27	es	PRON	PPER				3	S		Nom	N
+32003010	28	ihnen	PRON	PPER				3	P		Dat	
+32003010	29	tun	VERB	VVINF		Inf						
+32003010	30	wollen	AUX	VMFIN		Fin	Pres	3	S	Sub		
+32003010	31	und	CCONJ	KON								
+32003010	32	tun	VERB	VVFIN		Fin	Past	3	S	Ind		
+32003010	33	es	PRON	PPER				3	S		Nom	N
+32003010	34	nicht	PART	PTKNEG								
+32004001	1	und	CCONJ	KON								
+32004001	2	es	PRON	PPER				3	S		Nom	N
+32004001	3	verdroß	ADV	ADJD	Pos							
+32004001	4	Jona	PROPN	NE					S		Nom	M
+32004001	5	sehr	ADV	ADV								
+32004001	6	und	CCONJ	KON								
+32004001	7	er	PRON	PPER				3	S		Nom	M
+32004001	8	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+32004001	9	zornig	ADV	ADJD	Pos							
+32004002	1	und	CCONJ	KON								
+32004002	2	er	PRON	PPER				3	S		Nom	M
+32004002	3	beten	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004002	4	zu	ADP	PTKVZ								
+32004002	5	Jahwe	NOUN	NN					S		Nom	M
+32004002	6	und	CCONJ	KON								
+32004002	7	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004002	8	ach	INTJ	ITJ								
+32004002	9	Jahwe	NOUN	NN					S		Nom	M
+32004002	10	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+32004002	11	der	DET	ART					S		Nom	N
+32004002	12	nicht	PART	PTKNEG								
+32004002	13	mein	DET	PPOSAT					S		Nom	N
+32004002	14	Wort	NOUN	NN					S		Nom	N
+32004002	15	als	ADP	KOKOM								
+32004002	16	ich	PRON	PPER				1	S		Nom	
+32004002	17	noch	CCONJ	KON								
+32004002	18	in	ADP	APPR								
+32004002	19	mein	DET	PPOSAT					S		Dat	M
+32004002	20	Land	NOUN	NN					P		Nom	N
+32004002	21	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+32004002	22	darum	ADV	PROAV								
+32004002	23	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004002	24	ich	PRON	PPER				1	S		Nom	
+32004002	25	zuvor	ADV	ADV								
+32004002	26	indem	SCONJ	KOUS								
+32004002	27	ich	PRON	PPER				1	S		Nom	
+32004002	28	nach	ADP	APPR								
+32004002	29	Tarsis	NOUN	NN					S		Nom	F
+32004002	30	entfloh	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32004002	31	denn	CCONJ	KON								
+32004002	32	ich	PRON	PPER				1	S		Nom	
+32004002	33	wissen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004002	34	daß	SCONJ	KOUS								
+32004002	35	du	PRON	PPER				2	S		Nom	
+32004002	36	ein	DET	ART					S		Nom	N
+32004002	37	gnädig	ADV	ADJD	Cmp							
+32004002	38	und	CCONJ	KON								
+32004002	39	barmherzig	ADV	NN	Cmp							
+32004002	40	Gott	NOUN	NN					S		Nom	M
+32004002	41	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+32004002	42	langsam	ADV	ADJD	Pos							
+32004002	43	zu	ADP	APPRART					S		Dat	N
+32004002	44	Zorn	NOUN	NN					S		Nom	M
+32004002	45	und	CCONJ	KON								
+32004002	46	groß	ADV	ADJD	Pos							
+32004002	47	an	ADP	PTKVZ								
+32004002	48	Güte	NOUN	NN					S		Nom	F
+32004002	49	und	CCONJ	KON								
+32004002	50	der	DET	ART					S		Nom	M
+32004002	51	sich	PRON	PRF				3	S		Acc	
+32004002	52	der	DET	ART					S		Gen	M
+32004002	53	Übel	NOUN	NE					S		Gen	N
+32004002	54	gereuen	VERB	VVPP		Part						
+32004002	55	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+32004003	1	und	CCONJ	KON								
+32004003	2	nun	ADV	ADV								
+32004003	3	Jahwe	NOUN	NN					S		Nom	M
+32004003	4	nimm	PROPN	VVFIN					S		Nom	N
+32004003	5	doch	CCONJ	KON								
+32004003	6	mein	DET	PPOSAT					S		Nom	F
+32004003	7	Seele	NOUN	NN					S		Nom	F
+32004003	8	von	ADP	APPR								
+32004003	9	mir	PRON	PPER				1	S		Dat	
+32004003	10	denn	CCONJ	KON								
+32004003	11	es	PRON	PPER				3	S		Nom	N
+32004003	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32004003	13	gut	ADV	ADJD	Cmp							
+32004003	14	daß	SCONJ	KOUS								
+32004003	15	ich	PRON	PPER				1	S		Nom	
+32004003	16	sterben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32004003	17	als	ADP	KOKOM								
+32004003	18	daß	SCONJ	KOUS								
+32004003	19	ich	PRON	PPER				1	S		Nom	
+32004003	20	leben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32004004	1	und	CCONJ	KON								
+32004004	2	Jahwe	NOUN	NN					S		Nom	M
+32004004	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004004	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32004004	5	es	PRON	PPER				3	S		Nom	N
+32004004	6	Recht	NOUN	NN					S		Acc	N
+32004004	7	daß	SCONJ	KOUS								
+32004004	8	du	PRON	PPER				2	S		Nom	
+32004004	9	Zürnest	NOUN	NN					S		Nom	M
+32004005	1	und	CCONJ	KON								
+32004005	2	Jona	PROPN	NE					S		Nom	M
+32004005	3	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004005	4	aus	ADP	PTKVZ								
+32004005	5	der	DET	ART					S		Nom	M
+32004005	6	Stadt	NOUN	NN					S		Nom	F
+32004005	7	hinaus	ADP	APZR								
+32004005	8	und	CCONJ	KON								
+32004005	9	setzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004005	10	sich	PRON	PRF				3	S		Acc	
+32004005	11	gegen	ADP	APPR								
+32004005	12	Osten	NOUN	NN					S		Nom	M
+32004005	13	der	DET	ART					S		Nom	M
+32004005	14	Stadt	NOUN	NN					S		Nom	F
+32004005	15	und	CCONJ	KON								
+32004005	16	er	PRON	PPER				3	S		Nom	M
+32004005	17	machen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004005	18	sich	PRON	PRF				3	S		Acc	
+32004005	19	daselbst	ADV	PROAV								
+32004005	20	ein	DET	ART					S		Nom	F
+32004005	21	Hütte	NOUN	NN					S		Nom	F
+32004005	22	und	CCONJ	KON								
+32004005	23	er	PRON	PPER				3	S		Nom	M
+32004005	24	sitzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004005	25	darunter	ADV	PROAV								
+32004005	26	in	ADP	APPRART					S		Dat	N
+32004005	27	Schatten	NOUN	NN					S		Nom	M
+32004005	28	bis	CCONJ	KON								
+32004005	29	er	PRON	PPER				3	S		Nom	M
+32004005	30	sehen	VERB	VVFIN		Fin	Past	3	S	Sub		
+32004005	31	was	PRON	PWS					S		Nom	N
+32004005	32	mit	ADP	APPR								
+32004005	33	der	DET	ART					S		Nom	M
+32004005	34	Stadt	NOUN	NN					S		Nom	F
+32004005	35	geschehen	VERB	VVPP		Part						
+32004005	36	werden	AUX	VAFIN		Fin	Past	3	S	Sub		
+32004006	1	und	CCONJ	KON								
+32004006	2	Jahwe	NOUN	NN					S		Nom	M
+32004006	3	Gott	NOUN	NN					S		Nom	M
+32004006	4	bestellen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004006	5	ein	DET	ART					S		Acc	M
+32004006	6	Wunderbaum	NOUN	NN					S		Nom	M
+32004006	7	und	CCONJ	KON								
+32004006	8	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004006	9	ihn	PRON	PPER				3	S		Acc	M
+32004006	10	über	ADP	APPR								
+32004006	11	Jona	PROPN	NE					S		Nom	M
+32004006	12	Emporwachse	VERB	VVINF		Inf						
+32004006	13	damit	ADV	PROAV								
+32004006	14	Schatten	NOUN	NN					S		Nom	M
+32004006	15	über	ADP	APPR								
+32004006	16	sein	DET	PPOSAT					S		Dat	M
+32004006	17	Haupt	NOUN	NN					P		Nom	N
+32004006	18	sein	AUX	VAFIN		Fin	Past	3	S	Sub		
+32004006	19	um	ADP	APPR								
+32004006	20	ihn	PRON	PPER				3	S		Acc	M
+32004006	21	von	ADP	APPR								
+32004006	22	sein	DET	PPOSAT					S		Dat	M
+32004006	23	Mißmut	PROPN	NE					S		Nom	
+32004006	24	zu	ADP	PTKVZ								
+32004006	25	befreien	VERB	VVINF		Inf						
+32004006	26	und	CCONJ	KON								
+32004006	27	Jona	PROPN	NE					S		Nom	M
+32004006	28	freuen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004006	29	sich	PRON	PRF				3	S		Acc	
+32004006	30	über	ADP	APPR								
+32004006	31	der	DET	ART					S		Acc	M
+32004006	32	Wunderbaum	NOUN	NN					S		Nom	M
+32004006	33	mit	ADP	APPR								
+32004006	34	groß	ADJ	ADJA	Pos				S		Nom	M
+32004006	35	Freude	NOUN	NN					S		Nom	F
+32004007	1	aber	CCONJ	KON								
+32004007	2	Gott	NOUN	NN					S		Nom	M
+32004007	3	bestellen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004007	4	ein	DET	ART					S		Acc	M
+32004007	5	Wurm	NOUN	NE					S		Nom	M
+32004007	6	an	ADP	APPRART					S		Dat	M
+32004007	7	folgend	ADJ	ADJA	Pos				S		Acc	M
+32004007	8	Tag	NOUN	NN					P		Nom	M
+32004007	9	bei	ADP	APPRART					S		Dat	M
+32004007	10	Aufgang	NOUN	NN					S		Nom	M
+32004007	11	der	DET	ART					S		Nom	M
+32004007	12	Morgenröte	NOUN	NN					S		Nom	F
+32004007	13	und	CCONJ	KON								
+32004007	14	dieser	PRON	PDAT					S		Nom	M
+32004007	15	stach	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004007	16	der	DET	ART					S		Acc	M
+32004007	17	Wunderbaum	NOUN	NN					S		Nom	M
+32004007	18	daß	SCONJ	KOUS								
+32004007	19	er	PRON	PPER				3	S		Nom	M
+32004007	20	verdorrn	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004008	1	und	CCONJ	KON								
+32004008	2	es	PRON	PPER				3	S		Nom	N
+32004008	3	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004008	4	als	ADP	KOKOM								
+32004008	5	der	DET	ART					S		Nom	F
+32004008	6	Sonne	NOUN	NN					S		Nom	F
+32004008	7	aufgehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004008	8	da	ADV	ADV								
+32004008	9	bestellen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004008	10	Gott	NOUN	NN					S		Nom	M
+32004008	11	ein	DET	ART					S		Acc	M
+32004008	12	schwülen	ADV	ADJD	Pos							
+32004008	13	Ostwind	NOUN	NN					S		Nom	M
+32004008	14	und	CCONJ	KON								
+32004008	15	der	DET	ART					S		Nom	F
+32004008	16	Sonne	NOUN	NN					S		Nom	F
+32004008	17	stach	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004008	18	Jona	PROPN	NE					S		Nom	M
+32004008	19	auf	ADP	APPRART					S		Acc	N
+32004008	20	Haupt	NOUN	NN					S		Nom	N
+32004008	21	daß	SCONJ	KOUS								
+32004008	22	er	PRON	PPER				3	S		Nom	M
+32004008	23	ermatten	VERB	VVPP		Fin	Pres	3	S	Ind		
+32004008	24	Niedersank	PROPN	NE					S		Nom	F
+32004008	25	und	CCONJ	KON								
+32004008	26	er	PRON	PPER				3	S		Nom	M
+32004008	27	begehrt	VERB	ADJA		Fin	Past	3	S	Ind		
+32004008	28	daß	SCONJ	KOUS								
+32004008	29	sein	DET	PPOSAT					S		Nom	F
+32004008	30	Seele	NOUN	NN					S		Nom	F
+32004008	31	stürben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32004008	32	und	CCONJ	KON								
+32004008	33	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004008	34	es	PRON	PPER				3	S		Nom	N
+32004008	35	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32004008	36	gut	ADV	ADJD	Cmp							
+32004008	37	daß	SCONJ	KOUS								
+32004008	38	ich	PRON	PPER				1	S		Nom	
+32004008	39	sterben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32004008	40	als	ADP	KOKOM								
+32004008	41	daß	SCONJ	KOUS								
+32004008	42	ich	PRON	PPER				1	S		Nom	
+32004008	43	leben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+32004009	1	und	CCONJ	KON								
+32004009	2	Gott	NOUN	NN					S		Nom	M
+32004009	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004009	4	zu	ADP	PTKVZ								
+32004009	5	Jona	PROPN	NE					S		Nom	M
+32004009	6	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+32004009	7	es	PRON	PPER				3	S		Nom	N
+32004009	8	Recht	NOUN	NN					S		Acc	N
+32004009	9	daß	SCONJ	KOUS								
+32004009	10	du	PRON	PPER				2	S		Nom	
+32004009	11	wegen	ADP	APPR								
+32004009	12	der	DET	ART					S		Gen	M
+32004009	13	Wunderbaumes	PROPN	NE					S		Nom	
+32004009	14	Zürnest	NOUN	NN					S		Nom	M
+32004009	15	und	CCONJ	KON								
+32004009	16	er	PRON	PPER				3	S		Nom	M
+32004009	17	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004009	18	mit	ADP	APPR								
+32004009	19	Recht	NOUN	NN					S		Nom	N
+32004009	20	zürn	ADJ	ADJA	Pos				S		Nom	F
+32004009	21	ich	PRON	PPER				1	S		Nom	
+32004009	22	bis	CCONJ	KON								
+32004009	23	zu	ADP	APPRART					S		Dat	N
+32004009	24	Tod	NOUN	NN					S		Nom	M
+32004010	1	und	CCONJ	KON								
+32004010	2	Jahwe	NOUN	NN					S		Nom	M
+32004010	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004010	4	du	PRON	PPER				2	S		Nom	
+32004010	5	Erbarmst	PROPN	VVFIN					S		Nom	
+32004010	6	dich	PRON	PPER				2	S		Acc	
+32004010	7	der	DET	ART					S		Gen	M
+32004010	8	Wunderbaumes	PROPN	NE					S		Nom	
+32004010	9	um	ADP	APPR								
+32004010	10	welcher	DET	PWAT					S		Acc	M
+32004010	11	du	PRON	PPER				2	S		Nom	
+32004010	12	dich	PRON	PPER				2	S		Acc	
+32004010	13	nicht	PART	PTKNEG								
+32004010	14	mühen	NOUN	NN					S		Nom	M
+32004010	15	und	CCONJ	KON								
+32004010	16	der	DET	ART					S		Acc	M
+32004010	17	du	PRON	PPER				2	S		Nom	
+32004010	18	nicht	PART	PTKNEG								
+32004010	19	großziehen	VERB	VVPP		Part						
+32004010	20	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+32004010	21	der	DET	ART					S		Nom	M
+32004010	22	als	ADP	KOKOM								
+32004010	23	Sohn	NOUN	NN					S		Nom	M
+32004010	24	ein	PRON	ART					S		Nom	M
+32004010	25	Nacht	NOUN	NN					S		Nom	F
+32004010	26	entstehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004010	27	und	CCONJ	KON								
+32004010	28	als	ADP	KOKOM								
+32004010	29	Sohn	NOUN	NN					S		Nom	M
+32004010	30	ein	PRON	ART					S		Nom	M
+32004010	31	Nacht	NOUN	NN					S		Nom	F
+32004010	32	zu	ADP	PTKVZ								
+32004010	33	Grund	NOUN	NN					S		Nom	M
+32004010	34	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+32004011	1	und	CCONJ	KON								
+32004011	2	ich	PRON	PPER				1	S		Nom	
+32004011	3	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+32004011	4	mich	PRON	PPER				1	S		Acc	
+32004011	5	Ninives	NOUN	NN					S		Nom	N
+32004011	6	der	DET	ART					S		Nom	M
+32004011	7	groß	ADJ	ADJA	Pos				S		Acc	M
+32004011	8	Stadt	NOUN	NN					S		Nom	F
+32004011	9	nicht	PART	PTKNEG								
+32004011	10	erbarmen	VERB	VVPP		Inf						
+32004011	11	in	ADP	APPR								
+32004011	12	welcher	PRON	PWAT					S		Nom	M
+32004011	13	mehr	ADV	ADV								
+32004011	14	als	ADP	KOKOM								
+32004011	15	120000	NUM	CARD								
+32004011	16	Mensch	NOUN	NN					P		Nom	M
+32004011	17	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+32004011	18	der	DET	ART					S		Nom	F
+32004011	19	nicht	PART	PTKNEG								
+32004011	20	zu	ADP	PTKVZ								
+32004011	21	unterscheiden	VERB	VVINF		Inf						
+32004011	22	wissen	VERB	VVINF		Inf						
+32004011	23	zwischen	ADP	APPR								
+32004011	24	ihr	DET	PPOSAT					S		Dat	F
+32004011	25	rechte	NOUN	NN					P		Nom	F
+32004011	26	und	CCONJ	KON								
+32004011	27	ihr	DET	PPOSAT					S		Dat	F
+32004011	28	linke	NOUN	NN					P		Dat	
+32004011	29	und	CCONJ	KON								
+32004011	30	ein	DET	ART					S		Nom	F
+32004011	31	Menge	NOUN	NN					S		Nom	F
+32004011	32	Vieh	NOUN	NN					S		Nom	N

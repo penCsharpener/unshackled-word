@@ -1,11 +1,13 @@
 using System.Globalization;
 using System.Text;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Backup;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Tooling.WebApi.Models;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.BackupElbData.Mappings;
@@ -67,7 +69,68 @@ public class BackupFileService
 
     public async Task WriteElbMorphologyBackupAsync(CancellationToken token = default)
     {
+        var sql = """
+                  SELECT em."HebRefId"
+                       , em."PositionInVerse"
+                       , em."Lemma"
+                       , em."PartOfSpeech"
+                       , em."Stts"
+                       , em."Degree"
+                       , em."VerbForm"
+                       , em."Tense"
+                       , em."Person"
+                       , em."Number"
+                       , em."Mood"
+                       , em."Case"
+                       , em."Gender"
+                  FROM "unshackled-word"."Elb1871Morphology" em
+                  ORDER BY em."HebRefId", em."PositionInVerse";
+                  """;
 
+        var lines = await _reader.ReadAsListAsync<ElbMorphBackupItem>(sql);
+
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            Delimiter = "\t",
+            HasHeaderRecord = true
+        };
+
+        var backupDirectory = _file.Combine(_options.SolutionAssetsPath, "Elb1871Morphology");
+        _file.CreateDirectoryIfNotExists(backupDirectory);
+
+        foreach (var group in lines.GroupBy(x => BibleReference.FromRefId(x.HebRefId).BookId))
+        {
+            var bookName = BibleBook.AllBooks[group.Key].Name;
+            var fileName = $"{group.Key}-{bookName}";
+
+            var backupFilePath = _file.Combine(backupDirectory, $"{fileName}.csv");
+
+            var bookBackup = group.Select(x => x)
+                .OrderBy(x => x.HebRefId)
+                .ThenBy(x => x.PositionInVerse)
+                .ToList();
+
+            await using var writer = new StreamWriter(backupFilePath);
+            await using var csv = new CsvWriter(writer, config);
+            await csv.WriteRecordsAsync(bookBackup, token);
+        }
+    }
+
+    private sealed class ElbMorphBackupItem
+    {
+        public int HebRefId { get; set; }
+        public int PositionInVerse { get; set; }
+        public string Lemma { get; set; } = default!;
+        public string PartOfSpeech { get; set; } = default!;
+        public string Stts { get; set; } = default!;
+        public string? Degree { get; set; }
+        public string? VerbForm { get; set; }
+        public string? Tense { get; set; }
+        public string? Person { get; set; }
+        public string? Number { get; set; }
+        public string? Mood { get; set; }
+        public string? Case { get; set; }
+        public string? Gender { get; set; }
     }
 
     private class ElbVerseBackupLine

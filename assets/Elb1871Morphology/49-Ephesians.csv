@@ -1,0 +1,2806 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+49001001	1	Paulus	PROPN	NE					S		Nom	M
+49001001	2	Apostel	NOUN	NN					P		Nom	M
+49001001	3	Jesu	PROPN	NE					S		Gen	
+49001001	4	Christi	PROPN	NE					S		Nom	
+49001001	5	durch	ADP	APPR								
+49001001	6	Gott	NOUN	NN					S		Gen	M
+49001001	7	Wille	NOUN	NN					S		Acc	M
+49001001	8	der	DET	ART					S		Acc	M
+49001001	9	heilig	NOUN	NN					P		Dat	
+49001001	10	und	CCONJ	KON								
+49001001	11	Treue	VERB	NN		Fin	Pres	3	P	Ind		
+49001001	12	in	ADP	APPR								
+49001001	13	Christo	PROPN	NE					S		Nom	M
+49001001	14	Jesu	PROPN	NE					S		Gen	
+49001001	15	der	DET	ART					S		Nom	F
+49001001	16	in	ADP	APPR								
+49001001	17	Ephesus	PROPN	NE					S		Nom	N
+49001001	18	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49001002	1	Gnade	NOUN	NN					S		Nom	F
+49001002	2	euch	PRON	PPER				2	P		Dat	
+49001002	3	und	CCONJ	KON								
+49001002	4	Friede	NOUN	NN					S		Nom	M
+49001002	5	von	ADP	APPR								
+49001002	6	Gott	NOUN	NN					S		Nom	M
+49001002	7	unser	DET	PPOSAT					S		Dat	N
+49001002	8	Vater	NOUN	NN					S		Nom	M
+49001002	9	und	CCONJ	KON								
+49001002	10	der	DET	ART					S		Dat	M
+49001002	11	Herr	NOUN	NN					S		Acc	M
+49001002	12	Jesu	PROPN	NE					S		Gen	
+49001002	13	Christo	PROPN	NE					S		Nom	M
+49001003	1	Gepriesen	ADV	ADJD	Pos							
+49001003	2	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49001003	3	der	DET	ART					S		Nom	M
+49001003	4	Gott	NOUN	NN					S		Nom	M
+49001003	5	und	CCONJ	KON								
+49001003	6	Vater	NOUN	NN					S		Nom	M
+49001003	7	unser	DET	PPOSAT					S		Gen	M
+49001003	8	Herr	NOUN	NN					S		Acc	M
+49001003	9	Jesu	PROPN	NE					S		Gen	
+49001003	10	Christi	PROPN	NE					S		Nom	
+49001003	11	der	DET	ART					S		Nom	M
+49001003	12	uns	PRON	PPER				1	P		Acc	
+49001003	13	segnen	VERB	VVPP		Part						
+49001003	14	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001003	15	mit	ADP	APPR								
+49001003	16	jeder	PRON	PIS					S		Nom	M
+49001003	17	geistlich	ADJ	ADJA	Pos				S		Acc	M
+49001003	18	Segnung	NOUN	NN					S		Nom	F
+49001003	19	in	ADP	APPR								
+49001003	20	der	DET	ART					S		Acc	M
+49001003	21	himmlisch	ADJ	ADJA	Pos				S		Acc	M
+49001003	22	Örter	NOUN	NN					P		Nom	M
+49001003	23	in	ADP	APPR								
+49001003	24	Christo	PROPN	NE					S		Nom	M
+49001004	1	wie	ADP	KOKOM								
+49001004	2	er	PRON	PPER				3	S		Nom	M
+49001004	3	uns	PRON	PPER				1	P		Acc	
+49001004	4	auserwählen	VERB	VVPP		Part						
+49001004	5	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001004	6	in	ADP	APPR								
+49001004	7	ihm	PRON	PPER				3	S		Dat	M
+49001004	8	vor	ADP	APPR								
+49001004	9	Grundlegung	NOUN	NN					S		Nom	F
+49001004	10	der	DET	ART					S		Nom	M
+49001004	11	Welt	NOUN	NN					S		Nom	F
+49001004	12	daß	SCONJ	KOUS								
+49001004	13	wir	PRON	PPER				1	P		Nom	
+49001004	14	heilig	ADV	ADJD	Pos							
+49001004	15	und	CCONJ	KON								
+49001004	16	tadellos	ADV	ADJD	Pos							
+49001004	17	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+49001004	18	vor	ADP	APPR								
+49001004	19	ihm	PRON	PPER				3	S		Dat	M
+49001004	20	in	ADP	APPR								
+49001004	21	Liebe	NOUN	NN					S		Nom	F
+49001005	1	und	CCONJ	KON								
+49001005	2	uns	PRON	PPER				1	P		Acc	
+49001005	3	zuvorbestimmt	VERB	VVPP		Part						
+49001005	4	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001005	5	zu	ADP	APPRART					S		Dat	F
+49001005	6	Sohnschaft	NOUN	NN					S		Nom	F
+49001005	7	durch	ADP	APPR								
+49001005	8	Jesum	PROPN	XY					S		Nom	M
+49001005	9	Christum	NOUN	NN					S		Nom	N
+49001005	10	für	ADP	APPR								
+49001005	11	sich	PRON	PRF				3	S		Acc	
+49001005	12	selbst	ADV	ADV								
+49001005	13	nach	ADP	APPR								
+49001005	14	der	DET	ART					S		Dat	M
+49001005	15	Wohlgefallen	NOUN	NN					S		Nom	N
+49001005	16	sein	DET	PPOSAT					S		Gen	M
+49001005	17	Wille	NOUN	NN					S		Gen	M
+49001006	1	zu	ADP	APPRART					S		Dat	N
+49001006	2	Preis	NOUN	NN					P		Nom	M
+49001006	3	der	DET	ART					S		Nom	M
+49001006	4	Herrlichkeit	NOUN	NN					S		Nom	F
+49001006	5	sein	DET	PPOSAT					S		Dat	F
+49001006	6	Gnade	NOUN	NN					S		Nom	F
+49001006	7	worin	SCONJ	PWAV								
+49001006	8	er	PRON	PPER				3	S		Nom	M
+49001006	9	uns	PRON	PPER				1	P		Acc	
+49001006	10	begnadigen	VERB	VVPP		Part						
+49001006	11	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001006	12	in	ADP	APPR								
+49001006	13	der	DET	ART					S		Dat	M
+49001006	14	geliebter	NOUN	NN					P		Nom	
+49001007	1	in	ADP	APPR								
+49001007	2	welcher	DET	PWAT					S		Dat	N
+49001007	3	wir	PRON	PPER				1	P		Nom	
+49001007	4	der	DET	ART					S		Nom	F
+49001007	5	Erlösung	NOUN	NN					S		Nom	F
+49001007	6	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49001007	7	durch	ADP	APPR								
+49001007	8	sein	AUX	VAINF		Inf						
+49001007	9	Blut	NOUN	NN					S		Nom	N
+49001007	10	der	DET	ART					S		Nom	F
+49001007	11	Vergebung	NOUN	NN					S		Nom	F
+49001007	12	der	DET	ART					S		Nom	M
+49001007	13	Vergehung	NOUN	NN					P		Nom	F
+49001007	14	nach	ADP	APPR								
+49001007	15	der	DET	ART					S		Dat	M
+49001007	16	Reichtum	NOUN	NN					S		Nom	M
+49001007	17	sein	DET	PPOSAT					S		Dat	F
+49001007	18	Gnade	NOUN	NN					S		Nom	F
+49001008	1	welcher	DET	PWAT					S		Nom	F
+49001008	2	er	PRON	PPER				3	S		Nom	M
+49001008	3	gegen	ADP	APPR								
+49001008	4	uns	PRON	PPER				1	P		Acc	
+49001008	5	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001008	6	überströmen	NOUN	NN					P		Nom	F
+49001008	7	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+49001008	8	in	ADP	APPR								
+49001008	9	aller	DET	PIAT					P		Gen	
+49001008	10	Weisheit	NOUN	NN					S		Nom	F
+49001008	11	und	CCONJ	KON								
+49001008	12	Einsicht	NOUN	NN					S		Nom	F
+49001009	1	indem	SCONJ	KOUS								
+49001009	2	er	PRON	PPER				3	S		Nom	M
+49001009	3	uns	PRON	PPER				1	P		Acc	
+49001009	4	kundtun	VERB	VVPP		Part						
+49001009	5	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001009	6	der	DET	ART					S		Nom	N
+49001009	7	Geheimnis	NOUN	NN					S		Nom	N
+49001009	8	sein	DET	PPOSAT					S		Gen	M
+49001009	9	Wille	NOUN	NN					S		Gen	M
+49001009	10	nach	ADP	APPR								
+49001009	11	sein	DET	PPOSAT					S		Dat	M
+49001009	12	Wohlgefallen	NOUN	NN					S		Nom	N
+49001009	13	der	DET	ART					S		Nom	N
+49001009	14	er	PRON	PPER				3	S		Nom	M
+49001009	15	sich	PRON	PRF				3	S		Acc	
+49001009	16	vorsetzen	VERB	VVPP		Part						
+49001009	17	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001009	18	in	ADP	APPR								
+49001009	19	sich	PRON	PRF				3	S		Acc	
+49001009	20	selbst	ADV	ADV								
+49001010	1	für	ADP	APPR								
+49001010	2	der	DET	ART					S		Nom	F
+49001010	3	Verwaltung	NOUN	NN					S		Nom	F
+49001010	4	der	DET	ART					S		Nom	M
+49001010	5	Fülle	NOUN	NN					S		Nom	F
+49001010	6	der	DET	ART					S		Nom	M
+49001010	7	Zeit	NOUN	NN					P		Nom	F
+49001010	8	alle	PRON	PIS					S		Nom	N
+49001010	9	unter	ADP	APPR								
+49001010	10	ein	DET	ART					S		Nom	N
+49001010	11	Haupt	NOUN	NN					S		Nom	N
+49001010	12	zusammenzubringen	VERB	VVIZU		Inf						
+49001010	13	in	ADP	APPR								
+49001010	14	der	DET	ART					S		Dat	M
+49001010	15	Christus	PROPN	NE					S		Nom	M
+49001010	16	der	DET	ART					S		Nom	N
+49001010	17	was	PRON	PWS					S		Nom	N
+49001010	18	in	ADP	APPR								
+49001010	19	der	DET	ART					S		Acc	M
+49001010	20	Himmel	NOUN	NN					P		Dat	M
+49001010	21	und	CCONJ	KON								
+49001010	22	der	DET	ART					S		Nom	N
+49001010	23	was	PRON	PWS					S		Nom	N
+49001010	24	auf	ADP	PTKVZ								
+49001010	25	der	DET	ART					S		Nom	M
+49001010	26	Erde	NOUN	NN					S		Nom	F
+49001010	27	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001010	28	in	ADP	APPR								
+49001010	29	ihm	PRON	PPER				3	S		Dat	M
+49001011	1	in	ADP	APPR								
+49001011	2	welcher	DET	PWAT					S		Dat	N
+49001011	3	wir	PRON	PPER				1	P		Nom	
+49001011	4	auch	ADV	ADV								
+49001011	5	ein	DET	ART					S		Nom	N
+49001011	6	Erbteil	NOUN	NN					S		Nom	M
+49001011	7	erlangen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49001011	8	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49001011	9	der	DET	ART					S		Nom	F
+49001011	10	wir	PRON	PPER				1	P		Nom	
+49001011	11	zuvorbestimmt	VERB	VVPP		Part						
+49001011	12	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49001011	13	nach	ADP	APPR								
+49001011	14	der	DET	ART					S		Dat	M
+49001011	15	Vorsatz	NOUN	NN					S		Nom	M
+49001011	16	der	PRON	PDS					S		Gen	
+49001011	17	der	DET	ART					S		Nom	M
+49001011	18	alle	PRON	PIS					S		Nom	N
+49001011	19	wirken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49001011	20	nach	ADP	APPR								
+49001011	21	der	DET	ART					S		Dat	M
+49001011	22	Rate	NOUN	NN					S		Nom	F
+49001011	23	sein	DET	PPOSAT					S		Gen	M
+49001011	24	Wille	NOUN	NN					S		Gen	M
+49001012	1	damit	ADV	PROAV								
+49001012	2	wir	PRON	PPER				1	P		Nom	
+49001012	3	zu	ADP	APPRART					S		Dat	N
+49001012	4	Preis	NOUN	NN					P		Nom	M
+49001012	5	sein	DET	PPOSAT					S		Dat	F
+49001012	6	Herrlichkeit	NOUN	NN					S		Nom	F
+49001012	7	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+49001012	8	der	DET	ART					S		Nom	F
+49001012	9	wir	PRON	PPER				1	P		Nom	
+49001012	10	zuvor	ADV	ADV								
+49001012	11	auf	ADP	PTKVZ								
+49001012	12	der	DET	ART					S		Acc	M
+49001012	13	Christus	PROPN	NE					S		Nom	M
+49001012	14	hoffen	VERB	VVPP		Part						
+49001012	15	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49001013	1	auf	ADP	PTKVZ								
+49001013	2	welcher	DET	PWAT					S		Acc	M
+49001013	3	auch	ADV	ADV								
+49001013	4	ihr	PRON	PPOSAT				3	S		Dat	F
+49001013	5	hoffen	VERB	VVPP		Part						
+49001013	6	nachdem	SCONJ	KOUS								
+49001013	7	ihr	PRON	PPOSAT				3	S		Dat	F
+49001013	8	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49001013	9	habben	VERB	VAFIN				2	P	Imp		
+49001013	10	der	DET	ART					S		Nom	N
+49001013	11	Wort	NOUN	NN					S		Nom	N
+49001013	12	der	DET	ART					S		Nom	M
+49001013	13	Wahrheit	NOUN	NN					S		Nom	F
+49001013	14	der	DET	ART					S		Nom	N
+49001013	15	Evangelium	NOUN	NN					S		Nom	N
+49001013	16	eures	DET	PPOSAT					S		Nom	N
+49001013	17	Heil	ADP	ADV					S		Acc	N
+49001013	18	in	ADP	APPR								
+49001013	19	welcher	DET	PWAT					S		Dat	N
+49001013	20	ihr	PRON	PPOSAT				3	S		Dat	F
+49001013	21	auch	ADV	ADV								
+49001013	22	nachdem	SCONJ	KOUS								
+49001013	23	ihr	PRON	PPOSAT				3	S		Dat	F
+49001013	24	glauben	VERB	VVPP		Part						
+49001013	25	habben	VERB	VAFIN				2	P	Imp		
+49001013	26	versiegeln	VERB	VVPP		Part						
+49001013	27	werden	AUX	VAPP		Part						
+49001013	28	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49001013	29	mit	ADP	APPR								
+49001013	30	der	DET	ART					S		Dat	M
+49001013	31	heilig	NOUN	NN					P		Dat	
+49001013	32	Geist	NOUN	NN					P		Nom	M
+49001013	33	der	DET	ART					S		Nom	M
+49001013	34	Verheißung	NOUN	NN					S		Nom	F
+49001014	1	welcher	PRON	PWAT					S		Nom	M
+49001014	2	der	DET	ART					S		Nom	N
+49001014	3	Unterpfand	NOUN	NN					S		Nom	N
+49001014	4	unser	DET	PPOSAT					S		Gen	M
+49001014	5	Erbe	NOUN	NN					S		Gen	N
+49001014	6	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001014	7	zu	ADP	APPRART					S		Dat	F
+49001014	8	Erlösung	NOUN	NN					S		Nom	F
+49001014	9	der	DET	ART					S		Gen	M
+49001014	10	erworben	ADJ	ADJA	Pos				S		Dat	M
+49001014	11	Besitz	NOUN	NN					S		Gen	M
+49001014	12	zu	ADP	APPRART					S		Dat	N
+49001014	13	Preis	NOUN	NN					P		Nom	M
+49001014	14	sein	DET	PPOSAT					S		Dat	F
+49001014	15	Herrlichkeit	NOUN	NN					S		Nom	F
+49001015	1	weshalb	SCONJ	PWAV								
+49001015	2	auch	ADV	ADV								
+49001015	3	ich	PRON	PPER				1	S		Nom	
+49001015	4	nachdem	SCONJ	KOUS								
+49001015	5	ich	PRON	PPER				1	S		Nom	
+49001015	6	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49001015	7	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49001015	8	von	ADP	APPR								
+49001015	9	der	DET	ART					S		Dat	M
+49001015	10	Glaube	NOUN	NN					S		Acc	M
+49001015	11	an	ADP	PTKVZ								
+49001015	12	der	DET	ART					S		Acc	M
+49001015	13	Herr	NOUN	NN					S		Acc	M
+49001015	14	Jesu	PROPN	NE					S		Gen	
+49001015	15	der	DET	ART					S		Nom	M
+49001015	16	in	ADP	APPR								
+49001015	17	euch	PRON	PPER				2	P		Dat	
+49001015	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001015	19	und	CCONJ	KON								
+49001015	20	von	ADP	APPR								
+49001015	21	der	DET	ART					S		Nom	M
+49001015	22	Liebe	NOUN	NN					S		Nom	F
+49001015	23	der	DET	ART					S		Nom	F
+49001015	24	ihr	PRON	PPOSAT				3	S		Dat	F
+49001015	25	zu	ADP	PTKVZ								
+49001015	26	aller	DET	PIS					P		Dat	
+49001015	27	heilig	NOUN	NN					P		Dat	
+49001015	28	habben	VERB	VAFIN				2	P	Imp		
+49001016	1	nicht	PART	PTKNEG								
+49001016	2	aufhören	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49001016	3	für	ADP	APPR								
+49001016	4	euch	PRON	PPER				2	P		Dat	
+49001016	5	zu	ADP	PTKVZ								
+49001016	6	danken	VERB	VVINF		Inf						
+49001016	7	euer	DET	PPOSAT					S		Nom	M
+49001016	8	erwähnend	ADV	ADJD	Pos							
+49001016	9	in	ADP	APPR								
+49001016	10	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+49001016	11	Gebet	NOUN	NN					S		Acc	M
+49001017	1	auf	ADP	PTKVZ								
+49001017	2	daß	SCONJ	KOUS								
+49001017	3	der	DET	ART					S		Nom	M
+49001017	4	Gott	NOUN	NN					S		Nom	M
+49001017	5	unser	DET	PPOSAT					S		Gen	M
+49001017	6	Herr	NOUN	NN					S		Acc	M
+49001017	7	Jesu	PROPN	NE					S		Gen	
+49001017	8	Christi	PROPN	NE					S		Nom	
+49001017	9	der	DET	ART					S		Nom	M
+49001017	10	Vater	NOUN	NN					S		Nom	M
+49001017	11	der	DET	ART					S		Nom	M
+49001017	12	Herrlichkeit	NOUN	NN					S		Nom	F
+49001017	13	euch	PRON	PPER				2	P		Dat	
+49001017	14	geben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49001017	15	der	DET	ART					S		Acc	M
+49001017	16	Geist	NOUN	NN					S		Nom	M
+49001017	17	der	DET	ART					S		Nom	M
+49001017	18	Weisheit	NOUN	NN					S		Nom	F
+49001017	19	und	CCONJ	KON								
+49001017	20	Offenbarung	NOUN	NN					S		Nom	F
+49001017	21	in	ADP	APPR								
+49001017	22	der	DET	ART					S		Nom	M
+49001017	23	Erkenntnis	NOUN	NN					S		Nom	F
+49001017	24	sein	DET	PPOSAT					S		Dat	F
+49001017	25	selbst	ADV	ADV								
+49001018	1	damit	ADV	PROAV								
+49001018	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49001018	3	erleuchten	VERB	VVPP		Part						
+49001018	4	an	ADP	PTKVZ								
+49001018	5	der	DET	ART					S		Acc	M
+49001018	6	Auge	NOUN	NN					P		Nom	N
+49001018	7	eures	DET	PPOSAT					S		Nom	N
+49001018	8	Herzens	NOUN	NN					P		Nom	N
+49001018	9	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49001018	10	welcher	DET	PWAT					S		Acc	N
+49001018	11	der	DET	ART					S		Nom	F
+49001018	12	Hoffnung	NOUN	NN					S		Nom	F
+49001018	13	sein	DET	PPOSAT					S		Dat	F
+49001018	14	Berufung	NOUN	NN					S		Nom	F
+49001018	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001018	16	und	CCONJ	KON								
+49001018	17	welcher	DET	PWAT					S		Acc	N
+49001018	18	der	DET	ART					S		Nom	M
+49001018	19	Reichtum	NOUN	NN					S		Nom	M
+49001018	20	der	DET	ART					S		Nom	M
+49001018	21	Herrlichkeit	NOUN	NN					S		Nom	F
+49001018	22	sein	DET	PPOSAT					S		Gen	M
+49001018	23	Erbe	NOUN	NN					S		Gen	N
+49001018	24	in	ADP	APPR								
+49001018	25	der	DET	ART					S		Acc	M
+49001018	26	heilig	NOUN	NN					P		Dat	
+49001019	1	und	CCONJ	KON								
+49001019	2	welcher	DET	PWAT					S		Acc	N
+49001019	3	der	DET	ART					S		Nom	F
+49001019	4	überschwenglich	ADJ	ADJA	Pos				S		Nom	F
+49001019	5	Größe	NOUN	NN					S		Nom	F
+49001019	6	sein	DET	PPOSAT					S		Dat	F
+49001019	7	Kraft	NOUN	NN					S		Nom	F
+49001019	8	an	ADP	PTKVZ								
+49001019	9	uns	PRON	PPER				1	P		Acc	
+49001019	10	der	DET	ART					S		Acc	M
+49001019	11	Glaubenden	NOUN	NN					P		Nom	
+49001019	12	nach	ADP	APPR								
+49001019	13	der	DET	ART					S		Nom	M
+49001019	14	Wirksamkeit	NOUN	NN					S		Nom	F
+49001019	15	der	DET	ART					S		Nom	M
+49001019	16	Macht	NOUN	NN					S		Nom	F
+49001019	17	sein	DET	PPOSAT					S		Dat	F
+49001019	18	Stärke	NOUN	NN					S		Nom	F
+49001020	1	in	ADP	APPR								
+49001020	2	welcher	PRON	PWAT					S		Nom	M
+49001020	3	er	PRON	PPER				3	S		Nom	M
+49001020	4	wirken	VERB	VVPP		Part						
+49001020	5	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001020	6	in	ADP	APPR								
+49001020	7	der	DET	ART					S		Dat	M
+49001020	8	Christus	PROPN	NE					S		Nom	M
+49001020	9	indem	SCONJ	KOUS								
+49001020	10	er	PRON	PPER				3	S		Nom	M
+49001020	11	ihn	PRON	PPER				3	S		Acc	M
+49001020	12	aus	ADP	PTKVZ								
+49001020	13	der	DET	ART					S		Acc	M
+49001020	14	tote	NOUN	NN					P		Nom	
+49001020	15	auferweckte	NOUN	NN					P		Nom	M
+49001020	16	und	CCONJ	KON								
+49001020	17	er	PRON	PPER				3	S		Nom	M
+49001020	18	setzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+49001020	19	ihn	PRON	PPER				3	S		Acc	M
+49001020	20	zu	ADP	PTKVZ								
+49001020	21	sein	DET	PPOSAT					S		Dat	F
+49001020	22	rechte	NOUN	NN					P		Nom	F
+49001020	23	in	ADP	APPR								
+49001020	24	der	DET	ART					S		Acc	M
+49001020	25	himmlisch	ADJ	ADJA	Pos				S		Acc	M
+49001020	26	Örter	NOUN	NN					P		Nom	M
+49001021	1	über	ADP	APPR								
+49001021	2	jeder	DET	PIAT					S		Nom	N
+49001021	3	Fürstentum	NOUN	NN					S		Nom	N
+49001021	4	und	CCONJ	KON								
+49001021	5	jeder	DET	PIAT					S		Nom	F
+49001021	6	Gewalt	NOUN	NN					S		Nom	F
+49001021	7	und	CCONJ	KON								
+49001021	8	Kraft	NOUN	NN					S		Nom	F
+49001021	9	und	CCONJ	KON								
+49001021	10	Herrschaft	NOUN	NN					S		Nom	F
+49001021	11	und	CCONJ	KON								
+49001021	12	jeder	DET	PIS					S		Acc	M
+49001021	13	Name	NOUN	NN					P		Nom	M
+49001021	14	der	DET	ART					S		Nom	M
+49001021	15	nennen	VERB	VVPP		Part						
+49001021	16	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001021	17	nicht	PART	PTKNEG								
+49001021	18	allein	ADV	ADV								
+49001021	19	in	ADP	APPR								
+49001021	20	dieser	DET	PDAT					S		Dat	N
+49001021	21	Zeitalter	NOUN	NN					S		Nom	N
+49001021	22	sondern	CCONJ	KON								
+49001021	23	auch	ADV	ADV								
+49001021	24	in	ADP	APPR								
+49001021	25	der	DET	ART					S		Dat	M
+49001021	26	zukünftig	VERB	ADJA		Fin	Past	3	P	Ind		
+49001022	1	und	CCONJ	KON								
+49001022	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001022	3	alle	PRON	PIS					S		Nom	N
+49001022	4	sein	DET	PPOSAT					S		Acc	M
+49001022	5	Fuß	NOUN	NN					P		Dat	M
+49001022	6	unterwerfen	VERB	VVPP		Part						
+49001022	7	und	CCONJ	KON								
+49001022	8	ihn	PRON	PPER				3	S		Acc	M
+49001022	9	als	ADP	KOKOM								
+49001022	10	Haupt	NOUN	NN					S		Nom	N
+49001022	11	über	ADP	APPR								
+49001022	12	alle	PRON	PIS					S		Nom	N
+49001022	13	der	DET	ART					S		Nom	M
+49001022	14	Versammlung	NOUN	NN					S		Nom	F
+49001022	15	geben	VERB	VVPP		Part						
+49001023	1	welcher	DET	PWAT					S		Nom	F
+49001023	2	sein	AUX	VAINF		Inf						
+49001023	3	Leib	NOUN	NN					S		Nom	M
+49001023	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49001023	5	der	DET	ART					S		Nom	F
+49001023	6	Fülle	NOUN	NN					S		Nom	F
+49001023	7	der	PRON	PDS					S		Gen	
+49001023	8	der	DET	ART					S		Nom	M
+49001023	9	alle	PRON	PIS					S		Nom	N
+49001023	10	in	ADP	APPR								
+49001023	11	alle	PRON	PIS					S		Dat	N
+49001023	12	erfüllen	VERB	VVPP		Part						
+49002001	1	auch	ADV	ADV								
+49002001	2	euch	PRON	PPER				2	P		Dat	
+49002001	3	der	DET	ART					S		Nom	F
+49002001	4	ihr	PRON	PPOSAT				3	S		Dat	F
+49002001	5	tot	ADV	ADJD	Pos							
+49002001	6	Waret	VERB	VAFIN		Fin	Past	2	P	Ind		
+49002001	7	in	ADP	APPR								
+49002001	8	euren	DET	PPOSAT					S		Acc	M
+49002001	9	Vergehung	NOUN	NN					P		Nom	F
+49002001	10	und	CCONJ	KON								
+49002001	11	Sünde	NOUN	NN					P		Nom	F
+49002002	1	in	ADP	APPR								
+49002002	2	welcher	DET	PWAT					S		Acc	M
+49002002	3	ihr	PRON	PPOSAT				3	S		Dat	F
+49002002	4	einst	ADV	ADV								
+49002002	5	wandelten	VERB	VVFIN		Part						
+49002002	6	nach	ADP	APPR								
+49002002	7	der	DET	ART					S		Dat	M
+49002002	8	Zeitlauf	NOUN	NN					S		Nom	M
+49002002	9	dieser	PRON	PDAT					S		Nom	M
+49002002	10	Welt	NOUN	NN					S		Nom	F
+49002002	11	nach	ADP	APPR								
+49002002	12	der	DET	ART					S		Dat	M
+49002002	13	Fürst	NOUN	NN					P		Nom	M
+49002002	14	der	DET	ART					S		Nom	M
+49002002	15	Gewalt	NOUN	NN					S		Nom	F
+49002002	16	der	DET	ART					S		Nom	M
+49002002	17	Luft	NOUN	NN					S		Nom	F
+49002002	18	der	DET	ART					S		Gen	M
+49002002	19	Geist	NOUN	NN					S		Gen	M
+49002002	20	der	DET	ART					S		Nom	M
+49002002	21	jetzt	ADV	ADV								
+49002002	22	wirksam	ADV	ADJD	Pos							
+49002002	23	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002002	24	in	ADP	APPR								
+49002002	25	der	DET	ART					S		Acc	M
+49002002	26	Söhn	NOUN	NN					P		Dat	M
+49002002	27	der	DET	ART					S		Gen	M
+49002002	28	Ungehorsam	PROPN	NE					S		Gen	
+49002003	1	unter	ADP	APPR								
+49002003	2	welcher	DET	PWAT					S		Acc	M
+49002003	3	auch	ADV	ADV								
+49002003	4	wir	PRON	PPER				1	P		Nom	
+49002003	5	einst	ADV	ADV								
+49002003	6	aller	PRON	PIS					P		Nom	
+49002003	7	unser	DET	PPOSAT					S		Acc	M
+49002003	8	Verkehr	NOUN	NN					S		Nom	M
+49002003	9	haben	AUX	VAFIN		Fin	Past	3	P	Ind		
+49002003	10	in	ADP	APPR								
+49002003	11	der	DET	ART					S		Acc	M
+49002003	12	Lüst	NOUN	NN					P		Nom	M
+49002003	13	unser	DET	PPOSAT					S		Gen	M
+49002003	14	Fleisch	NOUN	NN					S		Nom	N
+49002003	15	indem	SCONJ	KOUS								
+49002003	16	wir	PRON	PPER				1	P		Nom	
+49002003	17	der	DET	ART					S		Acc	M
+49002003	18	Wille	NOUN	NN					S		Acc	M
+49002003	19	der	DET	ART					S		Gen	M
+49002003	20	Fleisch	NOUN	NN					S		Nom	N
+49002003	21	und	CCONJ	KON								
+49002003	22	der	DET	ART					S		Nom	M
+49002003	23	Gedanke	NOUN	NN					P		Nom	M
+49002003	24	tun	VERB	VVFIN		Fin	Past	3	P	Ind		
+49002003	25	und	CCONJ	KON								
+49002003	26	von	ADP	APPR								
+49002003	27	Natur	NOUN	NN					S		Nom	F
+49002003	28	Kind	NOUN	NN					P		Nom	N
+49002003	29	der	DET	ART					S		Gen	M
+49002003	30	Zorn	NOUN	NN					S		Gen	M
+49002003	31	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+49002003	32	wie	ADP	KOKOM								
+49002003	33	auch	ADV	ADV								
+49002003	34	der	DET	ART					S		Nom	F
+49002003	35	übrig	ADJ	ADJA	Pos				S		Dat	N
+49002004	1	Gott	NOUN	NN					S		Nom	M
+49002004	2	aber	CCONJ	KON								
+49002004	3	der	DET	ART					S		Nom	M
+49002004	4	reich	ADV	ADJD	Pos							
+49002004	5	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002004	6	an	ADP	PTKVZ								
+49002004	7	Barmherzigkeit	NOUN	NN					S		Nom	F
+49002004	8	wegen	ADP	APPR								
+49002004	9	sein	DET	PPOSAT					S		Dat	F
+49002004	10	vieler	PRON	PIS					P		Dat	N
+49002004	11	Liebe	NOUN	NN					S		Nom	F
+49002004	12	womit	SCONJ	PWAV								
+49002004	13	er	PRON	PPER				3	S		Nom	M
+49002004	14	uns	PRON	PPER				1	P		Acc	
+49002004	15	lieben	VERB	VVPP		Part						
+49002004	16	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002005	1	als	ADP	KOKOM								
+49002005	2	auch	ADV	ADV								
+49002005	3	wir	PRON	PPER				1	P		Nom	
+49002005	4	in	ADP	APPR								
+49002005	5	der	DET	ART					S		Acc	M
+49002005	6	Vergehung	NOUN	NN					P		Nom	F
+49002005	7	tot	ADV	ADJD	Pos							
+49002005	8	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+49002005	9	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002005	10	uns	PRON	PPER				1	P		Acc	
+49002005	11	mit	ADP	APPR								
+49002005	12	der	DET	ART					S		Dat	M
+49002005	13	Christus	PROPN	NE					S		Nom	M
+49002005	14	lebendig	ADV	ADJD	Pos							
+49002005	15	machen	VERB	VVPP		Part						
+49002005	16	durch	ADP	APPR								
+49002005	17	Gnade	NOUN	NN					S		Nom	F
+49002005	18	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49002005	19	ihr	PRON	PPOSAT				3	S		Dat	F
+49002005	20	erretten	VERB	VVPP		Part						
+49002006	1	und	CCONJ	KON								
+49002006	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002006	3	uns	PRON	PPER				1	P		Acc	
+49002006	4	mitauferweckt	VERB	VVPP		Part						
+49002006	5	und	CCONJ	KON								
+49002006	6	Mitsitz	NOUN	NN					P		Nom	F
+49002006	7	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+49002006	8	in	ADP	APPR								
+49002006	9	der	DET	ART					S		Acc	M
+49002006	10	himmlisch	ADJ	ADJA	Pos				S		Acc	M
+49002006	11	Örter	NOUN	NN					P		Nom	M
+49002006	12	in	ADP	APPR								
+49002006	13	Christo	PROPN	NE					S		Nom	M
+49002006	14	Jesu	PROPN	NE					S		Gen	
+49002007	1	auf	ADP	PTKVZ								
+49002007	2	daß	SCONJ	KOUS								
+49002007	3	er	PRON	PPER				3	S		Nom	M
+49002007	4	in	ADP	APPR								
+49002007	5	der	DET	ART					S		Acc	M
+49002007	6	kommend	ADJ	ADJA	Pos				S		Acc	M
+49002007	7	Zeitalter	NOUN	NN					P		Dat	N
+49002007	8	der	DET	ART					S		Acc	M
+49002007	9	überschwenglich	ADJ	ADJA	Pos				S		Acc	M
+49002007	10	Reichtum	NOUN	NN					S		Nom	M
+49002007	11	sein	DET	PPOSAT					S		Dat	F
+49002007	12	Gnade	NOUN	NN					S		Nom	F
+49002007	13	in	ADP	APPR								
+49002007	14	Güte	NOUN	NN					S		Nom	F
+49002007	15	gegen	ADP	APPR								
+49002007	16	uns	PRON	PPER				1	P		Acc	
+49002007	17	Erwiese	NOUN	NN					S		Nom	F
+49002007	18	in	ADP	APPR								
+49002007	19	Christo	PROPN	NE					S		Nom	M
+49002007	20	Jesu	PROPN	NE					S		Gen	
+49002008	1	denn	CCONJ	KON								
+49002008	2	durch	ADP	APPR								
+49002008	3	der	DET	ART					S		Nom	F
+49002008	4	Gnade	NOUN	NN					S		Nom	F
+49002008	5	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49002008	6	ihr	PRON	PPOSAT				3	S		Dat	F
+49002008	7	erretten	VERB	VVPP		Part						
+49002008	8	mittelst	VERB	NN		Fin	Pres	3	S	Sub		
+49002008	9	der	DET	ART					S		Gen	M
+49002008	10	Glauben	NOUN	NN					S		Gen	M
+49002008	11	und	CCONJ	KON								
+49002008	12	der	DET	ART					S		Nom	N
+49002008	13	nicht	PART	PTKNEG								
+49002008	14	aus	ADP	PTKVZ								
+49002008	15	euch	PRON	PPER				2	P		Dat	
+49002008	16	Gott	NOUN	NN					S		Gen	M
+49002008	17	Gabe	NOUN	NN					S		Nom	F
+49002008	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002008	19	es	PRON	PPER				3	S		Nom	N
+49002009	1	nicht	PART	PTKNEG								
+49002009	2	aus	ADP	PTKVZ								
+49002009	3	Werk	NOUN	NN					P		Dat	N
+49002009	4	auf	ADP	PTKVZ								
+49002009	5	daß	SCONJ	KOUS								
+49002009	6	niemand	PRON	PIS					S		Nom	M
+49002009	7	sich	PRON	PRF				3	S		Acc	
+49002009	8	rühmen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49002010	1	denn	CCONJ	KON								
+49002010	2	wir	PRON	PPER				1	P		Nom	
+49002010	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49002010	4	sein	AUX	VAINF		Inf						
+49002010	5	Werk	NOUN	NN					S		Nom	N
+49002010	6	schaffen	VERB	VVPP		Part						
+49002010	7	in	ADP	APPR								
+49002010	8	Christo	PROPN	NE					S		Nom	M
+49002010	9	Jesu	PROPN	NE					S		Gen	
+49002010	10	zu	ADP	PTKVZ								
+49002010	11	gut	ADJ	ADJA	Pos				S		Acc	M
+49002010	12	Werk	NOUN	NN					P		Dat	N
+49002010	13	welcher	DET	PWAT					S		Nom	F
+49002010	14	Gott	NOUN	NN					S		Nom	M
+49002010	15	zuvor	ADV	ADV								
+49002010	16	bereiten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49002010	17	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002010	18	auf	ADP	PTKVZ								
+49002010	19	daß	SCONJ	KOUS								
+49002010	20	wir	PRON	PPER				1	P		Nom	
+49002010	21	in	ADP	APPR								
+49002010	22	ihnen	PRON	PPER				3	P		Dat	
+49002010	23	wandeln	VERB	VVINF		Inf						
+49002010	24	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+49002011	1	deshalb	ADV	PROAV								
+49002011	2	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49002011	3	Eingedenk	ADV	ADJD	Pos							
+49002011	4	daß	SCONJ	KOUS								
+49002011	5	ihr	PRON	PPOSAT				3	S		Dat	F
+49002011	6	einst	ADV	ADV								
+49002011	7	der	DET	ART					S		Nom	F
+49002011	8	Nation	NOUN	NN					P		Nom	F
+49002011	9	in	ADP	APPRART					S		Dat	N
+49002011	10	Fleisch	NOUN	NN					S		Nom	N
+49002011	11	welcher	DET	PWAT					S		Nom	F
+49002011	12	Vorhaut	NOUN	NN					S		Nom	N
+49002011	13	nennen	VERB	VVPP		Part						
+49002011	14	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49002011	15	von	ADP	APPR								
+49002011	16	der	DET	ART					S		Nom	M
+49002011	17	sogenannter	ADJ	ADJA	Pos				S		Acc	M
+49002011	18	Beschneidung	NOUN	NN					S		Nom	F
+49002011	19	der	DET	ART					S		Nom	F
+49002011	20	in	ADP	APPRART					S		Dat	N
+49002011	21	Fleisch	NOUN	NN					S		Nom	N
+49002011	22	mit	ADP	APPR								
+49002011	23	Hand	NOUN	NN					P		Nom	F
+49002011	24	geschehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49002012	1	daß	SCONJ	KOUS								
+49002012	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49002012	3	zu	ADP	PTKVZ								
+49002012	4	jener	DET	PDAT					S		Nom	M
+49002012	5	Zeit	NOUN	NN					S		Nom	F
+49002012	6	ohne	ADP	APPR								
+49002012	7	Christum	NOUN	NN					S		Nom	N
+49002012	8	Waret	VERB	VAFIN		Fin	Past	2	P	Ind		
+49002012	9	entfremden	VERB	VVPP		Part						
+49002012	10	der	DET	ART					S		Dat	M
+49002012	11	Bürgerrecht	NOUN	NN					S		Nom	N
+49002012	12	Israel	PROPN	NE					S		Gen	N
+49002012	13	und	CCONJ	KON								
+49002012	14	Fremdling	NOUN	NN					P		Nom	M
+49002012	15	Betreff	VERB	VVFIN		Fin	Past	3	S	Sub		
+49002012	16	der	DET	ART					S		Nom	M
+49002012	17	Bündnis	NOUN	NN					P		Nom	N
+49002012	18	der	DET	ART					S		Nom	M
+49002012	19	Verheißung	NOUN	NN					S		Nom	F
+49002012	20	kein	DET	PIAT					S		Nom	F
+49002012	21	Hoffnung	NOUN	NN					S		Nom	F
+49002012	22	habend	ADV	VAFIN	Pos							
+49002012	23	und	CCONJ	KON								
+49002012	24	ohne	ADP	APPR								
+49002012	25	Gott	NOUN	NN					S		Nom	M
+49002012	26	in	ADP	APPR								
+49002012	27	der	DET	ART					S		Nom	M
+49002012	28	Welt	NOUN	NN					S		Nom	F
+49002013	1	jetzt	ADV	ADV								
+49002013	2	aber	CCONJ	KON								
+49002013	3	in	ADP	APPR								
+49002013	4	Christo	PROPN	NE					S		Nom	M
+49002013	5	Jesu	PROPN	NE					S		Gen	
+49002013	6	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49002013	7	ihr	PRON	PPOSAT				3	S		Dat	F
+49002013	8	der	DET	ART					S		Nom	F
+49002013	9	ihr	PRON	PPOSAT				3	S		Dat	F
+49002013	10	einst	ADV	ADV								
+49002013	11	fern	ADV	ADJD	Pos							
+49002013	12	Waret	VERB	VAFIN		Fin	Past	2	P	Ind		
+49002013	13	durch	ADP	APPR								
+49002013	14	der	DET	ART					S		Nom	N
+49002013	15	Blut	NOUN	NN					S		Nom	N
+49002013	16	der	DET	ART					S		Gen	M
+49002013	17	Christus	PROPN	NE					S		Nom	M
+49002013	18	nah	ADP	APPR								
+49002013	19	werden	AUX	VAPP		Part						
+49002014	1	denn	CCONJ	KON								
+49002014	2	er	PRON	PPER				3	S		Nom	M
+49002014	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002014	4	unser	DET	PPOSAT					S		Nom	N
+49002014	5	Friede	NOUN	NN					S		Nom	M
+49002014	6	der	DET	ART					S		Nom	M
+49002014	7	aus	ADP	PTKVZ								
+49002014	8	beide	PRON	PIAT					P		Nom	
+49002014	9	ein	PRON	ART					S		Nom	N
+49002014	10	machen	VERB	VVPP		Part						
+49002014	11	und	CCONJ	KON								
+49002014	12	abbrechen	VERB	VVPP		Part						
+49002014	13	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002014	14	der	DET	ART					S		Nom	F
+49002014	15	Zwischenwand	NOUN	NN					S		Nom	M
+49002014	16	der	DET	ART					S		Nom	M
+49002014	17	Umzäunung	NOUN	NN					S		Nom	F
+49002015	1	nachdem	SCONJ	KOUS								
+49002015	2	er	PRON	PPER				3	S		Nom	M
+49002015	3	in	ADP	APPR								
+49002015	4	sein	DET	PPOSAT					S		Dat	M
+49002015	5	Fleisch	NOUN	NN					S		Nom	N
+49002015	6	der	DET	ART					S		Nom	F
+49002015	7	Feindschaft	NOUN	NN					S		Nom	F
+49002015	8	der	DET	ART					S		Nom	N
+49002015	9	Gesetz	NOUN	NN					S		Nom	N
+49002015	10	der	DET	ART					S		Nom	M
+49002015	11	Gebot	NOUN	NN					P		Nom	N
+49002015	12	in	ADP	APPR								
+49002015	13	Satzunge	NOUN	NN					P		Nom	F
+49002015	14	Hinweggetan	PROPN	NE					S		Nom	M
+49002015	15	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+49002015	16	auf	ADP	PTKVZ								
+49002015	17	daß	SCONJ	KOUS								
+49002015	18	er	PRON	PPER				3	S		Nom	M
+49002015	19	der	DET	ART					S		Nom	F
+49002015	20	zwei	NUM	CARD								
+49002015	21	Frieden	NOUN	NN					S		Nom	M
+49002015	22	stiftend	ADV	ADJD	Pos							
+49002015	23	in	ADP	APPR								
+49002015	24	sich	PRON	PRF				3	S		Acc	
+49002015	25	selbst	ADV	ADV								
+49002015	26	zu	ADP	PTKVZ								
+49002015	27	ein	DET	ART					S		Dat	M
+49002015	28	neu	ADJ	ADJA	Pos				S		Acc	M
+49002015	29	Mensch	NOUN	NN					P		Nom	M
+49002015	30	schüfe	VERB	VVFIN		Fin	Past	3	S	Sub		
+49002016	1	und	CCONJ	KON								
+49002016	2	der	DET	ART					S		Nom	F
+49002016	3	beide	PRON	PIAT					P		Nom	
+49002016	4	in	ADP	APPR								
+49002016	5	ein	DET	ART					S		Dat	M
+49002016	6	Leib	NOUN	NN					S		Nom	M
+49002016	7	mit	ADP	APPR								
+49002016	8	Gott	NOUN	NN					S		Nom	M
+49002016	9	versöhnen	VERB	VVFIN		Fin	Past	3	S	Ind		
+49002016	10	durch	ADP	APPR								
+49002016	11	der	DET	ART					S		Nom	N
+49002016	12	Kreuz	NOUN	NN					S		Nom	N
+49002016	13	nachdem	SCONJ	KOUS								
+49002016	14	er	PRON	PPER				3	S		Nom	M
+49002016	15	durch	ADP	APPR								
+49002016	16	Dasselbe	DET	PDAT					S		Nom	N
+49002016	17	der	DET	ART					S		Nom	F
+49002016	18	Feindschaft	NOUN	NN					S		Nom	F
+49002016	19	töten	VERB	VVPP		Part						
+49002016	20	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+49002017	1	und	CCONJ	KON								
+49002017	2	er	PRON	PPER				3	S		Nom	M
+49002017	3	kommen	VERB	VVFIN		Fin	Past	3	S	Ind		
+49002017	4	und	CCONJ	KON								
+49002017	5	verkündigen	VERB	VVFIN		Fin	Past	3	S	Ind		
+49002017	6	Frieden	NOUN	NN					S		Nom	M
+49002017	7	euch	PRON	PPER				2	P		Dat	
+49002017	8	der	DET	ART					S		Acc	M
+49002017	9	ferne	PROPN	NE					S		Nom	F
+49002017	10	und	CCONJ	KON								
+49002017	11	Frieden	NOUN	NN					S		Nom	M
+49002017	12	der	DET	ART					S		Acc	M
+49002017	13	nah	PROPN	NE					S		Nom	N
+49002018	1	denn	CCONJ	KON								
+49002018	2	durch	ADP	APPR								
+49002018	3	ihn	PRON	PPER				3	S		Acc	M
+49002018	4	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49002018	5	wir	PRON	PPER				1	P		Nom	
+49002018	6	beide	PRON	PIS					P		Nom	
+49002018	7	der	DET	ART					S		Acc	M
+49002018	8	Zugang	NOUN	NN					S		Acc	M
+49002018	9	durch	ADP	APPR								
+49002018	10	ein	DET	ART					S		Acc	M
+49002018	11	Geist	NOUN	NN					S		Nom	M
+49002018	12	zu	ADP	PTKVZ								
+49002018	13	der	DET	ART					S		Dat	M
+49002018	14	Vater	NOUN	NN					S		Nom	M
+49002019	1	also	ADV	ADV								
+49002019	2	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49002019	3	ihr	PRON	PPOSAT				3	S		Dat	F
+49002019	4	denn	CCONJ	KON								
+49002019	5	nicht	PART	PTKNEG								
+49002019	6	mehr	ADV	ADV								
+49002019	7	Fremdling	NOUN	NN					P		Nom	M
+49002019	8	und	CCONJ	KON								
+49002019	9	ohne	ADP	APPR								
+49002019	10	Bürgerrecht	NOUN	NN					S		Nom	N
+49002019	11	sondern	CCONJ	KON								
+49002019	12	ihr	PRON	PPOSAT				3	S		Dat	F
+49002019	13	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49002019	14	Mitbürger	NOUN	NN					P		Nom	M
+49002019	15	der	DET	ART					S		Nom	M
+49002019	16	heilig	NOUN	NN					P		Dat	
+49002019	17	und	CCONJ	KON								
+49002019	18	Hausgenossum	NOUN	NN					S		Nom	N
+49002019	19	Gott	NOUN	NN					S		Gen	M
+49002020	1	aufbauen	VERB	VVPP		Part						
+49002020	2	auf	ADP	PTKVZ								
+49002020	3	der	DET	ART					S		Nom	F
+49002020	4	Grundlage	NOUN	NN					S		Nom	F
+49002020	5	der	DET	ART					S		Nom	M
+49002020	6	Apostel	NOUN	NN					P		Nom	M
+49002020	7	und	CCONJ	KON								
+49002020	8	Prophet	NOUN	NN					P		Nom	M
+49002020	9	indem	SCONJ	KOUS								
+49002020	10	Jesus	PROPN	PPER					S		Nom	M
+49002020	11	Christus	PROPN	NE					S		Nom	M
+49002020	12	selbst	ADV	ADV								
+49002020	13	Eckstein	NOUN	NE					S		Nom	M
+49002020	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002021	1	in	ADP	APPR								
+49002021	2	welcher	DET	PWAT					S		Dat	N
+49002021	3	der	DET	ART					S		Nom	M
+49002021	4	ganz	ADJ	ADJA	Pos				S		Nom	F
+49002021	5	Bau	NOUN	NN					S		Nom	M
+49002021	6	wohl	ADV	ADV								
+49002021	7	zusammenfügen	VERB	VVPP		Part						
+49002021	8	wachsen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49002021	9	zu	ADP	PTKVZ								
+49002021	10	ein	DET	ART					S		Dat	M
+49002021	11	heilig	ADJ	ADJA	Pos				S		Acc	M
+49002021	12	Tempel	NOUN	NN					S		Nom	M
+49002021	13	in	ADP	APPRART					S		Dat	N
+49002021	14	Herr	NOUN	NN					S		Acc	M
+49002022	1	in	ADP	APPR								
+49002022	2	welcher	DET	PWAT					S		Dat	N
+49002022	3	auch	ADV	ADV								
+49002022	4	ihr	PRON	PPOSAT				3	S		Dat	F
+49002022	5	Mitaufgebaut	VERB	NN		Fin	Pres	3	S	Ind		
+49002022	6	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49002022	7	zu	ADP	PTKVZ								
+49002022	8	ein	PRON	ART					S		Nom	M
+49002022	9	Behausung	NOUN	NN					S		Nom	F
+49002022	10	Gott	NOUN	NN					S		Gen	M
+49002022	11	in	ADP	APPRART					S		Dat	N
+49002022	12	Geist	NOUN	NN					P		Nom	M
+49003001	1	dieserhalb	PROPN	NN					S		Nom	
+49003001	2	ich	PRON	PPER				1	S		Nom	
+49003001	3	Paulus	PROPN	NE					S		Nom	M
+49003001	4	der	DET	ART					S		Nom	M
+49003001	5	gefangener	NOUN	NN					P		Nom	
+49003001	6	Christi	PROPN	NE					S		Nom	
+49003001	7	Jesu	PROPN	NE					S		Gen	
+49003001	8	für	ADP	APPR								
+49003001	9	euch	PRON	PPER				2	P		Dat	
+49003001	10	der	DET	ART					S		Nom	F
+49003001	11	Nation	NOUN	NN					P		Nom	F
+49003002	1	wenn	SCONJ	KOUS								
+49003002	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49003002	3	anders	ADV	ADV								
+49003002	4	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49003002	5	habben	VERB	VAFIN				2	P	Imp		
+49003002	6	von	ADP	APPR								
+49003002	7	der	DET	ART					S		Nom	M
+49003002	8	Verwaltung	NOUN	NN					S		Nom	F
+49003002	9	der	DET	ART					S		Nom	M
+49003002	10	Gnade	NOUN	NN					S		Nom	F
+49003002	11	Gott	NOUN	NN					S		Gen	M
+49003002	12	der	DET	ART					S		Nom	F
+49003002	13	mir	PRON	PPER				1	S		Dat	
+49003002	14	in	ADP	APPR								
+49003002	15	Bezug	NOUN	NN					S		Acc	M
+49003002	16	auf	ADP	PTKVZ								
+49003002	17	euch	PRON	PPER				2	P		Dat	
+49003002	18	geben	VERB	VVPP		Part						
+49003002	19	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49003003	1	daß	SCONJ	KOUS								
+49003003	2	mir	PRON	PPER				1	S		Dat	
+49003003	3	durch	ADP	APPR								
+49003003	4	Offenbarung	NOUN	NN					S		Nom	F
+49003003	5	der	DET	ART					S		Nom	N
+49003003	6	Geheimnis	NOUN	NN					S		Nom	N
+49003003	7	kundtun	VERB	VVPP		Part						
+49003003	8	werden	AUX	VAPP		Part						
+49003003	10	wie	ADP	KOKOM								
+49003003	11	ich	PRON	PPER				1	S		Nom	
+49003003	12	es	PRON	PPER				3	S		Nom	N
+49003003	13	zuvor	ADV	ADV								
+49003003	14	in	ADP	APPR								
+49003003	15	kurz	ADJ	ADJA	Pos				S		Dat	N
+49003003	16	beschreiben	VERB	VVPP		Part						
+49003003	17	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49003004	1	woran	SCONJ	PWAV								
+49003004	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49003004	3	in	ADP	APPRART					S		Dat	N
+49003004	4	lesen	VERB	VVINF		Inf						
+49003004	5	merken	VERB	VVINF		Fin	Pres	3	P	Ind		
+49003004	6	können	VERB	VMFIN		Fin	Pres	3	S	Ind		
+49003004	7	mein	DET	PPOSAT					S		Nom	N
+49003004	8	Verständnis	NOUN	NN					S		Nom	N
+49003004	9	in	ADP	APPR								
+49003004	10	der	DET	ART					S		Dat	M
+49003004	11	Geheimnis	NOUN	NN					S		Nom	N
+49003004	12	der	DET	ART					S		Gen	M
+49003004	13	Christus	PROPN	NE					S		Nom	M
+49003005	1	welcher	DET	PWAT					S		Acc	N
+49003005	2	in	ADP	APPR								
+49003005	3	anderer	PRON	PIS					P		Dat	
+49003005	4	Geschlechter	NOUN	NN					P		Dat	M
+49003005	5	der	DET	ART					S		Acc	M
+49003005	6	Söhn	NOUN	NN					P		Dat	M
+49003005	7	der	DET	ART					S		Nom	M
+49003005	8	Mensch	NOUN	NN					P		Nom	M
+49003005	9	nicht	PART	PTKNEG								
+49003005	10	kundtun	VERB	VVPP		Part						
+49003005	11	werden	AUX	VAPP		Part						
+49003005	12	wie	ADP	KOKOM								
+49003005	13	es	PRON	PPER				3	S		Nom	N
+49003005	14	jetzt	ADV	ADV								
+49003005	15	offenbaren	VERB	VVPP		Part						
+49003005	16	werden	AUX	VAPP		Part						
+49003005	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49003005	18	sein	DET	PPOSAT					S		Acc	M
+49003005	19	heilig	ADJ	ADJA	Pos				S		Acc	M
+49003005	20	Apostel	NOUN	NN					P		Dat	M
+49003005	21	und	CCONJ	KON								
+49003005	22	Prophet	NOUN	NN					P		Nom	M
+49003005	23	in	ADP	APPRART					S		Dat	N
+49003005	24	Geist	NOUN	NN					P		Nom	M
+49003006	1	daß	SCONJ	KOUS								
+49003006	2	der	DET	ART					S		Nom	F
+49003006	3	aus	ADP	PTKVZ								
+49003006	4	der	DET	ART					S		Acc	M
+49003006	5	Nation	NOUN	NN					P		Nom	F
+49003006	6	Miterbe	NOUN	NN					P		Dat	M
+49003006	7	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+49003006	8	und	CCONJ	KON								
+49003006	9	Miteinverleibte	PROPN	NE					S		Nom	M
+49003006	10	und	CCONJ	KON								
+49003006	11	Mitteilhaber	X	FM								
+49003006	12	sein	DET	PPOSAT					S		Dat	F
+49003006	13	Verheißung	NOUN	NN					S		Nom	F
+49003006	14	in	ADP	APPR								
+49003006	15	Christo	PROPN	NE					S		Nom	M
+49003006	16	Jesu	PROPN	NE					S		Gen	
+49003006	17	durch	ADP	APPR								
+49003006	18	der	DET	ART					S		Nom	N
+49003006	19	Evangelium	NOUN	NN					S		Nom	N
+49003007	1	der	PRON	PDS					S		Gen	
+49003007	2	Diener	NOUN	NN					P		Nom	M
+49003007	3	ich	PRON	PPER				1	S		Nom	
+49003007	4	werden	AUX	VAPP		Part						
+49003007	5	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+49003007	6	nach	ADP	APPR								
+49003007	7	der	DET	ART					S		Nom	M
+49003007	8	Gabe	NOUN	NN					S		Nom	F
+49003007	9	der	DET	ART					S		Nom	M
+49003007	10	Gnade	NOUN	NN					S		Nom	F
+49003007	11	Gott	NOUN	NN					S		Gen	M
+49003007	12	der	DET	ART					S		Nom	F
+49003007	13	mir	PRON	PPER				1	S		Dat	
+49003007	14	geben	VERB	VVPP		Part						
+49003007	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49003007	16	nach	ADP	APPR								
+49003007	17	der	DET	ART					S		Nom	M
+49003007	18	Wirksamkeit	NOUN	NN					S		Nom	F
+49003007	19	sein	DET	PPOSAT					S		Dat	F
+49003007	20	Kraft	NOUN	NN					S		Nom	F
+49003008	1	Mir	PRON	NE				1	S		Dat	
+49003008	2	der	DET	ART					S		Dat	M
+49003008	3	allergeringst	NOUN	NN					P		Nom	
+49003008	4	von	ADP	APPR								
+49003008	5	aller	DET	PIS					P		Dat	
+49003008	6	heilig	NOUN	NN					P		Dat	
+49003008	7	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49003008	8	dieser	DET	PDAT					S		Nom	F
+49003008	9	Gnade	NOUN	NN					S		Nom	F
+49003008	10	geben	VERB	VVPP		Part						
+49003008	11	werden	AUX	VAPP		Part						
+49003008	12	unter	ADP	APPR								
+49003008	13	der	DET	ART					S		Acc	M
+49003008	14	Nation	NOUN	NN					P		Nom	F
+49003008	15	der	DET	ART					S		Acc	M
+49003008	16	unausforschlich	ADJ	ADJA	Pos				S		Dat	M
+49003008	17	Reichtum	NOUN	NN					S		Nom	M
+49003008	18	der	DET	ART					S		Gen	M
+49003008	19	Christus	PROPN	NE					S		Nom	M
+49003008	20	zu	ADP	PTKVZ								
+49003008	21	verkündigen	VERB	VVINF		Inf						
+49003009	1	und	CCONJ	KON								
+49003009	2	aller	PRON	PIS					P		Nom	
+49003009	3	zu	ADP	PTKVZ								
+49003009	4	erleuchten	VERB	NN		Fin	Pres	3	P	Ind		
+49003009	5	welcher	DET	PWAT					S		Acc	N
+49003009	6	der	DET	ART					S		Nom	F
+49003009	7	Verwaltung	NOUN	NN					S		Nom	F
+49003009	8	der	DET	ART					S		Gen	M
+49003009	9	Geheimnis	NOUN	NN					S		Gen	N
+49003009	10	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49003009	11	der	DET	ART					S		Nom	N
+49003009	12	von	ADP	APPR								
+49003009	13	der	DET	ART					S		Acc	M
+49003009	14	Zeitalter	NOUN	NN					P		Dat	N
+49003009	15	her	ADV	ADV								
+49003009	16	verbergen	VERB	VVPP		Part						
+49003009	17	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+49003009	18	in	ADP	APPR								
+49003009	19	Gott	NOUN	NN					S		Nom	M
+49003009	20	der	DET	ART					S		Nom	M
+49003009	21	aller	PRON	PIS					P		Nom	
+49003009	22	Ding	NOUN	NN					P		Nom	N
+49003009	23	schaffen	VERB	VVPP		Part						
+49003009	24	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49003010	1	auf	ADP	PTKVZ								
+49003010	2	daß	SCONJ	KOUS								
+49003010	3	jetzt	ADV	ADV								
+49003010	4	der	DET	ART					S		Acc	M
+49003010	5	Fürstentümer	NOUN	NN					P		Dat	M
+49003010	6	und	CCONJ	KON								
+49003010	7	der	DET	ART					S		Acc	M
+49003010	8	Gewalt	NOUN	NN					P		Nom	F
+49003010	9	in	ADP	APPR								
+49003010	10	der	DET	ART					S		Acc	M
+49003010	11	himmlisch	ADJ	ADJA	Pos				S		Acc	M
+49003010	12	Örter	NOUN	NN					P		Nom	M
+49003010	13	durch	ADP	APPR								
+49003010	14	der	DET	ART					S		Nom	F
+49003010	15	Versammlung	NOUN	NN					S		Nom	F
+49003010	16	kundtun	VERB	VVPP		Part						
+49003010	17	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49003010	18	der	DET	ART					S		Nom	F
+49003010	19	gar	ADV	ADV								
+49003010	20	mannigfaltig	ADJ	ADJA	Pos				S		Nom	F
+49003010	21	Weisheit	NOUN	NN					S		Nom	F
+49003010	22	Gott	NOUN	NN					S		Gen	M
+49003011	1	nach	ADP	APPR								
+49003011	2	der	DET	ART					S		Dat	M
+49003011	3	Vorsatz	NOUN	NN					S		Nom	M
+49003011	4	der	DET	ART					S		Nom	M
+49003011	5	Zeitalter	NOUN	NN					S		Nom	N
+49003011	6	der	DET	ART					S		Acc	M
+49003011	7	er	PRON	PPER				3	S		Nom	M
+49003011	8	fassen	VERB	VVPP		Part						
+49003011	9	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49003011	10	in	ADP	APPR								
+49003011	11	Christo	PROPN	NE					S		Nom	M
+49003011	12	Jesu	PROPN	NE					S		Gen	
+49003011	13	unser	DET	PPOSAT					S		Dat	N
+49003011	14	Herr	NOUN	NN					S		Acc	M
+49003012	1	in	ADP	APPR								
+49003012	2	welcher	DET	PWAT					S		Dat	N
+49003012	3	wir	PRON	PPER				1	P		Nom	
+49003012	4	der	DET	ART					S		Nom	F
+49003012	5	Freimütigkeit	NOUN	NN					S		Nom	F
+49003012	6	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49003012	7	und	CCONJ	KON								
+49003012	8	der	DET	ART					S		Acc	M
+49003012	9	Zugang	NOUN	NN					S		Acc	M
+49003012	10	in	ADP	APPR								
+49003012	11	Zuversicht	NOUN	NN					S		Nom	F
+49003012	12	durch	ADP	APPR								
+49003012	13	der	DET	ART					S		Acc	M
+49003012	14	Glaube	NOUN	NN					S		Acc	M
+49003012	15	an	ADP	PTKVZ								
+49003012	16	ihn	PRON	PPER				3	S		Acc	M
+49003013	1	deshalb	ADV	PROAV								
+49003013	2	bitte	ADV	ADV								
+49003013	3	ich	PRON	PPER				1	S		Nom	
+49003013	4	nicht	PART	PTKNEG								
+49003013	5	mutlos	ADV	ADJD	Pos							
+49003013	6	zu	ADP	PTKVZ								
+49003013	7	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49003013	8	durch	ADP	APPR								
+49003013	9	mein	DET	PPOSAT					S		Nom	F
+49003013	10	Drangsal	NOUN	NN					P		Nom	N
+49003013	11	für	ADP	APPR								
+49003013	12	euch	PRON	PPER				2	P		Dat	
+49003013	13	welcher	DET	PWAT					S		Nom	F
+49003013	14	eure	DET	PPOSAT					S		Nom	F
+49003013	15	Ehre	NOUN	NN					S		Nom	F
+49003013	16	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49003014	1	dieserhalb	PROPN	NN					S		Nom	
+49003014	2	beugen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49003014	3	ich	PRON	PPER				1	S		Nom	
+49003014	4	mein	DET	PPOSAT					S		Nom	F
+49003014	5	Knie	NOUN	NN					S		Nom	N
+49003014	6	vor	ADP	APPR								
+49003014	7	der	DET	ART					S		Dat	M
+49003014	8	Vater	NOUN	NN					S		Nom	M
+49003014	9	unser	DET	PPOSAT					S		Gen	M
+49003014	10	Herr	NOUN	NN					S		Acc	M
+49003014	11	Jesu	PROPN	NE					S		Gen	
+49003014	12	Christi	PROPN	NE					S		Nom	
+49003015	1	von	ADP	APPR								
+49003015	2	welcher	DET	PWAT					S		Dat	N
+49003015	3	jeder	DET	PIAT					S		Nom	F
+49003015	4	Familie	NOUN	NN					S		Nom	F
+49003015	5	in	ADP	APPR								
+49003015	6	der	DET	ART					S		Acc	M
+49003015	7	Himmel	NOUN	NN					P		Dat	M
+49003015	8	und	CCONJ	KON								
+49003015	9	auf	ADP	PTKVZ								
+49003015	10	Erde	NOUN	NN					P		Nom	F
+49003015	11	benennen	VERB	VVPP		Part						
+49003015	12	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49003016	1	auf	ADP	PTKVZ								
+49003016	2	daß	SCONJ	KOUS								
+49003016	3	er	PRON	PPER				3	S		Nom	M
+49003016	4	euch	PRON	PPER				2	P		Dat	
+49003016	5	geben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49003016	6	nach	ADP	APPR								
+49003016	7	der	DET	ART					S		Dat	M
+49003016	8	Reichtum	NOUN	NN					S		Nom	M
+49003016	9	sein	DET	PPOSAT					S		Dat	F
+49003016	10	Herrlichkeit	NOUN	NN					S		Nom	F
+49003016	11	mit	ADP	APPR								
+49003016	12	Kraft	NOUN	NN					S		Nom	F
+49003016	13	stärken	VERB	VVPP		Part						
+49003016	14	zu	ADP	PTKVZ								
+49003016	15	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49003016	16	durch	ADP	APPR								
+49003016	17	sein	DET	PPOSAT					S		Acc	M
+49003016	18	Geist	NOUN	NN					S		Nom	M
+49003016	19	an	ADP	PTKVZ								
+49003016	20	der	DET	ART					S		Dat	M
+49003016	21	innerer	ADJ	ADJA	Pos				P		Dat	N
+49003016	22	Mensch	NOUN	NN					P		Nom	M
+49003017	1	daß	SCONJ	KOUS								
+49003017	2	der	DET	ART					S		Nom	M
+49003017	3	Christus	PROPN	NE					S		Nom	M
+49003017	4	durch	ADP	APPR								
+49003017	5	der	DET	ART					S		Acc	M
+49003017	6	Glaube	NOUN	NN					S		Acc	M
+49003017	7	in	ADP	APPR								
+49003017	8	euren	DET	PPOSAT					S		Acc	M
+49003017	9	Herz	NOUN	NN					S		Nom	N
+49003017	10	wohnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49003017	11	indem	SCONJ	KOUS								
+49003017	12	ihr	PRON	PPOSAT				3	S		Dat	F
+49003017	13	in	ADP	APPR								
+49003017	14	Liebe	NOUN	NN					S		Nom	F
+49003017	15	Gewurzelt	ADV	NE	Pos							
+49003017	16	und	CCONJ	KON								
+49003017	17	gründen	VERB	VVPP		Part						
+49003017	18	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49003018	1	auf	ADP	PTKVZ								
+49003018	2	daß	SCONJ	KOUS								
+49003018	3	ihr	PRON	PPOSAT				3	S		Dat	F
+49003018	4	völlig	ADV	ADJD	Pos							
+49003018	5	zu	ADP	PTKVZ								
+49003018	6	erfassen	VERB	VVINF		Inf						
+49003018	7	Vermöget	NOUN	NN					S		Nom	N
+49003018	8	mit	ADP	APPR								
+49003018	9	aller	DET	PIS					P		Dat	
+49003018	10	heilig	NOUN	NN					P		Dat	
+49003018	11	welcher	DET	PWAT					S		Acc	N
+49003018	12	der	DET	ART					S		Nom	F
+49003018	13	Breite	NOUN	NN					S		Nom	F
+49003018	14	und	CCONJ	KON								
+49003018	15	Länge	NOUN	NN					S		Nom	F
+49003018	16	und	CCONJ	KON								
+49003018	17	Tiefe	NOUN	NN					S		Nom	F
+49003018	18	und	CCONJ	KON								
+49003018	19	Höhe	NOUN	NN					S		Nom	F
+49003018	20	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49003019	1	und	CCONJ	KON								
+49003019	2	zu	ADP	PTKVZ								
+49003019	3	erkennen	VERB	VVINF		Inf						
+49003019	4	der	DET	ART					S		Nom	F
+49003019	5	der	DET	ART					S		Nom	F
+49003019	6	Erkenntnis	NOUN	NN					S		Nom	F
+49003019	7	übersteigend	ADJ	ADJA	Pos				S		Nom	F
+49003019	8	Liebe	NOUN	NN					S		Nom	F
+49003019	9	der	DET	ART					S		Gen	M
+49003019	10	Christus	PROPN	NE					S		Nom	M
+49003019	11	auf	ADP	PTKVZ								
+49003019	12	daß	SCONJ	KOUS								
+49003019	13	ihr	PRON	PPOSAT				3	S		Dat	F
+49003019	14	erfüllen	VERB	VVPP		Part						
+49003019	15	sein	AUX	VAINF		Inf						
+49003019	16	Möget	AUX	VMFIN		Fin	Pres	3	S	Ind		
+49003019	17	zu	ADP	PTKVZ								
+49003019	18	der	DET	ART					S		Nom	M
+49003019	19	ganz	PRON	ADJA					S		Nom	M
+49003019	20	Fülle	NOUN	NN					S		Nom	F
+49003019	21	Gott	NOUN	NN					S		Gen	M
+49003020	1	der	DET	ART					S		Dat	M
+49003020	2	aber	CCONJ	KON								
+49003020	3	der	DET	ART					S		Nom	M
+49003020	4	über	ADP	APPR								
+49003020	5	alle	PRON	PIS					S		Nom	N
+49003020	6	hinaus	ADP	APZR								
+49003020	7	zu	ADP	PTKVZ								
+49003020	8	tun	VERB	VVINF		Inf						
+49003020	9	vermögen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49003020	10	über	ADP	APPR								
+49003020	11	der	DET	ART					S		Nom	F
+49003020	12	Maße	NOUN	NN					P		Dat	N
+49003020	13	mehr	ADV	ADV								
+49003020	14	als	ADP	KOKOM								
+49003020	15	was	PRON	PWS					S		Nom	N
+49003020	16	wir	PRON	PPER				1	P		Nom	
+49003020	17	erbitten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+49003020	18	oder	CCONJ	KON								
+49003020	19	erdenken	VERB	VVINF		Inf						
+49003020	20	nach	ADP	APPR								
+49003020	21	der	DET	ART					S		Nom	M
+49003020	22	Kraft	NOUN	NN					S		Nom	F
+49003020	23	der	DET	ART					S		Nom	F
+49003020	24	in	ADP	APPR								
+49003020	25	uns	PRON	PPER				1	P		Acc	
+49003020	26	wirken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49003021	1	ihm	PRON	PPER				3	S		Dat	M
+49003021	2	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49003021	3	der	DET	ART					S		Nom	F
+49003021	4	Herrlichkeit	NOUN	NN					S		Nom	F
+49003021	5	in	ADP	APPR								
+49003021	6	der	DET	ART					S		Nom	M
+49003021	7	Versammlung	NOUN	NN					S		Nom	F
+49003021	8	in	ADP	APPR								
+49003021	9	Christo	PROPN	NE					S		Nom	M
+49003021	10	Jesu	PROPN	NE					S		Gen	
+49003021	11	auf	ADP	PTKVZ								
+49003021	12	aller	PRON	PIS					P		Nom	
+49003021	13	Geschlecht	NOUN	NN					P		Nom	N
+49003021	14	der	DET	ART					S		Gen	M
+49003021	15	Zeitalter	NOUN	NN					S		Nom	N
+49003021	16	der	DET	ART					S		Nom	M
+49003021	17	Zeitalter	NOUN	NN					S		Nom	N
+49003021	18	hin	ADV	ADV								
+49003021	19	Amen	NOUN	NN					S		Nom	N
+49004001	1	ich	PRON	PPER				1	S		Nom	
+49004001	2	ermahnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004001	3	euch	PRON	PPER				2	P		Dat	
+49004001	4	nun	ADV	ADV								
+49004001	5	ich	PRON	PPER				1	S		Nom	
+49004001	6	der	DET	ART					S		Nom	M
+49004001	7	gefangener	NOUN	NN					P		Nom	
+49004001	8	in	ADP	APPRART					S		Dat	N
+49004001	9	Herr	NOUN	NN					S		Acc	M
+49004001	10	daß	SCONJ	KOUS								
+49004001	11	ihr	PRON	PPOSAT				3	S		Dat	F
+49004001	12	würdig	ADV	ADJD	Pos							
+49004001	13	wandeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004001	14	der	DET	ART					S		Nom	M
+49004001	15	Berufung	NOUN	NN					S		Nom	F
+49004001	16	mit	ADP	APPR								
+49004001	17	welcher	PRON	PWAT					S		Nom	M
+49004001	18	ihr	PRON	PPOSAT				3	S		Dat	F
+49004001	19	berufen	VERB	VVPP		Part						
+49004001	20	werden	AUX	VAPP		Part						
+49004001	21	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49004002	1	mit	ADP	APPR								
+49004002	2	aller	DET	PIAT					P		Gen	
+49004002	3	Demut	NOUN	NN					S		Nom	F
+49004002	4	und	CCONJ	KON								
+49004002	5	Sanftmut	NOUN	NN					S		Nom	F
+49004002	6	mit	ADP	APPR								
+49004002	7	Langmut	PROPN	NE					S		Nom	
+49004002	8	sich	PRON	PRF				3	P		Dat	
+49004002	9	ertragend	ADV	ADJD	Pos							
+49004002	10	in	ADP	APPR								
+49004002	11	Liebe	NOUN	NN					S		Nom	F
+49004003	1	euch	PRON	PPER				2	P		Dat	
+49004003	2	Befleißigend	ADV	ADJD	Pos							
+49004003	3	der	DET	ART					S		Nom	F
+49004003	4	Einheit	NOUN	NN					S		Nom	F
+49004003	5	der	DET	ART					S		Gen	M
+49004003	6	Geist	NOUN	NN					S		Gen	M
+49004003	7	zu	ADP	PTKVZ								
+49004003	8	bewahren	VERB	VVINF		Inf						
+49004003	9	in	ADP	APPR								
+49004003	10	der	DET	ART					S		Dat	M
+49004003	11	Bande	NOUN	NN					S		Nom	F
+49004003	12	der	DET	ART					S		Gen	M
+49004003	13	Frieden	NOUN	NE					S		Gen	M
+49004004	1	da	SCONJ	KOUS								
+49004004	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004004	3	ein	DET	ART					S		Nom	N
+49004004	4	Leib	NOUN	NN					S		Nom	M
+49004004	5	und	CCONJ	KON								
+49004004	6	ein	DET	ART					S		Nom	N
+49004004	7	Geist	NOUN	NN					S		Nom	M
+49004004	8	wie	ADP	KOKOM								
+49004004	9	ihr	PRON	PPOSAT				3	S		Dat	F
+49004004	10	auch	ADV	ADV								
+49004004	11	berufen	VERB	VVPP		Part						
+49004004	12	werden	AUX	VAPP		Part						
+49004004	13	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49004004	14	in	ADP	APPR								
+49004004	15	ein	PRON	ART					S		Nom	M
+49004004	16	Hoffnung	NOUN	NN					S		Nom	F
+49004004	17	eurer	PRON	PPOSAT							Gen	
+49004004	18	Berufung	NOUN	NN					S		Nom	F
+49004005	1	ein	DET	ART					S		Nom	M
+49004005	2	Herr	NOUN	NN					S		Nom	M
+49004005	3	ein	DET	ART					S		Nom	N
+49004005	4	Glaube	NOUN	NN					S		Nom	M
+49004005	5	ein	DET	ART					S		Nom	F
+49004005	6	Taufe	NOUN	NN					S		Nom	F
+49004006	1	ein	DET	ART					S		Nom	N
+49004006	2	Gott	NOUN	NN					S		Nom	M
+49004006	3	und	CCONJ	KON								
+49004006	4	Vater	NOUN	NN					S		Nom	M
+49004006	5	aller	DET	PIAT					P		Gen	
+49004006	6	der	DET	ART					S		Nom	M
+49004006	7	da	ADV	ADV								
+49004006	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004006	9	über	ADP	APPR								
+49004006	10	aller	DET	PIS					P		Dat	
+49004006	11	und	CCONJ	KON								
+49004006	12	durch	ADP	APPR								
+49004006	13	aller	PRON	PIS					P		Nom	
+49004006	14	und	CCONJ	KON								
+49004006	15	in	ADP	APPR								
+49004006	16	uns	PRON	PPER				1	P		Acc	
+49004006	17	aller	DET	PIS					P		Dat	
+49004007	1	Jeder	PRON	PIS					S		Dat	M
+49004007	2	einzeln	PRON	PIS					S		Nom	M
+49004007	3	aber	CCONJ	KON								
+49004007	4	von	ADP	APPR								
+49004007	5	uns	PRON	PPER				1	P		Acc	
+49004007	6	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004007	7	der	DET	ART					S		Nom	F
+49004007	8	Gnade	NOUN	NN					S		Nom	F
+49004007	9	geben	VERB	VVPP		Part						
+49004007	10	werden	AUX	VAPP		Part						
+49004007	11	nach	ADP	APPR								
+49004007	12	der	DET	ART					S		Dat	M
+49004007	13	Maß	NOUN	NN					S		Nom	N
+49004007	14	der	DET	ART					S		Nom	M
+49004007	15	Gabe	NOUN	NN					S		Nom	F
+49004007	16	der	DET	ART					S		Gen	M
+49004007	17	Christus	PROPN	NE					S		Nom	M
+49004008	1	darum	ADV	PROAV								
+49004008	2	sagen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004008	3	er	PRON	PPER				3	S		Nom	M
+49004008	4	Hinaufgestiege	NOUN	NN					P		Nom	F
+49004008	5	in	ADP	APPR								
+49004008	6	der	DET	ART					S		Nom	F
+49004008	7	Höhe	NOUN	NN					S		Nom	F
+49004008	8	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004008	9	er	PRON	PPER				3	S		Nom	M
+49004008	10	der	DET	ART					S		Nom	F
+49004008	11	Gefangenschaft	NOUN	NN					S		Nom	F
+49004008	12	gefangen	VERB	VVPP		Part						
+49004008	13	führen	VERB	VVPP		Part						
+49004008	14	und	CCONJ	KON								
+49004008	15	der	DET	ART					S		Acc	M
+49004008	16	Mensch	NOUN	NN					P		Nom	M
+49004008	17	Gabe	NOUN	NN					P		Nom	F
+49004008	18	geben	VERB	VVPP		Part						
+49004009	1	der	DET	ART					S		Nom	N
+49004009	2	aber	CCONJ	KON								
+49004009	3	er	PRON	PPER				3	S		Nom	M
+49004009	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004009	5	hinaufgestiegen	VERB	VVPP		Inf						
+49004009	6	was	PRON	PWS					S		Nom	N
+49004009	7	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004009	8	es	PRON	PPER				3	S		Nom	N
+49004009	9	anders	ADV	ADV								
+49004009	10	als	ADP	KOKOM								
+49004009	11	daß	SCONJ	KOUS								
+49004009	12	er	PRON	PPER				3	S		Nom	M
+49004009	13	auch	ADV	ADV								
+49004009	14	hinabgestiegen	VERB	VVPP		Part						
+49004009	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004009	16	in	ADP	APPR								
+49004009	17	der	DET	ART					S		Nom	F
+49004009	18	unterer	PRON	ADJA					P		Dat	
+49004009	19	Teil	NOUN	NN					P		Nom	M
+49004009	20	der	DET	ART					S		Nom	M
+49004009	21	Erde	NOUN	NN					S		Nom	F
+49004010	1	der	DET	ART					S		Nom	M
+49004010	2	hinabgestiegen	VERB	VVPP		Part						
+49004010	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004010	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004010	5	derselbe	PRON	PDS					S		Nom	M
+49004010	6	der	DET	ART					S		Nom	M
+49004010	7	auch	ADV	ADV								
+49004010	8	hinaufgestiegen	VERB	VVPP		Inf						
+49004010	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004010	10	über	ADP	APPR								
+49004010	11	aller	PRON	PIS					P		Nom	
+49004010	12	Himmel	NOUN	NN					S		Nom	M
+49004010	13	auf	ADP	PTKVZ								
+49004010	14	daß	SCONJ	KOUS								
+49004010	15	er	PRON	PPER				3	S		Nom	M
+49004010	16	alle	PRON	PIS					S		Nom	N
+49004010	17	erfüllen	VERB	VVFIN		Fin	Past	3	S	Ind		
+49004011	1	und	CCONJ	KON								
+49004011	2	er	PRON	PPER				3	S		Nom	M
+49004011	3	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004011	4	der	DET	ART					S		Nom	F
+49004011	5	ein	DET	ART					S		Acc	M
+49004011	6	geben	VERB	VVPP		Part						
+49004011	7	als	ADP	KOKOM								
+49004011	8	Apostel	NOUN	NN					P		Nom	M
+49004011	9	und	CCONJ	KON								
+49004011	10	anderer	PRON	PIS					P		Nom	
+49004011	11	als	ADP	KOKOM								
+49004011	12	Prophet	NOUN	NN					P		Nom	M
+49004011	13	und	CCONJ	KON								
+49004011	14	anderer	PRON	PIS					P		Nom	
+49004011	15	als	ADP	KOKOM								
+49004011	16	Evangelist	NOUN	NN					P		Nom	M
+49004011	17	und	CCONJ	KON								
+49004011	18	anderer	PRON	PIS					P		Nom	
+49004011	19	als	ADP	KOKOM								
+49004011	20	Hirt	NOUN	NN					P		Nom	M
+49004011	21	und	CCONJ	KON								
+49004011	22	Lehrer	NOUN	NN					P		Nom	M
+49004012	1	zu	ADP	APPRART					S		Dat	F
+49004012	2	Vollendung	NOUN	NN					S		Nom	F
+49004012	3	der	DET	ART					S		Nom	M
+49004012	4	heilig	NOUN	NN					P		Dat	
+49004012	5	für	ADP	APPR								
+49004012	6	der	DET	ART					S		Nom	N
+49004012	7	Werk	NOUN	NN					S		Nom	N
+49004012	8	der	DET	ART					S		Gen	M
+49004012	9	Dienst	NOUN	NN					S		Gen	M
+49004012	10	für	ADP	APPR								
+49004012	11	der	DET	ART					S		Nom	F
+49004012	12	Auferbauung	NOUN	NN					S		Nom	F
+49004012	13	der	DET	ART					S		Gen	M
+49004012	14	Leibe	NOUN	NN					S		Gen	M
+49004012	15	Christi	PROPN	NE					S		Nom	
+49004013	1	bis	CCONJ	KON								
+49004013	2	wir	PRON	PPER				1	P		Nom	
+49004013	3	aller	PRON	PIS					P		Nom	
+49004013	4	hingelangen	VERB	VVPP		Fin	Past	3	P	Ind		
+49004013	5	zu	ADP	PTKVZ								
+49004013	6	der	DET	ART					S		Nom	M
+49004013	7	Einheit	NOUN	NN					S		Nom	F
+49004013	8	der	DET	ART					S		Gen	M
+49004013	9	Glauben	NOUN	NN					S		Gen	M
+49004013	10	und	CCONJ	KON								
+49004013	11	zu	ADP	APPRART					S		Dat	F
+49004013	12	Erkenntnis	NOUN	NN					S		Nom	F
+49004013	13	der	DET	ART					S		Gen	M
+49004013	14	Sohn	PROPN	NE					S		Gen	M
+49004013	15	Gott	NOUN	NN					S		Gen	M
+49004013	16	zu	ADP	PTKVZ								
+49004013	17	der	DET	ART					S		Dat	M
+49004013	18	erwachsen	ADJ	ADJA	Pos				S		Acc	M
+49004013	19	Manne	NOUN	NN					S		Nom	M
+49004013	20	zu	ADP	PTKVZ								
+49004013	21	der	DET	ART					S		Dat	M
+49004013	22	Maß	NOUN	NN					S		Nom	N
+49004013	23	der	DET	ART					S		Gen	M
+49004013	24	voll	ADJ	ADJA	Pos				S		Acc	M
+49004013	25	Wuchses	PROPN	NE					S		Gen	
+49004013	26	der	DET	ART					S		Nom	M
+49004013	27	Fülle	NOUN	NN					S		Nom	F
+49004013	28	der	DET	ART					S		Gen	M
+49004013	29	Christus	PROPN	NE					S		Nom	M
+49004014	1	auf	ADP	PTKVZ								
+49004014	2	daß	SCONJ	KOUS								
+49004014	3	wir	PRON	PPER				1	P		Nom	
+49004014	4	nicht	PART	PTKNEG								
+49004014	5	mehr	ADV	ADV								
+49004014	6	Unmündige	NOUN	NN					P		Nom	
+49004014	7	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+49004014	8	hin	ADV	ADV								
+49004014	9	und	CCONJ	KON								
+49004014	10	Hergeworfen	VERB	VVFIN		Fin	Past	3	P	Sub		
+49004014	11	und	CCONJ	KON								
+49004014	12	umhergetrieben	PROPN	ADJD					P		Nom	
+49004014	13	von	ADP	APPR								
+49004014	14	jeder	DET	PIAT					S		Dat	M
+49004014	15	Wind	NOUN	NN					P		Nom	M
+49004014	16	der	DET	ART					S		Nom	M
+49004014	17	Lehre	NOUN	NN					S		Nom	F
+49004014	18	der	DET	ART					S		Nom	F
+49004014	19	da	ADV	ADV								
+49004014	20	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004014	21	durch	ADP	APPR								
+49004014	22	der	DET	ART					S		Nom	F
+49004014	23	Betrügerei	NOUN	NN					S		Nom	F
+49004014	24	der	DET	ART					S		Nom	M
+49004014	25	Mensch	NOUN	NN					P		Nom	M
+49004014	26	durch	ADP	APPR								
+49004014	27	ihr	DET	PPOSAT					S		Nom	F
+49004014	28	Verschlagenheit	NOUN	NN					S		Nom	F
+49004014	29	zu	ADP	PTKVZ								
+49004014	30	listig	ADV	ADJD	Pos							
+49004014	31	ersonnenem	PROPN	NE					S		Nom	M
+49004014	32	Irrtum	NOUN	NN					S		Nom	M
+49004015	1	sondern	CCONJ	KON								
+49004015	2	der	DET	ART					S		Nom	F
+49004015	3	Wahrheit	NOUN	NN					S		Nom	F
+49004015	4	festhaltend	ADV	ADJD	Pos							
+49004015	5	in	ADP	APPR								
+49004015	6	Liebe	NOUN	NN					S		Nom	F
+49004015	7	lassen	VERB	VVIMP				2	P	Imp		
+49004015	8	uns	PRON	PPER				1	P		Acc	
+49004015	9	in	ADP	APPR								
+49004015	10	alle	PRON	PIS					S		Dat	N
+49004015	11	heranwachsen	VERB	VVINF		Inf						
+49004015	12	zu	ADP	PTKVZ								
+49004015	13	ihm	PRON	PPER				3	S		Dat	M
+49004015	14	hin	ADV	ADV								
+49004015	15	der	DET	ART					S		Nom	M
+49004015	16	der	DET	ART					S		Nom	N
+49004015	17	Haupt	NOUN	NN					S		Nom	N
+49004015	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004015	19	der	DET	ART					S		Nom	M
+49004015	20	Christus	PROPN	NE					S		Nom	M
+49004016	1	aus	ADP	PTKVZ								
+49004016	2	welcher	DET	PWAT					S		Dat	N
+49004016	3	der	DET	ART					S		Nom	M
+49004016	4	ganz	ADJ	ADJA	Pos				S		Nom	F
+49004016	5	Leib	NOUN	NN					S		Nom	M
+49004016	6	wohl	ADV	ADV								
+49004016	7	zusammenfügen	VERB	VVPP		Part						
+49004016	8	und	CCONJ	KON								
+49004016	9	verbinden	VERB	VVPP		Part						
+49004016	10	durch	ADP	APPR								
+49004016	11	jeder	DET	PIAT					S		Nom	N
+49004016	12	Gelenk	NOUN	NN					S		Nom	N
+49004016	13	der	DET	ART					S		Nom	M
+49004016	14	Darreichung	NOUN	NN					S		Nom	F
+49004016	15	nach	ADP	APPR								
+49004016	16	der	DET	ART					S		Nom	M
+49004016	17	Wirksamkeit	NOUN	NN					S		Nom	F
+49004016	18	in	ADP	APPR								
+49004016	19	der	DET	ART					S		Dat	M
+49004016	20	Maß	NOUN	NN					S		Nom	N
+49004016	21	jeder	DET	PIAT					S		Nom	N
+49004016	22	einzeln	PRON	PIS					S		Nom	M
+49004016	23	Teile	NOUN	NN					S		Nom	N
+49004016	24	für	ADP	APPR								
+49004016	25	sich	PRON	PRF				3	S		Acc	
+49004016	26	der	DET	ART					S		Nom	N
+49004016	27	Wachstum	NOUN	NN					S		Nom	N
+49004016	28	der	DET	ART					S		Gen	M
+49004016	29	Leibe	NOUN	NN					S		Gen	M
+49004016	30	bewirken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004016	31	zu	ADP	PTKVZ								
+49004016	32	sein	DET	PPOSAT					S		Dat	F
+49004016	33	Selbstauferbauung	NOUN	NN					S		Nom	F
+49004016	34	in	ADP	APPR								
+49004016	35	Liebe	NOUN	NN					S		Nom	F
+49004017	1	dieser	PRON	PDS					S		Nom	N
+49004017	2	nun	ADV	ADV								
+49004017	3	sagen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004017	4	und	CCONJ	KON								
+49004017	5	bezeugen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004017	6	ich	PRON	PPER				1	S		Nom	
+49004017	7	in	ADP	APPRART					S		Dat	N
+49004017	8	Herr	NOUN	NN					S		Acc	M
+49004017	9	daß	SCONJ	KOUS								
+49004017	10	ihr	PRON	PPOSAT				3	S		Dat	F
+49004017	11	forthin	ADV	PROAV								
+49004017	12	nicht	PART	PTKNEG								
+49004017	13	wandeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004017	14	wie	ADP	KOKOM								
+49004017	15	auch	ADV	ADV								
+49004017	16	der	DET	ART					S		Nom	F
+49004017	17	übrig	ADJ	ADJA	Pos				S		Dat	N
+49004017	18	Nation	NOUN	NN					P		Nom	F
+49004017	19	wandeln	VERB	VVINF		Inf						
+49004017	20	in	ADP	APPR								
+49004017	21	Eitelkeit	NOUN	NN					S		Nom	F
+49004017	22	ihr	DET	PPOSAT					S		Gen	M
+49004017	23	Sinn	PROPN	NN					S		Gen	
+49004018	1	verfinstern	VERB	VVPP		Part						
+49004018	2	an	ADP	APPRART					S		Dat	M
+49004018	3	verstand	NOUN	NN					S		Nom	M
+49004018	4	entfremden	VERB	VVPP		Part						
+49004018	5	der	DET	ART					S		Dat	M
+49004018	6	Leben	NOUN	NN					S		Nom	N
+49004018	7	Gott	NOUN	NN					S		Gen	M
+49004018	8	wegen	ADP	APPR								
+49004018	9	der	DET	ART					S		Nom	M
+49004018	10	Unwissenheit	NOUN	NN					S		Nom	F
+49004018	11	der	DET	ART					S		Nom	F
+49004018	12	in	ADP	APPR								
+49004018	13	ihnen	PRON	PPER				3	P		Dat	
+49004018	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004018	15	wegen	ADP	APPR								
+49004018	16	der	DET	ART					S		Nom	M
+49004018	17	Verstockung	NOUN	NN					S		Nom	F
+49004018	18	ihr	DET	PPOSAT					S		Gen	M
+49004018	19	Herzens	NOUN	NN					P		Nom	N
+49004019	1	welcher	DET	PWAT					S		Nom	F
+49004019	2	da	ADV	ADV								
+49004019	3	sie	PRON	PPER				3	P		Nom	
+49004019	4	aller	PRON	PIS					P		Nom	
+49004019	5	Empfindlichkeit	NOUN	NN					S		Nom	F
+49004019	6	verlieren	VERB	VVPP		Part						
+49004019	7	sich	PRON	PRF				3	S		Acc	
+49004019	8	selbst	ADV	ADV								
+49004019	9	der	DET	ART					S		Nom	M
+49004019	10	Ausschweifung	NOUN	NN					S		Nom	F
+49004019	11	hingeben	VERB	VVPP		Part						
+49004019	12	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49004019	13	aller	PRON	PIS					P		Nom	
+49004019	14	Unreinigkeit	NOUN	NN					S		Nom	F
+49004019	15	mit	ADP	APPR								
+49004019	16	Gier	NOUN	NN					S		Nom	F
+49004019	17	ausüben	VERB	VVIZU		Inf						
+49004020	1	ihr	PRON	PPER				2	P		Nom	
+49004020	2	aber	CCONJ	KON								
+49004020	3	habben	VERB	VAFIN				2	P	Imp		
+49004020	4	der	DET	ART					S		Acc	M
+49004020	5	Christus	PROPN	NE					S		Nom	M
+49004020	6	nicht	PART	PTKNEG								
+49004020	7	also	ADV	ADV								
+49004020	8	lernen	VERB	VVPP		Part						
+49004021	1	wenn	SCONJ	KOUS								
+49004021	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49004021	3	anders	ADV	ADV								
+49004021	4	ihn	PRON	PPER				3	S		Acc	M
+49004021	5	gehören	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004021	6	habben	VERB	VAFIN				2	P	Imp		
+49004021	7	und	CCONJ	KON								
+49004021	8	in	ADP	APPR								
+49004021	9	ihm	PRON	PPER				3	S		Dat	M
+49004021	10	lehren	VERB	VVPP		Part						
+49004021	11	werden	AUX	VAPP		Part						
+49004021	12	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49004021	13	wie	ADP	KOKOM								
+49004021	14	der	DET	ART					S		Nom	F
+49004021	15	Wahrheit	NOUN	NN					S		Nom	F
+49004021	16	in	ADP	APPR								
+49004021	17	der	DET	ART					S		Dat	M
+49004021	18	Jesus	PROPN	PPER					S		Nom	M
+49004021	19	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004022	1	daß	SCONJ	KOUS								
+49004022	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49004022	3	was	PRON	PWS					S		Nom	N
+49004022	4	der	DET	ART					S		Acc	M
+49004022	5	früh	ADJ	ADJA	Cmp				S		Gen	N
+49004022	6	Lebenswandel	NOUN	NN					S		Nom	M
+49004022	7	betreffen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004022	8	ablegen	VERB	VVPP		Part						
+49004022	9	habben	VERB	VAFIN				2	P	Imp		
+49004022	10	der	DET	ART					S		Acc	M
+49004022	11	alt	ADJ	ADJA	Pos				S		Acc	M
+49004022	12	Mensch	NOUN	NN					P		Nom	M
+49004022	13	der	DET	ART					S		Nom	M
+49004022	14	nach	ADP	APPR								
+49004022	15	der	DET	ART					S		Acc	M
+49004022	16	betrügerisch	ADJ	ADJA	Pos				S		Acc	M
+49004022	17	Lüst	NOUN	NN					P		Nom	M
+49004022	18	verderben	VERB	VVPP		Part						
+49004022	19	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004023	1	aber	CCONJ	KON								
+49004023	2	erneuern	VERB	VVPP		Fin	Pres	3	S	Ind		
+49004023	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004023	4	in	ADP	APPR								
+49004023	5	der	DET	ART					S		Dat	M
+49004023	6	Geist	NOUN	NN					P		Nom	M
+49004023	7	eurer	PRON	PPOSAT							Gen	
+49004023	8	Gesinnung	NOUN	NN					S		Nom	F
+49004024	1	und	CCONJ	KON								
+49004024	2	anziehen	VERB	VVPP		Part						
+49004024	3	habben	VERB	VAFIN				2	P	Imp		
+49004024	4	der	DET	ART					S		Acc	M
+49004024	5	neu	ADJ	ADJA	Pos				S		Acc	M
+49004024	6	Mensch	NOUN	NN					P		Nom	M
+49004024	7	der	DET	ART					S		Nom	M
+49004024	8	nach	ADP	APPR								
+49004024	9	Gott	NOUN	NN					S		Nom	M
+49004024	10	schaffen	VERB	VVPP		Part						
+49004024	11	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004024	12	in	ADP	APPR								
+49004024	13	wahrhaftig	ADJ	ADJA	Pos				S		Nom	M
+49004024	14	Gerechtigkeit	NOUN	NN					S		Nom	F
+49004024	15	und	CCONJ	KON								
+49004024	16	Heiligkeit	NOUN	NN					S		Nom	F
+49004025	1	deshalb	ADV	PROAV								
+49004025	2	da	ADV	ADV								
+49004025	3	ihr	PRON	PPOSAT				3	S		Dat	F
+49004025	4	der	DET	ART					S		Nom	F
+49004025	5	Lüge	NOUN	NN					S		Nom	F
+49004025	6	ablegen	VERB	VVPP		Part						
+49004025	7	habben	VERB	VAFIN				2	P	Imp		
+49004025	8	reden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49004025	9	Wahrheit	NOUN	NN					S		Nom	F
+49004025	10	ein	DET	ART					S		Nom	N
+49004025	11	jeder	PRON	PIS					S		Nom	M
+49004025	12	mit	ADP	APPR								
+49004025	13	sein	DET	PPOSAT					S		Dat	M
+49004025	14	Nächsten	NOUN	ADJA					S		Nom	
+49004025	15	denn	CCONJ	KON								
+49004025	16	wir	PRON	PPER				1	P		Nom	
+49004025	17	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49004025	18	Glied	NOUN	NN					P		Nom	N
+49004025	19	voneinander	ADV	ADV								
+49004026	1	Zürnet	ADP	NN								
+49004026	2	und	CCONJ	KON								
+49004026	3	Sündiget	NOUN	NE					S		Nom	N
+49004026	4	nicht	PART	PTKNEG								
+49004026	5	der	DET	ART					S		Nom	F
+49004026	6	Sonne	NOUN	NN					S		Nom	F
+49004026	7	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004026	8	nicht	PART	PTKNEG								
+49004026	9	unter	ADP	APPR								
+49004026	10	über	ADP	APPR								
+49004026	11	eurer	DET	PPOSAT					S		Dat	M
+49004026	12	Zorn	NOUN	NN					S		Nom	M
+49004027	1	und	CCONJ	KON								
+49004027	2	Gebet	VERB	VVPP		Part						
+49004027	3	nicht	PART	PTKNEG								
+49004027	4	Raum	NOUN	NN					S		Nom	M
+49004027	5	der	DET	ART					S		Dat	M
+49004027	6	Teufel	PROPN	NE					S		Nom	M
+49004028	1	wer	PRON	PWS					S		Nom	M
+49004028	2	stehlen	VERB	VVPP		Part						
+49004028	3	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004028	4	stehlen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004028	5	nicht	PART	PTKNEG								
+49004028	6	mehr	ADV	ADV								
+49004028	7	sondern	CCONJ	KON								
+49004028	8	arbeiten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004028	9	vielmehr	ADV	ADV								
+49004028	10	und	CCONJ	KON								
+49004028	11	wirken	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004028	12	mit	ADP	APPR								
+49004028	13	sein	DET	PPOSAT					S		Acc	M
+49004028	14	Hand	NOUN	NN					P		Nom	F
+49004028	15	der	DET	ART					S		Nom	N
+49004028	16	gut	ADV	ADV								
+49004028	17	auf	ADP	PTKVZ								
+49004028	18	daß	SCONJ	KOUS								
+49004028	19	er	PRON	PPER				3	S		Nom	M
+49004028	20	der	DET	ART					S		Dat	M
+49004028	21	Dürftige	NOUN	NN					P		Nom	F
+49004028	22	mitteilen	VERB	VVIZU		Inf						
+49004028	23	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49004029	1	kein	DET	PIAT					S		Nom	N
+49004029	2	faul	ADJ	ADJA	Pos				S		Nom	N
+49004029	3	Rede	NOUN	NN					S		Nom	F
+49004029	4	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49004029	5	aus	ADP	PTKVZ								
+49004029	6	eurer	DET	PPOSAT					S		Dat	M
+49004029	7	Mund	NOUN	NN					S		Acc	M
+49004029	8	sondern	CCONJ	KON								
+49004029	9	der	DET	ART					S		Nom	N
+49004029	10	irgend	ADV	ADV								
+49004029	11	gut	ADV	ADJD	Pos							
+49004029	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49004029	13	zu	ADP	APPRART					S		Dat	F
+49004029	14	notwendig	ADJ	ADJA	Pos				S		Acc	M
+49004029	15	Erbauung	NOUN	NN					S		Nom	F
+49004029	16	auf	ADP	PTKVZ								
+49004029	17	daß	SCONJ	KOUS								
+49004029	18	es	PRON	PPER				3	S		Nom	N
+49004029	19	der	DET	ART					S		Acc	M
+49004029	20	hörend	NOUN	ADJA					P		Dat	
+49004029	21	Gnade	NOUN	NN					S		Nom	F
+49004029	22	Darreiche	ADJ	ADJA	Pos				S		Nom	F
+49004030	1	und	CCONJ	KON								
+49004030	2	Betrübet	PROPN	NE					S		Nom	
+49004030	3	nicht	PART	PTKNEG								
+49004030	4	der	DET	ART					S		Acc	M
+49004030	5	heilig	NOUN	NN					P		Dat	
+49004030	6	Geist	NOUN	NN					S		Nom	M
+49004030	7	Gott	NOUN	NN					S		Gen	M
+49004030	8	durch	ADP	APPR								
+49004030	9	welcher	DET	PWAT					S		Acc	M
+49004030	10	ihr	PRON	PPOSAT				3	S		Dat	F
+49004030	11	versiegeln	VERB	VVPP		Part						
+49004030	12	werden	AUX	VAPP		Part						
+49004030	13	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49004030	14	auf	ADP	PTKVZ								
+49004030	15	der	DET	ART					S		Acc	M
+49004030	16	Tag	NOUN	NN					S		Nom	M
+49004030	17	der	DET	ART					S		Nom	M
+49004030	18	Erlösung	NOUN	NN					S		Nom	F
+49004031	1	alle	PRON	PIS					P		Nom	
+49004031	2	Bitterkeit	NOUN	NN					S		Nom	F
+49004031	3	und	CCONJ	KON								
+49004031	4	Wut	NOUN	NN					S		Nom	F
+49004031	5	und	CCONJ	KON								
+49004031	6	Zorn	NOUN	NN					S		Nom	M
+49004031	7	und	CCONJ	KON								
+49004031	8	Geschrei	NOUN	NN					S		Nom	N
+49004031	9	und	CCONJ	KON								
+49004031	10	Lästerung	NOUN	NN					S		Nom	F
+49004031	11	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49004031	12	von	ADP	APPR								
+49004031	13	euch	PRON	PPER				2	P		Dat	
+49004031	14	weggetan	VERB	VVPP		Part						
+49004031	15	samt	ADP	APPR								
+49004031	16	aller	DET	PIAT					P		Gen	
+49004031	17	Bosheit	NOUN	NN					S		Nom	F
+49004032	1	Seid	NOUN	VAFIN					S		Acc	N
+49004032	2	aber	CCONJ	KON								
+49004032	3	gegeneinander	ADV	ADV								
+49004032	4	gütig	ADV	ADJD	Pos							
+49004032	5	mitleidig	ADV	ADJD	Pos							
+49004032	6	sich	PRON	PRF				3	P		Dat	
+49004032	7	vergebend	ADV	ADJD	Pos							
+49004032	8	gleichwie	CCONJ	ADV								
+49004032	9	auch	ADV	ADV								
+49004032	10	Gott	NOUN	NN					S		Nom	M
+49004032	11	in	ADP	APPR								
+49004032	12	Christo	PROPN	NE					S		Nom	M
+49004032	13	euch	PRON	PPER				2	P		Dat	
+49004032	14	vergeben	VERB	VVPP		Part						
+49004032	15	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005001	1	Seid	NOUN	VAFIN					S		Acc	N
+49005001	2	nun	ADV	ADV								
+49005001	3	Nachahmer	NOUN	NN					P		Nom	M
+49005001	4	Gott	NOUN	NN					S		Gen	M
+49005001	5	als	ADP	KOKOM								
+49005001	6	geliebt	ADJ	ADJA	Pos				S		Nom	F
+49005001	7	Kind	NOUN	NN					P		Nom	N
+49005002	1	und	CCONJ	KON								
+49005002	2	wandeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005002	3	in	ADP	APPR								
+49005002	4	Liebe	NOUN	NN					S		Nom	F
+49005002	5	gleichwie	CCONJ	ADV								
+49005002	6	auch	ADV	ADV								
+49005002	7	der	DET	ART					S		Nom	M
+49005002	8	Christus	PROPN	NE					S		Nom	M
+49005002	9	uns	PRON	PPER				1	P		Acc	
+49005002	10	lieben	VERB	VVPP		Part						
+49005002	11	und	CCONJ	KON								
+49005002	12	sich	PRON	PRF				3	S		Acc	
+49005002	13	selbst	ADV	ADV								
+49005002	14	für	ADP	APPR								
+49005002	15	uns	PRON	PPER				1	P		Acc	
+49005002	16	hingeben	VERB	VVPP		Part						
+49005002	17	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005002	18	als	ADP	KOKOM								
+49005002	19	Darbringung	NOUN	NN					S		Nom	F
+49005002	20	und	CCONJ	KON								
+49005002	21	Schlachtopfer	NOUN	NN					S		Nom	M
+49005002	22	Gott	NOUN	NN					S		Nom	M
+49005002	23	zu	ADP	PTKVZ								
+49005002	24	ein	DET	ART					S		Dat	M
+49005002	25	duftend	ADJ	ADJA	Pos				S		Acc	M
+49005002	26	Wohlgeruch	NOUN	NN					S		Nom	M
+49005003	1	Hurerei	NOUN	NN					S		Nom	F
+49005003	2	aber	CCONJ	KON								
+49005003	3	und	CCONJ	KON								
+49005003	4	aller	PRON	PIS					P		Nom	
+49005003	5	Unreinigkeit	NOUN	NN					S		Nom	F
+49005003	6	oder	CCONJ	KON								
+49005003	7	Habsucht	NOUN	NN					S		Nom	F
+49005003	8	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49005003	9	nicht	PART	PTKNEG								
+49005003	10	einmal	ADV	ADV								
+49005003	11	unter	ADP	APPR								
+49005003	12	euch	PRON	PPER				2	P		Dat	
+49005003	13	nennen	VERB	VVPP		Part						
+49005003	14	gleichwie	CCONJ	ADV								
+49005003	15	es	PRON	PPER				3	S		Nom	N
+49005003	16	heilig	NOUN	NN					P		Dat	
+49005003	17	geziemt	ADV	PTKVZ								
+49005004	1	auch	ADV	ADV								
+49005004	2	Schändlichkeit	NOUN	NN					S		Nom	F
+49005004	3	und	CCONJ	KON								
+49005004	4	albern	ADJ	ADJA	Pos				S		Nom	N
+49005004	5	Geschwätz	NOUN	NN					S		Nom	N
+49005004	6	oder	CCONJ	KON								
+49005004	7	Witzelei	PROPN	NE					S		Nom	N
+49005004	8	welcher	DET	PWAT					S		Nom	F
+49005004	9	sich	PRON	PRF				3	S		Acc	
+49005004	10	nicht	PART	PTKNEG								
+49005004	11	Geziem	VERB	VVPP		Part						
+49005004	12	sondern	CCONJ	KON								
+49005004	13	vielmehr	ADV	ADV								
+49005004	14	Danksagung	NOUN	NN					S		Nom	F
+49005005	1	denn	CCONJ	KON								
+49005005	2	dieser	DET	PDAT					S		Nom	N
+49005005	3	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005005	4	und	CCONJ	KON								
+49005005	5	erkennen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005005	6	ihr	PRON	PPOSAT				3	S		Dat	F
+49005005	7	daß	SCONJ	KOUS								
+49005005	8	kein	DET	PIAT					S		Nom	N
+49005005	9	Hurer	NOUN	NN					S		Nom	M
+49005005	10	oder	CCONJ	KON								
+49005005	11	Unreiner	NOUN	ADJD					S		Nom	M
+49005005	12	oder	CCONJ	KON								
+49005005	13	Habsüchtiger	NOUN	NN					S		Nom	M
+49005005	14	welcher	PRON	PWAT					S		Nom	M
+49005005	15	ein	DET	ART					S		Nom	N
+49005005	16	Götzendiener	NOUN	NN					P		Nom	M
+49005005	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005005	18	ein	DET	ART					S		Nom	N
+49005005	19	Erbteil	NOUN	NN					S		Nom	M
+49005005	20	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005005	21	in	ADP	APPR								
+49005005	22	der	DET	ART					S		Dat	M
+49005005	23	Reiche	PROPN	NE					S		Nom	M
+49005005	24	Christi	PROPN	NE					S		Nom	
+49005005	25	und	CCONJ	KON								
+49005005	26	Gott	NOUN	NN					S		Gen	M
+49005006	1	niemand	PRON	PIS					S		Nom	M
+49005006	2	verführen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49005006	3	euch	PRON	PPER				2	P		Dat	
+49005006	4	mit	ADP	APPR								
+49005006	5	eitel	ADJ	ADJA	Pos				S		Acc	M
+49005006	6	Wort	NOUN	NN					P		Dat	N
+49005006	7	denn	CCONJ	KON								
+49005006	8	dieser	PRON	PDAT					S		Nom	M
+49005006	9	Ding	NOUN	NN					P		Nom	N
+49005006	10	wegen	ADP	APPR								
+49005006	11	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005006	12	der	DET	ART					S		Nom	M
+49005006	13	Zorn	NOUN	NN					S		Nom	M
+49005006	14	Gott	NOUN	NN					S		Gen	M
+49005006	15	über	ADP	APPR								
+49005006	16	der	DET	ART					S		Nom	F
+49005006	17	Sohn	NOUN	NN					P		Nom	M
+49005006	18	der	DET	ART					S		Gen	M
+49005006	19	Ungehorsam	PROPN	NE					S		Gen	
+49005007	1	Seid	NOUN	VAFIN					S		Acc	N
+49005007	2	nun	ADV	ADV								
+49005007	3	nicht	PART	PTKNEG								
+49005007	4	ihr	DET	PPOSAT					S		Nom	F
+49005007	5	Mitgenoss	NOUN	NN					P		Nom	M
+49005008	1	denn	CCONJ	KON								
+49005008	2	einst	ADV	ADV								
+49005008	3	Waret	VERB	VAFIN		Fin	Past	2	P	Ind		
+49005008	4	ihr	PRON	PPOSAT				3	S		Dat	F
+49005008	5	Finsternis	NOUN	NN					S		Nom	F
+49005008	6	jetzt	ADV	ADV								
+49005008	7	aber	CCONJ	KON								
+49005008	8	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49005008	9	ihr	PRON	PPOSAT				3	S		Dat	F
+49005008	10	Licht	NOUN	NN					S		Nom	N
+49005008	11	in	ADP	APPR								
+49005008	12	der	DET	ART					S		Dat	M
+49005008	13	Herr	NOUN	NN					S		Acc	M
+49005008	14	wandeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005008	15	als	ADP	KOKOM								
+49005008	16	Kind	NOUN	NN					P		Nom	N
+49005008	17	der	DET	ART					S		Gen	M
+49005008	18	Licht	NOUN	NN					S		Nom	N
+49005009	1	denn	CCONJ	KON								
+49005009	2	der	DET	ART					S		Nom	F
+49005009	3	Frucht	NOUN	NN					S		Nom	F
+49005009	4	der	DET	ART					S		Gen	M
+49005009	5	Licht	NOUN	NN					S		Nom	N
+49005009	6	bestehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005009	7	in	ADP	APPR								
+49005009	8	aller	DET	PIAT					P		Gen	
+49005009	9	Gütigkeit	NOUN	NN					S		Nom	F
+49005009	10	und	CCONJ	KON								
+49005009	11	Gerechtigkeit	NOUN	NN					S		Nom	F
+49005009	12	und	CCONJ	KON								
+49005009	13	Wahrheit	NOUN	NN					S		Nom	F
+49005010	1	indem	SCONJ	KOUS								
+49005010	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49005010	3	Prüfet	NOUN	ADJD					S		Nom	F
+49005010	4	was	PRON	PWS					S		Nom	N
+49005010	5	der	DET	ART					S		Dat	M
+49005010	6	Herr	NOUN	NN					S		Acc	M
+49005010	7	wohlgefällig	ADV	ADJD	Pos							
+49005010	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005011	1	und	CCONJ	KON								
+49005011	2	habet	VERB	VVPP				2	P	Imp		
+49005011	3	nicht	PART	PTKNEG								
+49005011	4	Gemeinschaft	NOUN	NN					S		Nom	F
+49005011	5	mit	ADP	APPR								
+49005011	6	der	DET	ART					S		Acc	M
+49005011	7	unfruchtbar	ADJ	ADJA	Pos				S		Acc	M
+49005011	8	Werk	NOUN	NN					P		Dat	N
+49005011	9	der	DET	ART					S		Nom	M
+49005011	10	Finsternis	NOUN	NN					S		Nom	F
+49005011	11	vielmehr	ADV	ADV								
+49005011	12	aber	CCONJ	KON								
+49005011	13	Strafet	PROPN	NE					S		Nom	N
+49005011	14	sie	PRON	PPER				3	P		Nom	
+49005011	15	auch	ADV	ADV								
+49005012	1	denn	CCONJ	KON								
+49005012	2	was	PRON	PWS					S		Nom	N
+49005012	3	heimlich	ADV	ADJD	Pos							
+49005012	4	von	ADP	APPR								
+49005012	5	ihnen	PRON	PPER				3	P		Dat	
+49005012	6	geschehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005012	7	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005012	8	schändlich	ADV	ADJD	Pos							
+49005012	9	selbst	ADV	ADV								
+49005012	10	zu	ADP	PTKVZ								
+49005012	11	sagen	VERB	VVINF		Inf						
+49005013	1	alle	PRON	PIS					S		Nom	N
+49005013	2	aber	CCONJ	KON								
+49005013	3	was	PRON	PWS					S		Nom	N
+49005013	4	bloßgestellen	VERB	VVPP		Part						
+49005013	5	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005013	6	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005013	7	durch	ADP	APPR								
+49005013	8	der	DET	ART					S		Nom	N
+49005013	9	Licht	NOUN	NN					S		Nom	N
+49005013	10	offenbar	ADV	ADJD	Pos							
+49005013	11	machen	VERB	VVPP		Part						
+49005013	12	denn	CCONJ	KON								
+49005013	13	der	DET	ART					S		Nom	N
+49005013	14	Licht	NOUN	NN					S		Nom	N
+49005013	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005013	16	es	PRON	PPER				3	S		Nom	N
+49005013	17	welcher	DET	PWAT					S		Acc	N
+49005013	18	alle	PRON	PIS					S		Nom	N
+49005013	19	offenbar	ADV	ADJD	Pos							
+49005013	20	machen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005014	1	deshalb	ADV	PROAV								
+49005014	2	sagen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005014	3	er	PRON	PPER				3	S		Nom	M
+49005014	4	Wache	NOUN	NN					S		Nom	F
+49005014	5	auf	ADP	PTKVZ								
+49005014	6	der	DET	ART					S		Nom	M
+49005014	7	du	PRON	PPER				2	S		Nom	
+49005014	8	schläfst	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005014	9	und	CCONJ	KON								
+49005014	10	stehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49005014	11	auf	ADP	PTKVZ								
+49005014	12	aus	ADP	PTKVZ								
+49005014	13	der	DET	ART					S		Acc	M
+49005014	14	tote	NOUN	NN					P		Nom	
+49005014	15	und	CCONJ	KON								
+49005014	16	der	DET	ART					S		Nom	M
+49005014	17	Christus	PROPN	NE					S		Nom	M
+49005014	18	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005014	19	dir	PRON	PPER				2	S		Dat	
+49005014	20	leuchten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+49005015	1	sehet	VERB	VVIMP		Fin	Pres	3	S	Ind		
+49005015	2	nun	ADV	ADV								
+49005015	3	zu	ADP	PTKVZ								
+49005015	4	wie	ADP	KOKOM								
+49005015	5	ihr	PRON	PPOSAT				3	S		Dat	F
+49005015	6	sorgfältig	ADV	ADJD	Pos							
+49005015	7	wandeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005015	8	nicht	PART	PTKNEG								
+49005015	9	als	ADP	KOKOM								
+49005015	10	Unweise	NOUN	NN					S		Nom	F
+49005015	11	sondern	CCONJ	KON								
+49005015	12	als	ADP	KOKOM								
+49005015	13	Weise	NOUN	NN					S		Nom	F
+49005016	1	der	DET	ART					S		Nom	F
+49005016	2	gelegen	ADJ	ADJA	Pos				S		Nom	F
+49005016	3	Zeit	NOUN	NN					S		Nom	F
+49005016	4	auskaufend	ADV	ADJD	Pos							
+49005016	5	denn	CCONJ	KON								
+49005016	6	der	DET	ART					S		Nom	F
+49005016	7	Tag	NOUN	NN					P		Nom	M
+49005016	8	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49005016	9	böse	ADV	ADJD	Pos							
+49005017	1	darum	ADV	PROAV								
+49005017	2	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49005017	3	nicht	PART	PTKNEG								
+49005017	4	töricht	ADV	ADJD	Pos							
+49005017	5	sondern	CCONJ	KON								
+49005017	6	verständig	ADV	ADJD	Pos							
+49005017	7	was	PRON	PWS					S		Nom	N
+49005017	8	der	DET	ART					S		Nom	M
+49005017	9	Wille	NOUN	NN					S		Nom	M
+49005017	10	der	DET	ART					S		Gen	M
+49005017	11	Herr	NOUN	NN					S		Acc	M
+49005017	12	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49005018	1	und	CCONJ	KON								
+49005018	2	Berauschet	PROPN	NE					S		Nom	F
+49005018	3	euch	PRON	PPER				2	P		Dat	
+49005018	4	nicht	PART	PTKNEG								
+49005018	5	mit	ADP	APPR								
+49005018	6	Wein	NOUN	NN					S		Nom	M
+49005018	7	in	ADP	APPR								
+49005018	8	welcher	DET	PWAT					S		Dat	N
+49005018	9	Ausschweifung	NOUN	NN					S		Nom	F
+49005018	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005018	11	sondern	CCONJ	KON								
+49005018	12	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005018	13	mit	ADP	APPR								
+49005018	14	der	DET	ART					S		Dat	M
+49005018	15	Geist	NOUN	NN					P		Nom	M
+49005018	16	erfüllen	VERB	VVPP		Part						
+49005019	1	redend	ADV	ADJD	Pos							
+49005019	2	zueinander	ADV	ADV								
+49005019	3	in	ADP	APPR								
+49005019	4	Psalme	NOUN	NN					P		Nom	F
+49005019	5	und	CCONJ	KON								
+49005019	6	Loblieder	NOUN	NN					P		Dat	M
+49005019	7	und	CCONJ	KON								
+49005019	8	geistlich	ADJ	ADJA	Pos				S		Acc	M
+49005019	9	Lied	NOUN	NN					P		Dat	N
+49005019	10	singend	ADV	ADJD	Pos							
+49005019	11	und	CCONJ	KON								
+49005019	12	spielend	ADV	ADJD	Pos							
+49005019	13	der	DET	ART					S		Dat	M
+49005019	14	Herr	NOUN	NN					S		Acc	M
+49005019	15	in	ADP	APPR								
+49005019	16	eurer	DET	PPOSAT					S		Dat	M
+49005019	17	Herz	NOUN	NN					S		Nom	N
+49005020	1	Danksagend	ADV	ADJD	Pos							
+49005020	2	allezeit	ADV	ADV								
+49005020	3	für	ADP	APPR								
+49005020	4	alle	PRON	PIS					S		Nom	N
+49005020	5	der	DET	ART					S		Dat	M
+49005020	6	Gott	NOUN	NN					S		Nom	M
+49005020	7	und	CCONJ	KON								
+49005020	8	Vater	NOUN	NN					S		Nom	M
+49005020	9	in	ADP	APPRART					S		Dat	N
+49005020	10	Name	NOUN	NN					P		Nom	M
+49005020	11	unser	DET	PPOSAT					S		Gen	M
+49005020	12	Herr	NOUN	NN					S		Acc	M
+49005020	13	Jesu	PROPN	NE					S		Gen	
+49005020	14	Christi	PROPN	NE					S		Nom	
+49005021	1	sich	PRON	PRF				3	P		Dat	
+49005021	2	unterwürfig	ADV	ADJD	Pos							
+49005021	3	in	ADP	APPR								
+49005021	4	der	DET	ART					S		Nom	M
+49005021	5	Furcht	NOUN	NN					S		Nom	F
+49005021	6	Christi	PROPN	NE					S		Nom	
+49005022	1	ihr	PRON	PPER				2	P		Nom	
+49005022	2	Weiber	NOUN	NN					P		Nom	M
+49005022	3	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49005022	4	unterwürfig	ADV	ADJD	Pos							
+49005022	5	euren	DET	PPOSAT					S		Acc	M
+49005022	6	eigen	ADJ	ADJA	Pos				S		Acc	M
+49005022	7	Mann	NOUN	NN					P		Dat	M
+49005022	8	als	ADP	KOKOM								
+49005022	9	der	DET	ART					S		Dat	M
+49005022	10	Herr	NOUN	NN					S		Acc	M
+49005023	1	denn	CCONJ	KON								
+49005023	2	der	DET	ART					S		Nom	M
+49005023	3	Mann	NOUN	NN					S		Nom	M
+49005023	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005023	5	der	DET	ART					S		Nom	N
+49005023	6	Haupt	NOUN	NN					S		Nom	N
+49005023	7	der	DET	ART					S		Gen	M
+49005023	8	Weibe	NOUN	NN					S		Gen	N
+49005023	9	wie	ADP	KOKOM								
+49005023	10	auch	ADV	ADV								
+49005023	11	der	DET	ART					S		Nom	M
+49005023	12	Christus	PROPN	NE					S		Nom	M
+49005023	13	der	DET	ART					S		Nom	N
+49005023	14	Haupt	NOUN	NN					S		Nom	N
+49005023	15	der	DET	ART					S		Nom	M
+49005023	16	Versammlung	NOUN	NN					S		Nom	F
+49005023	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005023	18	er	PRON	PPER				3	S		Nom	M
+49005023	19	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005023	20	der	DET	ART					S		Gen	M
+49005023	21	Leibe	NOUN	NN					S		Gen	M
+49005023	22	Heiland	PROPN	NE					S		Nom	M
+49005024	1	aber	CCONJ	KON								
+49005024	2	gleichwie	CCONJ	ADV								
+49005024	3	der	DET	ART					S		Nom	F
+49005024	4	Versammlung	NOUN	NN					S		Nom	F
+49005024	5	der	DET	ART					S		Dat	M
+49005024	6	Christus	PROPN	NE					S		Nom	M
+49005024	7	unterwerfen	VERB	VVPP		Part						
+49005024	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005024	9	also	ADV	ADV								
+49005024	10	auch	ADV	ADV								
+49005024	11	der	DET	ART					S		Nom	F
+49005024	12	Weiber	NOUN	NN					P		Nom	M
+49005024	13	ihr	DET	PPOSAT					S		Acc	M
+49005024	14	Mann	NOUN	NN					P		Dat	M
+49005024	15	in	ADP	APPR								
+49005024	16	alle	PRON	PIS					S		Dat	N
+49005025	1	ihr	PRON	PPER				2	P		Nom	
+49005025	2	Mann	NOUN	NN					P		Nom	M
+49005025	3	Liebet	PROPN	NE					S		Nom	
+49005025	4	eure	DET	PPOSAT					S		Nom	F
+49005025	5	Weiber	NOUN	NN					P		Nom	M
+49005025	6	gleichwie	CCONJ	ADV								
+49005025	7	auch	ADV	ADV								
+49005025	8	der	DET	ART					S		Nom	M
+49005025	9	Christus	PROPN	NE					S		Nom	M
+49005025	10	der	DET	ART					S		Nom	F
+49005025	11	Versammlung	NOUN	NN					S		Nom	F
+49005025	12	lieben	VERB	VVPP		Part						
+49005025	13	und	CCONJ	KON								
+49005025	14	sich	PRON	PRF				3	S		Acc	
+49005025	15	selbst	ADV	ADV								
+49005025	16	für	ADP	APPR								
+49005025	17	sie	PRON	PPER				3	P		Nom	
+49005025	18	hingeben	VERB	VVPP		Part						
+49005025	19	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005026	1	auf	ADP	PTKVZ								
+49005026	2	daß	SCONJ	KOUS								
+49005026	3	er	PRON	PPER				3	S		Nom	M
+49005026	4	sie	PRON	PPER				3	P		Nom	
+49005026	5	heiligen	VERB	VVFIN		Fin	Past	3	S	Ind		
+49005026	6	sie	PRON	PPER				3	P		Nom	
+49005026	7	reinigend	ADV	ADJD	Pos							
+49005026	8	durch	ADP	APPR								
+49005026	9	der	DET	ART					S		Nom	F
+49005026	10	Waschung	NOUN	NN					S		Nom	F
+49005026	11	mit	ADP	APPR								
+49005026	12	Wasser	NOUN	NN					S		Nom	N
+49005026	13	durch	ADP	APPR								
+49005026	14	der	DET	ART					S		Nom	N
+49005026	15	Wort	NOUN	NN					S		Nom	N
+49005027	1	auf	ADP	PTKVZ								
+49005027	2	daß	SCONJ	KOUS								
+49005027	3	er	PRON	PPER				3	S		Nom	M
+49005027	4	der	DET	ART					S		Nom	F
+49005027	5	Versammlung	NOUN	NN					S		Nom	F
+49005027	6	sich	PRON	PRF				3	S		Acc	
+49005027	7	selbst	ADV	ADV								
+49005027	8	verherrlichen	VERB	VVPP		Part						
+49005027	9	darstellen	VERB	VVFIN		Fin	Past	3	S	Ind		
+49005027	10	der	DET	ART					S		Nom	F
+49005027	11	nicht	PART	PTKNEG								
+49005027	12	Flecken	NOUN	NN					P		Nom	M
+49005027	13	oder	CCONJ	KON								
+49005027	14	Runzel	PROPN	NN					S		Nom	
+49005027	15	oder	CCONJ	KON								
+49005027	16	etwas	PRON	PIS								N
+49005027	17	dergleichen	PRON	PIS					S		Nom	M
+49005027	18	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49005027	19	sondern	CCONJ	KON								
+49005027	20	daß	SCONJ	KOUS								
+49005027	21	sie	PRON	PPER				3	P		Nom	
+49005027	22	heilig	ADV	ADJD	Pos							
+49005027	23	und	CCONJ	KON								
+49005027	24	tadellos	ADV	ADJD	Pos							
+49005027	25	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49005028	1	also	ADV	ADV								
+49005028	2	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49005028	3	auch	ADV	ADV								
+49005028	4	der	DET	ART					S		Nom	F
+49005028	5	Mann	NOUN	NN					P		Nom	M
+49005028	6	schuldig	ADV	ADJD	Pos							
+49005028	7	ihr	DET	PPOSAT					S		Nom	F
+49005028	8	Weiber	NOUN	NN					P		Nom	M
+49005028	9	zu	ADP	PTKVZ								
+49005028	10	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+49005028	11	wie	ADP	KOKOM								
+49005028	12	ihr	DET	PPOSAT					S		Nom	F
+49005028	13	eigen	ADJ	ADJA	Pos				S		Acc	M
+49005028	14	Leiber	NOUN	NN					P		Nom	M
+49005028	15	wer	PRON	PWS					S		Nom	M
+49005028	16	sein	AUX	VAINF		Inf						
+49005028	17	Weib	NOUN	NN					S		Nom	N
+49005028	18	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005028	19	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005028	20	sich	PRON	PRF				3	S		Acc	
+49005028	21	selbst	ADV	ADV								
+49005029	1	denn	CCONJ	KON								
+49005029	2	niemand	PRON	PIS					S		Nom	M
+49005029	3	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005029	4	jemals	ADV	ADV								
+49005029	5	sein	AUX	VAINF		Inf						
+49005029	6	eigen	ADJ	ADJA	Pos				S		Nom	N
+49005029	7	Fleisch	NOUN	NN					S		Nom	N
+49005029	8	hassen	VERB	VVPP		Part						
+49005029	9	sondern	CCONJ	KON								
+49005029	10	er	PRON	PPER				3	S		Nom	M
+49005029	11	nähren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005029	12	und	CCONJ	KON								
+49005029	13	pflegen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49005029	14	es	PRON	PPER				3	S		Nom	N
+49005029	15	gleichwie	CCONJ	ADV								
+49005029	16	auch	ADV	ADV								
+49005029	17	der	DET	ART					S		Nom	M
+49005029	18	Christus	PROPN	NE					S		Nom	M
+49005029	19	der	DET	ART					S		Nom	F
+49005029	20	Versammlung	NOUN	NN					S		Nom	F
+49005030	1	denn	CCONJ	KON								
+49005030	2	wir	PRON	PPER				1	P		Nom	
+49005030	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49005030	4	Glied	NOUN	NN					P		Nom	N
+49005030	5	sein	DET	PPOSAT					S		Gen	M
+49005030	6	Leibe	NOUN	NN					S		Gen	M
+49005030	7	von	ADP	APPR								
+49005030	8	sein	DET	PPOSAT					S		Dat	M
+49005030	9	Fleisch	NOUN	NN					S		Nom	N
+49005030	10	und	CCONJ	KON								
+49005030	11	von	ADP	APPR								
+49005030	12	sein	DET	PPOSAT					S		Acc	M
+49005030	13	Gebein	NOUN	NN					P		Dat	N
+49005031	1	deswegen	ADV	PROAV								
+49005031	2	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005031	3	ein	DET	ART					S		Nom	N
+49005031	4	Mensch	NOUN	NN					S		Nom	M
+49005031	5	sein	DET	PPOSAT					S		Acc	M
+49005031	6	Vater	NOUN	NN					S		Nom	M
+49005031	7	und	CCONJ	KON								
+49005031	8	sein	DET	PPOSAT					S		Nom	F
+49005031	9	Mutter	NOUN	NN					S		Nom	F
+49005031	10	verlassen	VERB	VVINF		Inf						
+49005031	11	und	CCONJ	KON								
+49005031	12	sein	DET	PPOSAT					S		Dat	M
+49005031	13	Weibe	NOUN	NN					S		Nom	F
+49005031	14	anhangen	VERB	VVPP		Part						
+49005031	15	und	CCONJ	KON								
+49005031	16	der	DET	ART					S		Nom	F
+49005031	17	zwei	NUM	CARD								
+49005031	18	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+49005031	19	ein	DET	ART					S		Nom	N
+49005031	20	Fleisch	NOUN	NN					S		Nom	N
+49005031	21	sein	AUX	VAINF		Inf						
+49005032	1	dieser	PRON	PDS					S		Nom	N
+49005032	2	Geheimnis	NOUN	NN					S		Nom	N
+49005032	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49005032	4	groß	ADV	ADJD	Pos							
+49005032	5	ich	PRON	PPER				1	S		Nom	
+49005032	6	aber	CCONJ	KON								
+49005032	7	sagen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49005032	8	es	PRON	PPER				3	S		Nom	N
+49005032	9	in	ADP	APPR								
+49005032	10	Bezug	NOUN	NN					S		Acc	M
+49005032	11	auf	ADP	PTKVZ								
+49005032	12	Christum	NOUN	NN					S		Nom	N
+49005032	13	und	CCONJ	KON								
+49005032	14	auf	ADP	PTKVZ								
+49005032	15	der	DET	ART					S		Nom	F
+49005032	16	Versammlung	NOUN	NN					S		Nom	F
+49005033	1	doch	CCONJ	KON								
+49005033	2	auch	ADV	ADV								
+49005033	3	ihr	PRON	PPOSAT				3	S		Dat	F
+49005033	4	ein	DET	ART					S		Nom	N
+49005033	5	jeder	PRON	PIS					S		Nom	M
+49005033	6	von	ADP	APPR								
+49005033	7	euch	PRON	PPER				2	P		Dat	
+49005033	8	Liebe	VERB	NN		Fin	Pres	3	S	Sub		
+49005033	9	sein	AUX	VAINF		Inf						
+49005033	10	Weib	NOUN	NN					S		Nom	N
+49005033	11	also	ADV	ADV								
+49005033	12	wie	ADP	KOKOM								
+49005033	13	sich	PRON	PRF				3	S		Acc	
+49005033	14	selbst	ADV	ADV								
+49005033	15	der	DET	ART					S		Nom	N
+49005033	16	Weib	NOUN	NN					S		Nom	N
+49005033	17	aber	CCONJ	KON								
+49005033	18	daß	SCONJ	KOUS								
+49005033	19	sie	PRON	PPER				3	P		Nom	
+49005033	20	der	DET	ART					S		Acc	M
+49005033	21	Mann	NOUN	NN					S		Nom	M
+49005033	22	fürchten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49006001	1	ihr	PRON	PPER				2	P		Nom	
+49006001	2	Kind	NOUN	NN					P		Nom	N
+49006001	3	gehorchet	PROPN	NE					S		Nom	
+49006001	4	euren	DET	PPOSAT					S		Acc	M
+49006001	5	Eltern	NOUN	NN					P		Nom	
+49006001	6	in	ADP	APPRART					S		Dat	N
+49006001	7	Herr	NOUN	NN					S		Acc	M
+49006001	8	denn	CCONJ	KON								
+49006001	9	der	DET	ART					S		Nom	N
+49006001	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006001	11	Recht	NOUN	NN					S		Acc	N
+49006002	1	Ehre	NOUN	NN					S		Nom	F
+49006002	2	dein	DET	PPOSAT					S		Acc	M
+49006002	3	Vater	NOUN	NN					S		Nom	M
+49006002	4	und	CCONJ	KON								
+49006002	5	dein	DET	PPOSAT					S		Nom	F
+49006002	6	Mutter	NOUN	NN					S		Nom	F
+49006002	7	welcher	DET	PWAT					S		Acc	N
+49006002	8	der	DET	ART					S		Nom	N
+49006002	9	erster	ADJ	ADJA	Pos				S		Nom	F
+49006002	10	Gebot	NOUN	NN					S		Nom	N
+49006002	11	mit	ADP	APPR								
+49006002	12	Verheißung	NOUN	NN					S		Nom	F
+49006002	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006003	1	auf	ADP	PTKVZ								
+49006003	2	daß	SCONJ	KOUS								
+49006003	3	es	PRON	PPER				3	S		Nom	N
+49006003	4	dir	PRON	PPER				2	S		Dat	
+49006003	5	Wohlgehe	PROPN	NE					S		Nom	
+49006003	6	und	CCONJ	KON								
+49006003	7	du	PRON	PPER				2	S		Nom	
+49006003	8	lange	ADV	ADV								
+49006003	9	Lebest	NOUN	VVPP					S		Nom	M
+49006003	10	auf	ADP	PTKVZ								
+49006003	11	der	DET	ART					S		Nom	M
+49006003	12	Erde	NOUN	NN					S		Nom	F
+49006004	1	und	CCONJ	KON								
+49006004	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49006004	3	Vater	NOUN	NN					P		Nom	M
+49006004	4	Reizet	NOUN	NN					S		Nom	F
+49006004	5	eure	DET	PPOSAT					S		Nom	F
+49006004	6	Kind	NOUN	NN					P		Nom	N
+49006004	7	nicht	PART	PTKNEG								
+49006004	8	zu	ADP	APPRART					S		Dat	N
+49006004	9	Zorn	NOUN	NN					S		Nom	M
+49006004	10	sondern	CCONJ	KON								
+49006004	11	ziehet	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006004	12	sie	PRON	PPER				3	P		Nom	
+49006004	13	auf	ADP	PTKVZ								
+49006004	14	in	ADP	APPR								
+49006004	15	der	DET	ART					S		Nom	M
+49006004	16	Zucht	NOUN	NN					S		Nom	F
+49006004	17	und	CCONJ	KON								
+49006004	18	Ermahnung	NOUN	NN					S		Nom	F
+49006004	19	der	DET	ART					S		Gen	M
+49006004	20	Herr	NOUN	NN					S		Acc	M
+49006005	1	ihr	PRON	PPER				2	P		Nom	
+49006005	2	Knecht	NOUN	NN					P		Nom	M
+49006005	3	gehorchet	PROPN	NE					S		Nom	
+49006005	4	euren	DET	PPOSAT					S		Acc	M
+49006005	5	Herr	NOUN	NN					P		Nom	M
+49006005	6	nach	ADP	APPR								
+49006005	7	der	DET	ART					S		Dat	M
+49006005	8	Fleisch	NOUN	NN					S		Nom	N
+49006005	9	mit	ADP	APPR								
+49006005	10	Furcht	NOUN	NN					S		Nom	F
+49006005	11	und	CCONJ	KON								
+49006005	12	Zittern	NOUN	ADV					S		Nom	N
+49006005	13	in	ADP	APPR								
+49006005	14	Einfalt	NOUN	NN					S		Nom	F
+49006005	15	eures	DET	PPOSAT					S		Nom	N
+49006005	16	Herzens	NOUN	NN					P		Nom	N
+49006005	17	als	ADP	KOKOM								
+49006005	18	der	DET	ART					S		Dat	M
+49006005	19	Christus	PROPN	NE					S		Nom	M
+49006006	1	nicht	PART	PTKNEG								
+49006006	2	mit	ADP	APPR								
+49006006	3	Augendienerei	NOUN	NN					S		Nom	F
+49006006	4	als	ADP	KOKOM								
+49006006	5	Menschengefällige	NOUN	NN					P		Nom	
+49006006	6	sondern	CCONJ	KON								
+49006006	7	als	ADP	KOKOM								
+49006006	8	Knecht	NOUN	NN					P		Nom	M
+49006006	9	Christi	PROPN	NE					S		Nom	
+49006006	10	indem	SCONJ	KOUS								
+49006006	11	ihr	PRON	PPOSAT				3	S		Dat	F
+49006006	12	der	DET	ART					S		Acc	M
+49006006	13	Wille	NOUN	NN					S		Acc	M
+49006006	14	Gott	NOUN	NN					S		Gen	M
+49006006	15	von	ADP	APPR								
+49006006	16	Herz	NOUN	NN					S		Nom	N
+49006006	17	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006007	1	und	CCONJ	KON								
+49006007	2	mit	ADP	APPR								
+49006007	3	Gutwilligkeit	NOUN	NN					S		Nom	F
+49006007	4	dienen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006007	5	als	ADP	KOKOM								
+49006007	6	der	DET	ART					S		Dat	M
+49006007	7	Herr	NOUN	NN					S		Acc	M
+49006007	8	und	CCONJ	KON								
+49006007	9	nicht	PART	PTKNEG								
+49006007	10	der	DET	ART					S		Acc	M
+49006007	11	Mensch	NOUN	NN					P		Nom	M
+49006008	1	da	ADV	ADV								
+49006008	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49006008	3	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006008	4	daß	SCONJ	KOUS								
+49006008	5	was	PRON	PWS					S		Nom	N
+49006008	6	irgend	ADV	ADV								
+49006008	7	ein	DET	ART					S		Nom	N
+49006008	8	jeder	PRON	PIS					S		Nom	M
+49006008	9	gute	NOUN	NN					S		Nom	N
+49006008	10	tun	VERB	VVINF		Inf						
+49006008	11	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006008	12	er	PRON	PPER				3	S		Nom	M
+49006008	13	dieser	PRON	PDS					S		Nom	N
+49006008	14	von	ADP	APPRART					S		Dat	N
+49006008	15	Herr	NOUN	NN					S		Acc	M
+49006008	16	empfangen	VERB	VVPP		Part						
+49006008	17	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006008	18	er	PRON	PPER				3	S		Nom	M
+49006008	19	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49006008	20	Sklave	NOUN	NN					S		Nom	M
+49006008	21	oder	CCONJ	KON								
+49006008	22	frei	NOUN	NN							Nom	M
+49006009	1	und	CCONJ	KON								
+49006009	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49006009	3	Herr	NOUN	NN					P		Nom	M
+49006009	4	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006009	5	Dasselbe	DET	PDAT					S		Nom	N
+49006009	6	gegen	ADP	APPR								
+49006009	7	sie	PRON	PPER				3	P		Nom	
+49006009	8	und	CCONJ	KON								
+49006009	9	lasseen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006009	10	der	DET	ART					S		Nom	N
+49006009	11	drohen	NOUN	NN					S		Nom	N
+49006009	12	da	ADV	ADV								
+49006009	13	ihr	PRON	PPOSAT				3	S		Dat	F
+49006009	14	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006009	15	daß	SCONJ	KOUS								
+49006009	16	sowohl	CCONJ	KON								
+49006009	17	ihr	PRON	PPOSAT				3	S		Dat	F
+49006009	18	als	ADP	KOKOM								
+49006009	19	euer	DET	PPOSAT					S		Nom	M
+49006009	20	Herr	NOUN	NN					S		Nom	M
+49006009	21	in	ADP	APPR								
+49006009	22	der	DET	ART					S		Acc	M
+49006009	23	Himmel	NOUN	NN					P		Dat	M
+49006009	24	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006009	25	und	CCONJ	KON								
+49006009	26	daß	SCONJ	KOUS								
+49006009	27	bei	ADP	APPR								
+49006009	28	ihm	PRON	PPER				3	S		Dat	M
+49006009	29	kein	DET	PIAT					S		Nom	N
+49006009	30	ansehen	NOUN	NN					S		Nom	N
+49006009	31	der	DET	ART					S		Nom	M
+49006009	32	Person	NOUN	NN					S		Nom	F
+49006009	33	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006010	1	übrigens	ADV	ADV								
+49006010	2	Bruder	NOUN	NN					P		Nom	M
+49006010	3	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+49006010	4	stark	ADV	ADJD	Pos							
+49006010	5	in	ADP	APPR								
+49006010	6	der	DET	ART					S		Dat	M
+49006010	7	Herr	NOUN	NN					S		Acc	M
+49006010	8	und	CCONJ	KON								
+49006010	9	in	ADP	APPR								
+49006010	10	der	DET	ART					S		Nom	M
+49006010	11	Macht	NOUN	NN					S		Nom	F
+49006010	12	sein	DET	PPOSAT					S		Dat	F
+49006010	13	Stärke	NOUN	NN					S		Nom	F
+49006011	1	Ziehet	PROPN	NE					S		Nom	
+49006011	2	an	ADP	PTKVZ								
+49006011	3	der	DET	ART					S		Nom	F
+49006011	4	ganz	ADJ	ADJA	Pos				S		Nom	F
+49006011	5	Waffenrüstung	NOUN	NN					S		Nom	F
+49006011	6	Gott	NOUN	NN					S		Gen	M
+49006011	7	damit	ADV	PROAV								
+49006011	8	ihr	PRON	PPOSAT				3	S		Dat	F
+49006011	9	zu	ADP	PTKVZ								
+49006011	10	bestehen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+49006011	11	Vermöget	NOUN	NN					S		Nom	N
+49006011	12	wider	ADP	PTKVZ								
+49006011	13	der	DET	ART					S		Nom	F
+49006011	14	Liste	NOUN	NN					P		Nom	F
+49006011	15	der	DET	ART					S		Gen	M
+49006011	16	Teufel	PROPN	NE					S		Gen	
+49006012	1	denn	CCONJ	KON								
+49006012	2	unser	DET	PPOSAT					S		Nom	N
+49006012	3	Kampf	NOUN	NN					S		Nom	M
+49006012	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006012	5	nicht	PART	PTKNEG								
+49006012	6	wider	ADP	PTKVZ								
+49006012	7	Fleisch	NOUN	NN					S		Nom	N
+49006012	8	und	CCONJ	KON								
+49006012	9	Blut	NOUN	NN					S		Nom	N
+49006012	10	sondern	CCONJ	KON								
+49006012	11	wider	ADP	PTKVZ								
+49006012	12	der	DET	ART					S		Nom	F
+49006012	13	Fürstentümer	NOUN	NN					P		Nom	M
+49006012	14	wider	ADP	PTKVZ								
+49006012	15	der	DET	ART					S		Nom	F
+49006012	16	Gewalt	NOUN	NN					P		Nom	F
+49006012	17	wider	ADP	PTKVZ								
+49006012	18	der	DET	ART					S		Nom	F
+49006012	19	Weltbeherrscher	NOUN	NN					S		Nom	M
+49006012	20	dieser	PRON	PDAT					S		Nom	M
+49006012	21	Finsternis	NOUN	NN					S		Nom	F
+49006012	22	wider	ADP	PTKVZ								
+49006012	23	der	DET	ART					S		Nom	F
+49006012	24	geistlich	ADJ	ADJA	Pos				S		Acc	M
+49006012	25	Macht	NOUN	NN					P		Nom	F
+49006012	26	der	DET	ART					S		Nom	M
+49006012	27	Bosheit	NOUN	NN					S		Nom	F
+49006012	28	in	ADP	APPR								
+49006012	29	der	DET	ART					S		Acc	M
+49006012	30	himmlisch	ADJ	ADJA	Pos				S		Acc	M
+49006012	31	Örter	NOUN	NN					P		Nom	M
+49006013	1	deshalb	ADV	PROAV								
+49006013	2	nehmeen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006013	3	der	DET	ART					S		Nom	F
+49006013	4	ganz	ADJ	ADJA	Pos				S		Nom	F
+49006013	5	Waffenrüstung	NOUN	NN					S		Nom	F
+49006013	6	Gott	NOUN	NN					S		Gen	M
+49006013	7	auf	ADP	PTKVZ								
+49006013	8	daß	SCONJ	KOUS								
+49006013	9	ihr	PRON	PPOSAT				3	S		Dat	F
+49006013	10	an	ADP	PTKVZ								
+49006013	11	der	DET	ART					S		Dat	M
+49006013	12	böse	ADJ	PIS	Pos				S		Acc	M
+49006013	13	Tag	NOUN	NN					P		Nom	M
+49006013	14	zu	ADP	PTKVZ								
+49006013	15	widerstehen	VERB	VVINF		Inf						
+49006013	16	und	CCONJ	KON								
+49006013	17	nachdem	SCONJ	KOUS								
+49006013	18	ihr	PRON	PPOSAT				3	S		Dat	F
+49006013	19	alle	PRON	PIS					S		Nom	N
+49006013	20	ausrichten	VERB	VVPP		Part						
+49006013	21	habben	VERB	VAFIN				2	P	Imp		
+49006013	22	zu	ADP	PTKVZ								
+49006013	23	stehen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+49006013	24	Vermöget	NOUN	NN					S		Nom	N
+49006014	1	Stehet	PROPN	NE					S		Nom	
+49006014	2	nun	ADV	ADV								
+49006014	3	eure	DET	PPOSAT					S		Nom	F
+49006014	4	Lenden	NOUN	NN					P		Dat	
+49006014	5	umgürten	VERB	VVPP		Part						
+49006014	6	mit	ADP	APPR								
+49006014	7	Wahrheit	NOUN	NN					S		Nom	F
+49006014	8	und	CCONJ	KON								
+49006014	9	antun	VERB	VVPP		Part						
+49006014	10	mit	ADP	APPR								
+49006014	11	der	DET	ART					S		Dat	M
+49006014	12	Brustharnisch	PROPN	NE					S		Nom	
+49006014	13	der	DET	ART					S		Nom	M
+49006014	14	Gerechtigkeit	NOUN	NN					S		Nom	F
+49006015	1	und	CCONJ	KON								
+49006015	2	beschuhen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006015	3	an	ADP	PTKVZ								
+49006015	4	der	DET	ART					S		Acc	M
+49006015	5	Fuß	NOUN	NN					P		Dat	M
+49006015	6	mit	ADP	APPR								
+49006015	7	der	DET	ART					S		Nom	M
+49006015	8	Bereitschaft	NOUN	NN					S		Nom	F
+49006015	9	der	DET	ART					S		Gen	M
+49006015	10	Evangelium	NOUN	NN					S		Gen	N
+49006015	11	der	DET	ART					S		Gen	M
+49006015	12	Frieden	NOUN	NE					S		Gen	M
+49006016	1	indem	SCONJ	KOUS								
+49006016	2	ihr	PRON	PPOSAT				3	S		Dat	F
+49006016	3	über	ADP	APPR								
+49006016	4	der	DET	ART					S		Nom	N
+49006016	5	alle	PRON	PIS					S		Nom	N
+49006016	6	ergreifen	VERB	VVPP		Part						
+49006016	7	habben	VERB	VAFIN				2	P	Imp		
+49006016	8	der	DET	ART					S		Acc	M
+49006016	9	Schild	NOUN	NN					S		Nom	N
+49006016	10	der	DET	ART					S		Gen	M
+49006016	11	Glauben	NOUN	NN					S		Gen	M
+49006016	12	mit	ADP	APPR								
+49006016	13	welcher	DET	PWAT					S		Dat	N
+49006016	14	ihr	PRON	PPOSAT				3	S		Dat	F
+49006016	15	auslöschen	VERB	VVIZU		Inf						
+49006016	16	Vermöget	NOUN	NN					S		Nom	N
+49006016	17	aller	PRON	PIS					P		Nom	
+49006016	18	feurig	ADJ	ADJA	Pos				P		Dat	M
+49006016	19	Pfeil	NOUN	NN					P		Nom	M
+49006016	20	der	DET	ART					S		Gen	M
+49006016	21	böse	NOUN	NN					P		Nom	
+49006017	1	nehmet	NOUN	NE					S		Nom	N
+49006017	2	auch	ADV	ADV								
+49006017	3	der	DET	ART					S		Acc	M
+49006017	4	Helm	NOUN	NN					S		Nom	M
+49006017	5	der	DET	ART					S		Gen	M
+49006017	6	Heil	ADP	ADV					S		Acc	N
+49006017	7	und	CCONJ	KON								
+49006017	8	der	DET	ART					S		Nom	N
+49006017	9	Schwert	NOUN	NN					S		Nom	N
+49006017	10	der	DET	ART					S		Gen	M
+49006017	11	Geist	NOUN	NN					S		Gen	M
+49006017	12	welcher	DET	PWAT					S		Acc	N
+49006017	13	Gott	NOUN	NN					S		Gen	M
+49006017	14	Wort	NOUN	NN					S		Nom	N
+49006017	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006018	1	zu	ADP	PTKVZ								
+49006018	2	aller	DET	PIAT					P		Gen	
+49006018	3	Zeit	NOUN	NN					S		Nom	F
+49006018	4	betend	ADV	ADJD	Pos							
+49006018	5	mit	ADP	APPR								
+49006018	6	alle	PRON	PIS					S		Dat	N
+49006018	7	Gebet	NOUN	NN					S		Nom	N
+49006018	8	und	CCONJ	KON								
+49006018	9	Flehen	NOUN	NN					S		Nom	N
+49006018	10	in	ADP	APPR								
+49006018	11	der	DET	ART					S		Dat	M
+49006018	12	Geist	NOUN	NN					P		Nom	M
+49006018	13	und	CCONJ	KON								
+49006018	14	eben	ADV	ADV								
+49006018	15	hierzu	ADV	PROAV								
+49006018	16	wachend	ADV	ADJD	Pos							
+49006018	17	in	ADP	APPR								
+49006018	18	alle	PRON	PIS					S		Dat	N
+49006018	19	anhalten	NOUN	NN					S		Nom	N
+49006018	20	und	CCONJ	KON								
+49006018	21	Flehen	NOUN	NN					S		Nom	N
+49006018	22	für	ADP	APPR								
+49006018	23	aller	PRON	PIS					P		Nom	
+49006018	24	heilig	NOUN	NN					P		Dat	
+49006019	1	und	CCONJ	KON								
+49006019	2	für	ADP	APPR								
+49006019	3	mich	PRON	PPER				1	S		Acc	
+49006019	4	auf	ADP	PTKVZ								
+49006019	5	daß	SCONJ	KOUS								
+49006019	6	mir	PRON	PPER				1	S		Dat	
+49006019	7	Rede	NOUN	NN					S		Nom	F
+49006019	8	verleihen	VERB	VVPP		Part						
+49006019	9	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49006019	10	in	ADP	APPRART					S		Dat	N
+49006019	11	auftun	NOUN	NN					S		Nom	N
+49006019	12	meiner	DET	PPOSAT					S		Gen	N
+49006019	13	Munde	PROPN	NE					S		Gen	
+49006019	14	um	ADP	APPR								
+49006019	15	mit	ADP	APPR								
+49006019	16	Freimütigkeit	NOUN	NN					S		Nom	F
+49006019	17	kundzutun	VERB	VVIZU		Inf						
+49006019	18	der	DET	ART					S		Nom	N
+49006019	19	Geheimnis	NOUN	NN					S		Nom	N
+49006019	20	der	DET	ART					S		Gen	M
+49006019	21	Evangelium	NOUN	NN					S		Gen	N
+49006020	1	für	ADP	APPR								
+49006020	2	welcher	DET	PWAT					S		Acc	N
+49006020	3	ich	PRON	PPER				1	S		Nom	
+49006020	4	ein	DET	ART					S		Nom	N
+49006020	5	Gesandter	NOUN	NN					S		Nom	M
+49006020	6	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+49006020	7	in	ADP	APPR								
+49006020	8	Kette	NOUN	NN					P		Nom	F
+49006020	9	damit	ADV	PROAV								
+49006020	10	ich	PRON	PPER				1	S		Nom	
+49006020	11	in	ADP	APPR								
+49006020	12	derselbe	DET	PDAT					S		Dat	N
+49006020	13	freimütig	ADV	ADJD	Pos							
+49006020	14	Rede	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49006020	15	wie	ADP	KOKOM								
+49006020	16	ich	PRON	PPER				1	S		Nom	
+49006020	17	reden	VERB	VVINF		Inf						
+49006020	18	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+49006021	1	auf	ADP	APPR								
+49006021	2	daß	SCONJ	KOUS								
+49006021	3	aber	CCONJ	KON								
+49006021	4	auch	ADV	ADV								
+49006021	5	ihr	PRON	PPOSAT				3	S		Dat	F
+49006021	6	mein	DET	PPOSAT					S		Nom	F
+49006021	7	Umstand	NOUN	NN					P		Nom	M
+49006021	8	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006021	9	wie	ADP	KOKOM								
+49006021	10	es	PRON	PPER				3	S		Nom	N
+49006021	11	mir	PRON	PPER				1	S		Dat	
+49006021	12	gehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006021	13	so	ADV	ADV								
+49006021	14	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+49006021	15	Tychikus	NOUN	NN					S		Nom	M
+49006021	16	der	DET	ART					S		Nom	M
+49006021	17	geliebt	ADJ	ADJA	Pos				S		Nom	F
+49006021	18	Bruder	NOUN	NN					S		Nom	M
+49006021	19	und	CCONJ	KON								
+49006021	20	treu	ADJ	ADJA	Pos				S		Nom	F
+49006021	21	Diener	NOUN	NN					P		Nom	M
+49006021	22	in	ADP	APPRART					S		Dat	N
+49006021	23	Herr	NOUN	NN					S		Acc	M
+49006021	24	euch	PRON	PPER				2	P		Dat	
+49006021	25	alle	PRON	PIS					S		Nom	N
+49006021	26	kundtun	VERB	VVINF		Inf						
+49006022	1	der	DET	ART					S		Acc	M
+49006022	2	ich	PRON	PPER				1	S		Nom	
+49006022	3	eben	ADV	ADV								
+49006022	4	deshalb	ADV	PROAV								
+49006022	5	zu	ADP	PTKVZ								
+49006022	6	euch	PRON	PPER				2	P		Dat	
+49006022	7	gesandt	VERB	VVPP		Part						
+49006022	8	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+49006022	9	auf	ADP	PTKVZ								
+49006022	10	daß	SCONJ	KOUS								
+49006022	11	ihr	PRON	PPOSAT				3	S		Dat	F
+49006022	12	unser	DET	PPOSAT					S		Nom	F
+49006022	13	Umstand	NOUN	NN					P		Nom	M
+49006022	14	wisset	VERB	VVFIN		Fin	Pres	3	S	Ind		
+49006022	15	und	CCONJ	KON								
+49006022	16	er	PRON	PPER				3	S		Nom	M
+49006022	17	eure	DET	PPOSAT					S		Nom	F
+49006022	18	Herz	NOUN	NN					S		Nom	N
+49006022	19	trösten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+49006023	1	Friede	NOUN	NN					S		Nom	M
+49006023	2	der	DET	ART					S		Acc	M
+49006023	3	Brüdern	NOUN	NN					P		Dat	M
+49006023	4	und	CCONJ	KON								
+49006023	5	Liebe	NOUN	NN					S		Nom	F
+49006023	6	mit	ADP	APPR								
+49006023	7	Glaube	NOUN	NN					S		Acc	M
+49006023	8	von	ADP	APPR								
+49006023	9	Gott	NOUN	NN					S		Nom	M
+49006023	10	der	DET	ART					S		Dat	M
+49006023	11	Vater	NOUN	NN					S		Nom	M
+49006023	12	und	CCONJ	KON								
+49006023	13	der	DET	ART					S		Dat	M
+49006023	14	Herr	NOUN	NN					S		Acc	M
+49006023	15	Jesu	PROPN	NE					S		Gen	
+49006023	16	Christo	PROPN	NE					S		Nom	M
+49006024	1	der	DET	ART					S		Nom	F
+49006024	2	Gnade	NOUN	NN					S		Nom	F
+49006024	3	mit	ADP	APPR								
+49006024	4	aller	DET	PIS					P		Dat	
+49006024	5	der	PRON	PDS					P		Dat	
+49006024	6	der	DET	ART					S		Nom	F
+49006024	7	unser	DET	PPOSAT					S		Acc	M
+49006024	8	Herr	NOUN	NN					S		Acc	M
+49006024	9	Jesu	PROPN	NE					S		Gen	
+49006024	10	Christum	NOUN	NN					S		Nom	N
+49006024	11	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+49006024	12	in	ADP	APPR								
+49006024	13	Unverderblichkeit	NOUN	NN					S		Nom	F

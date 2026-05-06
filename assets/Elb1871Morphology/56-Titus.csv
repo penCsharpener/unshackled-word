@@ -1,0 +1,858 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+56001001	1	Paulus	PROPN	NE					S		Nom	M
+56001001	2	Knecht	NOUN	NN					S		Nom	M
+56001001	3	Gott	NOUN	NN					S		Gen	M
+56001001	4	aber	CCONJ	KON								
+56001001	5	Apostel	NOUN	NN					P		Nom	M
+56001001	6	Jesu	PROPN	NE					S		Gen	
+56001001	7	Christi	PROPN	NE					S		Nom	
+56001001	8	nach	ADP	APPR								
+56001001	9	der	DET	ART					S		Dat	M
+56001001	10	Glaube	NOUN	NN					S		Acc	M
+56001001	11	der	DET	ART					S		Nom	M
+56001001	12	auserwählter	NOUN	NN					P		Nom	
+56001001	13	Gott	NOUN	NN					S		Gen	M
+56001001	14	und	CCONJ	KON								
+56001001	15	nach	ADP	APPR								
+56001001	16	der	DET	ART					S		Nom	M
+56001001	17	Erkenntnis	NOUN	NN					S		Nom	F
+56001001	18	der	DET	ART					S		Nom	M
+56001001	19	Wahrheit	NOUN	NN					S		Nom	F
+56001001	20	der	DET	ART					S		Nom	F
+56001001	21	nach	ADP	APPR								
+56001001	22	der	DET	ART					S		Nom	M
+56001001	23	Gottseligkeit	NOUN	NN					S		Nom	F
+56001001	24	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001002	1	in	ADP	APPR								
+56001002	2	der	DET	ART					S		Nom	M
+56001002	3	Hoffnung	NOUN	NN					S		Nom	F
+56001002	4	der	DET	ART					S		Gen	M
+56001002	5	ewig	ADJ	ADJA	Pos				S		Acc	M
+56001002	6	Leben	NOUN	NN					S		Gen	N
+56001002	7	welcher	DET	PWAT					S		Acc	N
+56001002	8	Gott	NOUN	NN					S		Nom	M
+56001002	9	der	DET	ART					S		Nom	M
+56001002	10	nicht	PART	PTKNEG								
+56001002	11	lügen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56001002	12	können	AUX	VMFIN		Fin	Pres	3	S	Ind		
+56001002	13	verheißen	VERB	VVPP		Part						
+56001002	14	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001002	15	vor	ADP	APPR								
+56001002	16	der	DET	ART					S		Acc	M
+56001002	17	Zeit	NOUN	NN					P		Nom	F
+56001002	18	der	DET	ART					S		Nom	M
+56001002	19	Zeitalter	NOUN	NN					S		Nom	N
+56001003	1	zu	ADP	PTKVZ								
+56001003	2	sein	DET	PPOSAT					S		Dat	F
+56001003	3	Zeit	NOUN	NN					S		Nom	F
+56001003	4	aber	CCONJ	KON								
+56001003	5	sein	AUX	VAINF		Inf						
+56001003	6	Wort	NOUN	NN					S		Nom	N
+56001003	7	offenbaren	VERB	VVPP		Part						
+56001003	8	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001003	9	durch	ADP	APPR								
+56001003	10	der	DET	ART					S		Nom	F
+56001003	11	Predigt	NOUN	NN					S		Nom	F
+56001003	12	der	DET	ART					S		Nom	F
+56001003	13	mir	PRON	PPER				1	S		Dat	
+56001003	14	anvertrauen	VERB	VVPP		Part						
+56001003	15	werden	AUX	VAPP		Part						
+56001003	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001003	17	nach	ADP	APPR								
+56001003	18	Befehl	NOUN	NN					S		Nom	M
+56001003	19	unser	DET	PPOSAT					S		Gen	M
+56001003	20	Heiland-Gotte	ADJ	NN	Pos				S		Nom	N
+56001004	1	Titus	PROPN	NE					S		Nom	M
+56001004	2	mein	DET	PPOSAT					S		Dat	M
+56001004	3	echt	ADJ	ADJA	Pos				S		Acc	M
+56001004	4	Kind	NOUN	NN					P		Nom	N
+56001004	5	nach	ADP	APPR								
+56001004	6	unser	DET	PPOSAT					S		Dat	N
+56001004	7	gemeinschaftlich	ADJ	ADJA	Pos				S		Acc	M
+56001004	8	Glaube	NOUN	NN					S		Acc	M
+56001004	9	Gnade	NOUN	NN					S		Nom	F
+56001004	10	und	CCONJ	KON								
+56001004	11	Friede	NOUN	NN					S		Nom	M
+56001004	12	von	ADP	APPR								
+56001004	13	Gott	NOUN	NN					S		Nom	M
+56001004	14	der	DET	ART					S		Dat	M
+56001004	15	Vater	NOUN	NN					S		Nom	M
+56001004	16	und	CCONJ	KON								
+56001004	17	Christo	PROPN	NE					S		Nom	M
+56001004	18	Jesu	PROPN	NE					S		Gen	
+56001004	19	unser	DET	PPOSAT					S		Dat	N
+56001004	20	Heiland	NOUN	NN					P		Nom	M
+56001005	1	deswegen	ADV	PROAV								
+56001005	2	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+56001005	3	ich	PRON	PPER				1	S		Nom	
+56001005	4	dich	PRON	PPER				2	S		Acc	
+56001005	5	in	ADP	APPR								
+56001005	6	Kreta	PROPN	NE					S		Nom	N
+56001005	7	daß	SCONJ	KOUS								
+56001005	8	du	PRON	PPER				2	S		Nom	
+56001005	9	was	PRON	PWS					S		Nom	N
+56001005	10	noch	CCONJ	KON								
+56001005	11	mangelen	VERB	VVFIN		Fin	Past	3	S	Ind		
+56001005	12	in	ADP	APPR								
+56001005	13	Ordnung	NOUN	NN					S		Nom	F
+56001005	14	bringen	VERB	VVINF		Inf						
+56001005	15	und	CCONJ	KON								
+56001005	16	in	ADP	APPR								
+56001005	17	jeder	PRON	PIS					S		Nom	M
+56001005	18	Stadt	NOUN	NN					S		Nom	F
+56001005	19	Älteste	ADJ	ADJA	Sup				S		Nom	F
+56001005	20	anstellen	VERB	VVINF		Inf						
+56001005	21	Möchtest	AUX	VMFIN		Fin	Pres	3	S	Ind		
+56001005	22	wie	ADP	KOKOM								
+56001005	23	ich	PRON	PPER				1	S		Nom	
+56001005	24	dir	PRON	PPER				2	S		Dat	
+56001005	25	gebieten	VERB	VVPP		Part						
+56001005	26	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+56001006	1	wenn	SCONJ	KOUS								
+56001006	2	jemand	PRON	PIS					S		Nom	M
+56001006	3	untadelig	ADV	ADJD	Pos							
+56001006	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001006	5	ein	PRON	ART					S		Nom	N
+56001006	6	Weibe	NOUN	NN					S		Gen	N
+56001006	7	Mann	NOUN	NN					S		Nom	M
+56001006	8	der	DET	ART					S		Nom	M
+56001006	9	gläubig	ADJ	ADJA	Pos				P		Nom	M
+56001006	10	Kind	NOUN	NN					P		Nom	N
+56001006	11	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001006	12	der	DET	ART					S		Nom	F
+56001006	13	nicht	PART	PTKNEG								
+56001006	14	ein	PRON	ART					S		Nom	N
+56001006	15	ausschweifend	VERB	ADJA		Fin	Pres	3	P	Ind		
+56001006	16	Leben	NOUN	NN					S		Gen	N
+56001006	17	beschuldigen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+56001006	18	oder	CCONJ	KON								
+56001006	19	zügellos	ADV	ADJD	Pos							
+56001006	20	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+56001007	1	denn	CCONJ	KON								
+56001007	2	der	DET	ART					S		Nom	M
+56001007	3	Aufseher	NOUN	NN					P		Nom	M
+56001007	4	müssen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+56001007	5	untadelig	ADV	ADJD	Pos							
+56001007	6	sein	AUX	VAINF		Inf						
+56001007	7	als	ADP	KOKOM								
+56001007	8	Gott	NOUN	NN					S		Gen	M
+56001007	9	Verwalter	NOUN	NN					S		Nom	M
+56001007	10	nicht	PART	PTKNEG								
+56001007	11	eigenmächtig	ADV	ADJD	Pos							
+56001007	12	nicht	PART	PTKNEG								
+56001007	13	zornmütig	ADV	ADJD	Pos							
+56001007	14	nicht	PART	PTKNEG								
+56001007	15	der	DET	ART					S		Dat	M
+56001007	16	Wein	NOUN	NN					S		Nom	M
+56001007	17	ergeben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56001007	18	nicht	PART	PTKNEG								
+56001007	19	ein	DET	ART					S		Nom	N
+56001007	20	Schläger	NOUN	NN					S		Nom	M
+56001007	21	nicht	PART	PTKNEG								
+56001007	22	schändlich	ADJ	ADJA	Pos				S		Dat	M
+56001007	23	Gewinn	NOUN	NN					S		Nom	M
+56001007	24	nachgehend	ADV	ADJD	Pos							
+56001008	1	sondern	CCONJ	KON								
+56001008	2	Gastfrei	NOUN	NN					S		Nom	N
+56001008	3	der	DET	ART					S		Nom	N
+56001008	4	gut	ADV	ADV								
+56001008	5	liebend	ADV	ADJD	Pos							
+56001008	6	besonnen	ADV	ADJD	Pos							
+56001008	7	gerecht	ADV	ADJD	Pos							
+56001008	8	fromm	ADV	ADJD	Pos							
+56001008	9	enthaltsam	ADV	ADJD	Pos							
+56001009	1	anhangend	ADV	ADJD	Pos							
+56001009	2	der	DET	ART					S		Dat	M
+56001009	3	zuverlässig	ADJ	ADJA	Pos				S		Acc	M
+56001009	4	Wort	NOUN	NN					P		Nom	N
+56001009	5	nach	ADP	APPR								
+56001009	6	der	DET	ART					S		Nom	M
+56001009	7	Lehre	NOUN	NN					S		Nom	F
+56001009	8	auf	ADP	PTKVZ								
+56001009	9	daß	SCONJ	KOUS								
+56001009	10	er	PRON	PPER				3	S		Nom	M
+56001009	11	fähig	ADV	ADJD	Pos							
+56001009	12	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+56001009	13	sowohl	CCONJ	KON								
+56001009	14	mit	ADP	APPR								
+56001009	15	der	DET	ART					S		Nom	M
+56001009	16	gesund	ADJ	ADJA	Pos				S		Acc	M
+56001009	17	Lehre	NOUN	NN					S		Nom	F
+56001009	18	zu	ADP	PTKVZ								
+56001009	19	ermahnen	VERB	VVINF		Inf						
+56001009	20	als	ADP	KOKOM								
+56001009	21	auch	ADV	ADV								
+56001009	22	der	DET	ART					S		Nom	F
+56001009	23	widersprechend	NOUN	NN					P		Nom	
+56001009	24	zu	ADP	PTKVZ								
+56001009	25	überführen	VERB	VVINF		Inf						
+56001010	1	denn	CCONJ	KON								
+56001010	2	es	PRON	PPER				3	S		Nom	N
+56001010	3	geben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+56001010	4	vieler	PRON	PIS					P		Nom	
+56001010	5	zügellos	ADJ	ADJA	Pos				S		Nom	F
+56001010	6	Schwätzer	NOUN	NN					P		Nom	M
+56001010	7	und	CCONJ	KON								
+56001010	8	Betrüger	NOUN	NN					P		Nom	M
+56001010	9	besonders	ADV	ADV								
+56001010	10	der	DET	ART					S		Nom	F
+56001010	11	aus	ADP	PTKVZ								
+56001010	12	der	DET	ART					S		Nom	M
+56001010	13	Beschneidung	NOUN	NN					S		Nom	F
+56001011	1	der	PRON	PDS					P		Dat	
+56001011	2	man	PRON	PIS					S		Nom	
+56001011	3	der	DET	ART					S		Acc	M
+56001011	4	Mund	NOUN	NN					S		Nom	M
+56001011	5	stopfen	VERB	VVINF		Inf						
+56001011	6	müssen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+56001011	7	welcher	DET	PWAT					S		Nom	F
+56001011	8	ganz	ADJ	ADJA	Pos				S		Nom	F
+56001011	9	Haus	NOUN	NN					P		Nom	N
+56001011	10	umkehren	VERB	VVINF		Inf						
+56001011	11	indem	SCONJ	KOUS								
+56001011	12	sie	PRON	PPER				3	P		Nom	
+56001011	13	um	ADP	APPR								
+56001011	14	schändlich	ADJ	ADJA	Pos				S		Acc	M
+56001011	15	Gewinne	PROPN	NE					S		Gen	M
+56001011	16	Wille	ADP	APZR								
+56001011	17	lehren	VERB	VVINF		Inf						
+56001011	18	was	PRON	PWS					S		Nom	N
+56001011	19	sich	PRON	PRF				3	S		Acc	
+56001011	20	nicht	PART	PTKNEG								
+56001011	21	geziemt	ADV	PTKVZ								
+56001012	1	es	PRON	PPER				3	S		Nom	N
+56001012	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001012	3	ein	PRON	ART					S		Nom	M
+56001012	4	aus	ADP	PTKVZ								
+56001012	5	ihnen	PRON	PPER				3	P		Dat	
+56001012	6	ihr	PRON	PPOSAT				3	S		Dat	F
+56001012	7	eigen	ADJ	ADJA	Pos				S		Nom	M
+56001012	8	Prophet	NOUN	NN					S		Nom	M
+56001012	9	sagen	VERB	VVPP		Part						
+56001012	10	Kreter	NOUN	NN					P		Nom	M
+56001012	11	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+56001012	12	immer	ADV	ADV								
+56001012	13	Lügner	NOUN	NN					P		Nom	M
+56001012	14	böse	ADV	ADJD	Pos							
+56001012	15	wild	ADJ	ADJA	Pos				S		Nom	F
+56001012	16	Tier	NOUN	NN					P		Nom	N
+56001012	17	faul	ADJ	ADJA	Pos				S		Nom	F
+56001012	18	Bäuch	NOUN	NN					P		Nom	M
+56001013	1	dieser	PRON	PDS					S		Nom	N
+56001013	2	Zeugnis	NOUN	NN					S		Nom	N
+56001013	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001013	4	wahr	ADV	ADJD	Pos							
+56001013	5	um	ADP	APPR								
+56001013	6	dieser	PRON	PDAT					S		Nom	M
+56001013	7	Ursache	NOUN	NN					S		Nom	F
+56001013	8	Wille	ADP	APZR								
+56001013	9	Weise	NOUN	NN					S		Nom	F
+56001013	10	sie	PRON	PPER				3	P		Nom	
+56001013	11	streng	ADV	ADJD	Pos							
+56001013	12	zurecht	ADV	PTKVZ								
+56001013	13	auf	ADP	PTKVZ								
+56001013	14	daß	SCONJ	KOUS								
+56001013	15	sie	PRON	PPER				3	P		Nom	
+56001013	16	gesund	ADV	ADJD	Pos							
+56001013	17	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+56001013	18	in	ADP	APPRART					S		Dat	N
+56001013	19	Glaube	NOUN	NN					S		Acc	M
+56001014	1	und	CCONJ	KON								
+56001014	2	nicht	PART	PTKNEG								
+56001014	3	achten	VERB	VVINF		Inf						
+56001014	4	auf	ADP	PTKVZ								
+56001014	5	jüdisch	ADJ	ADJA	Pos				S		Nom	F
+56001014	6	Fabel	NOUN	NN					P		Nom	F
+56001014	7	und	CCONJ	KON								
+56001014	8	Gebot	NOUN	NN					P		Nom	N
+56001014	9	von	ADP	APPR								
+56001014	10	Mensch	NOUN	NN					P		Nom	M
+56001014	11	der	DET	ART					S		Nom	F
+56001014	12	sich	PRON	PRF				3	S		Acc	
+56001014	13	von	ADP	APPR								
+56001014	14	der	DET	ART					S		Nom	M
+56001014	15	Wahrheit	NOUN	NN					S		Nom	F
+56001014	16	abwenden	VERB	VVINF		Inf						
+56001015	1	der	DET	ART					S		Acc	M
+56001015	2	Reinen	NOUN	NN					P		Dat	
+56001015	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001015	4	alle	PRON	PIS					S		Nom	N
+56001015	5	rein	ADV	ADJD	Pos							
+56001015	6	der	DET	ART					S		Acc	M
+56001015	7	Befleckte	NOUN	NN					P		Nom	F
+56001015	8	aber	CCONJ	KON								
+56001015	9	und	CCONJ	KON								
+56001015	10	ungläubige	NOUN	NN					P		Dat	M
+56001015	11	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001015	12	nichts	PRON	PIS								N
+56001015	13	rein	ADV	ADJD	Pos							
+56001015	14	sondern	CCONJ	KON								
+56001015	15	beflecken	VERB	VVPP		Part						
+56001015	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56001015	17	sowohl	CCONJ	KON								
+56001015	18	ihr	DET	PPOSAT					S		Nom	F
+56001015	19	Gesinnung	NOUN	NN					S		Nom	F
+56001015	20	als	ADP	KOKOM								
+56001015	21	auch	ADV	ADV								
+56001015	22	ihr	PRON	PPOSAT				3	S		Dat	F
+56001015	23	Gewissen	NOUN	NN					S		Nom	N
+56001016	1	sie	PRON	PPER				3	P		Nom	
+56001016	2	geben	VERB	VVINF		Inf						
+56001016	3	vor	ADP	APPR								
+56001016	4	Gott	NOUN	NN					S		Nom	M
+56001016	5	zu	ADP	PTKVZ								
+56001016	6	kennen	VERB	VVINF		Fin	Pres	3	P	Ind		
+56001016	7	aber	CCONJ	KON								
+56001016	8	in	ADP	APPR								
+56001016	9	der	DET	ART					S		Acc	M
+56001016	10	Werk	NOUN	NN					P		Dat	N
+56001016	11	verleugnen	VERB	VVINF		Inf						
+56001016	12	sie	PRON	PPER				3	P		Nom	
+56001016	13	ihn	PRON	PPER				3	S		Acc	M
+56001016	14	und	CCONJ	KON								
+56001016	15	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+56001016	16	greulich	ADV	ADJD	Pos							
+56001016	17	und	CCONJ	KON								
+56001016	18	ungehorsam	ADV	ADJD	Pos							
+56001016	19	und	CCONJ	KON								
+56001016	20	zu	ADP	PTKVZ								
+56001016	21	jeder	DET	PIAT					S		Dat	M
+56001016	22	gut	ADJ	ADJA	Pos				S		Acc	M
+56001016	23	Werk	NOUN	NN					P		Nom	N
+56001016	24	unbewährt	PROPN	NE					S		Nom	
+56002001	1	du	PRON	PPER				2	S		Nom	
+56002001	2	aber	CCONJ	KON								
+56002001	3	Rede	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56002001	4	was	PRON	PWS					S		Nom	N
+56002001	5	der	DET	ART					S		Nom	M
+56002001	6	gesund	ADJ	ADJA	Pos				S		Acc	M
+56002001	7	Lehre	NOUN	NN					S		Nom	F
+56002001	8	geziemt	ADV	PTKVZ								
+56002002	1	daß	SCONJ	KOUS								
+56002002	2	der	DET	ART					S		Nom	F
+56002002	3	alt	ADJ	ADJA	Pos				S		Acc	M
+56002002	4	Mann	NOUN	NN					P		Nom	M
+56002002	5	nüchtern	ADV	ADJD	Pos							
+56002002	6	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+56002002	7	würdig	ADV	ADJD	Pos							
+56002002	8	besonnen	ADV	ADJD	Pos							
+56002002	9	gesund	ADV	ADJD	Pos							
+56002002	10	in	ADP	APPRART					S		Dat	N
+56002002	11	Glaube	NOUN	NN					S		Acc	M
+56002002	12	in	ADP	APPR								
+56002002	13	der	DET	ART					S		Nom	M
+56002002	14	Liebe	NOUN	NN					S		Nom	F
+56002002	15	in	ADP	APPRART					S		Dat	N
+56002002	16	ausharren	NOUN	NN					S		Nom	N
+56002003	1	der	DET	ART					S		Nom	F
+56002003	2	alt	ADJ	ADJA	Pos				S		Acc	M
+56002003	3	Frau	NOUN	NN					P		Nom	F
+56002003	4	desgleichen	ADV	PROAV								
+56002003	5	in	ADP	APPR								
+56002003	6	ihr	DET	PPOSAT					S		Dat	N
+56002003	7	betragen	NOUN	NN					S		Nom	N
+56002003	8	wie	ADP	KOKOM								
+56002003	9	es	PRON	PPER				3	S		Nom	N
+56002003	10	der	DET	ART					S		Dat	M
+56002003	11	heilig	ADJ	ADJA	Pos				S		Acc	M
+56002003	12	Stande	NOUN	NN					S		Nom	M
+56002003	13	geziemt	ADV	PTKVZ								
+56002003	14	nicht	PART	PTKNEG								
+56002003	15	verleumderisch	ADV	ADJD	Pos							
+56002003	16	nicht	PART	PTKNEG								
+56002003	17	Sklavin	NOUN	NN					P		Nom	F
+56002003	18	von	ADP	APPR								
+56002003	19	vieler	PRON	PIS					S		Dat	N
+56002003	20	Wein	NOUN	NN					S		Nom	M
+56002003	21	Lehrerin	NOUN	NN					P		Nom	F
+56002003	22	der	DET	ART					S		Gen	M
+56002003	23	gute	NOUN	NN					P		Nom	
+56002004	1	auf	ADP	PTKVZ								
+56002004	2	daß	SCONJ	KOUS								
+56002004	3	sie	PRON	PPER				3	P		Nom	
+56002004	4	der	DET	ART					S		Nom	F
+56002004	5	jung	ADJ	ADJA	Pos				P		Dat	M
+56002004	6	Frau	NOUN	NN					P		Nom	F
+56002004	7	unterweisen	VERB	VVINF		Inf						
+56002004	8	ihr	DET	PPOSAT					S		Nom	F
+56002004	9	Mann	NOUN	NN					P		Nom	M
+56002004	10	zu	ADP	PTKVZ								
+56002004	11	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56002004	12	ihr	DET	PPOSAT					S		Nom	F
+56002004	13	Kind	NOUN	NN					P		Nom	N
+56002004	14	zu	ADP	PTKVZ								
+56002004	15	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56002005	1	besonnen	ADV	ADJD	Pos							
+56002005	2	keusch	ADV	ADJD	Pos							
+56002005	3	mit	ADP	APPR								
+56002005	4	häuslich	ADJ	ADJA	Pos				S		Acc	M
+56002005	5	Arbeit	NOUN	NN					P		Nom	F
+56002005	6	beschäftigen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+56002005	7	gütig	ADV	ADJD	Pos							
+56002005	8	der	DET	ART					S		Acc	M
+56002005	9	eigen	ADJ	ADJA	Pos				S		Acc	M
+56002005	10	Mann	NOUN	NN					P		Dat	M
+56002005	11	unterwürfig	ADV	ADJD	Pos							
+56002005	12	zu	ADP	PTKVZ								
+56002005	13	sein	AUX	VAINF		Inf						
+56002005	14	auf	ADP	PTKVZ								
+56002005	15	daß	SCONJ	KOUS								
+56002005	16	der	DET	ART					S		Nom	N
+56002005	17	Wort	NOUN	NN					S		Nom	N
+56002005	18	Gott	NOUN	NN					S		Gen	M
+56002005	19	nicht	PART	PTKNEG								
+56002005	20	verlästern	VERB	VVPP		Part						
+56002005	21	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+56002006	1	der	DET	ART					S		Nom	F
+56002006	2	Jünglinge	NOUN	NN					P		Nom	M
+56002006	3	desgleichen	ADV	PROAV								
+56002006	4	ermahnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56002006	5	besonnen	ADV	ADJD	Pos							
+56002006	6	zu	ADP	PTKVZ								
+56002006	7	sein	AUX	VAINF		Inf						
+56002007	1	indem	SCONJ	KOUS								
+56002007	2	du	PRON	PPER				2	S		Nom	
+56002007	3	in	ADP	APPR								
+56002007	4	alle	PRON	PIS					S		Dat	N
+56002007	5	dich	PRON	PPER				2	S		Acc	
+56002007	6	selbst	ADV	ADV								
+56002007	7	als	ADP	KOKOM								
+56002007	8	ein	DET	ART					S		Nom	N
+56002007	9	Vorbild	NOUN	NN					S		Nom	N
+56002007	10	gut	ADV	ADJA	Cmp							
+56002007	11	Werk	NOUN	NN					P		Nom	N
+56002007	12	darstellst	VERB	VVFIN		Fin	Pres	2	S	Ind		
+56002007	13	in	ADP	APPR								
+56002007	14	der	DET	ART					S		Nom	M
+56002007	15	Lehre	NOUN	NN					S		Nom	F
+56002007	16	Unverderbtheit	NOUN	NN					S		Nom	F
+56002007	17	würdigen	VERB	VVINF		Inf						
+56002007	18	Ernst	PROPN	NE					S		Nom	M
+56002008	1	gesund	ADJ	ADJA	Pos				S		Nom	F
+56002008	2	nicht	PART	PTKNEG								
+56002008	3	zu	ADP	PTKVZ								
+56002008	4	verurteilende	VERB	VVFIN		Fin	Past	3	S	Ind		
+56002008	5	Rede	NOUN	NN					S		Nom	F
+56002008	6	auf	ADP	PTKVZ								
+56002008	7	daß	SCONJ	KOUS								
+56002008	8	der	DET	ART					S		Nom	M
+56002008	9	von	ADP	APPR								
+56002008	10	der	DET	ART					S		Nom	M
+56002008	11	Gegenpartei	NOUN	NN					S		Nom	F
+56002008	12	sich	PRON	PRF				3	S		Acc	
+56002008	13	schämen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56002008	14	indem	SCONJ	KOUS								
+56002008	15	er	PRON	PPER				3	S		Nom	M
+56002008	16	nichts	PRON	PIS								N
+56002008	17	schlechte	NOUN	NN					S		Nom	N
+56002008	18	über	ADP	APPR								
+56002008	19	uns	PRON	PPER				1	P		Acc	
+56002008	20	zu	ADP	PTKVZ								
+56002008	21	sagen	VERB	VVINF		Inf						
+56002008	22	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56002009	1	der	DET	ART					S		Nom	F
+56002009	2	Knecht	NOUN	NN					P		Nom	M
+56002009	3	ermahnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56002009	4	ihr	DET	PPOSAT					S		Acc	M
+56002009	5	eigen	ADJ	ADJA	Pos				S		Acc	M
+56002009	6	Herr	NOUN	NN					P		Nom	M
+56002009	7	unterwürfig	ADV	ADJD	Pos							
+56002009	8	zu	ADP	PTKVZ								
+56002009	9	sein	AUX	VAINF		Inf						
+56002009	10	in	ADP	APPR								
+56002009	11	alle	PRON	PIS					S		Dat	N
+56002009	12	sich	PRON	PRF				3	S		Acc	
+56002009	13	wohlgefällig	ADV	ADJD	Pos							
+56002009	14	zu	ADP	PTKVZ								
+56002009	15	machen	VERB	VVINF		Inf						
+56002009	16	nicht	PART	PTKNEG								
+56002009	17	widersprechend	ADV	ADJD	Pos							
+56002010	1	nichts	PRON	PIS								N
+56002010	2	unterschlagend	ADV	ADJD	Pos							
+56002010	3	sondern	CCONJ	KON								
+56002010	4	aller	PRON	PIS					P		Nom	
+56002010	5	gut	ADJ	ADJA	Pos				S		Nom	F
+56002010	6	Treue	NOUN	NN					S		Nom	F
+56002010	7	erweisend	ADV	ADJD	Pos							
+56002010	8	auf	ADP	PTKVZ								
+56002010	9	daß	SCONJ	KOUS								
+56002010	10	sie	PRON	PPER				3	P		Nom	
+56002010	11	der	DET	ART					S		Nom	F
+56002010	12	Lehre	NOUN	NN					S		Nom	F
+56002010	13	der	DET	ART					S		Nom	F
+56002010	14	unser	DET	PPOSAT					S		Gen	M
+56002010	15	Heiland-Gotte	ADJ	NN	Pos				S		Nom	N
+56002010	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56002010	17	zieren	VERB	VVINF		Inf						
+56002010	18	in	ADP	APPR								
+56002010	19	alle	PRON	PIS					S		Dat	N
+56002011	1	denn	CCONJ	KON								
+56002011	2	der	DET	ART					S		Nom	F
+56002011	3	Gnade	NOUN	NN					S		Nom	F
+56002011	4	Gott	NOUN	NN					S		Gen	M
+56002011	5	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56002011	6	erscheinen	VERB	VVPP		Part						
+56002011	7	heilbringend	ADV	ADJD	Pos							
+56002011	8	für	ADP	APPR								
+56002011	9	aller	PRON	PIS					P		Nom	
+56002011	10	Mensch	NOUN	NN					P		Nom	M
+56002012	1	und	CCONJ	KON								
+56002012	2	unterweisen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+56002012	3	uns	PRON	PPER				1	P		Acc	
+56002012	4	auf	ADP	PTKVZ								
+56002012	5	daß	SCONJ	KOUS								
+56002012	6	wir	PRON	PPER				1	P		Nom	
+56002012	7	der	DET	ART					S		Nom	F
+56002012	8	Gottlosigkeit	NOUN	NN					S		Nom	F
+56002012	9	und	CCONJ	KON								
+56002012	10	der	DET	ART					S		Nom	F
+56002012	11	weltlich	ADJ	ADJA	Pos				S		Acc	M
+56002012	12	Lust	NOUN	NN					S		Nom	F
+56002012	13	Verleugnend	NOUN	NN					S		Nom	M
+56002012	14	besonnen	ADV	ADJD	Pos							
+56002012	15	und	CCONJ	KON								
+56002012	16	gerecht	ADV	ADJD	Pos							
+56002012	17	und	CCONJ	KON								
+56002012	18	Gottselig	ADV	ADJD	Pos							
+56002012	19	leben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56002012	20	in	ADP	APPR								
+56002012	21	der	DET	ART					S		Dat	M
+56002012	22	jetzig	ADJ	ADJA	Pos				S		Acc	M
+56002012	23	Zeitlauf	NOUN	NN					S		Nom	M
+56002013	1	indem	SCONJ	KOUS								
+56002013	2	wir	PRON	PPER				1	P		Nom	
+56002013	3	erwarten	VERB	VVINF		Fin	Pres	3	P	Ind		
+56002013	4	der	DET	ART					S		Nom	F
+56002013	5	glückselig	ADJ	ADJA	Pos				S		Nom	F
+56002013	6	Hoffnung	NOUN	NN					S		Nom	F
+56002013	7	und	CCONJ	KON								
+56002013	8	Erscheinung	NOUN	NN					S		Nom	F
+56002013	9	der	DET	ART					S		Nom	M
+56002013	10	Herrlichkeit	NOUN	NN					S		Nom	F
+56002013	11	unser	DET	PPOSAT					S		Gen	M
+56002013	12	groß	ADJ	ADJA	Pos				S		Acc	M
+56002013	13	Gott	NOUN	NN					S		Gen	M
+56002013	14	und	CCONJ	KON								
+56002013	15	Heilande	NOUN	NN					P		Nom	N
+56002013	16	Jesus	PROPN	PPER					S		Nom	M
+56002013	17	Christus	PROPN	NE					S		Nom	M
+56002014	1	der	DET	ART					S		Nom	M
+56002014	2	sich	PRON	PRF				3	S		Acc	
+56002014	3	selbst	ADV	ADV								
+56002014	4	für	ADP	APPR								
+56002014	5	uns	PRON	PPER				1	P		Acc	
+56002014	6	geben	VERB	VVPP		Part						
+56002014	7	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56002014	8	auf	ADP	PTKVZ								
+56002014	9	daß	SCONJ	KOUS								
+56002014	10	er	PRON	PPER				3	S		Nom	M
+56002014	11	uns	PRON	PPER				1	P		Acc	
+56002014	12	loskaufte	NOUN	NN					P		Nom	F
+56002014	13	von	ADP	APPR								
+56002014	14	aller	DET	PIAT					P		Gen	
+56002014	15	Gesetzlosigkeit	NOUN	NN					S		Nom	F
+56002014	16	und	CCONJ	KON								
+56002014	17	reinigen	VERB	VVFIN		Fin	Past	3	S	Ind		
+56002014	18	sich	PRON	PRF				3	S		Acc	
+56002014	19	selbst	ADV	ADV								
+56002014	20	ein	DET	ART					S		Nom	N
+56002014	21	Eigentumsvolk	PROPN	NE					S		Nom	N
+56002014	22	eifrig	ADV	ADJD	Pos							
+56002014	23	in	ADP	APPR								
+56002014	24	gut	ADJ	ADJA	Pos				S		Acc	M
+56002014	25	Werk	NOUN	NN					P		Dat	N
+56002015	1	dieser	PRON	PDS					S		Nom	N
+56002015	2	Rede	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56002015	3	und	CCONJ	KON								
+56002015	4	ermahnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56002015	5	und	CCONJ	KON								
+56002015	6	überführe	VERB	VVFIN		Fin	Past	3	S	Sub		
+56002015	7	mit	ADP	APPR								
+56002015	8	aller	DET	PIAT					P		Gen	
+56002015	9	Machtvollkommenheit	NOUN	NN					S		Nom	F
+56002015	10	Laß	VERB	NE				2	S	Imp		
+56002015	11	dich	PRON	PPER				2	S		Acc	
+56002015	12	niemand	PRON	PIS					S		Nom	M
+56002015	13	verachten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56003001	1	Erinnere	VERB	FM		Fin	Pres	3	S	Sub		
+56003001	2	sie	PRON	PPER				3	P		Nom	
+56003001	3	Obrigkeit	NOUN	NN					P		Nom	F
+56003001	4	und	CCONJ	KON								
+56003001	5	Gewalt	NOUN	NN					P		Nom	F
+56003001	6	untertan	ADV	ADJD	Pos							
+56003001	7	zu	ADP	PTKVZ								
+56003001	8	sein	AUX	VAINF		Inf						
+56003001	9	Gehorsam	NOUN	NN					S		Nom	M
+56003001	10	zu	ADP	PTKVZ								
+56003001	11	leisten	VERB	VVINF		Inf						
+56003001	12	zu	ADP	PTKVZ								
+56003001	13	jeder	DET	PIAT					S		Dat	M
+56003001	14	gut	ADJ	ADJA	Pos				S		Acc	M
+56003001	15	Werk	NOUN	NN					P		Nom	N
+56003001	16	bereit	ADV	ADJD	Pos							
+56003001	17	zu	ADP	PTKVZ								
+56003001	18	sein	AUX	VAINF		Inf						
+56003002	1	niemand	PRON	PIS					S		Nom	M
+56003002	2	zu	ADP	PTKVZ								
+56003002	3	lästern	VERB	VVINF		Fin	Pres	3	P	Ind		
+56003002	4	nicht	PART	PTKNEG								
+56003002	5	streitsüchtig	ADV	ADJD	Pos							
+56003002	6	zu	ADP	PTKVZ								
+56003002	7	sein	AUX	VAINF		Inf						
+56003002	8	gelinde	ADV	ADJD	Pos							
+56003002	9	aller	PRON	PIS					P		Nom	
+56003002	10	Sanftmut	NOUN	NN					S		Nom	F
+56003002	11	erweisend	ADV	ADJD	Pos							
+56003002	12	gegen	ADP	APPR								
+56003002	13	aller	PRON	PIS					P		Nom	
+56003002	14	Mensch	NOUN	NN					P		Nom	M
+56003003	1	denn	CCONJ	KON								
+56003003	2	einst	ADV	ADV								
+56003003	3	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+56003003	4	auch	ADV	ADV								
+56003003	5	wir	PRON	PPER				1	P		Nom	
+56003003	6	unverständig	ADV	ADJD	Pos							
+56003003	7	ungehorsam	ADV	ADJD	Pos							
+56003003	8	irregehend	ADV	ADJD	Pos							
+56003003	9	dienen	VERB	VVFIN		Fin	Past	3	P	Ind		
+56003003	10	mancherlei	PRON	PIS								
+56003003	11	Lüst	NOUN	NN					P		Nom	M
+56003003	12	und	CCONJ	KON								
+56003003	13	Vergnügung	NOUN	NN					P		Nom	F
+56003003	14	führen	VERB	VVFIN		Fin	Past	3	P	Ind		
+56003003	15	unser	DET	PPOSAT					S		Nom	N
+56003003	16	Leben	NOUN	NN					S		Nom	N
+56003003	17	in	ADP	APPR								
+56003003	18	Bosheit	NOUN	NN					S		Nom	F
+56003003	19	und	CCONJ	KON								
+56003003	20	Neid	NOUN	NN					S		Nom	M
+56003003	21	verhassen	VERB	VVPP		Part						
+56003003	22	und	CCONJ	KON								
+56003003	23	sich	PRON	PRF				3	P		Dat	
+56003003	24	Hassend	VERB	VVFIN		Fin	Past	3	S	Ind		
+56003004	1	als	ADP	APPR								
+56003004	2	aber	CCONJ	KON								
+56003004	3	der	DET	ART					S		Nom	F
+56003004	4	Güte	NOUN	NN					S		Nom	F
+56003004	5	und	CCONJ	KON								
+56003004	6	der	DET	ART					S		Nom	F
+56003004	7	Menschenlieb	NOUN	NN					P		Nom	M
+56003004	8	unser	DET	PPOSAT					S		Gen	M
+56003004	9	Heiland-Gotte	ADJ	NN	Pos				S		Nom	N
+56003004	10	erscheinen	VERB	VVFIN		Fin	Past	3	S	Ind		
+56003005	1	erretten	VERB	VVFIN		Fin	Past	3	S	Ind		
+56003005	2	er	PRON	PPER				3	S		Nom	M
+56003005	3	uns	PRON	PPER				1	P		Acc	
+56003005	4	nicht	PART	PTKNEG								
+56003005	5	aus	ADP	PTKVZ								
+56003005	6	Werk	NOUN	NN					P		Dat	N
+56003005	7	der	DET	ART					S		Nom	F
+56003005	8	in	ADP	APPR								
+56003005	9	Gerechtigkeit	NOUN	NN					S		Nom	F
+56003005	10	vollbringen	VERB	VVPP		Part						
+56003005	11	wir	PRON	PPER				1	P		Nom	
+56003005	12	tun	VERB	VVPP		Part						
+56003005	13	haben	AUX	VAFIN		Fin	Past	3	P	Ind		
+56003005	14	sondern	CCONJ	KON								
+56003005	15	nach	ADP	APPR								
+56003005	16	sein	DET	PPOSAT					S		Dat	F
+56003005	17	Barmherzigkeit	NOUN	NN					S		Nom	F
+56003005	18	durch	ADP	APPR								
+56003005	19	der	DET	ART					S		Nom	F
+56003005	20	Waschung	NOUN	NN					S		Nom	F
+56003005	21	der	DET	ART					S		Nom	M
+56003005	22	Wiedergeburt	NOUN	NN					S		Nom	F
+56003005	23	und	CCONJ	KON								
+56003005	24	Erneuerung	NOUN	NN					S		Nom	F
+56003005	25	der	DET	ART					S		Gen	M
+56003005	26	heilig	NOUN	NN					P		Dat	
+56003005	27	Geist	NOUN	NN					S		Gen	M
+56003006	1	welcher	DET	PWAT					S		Acc	M
+56003006	2	er	PRON	PPER				3	S		Nom	M
+56003006	3	reichlich	ADV	ADJD	Pos							
+56003006	4	über	ADP	APPR								
+56003006	5	uns	PRON	PPER				1	P		Acc	
+56003006	6	ausgegossen	VERB	VVPP		Part						
+56003006	7	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56003006	8	durch	ADP	APPR								
+56003006	9	Jesum	PROPN	XY					S		Nom	M
+56003006	10	Christum	NOUN	NN					S		Nom	N
+56003006	11	unser	DET	PPOSAT					S		Acc	M
+56003006	12	Heiland	PROPN	NE					S		Nom	M
+56003007	1	auf	ADP	PTKVZ								
+56003007	2	daß	SCONJ	KOUS								
+56003007	3	wir	PRON	PPER				1	P		Nom	
+56003007	4	rechtfertigen	VERB	VVPP		Part						
+56003007	5	durch	ADP	APPR								
+56003007	6	sein	DET	PPOSAT					S		Nom	F
+56003007	7	Gnade	NOUN	NN					S		Nom	F
+56003007	8	Erbe	NOUN	NN					P		Nom	M
+56003007	9	werden	AUX	VAFIN		Fin	Past	3	P	Sub		
+56003007	10	nach	ADP	APPR								
+56003007	11	der	DET	ART					S		Nom	M
+56003007	12	Hoffnung	NOUN	NN					S		Nom	F
+56003007	13	der	DET	ART					S		Gen	M
+56003007	14	ewig	ADJ	ADJA	Pos				S		Acc	M
+56003007	15	Leben	NOUN	NN					S		Gen	N
+56003008	1	der	DET	ART					S		Nom	N
+56003008	2	Wort	NOUN	NN					S		Nom	N
+56003008	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56003008	4	gewiß	ADV	ADV								
+56003008	5	und	CCONJ	KON								
+56003008	6	ich	PRON	PPER				1	S		Nom	
+56003008	7	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+56003008	8	daß	SCONJ	KOUS								
+56003008	9	du	PRON	PPER				2	S		Nom	
+56003008	10	auf	ADP	PTKVZ								
+56003008	11	dieser	DET	PDAT					S		Acc	M
+56003008	12	Ding	NOUN	NN					P		Dat	N
+56003008	13	fest	ADV	PTKVZ								
+56003008	14	bestehsen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+56003008	15	auf	ADP	PTKVZ								
+56003008	16	daß	SCONJ	KOUS								
+56003008	17	der	DET	ART					S		Nom	F
+56003008	18	welcher	DET	PWAT					S		Nom	F
+56003008	19	Gott	NOUN	NN					S		Nom	M
+56003008	20	glauben	VERB	VVPP		Part						
+56003008	21	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+56003008	22	Sorge	NOUN	NN					S		Nom	F
+56003008	23	tragen	VERB	VVINF		Inf						
+56003008	24	gut	ADJ	ADJA	Pos				S		Nom	F
+56003008	25	Werk	NOUN	NN					P		Nom	N
+56003008	26	zu	ADP	PTKVZ								
+56003008	27	betreiben	VERB	VVINF		Inf						
+56003008	28	dieser	PRON	PDS					S		Nom	N
+56003008	29	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56003008	30	gut	ADV	ADJD	Pos							
+56003008	31	und	CCONJ	KON								
+56003008	32	nützlich	ADV	ADJD	Pos							
+56003008	33	für	ADP	APPR								
+56003008	34	der	DET	ART					S		Nom	F
+56003008	35	Mensch	NOUN	NN					P		Nom	M
+56003009	1	Törichte	NOUN	NE					S		Nom	F
+56003009	2	Streitfrage	NOUN	NN					P		Nom	F
+56003009	3	aber	CCONJ	KON								
+56003009	4	und	CCONJ	KON								
+56003009	5	Geschlechtsregister	NOUN	NN					S		Nom	M
+56003009	6	und	CCONJ	KON								
+56003009	7	Zänkereie	NOUN	NE					P		Nom	F
+56003009	8	und	CCONJ	KON								
+56003009	9	Streitigkeit	NOUN	NN					P		Nom	F
+56003009	10	über	ADP	APPR								
+56003009	11	der	DET	ART					S		Nom	N
+56003009	12	Gesetz	NOUN	NN					S		Nom	N
+56003009	13	vermeiden	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56003009	14	denn	CCONJ	KON								
+56003009	15	sie	PRON	PPER				3	P		Nom	
+56003009	16	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+56003009	17	unnütz	ADV	ADJD	Pos							
+56003009	18	und	CCONJ	KON								
+56003009	19	eitel	ADV	ADJD	Pos							
+56003010	1	ein	DET	ART					S		Acc	M
+56003010	2	sektiererisch	ADJ	ADJA	Pos				S		Acc	M
+56003010	3	Mensch	NOUN	NN					P		Nom	M
+56003010	4	Weise	NOUN	NN					S		Nom	F
+56003010	5	ab	ADP	PTKVZ								
+56003010	6	nach	ADP	APPR								
+56003010	7	ein	PRON	ART					S		Nom	M
+56003010	8	ein	DET	ART					S		Nom	N
+56003010	9	und	CCONJ	KON								
+56003010	10	zweimalig	ADJ	ADJA	Pos				S		Acc	M
+56003010	11	Zurechtweisung	NOUN	NN					S		Nom	F
+56003011	1	da	ADV	ADV								
+56003011	2	du	PRON	PPER				2	S		Nom	
+56003011	3	weißen	VERB	VVFIN		Fin	Pres	2	S	Ind		
+56003011	4	daß	SCONJ	KOUS								
+56003011	5	ein	DET	ART					S		Nom	N
+56003011	6	solcher	DET	PIAT					S		Nom	M
+56003011	7	verkehren	ADV	ADJD	Pos							
+56003011	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56003011	9	und	CCONJ	KON								
+56003011	10	sündigen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+56003011	11	indem	SCONJ	KOUS								
+56003011	12	er	PRON	PPER				3	S		Nom	M
+56003011	13	durch	ADP	APPR								
+56003011	14	sich	PRON	PRF				3	S		Acc	
+56003011	15	selbst	ADV	ADV								
+56003011	16	verurteilen	VERB	VVPP		Part						
+56003011	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+56003012	1	wenn	SCONJ	KOUS								
+56003012	2	ich	PRON	PPER				1	S		Nom	
+56003012	3	Artemas	NOUN	NN					S		Nom	F
+56003012	4	oder	CCONJ	KON								
+56003012	5	Tychikus	NOUN	NN					S		Nom	M
+56003012	6	zu	ADP	PTKVZ								
+56003012	7	dir	PRON	PPER				2	S		Dat	
+56003012	8	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56003012	9	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+56003012	10	so	ADV	ADV								
+56003012	11	befleißigen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+56003012	12	dich	PRON	PPER				2	S		Acc	
+56003012	13	zu	ADP	PTKVZ								
+56003012	14	mir	PRON	PPER				1	S		Dat	
+56003012	15	nach	ADP	APPR								
+56003012	16	Nikopoli	PROPN	NE					S		Gen	N
+56003012	17	zu	ADP	PTKVZ								
+56003012	18	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56003012	19	denn	CCONJ	KON								
+56003012	20	ich	PRON	PPER				1	S		Nom	
+56003012	21	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+56003012	22	beschließen	VERB	VVPP		Part						
+56003012	23	daselbst	ADV	PROAV								
+56003012	24	zu	ADP	PTKVZ								
+56003012	25	überwintern	VERB	VVINF		Inf						
+56003013	1	Zena	PROPN	NE					S		Gen	
+56003013	2	der	DET	ART					S		Dat	M
+56003013	3	Gesetzgelehrten	NOUN	NN					S		Nom	M
+56003013	4	und	CCONJ	KON								
+56003013	5	Apollos	PROPN	NE					S		Nom	
+56003013	6	gib	VERB	VVIMP				2	S	Imp		
+56003013	7	mit	ADP	APPR								
+56003013	8	Sorgfalt	NOUN	NN					S		Nom	F
+56003013	9	der	DET	ART					S		Nom	N
+56003013	10	Geleit	NOUN	NN					S		Nom	N
+56003013	11	auf	ADP	PTKVZ								
+56003013	12	daß	SCONJ	KOUS								
+56003013	13	ihnen	PRON	PPER				3	P		Dat	
+56003013	14	nichts	PRON	PIS								N
+56003013	15	mangle	VERB	NE		Fin	Pres	3	S	Sub		
+56003014	1	Laß	VERB	NE				2	S	Imp		
+56003014	2	aber	CCONJ	KON								
+56003014	3	auch	ADV	ADV								
+56003014	4	der	DET	ART					S		Nom	F
+56003014	5	Unsrigen	VERB	NN		Part						
+56003014	6	lernen	VERB	VVINF		Inf						
+56003014	7	für	ADP	APPR								
+56003014	8	der	DET	ART					S		Nom	F
+56003014	9	notwendig	ADJ	ADJA	Pos				S		Acc	M
+56003014	10	Bedürfnis	NOUN	NN					P		Nom	N
+56003014	11	gut	ADJ	ADJA	Pos				S		Nom	F
+56003014	12	Werk	NOUN	NN					P		Nom	N
+56003014	13	zu	ADP	PTKVZ								
+56003014	14	betreiben	VERB	VVINF		Inf						
+56003014	15	auf	ADP	PTKVZ								
+56003014	16	daß	SCONJ	KOUS								
+56003014	17	sie	PRON	PPER				3	P		Nom	
+56003014	18	nicht	PART	PTKNEG								
+56003014	19	unfruchtbar	ADV	ADJD	Pos							
+56003014	20	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+56003015	1	es	PRON	PPER				3	S		Nom	N
+56003015	2	grüßen	VERB	VVINF		Inf						
+56003015	3	dich	PRON	PPER				2	S		Acc	
+56003015	4	aller	PRON	PIS					P		Nom	
+56003015	5	der	DET	ART					S		Nom	F
+56003015	6	bei	ADP	APPR								
+56003015	7	mir	PRON	PPER				1	S		Dat	
+56003015	8	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+56003015	9	Gruß	VERB	VVIMP				2	S	Imp		
+56003015	10	der	DET	ART					S		Nom	F
+56003015	11	uns	PRON	PPER				1	P		Acc	
+56003015	12	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+56003015	13	in	ADP	APPRART					S		Dat	N
+56003015	14	Glaube	NOUN	NN					S		Acc	M
+56003015	15	der	DET	ART					S		Nom	F
+56003015	16	Gnade	NOUN	NN					S		Nom	F
+56003015	17	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+56003015	18	mit	ADP	APPR								
+56003015	19	euch	PRON	PPER				2	P		Dat	
+56003015	20	aller	DET	PIS					P		Dat	

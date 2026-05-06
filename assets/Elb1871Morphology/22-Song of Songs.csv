@@ -1,0 +1,2366 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+22001001	1	der	DET	ART					S		Nom	N
+22001001	2	Lied	NOUN	NN					S		Nom	N
+22001001	3	der	DET	ART					S		Nom	M
+22001001	4	Lied	NOUN	NN					P		Nom	N
+22001001	5	von	ADP	APPR								
+22001001	6	Salomo	PROPN	NE					S		Nom	M
+22001002	1	er	PRON	PPER				3	S		Nom	M
+22001002	2	küsse	NOUN	NN					P		Nom	M
+22001002	3	mich	PRON	PPER				1	S		Acc	
+22001002	4	mit	ADP	APPR								
+22001002	5	der	DET	ART					S		Acc	M
+22001002	6	Küssen	NOUN	NN					S		Nom	N
+22001002	7	sein	DET	PPOSAT					S		Gen	M
+22001002	8	Munde	PROPN	NE					S		Gen	
+22001002	9	denn	CCONJ	KON								
+22001002	10	dein	DET	PPOSAT					S		Nom	F
+22001002	11	Liebe	NOUN	NN					S		Nom	F
+22001002	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22001002	13	gut	ADV	ADJD	Cmp							
+22001002	14	als	ADP	KOKOM								
+22001002	15	Wein	NOUN	NN					S		Nom	M
+22001003	1	lieblich	ADV	ADJD	Pos							
+22001003	2	an	ADP	PTKVZ								
+22001003	3	Geruch	NOUN	NN					S		Nom	M
+22001003	4	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22001003	5	dein	DET	PPOSAT					S		Nom	F
+22001003	6	Salbe	NOUN	NN					P		Nom	F
+22001003	7	ein	DET	ART					S		Nom	N
+22001003	8	ausgegossenes	ADJ	NE	Pos				S		Nom	N
+22001003	9	Salböl	NOUN	NN					S		Nom	N
+22001003	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22001003	11	dein	DET	PPER					S		Nom	N
+22001003	12	Name	NOUN	NN					S		Nom	M
+22001003	13	darum	ADV	PROAV								
+22001003	14	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22001003	15	dich	PRON	PPER				2	S		Acc	
+22001003	16	der	DET	ART					S		Nom	F
+22001003	17	Jungfraue	NOUN	NN					P		Nom	F
+22001004	1	Ziehe	VERB	VVIMP				2	S	Imp		
+22001004	2	mich	PRON	PPER				1	S		Acc	
+22001004	3	wir	PRON	PPER				1	P		Nom	
+22001004	4	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22001004	5	dir	PRON	PPER				2	S		Dat	
+22001004	6	nachlaufen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22001004	7	der	DET	ART					S		Nom	M
+22001004	8	König	NOUN	NN					S		Nom	M
+22001004	9	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22001004	10	mich	PRON	PPER				1	S		Acc	
+22001004	11	in	ADP	APPR								
+22001004	12	sein	DET	PPOSAT					S		Nom	F
+22001004	13	Gemächer	NOUN	NN					P		Nom	N
+22001004	14	führen	VERB	VVPP		Part						
+22001004	15	wir	PRON	PPER				1	P		Nom	
+22001004	16	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22001004	17	frohlocken	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22001004	18	und	CCONJ	KON								
+22001004	19	dein	DET	PPOSAT					S		Dat	F
+22001004	20	uns	PRON	PPER				1	P		Acc	
+22001004	21	freuen	VERB	VVINF		Inf						
+22001004	22	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22001004	23	dein	DET	PPOSAT					S		Nom	F
+22001004	24	Liebe	NOUN	NN					S		Nom	F
+22001004	25	preisen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22001004	26	mehr	ADV	ADV								
+22001004	27	als	ADP	KOKOM								
+22001004	28	Wein	NOUN	NN					S		Nom	M
+22001004	29	sie	PRON	PPER				3	P		Nom	
+22001004	30	lieben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22001004	31	dich	PRON	PPER				2	S		Acc	
+22001004	32	in	ADP	APPR								
+22001004	33	Aufrichtigkeit	NOUN	NN					S		Nom	F
+22001005	1	ich	PRON	PPER				1	S		Nom	
+22001005	2	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22001005	3	Schwarz	ADV	ADJD	Pos							
+22001005	4	aber	CCONJ	KON								
+22001005	5	anmutig	ADV	ADJD	Pos							
+22001005	6	Tochter	NOUN	NN					P		Nom	F
+22001005	7	Jerusalem	PROPN	NE					S		Gen	N
+22001005	8	wie	ADP	KOKOM								
+22001005	9	der	DET	ART					S		Nom	F
+22001005	10	Zelt	NOUN	NN					P		Nom	N
+22001005	11	Kedar	PROPN	NE					S		Gen	
+22001005	12	wie	ADP	KOKOM								
+22001005	13	der	DET	ART					S		Nom	F
+22001005	14	Zeltbehang	NOUN	NN					P		Nom	M
+22001005	15	Salomos	PROPN	NE					S		Nom	
+22001006	1	sehet	VERB	VVIMP		Fin	Pres	3	S	Ind		
+22001006	2	mich	PRON	PPER				1	S		Acc	
+22001006	3	nicht	PART	PTKNEG								
+22001006	4	an	ADP	PTKVZ								
+22001006	5	weil	SCONJ	KOUS								
+22001006	6	ich	PRON	PPER				1	S		Nom	
+22001006	7	schwärzlich	ADV	ADJD	Pos							
+22001006	8	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22001006	9	weil	SCONJ	KOUS								
+22001006	10	der	DET	ART					S		Nom	F
+22001006	11	Sonne	NOUN	NN					S		Nom	F
+22001006	12	mich	PRON	PPER				1	S		Acc	
+22001006	13	verbrennen	VERB	VVPP		Part						
+22001006	14	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22001006	15	mein	DET	PPOSAT					S		Dat	F
+22001006	16	Mutter	NOUN	NN					S		Nom	F
+22001006	17	Sohn	NOUN	NN					P		Nom	M
+22001006	18	zürnten	NOUN	VVIZU					P		Dat	
+22001006	19	mir	PRON	PPER				1	S		Dat	
+22001006	20	bestellen	VERB	ADJA		Fin	Past	3	P	Ind		
+22001006	21	mich	PRON	PPER				1	S		Acc	
+22001006	22	zu	ADP	APPRART					S		Dat	F
+22001006	23	Hüterin	NOUN	NN					S		Nom	F
+22001006	24	der	DET	ART					S		Nom	M
+22001006	25	Weinberg	NOUN	NN					P		Nom	M
+22001006	26	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22001006	27	eigen	ADJ	ADJA	Pos				S		Acc	M
+22001006	28	Weinberg	PROPN	NE					S		Nom	
+22001006	29	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22001006	30	ich	PRON	PPER				1	S		Nom	
+22001006	31	nicht	PART	PTKNEG								
+22001006	32	hüten	VERB	VVPP		Part						
+22001007	1	Sage	NOUN	NN					S		Nom	F
+22001007	2	mir	PRON	PPER				1	S		Dat	
+22001007	3	an	ADP	PTKVZ								
+22001007	4	du	PRON	PPER				2	S		Nom	
+22001007	5	der	DET	ART					S		Acc	M
+22001007	6	mein	DET	PPOSAT					S		Nom	F
+22001007	7	Seele	NOUN	NN					S		Nom	F
+22001007	8	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22001007	9	wo	SCONJ	PWAV								
+22001007	10	Weidest	PROPN	NE					S		Nom	
+22001007	11	du	PRON	PPER				2	S		Nom	
+22001007	12	wo	SCONJ	PWAV								
+22001007	13	Lässest	ADV	ADJD	Pos							
+22001007	14	du	PRON	PPER				2	S		Nom	
+22001007	15	lagern	VERB	VVINF		Inf						
+22001007	16	an	ADP	APPRART					S		Dat	M
+22001007	17	Mittag	NOUN	NN					S		Nom	M
+22001007	18	denn	CCONJ	KON								
+22001007	19	warum	SCONJ	PWAV								
+22001007	20	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+22001007	21	ich	PRON	PPER				1	S		Nom	
+22001007	22	wie	ADP	KOKOM								
+22001007	23	ein	DET	ART					S		Nom	F
+22001007	24	verschleierte	NOUN	NN					P		Nom	
+22001007	25	sein	AUX	VAINF		Inf						
+22001007	26	bei	ADP	APPR								
+22001007	27	der	DET	ART					S		Acc	M
+22001007	28	Herde	NOUN	NN					P		Nom	F
+22001007	29	dein	DET	PPOSAT					S		Dat	F
+22001007	30	Genosse	NOUN	NN					P		Nom	M
+22001008	1	wenn	SCONJ	KOUS								
+22001008	2	du	PRON	PPER				2	S		Nom	
+22001008	3	es	PRON	PPER				3	S		Nom	N
+22001008	4	nicht	PART	PTKNEG								
+22001008	5	weißen	VERB	VVFIN		Fin	Pres	2	S	Ind		
+22001008	6	du	PRON	PPER				2	S		Nom	
+22001008	7	Schönste	ADJ	FM	Sup				S		Nom	F
+22001008	8	unter	ADP	APPR								
+22001008	9	der	DET	ART					S		Acc	M
+22001008	10	Frau	NOUN	NN					P		Nom	F
+22001008	11	so	ADV	ADV								
+22001008	12	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22001008	13	hinaus	ADP	APZR								
+22001008	14	der	DET	ART					S		Acc	M
+22001008	15	Spur	NOUN	NN					P		Nom	F
+22001008	16	der	DET	ART					S		Nom	M
+22001008	17	Herde	NOUN	NN					S		Nom	F
+22001008	18	nach	ADP	APPR								
+22001008	19	und	CCONJ	KON								
+22001008	20	Weide	NOUN	NN					S		Nom	F
+22001008	21	dein	DET	PPOSAT					S		Nom	F
+22001008	22	Zicklein	NOUN	NN					S		Nom	N
+22001008	23	bei	ADP	APPR								
+22001008	24	der	DET	ART					S		Acc	M
+22001008	25	Wohnung	NOUN	NN					P		Nom	F
+22001008	26	der	DET	ART					S		Nom	M
+22001008	27	Hirt	NOUN	NN					P		Nom	M
+22001009	1	ein	DET	PIS					S		Dat	M
+22001009	2	Roß	NOUN	NN					P		Nom	M
+22001009	3	an	ADP	PTKVZ								
+22001009	4	der	DET	ART					S		Gen	M
+22001009	5	Pharao	NOUN	NN					S		Nom	M
+22001009	6	Prachtwag	NOUN	NN					P		Nom	M
+22001009	7	Vergleich	NOUN	NN					P		Nom	M
+22001009	8	ich	PRON	PPER				1	S		Nom	
+22001009	9	dich	PRON	PPER				2	S		Acc	
+22001009	10	mein	DET	PPOSAT					S		Nom	F
+22001009	11	Freundin	NOUN	NN					S		Nom	F
+22001010	1	Anmutig	ADV	ADJD	Pos							
+22001010	2	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22001010	3	dein	DET	PPOSAT					S		Nom	F
+22001010	4	Wange	NOUN	NN					P		Nom	F
+22001010	5	in	ADP	APPR								
+22001010	6	der	DET	ART					S		Acc	M
+22001010	7	Kettchen	NOUN	NN					S		Nom	N
+22001010	8	dein	DET	PPER					S		Nom	N
+22001010	9	Hals	NOUN	NN					S		Nom	M
+22001010	10	in	ADP	APPR								
+22001010	11	der	DET	ART					S		Acc	M
+22001010	12	schnüren	NOUN	NN					S		Nom	N
+22001011	1	wir	PRON	PPER				1	P		Nom	
+22001011	2	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22001011	3	dir	PRON	PPER				2	S		Dat	
+22001011	4	golden	ADJ	ADJA	Pos				S		Nom	F
+22001011	5	Kettchen	NOUN	NN					S		Nom	N
+22001011	6	machen	VERB	VVINF		Inf						
+22001011	7	mit	ADP	APPR								
+22001011	8	Punkt	NOUN	NN					P		Dat	M
+22001011	9	von	ADP	APPR								
+22001011	10	Silber	NOUN	NN					S		Nom	N
+22001012	1	während	SCONJ	KOUS								
+22001012	2	der	DET	ART					S		Nom	M
+22001012	3	König	NOUN	NN					S		Nom	M
+22001012	4	an	ADP	PTKVZ								
+22001012	5	sein	DET	PPOSAT					S		Dat	F
+22001012	6	Tafel	NOUN	NN					S		Nom	F
+22001012	7	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+22001012	8	geben	VERB	VVFIN		Fin	Past	3	S	Ind		
+22001012	9	mein	DET	PPOSAT					S		Nom	F
+22001012	10	Narde	PROPN	NE					S		Nom	
+22001012	11	ihr	DET	PPOSAT					S		Acc	M
+22001012	12	Duft	NOUN	NN					S		Nom	M
+22001013	1	mein	PRON	PPOSAT				2	P		Nom	
+22001013	2	Geliebter	NOUN	NN					S		Nom	M
+22001013	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22001013	4	mir	PRON	PPER				1	S		Dat	
+22001013	5	ein	DET	ART					S		Nom	N
+22001013	6	Bündel	NOUN	NN					S		Nom	N
+22001013	7	myrrhe	NOUN	NN					S		Nom	N
+22001013	8	der	DET	ART					S		Nom	N
+22001013	9	zwischen	ADP	APPR								
+22001013	10	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22001013	11	Brüst	NOUN	NN					P		Nom	F
+22001013	12	ruhen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22001014	1	ein	DET	ART					S		Nom	F
+22001014	2	Cypertraube	PROPN	NE					S		Nom	
+22001014	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22001014	4	mir	PRON	PPER				1	S		Dat	
+22001014	5	mein	DET	PPOSAT					S		Nom	N
+22001014	6	Geliebter	NOUN	NN					S		Nom	M
+22001014	7	in	ADP	APPR								
+22001014	8	der	DET	ART					S		Acc	M
+22001014	9	Weinberg	NOUN	NN					P		Dat	M
+22001014	10	von	ADP	APPR								
+22001014	11	Engedi	NOUN	NN					S		Nom	F
+22001015	1	sehen	VERB	VVIMP				2	S	Imp		
+22001015	2	du	PRON	PPER				2	S		Nom	
+22001015	3	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22001015	4	schön	ADV	ADJD	Pos							
+22001015	5	mein	DET	PPOSAT					S		Nom	F
+22001015	6	Freundin	NOUN	NN					S		Nom	F
+22001015	7	sehen	VERB	VVIMP				2	S	Imp		
+22001015	8	du	PRON	PPER				2	S		Nom	
+22001015	9	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22001015	10	schön	ADV	ADJD	Pos							
+22001015	11	dein	DET	PPOSAT					S		Nom	F
+22001015	12	Auge	NOUN	NN					P		Nom	N
+22001015	13	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22001015	14	Taube	NOUN	NN					P		Nom	F
+22001016	1	sehen	VERB	VVIMP				2	S	Imp		
+22001016	2	du	PRON	PPER				2	S		Nom	
+22001016	3	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22001016	4	schön	ADV	ADJD	Pos							
+22001016	5	mein	DET	PPOSAT					S		Nom	N
+22001016	6	Geliebter	NOUN	NN					S		Nom	M
+22001016	7	ja	ADV	ADV								
+22001016	8	Holdselig	VERB	NE		Fin	Pres	3	S	Ind		
+22001016	9	ja	ADV	ADV								
+22001016	10	unser	DET	PPOSAT					S		Nom	N
+22001016	11	Lager	NOUN	NN					S		Nom	N
+22001016	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22001016	13	frisch	ADJ	ADJA	Pos				S		Nom	N
+22001016	14	Grün	PROPN	NE					S		Nom	M
+22001017	1	der	DET	ART					S		Nom	F
+22001017	2	Balke	NOUN	NN					P		Nom	M
+22001017	3	unser	DET	PPOSAT					S		Dat	F
+22001017	4	Behausung	NOUN	NN					S		Nom	F
+22001017	5	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22001017	6	Cedern	NOUN	NN					S		Nom	N
+22001017	7	unser	DET	PPOSAT					S		Nom	N
+22001017	8	Getäfel	NOUN	NN					S		Nom	M
+22001017	9	Cypresse	PROPN	NE					S		Nom	
+22002001	1	ich	PRON	PPER				1	S		Nom	
+22002001	2	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22002001	3	ein	DET	ART					S		Nom	F
+22002001	4	Narzisse	NOUN	NN					S		Nom	F
+22002001	5	Saron	PROPN	NE					S		Gen	
+22002001	6	ein	DET	ART					S		Nom	F
+22002001	7	Lilie	NOUN	NN					S		Nom	F
+22002001	8	der	DET	ART					S		Nom	M
+22002001	9	Täler	NOUN	NN					P		Nom	N
+22002002	1	wie	ADV	PWAV								
+22002002	2	ein	DET	ART					S		Nom	F
+22002002	3	Lilie	NOUN	NN					S		Nom	F
+22002002	4	inmitten	ADP	APPR								
+22002002	5	der	DET	ART					S		Nom	M
+22002002	6	Dorne	NOUN	NN					P		Nom	F
+22002002	7	so	ADV	ADV								
+22002002	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002002	9	mein	DET	PPOSAT					S		Nom	F
+22002002	10	Freundin	NOUN	NN					S		Nom	F
+22002002	11	inmitten	ADP	APPR								
+22002002	12	der	DET	ART					S		Nom	M
+22002002	13	Tochter	NOUN	NN					P		Nom	F
+22002003	1	wie	ADV	PWAV								
+22002003	2	ein	DET	ART					S		Nom	N
+22002003	3	Apfelbaum	NOUN	NN					S		Nom	M
+22002003	4	unter	ADP	APPR								
+22002003	5	der	DET	ART					S		Acc	M
+22002003	6	Baum	NOUN	NN					P		Dat	M
+22002003	7	der	DET	ART					S		Gen	M
+22002003	8	Wald	NOUN	NN					P		Nom	M
+22002003	9	so	ADV	ADV								
+22002003	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002003	11	mein	DET	PPOSAT					S		Nom	N
+22002003	12	Geliebter	NOUN	NN					S		Nom	M
+22002003	13	inmitten	ADP	APPR								
+22002003	14	der	DET	ART					S		Nom	M
+22002003	15	Sohn	NOUN	NN					P		Nom	M
+22002003	16	ich	PRON	PPER				1	S		Nom	
+22002003	17	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22002003	18	mich	PRON	PPER				1	S		Acc	
+22002003	19	mit	ADP	APPR								
+22002003	20	Wonne	NOUN	NN					S		Nom	F
+22002003	21	in	ADP	APPR								
+22002003	22	sein	DET	PPOSAT					S		Acc	M
+22002003	23	Schatten	NOUN	NN					S		Nom	M
+22002003	24	setzen	VERB	VVPP		Part						
+22002003	25	und	CCONJ	KON								
+22002003	26	sein	DET	PPOSAT					S		Nom	F
+22002003	27	Frucht	NOUN	NN					S		Nom	F
+22002003	28	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002003	29	mein	DET	PPOSAT					S		Dat	M
+22002003	30	Gaumen	NOUN	NN					S		Nom	N
+22002003	31	süß	ADV	ADJD	Pos							
+22002004	1	er	PRON	PPER				3	S		Nom	M
+22002004	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002004	3	mich	PRON	PPER				1	S		Acc	
+22002004	4	in	ADP	APPR								
+22002004	5	der	DET	ART					S		Nom	N
+22002004	6	Haus	NOUN	NN					S		Nom	N
+22002004	7	der	DET	ART					S		Gen	M
+22002004	8	Weiner	NOUN	NN					S		Gen	M
+22002004	9	führen	VERB	VVPP		Part						
+22002004	10	und	CCONJ	KON								
+22002004	11	sein	AUX	VAINF		Inf						
+22002004	12	Panier	NOUN	NN					S		Nom	N
+22002004	13	über	ADP	APPR								
+22002004	14	mir	PRON	PPER				1	S		Dat	
+22002004	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002004	16	der	DET	ART					S		Nom	F
+22002004	17	Liebe	NOUN	NN					S		Nom	F
+22002005	1	Stärket	PROPN	NE					S		Nom	
+22002005	2	mich	PRON	PPER				1	S		Acc	
+22002005	3	mit	ADP	APPR								
+22002005	4	Traubenkuche	NOUN	NN					P		Nom	F
+22002005	5	Erquicket	NOUN	NE					S		Nom	N
+22002005	6	mich	PRON	PPER				1	S		Acc	
+22002005	7	mit	ADP	APPR								
+22002005	8	Äpfeln	NOUN	NN					S		Nom	N
+22002005	9	denn	CCONJ	KON								
+22002005	10	ich	PRON	PPER				1	S		Nom	
+22002005	11	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22002005	12	krank	ADV	ADJD	Pos							
+22002005	13	vor	ADP	APPR								
+22002005	14	Liebe	NOUN	NN					S		Nom	F
+22002006	1	sein	DET	PPOSAT					S		Nom	F
+22002006	2	linke	NOUN	NE					P		Nom	
+22002006	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002006	4	unter	ADP	APPR								
+22002006	5	mein	DET	PPOSAT					S		Dat	M
+22002006	6	Haupt	NOUN	NN					P		Nom	N
+22002006	7	und	CCONJ	KON								
+22002006	8	sein	DET	PPOSAT					S		Nom	F
+22002006	9	Recht	NOUN	NN					P		Nom	N
+22002006	10	umfassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002006	11	mich	PRON	PPER				1	S		Acc	
+22002007	1	ich	PRON	PPER				1	S		Nom	
+22002007	2	beschwören	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22002007	3	euch	PRON	PPER				2	P		Dat	
+22002007	4	Tochter	NOUN	NN					P		Nom	F
+22002007	5	Jerusalem	PROPN	NE					S		Gen	N
+22002007	6	bei	ADP	APPR								
+22002007	7	der	DET	ART					S		Acc	M
+22002007	8	Gazelle	NOUN	NN					P		Nom	F
+22002007	9	oder	CCONJ	KON								
+22002007	10	bei	ADP	APPR								
+22002007	11	der	DET	ART					S		Acc	M
+22002007	12	Hindin	NOUN	NN					P		Nom	F
+22002007	13	der	DET	ART					S		Gen	M
+22002007	14	Felde	NOUN	NE					S		Nom	N
+22002007	15	daß	SCONJ	KOUS								
+22002007	16	ihr	PRON	PPOSAT				3	S		Dat	F
+22002007	17	nicht	PART	PTKNEG								
+22002007	18	Wecket	PROPN	NE					S		Nom	N
+22002007	19	noch	CCONJ	KON								
+22002007	20	Aufwecket	PROPN	NE					S		Nom	M
+22002007	21	der	DET	ART					S		Nom	F
+22002007	22	Liebe	NOUN	NN					S		Nom	F
+22002007	23	bis	CCONJ	KON								
+22002007	24	es	PRON	PPER				3	S		Nom	N
+22002007	25	ihr	PRON	PPOSAT				3	S		Dat	F
+22002007	26	gefällen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002008	1	Horch	PROPN	NE					S		Nom	
+22002008	2	mein	DET	PPOSAT					S		Nom	N
+22002008	3	Geliebter	NOUN	NN					S		Nom	M
+22002008	4	sehen	VERB	VVIMP				2	S	Imp		
+22002008	5	da	ADV	ADV								
+22002008	6	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002008	7	er	PRON	PPER				3	S		Nom	M
+22002008	8	springend	ADV	ADJD	Pos							
+22002008	9	über	ADP	APPR								
+22002008	10	der	DET	ART					S		Nom	F
+22002008	11	Berg	NOUN	NN					P		Nom	M
+22002008	12	hüpfend	ADV	ADJD	Pos							
+22002008	13	über	ADP	APPR								
+22002008	14	der	DET	ART					S		Nom	F
+22002008	15	Hügel	NOUN	NN					S		Nom	M
+22002009	1	mein	PRON	PPOSAT				2	P		Nom	
+22002009	2	Geliebter	NOUN	NN					S		Nom	M
+22002009	3	gleichen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002009	4	ein	PRON	ART					S		Nom	M
+22002009	5	Gazelle	NOUN	NN					S		Nom	F
+22002009	6	oder	CCONJ	KON								
+22002009	7	ein	DET	ART					S		Dat	M
+22002009	8	Junge	NOUN	NN					P		Nom	M
+22002009	9	der	DET	ART					S		Nom	M
+22002009	10	Hirsch	NOUN	NN					P		Nom	N
+22002009	11	sehen	VERB	VVIMP				2	S	Imp		
+22002009	12	da	ADV	ADV								
+22002009	13	stehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002009	14	er	PRON	PPER				3	S		Nom	M
+22002009	15	hinter	ADP	APPR								
+22002009	16	unser	DET	PPOSAT					S		Dat	F
+22002009	17	Mauer	NOUN	NN					S		Nom	F
+22002009	18	schauen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002009	19	durch	ADP	APPR								
+22002009	20	der	DET	ART					S		Nom	F
+22002009	21	Fenster	NOUN	NN					S		Nom	N
+22002009	22	blicken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002009	23	durch	ADP	APPR								
+22002009	24	der	DET	ART					S		Nom	F
+22002009	25	Gitter	NOUN	NN					S		Nom	N
+22002010	1	mein	PRON	PPOSAT				2	P		Nom	
+22002010	2	Geliebter	NOUN	NN					S		Nom	M
+22002010	3	heben	VERB	VVFIN		Fin	Past	3	S	Ind		
+22002010	4	an	ADP	PTKVZ								
+22002010	5	und	CCONJ	KON								
+22002010	6	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22002010	7	zu	ADP	PTKVZ								
+22002010	8	mir	PRON	PPER				1	S		Dat	
+22002010	9	Mache	VERB	VVIMP				2	S	Imp		
+22002010	10	dich	PRON	PPER				2	S		Acc	
+22002010	11	auf	ADP	PTKVZ								
+22002010	12	mein	DET	PPOSAT					S		Nom	F
+22002010	13	Freundin	NOUN	NN					S		Nom	F
+22002010	14	mein	DET	PPOSAT					S		Nom	F
+22002010	15	schön	ADJ	ADJA	Pos				S		Nom	F
+22002010	16	und	CCONJ	KON								
+22002010	17	kommen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22002011	1	denn	CCONJ	KON								
+22002011	2	sehen	VERB	VVIMP				2	S	Imp		
+22002011	3	der	DET	ART					S		Nom	M
+22002011	4	Winter	NOUN	NN					S		Nom	M
+22002011	5	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002011	6	vorbei	ADV	ADV								
+22002011	7	der	DET	ART					S		Nom	M
+22002011	8	Regen	NOUN	NN					S		Nom	M
+22002011	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002011	10	vorüber	ADV	ADV								
+22002011	11	er	PRON	PPER				3	S		Nom	M
+22002011	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002011	13	dahin	ADV	PROAV								
+22002012	1	der	DET	ART					S		Nom	F
+22002012	2	Blume	NOUN	NN					P		Nom	F
+22002012	3	erscheinen	VERB	VVINF		Inf						
+22002012	4	in	ADP	APPRART					S		Dat	N
+22002012	5	Land	NOUN	NN					P		Nom	N
+22002012	6	der	DET	ART					S		Nom	F
+22002012	7	Zeit	NOUN	NN					S		Nom	F
+22002012	8	der	DET	ART					S		Gen	M
+22002012	9	Gesange	NOUN	NN					S		Gen	M
+22002012	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002012	11	kommen	VERB	VVPP		Part						
+22002012	12	und	CCONJ	KON								
+22002012	13	der	DET	ART					S		Nom	F
+22002012	14	Stimme	NOUN	NN					S		Nom	F
+22002012	15	der	DET	ART					S		Nom	M
+22002012	16	Turteltaube	NOUN	NN					S		Nom	F
+22002012	17	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002012	18	sich	PRON	PRF				3	S		Acc	
+22002012	19	hören	VERB	VVINF		Inf						
+22002012	20	in	ADP	APPR								
+22002012	21	unser	DET	PPOSAT					S		Dat	N
+22002012	22	Land	NOUN	NN					P		Nom	N
+22002013	1	der	DET	ART					S		Nom	M
+22002013	2	Feigenbaum	NOUN	NN					S		Nom	M
+22002013	3	röten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002013	4	sein	DET	PPOSAT					S		Nom	F
+22002013	5	Feige	NOUN	NN					P		Nom	F
+22002013	6	und	CCONJ	KON								
+22002013	7	der	DET	ART					S		Nom	F
+22002013	8	Weinstock	NOUN	NN					P		Nom	M
+22002013	9	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22002013	10	in	ADP	APPR								
+22002013	11	der	DET	ART					S		Nom	M
+22002013	12	Blüte	NOUN	NN					S		Nom	F
+22002013	13	geben	VERB	VVINF		Inf						
+22002013	14	Duft	NOUN	NN					S		Nom	M
+22002013	15	Mache	VERB	VVIMP				2	S	Imp		
+22002013	16	dich	PRON	PPER				2	S		Acc	
+22002013	17	auf	ADP	PTKVZ								
+22002013	18	mein	DET	PPOSAT					S		Nom	F
+22002013	19	Freundin	NOUN	NN					S		Nom	F
+22002013	20	mein	DET	PPOSAT					S		Nom	F
+22002013	21	schön	ADJ	ADJA	Pos				S		Nom	F
+22002013	22	und	CCONJ	KON								
+22002013	23	kommen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22002014	1	mein	DET	PPOSAT					S		Nom	F
+22002014	2	Taube	NOUN	NN					S		Nom	F
+22002014	3	in	ADP	APPRART					S		Dat	N
+22002014	4	Geklüft	NOUN	NN					P		Nom	N
+22002014	5	der	DET	ART					S		Nom	M
+22002014	6	Fels	NOUN	NN					P		Nom	M
+22002014	7	in	ADP	APPRART					S		Dat	N
+22002014	8	Versteck	NOUN	NN					S		Nom	N
+22002014	9	der	DET	ART					S		Nom	M
+22002014	10	Felswand	NOUN	NN					P		Nom	M
+22002014	11	laß	VERB	VVIMP				2	S	Imp		
+22002014	12	mich	PRON	PPER				1	S		Acc	
+22002014	13	dein	DET	PPOSAT					S		Nom	F
+22002014	14	Gestalt	NOUN	NN					S		Nom	F
+22002014	15	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+22002014	16	laß	VERB	VVIMP				2	S	Imp		
+22002014	17	mich	PRON	PPER				1	S		Acc	
+22002014	18	dein	DET	PPOSAT					S		Nom	F
+22002014	19	Stimme	NOUN	NN					S		Nom	F
+22002014	20	hören	VERB	VVINF		Inf						
+22002014	21	denn	CCONJ	KON								
+22002014	22	dein	DET	PPOSAT					S		Nom	F
+22002014	23	Stimme	NOUN	NN					S		Nom	F
+22002014	24	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002014	25	süß	ADV	ADJD	Pos							
+22002014	26	und	CCONJ	KON								
+22002014	27	dein	DET	PPOSAT					S		Nom	F
+22002014	28	Gestalt	NOUN	NN					S		Nom	F
+22002014	29	anmutig	ADV	ADJD	Pos							
+22002015	1	Fanget	NOUN	NN					S		Nom	N
+22002015	2	uns	PRON	PPER				1	P		Acc	
+22002015	3	der	DET	ART					S		Nom	F
+22002015	4	Füchs	NOUN	NN					P		Nom	M
+22002015	5	der	DET	ART					S		Nom	F
+22002015	6	klein	ADJ	ADJA	Pos				S		Acc	M
+22002015	7	Füchs	NOUN	NN					P		Nom	M
+22002015	8	welcher	DET	PWAT					S		Nom	F
+22002015	9	der	DET	ART					S		Nom	F
+22002015	10	Weinberg	NOUN	NN					P		Nom	M
+22002015	11	verderben	VERB	VVINF		Inf						
+22002015	12	denn	CCONJ	KON								
+22002015	13	unser	DET	PPOSAT					S		Nom	F
+22002015	14	Weinberg	NOUN	NN					P		Nom	M
+22002015	15	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22002015	16	in	ADP	APPR								
+22002015	17	der	DET	ART					S		Nom	M
+22002015	18	Blüte	NOUN	NN					S		Nom	F
+22002016	1	mein	PRON	PPOSAT				2	P		Nom	
+22002016	2	Geliebter	NOUN	NN					S		Nom	M
+22002016	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22002016	4	mein	DET	PPOSAT					S		Nom	N
+22002016	5	und	CCONJ	KON								
+22002016	6	ich	PRON	PPER				1	S		Nom	
+22002016	7	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22002016	8	sein	AUX	VAINF		Inf						
+22002016	9	der	DET	ART					S		Nom	M
+22002016	10	unter	ADP	APPR								
+22002016	11	der	DET	ART					S		Acc	M
+22002016	12	Lilie	NOUN	NN					P		Nom	F
+22002016	13	weiden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002017	1	bis	ADP	APPR								
+22002017	2	der	DET	ART					S		Nom	M
+22002017	3	Tag	NOUN	NN					S		Nom	M
+22002017	4	sich	PRON	PRF				3	S		Acc	
+22002017	5	kühlen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22002017	6	und	CCONJ	KON								
+22002017	7	der	DET	ART					S		Nom	F
+22002017	8	Schatten	NOUN	NN					S		Nom	M
+22002017	9	fliehen	VERB	VVINF		Inf						
+22002017	10	wenden	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22002017	11	dich	PRON	PPER				2	S		Acc	
+22002017	12	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22002017	13	mein	DET	PPOSAT					S		Nom	N
+22002017	14	Geliebter	NOUN	NN					S		Nom	M
+22002017	15	gleich	ADV	ADV	Pos							
+22002017	16	ein	PRON	ART					S		Nom	M
+22002017	17	Gazelle	NOUN	NN					S		Nom	F
+22002017	18	oder	CCONJ	KON								
+22002017	19	ein	DET	ART					S		Dat	M
+22002017	20	Junge	NOUN	NN					P		Nom	M
+22002017	21	der	DET	ART					S		Nom	M
+22002017	22	Hirsch	NOUN	NN					P		Nom	N
+22002017	23	auf	ADP	PTKVZ								
+22002017	24	der	DET	ART					S		Acc	M
+22002017	25	zerklüfteen	VERB	VVFIN		Fin	Past	3	P	Ind		
+22002017	26	Berg	NOUN	NN					P		Nom	M
+22003001	1	auf	ADP	APPR								
+22003001	2	mein	DET	PPOSAT					S		Dat	M
+22003001	3	Lager	NOUN	NN					S		Nom	N
+22003001	4	in	ADP	APPR								
+22003001	5	der	DET	ART					S		Acc	M
+22003001	6	Nacht	NOUN	NN					P		Nom	F
+22003001	7	suchen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003001	8	ich	PRON	PPER				1	S		Nom	
+22003001	9	der	DET	ART					S		Acc	M
+22003001	10	mein	DET	PPOSAT					S		Nom	F
+22003001	11	Seele	NOUN	NN					S		Nom	F
+22003001	12	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22003001	13	ich	PRON	PPER				1	S		Nom	
+22003001	14	suchen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003001	15	ihn	PRON	PPER				3	S		Acc	M
+22003001	16	und	CCONJ	KON								
+22003001	17	finden	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003001	18	ihn	PRON	PPER				3	S		Acc	M
+22003001	19	nicht	PART	PTKNEG								
+22003002	1	ich	PRON	PPER				1	S		Nom	
+22003002	2	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22003002	3	doch	CCONJ	KON								
+22003002	4	aufstehen	VERB	VVINF		Inf						
+22003002	5	und	CCONJ	KON								
+22003002	6	in	ADP	APPR								
+22003002	7	der	DET	ART					S		Nom	M
+22003002	8	Stadt	NOUN	NN					S		Nom	F
+22003002	9	umhergehen	VERB	VVINF		Inf						
+22003002	10	auf	ADP	PTKVZ								
+22003002	11	der	DET	ART					S		Acc	M
+22003002	12	Straße	NOUN	NN					P		Nom	F
+22003002	13	und	CCONJ	KON								
+22003002	14	auf	ADP	PTKVZ								
+22003002	15	der	DET	ART					S		Acc	M
+22003002	16	Platz	NOUN	NN					P		Dat	M
+22003002	17	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22003002	18	suchen	VERB	VVINF		Inf						
+22003002	19	der	DET	ART					S		Acc	M
+22003002	20	mein	DET	PPOSAT					S		Nom	F
+22003002	21	Seele	NOUN	NN					S		Nom	F
+22003002	22	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22003002	23	ich	PRON	PPER				1	S		Nom	
+22003002	24	suchen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003002	25	ihn	PRON	PPER				3	S		Acc	M
+22003002	26	und	CCONJ	KON								
+22003002	27	finden	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003002	28	ihn	PRON	PPER				3	S		Acc	M
+22003002	29	nicht	PART	PTKNEG								
+22003003	1	es	PRON	PPER				3	S		Nom	N
+22003003	2	finden	VERB	VVFIN		Fin	Past	3	P	Ind		
+22003003	3	mich	PRON	PPER				1	S		Acc	
+22003003	4	der	DET	ART					S		Nom	F
+22003003	5	Wächter	PROPN	NE					S		Nom	M
+22003003	6	der	DET	ART					S		Nom	F
+22003003	7	in	ADP	APPR								
+22003003	8	der	DET	ART					S		Nom	M
+22003003	9	Stadt	NOUN	NN					S		Nom	F
+22003003	10	umhergehen	VERB	VVINF		Inf						
+22003003	11	habben	VERB	VAFIN		Fin	Pres	3	S	Ind		
+22003003	12	ihr	PRON	PPOSAT				3	S		Dat	F
+22003003	13	der	DET	ART					S		Acc	M
+22003003	14	sehen	VERB	VVPP		Part						
+22003003	15	der	DET	ART					S		Acc	M
+22003003	16	mein	DET	PPOSAT					S		Nom	F
+22003003	17	Seele	NOUN	NN					S		Nom	F
+22003003	18	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22003004	1	kaum	ADV	ADV								
+22003004	2	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+22003004	3	ich	PRON	PPER				1	S		Nom	
+22003004	4	an	ADP	PTKVZ								
+22003004	5	ihnen	PRON	PPER				3	P		Dat	
+22003004	6	vorüber	ADV	ADV								
+22003004	7	da	ADV	ADV								
+22003004	8	finden	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003004	9	ich	PRON	PPER				1	S		Nom	
+22003004	10	der	DET	ART					S		Acc	M
+22003004	11	mein	DET	PPOSAT					S		Nom	F
+22003004	12	Seele	NOUN	NN					S		Nom	F
+22003004	13	lieben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22003004	14	ich	PRON	PPER				1	S		Nom	
+22003004	15	ergreifen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003004	16	ihn	PRON	PPER				3	S		Acc	M
+22003004	17	und	CCONJ	KON								
+22003004	18	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22003004	19	ihn	PRON	PPER				3	S		Acc	M
+22003004	20	nicht	PART	PTKNEG								
+22003004	21	bis	CCONJ	KON								
+22003004	22	ich	PRON	PPER				1	S		Nom	
+22003004	23	ihn	PRON	PPER				3	S		Acc	M
+22003004	24	bringen	VERB	VVPP		Part						
+22003004	25	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+22003004	26	in	ADP	APPR								
+22003004	27	der	DET	ART					S		Nom	N
+22003004	28	Haus	NOUN	NN					S		Nom	N
+22003004	29	mein	DET	PPOSAT					S		Dat	F
+22003004	30	Mutter	NOUN	NN					S		Nom	F
+22003004	31	und	CCONJ	KON								
+22003004	32	in	ADP	APPR								
+22003004	33	der	DET	ART					S		Nom	N
+22003004	34	Gemach	NOUN	NN					S		Nom	N
+22003004	35	mein	DET	PPOSAT					S		Dat	F
+22003004	36	Gebärerin	NOUN	NN					S		Nom	F
+22003005	1	ich	PRON	PPER				1	S		Nom	
+22003005	2	beschwören	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22003005	3	euch	PRON	PPER				2	P		Dat	
+22003005	4	Tochter	NOUN	NN					P		Nom	F
+22003005	5	Jerusalem	PROPN	NE					S		Gen	N
+22003005	6	bei	ADP	APPR								
+22003005	7	der	DET	ART					S		Acc	M
+22003005	8	Gazelle	NOUN	NN					P		Nom	F
+22003005	9	oder	CCONJ	KON								
+22003005	10	bei	ADP	APPR								
+22003005	11	der	DET	ART					S		Acc	M
+22003005	12	Hindin	NOUN	NN					P		Nom	F
+22003005	13	der	DET	ART					S		Gen	M
+22003005	14	Felde	NOUN	NE					S		Nom	N
+22003005	15	daß	SCONJ	KOUS								
+22003005	16	ihr	PRON	PPOSAT				3	S		Dat	F
+22003005	17	nicht	PART	PTKNEG								
+22003005	18	Wecket	PROPN	NE					S		Nom	N
+22003005	19	noch	CCONJ	KON								
+22003005	20	Aufwecket	PROPN	NE					S		Nom	M
+22003005	21	der	DET	ART					S		Nom	F
+22003005	22	Liebe	NOUN	NN					S		Nom	F
+22003005	23	bis	CCONJ	KON								
+22003005	24	es	PRON	PPER				3	S		Nom	N
+22003005	25	ihr	PRON	PPOSAT				3	S		Dat	F
+22003005	26	gefällen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22003006	1	wer	PRON	PWS					S		Nom	M
+22003006	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22003006	3	der	DET	ART					S		Nom	F
+22003006	4	der	DET	ART					S		Nom	F
+22003006	5	da	ADV	ADV								
+22003006	6	heraufkommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22003006	7	von	ADP	APPR								
+22003006	8	der	DET	ART					S		Nom	M
+22003006	9	Wüste	NOUN	NN					S		Nom	F
+22003006	10	her	ADV	ADV								
+22003006	11	wie	ADP	KOKOM								
+22003006	12	Rauchsäule	NOUN	NN					P		Nom	F
+22003006	13	durchduften	VERB	VVPP		Part						
+22003006	14	von	ADP	APPR								
+22003006	15	myrrhe	NOUN	NN					S		Nom	N
+22003006	16	und	CCONJ	KON								
+22003006	17	Weihrauch	NOUN	NN					S		Nom	M
+22003006	18	von	ADP	APPR								
+22003006	19	allerlei	DET	PIAT								
+22003006	20	Gewürzpulver	NOUN	NN					S		Nom	N
+22003006	21	der	DET	ART					S		Gen	M
+22003006	22	Krämer	PROPN	FM					S		Gen	
+22003007	1	sehen	VERB	VVIMP				2	S	Imp		
+22003007	2	da	ADV	ADV								
+22003007	3	Salomos	PROPN	NE					S		Nom	
+22003007	4	Tragbett	PROPN	NE					S		Nom	F
+22003007	5	sechzig	NUM	CARD								
+22003007	6	Held	NOUN	NN					P		Nom	M
+22003007	7	rings	ADV	ADV								
+22003007	8	um	ADP	APPR								
+22003007	9	Dasselbe	DET	PDAT					S		Nom	N
+22003007	10	her	ADV	ADV								
+22003007	11	von	ADP	APPR								
+22003007	12	der	DET	ART					S		Acc	M
+22003007	13	Held	NOUN	NN					P		Nom	M
+22003007	14	Israel	PROPN	NE					S		Gen	N
+22003008	1	sie	PRON	PPER				3	P		Nom	
+22003008	2	aller	PRON	PIS					P		Nom	
+22003008	3	führen	VERB	VVINF		Inf						
+22003008	4	der	DET	ART					S		Nom	N
+22003008	5	Schwert	NOUN	NN					S		Nom	N
+22003008	6	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22003008	7	üben	VERB	VVPP		Part						
+22003008	8	in	ADP	APPRART					S		Dat	N
+22003008	9	Krieg	NOUN	NN					P		Nom	M
+22003008	10	ein	DET	ART					S		Nom	N
+22003008	11	jeder	PRON	PIS					S		Nom	M
+22003008	12	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22003008	13	sein	AUX	VAINF		Inf						
+22003008	14	Schwert	NOUN	NN					S		Nom	N
+22003008	15	an	ADP	PTKVZ								
+22003008	16	sein	DET	PPOSAT					S		Dat	F
+22003008	17	Hüfte	NOUN	NN					S		Nom	F
+22003008	18	zu	ADP	APPRART					S		Dat	N
+22003008	19	Schutz	NOUN	NN					S		Nom	M
+22003008	20	vor	ADP	APPR								
+22003008	21	der	DET	ART					S		Dat	M
+22003008	22	Schrecken	NOUN	NN					S		Nom	M
+22003008	23	in	ADP	APPR								
+22003008	24	der	DET	ART					S		Acc	M
+22003008	25	Nacht	NOUN	NN					P		Nom	F
+22003009	1	der	DET	ART					S		Nom	M
+22003009	2	König	NOUN	NN					S		Nom	M
+22003009	3	Salomo	PROPN	NE					S		Nom	M
+22003009	4	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22003009	5	sich	PRON	PRF				3	S		Acc	
+22003009	6	ein	DET	ART					S		Nom	N
+22003009	7	Prachtbett	NOUN	NN					S		Nom	N
+22003009	8	machen	VERB	VVPP		Part						
+22003009	9	von	ADP	APPR								
+22003009	10	der	DET	ART					S		Dat	M
+22003009	11	Holze	PROPN	NE					S		Nom	N
+22003009	12	der	DET	ART					S		Gen	M
+22003009	13	Libanon	PROPN	NE					S		Nom	M
+22003010	1	sein	DET	PPOSAT					S		Nom	F
+22003010	2	Säule	NOUN	NN					P		Nom	F
+22003010	3	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22003010	4	er	PRON	PPER				3	S		Nom	M
+22003010	5	von	ADP	APPR								
+22003010	6	Silber	NOUN	NN					S		Nom	N
+22003010	7	machen	VERB	VVPP		Part						
+22003010	8	sein	DET	PPOSAT					S		Nom	F
+22003010	9	Lehne	PROPN	NE					S		Nom	
+22003010	10	von	ADP	APPR								
+22003010	11	Gold	NOUN	NN					S		Nom	N
+22003010	12	sein	DET	PPOSAT					S		Acc	M
+22003010	13	Sitz	NOUN	NN					S		Nom	M
+22003010	14	von	ADP	APPR								
+22003010	15	Purpur	NOUN	NN					S		Nom	N
+22003010	16	der	DET	ART					S		Nom	N
+22003010	17	Innere	NOUN	ADJA					S		Nom	N
+22003010	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22003010	19	kunstvoll	ADV	ADJD	Pos							
+22003010	20	sticken	VERB	VVPP		Part						
+22003010	21	aus	ADP	PTKVZ								
+22003010	22	Liebe	NOUN	NN					S		Nom	F
+22003010	23	von	ADP	APPR								
+22003010	24	der	DET	ART					S		Acc	M
+22003010	25	Töchter	NOUN	NN					P		Nom	F
+22003010	26	Jerusalem	PROPN	NE					S		Gen	N
+22003011	1	Kommet	NOUN	NN					S		Nom	F
+22003011	2	heraus	ADV	PTKVZ								
+22003011	3	Tochter	NOUN	NN					P		Nom	F
+22003011	4	Zions	X	FM								
+22003011	5	und	CCONJ	KON								
+22003011	6	betrachten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22003011	7	der	DET	ART					S		Acc	M
+22003011	8	König	NOUN	NN					S		Nom	M
+22003011	9	Salomo	PROPN	NE					S		Nom	M
+22003011	10	in	ADP	APPR								
+22003011	11	der	DET	ART					S		Nom	M
+22003011	12	Krone	NOUN	NN					S		Nom	F
+22003011	13	mit	ADP	APPR								
+22003011	14	welcher	PRON	PWAT					S		Nom	M
+22003011	15	sein	DET	PPOSAT					S		Nom	F
+22003011	16	Mutter	NOUN	NN					S		Nom	F
+22003011	17	ihn	PRON	PPER				3	S		Acc	M
+22003011	18	krönen	VERB	VVPP		Part						
+22003011	19	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22003011	20	an	ADP	APPRART					S		Dat	M
+22003011	21	Tag	NOUN	NN					P		Nom	M
+22003011	22	sein	DET	PPOSAT					S		Dat	F
+22003011	23	Vermählung	NOUN	NN					S		Nom	F
+22003011	24	und	CCONJ	KON								
+22003011	25	an	ADP	APPRART					S		Dat	M
+22003011	26	Tag	NOUN	NN					P		Nom	M
+22003011	27	der	DET	ART					S		Nom	M
+22003011	28	Freude	NOUN	NN					S		Nom	F
+22003011	29	sein	DET	PPOSAT					S		Gen	M
+22003011	30	Herzens	NOUN	NN					P		Nom	N
+22004001	1	sehen	VERB	VVIMP				2	S	Imp		
+22004001	2	du	PRON	PPER				2	S		Nom	
+22004001	3	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22004001	4	schön	ADV	ADJD	Pos							
+22004001	5	mein	DET	PPOSAT					S		Nom	F
+22004001	6	Freundin	NOUN	NN					S		Nom	F
+22004001	7	sehen	VERB	VVIMP				2	S	Imp		
+22004001	8	du	PRON	PPER				2	S		Nom	
+22004001	9	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22004001	10	schön	ADV	ADJD	Pos							
+22004001	11	Deine	DET	PPOSAT					S		Nom	F
+22004001	12	Auge	NOUN	NN					P		Nom	N
+22004001	13	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22004001	14	Taube	NOUN	NN					P		Nom	F
+22004001	15	hinter	ADP	APPR								
+22004001	16	dein	DET	PPOSAT					S		Dat	M
+22004001	17	Schleier	NOUN	NN					S		Nom	M
+22004001	18	dein	PRON	PPOSAT				2	P		Nom	
+22004001	19	Haar	NOUN	NN					S		Nom	N
+22004001	20	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004001	21	wie	ADP	KOKOM								
+22004001	22	ein	DET	ART					S		Nom	F
+22004001	23	Herde	NOUN	NN					S		Nom	F
+22004001	24	Ziege	NOUN	NN					P		Nom	F
+22004001	25	der	DET	ART					S		Nom	F
+22004001	26	an	ADP	PTKVZ								
+22004001	27	der	DET	ART					S		Acc	M
+22004001	28	abhängen	NOUN	NN					P		Nom	F
+22004001	29	der	DET	ART					S		Gen	M
+22004001	30	Gebirge	PROPN	NE					S		Gen	M
+22004001	31	Gilead	PROPN	NE					S		Nom	
+22004001	32	lagern	VERB	VVINF		Inf						
+22004002	1	Deine	DET	PPOSAT					S		Nom	F
+22004002	2	Zahn	NOUN	NN					P		Nom	M
+22004002	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22004002	4	wie	ADP	KOKOM								
+22004002	5	ein	DET	ART					S		Nom	F
+22004002	6	Herde	NOUN	NN					S		Nom	F
+22004002	7	Geschorener	NOUN	NN					P		Nom	M
+22004002	8	Schaf	NOUN	NN					P		Nom	N
+22004002	9	der	DET	ART					S		Nom	F
+22004002	10	aus	ADP	PTKVZ								
+22004002	11	der	DET	ART					S		Nom	M
+22004002	12	Schwemme	NOUN	NN					S		Nom	F
+22004002	13	heraufkommen	VERB	VVINF		Inf						
+22004002	14	welcher	DET	PWAT					S		Nom	F
+22004002	15	allzumal	ADV	ADV								
+22004002	16	Zwillinge	NOUN	NN					P		Nom	M
+22004002	17	gebären	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22004002	18	und	CCONJ	KON								
+22004002	19	keiner	PRON	PIAT					S		Nom	N
+22004002	20	unter	ADP	APPR								
+22004002	21	ihnen	PRON	PPER				3	P		Dat	
+22004002	22	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004002	23	unfruchtbar	ADV	ADJD	Pos							
+22004003	1	Deine	DET	PPOSAT					S		Nom	F
+22004003	2	Lippe	NOUN	NN					P		Nom	F
+22004003	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22004003	4	wie	ADP	KOKOM								
+22004003	5	ein	DET	ART					S		Nom	F
+22004003	6	Karmesinschnur	PROPN	NE					S		Nom	
+22004003	7	und	CCONJ	KON								
+22004003	8	dein	DET	PPER					S		Nom	N
+22004003	9	Mund	NOUN	NN					S		Nom	M
+22004003	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004003	11	zierlich	ADV	ADJD	Pos							
+22004003	12	wie	ADV	PWAV								
+22004003	13	ein	DET	ART					S		Nom	N
+22004003	14	Schnittstück	NOUN	NN					S		Nom	M
+22004003	15	ein	PRON	ART					S		Nom	M
+22004003	16	Granate	NOUN	NN					S		Nom	F
+22004003	17	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004003	18	dein	DET	PPOSAT					S		Nom	F
+22004003	19	schläfe	NOUN	NN					S		Nom	F
+22004003	20	hinter	ADP	APPR								
+22004003	21	dein	DET	PPOSAT					S		Dat	M
+22004003	22	Schleier	NOUN	NN					S		Nom	M
+22004004	1	dein	PRON	PPOSAT				2	P		Nom	
+22004004	2	Hals	NOUN	NN					S		Nom	M
+22004004	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004004	4	wie	ADP	KOKOM								
+22004004	5	der	DET	ART					S		Nom	M
+22004004	6	Turm	NOUN	NN					S		Nom	M
+22004004	7	David	PROPN	NE					S		Gen	M
+22004004	8	der	DET	ART					S		Nom	M
+22004004	9	in	ADP	APPR								
+22004004	10	Terrasse	NOUN	NN					P		Nom	F
+22004004	11	bauen	VERB	VVPP		Part						
+22004004	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004004	13	tausend	NUM	CARD								
+22004004	14	Schild	NOUN	NN					P		Nom	N
+22004004	15	hängen	VERB	VVINF		Inf						
+22004004	16	daran	ADV	PROAV								
+22004004	17	aller	PRON	PIS					P		Nom	
+22004004	18	Schild	NOUN	NN					P		Nom	N
+22004004	19	der	DET	ART					S		Nom	M
+22004004	20	Held	NOUN	NN					P		Nom	M
+22004005	1	Deine	DET	PPOSAT					S		Nom	F
+22004005	2	beide	PRON	PIAT					P		Nom	
+22004005	3	Brust	NOUN	NN					P		Nom	F
+22004005	4	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22004005	5	wie	ADP	KOKOM								
+22004005	6	ein	DET	ART					S		Nom	N
+22004005	7	Zwillingspaar	NOUN	NN					S		Nom	N
+22004005	8	jung	ADJ	ADJA	Pos				S		Nom	M
+22004005	9	Gazelle	NOUN	NN					P		Nom	F
+22004005	10	der	DET	ART					S		Nom	F
+22004005	11	unter	ADP	APPR								
+22004005	12	der	DET	ART					S		Acc	M
+22004005	13	Lilie	NOUN	NN					P		Nom	F
+22004005	14	weiden	VERB	VVINF		Inf						
+22004006	1	bis	ADP	APPR								
+22004006	2	der	DET	ART					S		Nom	M
+22004006	3	Tag	NOUN	NN					S		Nom	M
+22004006	4	sich	PRON	PRF				3	S		Acc	
+22004006	5	kühlen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22004006	6	und	CCONJ	KON								
+22004006	7	der	DET	ART					S		Nom	F
+22004006	8	Schatten	NOUN	NN					S		Nom	M
+22004006	9	fliehen	VERB	VVINF		Inf						
+22004006	10	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22004006	11	ich	PRON	PPER				1	S		Nom	
+22004006	12	zu	ADP	APPRART					S		Dat	N
+22004006	13	Myrrhenberge	NOUN	NN					S		Nom	F
+22004006	14	hingehen	VERB	VVINF		Inf						
+22004006	15	und	CCONJ	KON								
+22004006	16	zu	ADP	APPRART					S		Dat	N
+22004006	17	Weihrauchhügel	NOUN	NN					P		Nom	M
+22004007	1	ganz	ADV	ADV								
+22004007	2	schön	ADV	ADJD	Pos							
+22004007	3	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22004007	4	du	PRON	PPER				2	S		Nom	
+22004007	5	mein	DET	PPOSAT					S		Nom	F
+22004007	6	Freundin	NOUN	NN					S		Nom	F
+22004007	7	und	CCONJ	KON								
+22004007	8	kein	DET	PIAT					S		Nom	N
+22004007	9	Makel	NOUN	NN					S		Nom	M
+22004007	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004007	11	an	ADP	PTKVZ								
+22004007	12	dir	PRON	PPER				2	S		Dat	
+22004008	1	mit	ADP	APPR								
+22004008	2	mir	PRON	PPER				1	S		Dat	
+22004008	3	von	ADP	APPRART					S		Dat	N
+22004008	4	Libanon	PROPN	NE					S		Nom	M
+22004008	5	herab	ADV	ADV								
+22004008	6	mein	DET	PPOSAT					S		Nom	F
+22004008	7	Braut	NOUN	NN					S		Nom	F
+22004008	8	mit	ADP	APPR								
+22004008	9	mir	PRON	PPER				1	S		Dat	
+22004008	10	von	ADP	APPRART					S		Dat	N
+22004008	11	Libanon	PROPN	NE					S		Nom	M
+22004008	12	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22004008	13	du	PRON	PPER				2	S		Nom	
+22004008	14	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22004008	15	von	ADP	APPRART					S		Dat	N
+22004008	16	Gipfel	NOUN	NN					S		Nom	M
+22004008	17	der	DET	ART					S		Gen	M
+22004008	18	Amana	PROPN	NE					S		Nom	F
+22004008	19	herab	ADV	ADV								
+22004008	20	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22004008	21	du	PRON	PPER				2	S		Nom	
+22004008	22	schauen	VERB	VVINF		Fin	Pres	3	P	Ind		
+22004008	23	von	ADP	APPRART					S		Dat	N
+22004008	24	Gipfel	NOUN	NN					S		Nom	M
+22004008	25	der	DET	ART					S		Gen	M
+22004008	26	Senir	PROPN	NE					S		Gen	M
+22004008	27	und	CCONJ	KON								
+22004008	28	Hermon	PROPN	NE					S		Nom	M
+22004008	29	von	ADP	APPR								
+22004008	30	der	DET	ART					S		Acc	M
+22004008	31	Lagerstätte	NOUN	NN					P		Nom	F
+22004008	32	der	DET	ART					S		Nom	M
+22004008	33	Löwe	NOUN	NN					S		Nom	M
+22004008	34	von	ADP	APPR								
+22004008	35	der	DET	ART					S		Acc	M
+22004008	36	Berg	NOUN	NN					P		Nom	M
+22004008	37	der	DET	ART					S		Nom	M
+22004008	38	Panther	NOUN	NN					S		Nom	M
+22004009	1	du	PRON	PPER				2	S		Nom	
+22004009	2	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22004009	3	mir	PRON	PPER				1	S		Dat	
+22004009	4	der	DET	ART					S		Nom	N
+22004009	5	Herz	NOUN	NN					S		Nom	N
+22004009	6	rauben	VERB	VVPP		Part						
+22004009	7	mein	DET	PPOSAT					S		Nom	F
+22004009	8	Schwester	NOUN	NN					S		Nom	F
+22004009	9	mein	DET	PPOSAT					S		Nom	F
+22004009	10	Braut	NOUN	NN					S		Nom	F
+22004009	11	du	PRON	PPER				2	S		Nom	
+22004009	12	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22004009	13	mir	PRON	PPER				1	S		Dat	
+22004009	14	der	DET	ART					S		Nom	N
+22004009	15	Herz	NOUN	NN					S		Nom	N
+22004009	16	rauben	VERB	VVPP		Part						
+22004009	17	mit	ADP	APPR								
+22004009	18	ein	DET	ART					S		Dat	M
+22004009	19	dein	DET	PPOSAT					S		Dat	F
+22004009	20	Blick	NOUN	NN					P		Nom	M
+22004009	21	mit	ADP	APPR								
+22004009	22	ein	PRON	ART					S		Nom	M
+22004009	23	Kette	NOUN	NN					S		Nom	F
+22004009	24	von	ADP	APPR								
+22004009	25	dein	DET	PPOSAT					S		Dat	M
+22004009	26	Halsschmuck	NOUN	NN					S		Nom	M
+22004010	1	wie	ADV	PWAV								
+22004010	2	schön	ADV	ADJD	Pos							
+22004010	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004010	4	dein	DET	PPOSAT					S		Nom	F
+22004010	5	Liebe	NOUN	NN					S		Nom	F
+22004010	6	mein	DET	PPOSAT					S		Nom	F
+22004010	7	Schwester	NOUN	NN					S		Nom	F
+22004010	8	mein	DET	PPOSAT					S		Nom	F
+22004010	9	Braut	NOUN	NN					S		Nom	F
+22004010	10	wieviel	ADV	PWS								
+22004010	11	gut	ADV	ADJD	Cmp							
+22004010	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004010	13	dein	DET	PPOSAT					S		Nom	F
+22004010	14	Liebe	NOUN	NN					S		Nom	F
+22004010	15	als	ADP	KOKOM								
+22004010	16	Wein	NOUN	NN					S		Nom	M
+22004010	17	und	CCONJ	KON								
+22004010	18	der	DET	ART					S		Nom	M
+22004010	19	Duft	NOUN	NN					S		Nom	M
+22004010	20	dein	DET	PPOSAT					S		Dat	F
+22004010	21	Salbe	NOUN	NN					P		Nom	F
+22004010	22	als	ADP	KOKOM								
+22004010	23	aller	PRON	PIS					P		Nom	
+22004010	24	Gewürz	NOUN	NN					P		Nom	N
+22004010	25	Honigseim	PROPN	NE					S		Nom	N
+22004010	26	Träufeln	VERB	VVINF		Inf						
+22004010	27	dein	DET	PPOSAT					S		Nom	F
+22004010	28	Lippe	NOUN	NN					P		Nom	F
+22004010	29	mein	DET	PPOSAT					S		Nom	F
+22004010	30	Braut	NOUN	NN					S		Nom	F
+22004011	1	Honig	NOUN	NN					S		Nom	M
+22004011	2	und	CCONJ	KON								
+22004011	3	Milch	NOUN	NN					S		Nom	F
+22004011	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004011	5	unter	ADP	APPR								
+22004011	6	dein	DET	PPOSAT					S		Dat	F
+22004011	7	Zunge	NOUN	NN					S		Nom	F
+22004011	8	und	CCONJ	KON								
+22004011	9	der	DET	ART					S		Nom	M
+22004011	10	Duft	NOUN	NN					S		Nom	M
+22004011	11	dein	DET	PPOSAT					S		Dat	F
+22004011	12	Gewänd	NOUN	NN					P		Nom	N
+22004011	13	wie	ADP	KOKOM								
+22004011	14	der	DET	ART					S		Nom	M
+22004011	15	Duft	NOUN	NN					S		Nom	M
+22004011	16	der	DET	ART					S		Gen	M
+22004011	17	Libanon	PROPN	NE					S		Nom	M
+22004012	1	ein	DET	ART					S		Nom	M
+22004012	2	verschlossen	ADV	ADJD	Cmp							
+22004012	3	Garten	NOUN	NN					S		Nom	M
+22004012	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004012	5	mein	DET	PPOSAT					S		Nom	F
+22004012	6	Schwester	NOUN	NN					S		Nom	F
+22004012	7	mein	DET	PPOSAT					S		Nom	F
+22004012	8	Braut	NOUN	NN					S		Nom	F
+22004012	9	ein	DET	ART					S		Nom	N
+22004012	10	verschlossen	ADV	ADJD	Cmp							
+22004012	11	Born	X	FM								
+22004012	12	ein	DET	ART					S		Nom	F
+22004012	13	versiegelen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22004012	14	Quelle	NOUN	NN					S		Nom	F
+22004013	1	was	PRON	PWS					S		Nom	N
+22004013	2	dir	PRON	PPER				2	S		Dat	
+22004013	3	Entsproßt	PROPN	NE					S		Nom	
+22004013	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22004013	5	ein	DET	ART					S		Nom	N
+22004013	6	Lustgarten	NOUN	NN					S		Nom	M
+22004013	7	von	ADP	APPR								
+22004013	8	Granate	NOUN	NN					P		Nom	F
+22004013	9	nebst	ADP	APPR								
+22004013	10	edel	ADJ	ADJA	Pos				P		Dat	M
+22004013	11	Frücht	NOUN	NN					P		Nom	F
+22004013	12	Cyperblume	NOUN	NN					P		Nom	F
+22004013	13	nebst	ADP	APPR								
+22004013	14	narden	NOUN	NN					P		Nom	F
+22004014	1	Narde	PROPN	NE					S		Nom	
+22004014	2	und	CCONJ	KON								
+22004014	3	Safran	PROPN	NN					S		Nom	
+22004014	4	Würzrohr	NOUN	NN					S		Nom	N
+22004014	5	und	CCONJ	KON								
+22004014	6	Zimt	PROPN	NE					S		Nom	M
+22004014	7	nebst	ADP	APPR								
+22004014	8	allerlei	DET	PIAT								
+22004014	9	Weihrauchgehölz	NOUN	NN					P		Nom	M
+22004014	10	myrrhe	NOUN	NN					S		Nom	N
+22004014	11	und	CCONJ	KON								
+22004014	12	Aloe	PROPN	NE					S		Nom	
+22004014	13	nebst	ADP	APPR								
+22004014	14	aller	DET	PIS					P		Dat	
+22004014	15	Vortrefflichst	NOUN	NN					P		Nom	F
+22004014	16	Gewürz	NOUN	NN					P		Dat	N
+22004015	1	ein	DET	ART					S		Nom	F
+22004015	2	Gartenquelle	NOUN	NN					S		Nom	F
+22004015	3	ein	DET	ART					S		Nom	N
+22004015	4	Brunnen	NOUN	NN					S		Nom	M
+22004015	5	lebendig	ADJ	ADJA	Pos				S		Acc	M
+22004015	6	Wasser	NOUN	NN					P		Nom	N
+22004015	7	und	CCONJ	KON								
+22004015	8	Bach	NOUN	NN					P		Nom	M
+22004015	9	der	DET	ART					S		Nom	F
+22004015	10	von	ADP	APPRART					S		Dat	N
+22004015	11	Libanon	PROPN	NE					S		Nom	M
+22004015	12	fließen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22004016	1	Wache	NOUN	NN					S		Nom	F
+22004016	2	auf	ADP	PTKVZ								
+22004016	3	Nordwind	NOUN	NN					S		Nom	M
+22004016	4	und	CCONJ	KON								
+22004016	5	kommen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22004016	6	Südwind	NOUN	NE					S		Nom	M
+22004016	7	durchwehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22004016	8	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22004016	9	Garten	NOUN	NN					S		Nom	M
+22004016	10	laß	VERB	VVIMP				2	S	Imp		
+22004016	11	Träufeln	VERB	VVINF		Inf						
+22004016	12	sein	DET	PPOSAT					S		Nom	F
+22004016	13	Wohlgeruch	NOUN	NN					P		Nom	M
+22004016	14	mein	PRON	PPOSAT				2	P		Nom	
+22004016	15	Geliebter	NOUN	NN					S		Nom	M
+22004016	16	kommen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22004016	17	in	ADP	APPR								
+22004016	18	sein	DET	PPOSAT					S		Acc	M
+22004016	19	Garten	NOUN	NN					S		Nom	M
+22004016	20	und	CCONJ	KON								
+22004016	21	essen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22004016	22	der	DET	ART					S		Nom	F
+22004016	23	ihm	PRON	PPER				3	S		Dat	M
+22004016	24	köstlich	ADJ	ADJA	Pos				S		Nom	F
+22004016	25	Frucht	NOUN	NN					S		Nom	F
+22005001	1	ich	PRON	PPER				1	S		Nom	
+22005001	2	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22005001	3	in	ADP	APPR								
+22005001	4	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22005001	5	Garten	NOUN	NN					S		Nom	M
+22005001	6	kommen	VERB	VVPP		Part						
+22005001	7	mein	DET	PPOSAT					S		Nom	F
+22005001	8	Schwester	NOUN	NN					S		Nom	F
+22005001	9	mein	DET	PPOSAT					S		Nom	F
+22005001	10	Braut	NOUN	NN					S		Nom	F
+22005001	11	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22005001	12	mein	DET	PPOSAT					S		Nom	F
+22005001	13	myrrhe	NOUN	NN					S		Nom	N
+22005001	14	pflücken	VERB	VVPP		Part						
+22005001	15	samt	ADP	APPR								
+22005001	16	mein	DET	PPOSAT					S		Dat	M
+22005001	17	Balsam	NOUN	NN					S		Nom	M
+22005001	18	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22005001	19	mein	DET	PPOSAT					S		Nom	F
+22005001	20	Wabe	NOUN	NN					S		Nom	F
+22005001	21	gegessen	VERB	VVPP		Part						
+22005001	22	samt	ADP	APPR								
+22005001	23	mein	DET	PPOSAT					S		Dat	M
+22005001	24	Honig	NOUN	NN					S		Nom	M
+22005001	25	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22005001	26	Wein	NOUN	NN					S		Nom	M
+22005001	27	trinken	VERB	VVPP		Part						
+22005001	28	samt	ADP	APPR								
+22005001	29	mein	DET	PPOSAT					S		Dat	F
+22005001	30	Milch	NOUN	NN					S		Nom	F
+22005001	31	Esset	PROPN	NE					S		Nom	F
+22005001	32	Freund	NOUN	NN					P		Nom	M
+22005001	33	trinket	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22005001	34	und	CCONJ	KON								
+22005001	35	Berauschet	PROPN	NE					S		Nom	F
+22005001	36	euch	PRON	PPER				2	P		Dat	
+22005001	37	Geliebte	NOUN	NN					S		Nom	F
+22005002	1	ich	PRON	PPER				1	S		Nom	
+22005002	2	schleiefen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005002	3	aber	CCONJ	KON								
+22005002	4	mein	DET	PPOSAT					S		Nom	N
+22005002	5	Herz	NOUN	NN					S		Nom	N
+22005002	6	wachen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005002	7	Horch	PROPN	NE					S		Nom	
+22005002	8	mein	PRON	PPOSAT				2	P		Nom	
+22005002	9	Geliebter	NOUN	NN					S		Nom	M
+22005002	10	er	PRON	PPER				3	S		Nom	M
+22005002	11	klopfen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22005002	12	Tue	ADV	FM								
+22005002	13	mir	PRON	PPER				1	S		Dat	
+22005002	14	auf	ADP	PTKVZ								
+22005002	15	mein	DET	PPOSAT					S		Nom	F
+22005002	16	Schwester	NOUN	NN					S		Nom	F
+22005002	17	mein	DET	PPOSAT					S		Nom	F
+22005002	18	Freundin	NOUN	NN					S		Nom	F
+22005002	19	mein	DET	PPOSAT					S		Nom	F
+22005002	20	Taube	NOUN	NN					S		Nom	F
+22005002	21	mein	DET	PPOSAT					S		Nom	F
+22005002	22	vollkommene	NOUN	NN					S		Nom	N
+22005002	23	denn	CCONJ	KON								
+22005002	24	mein	DET	PPOSAT					S		Nom	N
+22005002	25	Haupt	NOUN	NN					S		Nom	N
+22005002	26	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005002	27	voll	ADV	ADJD	Pos							
+22005002	28	Tau	PROPN	NE					S		Nom	
+22005002	29	mein	DET	PPOSAT					S		Nom	F
+22005002	30	locken	NOUN	NN					P		Nom	F
+22005002	31	voll	ADV	ADJD	Pos							
+22005002	32	Tropfen	NOUN	NN					P		Nom	M
+22005002	33	der	DET	ART					S		Nom	M
+22005002	34	Nacht	NOUN	NN					S		Nom	F
+22005003	1	ich	PRON	PPER				1	S		Nom	
+22005003	2	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22005003	3	mein	DET	PPOSAT					S		Nom	N
+22005003	4	Kleid	NOUN	NN					S		Nom	N
+22005003	5	ausziehen	VERB	VVPP		Part						
+22005003	6	wie	ADP	KOKOM								
+22005003	7	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+22005003	8	ich	PRON	PPER				1	S		Nom	
+22005003	9	es	PRON	PPER				3	S		Nom	N
+22005003	10	wieder	ADV	ADV								
+22005003	11	anziehen	VERB	VVINF		Inf						
+22005003	12	ich	PRON	PPER				1	S		Nom	
+22005003	13	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22005003	14	mein	DET	PPOSAT					S		Nom	F
+22005003	15	Fuß	PROPN	NN					S		Nom	
+22005003	16	waschen	VERB	VVPP		Part						
+22005003	17	wie	ADP	KOKOM								
+22005003	18	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+22005003	19	ich	PRON	PPER				1	S		Nom	
+22005003	20	sie	PRON	PPER				3	P		Nom	
+22005003	21	wieder	ADV	ADV								
+22005003	22	beschmutzen	VERB	VVINF		Inf						
+22005004	1	mein	PRON	PPOSAT				2	P		Nom	
+22005004	2	Geliebter	NOUN	NN					S		Nom	M
+22005004	3	strecken	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005004	4	sein	DET	PPOSAT					S		Nom	F
+22005004	5	Hand	NOUN	NN					S		Nom	F
+22005004	6	durch	ADP	APPR								
+22005004	7	der	DET	ART					S		Nom	F
+22005004	8	Öffnung	NOUN	NN					S		Nom	F
+22005004	9	und	CCONJ	KON								
+22005004	10	mein	DET	PPOSAT					S		Nom	N
+22005004	11	Inneres	NOUN	NN					S		Nom	N
+22005004	12	werden	VERB	VAFIN		Fin	Past	3	S	Ind		
+22005004	13	seinetwegen	ADV	ADV								
+22005004	14	erregen	ADV	ADJD	Pos							
+22005005	1	ich	PRON	PPER				1	S		Nom	
+22005005	2	stehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005005	3	auf	ADP	PTKVZ								
+22005005	4	um	ADP	APPR								
+22005005	5	mein	DET	PPOSAT					S		Dat	M
+22005005	6	geliebter	NOUN	NN					P		Nom	
+22005005	7	zu	ADP	PTKVZ								
+22005005	8	öffnen	VERB	VVINF		Inf						
+22005005	9	und	CCONJ	KON								
+22005005	10	mein	DET	PPOSAT					S		Nom	F
+22005005	11	Hand	NOUN	NN					P		Nom	F
+22005005	12	Troffen	NOUN	NN					P		Nom	N
+22005005	13	von	ADP	APPR								
+22005005	14	myrrhe	NOUN	NN					S		Nom	N
+22005005	15	und	CCONJ	KON								
+22005005	16	mein	DET	PPOSAT					S		Nom	F
+22005005	17	Finger	NOUN	NN					S		Nom	M
+22005005	18	von	ADP	APPR								
+22005005	19	fließend	ADJ	ADJA	Pos				S		Nom	M
+22005005	20	myrrhe	NOUN	NN					S		Nom	N
+22005005	21	an	ADP	PTKVZ								
+22005005	22	der	DET	ART					S		Dat	M
+22005005	23	Griff	NOUN	NN					P		Nom	M
+22005005	24	der	DET	ART					S		Gen	M
+22005005	25	Riegel	PROPN	NE					S		Gen	
+22005006	1	ich	PRON	PPER				1	S		Nom	
+22005006	2	öffnen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005006	3	mein	DET	PPOSAT					S		Dat	M
+22005006	4	geliebter	NOUN	NN					P		Nom	
+22005006	5	aber	CCONJ	KON								
+22005006	6	mein	DET	PPOSAT					S		Nom	N
+22005006	7	Geliebter	NOUN	NN					S		Nom	M
+22005006	8	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+22005006	9	sich	PRON	PRF				3	S		Acc	
+22005006	10	umgewandt	ADV	ADJD	Pos							
+22005006	11	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+22005006	12	weitergegangen	VERB	VVPP		Part						
+22005006	13	ich	PRON	PPER				1	S		Nom	
+22005006	14	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+22005006	15	außer	ADP	APPR								
+22005006	16	mir	PRON	PPER				1	S		Dat	
+22005006	17	während	SCONJ	KOUS								
+22005006	18	er	PRON	PPER				3	S		Nom	M
+22005006	19	reden	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005006	20	ich	PRON	PPER				1	S		Nom	
+22005006	21	suchen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005006	22	ihn	PRON	PPER				3	S		Acc	M
+22005006	23	und	CCONJ	KON								
+22005006	24	finden	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005006	25	ihn	PRON	PPER				3	S		Acc	M
+22005006	26	nicht	PART	PTKNEG								
+22005006	27	ich	PRON	PPER				1	S		Nom	
+22005006	28	rufen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005006	29	ihn	PRON	PPER				3	S		Acc	M
+22005006	30	und	CCONJ	KON								
+22005006	31	er	PRON	PPER				3	S		Nom	M
+22005006	32	antworten	VERB	VVFIN		Fin	Past	3	S	Ind		
+22005006	33	mir	PRON	PPER				1	S		Dat	
+22005006	34	nicht	PART	PTKNEG								
+22005007	1	es	PRON	PPER				3	S		Nom	N
+22005007	2	finden	VERB	VVFIN		Fin	Past	3	P	Ind		
+22005007	3	mich	PRON	PPER				1	S		Acc	
+22005007	4	der	DET	ART					S		Nom	F
+22005007	5	Wächter	PROPN	NE					S		Nom	M
+22005007	6	der	DET	ART					S		Nom	F
+22005007	7	in	ADP	APPR								
+22005007	8	der	DET	ART					S		Nom	M
+22005007	9	Stadt	NOUN	NN					S		Nom	F
+22005007	10	umhergehen	VERB	VVINF		Inf						
+22005007	11	sie	PRON	PPER				3	P		Nom	
+22005007	12	schlagen	VERB	VVFIN		Fin	Past	3	P	Ind		
+22005007	13	mich	PRON	PPER				1	S		Acc	
+22005007	14	verwundeen	VERB	VVFIN		Fin	Past	3	P	Ind		
+22005007	15	mich	PRON	PPER				1	S		Acc	
+22005007	16	der	DET	ART					S		Nom	F
+22005007	17	Wächter	PROPN	NE					S		Nom	M
+22005007	18	der	DET	ART					S		Nom	M
+22005007	19	Mauer	NOUN	NN					P		Nom	F
+22005007	20	nehmen	VERB	VVFIN		Fin	Past	3	P	Ind		
+22005007	21	mir	PRON	PPER				1	S		Dat	
+22005007	22	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22005007	23	Schleier	NOUN	NN					S		Nom	M
+22005007	24	Weg	ADV	PTKVZ								
+22005008	1	ich	PRON	PPER				1	S		Nom	
+22005008	2	beschwören	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22005008	3	euch	PRON	PPER				2	P		Dat	
+22005008	4	Tochter	NOUN	NN					P		Nom	F
+22005008	5	Jerusalem	PROPN	NE					S		Gen	N
+22005008	6	wenn	SCONJ	KOUS								
+22005008	7	ihr	PRON	PPOSAT				3	S		Dat	F
+22005008	8	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22005008	9	geliebter	NOUN	NN					P		Nom	
+22005008	10	finden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22005008	11	was	PRON	PWS					S		Nom	N
+22005008	12	sollten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22005008	13	ihr	PRON	PPOSAT				3	S		Dat	F
+22005008	14	ihm	PRON	PPER				3	S		Dat	M
+22005008	15	berichten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22005008	16	daß	SCONJ	KOUS								
+22005008	17	ich	PRON	PPER				1	S		Nom	
+22005008	18	krank	ADV	ADJD	Pos							
+22005008	19	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22005008	20	vor	ADP	APPR								
+22005008	21	Liebe	NOUN	NN					S		Nom	F
+22005009	1	was	PRON	PWS					S		Nom	N
+22005009	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005009	3	dein	DET	PPER					S		Nom	N
+22005009	4	Geliebter	NOUN	NN					S		Nom	M
+22005009	5	vor	ADP	APPR								
+22005009	6	ein	DET	ART					S		Dat	M
+22005009	7	anderer	PRON	PIS					P		Dat	
+22005009	8	geliebter	NOUN	NN					P		Nom	
+22005009	9	du	PRON	PPER				2	S		Nom	
+22005009	10	Schönste	ADJ	FM	Sup				S		Nom	F
+22005009	11	unter	ADP	APPR								
+22005009	12	der	DET	ART					S		Acc	M
+22005009	13	Frau	NOUN	NN					P		Nom	F
+22005009	14	was	PRON	PWS					S		Nom	N
+22005009	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005009	16	dein	DET	PPER					S		Nom	N
+22005009	17	Geliebter	NOUN	NN					S		Nom	M
+22005009	18	vor	ADP	APPR								
+22005009	19	ein	DET	ART					S		Dat	M
+22005009	20	anderer	PRON	PIS					P		Dat	
+22005009	21	geliebter	NOUN	NN					P		Nom	
+22005009	22	daß	SCONJ	KOUS								
+22005009	23	du	PRON	PPER				2	S		Nom	
+22005009	24	uns	PRON	PPER				1	P		Acc	
+22005009	25	also	ADV	ADV								
+22005009	26	Beschwörst	NOUN	NN					S		Nom	M
+22005010	1	mein	PRON	PPOSAT				2	P		Nom	
+22005010	2	Geliebter	NOUN	NN					S		Nom	M
+22005010	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005010	4	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22005010	5	und	CCONJ	KON								
+22005010	6	rot	ADV	ADJD	Pos							
+22005010	7	auszeichnen	VERB	VVPP		Part						
+22005010	8	vor	ADP	APPR								
+22005010	9	Zehntausend	NOUN	NN					P		Nom	N
+22005011	1	sein	DET	PPOSAT					S		Nom	N
+22005011	2	Haupt	NOUN	NN					S		Nom	N
+22005011	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005011	4	gediegen	ADJ	ADJA	Pos				S		Nom	N
+22005011	5	fein	ADJ	ADJA	Pos				S		Nom	N
+22005011	6	Gold	NOUN	NN					S		Nom	N
+22005011	7	sein	DET	PPOSAT					S		Nom	F
+22005011	8	locken	NOUN	NN					P		Nom	F
+22005011	9	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22005011	10	Herabwallend	ADV	ADJD	Pos							
+22005011	11	Schwarz	ADV	ADJD	Pos							
+22005011	12	wie	ADP	KOKOM								
+22005011	13	der	DET	ART					S		Nom	M
+22005011	14	Rabe	PROPN	NE					S		Nom	
+22005012	1	sein	DET	PPOSAT					S		Nom	F
+22005012	2	Auge	NOUN	NN					P		Nom	N
+22005012	3	wie	ADP	KOKOM								
+22005012	4	Taube	NOUN	NN					P		Nom	F
+22005012	5	an	ADP	PTKVZ								
+22005012	6	Wasserbäche	NOUN	NN					P		Nom	F
+22005012	7	badend	ADV	ADJD	Pos							
+22005012	8	in	ADP	APPR								
+22005012	9	Milch	NOUN	NN					S		Nom	F
+22005012	10	eingefaßt	ADJ	ADJA	Pos				S		Nom	F
+22005012	11	Stein	NOUN	NN					P		Nom	M
+22005013	1	sein	DET	PPOSAT					S		Nom	F
+22005013	2	Wange	NOUN	NN					P		Nom	F
+22005013	3	wie	ADP	KOKOM								
+22005013	4	Beete	NOUN	NN					S		Nom	F
+22005013	5	von	ADP	APPR								
+22005013	6	Würzkraut	NOUN	NN					S		Nom	N
+22005013	7	Anhöhe	NOUN	NN					P		Nom	F
+22005013	8	von	ADP	APPR								
+22005013	9	duftend	ADJ	ADJA	Pos				S		Acc	M
+22005013	10	Pflanze	NOUN	NN					P		Nom	F
+22005013	11	sein	DET	PPOSAT					S		Nom	F
+22005013	12	Lippe	NOUN	NN					P		Nom	F
+22005013	13	Lilie	NOUN	NN					P		Nom	F
+22005013	14	Träufelnd	ADV	ADJD	Pos							
+22005013	15	von	ADP	APPR								
+22005013	16	fließend	ADJ	ADJA	Pos				S		Nom	M
+22005013	17	myrrhe	NOUN	NN					S		Nom	N
+22005014	1	sein	DET	PPOSAT					S		Nom	F
+22005014	2	Hand	NOUN	NN					P		Nom	F
+22005014	3	golden	ADJ	ADJA	Pos				S		Nom	F
+22005014	4	Rolle	NOUN	NN					P		Nom	F
+22005014	5	mit	ADP	APPR								
+22005014	6	Topase	NOUN	NN					P		Nom	F
+22005014	7	besetzen	VERB	VVPP		Part						
+22005014	8	sein	AUX	VAINF		Inf						
+22005014	9	Leib	NOUN	NN					S		Nom	M
+22005014	10	ein	DET	ART					S		Nom	N
+22005014	11	Kunstwerk	NOUN	NN					S		Nom	N
+22005014	12	von	ADP	APPR								
+22005014	13	Elfenbein	NOUN	NE					S		Nom	N
+22005014	14	bedeckt	ADV	ADJD	Pos							
+22005014	15	mit	ADP	APPR								
+22005014	16	Saphire	NOUN	NN					P		Nom	F
+22005015	1	sein	DET	PPOSAT					S		Nom	F
+22005015	2	Schenkel	PROPN	PTKVZ					S		Nom	
+22005015	3	Säule	NOUN	NN					P		Nom	F
+22005015	4	von	ADP	APPR								
+22005015	5	weiß	ADJ	ADJA	Pos				S		Dat	M
+22005015	6	Marmor	NOUN	NN					S		Nom	M
+22005015	7	gründen	VERB	VVPP		Part						
+22005015	8	auf	ADP	PTKVZ								
+22005015	9	Untersatz	NOUN	NN					P		Nom	M
+22005015	10	von	ADP	APPR								
+22005015	11	fein	ADJ	ADJA	Pos				S		Dat	M
+22005015	12	Golde	NOUN	NN					S		Nom	N
+22005015	13	sein	DET	PPOSAT					S		Nom	F
+22005015	14	Gestalt	NOUN	NN					S		Nom	F
+22005015	15	wie	ADP	KOKOM								
+22005015	16	der	DET	ART					S		Nom	M
+22005015	17	Libanon	PROPN	NE					S		Nom	M
+22005015	18	auserlesen	VERB	VVPP		Part						
+22005015	19	wie	ADP	KOKOM								
+22005015	20	der	DET	ART					S		Nom	F
+22005015	21	Cedern	NOUN	NN					S		Nom	N
+22005016	1	sein	AUX	VAINF		Inf						
+22005016	2	Gaumen	NOUN	NN					S		Nom	N
+22005016	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005016	4	laut	ADV	PIAT	Cmp							
+22005016	5	Süßigkeit	NOUN	NN					S		Nom	F
+22005016	6	und	CCONJ	KON								
+22005016	7	alle	PRON	PIS					S		Nom	N
+22005016	8	an	ADP	PTKVZ								
+22005016	9	ihm	PRON	PPER				3	S		Dat	M
+22005016	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005016	11	lieblich	ADV	ADJD	Pos							
+22005016	12	der	DET	ART					S		Nom	N
+22005016	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22005016	14	mein	DET	PPOSAT					S		Nom	N
+22005016	15	Geliebter	NOUN	NN					S		Nom	M
+22005016	16	und	CCONJ	KON								
+22005016	17	der	DET	ART					S		Nom	N
+22005016	18	mein	DET	PPOSAT					S		Nom	N
+22005016	19	Freund	NOUN	NN					S		Nom	M
+22005016	20	ihr	PRON	PPOSAT				3	S		Dat	F
+22005016	21	Tochter	NOUN	NN					P		Nom	F
+22005016	22	Jerusalem	PROPN	NE					S		Gen	N
+22006001	1	wohin	ADV	PWAV								
+22006001	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006001	3	dein	DET	PPER					S		Nom	N
+22006001	4	Geliebter	NOUN	NN					S		Nom	M
+22006001	5	gehen	VERB	VVPP		Part						
+22006001	6	du	PRON	PPER				2	S		Nom	
+22006001	7	Schönste	ADJ	FM	Sup				S		Nom	F
+22006001	8	unter	ADP	APPR								
+22006001	9	der	DET	ART					S		Acc	M
+22006001	10	Frau	NOUN	NN					P		Nom	F
+22006001	11	wohin	ADV	PWAV								
+22006001	12	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006001	13	dein	DET	PPER					S		Nom	N
+22006001	14	Geliebter	NOUN	NN					S		Nom	M
+22006001	15	sich	PRON	PRF				3	S		Acc	
+22006001	16	wenden	VERB	VVPP		Part						
+22006001	17	und	CCONJ	KON								
+22006001	18	wir	PRON	PPER				1	P		Nom	
+22006001	19	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22006001	20	ihn	PRON	PPER				3	S		Acc	M
+22006001	21	mit	ADP	APPR								
+22006001	22	dir	PRON	PPER				2	S		Dat	
+22006001	23	suchen	VERB	VVINF		Inf						
+22006002	1	mein	PRON	PPOSAT				2	P		Nom	
+22006002	2	Geliebter	NOUN	NN					S		Nom	M
+22006002	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006002	4	in	ADP	APPR								
+22006002	5	sein	DET	PPOSAT					S		Acc	M
+22006002	6	Garten	NOUN	NN					S		Nom	M
+22006002	7	Hinabgegang	NOUN	NN					P		Nom	F
+22006002	8	zu	ADP	PTKVZ								
+22006002	9	der	DET	ART					S		Acc	M
+22006002	10	Würzkrautbeete	NOUN	NN					P		Nom	F
+22006002	11	um	ADP	APPR								
+22006002	12	in	ADP	APPR								
+22006002	13	der	DET	ART					S		Acc	M
+22006002	14	Garten	NOUN	NN					P		Nom	M
+22006002	15	zu	ADP	PTKVZ								
+22006002	16	weiden	VERB	VVINF		Inf						
+22006002	17	und	CCONJ	KON								
+22006002	18	Lilie	NOUN	NN					P		Nom	F
+22006002	19	zu	ADP	PTKVZ								
+22006002	20	pflücken	VERB	VVINF		Inf						
+22006003	1	ich	PRON	PPER				1	S		Nom	
+22006003	2	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22006003	3	meiner	DET	PPOSAT					S		Gen	N
+22006003	4	geliebter	NOUN	NN					P		Nom	
+22006003	5	und	CCONJ	KON								
+22006003	6	mein	DET	PPOSAT					S		Nom	N
+22006003	7	Geliebter	NOUN	NN					S		Nom	M
+22006003	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006003	9	mein	DET	PPOSAT					S		Nom	N
+22006003	10	der	DET	ART					S		Nom	M
+22006003	11	unter	ADP	APPR								
+22006003	12	der	DET	ART					S		Acc	M
+22006003	13	Lilie	NOUN	NN					P		Nom	F
+22006003	14	weiden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22006004	1	du	PRON	PPER				2	S		Nom	
+22006004	2	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22006004	3	schön	ADV	ADJD	Pos							
+22006004	4	mein	DET	PPOSAT					S		Nom	F
+22006004	5	Freundin	NOUN	NN					S		Nom	F
+22006004	6	wie	ADP	KOKOM								
+22006004	7	Tirza	NOUN	NN					S		Nom	F
+22006004	8	lieblich	ADV	ADJD	Pos							
+22006004	9	wie	ADP	KOKOM								
+22006004	10	Jerusalem	PROPN	NE					S		Nom	N
+22006004	11	furchtbar	ADV	ADJD	Pos							
+22006004	12	wie	ADP	KOKOM								
+22006004	13	Kriegsscharum	NOUN	NN					P		Nom	N
+22006005	1	Wende	NOUN	NN					S		Nom	F
+22006005	2	dein	DET	PPOSAT					S		Nom	F
+22006005	3	Auge	NOUN	NN					P		Nom	N
+22006005	4	von	ADP	APPR								
+22006005	5	mir	PRON	PPER				1	S		Dat	
+22006005	6	ab	ADP	PTKVZ								
+22006005	7	denn	CCONJ	KON								
+22006005	8	sie	PRON	PPER				3	P		Nom	
+22006005	9	überwältigen	VERB	VVINF		Inf						
+22006005	10	mich	PRON	PPER				1	S		Acc	
+22006005	11	dein	PRON	PPOSAT				2	P		Nom	
+22006005	12	Haar	NOUN	NN					S		Nom	N
+22006005	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006005	14	wie	ADP	KOKOM								
+22006005	15	ein	DET	ART					S		Nom	F
+22006005	16	Herde	NOUN	NN					S		Nom	F
+22006005	17	Ziege	NOUN	NN					P		Nom	F
+22006005	18	der	DET	ART					S		Nom	F
+22006005	19	an	ADP	PTKVZ								
+22006005	20	der	DET	ART					S		Acc	M
+22006005	21	abhängen	NOUN	NN					P		Nom	F
+22006005	22	der	DET	ART					S		Gen	M
+22006005	23	Gilead	PROPN	NE					S		Nom	
+22006005	24	lagern	VERB	VVINF		Inf						
+22006006	1	dein	DET	PPOSAT					S		Nom	F
+22006006	2	Zahn	NOUN	NN					P		Nom	M
+22006006	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22006006	4	wie	ADP	KOKOM								
+22006006	5	ein	DET	ART					S		Nom	F
+22006006	6	Herde	NOUN	NN					S		Nom	F
+22006006	7	Mutterschafe	NOUN	NN					S		Nom	F
+22006006	8	der	DET	ART					S		Nom	F
+22006006	9	aus	ADP	PTKVZ								
+22006006	10	der	DET	ART					S		Nom	M
+22006006	11	Schwemme	NOUN	NN					S		Nom	F
+22006006	12	heraufkommen	VERB	VVINF		Inf						
+22006006	13	welcher	DET	PWAT					S		Nom	F
+22006006	14	allzumal	ADV	ADV								
+22006006	15	Zwillinge	NOUN	NN					P		Nom	M
+22006006	16	gebären	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22006006	17	und	CCONJ	KON								
+22006006	18	keiner	PRON	PIAT					S		Nom	N
+22006006	19	unter	ADP	APPR								
+22006006	20	ihnen	PRON	PPER				3	P		Dat	
+22006006	21	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006006	22	unfruchtbar	ADV	ADJD	Pos							
+22006007	1	wie	ADP	KOKOM								
+22006007	2	ein	DET	ART					S		Nom	N
+22006007	3	Schnittstück	NOUN	NN					S		Nom	M
+22006007	4	ein	PRON	ART					S		Nom	M
+22006007	5	Granate	NOUN	NN					S		Nom	F
+22006007	6	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006007	7	dein	DET	PPOSAT					S		Nom	F
+22006007	8	schläfe	NOUN	NN					S		Nom	F
+22006007	9	hinter	ADP	APPR								
+22006007	10	dein	DET	PPOSAT					S		Dat	M
+22006007	11	Schleier	NOUN	NN					S		Nom	M
+22006008	1	sechzig	NUM	CARD								
+22006008	2	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22006008	3	der	DET	ART					S		Nom	M
+22006008	4	Königin	NOUN	NN					P		Nom	F
+22006008	5	und	CCONJ	KON								
+22006008	6	achtzig	NUM	CARD								
+22006008	7	der	DET	ART					S		Nom	M
+22006008	8	Kebsweiber	NOUN	NN					S		Nom	M
+22006008	9	und	CCONJ	KON								
+22006008	10	Jungfraue	NOUN	NN					P		Nom	F
+22006008	11	ohne	ADP	APPR								
+22006008	12	Zahl	NOUN	NN					S		Nom	F
+22006009	1	ein	DET	ART					S		Nom	F
+22006009	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006009	3	mein	DET	PPOSAT					S		Nom	F
+22006009	4	Taube	NOUN	NN					S		Nom	F
+22006009	5	mein	DET	PPOSAT					S		Nom	F
+22006009	6	vollkommene	NOUN	NN					S		Nom	N
+22006009	7	sie	PRON	PPER				3	P		Nom	
+22006009	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006009	9	der	DET	ART					S		Nom	F
+22006009	10	einzig	ADJ	ADJA	Pos				S		Nom	F
+22006009	11	ihr	DET	PPOSAT					S		Dat	F
+22006009	12	Mutter	NOUN	NN					S		Nom	F
+22006009	13	sie	PRON	PPER				3	P		Nom	
+22006009	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006009	15	der	DET	ART					S		Nom	F
+22006009	16	auserkorener	NOUN	NN					S		Nom	F
+22006009	17	ihr	DET	PPOSAT					S		Dat	F
+22006009	18	Gebärerin	NOUN	NN					S		Nom	F
+22006009	19	Tochter	NOUN	NN					P		Nom	F
+22006009	20	sehen	VERB	VVFIN		Fin	Past	3	P	Ind		
+22006009	21	sie	PRON	PPER				3	P		Nom	
+22006009	22	und	CCONJ	KON								
+22006009	23	Priese	VERB	NN		Fin	Past	3	P	Ind		
+22006009	24	sie	PRON	PPER				3	P		Nom	
+22006009	25	glücklich	ADV	ADJD	Pos							
+22006009	26	Königin	NOUN	NN					P		Nom	F
+22006009	27	und	CCONJ	KON								
+22006009	28	Kebsweiber	NOUN	NN					S		Nom	M
+22006009	29	und	CCONJ	KON								
+22006009	30	sie	PRON	PPER				3	P		Nom	
+22006009	31	rühmen	VERB	VVFIN		Fin	Past	3	P	Ind		
+22006009	32	sie	PRON	PPER				3	P		Nom	
+22006010	1	wer	PRON	PWS					S		Nom	M
+22006010	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22006010	3	sie	PRON	PPER				3	P		Nom	
+22006010	4	der	DET	ART					S		Nom	F
+22006010	5	da	ADV	ADV								
+22006010	6	Hervorglänzt	VERB	NE		Fin	Pres	3	S	Ind		
+22006010	7	wie	ADP	KOKOM								
+22006010	8	der	DET	ART					S		Nom	F
+22006010	9	Morgenröte	NOUN	NN					S		Nom	F
+22006010	10	schön	ADV	ADJD	Pos							
+22006010	11	wie	ADP	KOKOM								
+22006010	12	der	DET	ART					S		Nom	M
+22006010	13	Mond	NOUN	NN					S		Nom	M
+22006010	14	rein	ADV	ADJD	Pos							
+22006010	15	wie	ADP	KOKOM								
+22006010	16	der	DET	ART					S		Nom	F
+22006010	17	Sonne	NOUN	NN					S		Nom	F
+22006010	18	furchtbar	ADV	ADJD	Pos							
+22006010	19	wie	ADP	KOKOM								
+22006010	20	Kriegsscharum	NOUN	NN					P		Nom	N
+22006011	1	in	ADP	APPR								
+22006011	2	der	DET	ART					S		Acc	M
+22006011	3	Nußgarten	NOUN	NN					P		Nom	F
+22006011	4	gehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22006011	5	ich	PRON	PPER				1	S		Nom	
+22006011	6	Hinab	ADV	PTKVZ								
+22006011	7	um	ADP	APPR								
+22006011	8	der	DET	ART					S		Nom	F
+22006011	9	jung	ADJ	ADJA	Pos				P		Dat	M
+22006011	10	Trieb	NOUN	NN					P		Nom	M
+22006011	11	der	DET	ART					S		Gen	M
+22006011	12	Tal	PROPN	NE					S		Gen	N
+22006011	13	zu	ADP	PTKVZ								
+22006011	14	besehen	ADV	VVPP	Pos							
+22006011	15	um	ADP	APPR								
+22006011	16	zu	ADP	PTKVZ								
+22006011	17	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+22006011	18	ob	SCONJ	KOUS								
+22006011	19	der	DET	ART					S		Nom	M
+22006011	20	Weinstock	NOUN	XY					S		Nom	M
+22006011	21	ausschlagen	VERB	VVPP		Part						
+22006011	22	sein	AUX	VAFIN		Fin	Past	3	S	Sub		
+22006011	23	ob	SCONJ	KOUS								
+22006011	24	der	DET	ART					S		Nom	F
+22006011	25	Granate	NOUN	NN					P		Nom	F
+22006011	26	blühn	VERB	VVFIN		Fin	Past	3	P	Ind		
+22006012	1	unbewußt	NOUN	NN					S		Nom	N
+22006012	2	setzen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22006012	3	mich	PRON	PPER				1	S		Acc	
+22006012	4	mein	DET	PPOSAT					S		Nom	F
+22006012	5	Seele	NOUN	NN					S		Nom	F
+22006012	6	auf	ADP	PTKVZ								
+22006012	7	der	DET	ART					S		Acc	M
+22006012	8	Prachtwag	NOUN	NN					P		Nom	M
+22006012	9	meiner	DET	PPOSAT					S		Gen	N
+22006012	10	willig	ADJ	ADJA	Pos				S		Acc	M
+22006012	11	Volk	NOUN	NN					S		Gen	N
+22007001	1	Kehre	NOUN	NN					S		Nom	F
+22007001	2	um	ADP	APPR								
+22007001	3	kehren	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22007001	4	um	ADP	APPR								
+22007001	5	Sulamith	PROPN	NE					S		Nom	
+22007001	6	kehren	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22007001	7	um	ADP	APPR								
+22007001	8	kehren	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22007001	9	um	ADP	APPR								
+22007001	10	daß	SCONJ	KOUS								
+22007001	11	wir	PRON	PPER				1	P		Nom	
+22007001	12	dich	PRON	PPER				2	S		Acc	
+22007001	13	anschauen	VERB	VVINF		Inf						
+22007001	14	was	PRON	PWS					S		Nom	N
+22007001	15	Möget	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22007001	16	ihr	PRON	PPOSAT				3	S		Dat	F
+22007001	17	an	ADP	PTKVZ								
+22007001	18	der	DET	ART					S		Nom	M
+22007001	19	Sulamith	PROPN	NE					S		Nom	
+22007001	20	schauen	VERB	VVINF		Fin	Pres	3	P	Ind		
+22007001	21	wie	ADV	PWAV								
+22007001	22	der	DET	ART					S		Acc	M
+22007001	23	Reigen	NOUN	NN					S		Nom	M
+22007001	24	von	ADP	APPR								
+22007001	25	Machanaim	PROPN	NE					S		Nom	
+22007002	1	wie	ADV	PWAV								
+22007002	2	schön	ADV	ADJD	Pos							
+22007002	3	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22007002	4	dein	DET	PPOSAT					S		Nom	F
+22007002	5	Tritt	NOUN	NN					P		Nom	M
+22007002	6	in	ADP	APPR								
+22007002	7	der	DET	ART					S		Acc	M
+22007002	8	Schuhen	NOUN	NN					P		Dat	N
+22007002	9	Fürstentochter	PROPN	NE					S		Nom	
+22007002	10	der	DET	ART					S		Nom	F
+22007002	11	Biegunge	NOUN	NN					P		Nom	F
+22007002	12	dein	DET	PPOSAT					S		Dat	F
+22007002	13	Hüfte	NOUN	NN					P		Nom	F
+22007002	14	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22007002	15	wie	ADP	KOKOM								
+22007002	16	ein	DET	ART					S		Nom	N
+22007002	17	Halsgeschmeid	PROPN	NE					S		Nom	
+22007002	18	ein	DET	ART					S		Nom	N
+22007002	19	Werk	NOUN	NN					S		Nom	N
+22007002	20	von	ADP	APPR								
+22007002	21	Künstlerhand	NOUN	NN					S		Nom	F
+22007003	1	dein	PRON	PPOSAT				2	P		Nom	
+22007003	2	Nabel	NOUN	NN					S		Nom	M
+22007003	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22007003	4	ein	DET	ART					S		Nom	F
+22007003	5	rund	ADJ	ADJA	Pos				S		Nom	F
+22007003	6	Schale	NOUN	NN					S		Nom	F
+22007003	7	in	ADP	APPR								
+22007003	8	welcher	PRON	PWAT					S		Nom	M
+22007003	9	der	DET	ART					S		Nom	M
+22007003	10	Mischwein	PROPN	NE					S		Nom	
+22007003	11	nicht	PART	PTKNEG								
+22007003	12	mangeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22007003	13	dein	DET	PPER					S		Nom	N
+22007003	14	Leib	NOUN	NN					S		Nom	M
+22007003	15	ein	DET	ART					S		Nom	N
+22007003	16	weizenhaufen	NOUN	NN					P		Nom	F
+22007003	17	umzäunen	ADV	ADJD	Pos							
+22007003	18	mit	ADP	APPR								
+22007003	19	Lilie	NOUN	NN					P		Nom	F
+22007004	1	Deine	DET	PPOSAT					S		Nom	F
+22007004	2	beide	PRON	PIAT					P		Nom	
+22007004	3	Brust	NOUN	NN					P		Nom	F
+22007004	4	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22007004	5	wie	ADP	KOKOM								
+22007004	6	ein	DET	ART					S		Nom	N
+22007004	7	Zwillingspaar	NOUN	NN					S		Nom	N
+22007004	8	jung	ADJ	ADJA	Pos				S		Nom	M
+22007004	9	Gazelle	NOUN	NN					P		Nom	F
+22007005	1	dein	PRON	PPOSAT				2	P		Nom	
+22007005	2	Hals	NOUN	NN					S		Nom	M
+22007005	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22007005	4	wie	ADP	KOKOM								
+22007005	5	ein	DET	ART					S		Nom	N
+22007005	6	Turm	NOUN	NN					S		Nom	M
+22007005	7	von	ADP	APPR								
+22007005	8	Elfenbein	NOUN	NE					S		Nom	N
+22007005	9	dein	DET	PPOSAT					S		Nom	F
+22007005	10	Auge	NOUN	NN					P		Nom	N
+22007005	11	wie	ADP	KOKOM								
+22007005	12	der	DET	ART					S		Nom	F
+22007005	13	Teich	NOUN	NN					P		Nom	M
+22007005	14	zu	ADP	PTKVZ								
+22007005	15	Hesbon	NOUN	NN					S		Nom	M
+22007005	16	an	ADP	APPRART					S		Dat	M
+22007005	17	Tor	NOUN	NN					P		Nom	N
+22007005	18	der	DET	ART					S		Nom	M
+22007005	19	volkreichen	VERB	VVPP		Fin	Past	3	P	Ind		
+22007005	20	Stadt	NOUN	NN					S		Nom	F
+22007005	21	dein	DET	PPOSAT					S		Nom	F
+22007005	22	Nase	NOUN	NN					S		Nom	F
+22007005	23	wie	ADP	KOKOM								
+22007005	24	der	DET	ART					S		Nom	M
+22007005	25	Libanonturm	PROPN	NE					S		Nom	
+22007005	26	der	DET	ART					S		Nom	M
+22007005	27	nach	ADP	APPR								
+22007005	28	Damaskus	PROPN	NE					S		Nom	N
+22007005	29	hinschauen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22007006	1	dein	PRON	PPOSAT				2	P		Nom	
+22007006	2	Haupt	NOUN	NN					S		Nom	N
+22007006	3	auf	ADP	PTKVZ								
+22007006	4	dir	PRON	PPER				2	S		Dat	
+22007006	5	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22007006	6	wie	ADP	KOKOM								
+22007006	7	der	DET	ART					S		Nom	M
+22007006	8	Karmel	NOUN	NN					S		Nom	F
+22007006	9	und	CCONJ	KON								
+22007006	10	der	DET	ART					S		Nom	N
+22007006	11	Herabwallende	NOUN	ADJA					S		Nom	F
+22007006	12	Haar	NOUN	NN					S		Nom	N
+22007006	13	dein	DET	PPOSAT					S		Gen	N
+22007006	14	Hauptes	X	FM								
+22007006	15	wie	ADP	KOKOM								
+22007006	16	Purpur	NOUN	NN					S		Nom	N
+22007006	17	ein	DET	ART					S		Nom	N
+22007006	18	König	NOUN	NN					S		Nom	M
+22007006	19	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22007006	20	fesseln	VERB	VVPP		Part						
+22007006	21	durch	ADP	APPR								
+22007006	22	dein	DET	PPOSAT					S		Nom	F
+22007006	23	locken	NOUN	NN					P		Nom	F
+22007007	1	wie	ADV	PWAV								
+22007007	2	schön	ADV	ADJD	Pos							
+22007007	3	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22007007	4	du	PRON	PPER				2	S		Nom	
+22007007	5	und	CCONJ	KON								
+22007007	6	wie	ADP	KOKOM								
+22007007	7	lieblich	ADV	ADJD	Pos							
+22007007	8	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+22007007	9	du	PRON	PPER				2	S		Nom	
+22007007	10	o	PROPN	NE					S		Nom	
+22007007	11	Liebe	NOUN	NN					S		Nom	F
+22007007	12	unter	ADP	APPR								
+22007007	13	der	DET	ART					S		Acc	M
+22007007	14	Wonn	NOUN	NN					P		Nom	F
+22007008	1	dieser	PRON	PDS					S		Nom	M
+22007008	2	dein	DET	PPER					S		Nom	N
+22007008	3	Wuchs	NOUN	NN					S		Nom	M
+22007008	4	gleichen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22007008	5	der	DET	ART					S		Nom	M
+22007008	6	Palme	NOUN	NN					S		Nom	F
+22007008	7	und	CCONJ	KON								
+22007008	8	dein	DET	PPOSAT					S		Nom	F
+22007008	9	Brust	NOUN	NN					P		Nom	F
+22007008	10	der	DET	ART					S		Acc	M
+22007008	11	Traube	NOUN	NN					P		Nom	F
+22007009	1	ich	PRON	PPER				1	S		Nom	
+22007009	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+22007009	3	ich	PRON	PPER				1	S		Nom	
+22007009	4	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22007009	5	der	DET	ART					S		Nom	F
+22007009	6	Palme	NOUN	NN					S		Nom	F
+22007009	7	ersteigen	VERB	VVINF		Inf						
+22007009	8	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22007009	9	ihr	DET	PPOSAT					S		Nom	F
+22007009	10	Zweig	NOUN	NN					P		Nom	M
+22007009	11	erfassen	VERB	VVINF		Inf						
+22007009	12	und	CCONJ	KON								
+22007009	13	dein	DET	PPOSAT					S		Nom	F
+22007009	14	Brust	NOUN	NN					P		Nom	F
+22007009	15	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22007009	16	mir	PRON	PPER				1	S		Dat	
+22007009	17	sein	AUX	VAINF		Inf						
+22007009	18	wie	ADP	KOKOM								
+22007009	19	Traube	NOUN	NN					P		Nom	F
+22007009	20	der	DET	ART					S		Gen	M
+22007009	21	Weinstock	PROPN	NN					S		Gen	M
+22007009	22	und	CCONJ	KON								
+22007009	23	der	DET	ART					S		Nom	M
+22007009	24	Duft	NOUN	NN					S		Nom	M
+22007009	25	dein	DET	PPOSAT					S		Dat	F
+22007009	26	Nase	NOUN	NN					S		Nom	F
+22007009	27	wie	ADP	KOKOM								
+22007009	28	Äpfel	NOUN	NN					P		Nom	M
+22007010	1	und	CCONJ	KON								
+22007010	2	dein	DET	PPER					S		Nom	N
+22007010	3	Gaumen	NOUN	NN					S		Nom	N
+22007010	4	wie	ADP	KOKOM								
+22007010	5	der	DET	ART					S		Nom	M
+22007010	6	gut	ADJ	ADJA	Sup				S		Nom	F
+22007010	7	Wein	NOUN	NN					S		Nom	M
+22007010	8	der	DET	ART					S		Nom	M
+22007010	9	mein	DET	PPOSAT					S		Dat	M
+22007010	10	geliebter	NOUN	NN					P		Nom	
+22007010	11	sanft	ADV	ADJD	Pos							
+22007010	12	hinuntergleiten	VERB	VVPP		Part						
+22007010	13	der	DET	ART					S		Nom	M
+22007010	14	über	ADP	APPR								
+22007010	15	der	DET	ART					S		Nom	F
+22007010	16	Lippe	NOUN	NN					P		Nom	F
+22007010	17	der	DET	ART					S		Nom	M
+22007010	18	Schlummernden	NOUN	NN					P		Nom	F
+22007010	19	schleichen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22007011	1	ich	PRON	PPER				1	S		Nom	
+22007011	2	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22007011	3	meiner	DET	PPOSAT					S		Gen	N
+22007011	4	geliebter	NOUN	NN					P		Nom	
+22007011	5	und	CCONJ	KON								
+22007011	6	nach	ADP	APPR								
+22007011	7	mir	PRON	PPER				1	S		Dat	
+22007011	8	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22007011	9	sein	AUX	VAINF		Inf						
+22007011	10	verlangen	NOUN	NN					S		Nom	N
+22007012	1	Komm	ADV	FM								
+22007012	2	mein	DET	PPOSAT					S		Nom	N
+22007012	3	Geliebter	NOUN	NN					S		Nom	M
+22007012	4	laß	VERB	VVIMP				2	S	Imp		
+22007012	5	uns	PRON	PPER				1	P		Acc	
+22007012	6	auf	ADP	APPRART					S		Acc	N
+22007012	7	Feld	NOUN	NN					S		Nom	N
+22007012	8	hinausgehen	VERB	VVINF		Inf						
+22007012	9	in	ADP	APPR								
+22007012	10	der	DET	ART					S		Acc	M
+22007012	11	Dorf	NOUN	NN					P		Dat	N
+22007012	12	übernachten	VERB	VVINF		Inf						
+22007013	1	wir	PRON	PPER				1	P		Nom	
+22007013	2	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22007013	3	uns	PRON	PPER				1	P		Acc	
+22007013	4	früh	ADV	ADJD	Pos							
+22007013	5	aufmachen	VERB	VVINF		Inf						
+22007013	6	nach	ADP	APPR								
+22007013	7	der	DET	ART					S		Acc	M
+22007013	8	Weinberg	NOUN	NN					P		Dat	M
+22007013	9	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22007013	10	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+22007013	11	ob	SCONJ	KOUS								
+22007013	12	der	DET	ART					S		Nom	M
+22007013	13	Weinstock	NOUN	XY					S		Nom	M
+22007013	14	ausschlagen	VERB	VVPP		Part						
+22007013	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22007013	16	der	DET	ART					S		Nom	F
+22007013	17	Weinblüte	NOUN	NN					S		Nom	N
+22007013	18	sich	PRON	PRF				3	S		Acc	
+22007013	19	öffnen	VERB	VVPP		Part						
+22007013	20	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22007013	21	ob	SCONJ	KOUS								
+22007013	22	der	DET	ART					S		Nom	F
+22007013	23	Granate	NOUN	NN					P		Nom	F
+22007013	24	blühen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22007013	25	dort	ADV	ADV								
+22007013	26	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+22007013	27	ich	PRON	PPER				1	S		Nom	
+22007013	28	dir	PRON	PPER				2	S		Dat	
+22007013	29	mein	DET	PPOSAT					S		Nom	F
+22007013	30	Liebe	NOUN	NN					S		Nom	F
+22007013	31	geben	VERB	VVINF		Inf						
+22007014	1	der	DET	ART					S		Nom	F
+22007014	2	Liebesäpfel	NOUN	NN					S		Nom	M
+22007014	3	duften	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22007014	4	und	CCONJ	KON								
+22007014	5	über	ADP	APPR								
+22007014	6	unser	DET	PPOSAT					S		Acc	M
+22007014	7	Tür	NOUN	NN					P		Nom	F
+22007014	8	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22007014	9	allerlei	DET	PIAT								
+22007014	10	edel	ADV	ADJD	Pos							
+22007014	11	Frucht	NOUN	NN					P		Nom	F
+22007014	12	neu	ADJ	ADJA	Pos				P		Nom	F
+22007014	13	und	CCONJ	KON								
+22007014	14	alt	ADJ	ADJA	Pos				S		Nom	F
+22007014	15	der	DET	ART					S		Nom	F
+22007014	16	ich	PRON	PPER				1	S		Nom	
+22007014	17	mein	DET	PPOSAT					S		Nom	N
+22007014	18	Geliebter	NOUN	NN					S		Nom	M
+22007014	19	dir	PRON	PPER				2	S		Dat	
+22007014	20	aufbewahren	VERB	VVPP		Part						
+22007014	21	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22008001	1	O	PROPN	NE								
+22008001	2	wärest	AUX	VAFIN		Fin	Past	3	S	Ind		
+22008001	3	du	PRON	PPER				2	S		Nom	
+22008001	4	mir	PRON	PPER				1	S		Dat	
+22008001	5	gleich	ADV	ADV	Pos							
+22008001	6	ein	DET	ART					S		Dat	M
+22008001	7	Bruder	NOUN	NN					S		Nom	M
+22008001	8	der	DET	ART					S		Nom	M
+22008001	9	der	DET	ART					S		Nom	F
+22008001	10	Brust	NOUN	NN					P		Nom	F
+22008001	11	mein	DET	PPOSAT					S		Dat	F
+22008001	12	Mutter	NOUN	NN					S		Nom	F
+22008001	13	gesogen	VERB	VVPP		Part						
+22008001	14	Fand	NOUN	NN					P		Acc	M
+22008001	15	ich	PRON	PPER				1	S		Nom	
+22008001	16	dich	PRON	PPER				2	S		Acc	
+22008001	17	draußen	ADV	ADV								
+22008001	18	ich	PRON	PPER				1	S		Nom	
+22008001	19	wollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+22008001	20	dich	PRON	PPER				2	S		Acc	
+22008001	21	küssen	VERB	VVINF		Fin	Pres	3	P	Ind		
+22008001	22	und	CCONJ	KON								
+22008001	23	man	PRON	PIS					S		Nom	
+22008001	24	werden	AUX	VAFIN		Fin	Past	3	S	Sub		
+22008001	25	mich	PRON	PPER				1	S		Acc	
+22008001	26	nicht	PART	PTKNEG								
+22008001	27	verachten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22008002	1	ich	PRON	PPER				1	S		Nom	
+22008002	2	werden	AUX	VAFIN		Fin	Past	3	S	Sub		
+22008002	3	dich	PRON	PPER				2	S		Acc	
+22008002	4	führen	VERB	VVINF		Inf						
+22008002	5	dich	PRON	PPER				2	S		Acc	
+22008002	6	hineinbringen	VERB	VVINF		Inf						
+22008002	7	in	ADP	APPR								
+22008002	8	mein	DET	PPOSAT					S		Dat	F
+22008002	9	Mutter	NOUN	NN					S		Nom	F
+22008002	10	Haus	NOUN	NN					S		Nom	N
+22008002	11	du	PRON	PPER				2	S		Nom	
+22008002	12	würdest	AUX	VMFIN		Fin	Past	3	S	Sub		
+22008002	13	mich	PRON	PPER				1	S		Acc	
+22008002	14	belehren	VERB	VVINF		Inf						
+22008002	15	ich	PRON	PPER				1	S		Nom	
+22008002	16	werden	AUX	VAFIN		Fin	Past	3	S	Sub		
+22008002	17	dich	PRON	PPER				2	S		Acc	
+22008002	18	tränken	VERB	VVINF		Inf						
+22008002	19	mit	ADP	APPR								
+22008002	20	Würzwein	NOUN	NN					S		Nom	M
+22008002	21	mit	ADP	APPR								
+22008002	22	der	DET	ART					S		Dat	M
+22008002	23	Most	NOUN	NN					P		Nom	N
+22008002	24	mein	DET	PPOSAT					S		Dat	F
+22008002	25	Granate	NOUN	NN					P		Nom	F
+22008003	1	sein	DET	PPOSAT					S		Nom	F
+22008003	2	linke	NOUN	NE					P		Nom	
+22008003	3	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22008003	4	unter	ADP	APPR								
+22008003	5	mein	DET	PPOSAT					S		Dat	M
+22008003	6	Haupt	NOUN	NN					P		Nom	N
+22008003	7	und	CCONJ	KON								
+22008003	8	sein	DET	PPOSAT					S		Nom	F
+22008003	9	Recht	NOUN	NN					P		Nom	N
+22008003	10	umfassen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22008003	11	mich	PRON	PPER				1	S		Acc	
+22008004	1	ich	PRON	PPER				1	S		Nom	
+22008004	2	beschwören	VERB	VVFIN		Fin	Pres	3	S	Sub		
+22008004	3	euch	PRON	PPER				2	P		Dat	
+22008004	4	Tochter	NOUN	NN					P		Nom	F
+22008004	5	Jerusalem	PROPN	NE					S		Gen	N
+22008004	6	daß	SCONJ	KOUS								
+22008004	7	ihr	PRON	PPOSAT				3	S		Dat	F
+22008004	8	nicht	PART	PTKNEG								
+22008004	9	Wecket	PROPN	NE					S		Nom	N
+22008004	10	noch	CCONJ	KON								
+22008004	11	Aufwecket	PROPN	NE					S		Nom	M
+22008004	12	der	DET	ART					S		Nom	F
+22008004	13	Liebe	NOUN	NN					S		Nom	F
+22008004	14	bis	CCONJ	KON								
+22008004	15	es	PRON	PPER				3	S		Nom	N
+22008004	16	ihr	PRON	PPOSAT				3	S		Dat	F
+22008004	17	gefällen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22008005	1	wer	PRON	PWS					S		Nom	M
+22008005	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008005	3	sie	PRON	PPER				3	P		Nom	
+22008005	4	der	DET	ART					S		Nom	F
+22008005	5	da	ADV	ADV								
+22008005	6	heraufkommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22008005	7	von	ADP	APPR								
+22008005	8	der	DET	ART					S		Nom	M
+22008005	9	Wüste	NOUN	NN					S		Nom	F
+22008005	10	her	ADV	ADV								
+22008005	11	sich	PRON	PRF				3	S		Acc	
+22008005	12	lehnend	ADV	ADJD	Pos							
+22008005	13	auf	ADP	PTKVZ								
+22008005	14	ihr	DET	PPOSAT					S		Acc	M
+22008005	15	geliebter	NOUN	NN					P		Nom	
+22008005	16	unter	ADP	APPR								
+22008005	17	der	DET	ART					S		Dat	M
+22008005	18	Apfelbaume	NOUN	NN					P		Nom	M
+22008005	19	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22008005	20	ich	PRON	PPER				1	S		Nom	
+22008005	21	dich	PRON	PPER				2	S		Acc	
+22008005	22	wecken	VERB	VVPP		Part						
+22008005	23	dort	ADV	ADV								
+22008005	24	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008005	25	mit	ADP	APPR								
+22008005	26	dir	PRON	PPER				2	S		Dat	
+22008005	27	Wehe	NOUN	NN					P		Nom	F
+22008005	28	haben	VERB	VAPP		Part						
+22008005	29	dein	DET	PPOSAT					S		Nom	F
+22008005	30	Mutter	NOUN	NN					S		Nom	F
+22008005	31	dort	ADV	ADV								
+22008005	32	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008005	33	Wehe	NOUN	NN					P		Nom	F
+22008005	34	haben	VERB	VAPP		Part						
+22008005	35	der	DET	ART					S		Nom	F
+22008005	36	dich	PRON	PPER				2	S		Acc	
+22008005	37	gebären	VERB	VVPP		Part						
+22008006	1	Lege	X	FM								
+22008006	2	mich	PRON	PPER				1	S		Acc	
+22008006	3	wie	ADP	KOKOM								
+22008006	4	ein	DET	ART					S		Acc	M
+22008006	5	Siegelring	PROPN	NE					S		Nom	
+22008006	6	an	ADP	PTKVZ								
+22008006	7	dein	DET	PPER					S		Nom	N
+22008006	8	Herz	NOUN	NN					S		Nom	N
+22008006	9	wie	ADP	KOKOM								
+22008006	10	ein	DET	ART					S		Acc	M
+22008006	11	Siegelring	PROPN	NE					S		Nom	
+22008006	12	an	ADP	PTKVZ								
+22008006	13	dein	DET	PPOSAT					S		Acc	M
+22008006	14	Arm	NOUN	XY					S		Nom	M
+22008006	15	denn	CCONJ	KON								
+22008006	16	der	DET	ART					S		Nom	F
+22008006	17	Liebe	NOUN	NN					S		Nom	F
+22008006	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008006	19	gewaltsam	ADV	ADJD	Pos							
+22008006	20	wie	ADP	KOKOM								
+22008006	21	der	DET	ART					S		Nom	M
+22008006	22	Tod	NOUN	NN					S		Nom	M
+22008006	23	hart	ADV	ADJD	Pos							
+22008006	24	wie	ADP	KOKOM								
+22008006	25	der	DET	ART					S		Nom	M
+22008006	26	Scheol	PROPN	NE					S		Nom	M
+22008006	27	ihr	PRON	PPOSAT				3	S		Dat	F
+22008006	28	Eifer	NOUN	NN					S		Nom	M
+22008006	29	ihr	DET	PPOSAT					S		Nom	F
+22008006	30	Gluten	NOUN	NN					S		Nom	N
+22008006	31	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22008006	32	Feuerglut	NOUN	NN					P		Nom	F
+22008006	33	ein	DET	ART					S		Nom	F
+22008006	34	Flamme	NOUN	NN					S		Nom	F
+22008006	35	Jah	PROPN	NE					S		Nom	M
+22008007	1	groß	PROPN	NE					S		Nom	
+22008007	2	Wasser	NOUN	NN					S		Nom	N
+22008007	3	Vermögen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22008007	4	nicht	PART	PTKNEG								
+22008007	5	der	DET	ART					S		Nom	F
+22008007	6	Liebe	NOUN	NN					S		Nom	F
+22008007	7	auslöschen	VERB	VVIZU		Inf						
+22008007	8	und	CCONJ	KON								
+22008007	9	Strom	NOUN	NN					P		Nom	M
+22008007	10	überfluten	VERB	VVINF		Inf						
+22008007	11	sie	PRON	PPER				3	P		Nom	
+22008007	12	nicht	PART	PTKNEG								
+22008007	13	wenn	SCONJ	KOUS								
+22008007	14	ein	DET	ART					S		Nom	N
+22008007	15	Mann	NOUN	NN					S		Nom	M
+22008007	16	aller	DET	PIS					P		Dat	
+22008007	17	Reichtum	NOUN	NN					S		Nom	M
+22008007	18	sein	DET	PPOSAT					S		Gen	M
+22008007	19	Haus	NOUN	NN					S		Gen	N
+22008007	20	um	ADP	APPR								
+22008007	21	der	DET	ART					S		Nom	F
+22008007	22	Liebe	NOUN	NN					S		Nom	F
+22008007	23	geben	VERB	VVINF		Inf						
+22008007	24	wollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+22008007	25	man	PRON	PIS					S		Nom	
+22008007	26	werden	AUX	VAFIN		Fin	Past	3	S	Sub		
+22008007	27	ihn	PRON	PPER				3	S		Acc	M
+22008007	28	nur	ADV	ADV								
+22008007	29	verachten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+22008008	1	wir	PRON	PPER				1	P		Nom	
+22008008	2	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22008008	3	ein	DET	ART					S		Nom	F
+22008008	4	Schwester	NOUN	NN					S		Nom	F
+22008008	5	ein	DET	ART					S		Nom	F
+22008008	6	klein	ADJ	ADJA	Pos				S		Nom	F
+22008008	7	der	DET	ART					S		Nom	F
+22008008	8	noch	CCONJ	KON								
+22008008	9	kein	DET	PIAT					S		Nom	F
+22008008	10	Brust	NOUN	NN					P		Nom	F
+22008008	11	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008008	12	was	PRON	PWS					S		Nom	N
+22008008	13	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22008008	14	wir	PRON	PPER				1	P		Nom	
+22008008	15	mit	ADP	APPR								
+22008008	16	unser	DET	PPOSAT					S		Dat	F
+22008008	17	Schwester	NOUN	NN					S		Nom	F
+22008008	18	tun	VERB	VVINF		Inf						
+22008008	19	an	ADP	PTKVZ								
+22008008	20	der	DET	ART					S		Dat	M
+22008008	21	Tag	NOUN	NN					P		Nom	M
+22008008	22	da	ADV	ADV								
+22008008	23	man	PRON	PIS					S		Nom	
+22008008	24	um	ADP	APPR								
+22008008	25	sie	PRON	PPER				3	P		Nom	
+22008008	26	werben	VERB	VVINF		Inf						
+22008008	27	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008009	1	wenn	SCONJ	KOUS								
+22008009	2	sie	PRON	PPER				3	P		Nom	
+22008009	3	ein	DET	ART					S		Nom	F
+22008009	4	Mauer	NOUN	NN					S		Nom	F
+22008009	5	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008009	6	so	ADV	ADV								
+22008009	7	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22008009	8	wir	PRON	PPER				1	P		Nom	
+22008009	9	ein	DET	ART					S		Nom	F
+22008009	10	Zinne	NOUN	NN					S		Nom	F
+22008009	11	von	ADP	APPR								
+22008009	12	Silber	NOUN	NN					S		Nom	N
+22008009	13	darauf	ADV	PROAV								
+22008009	14	bauen	VERB	VVINF		Inf						
+22008009	15	und	CCONJ	KON								
+22008009	16	wenn	SCONJ	KOUS								
+22008009	17	sie	PRON	PPER				3	P		Nom	
+22008009	18	ein	DET	ART					S		Nom	F
+22008009	19	Tür	NOUN	NN					S		Nom	F
+22008009	20	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008009	21	so	ADV	ADV								
+22008009	22	wollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+22008009	23	wir	PRON	PPER				1	P		Nom	
+22008009	24	sie	PRON	PPER				3	P		Nom	
+22008009	25	mit	ADP	APPR								
+22008009	26	ein	DET	ART					S		Dat	M
+22008009	27	Cedernbrett	PROPN	NN					S		Nom	N
+22008009	28	verschließen	VERB	VVINF		Inf						
+22008010	1	ich	PRON	PPER				1	S		Nom	
+22008010	2	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+22008010	3	ein	DET	ART					S		Nom	F
+22008010	4	Mauer	NOUN	NN					S		Nom	F
+22008010	5	und	CCONJ	KON								
+22008010	6	mein	DET	PPOSAT					S		Nom	F
+22008010	7	Brust	NOUN	NN					P		Nom	F
+22008010	8	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22008010	9	wie	ADP	KOKOM								
+22008010	10	Türme	NOUN	NN					P		Nom	M
+22008010	11	da	ADV	ADV								
+22008010	12	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+22008010	13	ich	PRON	PPER				1	S		Nom	
+22008010	14	in	ADP	APPR								
+22008010	15	sein	DET	PPOSAT					S		Acc	M
+22008010	16	Auge	NOUN	NN					P		Nom	N
+22008010	17	wie	ADP	KOKOM								
+22008010	18	ein	DET	ART					S		Nom	F
+22008010	19	der	DET	ART					S		Nom	F
+22008010	20	Frieden	NOUN	NN					S		Nom	M
+22008010	21	finden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+22008011	1	Salomo	PROPN	NE					S		Nom	M
+22008011	2	haben	AUX	VAFIN		Fin	Past	3	S	Ind		
+22008011	3	ein	DET	ART					S		Acc	M
+22008011	4	Weinberg	PROPN	NE					S		Nom	
+22008011	5	zu	ADP	PTKVZ								
+22008011	6	Baal-Hamon	X	FM								
+22008011	7	er	PRON	PPER				3	S		Nom	M
+22008011	8	übergeben	VERB	VVFIN		Fin	Past	3	S	Ind		
+22008011	9	der	DET	ART					S		Acc	M
+22008011	10	Weinberg	PROPN	NE					S		Nom	
+22008011	11	der	DET	ART					S		Acc	M
+22008011	12	Hütern	NOUN	NN					P		Dat	M
+22008011	13	ein	DET	ART					S		Nom	N
+22008011	14	jeder	PRON	PIS					S		Nom	M
+22008011	15	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+22008011	16	für	ADP	APPR								
+22008011	17	sein	DET	PPOSAT					S		Nom	F
+22008011	18	Frucht	NOUN	NN					S		Nom	F
+22008011	19	tausend	NUM	CARD								
+22008011	20	silbersekel	NOUN	NN					S		Nom	M
+22008011	21	bringen	VERB	VVINF		Inf						
+22008012	1	mein	PRON	PPOSAT				2	P		Nom	
+22008012	2	eigen	ADJ	ADJA	Pos				S		Nom	M
+22008012	3	Weinberg	PROPN	NE					S		Nom	
+22008012	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+22008012	5	vor	ADP	APPR								
+22008012	6	mir	PRON	PPER				1	S		Dat	
+22008012	7	der	DET	ART					S		Nom	F
+22008012	8	tausend	NUM	CARD								
+22008012	9	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+22008012	10	dein	DET	PPER					S		Nom	N
+22008012	11	Salomo	PROPN	NE					S		Nom	M
+22008012	12	und	CCONJ	KON								
+22008012	13	zweihundert	NUM	CARD								
+22008012	14	sein	AUX	VAFIN		Fin	Pres	3	P	Sub		
+22008012	15	der	DET	ART					S		Acc	M
+22008012	16	Hütern	NOUN	NN					P		Dat	M
+22008012	17	sein	DET	PPOSAT					S		Dat	F
+22008012	18	Frucht	NOUN	NN					S		Nom	F
+22008013	1	Bewohnerin	NOUN	NN					S		Nom	F
+22008013	2	der	DET	ART					S		Nom	M
+22008013	3	Garten	NOUN	NN					P		Nom	M
+22008013	4	der	DET	ART					S		Nom	F
+22008013	5	Genosse	NOUN	NN					P		Nom	M
+22008013	6	horchen	VERB	VVINF		Inf						
+22008013	7	auf	ADP	PTKVZ								
+22008013	8	dein	DET	PPOSAT					S		Nom	F
+22008013	9	Stimme	NOUN	NN					S		Nom	F
+22008013	10	laß	VERB	VVIMP				2	S	Imp		
+22008013	11	sie	PRON	PPER				3	P		Nom	
+22008013	12	mich	PRON	PPER				1	S		Acc	
+22008013	13	hören	VERB	VVINF		Inf						
+22008014	1	Enteil	NOUN	NN					P		Nom	M
+22008014	2	mein	DET	PPOSAT					S		Nom	N
+22008014	3	Geliebter	NOUN	NN					S		Nom	M
+22008014	4	und	CCONJ	KON								
+22008014	5	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+22008014	6	gleich	ADV	ADV	Pos							
+22008014	7	ein	PRON	ART					S		Nom	M
+22008014	8	Gazelle	NOUN	NN					S		Nom	F
+22008014	9	oder	CCONJ	KON								
+22008014	10	ein	DET	ART					S		Dat	M
+22008014	11	Junge	NOUN	NN					P		Nom	M
+22008014	12	der	DET	ART					S		Nom	M
+22008014	13	Hirsch	NOUN	NN					P		Nom	N
+22008014	14	auf	ADP	PTKVZ								
+22008014	15	der	DET	ART					S		Acc	M
+22008014	16	duftend	ADJ	ADJA	Pos				S		Acc	M
+22008014	17	Berg	NOUN	NN					P		Nom	M

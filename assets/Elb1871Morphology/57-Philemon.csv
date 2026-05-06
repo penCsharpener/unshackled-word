@@ -1,0 +1,419 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+57001001	1	Paulus	PROPN	NE					S		Nom	M
+57001001	2	ein	DET	ART					S		Nom	N
+57001001	3	gefangener	NOUN	NN					P		Nom	
+57001001	4	Christi	PROPN	NE					S		Nom	
+57001001	5	Jesu	PROPN	NE					S		Gen	
+57001001	6	und	CCONJ	KON								
+57001001	7	Timotheus	PROPN	NE					S		Nom	M
+57001001	8	der	DET	ART					S		Nom	M
+57001001	9	Bruder	NOUN	NN					S		Nom	M
+57001001	10	Philemon	NOUN	NN					S		Nom	M
+57001001	11	der	DET	ART					S		Dat	M
+57001001	12	geliebter	NOUN	NN					P		Nom	
+57001001	13	und	CCONJ	KON								
+57001001	14	unser	DET	PPOSAT					S		Dat	N
+57001001	15	Mitarbeiter	NOUN	NN					P		Nom	M
+57001002	1	und	CCONJ	KON								
+57001002	2	Appia	PROPN	NE					S		Nom	
+57001002	3	der	DET	ART					S		Nom	M
+57001002	4	Schwester	NOUN	NN					S		Nom	F
+57001002	5	und	CCONJ	KON								
+57001002	6	Archippus	PROPN	NE					S		Nom	M
+57001002	7	unser	DET	PPOSAT					S		Dat	N
+57001002	8	Mitkämpfer	NOUN	NN					P		Nom	M
+57001002	9	und	CCONJ	KON								
+57001002	10	der	DET	ART					S		Nom	M
+57001002	11	Versammlung	NOUN	NN					S		Nom	F
+57001002	12	der	DET	ART					S		Nom	F
+57001002	13	in	ADP	APPR								
+57001002	14	dein	DET	PPOSAT					S		Dat	M
+57001002	15	Haus	NOUN	NN					P		Nom	N
+57001002	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+57001003	1	Gnade	NOUN	NN					S		Nom	F
+57001003	2	euch	PRON	PPER				2	P		Dat	
+57001003	3	und	CCONJ	KON								
+57001003	4	Friede	NOUN	NN					S		Nom	M
+57001003	5	von	ADP	APPR								
+57001003	6	Gott	NOUN	NN					S		Nom	M
+57001003	7	unser	DET	PPOSAT					S		Dat	N
+57001003	8	Vater	NOUN	NN					S		Nom	M
+57001003	9	und	CCONJ	KON								
+57001003	10	der	DET	ART					S		Dat	M
+57001003	11	Herr	NOUN	NN					S		Acc	M
+57001003	12	Jesus	PROPN	PPER					S		Nom	M
+57001003	13	Christus	PROPN	NE					S		Nom	M
+57001004	1	ich	PRON	PPER				1	S		Nom	
+57001004	2	danken	VERB	NN		Fin	Pres	3	S	Sub		
+57001004	3	mein	DET	PPOSAT					S		Dat	M
+57001004	4	Gott	NOUN	NN					S		Nom	M
+57001004	5	indem	SCONJ	KOUS								
+57001004	6	ich	PRON	PPER				1	S		Nom	
+57001004	7	allezeit	ADV	ADV								
+57001004	8	dein	DET	PPOSAT					S		Dat	F
+57001004	9	erwähnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001004	10	in	ADP	APPR								
+57001004	11	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+57001004	12	Gebet	NOUN	NN					S		Acc	M
+57001005	1	da	ADV	ADV								
+57001005	2	ich	PRON	PPER				1	S		Nom	
+57001005	3	hören	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001005	4	von	ADP	APPR								
+57001005	5	dein	DET	PPOSAT					S		Dat	F
+57001005	6	Liebe	NOUN	NN					S		Nom	F
+57001005	7	und	CCONJ	KON								
+57001005	8	von	ADP	APPR								
+57001005	9	der	DET	ART					S		Dat	M
+57001005	10	Glaube	NOUN	NN					S		Acc	M
+57001005	11	der	DET	ART					S		Acc	M
+57001005	12	du	PRON	PPER				2	S		Nom	
+57001005	13	an	ADP	PTKVZ								
+57001005	14	der	DET	ART					S		Acc	M
+57001005	15	Herr	NOUN	NN					S		Acc	M
+57001005	16	Jesus	PROPN	PPER					S		Nom	M
+57001005	17	und	CCONJ	KON								
+57001005	18	zu	ADP	PTKVZ								
+57001005	19	aller	DET	PIS					P		Dat	
+57001005	20	heilig	NOUN	NN					P		Dat	
+57001005	21	haben	AUX	VAFIN		Fin	Pres	2	S	Ind		
+57001006	1	daß	SCONJ	KOUS								
+57001006	2	der	DET	ART					S		Nom	F
+57001006	3	Gemeinschaft	NOUN	NN					S		Nom	F
+57001006	4	dein	DET	PPOSAT					S		Gen	N
+57001006	5	Glauben	NOUN	NN					S		Gen	M
+57001006	6	wirksam	ADV	ADJD	Pos							
+57001006	7	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001006	8	in	ADP	APPR								
+57001006	9	der	DET	ART					S		Nom	M
+57001006	10	Anerkennung	NOUN	NN					S		Nom	F
+57001006	11	alle	PRON	PIS					S		Nom	N
+57001006	12	gute	NOUN	NN					P		Nom	
+57001006	13	welcher	DET	PWAT					S		Acc	N
+57001006	14	in	ADP	APPR								
+57001006	15	uns	PRON	PPER				1	P		Acc	
+57001006	16	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+57001006	17	gegen	ADP	APPR								
+57001006	18	Christum	NOUN	NN					S		Nom	N
+57001006	19	Jesum	PROPN	XY					S		Nom	M
+57001007	1	denn	CCONJ	KON								
+57001007	2	wir	PRON	PPER				1	P		Nom	
+57001007	3	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+57001007	4	groß	ADJ	ADJA	Pos				S		Nom	F
+57001007	5	Freude	NOUN	NN					S		Nom	F
+57001007	6	und	CCONJ	KON								
+57001007	7	groß	ADJ	ADJA	Pos				S		Acc	M
+57001007	8	Trost	NOUN	NN					S		Nom	M
+57001007	9	durch	ADP	APPR								
+57001007	10	dein	DET	PPOSAT					S		Nom	F
+57001007	11	Liebe	NOUN	NN					S		Nom	F
+57001007	12	weil	SCONJ	KOUS								
+57001007	13	der	DET	ART					S		Nom	F
+57001007	14	Herz	NOUN	NN					S		Nom	N
+57001007	15	der	DET	ART					S		Nom	M
+57001007	16	heilig	NOUN	NN					P		Dat	
+57001007	17	durch	ADP	APPR								
+57001007	18	dich	PRON	PPER				2	S		Acc	
+57001007	19	Bruder	NOUN	NN					S		Nom	M
+57001007	20	erquicken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+57001007	21	werden	AUX	VAPP		Part						
+57001007	22	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+57001008	1	deshalb	ADV	PROAV								
+57001008	2	obgleich	SCONJ	KOUS								
+57001008	3	ich	PRON	PPER				1	S		Nom	
+57001008	4	groß	ADJ	ADJA	Pos				S		Nom	F
+57001008	5	Freimütigkeit	NOUN	NN					S		Nom	F
+57001008	6	in	ADP	APPR								
+57001008	7	Christo	PROPN	NE					S		Nom	M
+57001008	8	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001008	9	dir	PRON	PPER				2	S		Dat	
+57001008	10	zu	ADP	PTKVZ								
+57001008	11	gebieten	NOUN	NN					S		Nom	N
+57001008	12	was	PRON	PWS					S		Nom	N
+57001008	13	sich	PRON	PRF				3	S		Acc	
+57001008	14	geziemt	ADV	PTKVZ								
+57001009	1	so	ADV	ADV								
+57001009	2	bitte	ADV	ADV								
+57001009	3	ich	PRON	PPER				1	S		Nom	
+57001009	4	doch	CCONJ	KON								
+57001009	5	vielmehr	ADV	ADV								
+57001009	6	um	ADP	APPR								
+57001009	7	der	DET	ART					S		Nom	M
+57001009	8	Liebe	NOUN	NN					S		Nom	F
+57001009	9	Wille	ADP	APZR								
+57001009	10	da	ADV	ADV								
+57001009	11	ich	PRON	PPER				1	S		Nom	
+57001009	12	nun	ADV	ADV								
+57001009	13	ein	DET	ART					S		Nom	N
+57001009	14	solcher	DET	PIAT					S		Nom	M
+57001009	15	sein	AUX	VAFIN		Fin	Pres	1	S	Ind		
+57001009	16	wie	ADP	KOKOM								
+57001009	17	Paulus	PROPN	NE					S		Nom	M
+57001009	18	der	DET	ART					S		Nom	M
+57001009	19	alte	ADJ	ADJA	Pos				S		Nom	F
+57001009	20	jetzt	ADV	ADV								
+57001009	21	aber	CCONJ	KON								
+57001009	22	auch	ADV	ADV								
+57001009	23	ein	DET	ART					S		Nom	N
+57001009	24	gefangener	NOUN	NN					P		Nom	
+57001009	25	Jesu	PROPN	NE					S		Gen	
+57001009	26	Christi	PROPN	NE					S		Nom	
+57001010	1	ich	PRON	PPER				1	S		Nom	
+57001010	2	bitte	ADV	ADV								
+57001010	3	dich	PRON	PPER				2	S		Acc	
+57001010	4	für	ADP	APPR								
+57001010	5	mein	DET	PPOSAT					S		Nom	N
+57001010	6	Kind	NOUN	NN					S		Nom	N
+57001010	7	der	DET	ART					S		Nom	N
+57001010	8	ich	PRON	PPER				1	S		Nom	
+57001010	9	zeugen	VERB	VVPP		Part						
+57001010	10	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001010	11	in	ADP	APPR								
+57001010	12	der	DET	ART					S		Acc	M
+57001010	13	Bande	NOUN	NN					P		Nom	F
+57001010	14	Onesimus	NOUN	NN					S		Nom	M
+57001011	1	der	DET	ART					S		Nom	M
+57001011	2	dir	PRON	PPER				2	S		Dat	
+57001011	3	einst	ADV	ADV								
+57001011	4	unnütz	ADV	ADJD	Pos							
+57001011	5	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+57001011	6	jetzt	ADV	ADV								
+57001011	7	aber	CCONJ	KON								
+57001011	8	dir	PRON	PPER				2	S		Dat	
+57001011	9	und	CCONJ	KON								
+57001011	10	mir	PRON	PPER				1	S		Dat	
+57001011	11	nützlich	ADV	ADJD	Pos							
+57001011	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+57001012	1	der	DET	ART					S		Acc	M
+57001012	2	ich	PRON	PPER				1	S		Nom	
+57001012	3	zu	ADP	PTKVZ								
+57001012	4	dir	PRON	PPER				2	S		Dat	
+57001012	5	zurückgesandt	VERB	VVPP		Part						
+57001012	6	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001012	8	ihn	PRON	PPER				3	S		Acc	M
+57001012	9	der	DET	ART					S		Nom	N
+57001012	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+57001012	11	mein	DET	PPOSAT					S		Nom	N
+57001012	12	Herz	NOUN	NN					S		Nom	N
+57001013	1	welcher	DET	PWAT					S		Acc	M
+57001013	2	ich	PRON	PPER				1	S		Nom	
+57001013	3	bei	ADP	APPR								
+57001013	4	mir	PRON	PPER				1	S		Dat	
+57001013	5	behalten	VERB	VVINF		Inf						
+57001013	6	wollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+57001013	7	auf	ADP	PTKVZ								
+57001013	8	daß	SCONJ	KOUS								
+57001013	9	er	PRON	PPER				3	S		Nom	M
+57001013	10	statt	ADP	APPR								
+57001013	11	dein	DET	PPOSAT					S		Dat	F
+57001013	12	mir	PRON	PPER				1	S		Dat	
+57001013	13	dienen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001013	14	in	ADP	APPR								
+57001013	15	der	DET	ART					S		Acc	M
+57001013	16	Bande	NOUN	NN					P		Nom	F
+57001013	17	der	DET	ART					S		Gen	M
+57001013	18	Evangelium	NOUN	NN					S		Gen	N
+57001014	1	aber	CCONJ	KON								
+57001014	2	ohne	ADP	APPR								
+57001014	3	dein	DET	PPOSAT					S		Acc	M
+57001014	4	Wille	NOUN	NN					S		Acc	M
+57001014	5	wollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+57001014	6	ich	PRON	PPER				1	S		Nom	
+57001014	7	nichts	PRON	PIS								N
+57001014	8	tun	VERB	VVINF		Inf						
+57001014	9	auf	ADP	PTKVZ								
+57001014	10	daß	SCONJ	KOUS								
+57001014	11	dein	DET	PPOSAT					S		Nom	F
+57001014	12	Wohltat	NOUN	NN					S		Nom	F
+57001014	13	nicht	PART	PTKNEG								
+57001014	14	wie	ADP	KOKOM								
+57001014	15	zwingen	VERB	VVPP		Part						
+57001014	16	sondern	CCONJ	KON								
+57001014	17	freiwillig	ADV	ADJD	Pos							
+57001014	18	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001015	1	denn	CCONJ	KON								
+57001015	2	vielleicht	ADV	ADV								
+57001015	3	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+57001015	4	er	PRON	PPER				3	S		Nom	M
+57001015	5	deswegen	ADV	PROAV								
+57001015	6	für	ADP	APPR								
+57001015	7	ein	DET	ART					S		Nom	F
+57001015	8	Zeit	NOUN	NN					S		Nom	F
+57001015	9	von	ADP	APPR								
+57001015	10	dir	PRON	PPER				2	S		Dat	
+57001015	11	trennen	VERB	VVPP		Part						
+57001015	12	sein	AUX	VAPP		Part						
+57001015	13	auf	ADP	PTKVZ								
+57001015	14	daß	SCONJ	KOUS								
+57001015	15	du	PRON	PPER				2	S		Nom	
+57001015	16	ihn	PRON	PPER				3	S		Acc	M
+57001015	17	für	ADP	APPR								
+57001015	18	immer	ADV	ADV								
+57001015	19	besitzen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+57001015	20	mögest	X	FM								
+57001016	1	nicht	PART	PTKNEG								
+57001016	2	lang	ADV	ADJD	Cmp							
+57001016	3	als	ADP	KOKOM								
+57001016	4	ein	DET	ART					S		Acc	M
+57001016	5	Sklave	NOUN	NN					P		Nom	M
+57001016	6	sondern	CCONJ	KON								
+57001016	7	mehr	ADV	ADV								
+57001016	8	als	ADP	KOKOM								
+57001016	9	ein	DET	ART					S		Acc	M
+57001016	10	Sklave	NOUN	NN					P		Nom	M
+57001016	11	als	ADP	KOKOM								
+57001016	12	ein	DET	ART					S		Acc	M
+57001016	13	geliebt	ADJ	ADJA	Pos				S		Acc	M
+57001016	14	Bruder	NOUN	NN					S		Nom	M
+57001016	15	besonders	ADV	ADV								
+57001016	16	für	ADP	APPR								
+57001016	17	mich	PRON	PPER				1	S		Acc	
+57001016	18	wieviel	ADV	PWS								
+57001016	19	mehr	ADV	ADV								
+57001016	20	aber	CCONJ	KON								
+57001016	21	für	ADP	APPR								
+57001016	22	dich	PRON	PPER				2	S		Acc	
+57001016	23	sowohl	CCONJ	KON								
+57001016	24	in	ADP	APPRART					S		Dat	N
+57001016	25	Fleisch	NOUN	NN					S		Nom	N
+57001016	26	als	ADP	KOKOM								
+57001016	27	in	ADP	APPRART					S		Dat	N
+57001016	28	Herr	NOUN	NN					S		Acc	M
+57001017	1	wenn	SCONJ	KOUS								
+57001017	2	du	PRON	PPER				2	S		Nom	
+57001017	3	mich	PRON	PPER				1	S		Acc	
+57001017	4	nun	ADV	ADV								
+57001017	5	für	ADP	APPR								
+57001017	6	dein	DET	PPOSAT					S		Acc	M
+57001017	7	Genosse	NOUN	NN					P		Nom	M
+57001017	8	hältsen	PROPN	VVFIN					S		Nom	N
+57001017	9	so	ADV	ADV								
+57001017	10	nimm	PROPN	VVFIN					S		Nom	N
+57001017	11	ihn	PRON	PPER				3	S		Acc	M
+57001017	12	auf	ADP	PTKVZ								
+57001017	13	wie	ADP	KOKOM								
+57001017	14	mich	PRON	PPER				1	S		Acc	
+57001018	1	wenn	SCONJ	KOUS								
+57001018	2	er	PRON	PPER				3	S		Nom	M
+57001018	3	dir	PRON	PPER				2	S		Dat	
+57001018	4	aber	CCONJ	KON								
+57001018	5	irgend	ADV	ADV								
+57001018	6	ein	DET	ART					S		Nom	N
+57001018	7	Unrecht	NOUN	NN					S		Nom	N
+57001018	8	tun	VERB	VVPP		Part						
+57001018	9	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+57001018	10	oder	CCONJ	KON								
+57001018	11	dir	PRON	PPER				2	S		Dat	
+57001018	12	etwas	PRON	PIS								N
+57001018	13	schuldig	ADV	ADJD	Pos							
+57001018	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+57001018	15	so	ADV	ADV								
+57001018	16	rechnen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001018	17	dieser	PRON	PDS					S		Nom	N
+57001018	18	mir	PRON	PPER				1	S		Dat	
+57001018	19	an	ADP	PTKVZ								
+57001019	1	ich	PRON	PPER				1	S		Nom	
+57001019	2	Paulus	PROPN	NE					S		Nom	M
+57001019	3	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001019	4	es	PRON	PPER				3	S		Nom	N
+57001019	5	mit	ADP	APPR								
+57001019	6	mein	DET	PPOSAT					S		Dat	F
+57001019	7	Hand	NOUN	NN					S		Nom	F
+57001019	8	schreiben	VERB	VVPP		Part						
+57001019	9	ich	PRON	PPER				1	S		Nom	
+57001019	10	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+57001019	11	bezahlen	VERB	VVINF		Inf						
+57001019	12	daß	SCONJ	KOUS								
+57001019	13	ich	PRON	PPER				1	S		Nom	
+57001019	14	dir	PRON	PPER				2	S		Dat	
+57001019	15	nicht	PART	PTKNEG								
+57001019	16	sagen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001019	17	daß	SCONJ	KOUS								
+57001019	18	du	PRON	PPER				2	S		Nom	
+57001019	19	auch	ADV	ADV								
+57001019	20	dich	PRON	PPER				2	S		Acc	
+57001019	21	selbst	ADV	ADV								
+57001019	22	mir	PRON	PPER				1	S		Dat	
+57001019	23	schuldig	ADV	ADJD	Pos							
+57001019	24	sein	AUX	VAFIN		Fin	Pres	2	S	Ind		
+57001020	1	ja	PART	PTKANT								
+57001020	2	Bruder	NOUN	NN					S		Nom	M
+57001020	3	ich	PRON	PPER				1	S		Nom	
+57001020	4	möchten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+57001020	5	gern	ADV	ADV								
+57001020	6	Nutzen	NOUN	NN					S		Nom	M
+57001020	7	an	ADP	PTKVZ								
+57001020	8	dir	PRON	PPER				2	S		Dat	
+57001020	9	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+57001020	10	in	ADP	APPRART					S		Dat	N
+57001020	11	Herr	NOUN	NN					S		Acc	M
+57001020	12	Erquick	NOUN	NN					P		Nom	N
+57001020	13	mein	DET	PPOSAT					S		Nom	N
+57001020	14	Herz	NOUN	NN					S		Nom	N
+57001020	15	in	ADP	APPR								
+57001020	16	Christo	PROPN	NE					S		Nom	M
+57001021	1	da	SCONJ	KOUS								
+57001021	2	ich	PRON	PPER				1	S		Nom	
+57001021	3	dein	DET	PPOSAT					S		Dat	M
+57001021	4	Gehorsam	NOUN	NN					S		Nom	M
+57001021	5	vertrauen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001021	6	so	ADV	ADV								
+57001021	7	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001021	8	ich	PRON	PPER				1	S		Nom	
+57001021	9	dir	PRON	PPER				2	S		Dat	
+57001021	10	schreiben	VERB	VVPP		Part						
+57001021	11	indem	SCONJ	KOUS								
+57001021	12	ich	PRON	PPER				1	S		Nom	
+57001021	13	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+57001021	14	daß	SCONJ	KOUS								
+57001021	15	du	PRON	PPER				2	S		Nom	
+57001021	16	auch	ADV	ADV								
+57001021	17	mehr	ADV	ADV								
+57001021	18	tun	VERB	VVINF		Inf						
+57001021	19	wersten	AUX	VAFIN		Fin	Pres	2	S	Ind		
+57001021	20	als	ADP	KOKOM								
+57001021	21	ich	PRON	PPER				1	S		Nom	
+57001021	22	sagen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001022	1	zugleich	ADV	ADV								
+57001022	2	aber	CCONJ	KON								
+57001022	3	bereiten	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001022	4	mir	PRON	PPER				1	S		Dat	
+57001022	5	auch	ADV	ADV								
+57001022	6	ein	DET	ART					S		Nom	F
+57001022	7	Herberge	NOUN	NN					S		Nom	F
+57001022	8	denn	CCONJ	KON								
+57001022	9	ich	PRON	PPER				1	S		Nom	
+57001022	10	hoffen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+57001022	11	daß	SCONJ	KOUS								
+57001022	12	ich	PRON	PPER				1	S		Nom	
+57001022	13	durch	ADP	APPR								
+57001022	14	eure	DET	PPOSAT					S		Nom	F
+57001022	15	Gebet	NOUN	NN					P		Nom	N
+57001022	16	euch	PRON	PPER				2	P		Dat	
+57001022	17	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001022	18	schenken	VERB	VVPP		Part						
+57001022	19	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+57001023	1	es	PRON	PPER				3	S		Nom	N
+57001023	2	grüßen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+57001023	3	dich	PRON	PPER				2	S		Acc	
+57001023	4	Epaphra	PROPN	NE					S		Gen	
+57001023	5	mein	DET	PPOSAT					S		Nom	N
+57001023	6	Mitgefangener	NOUN	NN					S		Nom	M
+57001023	7	in	ADP	APPR								
+57001023	8	Christo	PROPN	NE					S		Nom	M
+57001023	9	Jesu	PROPN	NE					S		Gen	
+57001024	1	Markus	PROPN	NE					S		Nom	M
+57001024	2	Aristarchu	PROPN	NE					S		Nom	
+57001024	3	Demas	PROPN	NE					S		Nom	
+57001024	4	Lukas	PROPN	NE					S		Nom	M
+57001024	5	mein	DET	PPOSAT					S		Nom	F
+57001024	6	Mitarbeiter	NOUN	NN					P		Nom	M
+57001025	1	der	DET	ART					S		Nom	F
+57001025	2	Gnade	NOUN	NN					S		Nom	F
+57001025	3	unser	DET	PPOSAT					S		Gen	M
+57001025	4	Herr	NOUN	NN					S		Acc	M
+57001025	5	Jesus	PROPN	PPER					S		Nom	M
+57001025	6	Christus	PROPN	NE					S		Nom	M
+57001025	7	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+57001025	8	mit	ADP	APPR								
+57001025	9	eurer	DET	PPOSAT					S		Dat	M
+57001025	10	Geist	NOUN	NN					P		Nom	M

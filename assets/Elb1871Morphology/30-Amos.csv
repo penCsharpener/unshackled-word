@@ -1,0 +1,3770 @@
+HebRefId	PositionInVerse	Lemma	PartOfSpeech	Stts	Degree	VerbForm	Tense	Person	Number	Mood	Case	Gender
+30001001	1	Wort	NOUN	NN					P		Nom	N
+30001001	2	der	DET	ART					S		Gen	M
+30001001	3	Amos	PROPN	NE					S		Nom	M
+30001001	4	der	DET	ART					S		Nom	M
+30001001	5	unter	ADP	APPR								
+30001001	6	der	DET	ART					S		Acc	M
+30001001	7	Hirt	NOUN	NN					P		Nom	M
+30001001	8	von	ADP	APPR								
+30001001	9	Tekoa	PROPN	NE					S		Nom	F
+30001001	10	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30001001	11	welcher	DET	PWAT					S		Nom	F
+30001001	12	er	PRON	PPER				3	S		Nom	M
+30001001	13	über	ADP	APPR								
+30001001	14	Israel	PROPN	NE					S		Nom	N
+30001001	15	schauen	VERB	VVPP		Part						
+30001001	16	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001001	17	in	ADP	APPR								
+30001001	18	der	DET	ART					S		Acc	M
+30001001	19	Tag	NOUN	NN					P		Dat	M
+30001001	20	Ussijas	PROPN	NE					S		Nom	
+30001001	21	der	DET	ART					S		Gen	M
+30001001	22	König	PROPN	NE					S		Nom	
+30001001	23	von	ADP	APPR								
+30001001	24	Juda	PROPN	NE					S		Nom	M
+30001001	25	und	CCONJ	KON								
+30001001	26	in	ADP	APPR								
+30001001	27	der	DET	ART					S		Acc	M
+30001001	28	Tag	NOUN	NN					P		Dat	M
+30001001	29	Jerobeam	PROPN	NE					S		Gen	
+30001001	30	der	DET	ART					S		Gen	M
+30001001	31	Sohn	PROPN	NE					S		Gen	M
+30001001	32	Joas	PROPN	NE					S		Nom	
+30001001	33	der	DET	ART					S		Gen	M
+30001001	34	König	PROPN	NE					S		Nom	
+30001001	35	von	ADP	APPR								
+30001001	36	Israel	PROPN	NE					S		Nom	N
+30001001	37	zwei	NUM	CARD								
+30001001	38	Jahr	NOUN	NN					P		Nom	N
+30001001	39	vor	ADP	APPR								
+30001001	40	der	DET	ART					S		Dat	M
+30001001	41	Erdbeben	NOUN	NN					S		Nom	N
+30001002	1	und	CCONJ	KON								
+30001002	2	er	PRON	PPER				3	S		Nom	M
+30001002	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30001002	4	Jahwe	NOUN	NN					S		Nom	M
+30001002	5	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001002	6	aus	ADP	PTKVZ								
+30001002	7	Zion	PROPN	NE					S		Nom	F
+30001002	8	brüllen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30001002	9	und	CCONJ	KON								
+30001002	10	aus	ADP	PTKVZ								
+30001002	11	Jerusalem	PROPN	NE					S		Nom	N
+30001002	12	sein	DET	PPOSAT					S		Nom	F
+30001002	13	Stimme	NOUN	NN					S		Nom	F
+30001002	14	erschallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30001002	15	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30001002	16	und	CCONJ	KON								
+30001002	17	der	DET	ART					S		Nom	F
+30001002	18	Aue	NOUN	NN					P		Nom	F
+30001002	19	der	DET	ART					S		Nom	M
+30001002	20	Hirt	NOUN	NN					P		Nom	M
+30001002	21	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30001002	22	trauern	VERB	VVINF		Inf						
+30001002	23	und	CCONJ	KON								
+30001002	24	der	DET	ART					S		Nom	M
+30001002	25	Gipfel	NOUN	NN					S		Nom	M
+30001002	26	der	DET	ART					S		Gen	M
+30001002	27	Karmel	NOUN	NN					S		Nom	F
+30001002	28	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001002	29	verdorren	VERB	VVINF		Inf						
+30001003	1	so	ADV	ADV								
+30001003	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001003	3	Jahwe	NOUN	NN					S		Nom	M
+30001003	4	wegen	ADP	APPR								
+30001003	5	drei	NUM	CARD								
+30001003	6	Freveltate	NOUN	NN					P		Nom	F
+30001003	7	von	ADP	APPR								
+30001003	8	Damaskus	PROPN	NE					S		Nom	N
+30001003	9	und	CCONJ	KON								
+30001003	10	wegen	ADP	APPR								
+30001003	11	vier	NUM	CARD								
+30001003	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001003	13	ich	PRON	PPER				1	S		Nom	
+30001003	14	es	PRON	PPER				3	S		Nom	N
+30001003	15	nicht	PART	PTKNEG								
+30001003	16	rückgängig	ADV	ADJD	Pos							
+30001003	17	machen	VERB	VVINF		Inf						
+30001003	18	weil	SCONJ	KOUS								
+30001003	19	sie	PRON	PPER				3	P		Nom	
+30001003	20	Gilead	PROPN	NE					S		Nom	
+30001003	21	mit	ADP	APPR								
+30001003	22	eisern	ADJ	ADJA	Pos				S		Acc	M
+30001003	23	Dreschschlitt	NOUN	NN					P		Nom	F
+30001003	24	dreschen	VERB	VVPP		Part						
+30001003	25	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30001004	1	so	ADV	ADV								
+30001004	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001004	3	ich	PRON	PPER				1	S		Nom	
+30001004	4	ein	DET	ART					S		Nom	N
+30001004	5	Feuer	NOUN	NN					S		Nom	N
+30001004	6	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30001004	7	in	ADP	APPR								
+30001004	8	der	DET	ART					S		Nom	N
+30001004	9	Haus	NOUN	NN					S		Nom	N
+30001004	10	Hasael	PROPN	NN					S		Nom	
+30001004	11	und	CCONJ	KON								
+30001004	12	es	PRON	PPER				3	S		Nom	N
+30001004	13	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001004	14	der	DET	ART					S		Nom	F
+30001004	15	Palast	NOUN	NN					P		Nom	F
+30001004	16	Ben-Hadads	NOUN	NN					S		Nom	M
+30001004	17	verzehren	VERB	VVINF		Inf						
+30001005	1	und	CCONJ	KON								
+30001005	2	ich	PRON	PPER				1	S		Nom	
+30001005	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001005	4	der	DET	ART					S		Acc	M
+30001005	5	Riegel	NOUN	NN					S		Nom	M
+30001005	6	von	ADP	APPR								
+30001005	7	Damaskus	PROPN	NE					S		Nom	N
+30001005	8	zerbrechen	VERB	VVINF		Inf						
+30001005	9	und	CCONJ	KON								
+30001005	10	der	DET	ART					S		Acc	M
+30001005	11	Bewohner	NOUN	NN					P		Nom	M
+30001005	12	ausrotten	VERB	VVINF		Inf						
+30001005	13	aus	ADP	PTKVZ								
+30001005	14	der	DET	ART					S		Dat	M
+30001005	15	Tal	PROPN	NN					S		Nom	
+30001005	16	Awe	NOUN	NN					P		Nom	F
+30001005	17	und	CCONJ	KON								
+30001005	18	der	DET	ART					S		Acc	M
+30001005	19	der	DET	ART					S		Nom	M
+30001005	20	der	DET	ART					S		Nom	N
+30001005	21	Scepter	NOUN	NN					S		Nom	N
+30001005	22	halten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001005	23	aus	ADP	PTKVZ								
+30001005	24	Beth-Ede	NOUN	NN					P		Nom	F
+30001005	25	und	CCONJ	KON								
+30001005	26	der	DET	ART					S		Nom	N
+30001005	27	Volk	NOUN	NN					S		Nom	N
+30001005	28	von	ADP	APPR								
+30001005	29	Syrien	PROPN	NE					S		Nom	N
+30001005	30	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001005	31	nach	ADP	APPR								
+30001005	32	Kir	PROPN	NE					S		Nom	
+30001005	33	wegführen	VERB	VVPP		Part						
+30001005	34	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30001005	35	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001005	36	Jahwe	NOUN	NN					S		Nom	M
+30001006	1	so	ADV	ADV								
+30001006	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001006	3	Jahwe	NOUN	NN					S		Nom	M
+30001006	4	wegen	ADP	APPR								
+30001006	5	drei	NUM	CARD								
+30001006	6	Freveltate	NOUN	NN					P		Nom	F
+30001006	7	von	ADP	APPR								
+30001006	8	Gasa	PROPN	NE					S		Nom	
+30001006	9	und	CCONJ	KON								
+30001006	10	wegen	ADP	APPR								
+30001006	11	vier	NUM	CARD								
+30001006	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001006	13	ich	PRON	PPER				1	S		Nom	
+30001006	14	es	PRON	PPER				3	S		Nom	N
+30001006	15	nicht	PART	PTKNEG								
+30001006	16	rückgängig	ADV	ADJD	Pos							
+30001006	17	machen	VERB	VVINF		Inf						
+30001006	18	weil	SCONJ	KOUS								
+30001006	19	sie	PRON	PPER				3	P		Nom	
+30001006	20	gefangener	NOUN	NN					P		Nom	
+30001006	21	in	ADP	APPR								
+30001006	22	voll	ADP	APPR								
+30001006	23	Zahl	NOUN	NN					S		Nom	F
+30001006	24	wegführen	VERB	VVPP		Part						
+30001006	25	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30001006	26	um	ADP	APPR								
+30001006	27	sie	PRON	PPER				3	P		Nom	
+30001006	28	an	ADP	PTKVZ								
+30001006	29	Edom	PROPN	NE					S		Nom	
+30001006	30	ausliefern	VERB	VVIZU		Inf						
+30001007	1	so	ADV	ADV								
+30001007	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001007	3	ich	PRON	PPER				1	S		Nom	
+30001007	4	ein	DET	ART					S		Nom	N
+30001007	5	Feuer	NOUN	NN					S		Nom	N
+30001007	6	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30001007	7	in	ADP	APPR								
+30001007	8	der	DET	ART					S		Nom	F
+30001007	9	Mauer	NOUN	NN					S		Nom	F
+30001007	10	von	ADP	APPR								
+30001007	11	Gasa	PROPN	NE					S		Nom	
+30001007	12	und	CCONJ	KON								
+30001007	13	es	PRON	PPER				3	S		Nom	N
+30001007	14	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001007	15	sein	DET	PPOSAT					S		Nom	F
+30001007	16	Palast	NOUN	NN					P		Nom	F
+30001007	17	verzehren	VERB	VVINF		Inf						
+30001008	1	und	CCONJ	KON								
+30001008	2	ich	PRON	PPER				1	S		Nom	
+30001008	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001008	4	der	DET	ART					S		Acc	M
+30001008	5	Bewohner	NOUN	NN					P		Nom	M
+30001008	6	ausrotten	VERB	VVINF		Inf						
+30001008	7	aus	ADP	PTKVZ								
+30001008	8	Asdod	PROPN	NE					S		Nom	F
+30001008	9	und	CCONJ	KON								
+30001008	10	der	DET	ART					S		Acc	M
+30001008	11	der	DET	ART					S		Nom	M
+30001008	12	der	DET	ART					S		Nom	N
+30001008	13	Scepter	NOUN	NN					S		Nom	N
+30001008	14	halten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001008	15	aus	ADP	PTKVZ								
+30001008	16	Askelon	PROPN	NE					S		Nom	
+30001008	17	und	CCONJ	KON								
+30001008	18	ich	PRON	PPER				1	S		Nom	
+30001008	19	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001008	20	mein	DET	PPOSAT					S		Nom	F
+30001008	21	Hand	NOUN	NN					S		Nom	F
+30001008	22	wenden	VERB	VVINF		Inf						
+30001008	23	wider	ADP	PTKVZ								
+30001008	24	Ekron	PROPN	NE					S		Nom	
+30001008	25	und	CCONJ	KON								
+30001008	26	der	DET	ART					S		Nom	M
+30001008	27	Überrest	NOUN	NN					S		Nom	M
+30001008	28	der	DET	ART					S		Nom	M
+30001008	29	Philister	NOUN	NN					S		Nom	M
+30001008	30	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001008	31	untergehen	VERB	VVINF		Inf						
+30001008	32	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001008	33	der	DET	ART					S		Nom	M
+30001008	34	Herr	NOUN	NN					S		Nom	M
+30001008	35	Jahwe	NOUN	NN					S		Nom	M
+30001009	1	so	ADV	ADV								
+30001009	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001009	3	Jahwe	NOUN	NN					S		Nom	M
+30001009	4	wegen	ADP	APPR								
+30001009	5	drei	NUM	CARD								
+30001009	6	Freveltate	NOUN	NN					P		Nom	F
+30001009	7	von	ADP	APPR								
+30001009	8	Tyrus	PROPN	NE					S		Nom	M
+30001009	9	und	CCONJ	KON								
+30001009	10	wegen	ADP	APPR								
+30001009	11	vier	NUM	CARD								
+30001009	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001009	13	ich	PRON	PPER				1	S		Nom	
+30001009	14	es	PRON	PPER				3	S		Nom	N
+30001009	15	nicht	PART	PTKNEG								
+30001009	16	rückgängig	ADV	ADJD	Pos							
+30001009	17	machen	VERB	VVINF		Inf						
+30001009	18	weil	SCONJ	KOUS								
+30001009	19	sie	PRON	PPER				3	P		Nom	
+30001009	20	gefangener	NOUN	NN					P		Nom	
+30001009	21	in	ADP	APPR								
+30001009	22	voll	ADP	APPR								
+30001009	23	Zahl	NOUN	NN					S		Nom	F
+30001009	24	an	ADP	PTKVZ								
+30001009	25	Edom	PROPN	NE					S		Nom	
+30001009	26	ausliefern	VERB	VVPP		Part						
+30001009	27	und	CCONJ	KON								
+30001009	28	der	DET	ART					S		Gen	M
+30001009	29	Bruderbund	NOUN	NN					S		Nom	N
+30001009	30	nicht	PART	PTKNEG								
+30001009	31	denken	VERB	VVPP		Part						
+30001009	32	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30001010	1	so	ADV	ADV								
+30001010	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001010	3	ich	PRON	PPER				1	S		Nom	
+30001010	4	ein	DET	ART					S		Nom	N
+30001010	5	Feuer	NOUN	NN					S		Nom	N
+30001010	6	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30001010	7	in	ADP	APPR								
+30001010	8	der	DET	ART					S		Nom	F
+30001010	9	Mauer	NOUN	NN					S		Nom	F
+30001010	10	von	ADP	APPR								
+30001010	11	Tyrus	PROPN	NE					S		Nom	M
+30001010	12	und	CCONJ	KON								
+30001010	13	es	PRON	PPER				3	S		Nom	N
+30001010	14	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001010	15	sein	DET	PPOSAT					S		Nom	F
+30001010	16	Palast	NOUN	NN					P		Nom	F
+30001010	17	verzehren	VERB	VVINF		Inf						
+30001011	1	so	ADV	ADV								
+30001011	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001011	3	Jahwe	NOUN	NN					S		Nom	M
+30001011	4	wegen	ADP	APPR								
+30001011	5	drei	NUM	CARD								
+30001011	6	Freveltate	NOUN	NN					P		Nom	F
+30001011	7	von	ADP	APPR								
+30001011	8	Edom	PROPN	NE					S		Nom	
+30001011	9	und	CCONJ	KON								
+30001011	10	wegen	ADP	APPR								
+30001011	11	vier	NUM	CARD								
+30001011	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001011	13	ich	PRON	PPER				1	S		Nom	
+30001011	14	es	PRON	PPER				3	S		Nom	N
+30001011	15	nicht	PART	PTKNEG								
+30001011	16	rückgängig	ADV	ADJD	Pos							
+30001011	17	machen	VERB	VVINF		Inf						
+30001011	18	weil	SCONJ	KOUS								
+30001011	19	es	PRON	PPER				3	S		Nom	N
+30001011	20	sein	DET	PPOSAT					S		Acc	M
+30001011	21	Bruder	NOUN	NN					S		Nom	M
+30001011	22	mit	ADP	APPR								
+30001011	23	der	DET	ART					S		Dat	M
+30001011	24	schwerte	NOUN	NN					P		Nom	
+30001011	25	verfolgen	VERB	VVPP		Fin	Pres	3	S	Ind		
+30001011	26	und	CCONJ	KON								
+30001011	27	sein	AUX	VAINF		Inf						
+30001011	28	erbarmen	NOUN	NN					S		Nom	N
+30001011	29	ersticken	VERB	VVPP		Part						
+30001011	30	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001011	31	und	CCONJ	KON								
+30001011	32	weil	SCONJ	KOUS								
+30001011	33	sein	AUX	VAINF		Inf						
+30001011	34	Zorn	NOUN	NN					S		Nom	M
+30001011	35	beständig	ADV	ADJD	Pos							
+30001011	36	zerfleischen	VERB	VVPP		Part						
+30001011	37	und	CCONJ	KON								
+30001011	38	es	PRON	PPER				3	S		Nom	N
+30001011	39	sein	DET	PPOSAT					S		Acc	M
+30001011	40	Grimm	PROPN	NE					S		Nom	M
+30001011	41	immerdar	ADV	ADJD	Pos							
+30001011	42	bewahren	VERB	VVPP		Part						
+30001012	1	so	ADV	ADV								
+30001012	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001012	3	ich	PRON	PPER				1	S		Nom	
+30001012	4	ein	DET	ART					S		Nom	N
+30001012	5	Feuer	NOUN	NN					S		Nom	N
+30001012	6	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30001012	7	nach	ADP	APPR								
+30001012	8	Teman	PROPN	NE					S		Nom	
+30001012	9	und	CCONJ	KON								
+30001012	10	es	PRON	PPER				3	S		Nom	N
+30001012	11	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001012	12	der	DET	ART					S		Nom	F
+30001012	13	Palast	NOUN	NN					P		Nom	F
+30001012	14	von	ADP	APPR								
+30001012	15	Bozra	PROPN	NE					S		Nom	M
+30001012	16	verzehren	VERB	VVINF		Inf						
+30001013	1	so	ADV	ADV								
+30001013	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001013	3	Jahwe	NOUN	NN					S		Nom	M
+30001013	4	wegen	ADP	APPR								
+30001013	5	drei	NUM	CARD								
+30001013	6	Freveltate	NOUN	NN					P		Nom	F
+30001013	7	der	DET	ART					S		Nom	M
+30001013	8	Kind	NOUN	NN					P		Nom	N
+30001013	9	Ammon	PROPN	NE					S		Nom	
+30001013	10	und	CCONJ	KON								
+30001013	11	wegen	ADP	APPR								
+30001013	12	vier	NUM	CARD								
+30001013	13	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001013	14	ich	PRON	PPER				1	S		Nom	
+30001013	15	es	PRON	PPER				3	S		Nom	N
+30001013	16	nicht	PART	PTKNEG								
+30001013	17	rückgängig	ADV	ADJD	Pos							
+30001013	18	machen	VERB	VVINF		Inf						
+30001013	19	weil	SCONJ	KOUS								
+30001013	20	sie	PRON	PPER				3	P		Nom	
+30001013	21	der	DET	ART					S		Nom	F
+30001013	22	schwangeren	NOUN	NN					P		Nom	
+30001013	23	von	ADP	APPR								
+30001013	24	Gilead	PROPN	NE					S		Nom	
+30001013	25	aufschlitzen	VERB	VVPP		Part						
+30001013	26	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30001013	27	um	ADP	APPR								
+30001013	28	ihr	DET	PPOSAT					S		Nom	F
+30001013	29	Grenze	NOUN	NN					S		Nom	F
+30001013	30	zu	ADP	PTKVZ								
+30001013	31	erweitern	VERB	VVINF		Inf						
+30001014	1	so	ADV	ADV								
+30001014	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30001014	3	ich	PRON	PPER				1	S		Nom	
+30001014	4	ein	DET	ART					S		Nom	N
+30001014	5	Feuer	NOUN	NN					S		Nom	N
+30001014	6	anzünden	VERB	VVINF		Inf						
+30001014	7	in	ADP	APPR								
+30001014	8	der	DET	ART					S		Nom	M
+30001014	9	Mauer	NOUN	NN					S		Nom	F
+30001014	10	von	ADP	APPR								
+30001014	11	Rabba	PROPN	NE					S		Nom	M
+30001014	12	und	CCONJ	KON								
+30001014	13	es	PRON	PPER				3	S		Nom	N
+30001014	14	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001014	15	sein	DET	PPOSAT					S		Nom	F
+30001014	16	Palast	NOUN	NN					P		Nom	F
+30001014	17	verzehren	VERB	VVINF		Inf						
+30001014	18	unter	ADP	APPR								
+30001014	19	Kriegsgeschrei	NOUN	NN					S		Nom	N
+30001014	20	an	ADP	APPRART					S		Dat	M
+30001014	21	Tag	NOUN	NN					P		Nom	M
+30001014	22	der	DET	ART					S		Gen	M
+30001014	23	Kampf	NOUN	NN					S		Gen	M
+30001014	24	unter	ADP	APPR								
+30001014	25	Sturm	NOUN	NN					S		Nom	M
+30001014	26	an	ADP	APPRART					S		Dat	M
+30001014	27	Tag	NOUN	NN					P		Nom	M
+30001014	28	der	DET	ART					S		Gen	M
+30001014	29	Ungewitter	NOUN	NN					P		Nom	M
+30001015	1	und	CCONJ	KON								
+30001015	2	ihr	PRON	PPOSAT				3	S		Dat	F
+30001015	3	König	NOUN	NN					S		Nom	M
+30001015	4	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30001015	5	in	ADP	APPR								
+30001015	6	der	DET	ART					S		Nom	F
+30001015	7	Gefangenschaft	NOUN	NN					S		Nom	F
+30001015	8	gehen	VERB	VVINF		Inf						
+30001015	9	er	PRON	PPER				3	S		Nom	M
+30001015	10	und	CCONJ	KON								
+30001015	11	sein	DET	PPOSAT					S		Nom	F
+30001015	12	Fürst	NOUN	NN					P		Nom	M
+30001015	13	miteinander	ADV	ADV								
+30001015	14	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30001015	15	Jahwe	NOUN	NN					S		Nom	M
+30002001	1	so	ADV	ADV								
+30002001	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002001	3	Jahwe	NOUN	NN					S		Nom	M
+30002001	4	wegen	ADP	APPR								
+30002001	5	drei	NUM	CARD								
+30002001	6	Freveltate	NOUN	NN					P		Nom	F
+30002001	7	von	ADP	APPR								
+30002001	8	Moab	PROPN	NE					S		Nom	
+30002001	9	und	CCONJ	KON								
+30002001	10	wegen	ADP	APPR								
+30002001	11	vier	NUM	CARD								
+30002001	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002001	13	ich	PRON	PPER				1	S		Nom	
+30002001	14	es	PRON	PPER				3	S		Nom	N
+30002001	15	nicht	PART	PTKNEG								
+30002001	16	rückgängig	ADV	ADJD	Pos							
+30002001	17	machen	VERB	VVINF		Inf						
+30002001	18	weil	SCONJ	KOUS								
+30002001	19	es	PRON	PPER				3	S		Nom	N
+30002001	20	der	DET	ART					S		Nom	F
+30002001	21	Gebein	NOUN	NN					P		Nom	N
+30002001	22	der	DET	ART					S		Gen	M
+30002001	23	König	PROPN	NE					S		Nom	
+30002001	24	von	ADP	APPR								
+30002001	25	Edom	PROPN	NE					S		Nom	
+30002001	26	zu	ADP	PTKVZ								
+30002001	27	Kalk	NOUN	NN					S		Nom	M
+30002001	28	verbrennen	VERB	VVPP		Part						
+30002001	29	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002002	1	so	ADV	ADV								
+30002002	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002002	3	ich	PRON	PPER				1	S		Nom	
+30002002	4	ein	DET	ART					S		Nom	N
+30002002	5	Feuer	NOUN	NN					S		Nom	N
+30002002	6	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30002002	7	nach	ADP	APPR								
+30002002	8	Moab	PROPN	NE					S		Nom	
+30002002	9	und	CCONJ	KON								
+30002002	10	es	PRON	PPER				3	S		Nom	N
+30002002	11	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002002	12	der	DET	ART					S		Nom	F
+30002002	13	Palast	NOUN	NN					P		Nom	F
+30002002	14	von	ADP	APPR								
+30002002	15	Kerijoth	PROPN	NE					S		Nom	M
+30002002	16	verzehren	VERB	VVINF		Inf						
+30002002	17	und	CCONJ	KON								
+30002002	18	Moab	PROPN	NE					S		Nom	
+30002002	19	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002002	20	sterben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30002002	21	in	ADP	APPRART					S		Dat	N
+30002002	22	Getümmel	NOUN	NN					S		Nom	N
+30002002	23	unter	ADP	APPR								
+30002002	24	Kriegsgeschrei	NOUN	NN					S		Nom	N
+30002002	25	unter	ADP	APPR								
+30002002	26	Posaunenschall	NOUN	NN					S		Nom	M
+30002003	1	und	CCONJ	KON								
+30002003	2	ich	PRON	PPER				1	S		Nom	
+30002003	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002003	4	der	DET	ART					S		Acc	M
+30002003	5	Richter	NOUN	NN					S		Nom	M
+30002003	6	ausrotten	VERB	VVINF		Inf						
+30002003	7	aus	ADP	PTKVZ								
+30002003	8	sein	DET	PPOSAT					S		Dat	F
+30002003	9	Mitte	NOUN	NN					S		Nom	F
+30002003	10	und	CCONJ	KON								
+30002003	11	aller	PRON	PIS					P		Nom	
+30002003	12	sein	DET	PPOSAT					S		Nom	F
+30002003	13	Fürst	NOUN	NN					P		Nom	M
+30002003	14	mit	ADP	APPR								
+30002003	15	ihm	PRON	PPER				3	S		Dat	M
+30002003	16	umbringen	VERB	VVINF		Inf						
+30002003	17	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002003	18	Jahwe	NOUN	NN					S		Nom	M
+30002004	1	so	ADV	ADV								
+30002004	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002004	3	Jahwe	NOUN	NN					S		Nom	M
+30002004	4	wegen	ADP	APPR								
+30002004	5	drei	NUM	CARD								
+30002004	6	Freveltate	NOUN	NN					P		Nom	F
+30002004	7	von	ADP	APPR								
+30002004	8	Juda	PROPN	NE					S		Nom	M
+30002004	9	und	CCONJ	KON								
+30002004	10	wegen	ADP	APPR								
+30002004	11	vier	NUM	CARD								
+30002004	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002004	13	ich	PRON	PPER				1	S		Nom	
+30002004	14	es	PRON	PPER				3	S		Nom	N
+30002004	15	nicht	PART	PTKNEG								
+30002004	16	rückgängig	ADV	ADJD	Pos							
+30002004	17	machen	VERB	VVINF		Inf						
+30002004	18	weil	SCONJ	KOUS								
+30002004	19	sie	PRON	PPER				3	P		Nom	
+30002004	20	der	DET	ART					S		Nom	N
+30002004	21	Gesetz	NOUN	NN					S		Nom	N
+30002004	22	Jahwe	PROPN	NE					S		Gen	
+30002004	23	verwerfen	VERB	VVPP		Part						
+30002004	24	und	CCONJ	KON								
+30002004	25	sein	DET	PPOSAT					S		Nom	F
+30002004	26	Satzunge	NOUN	NN					P		Nom	F
+30002004	27	nicht	PART	PTKNEG								
+30002004	28	bewahren	VERB	VVPP		Part						
+30002004	29	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30002004	30	und	CCONJ	KON								
+30002004	31	ihr	DET	PPOSAT					S		Nom	F
+30002004	32	Lüge	NOUN	NN					P		Nom	F
+30002004	33	sie	PRON	PPER				3	P		Nom	
+30002004	34	verführn	VERB	VVFIN		Fin	Past	3	P	Ind		
+30002004	35	der	PRON	PDS					P		Dat	
+30002004	36	ihr	DET	PPOSAT					S		Nom	F
+30002004	37	Vater	NOUN	NN					P		Nom	M
+30002004	38	nachgewandeln	VERB	NE		Fin	Pres	3	S	Ind		
+30002004	39	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30002005	1	so	ADV	ADV								
+30002005	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002005	3	ich	PRON	PPER				1	S		Nom	
+30002005	4	ein	DET	ART					S		Nom	N
+30002005	5	Feuer	NOUN	NN					S		Nom	N
+30002005	6	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30002005	7	nach	ADP	APPR								
+30002005	8	Juda	PROPN	NE					S		Nom	M
+30002005	9	und	CCONJ	KON								
+30002005	10	es	PRON	PPER				3	S		Nom	N
+30002005	11	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002005	12	der	DET	ART					S		Nom	F
+30002005	13	Palast	NOUN	NN					P		Nom	F
+30002005	14	Jerusalem	PROPN	NE					S		Gen	N
+30002005	15	verzehren	VERB	VVINF		Inf						
+30002006	1	so	ADV	ADV								
+30002006	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002006	3	Jahwe	NOUN	NN					S		Nom	M
+30002006	4	wegen	ADP	APPR								
+30002006	5	drei	NUM	CARD								
+30002006	6	Freveltate	NOUN	NN					P		Nom	F
+30002006	7	von	ADP	APPR								
+30002006	8	Israel	PROPN	NE					S		Nom	N
+30002006	9	und	CCONJ	KON								
+30002006	10	wegen	ADP	APPR								
+30002006	11	vier	NUM	CARD								
+30002006	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002006	13	ich	PRON	PPER				1	S		Nom	
+30002006	14	es	PRON	PPER				3	S		Nom	N
+30002006	15	nicht	PART	PTKNEG								
+30002006	16	rückgängig	ADV	ADJD	Pos							
+30002006	17	machen	VERB	VVINF		Inf						
+30002006	18	weil	SCONJ	KOUS								
+30002006	19	sie	PRON	PPER				3	P		Nom	
+30002006	20	der	DET	ART					S		Acc	M
+30002006	21	Gerechten	NOUN	NN					P		Dat	
+30002006	22	für	ADP	APPR								
+30002006	23	Geld	NOUN	NN					S		Nom	N
+30002006	24	und	CCONJ	KON								
+30002006	25	der	DET	ART					S		Acc	M
+30002006	26	Dürftige	NOUN	NN					P		Nom	F
+30002006	27	um	ADP	APPR								
+30002006	28	ein	DET	ART					S		Nom	N
+30002006	29	Paar	NOUN	NN					S		Nom	N
+30002006	30	Schuh	NOUN	NN					P		Nom	M
+30002006	31	verkaufen	VERB	VVINF		Inf						
+30002007	1	sie	PRON	PPER				3	P		Nom	
+30002007	2	welcher	DET	PWAT					S		Nom	F
+30002007	3	danach	ADV	PROAV								
+30002007	4	lechzen	VERB	VVINF		Inf						
+30002007	5	der	DET	ART					S		Acc	M
+30002007	6	Staub	NOUN	NN					S		Nom	M
+30002007	7	der	DET	ART					S		Nom	M
+30002007	8	Erde	NOUN	NN					S		Nom	F
+30002007	9	auf	ADP	PTKVZ								
+30002007	10	der	DET	ART					S		Dat	M
+30002007	11	Haupt	NOUN	NN					P		Nom	N
+30002007	12	der	DET	ART					S		Nom	M
+30002007	13	arme	NOUN	NN					P		Dat	M
+30002007	14	zu	ADP	PTKVZ								
+30002007	15	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30002007	16	und	CCONJ	KON								
+30002007	17	der	DET	ART					S		Acc	M
+30002007	18	Weg	NOUN	NN					S		Nom	M
+30002007	19	der	DET	ART					S		Nom	M
+30002007	20	sanftmütigen	NOUN	NN					P		Nom	F
+30002007	21	krümmen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30002007	22	und	CCONJ	KON								
+30002007	23	ein	DET	ART					S		Nom	N
+30002007	24	Mann	NOUN	NN					S		Nom	M
+30002007	25	und	CCONJ	KON								
+30002007	26	sein	AUX	VAINF		Inf						
+30002007	27	Vater	NOUN	NN					S		Nom	M
+30002007	28	gehen	VERB	VVINF		Inf						
+30002007	29	zu	ADP	PTKVZ								
+30002007	30	derselbe	PRON	PDS					P		Dat	
+30002007	31	Dirne	NOUN	NN					S		Nom	F
+30002007	32	um	ADP	APPR								
+30002007	33	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30002007	34	heilig	ADJ	ADJA	Pos				S		Acc	M
+30002007	35	Name	NOUN	NN					P		Nom	M
+30002007	36	zu	ADP	PTKVZ								
+30002007	37	entweihen	VERB	VVINF		Inf						
+30002008	1	und	CCONJ	KON								
+30002008	2	neben	ADP	APPR								
+30002008	3	jeder	DET	PIAT					S		Dat	M
+30002008	4	Altar	NOUN	NN					P		Nom	N
+30002008	5	Strecke	VERB	VVINF		Inf						
+30002008	6	sie	PRON	PPER				3	P		Nom	
+30002008	7	sich	PRON	PRF				3	S		Acc	
+30002008	8	hin	ADV	ADV								
+30002008	9	auf	ADP	PTKVZ								
+30002008	10	gepfändeen	ADJ	ADJA	Pos				S		Dat	F
+30002008	11	Oberkleider	NOUN	NN					P		Nom	M
+30002008	12	und	CCONJ	KON								
+30002008	13	in	ADP	APPRART					S		Dat	N
+30002008	14	Haus	NOUN	NN					P		Nom	N
+30002008	15	ihr	DET	PPOSAT					S		Gen	M
+30002008	16	Gott	NOUN	NN					S		Gen	M
+30002008	17	trinken	VERB	VVINF		Inf						
+30002008	18	sie	PRON	PPER				3	P		Nom	
+30002008	19	Wein	NOUN	NN					S		Nom	M
+30002008	20	von	ADP	APPR								
+30002008	21	Strafgeldern	NOUN	NN					P		Dat	M
+30002009	1	und	CCONJ	KON								
+30002009	2	doch	CCONJ	KON								
+30002009	3	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002009	4	ich	PRON	PPER				1	S		Nom	
+30002009	5	der	DET	ART					S		Acc	M
+30002009	6	Amoriter	NOUN	NN					S		Nom	M
+30002009	7	vor	ADP	APPR								
+30002009	8	ihnen	PRON	PPER				3	P		Dat	
+30002009	9	vertilgen	VERB	VVPP		Part						
+30002009	10	der	PRON	PDS					S		Gen	
+30002009	11	Höhe	NOUN	NN					S		Nom	F
+30002009	12	wie	ADP	KOKOM								
+30002009	13	der	DET	ART					S		Nom	F
+30002009	14	Höhe	NOUN	NN					S		Nom	F
+30002009	15	der	DET	ART					S		Nom	M
+30002009	16	Cedern	NOUN	NN					S		Nom	N
+30002009	17	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30002009	18	und	CCONJ	KON								
+30002009	19	er	PRON	PPER				3	S		Nom	M
+30002009	20	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30002009	21	stark	ADV	ADJD	Pos							
+30002009	22	wie	ADP	KOKOM								
+30002009	23	der	DET	ART					S		Nom	F
+30002009	24	Eiche	NOUN	NN					P		Nom	F
+30002009	25	und	CCONJ	KON								
+30002009	26	ich	PRON	PPER				1	S		Nom	
+30002009	27	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002009	28	sein	DET	PPOSAT					S		Nom	F
+30002009	29	Frucht	NOUN	NN					S		Nom	F
+30002009	30	vertilgen	VERB	VVPP		Part						
+30002009	31	von	ADP	APPR								
+30002009	32	oben	ADV	ADV								
+30002009	33	und	CCONJ	KON								
+30002009	34	sein	DET	PPOSAT					S		Nom	F
+30002009	35	Wurzel	NOUN	NN					P		Nom	F
+30002009	36	von	ADP	APPR								
+30002009	37	unten	ADV	ADV								
+30002010	1	und	CCONJ	KON								
+30002010	2	doch	CCONJ	KON								
+30002010	3	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002010	4	ich	PRON	PPER				1	S		Nom	
+30002010	5	euch	PRON	PPER				2	P		Dat	
+30002010	6	aus	ADP	PTKVZ								
+30002010	7	der	DET	ART					S		Dat	M
+30002010	8	Land	NOUN	NN					P		Nom	N
+30002010	9	Ägypten	PROPN	NE					S		Nom	N
+30002010	10	Heraufgeführt	PROPN	NN					S		Nom	
+30002010	11	und	CCONJ	KON								
+30002010	12	euch	PRON	PPER				2	P		Dat	
+30002010	13	vierzig	NUM	CARD								
+30002010	14	Jahr	NOUN	NN					P		Nom	N
+30002010	15	in	ADP	APPR								
+30002010	16	der	DET	ART					S		Nom	M
+30002010	17	Wüste	NOUN	NN					S		Nom	F
+30002010	18	leiten	VERB	VVPP		Part						
+30002010	19	damit	ADV	PROAV								
+30002010	20	ihr	PRON	PPOSAT				3	S		Dat	F
+30002010	21	der	DET	ART					S		Nom	N
+30002010	22	Land	NOUN	NN					S		Nom	N
+30002010	23	der	DET	ART					S		Gen	M
+30002010	24	Amoriter	NOUN	NN					S		Nom	M
+30002010	25	in	ADP	APPR								
+30002010	26	Besitz	NOUN	NN					S		Nom	M
+30002010	27	Nähmet	VERB	NE		Part						
+30002011	1	und	CCONJ	KON								
+30002011	2	ich	PRON	PPER				1	S		Nom	
+30002011	3	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002011	4	Prophet	NOUN	NN					P		Nom	M
+30002011	5	erwecken	VERB	VVPP		Part						
+30002011	6	aus	ADP	PTKVZ								
+30002011	7	euren	DET	PPOSAT					S		Acc	M
+30002011	8	Söhn	NOUN	NN					P		Dat	M
+30002011	9	und	CCONJ	KON								
+30002011	10	Nasiräer	NOUN	NN					S		Nom	M
+30002011	11	aus	ADP	PTKVZ								
+30002011	12	euren	DET	PPOSAT					S		Acc	M
+30002011	13	Jünglinge	NOUN	NN					P		Nom	F
+30002011	14	ja	PART	PTKANT								
+30002011	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002011	16	es	PRON	PPER				3	S		Nom	N
+30002011	17	nicht	PART	PTKNEG								
+30002011	18	also	ADV	ADV								
+30002011	19	ihr	PRON	PPOSAT				3	S		Dat	F
+30002011	20	Kind	NOUN	NN					P		Nom	N
+30002011	21	Israel	PROPN	NE					S		Nom	N
+30002011	22	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002011	23	Jahwe	NOUN	NN					S		Nom	M
+30002012	1	aber	CCONJ	KON								
+30002012	2	ihr	PRON	PPOSAT				3	S		Dat	F
+30002012	3	habben	VERB	VAFIN				2	P	Imp		
+30002012	4	der	DET	ART					S		Acc	M
+30002012	5	Nasiräern	NOUN	NN					P		Dat	M
+30002012	6	Wein	NOUN	NN					S		Nom	M
+30002012	7	zu	ADP	PTKVZ								
+30002012	8	trinken	VERB	VVINF		Inf						
+30002012	9	geben	VERB	VVPP		Part						
+30002012	10	und	CCONJ	KON								
+30002012	11	der	DET	ART					S		Acc	M
+30002012	12	Prophet	NOUN	NN					P		Nom	M
+30002012	13	gebieten	VERB	VVPP		Part						
+30002012	14	und	CCONJ	KON								
+30002012	15	sagen	VERB	VVPP		Part						
+30002012	16	ihr	PRON	PPER				2	P		Nom	
+30002012	17	sollten	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30002012	18	nicht	PART	PTKNEG								
+30002012	19	weissagen	VERB	VVINF		Inf						
+30002013	1	sehen	VERB	VVIMP				2	S	Imp		
+30002013	2	ich	PRON	PPER				1	S		Nom	
+30002013	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30002013	4	euch	PRON	PPER				2	P		Dat	
+30002013	5	niederdrücken	VERB	VVINF		Inf						
+30002013	6	wie	ADP	KOKOM								
+30002013	7	der	DET	ART					S		Nom	M
+30002013	8	Wagen	NOUN	NN					S		Nom	M
+30002013	9	drücken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002013	10	der	DET	ART					S		Nom	M
+30002013	11	voll	ADV	ADJD	Pos							
+30002013	12	Garbe	NOUN	NN					P		Nom	F
+30002013	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002014	1	und	CCONJ	KON								
+30002014	2	der	DET	ART					S		Dat	M
+30002014	3	schnell	NOUN	NN					P		Nom	
+30002014	4	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002014	5	der	DET	ART					S		Nom	F
+30002014	6	Flucht	NOUN	NN					S		Nom	F
+30002014	7	entschwinden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30002014	8	und	CCONJ	KON								
+30002014	9	der	DET	ART					S		Nom	M
+30002014	10	starke	PROPN	NE					S		Nom	
+30002014	11	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002014	12	sein	DET	PPOSAT					S		Nom	F
+30002014	13	Kraft	NOUN	NN					S		Nom	F
+30002014	14	nicht	PART	PTKNEG								
+30002014	15	befestigen	VERB	VVINF		Inf						
+30002014	16	und	CCONJ	KON								
+30002014	17	der	DET	ART					S		Nom	M
+30002014	18	Held	NOUN	NN					S		Nom	M
+30002014	19	sein	AUX	VAINF		Inf						
+30002014	20	Leben	NOUN	NN					S		Nom	N
+30002014	21	nicht	PART	PTKNEG								
+30002014	22	erretten	VERB	VVINF		Inf						
+30002015	1	und	CCONJ	KON								
+30002015	2	der	DET	ART					S		Nom	M
+30002015	3	der	DET	ART					S		Acc	M
+30002015	4	Bogen	NOUN	NN					S		Nom	M
+30002015	5	führen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002015	6	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002015	7	nicht	PART	PTKNEG								
+30002015	8	standhalten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30002015	9	und	CCONJ	KON								
+30002015	10	der	DET	ART					S		Nom	M
+30002015	11	Schnellfüßige	NOUN	NN					S		Nom	F
+30002015	12	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002015	13	nicht	PART	PTKNEG								
+30002015	14	entrinnen	VERB	VVINF		Inf						
+30002015	15	und	CCONJ	KON								
+30002015	16	der	DET	ART					S		Nom	M
+30002015	17	auf	ADP	PTKVZ								
+30002015	18	der	DET	ART					S		Dat	M
+30002015	19	Roß	NOUN	NN					P		Nom	M
+30002015	20	reiten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002015	21	sein	AUX	VAINF		Inf						
+30002015	22	Leben	NOUN	NN					S		Nom	N
+30002015	23	nicht	PART	PTKNEG								
+30002015	24	erretten	VERB	VVINF		Inf						
+30002016	1	und	CCONJ	KON								
+30002016	2	der	DET	ART					S		Nom	M
+30002016	3	Beherzteste	NOUN	NN					S		Nom	M
+30002016	4	unter	ADP	APPR								
+30002016	5	der	DET	ART					S		Acc	M
+30002016	6	Held	NOUN	NN					P		Nom	M
+30002016	7	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30002016	8	nackt	ADV	ADJD	Pos							
+30002016	9	entfliehen	VERB	VVINF		Inf						
+30002016	10	an	ADP	PTKVZ								
+30002016	11	jener	DET	PDAT					S		Dat	N
+30002016	12	Tag	NOUN	NN					P		Nom	M
+30002016	13	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30002016	14	Jahwe	NOUN	NN					S		Nom	M
+30003001	1	höret	NOUN	NN					S		Nom	N
+30003001	2	dieser	DET	PDAT					S		Nom	N
+30003001	3	Wort	NOUN	NN					S		Nom	N
+30003001	4	der	DET	ART					S		Nom	N
+30003001	5	Jahwe	NOUN	NN					S		Nom	M
+30003001	6	über	ADP	APPR								
+30003001	7	euch	PRON	PPER				2	P		Dat	
+30003001	8	reden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003001	9	ihr	PRON	PPOSAT				3	S		Dat	F
+30003001	10	Kind	NOUN	NN					P		Nom	N
+30003001	11	Israel	PROPN	NE					S		Nom	N
+30003001	12	über	ADP	APPR								
+30003001	13	der	DET	ART					S		Nom	N
+30003001	14	ganz	ADJ	ADJA	Pos				S		Nom	F
+30003001	15	Geschlecht	NOUN	NN					S		Nom	N
+30003001	16	welcher	DET	PWAT					S		Acc	N
+30003001	17	ich	PRON	PPER				1	S		Nom	
+30003001	18	aus	ADP	PTKVZ								
+30003001	19	der	DET	ART					S		Dat	M
+30003001	20	Land	NOUN	NN					P		Nom	N
+30003001	21	Ägypten	PROPN	NE					S		Nom	N
+30003001	22	Heraufgeführt	PROPN	NN					S		Nom	
+30003001	23	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003001	24	indem	SCONJ	KOUS								
+30003001	25	er	PRON	PPER				3	S		Nom	M
+30003001	26	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003002	1	nur	ADV	ADV								
+30003002	2	euch	PRON	PPER				2	P		Dat	
+30003002	3	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003002	4	ich	PRON	PPER				1	S		Nom	
+30003002	5	von	ADP	APPR								
+30003002	6	aller	DET	PIS					P		Dat	
+30003002	7	Geschlechter	NOUN	NN					P		Dat	M
+30003002	8	der	DET	ART					S		Nom	M
+30003002	9	Erde	NOUN	NN					S		Nom	F
+30003002	10	erkennen	VERB	VVPP		Part						
+30003002	11	darum	ADV	PROAV								
+30003002	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003002	13	ich	PRON	PPER				1	S		Nom	
+30003002	14	aller	PRON	PIS					P		Nom	
+30003002	15	eure	DET	PPOSAT					S		Nom	F
+30003002	16	Missetat	NOUN	NN					P		Nom	F
+30003002	17	an	ADP	PTKVZ								
+30003002	18	euch	PRON	PPER				2	P		Dat	
+30003002	19	heimsuchen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003003	1	Wandeln	VERB	VVINF		Inf						
+30003003	2	wohl	ADV	ADV								
+30003003	3	zwei	NUM	CARD								
+30003003	4	miteinander	ADV	ADV								
+30003003	5	es	PRON	PPER				3	S		Nom	N
+30003003	6	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003003	7	denn	CCONJ	KON								
+30003003	8	daß	SCONJ	KOUS								
+30003003	9	sie	PRON	PPER				3	P		Nom	
+30003003	10	übereingekommen	VERB	VVPP		Part						
+30003003	11	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003004	1	brüllt	PROPN	NE					S		Nom	
+30003004	2	der	DET	ART					S		Nom	M
+30003004	3	Löwe	PROPN	NE					S		Nom	M
+30003004	4	in	ADP	APPRART					S		Dat	N
+30003004	5	Walde	PROPN	NE					S		Nom	M
+30003004	6	wenn	SCONJ	KOUS								
+30003004	7	er	PRON	PPER				3	S		Nom	M
+30003004	8	kein	PRON	PIS					S		Acc	M
+30003004	9	Raub	NOUN	NN					S		Nom	M
+30003004	10	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003004	11	Lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003004	12	der	DET	ART					S		Nom	M
+30003004	13	jung	ADJ	ADJA	Pos				S		Nom	F
+30003004	14	Löwe	PROPN	NE					S		Nom	M
+30003004	15	sein	DET	PPOSAT					S		Nom	F
+30003004	16	Stimme	NOUN	NN					S		Nom	F
+30003004	17	aus	ADP	PTKVZ								
+30003004	18	sein	DET	PPOSAT					S		Dat	F
+30003004	19	Höhle	NOUN	NN					S		Nom	F
+30003004	20	erschallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003004	21	außer	ADP	APPR								
+30003004	22	wenn	SCONJ	KOUS								
+30003004	23	er	PRON	PPER				3	S		Nom	M
+30003004	24	ein	DET	ART					S		Acc	M
+30003004	25	Fang	NOUN	NN					S		Nom	M
+30003004	26	tun	VERB	VVPP		Part						
+30003004	27	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003005	1	fallen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003005	2	der	DET	ART					S		Nom	M
+30003005	3	Vogel	PROPN	NE					S		Nom	M
+30003005	4	in	ADP	APPR								
+30003005	5	der	DET	ART					S		Nom	F
+30003005	6	Schlinge	NOUN	NN					S		Nom	F
+30003005	7	an	ADP	APPRART					S		Dat	M
+30003005	8	Boden	NOUN	NN					S		Nom	M
+30003005	9	wenn	SCONJ	KOUS								
+30003005	10	ihm	PRON	PPER				3	S		Dat	M
+30003005	11	kein	DET	PIAT					S		Nom	N
+30003005	12	Sprenkel	NOUN	NN					S		Nom	M
+30003005	13	legen	VERB	VVPP		Part						
+30003005	14	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003005	15	schnellen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003005	16	der	DET	ART					S		Nom	F
+30003005	17	Schlinge	NOUN	NN					S		Nom	F
+30003005	18	von	ADP	APPR								
+30003005	19	der	DET	ART					S		Nom	M
+30003005	20	Erde	NOUN	NN					S		Nom	F
+30003005	21	Empor	ADV	PROAV								
+30003005	22	wenn	SCONJ	KOUS								
+30003005	23	sie	PRON	PPER				3	P		Nom	
+30003005	24	gar	ADV	ADV								
+30003005	25	nichts	PRON	PIS								N
+30003005	26	gefangen	VERB	VVPP		Part						
+30003005	27	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003006	1	oder	CCONJ	KON								
+30003006	2	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003006	3	der	DET	ART					S		Nom	F
+30003006	4	Posaune	PROPN	NE					S		Nom	
+30003006	5	in	ADP	APPR								
+30003006	6	der	DET	ART					S		Nom	M
+30003006	7	Stadt	NOUN	NN					S		Nom	F
+30003006	8	blasen	VERB	VVPP		Part						
+30003006	9	und	CCONJ	KON								
+30003006	10	der	DET	ART					S		Nom	N
+30003006	11	Volk	NOUN	NN					S		Nom	N
+30003006	12	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+30003006	13	nicht	PART	PTKNEG								
+30003006	14	erschrecken	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003006	15	oder	CCONJ	KON								
+30003006	16	geschehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003006	17	ein	DET	ART					S		Nom	N
+30003006	18	Unglück	NOUN	NN					S		Nom	N
+30003006	19	in	ADP	APPR								
+30003006	20	der	DET	ART					S		Nom	M
+30003006	21	Stadt	NOUN	NN					S		Nom	F
+30003006	22	und	CCONJ	KON								
+30003006	23	Jahwe	NOUN	NN					S		Nom	M
+30003006	24	haben	AUX	VAFIN		Fin	Past	3	S	Sub		
+30003006	25	es	PRON	PPER				3	S		Nom	N
+30003006	26	nicht	PART	PTKNEG								
+30003006	27	bewirken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003007	1	denn	CCONJ	KON								
+30003007	2	der	DET	ART					S		Nom	M
+30003007	3	Herr	NOUN	NN					S		Nom	M
+30003007	4	Jahwe	NOUN	NN					S		Nom	M
+30003007	5	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003007	6	nichts	PRON	PIS								N
+30003007	7	es	PRON	PPER				3	S		Nom	N
+30003007	8	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003007	9	denn	CCONJ	KON								
+30003007	10	daß	SCONJ	KOUS								
+30003007	11	er	PRON	PPER				3	S		Nom	M
+30003007	12	sein	AUX	VAINF		Inf						
+30003007	13	Geheimnis	NOUN	NN					S		Nom	N
+30003007	14	sein	DET	PPOSAT					S		Acc	M
+30003007	15	knechte	NOUN	NN					P		Nom	M
+30003007	16	der	DET	ART					S		Acc	M
+30003007	17	Prophet	NOUN	NN					P		Nom	M
+30003007	18	offenbaren	VERB	VVPP		Part						
+30003007	19	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003008	1	der	DET	ART					S		Nom	M
+30003008	2	Löwe	PROPN	NE					S		Nom	M
+30003008	3	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003008	4	brüllen	VERB	VVPP		Part						
+30003008	5	wer	PRON	PWS					S		Nom	M
+30003008	6	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+30003008	7	sich	PRON	PRF				3	S		Acc	
+30003008	8	nicht	PART	PTKNEG								
+30003008	9	fürchten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003008	10	der	DET	ART					S		Nom	M
+30003008	11	Herr	NOUN	NN					S		Nom	M
+30003008	12	Jahwe	NOUN	NN					S		Nom	M
+30003008	13	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003008	14	reden	VERB	VVPP		Part						
+30003008	15	wer	PRON	PWS					S		Nom	M
+30003008	16	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+30003008	17	nicht	PART	PTKNEG								
+30003008	18	weissagen	VERB	VVINF		Inf						
+30003009	1	Rufet	NOUN	NN					S		Nom	N
+30003009	2	über	ADP	APPR								
+30003009	3	der	DET	ART					S		Nom	F
+30003009	4	Palast	NOUN	NN					P		Nom	F
+30003009	5	in	ADP	APPR								
+30003009	6	Asdod	PROPN	NE					S		Nom	F
+30003009	7	und	CCONJ	KON								
+30003009	8	über	ADP	APPR								
+30003009	9	der	DET	ART					S		Nom	F
+30003009	10	Palast	NOUN	NN					P		Nom	F
+30003009	11	in	ADP	APPRART					S		Dat	N
+30003009	12	Land	NOUN	NN					P		Nom	N
+30003009	13	Ägypten	PROPN	NE					S		Nom	N
+30003009	14	hin	ADV	ADV								
+30003009	15	und	CCONJ	KON								
+30003009	16	Sprechet	PROPN	NE					S		Nom	
+30003009	17	versammeln	VERB	NN		Part						
+30003009	18	euch	PRON	PPER				2	P		Dat	
+30003009	19	auf	ADP	PTKVZ								
+30003009	20	der	DET	ART					S		Acc	M
+30003009	21	Berg	NOUN	NN					P		Nom	M
+30003009	22	von	ADP	APPR								
+30003009	23	Samaria	PROPN	NE					S		Nom	N
+30003009	24	und	CCONJ	KON								
+30003009	25	seheen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003009	26	der	DET	ART					S		Nom	F
+30003009	27	groß	ADJ	ADJA	Pos				S		Nom	F
+30003009	28	Verwirrung	NOUN	NN					S		Nom	F
+30003009	29	in	ADP	APPR								
+30003009	30	sein	DET	PPOSAT					S		Dat	F
+30003009	31	Mitte	NOUN	NN					S		Nom	F
+30003009	32	und	CCONJ	KON								
+30003009	33	der	DET	ART					S		Nom	F
+30003009	34	Bedrückung	NOUN	NN					P		Nom	F
+30003009	35	in	ADP	APPR								
+30003009	36	sein	DET	PPOSAT					S		Dat	M
+30003009	37	innere	NOUN	NN					S		Nom	N
+30003010	1	und	CCONJ	KON								
+30003010	2	sie	PRON	PPER				3	P		Nom	
+30003010	3	wissen	VERB	VVINF		Inf						
+30003010	4	nicht	PART	PTKNEG								
+30003010	5	zu	ADP	PTKVZ								
+30003010	6	tun	VERB	VVINF		Inf						
+30003010	7	was	PRON	PWS					S		Nom	N
+30003010	8	Recht	NOUN	NN					S		Acc	N
+30003010	9	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003010	10	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003010	11	Jahwe	NOUN	NN					S		Nom	M
+30003010	12	sie	PRON	PPER				3	P		Nom	
+30003010	13	welcher	DET	PWAT					S		Nom	F
+30003010	14	Gewalttat	NOUN	NN					S		Nom	F
+30003010	15	und	CCONJ	KON								
+30003010	16	Zerstörung	NOUN	NN					S		Nom	F
+30003010	17	häufen	VERB	VVINF		Inf						
+30003010	18	in	ADP	APPR								
+30003010	19	ihr	DET	PPOSAT					S		Acc	M
+30003010	20	Palast	NOUN	NN					P		Dat	M
+30003011	1	darum	ADV	PROAV								
+30003011	2	so	ADV	ADV								
+30003011	3	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003011	4	der	DET	ART					S		Nom	M
+30003011	5	Herr	NOUN	NN					S		Nom	M
+30003011	6	Jahwe	NOUN	NN					S		Nom	M
+30003011	7	der	DET	ART					S		Nom	M
+30003011	8	Feind	NOUN	NN					S		Nom	M
+30003011	9	und	CCONJ	KON								
+30003011	10	zwar	ADV	ADV								
+30003011	11	rings	ADV	ADV								
+30003011	12	um	ADP	APPR								
+30003011	13	der	DET	ART					S		Nom	N
+30003011	14	Land	NOUN	NN					S		Nom	N
+30003011	15	her	ADV	ADV								
+30003011	16	und	CCONJ	KON								
+30003011	17	er	PRON	PPER				3	S		Nom	M
+30003011	18	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30003011	19	dein	DET	PPOSAT					S		Nom	F
+30003011	20	Macht	NOUN	NN					S		Nom	F
+30003011	21	von	ADP	APPR								
+30003011	22	dir	PRON	PPER				2	S		Dat	
+30003011	23	herabstürzen	VERB	VVINF		Inf						
+30003011	24	und	CCONJ	KON								
+30003011	25	dein	DET	PPER					S		Nom	N
+30003011	26	Palast	NOUN	NN					P		Nom	F
+30003011	27	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003011	28	plündern	VERB	VVPP		Part						
+30003011	29	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003012	1	so	ADV	ADV								
+30003012	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003012	3	Jahwe	NOUN	NN					S		Nom	M
+30003012	4	gleichwie	ADP	ADV								
+30003012	5	der	DET	ART					S		Nom	M
+30003012	6	Hirt	PROPN	NE					S		Nom	
+30003012	7	zwei	NUM	CARD								
+30003012	8	Bein	NOUN	NN					P		Nom	N
+30003012	9	oder	CCONJ	KON								
+30003012	10	ein	DET	ART					S		Acc	M
+30003012	11	Ohrzipfel	NOUN	NN					S		Nom	M
+30003012	12	aus	ADP	PTKVZ								
+30003012	13	der	DET	ART					S		Dat	M
+30003012	14	Rachen	NOUN	NN					S		Nom	M
+30003012	15	der	DET	ART					S		Gen	M
+30003012	16	Löwe	NOUN	NN					S		Nom	M
+30003012	17	retten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003012	18	also	ADV	ADV								
+30003012	19	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003012	20	retten	VERB	VVPP		Part						
+30003012	21	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003012	22	der	DET	ART					S		Nom	F
+30003012	23	Kind	NOUN	NN					P		Nom	N
+30003012	24	Israel	PROPN	NE					S		Nom	N
+30003012	25	welcher	DET	PWAT					S		Nom	F
+30003012	26	in	ADP	APPR								
+30003012	27	Samaria	PROPN	NE					S		Nom	N
+30003012	28	in	ADP	APPR								
+30003012	29	der	DET	ART					S		Nom	M
+30003012	30	Ecke	NOUN	NN					S		Nom	F
+30003012	31	der	DET	ART					S		Gen	M
+30003012	32	Polster	PROPN	NE					S		Gen	
+30003012	33	und	CCONJ	KON								
+30003012	34	auf	ADP	PTKVZ								
+30003012	35	der	DET	ART					S		Dat	M
+30003012	36	damast	NOUN	NN					P		Nom	M
+30003012	37	der	DET	ART					S		Gen	M
+30003012	38	Ruhebettes	PROPN	NE					S		Nom	
+30003012	39	sitzen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003013	1	höret	NOUN	NN					S		Nom	N
+30003013	2	und	CCONJ	KON								
+30003013	3	Bezeuget	NOUN	NN					S		Nom	N
+30003013	4	es	PRON	PPER				3	S		Nom	N
+30003013	5	der	DET	ART					S		Dat	M
+30003013	6	Haus	NOUN	NN					P		Nom	N
+30003013	7	Jakob	PROPN	NE					S		Nom	M
+30003013	8	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003013	9	der	DET	ART					S		Nom	M
+30003013	10	Herr	NOUN	NN					S		Nom	M
+30003013	11	Jahwe	NOUN	NN					S		Nom	M
+30003013	12	der	DET	ART					S		Nom	M
+30003013	13	Gott	NOUN	NN					S		Nom	M
+30003013	14	der	DET	ART					S		Nom	M
+30003013	15	Heerschare	NOUN	NN					P		Nom	F
+30003014	1	an	ADP	APPR								
+30003014	2	der	DET	ART					S		Dat	M
+30003014	3	Tag	NOUN	NN					P		Nom	M
+30003014	4	da	ADV	ADV								
+30003014	5	ich	PRON	PPER				1	S		Nom	
+30003014	6	Israel	PROPN	NE					S		Gen	N
+30003014	7	Übertretung	NOUN	NN					P		Nom	F
+30003014	8	an	ADP	PTKVZ								
+30003014	9	ihm	PRON	PPER				3	S		Dat	M
+30003014	10	heimsuchen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003014	11	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003014	12	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003014	13	ich	PRON	PPER				1	S		Nom	
+30003014	14	auch	ADV	ADV								
+30003014	15	der	DET	ART					S		Nom	F
+30003014	16	Altär	NOUN	NN					P		Nom	M
+30003014	17	von	ADP	APPR								
+30003014	18	Bethel	PROPN	NE					S		Nom	N
+30003014	19	heimsuchen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003014	20	und	CCONJ	KON								
+30003014	21	der	DET	ART					S		Nom	F
+30003014	22	Horn	NOUN	NN					P		Nom	N
+30003014	23	der	DET	ART					S		Gen	M
+30003014	24	Altar	NOUN	NN					P		Nom	N
+30003014	25	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+30003014	26	abhauen	VERB	VVPP		Part						
+30003014	27	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003014	28	und	CCONJ	KON								
+30003014	29	zu	ADP	PTKVZ								
+30003014	30	Boden	NOUN	NN					S		Nom	M
+30003014	31	fallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30003015	1	und	CCONJ	KON								
+30003015	2	ich	PRON	PPER				1	S		Nom	
+30003015	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30003015	4	der	DET	ART					S		Nom	N
+30003015	5	Winterhaus	PROPN	NE					S		Nom	
+30003015	6	zertrümmern	VERB	VVINF		Inf						
+30003015	7	samt	ADP	APPR								
+30003015	8	der	DET	ART					S		Dat	M
+30003015	9	Sommerhause	NOUN	NN					S		Nom	F
+30003015	10	und	CCONJ	KON								
+30003015	11	der	DET	ART					S		Nom	F
+30003015	12	Elfenbeinhäuser	ADV	ADJD	Cmp							
+30003015	13	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003015	14	zu	ADP	PTKVZ								
+30003015	15	Grund	NOUN	NN					S		Nom	M
+30003015	16	gehen	VERB	VVINF		Inf						
+30003015	17	der	DET	ART					S		Nom	F
+30003015	18	groß	ADJ	ADJA	Pos				S		Acc	M
+30003015	19	Haus	NOUN	NN					P		Nom	N
+30003015	20	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30003015	21	verschwinden	VERB	VVINF		Inf						
+30003015	22	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30003015	23	Jahwe	NOUN	NN					S		Nom	M
+30004001	1	höret	NOUN	NN					S		Nom	N
+30004001	2	dieser	DET	PDAT					S		Nom	N
+30004001	3	Wort	NOUN	NN					S		Nom	N
+30004001	4	ihr	PRON	PPOSAT				3	S		Dat	F
+30004001	5	Kuh	NOUN	NN					P		Nom	F
+30004001	6	Basan	PROPN	NE					S		Gen	
+30004001	7	der	DET	ART					S		Nom	F
+30004001	8	ihr	PRON	PPOSAT				3	S		Dat	F
+30004001	9	auf	ADP	PTKVZ								
+30004001	10	der	DET	ART					S		Dat	M
+30004001	11	Berg	NOUN	NN					P		Nom	M
+30004001	12	Samaria	PROPN	NE					S		Gen	
+30004001	13	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+30004001	14	der	DET	ART					S		Nom	F
+30004001	15	ihr	PRON	PPOSAT				3	S		Dat	F
+30004001	16	der	DET	ART					S		Nom	F
+30004001	17	arme	NOUN	NN					P		Dat	M
+30004001	18	Bedrücket	NOUN	NN					S		Nom	N
+30004001	19	der	DET	ART					S		Nom	F
+30004001	20	Dürftige	NOUN	NN					P		Nom	F
+30004001	21	mißhandeln	VERB	VVPP		Part						
+30004001	22	und	CCONJ	KON								
+30004001	23	zu	ADP	PTKVZ								
+30004001	24	euren	DET	PPOSAT					S		Acc	M
+30004001	25	Herr	NOUN	NN					P		Nom	M
+30004001	26	Sprechet	PROPN	NE					S		Nom	
+30004001	27	Bringen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30004001	28	her	ADV	ADV								
+30004001	29	daß	SCONJ	KOUS								
+30004001	30	wir	PRON	PPER				1	P		Nom	
+30004001	31	trinken	VERB	VVINF		Inf						
+30004002	1	Geschwor	NOUN	NN					P		Nom	F
+30004002	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30004002	3	der	DET	ART					S		Nom	M
+30004002	4	Herr	NOUN	NN					S		Nom	M
+30004002	5	Jahwe	NOUN	NN					S		Nom	M
+30004002	6	bei	ADP	APPR								
+30004002	7	sein	DET	PPOSAT					S		Dat	F
+30004002	8	Heiligkeit	NOUN	NN					S		Nom	F
+30004002	9	sehen	VERB	VVIMP				2	S	Imp		
+30004002	10	Tag	NOUN	NN					P		Nom	M
+30004002	11	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30004002	12	über	ADP	APPR								
+30004002	13	euch	PRON	PPER				2	P		Dat	
+30004002	14	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30004002	15	da	ADV	ADV								
+30004002	16	man	PRON	PIS					S		Nom	
+30004002	17	euch	PRON	PPER				2	P		Dat	
+30004002	18	an	ADP	PTKVZ								
+30004002	19	Haken	NOUN	NN					S		Nom	M
+30004002	20	wegschleppe	NOUN	NN					P		Nom	F
+30004002	21	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30004002	22	und	CCONJ	KON								
+30004002	23	euren	DET	PPOSAT					S		Acc	M
+30004002	24	Rest	NOUN	NN					S		Nom	M
+30004002	25	an	ADP	PTKVZ								
+30004002	26	Fischerangel	NOUN	NN					P		Nom	F
+30004003	1	und	CCONJ	KON								
+30004003	2	ihr	PRON	PPOSAT				3	S		Dat	F
+30004003	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30004003	4	durch	ADP	APPR								
+30004003	5	der	DET	ART					S		Nom	F
+30004003	6	Mauerris	NOUN	NN					P		Acc	M
+30004003	7	hinausgehen	VERB	VVINF		Inf						
+30004003	8	ein	DET	ART					S		Nom	F
+30004003	9	jeder	DET	PIAT					S		Nom	F
+30004003	10	vor	ADP	APPR								
+30004003	11	sich	PRON	PRF				3	S		Acc	
+30004003	12	hin	ADV	ADV								
+30004003	13	und	CCONJ	KON								
+30004003	14	ihr	PRON	PPOSAT				3	S		Dat	F
+30004003	15	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30004003	16	nach	ADP	APPR								
+30004003	17	Harmon	PROPN	NE					S		Nom	
+30004003	18	hinwerfen	VERB	VVPP		Part						
+30004003	19	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30004003	20	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004003	21	Jahwe	NOUN	NN					S		Nom	M
+30004004	1	gehet	ADV	PROAV								
+30004004	2	nach	ADP	APPR								
+30004004	3	Bethel	PROPN	NE					S		Nom	N
+30004004	4	und	CCONJ	KON								
+30004004	5	übertretet	VERB	VVPP		Part						
+30004004	6	nach	ADP	APPR								
+30004004	7	Gilgal	PROPN	NE					S		Nom	
+30004004	8	und	CCONJ	KON								
+30004004	9	mehret	ADV	ADV								
+30004004	10	der	DET	ART					S		Nom	F
+30004004	11	Übertretung	NOUN	NN					S		Nom	F
+30004004	12	und	CCONJ	KON								
+30004004	13	Bringet	NOUN	VVFIN					S		Nom	N
+30004004	14	jeder	DET	PIS					S		Acc	M
+30004004	15	Morgen	ADV	NN								
+30004004	16	eure	DET	PPOSAT					S		Nom	F
+30004004	17	Schlachtopfer	NOUN	NN					S		Nom	M
+30004004	18	aller	PRON	PIS					P		Nom	
+30004004	19	drei	NUM	CARD								
+30004004	20	Tag	NOUN	NN					P		Nom	M
+30004004	21	eure	DET	PPOSAT					S		Nom	F
+30004004	22	zehnten	NOUN	NN					S		Acc	M
+30004005	1	und	CCONJ	KON								
+30004005	2	räucheren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004005	3	von	ADP	APPR								
+30004005	4	der	DET	ART					S		Dat	M
+30004005	5	Gesäuert	NOUN	NN					P		Nom	F
+30004005	6	Dankopfer	NOUN	NN					S		Nom	M
+30004005	7	und	CCONJ	KON								
+30004005	8	Rufet	NOUN	NN					S		Nom	N
+30004005	9	aus	ADP	PTKVZ								
+30004005	10	verkünden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004005	11	freiwillig	ADJ	ADJA	Pos				S		Nom	F
+30004005	12	Gabe	NOUN	NN					P		Nom	F
+30004005	13	denn	CCONJ	KON								
+30004005	14	also	ADV	ADV								
+30004005	15	Liebet	PROPN	NE					S		Nom	
+30004005	16	ihrs	ADV	ADV								
+30004005	17	ihr	PRON	PPOSAT				3	S		Dat	F
+30004005	18	Kind	NOUN	NN					P		Nom	N
+30004005	19	Israel	PROPN	NE					S		Nom	N
+30004005	20	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004005	21	der	DET	ART					S		Nom	M
+30004005	22	Herr	NOUN	NN					S		Nom	M
+30004005	23	Jahwe	NOUN	NN					S		Nom	M
+30004006	1	und	CCONJ	KON								
+30004006	2	so	ADV	ADV								
+30004006	3	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004006	4	auch	ADV	ADV								
+30004006	5	ich	PRON	PPER				1	S		Nom	
+30004006	6	euch	PRON	PPER				2	P		Dat	
+30004006	7	rein	ADJ	ADJA	Pos				S		Nom	F
+30004006	8	Zahn	NOUN	NN					P		Nom	M
+30004006	9	geben	VERB	VVPP		Part						
+30004006	10	in	ADP	APPR								
+30004006	11	aller	DET	PIS					P		Dat	
+30004006	12	euren	DET	PPOSAT					S		Acc	M
+30004006	13	Stadt	NOUN	NN					P		Nom	F
+30004006	14	und	CCONJ	KON								
+30004006	15	Mangel	NOUN	NN					S		Nom	M
+30004006	16	an	ADP	PTKVZ								
+30004006	17	Brot	NOUN	NN					S		Nom	N
+30004006	18	in	ADP	APPR								
+30004006	19	aller	DET	PIS					P		Dat	
+30004006	20	euren	DET	PPOSAT					S		Acc	M
+30004006	21	Ort	NOUN	NN					P		Dat	M
+30004006	22	und	CCONJ	KON								
+30004006	23	doch	CCONJ	KON								
+30004006	24	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+30004006	25	ihr	PRON	PPOSAT				3	S		Dat	F
+30004006	26	nicht	PART	PTKNEG								
+30004006	27	bis	CCONJ	KON								
+30004006	28	zu	ADP	PTKVZ								
+30004006	29	mir	PRON	PPER				1	S		Dat	
+30004006	30	umgekehrt	ADV	ADJD	Pos							
+30004006	31	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004006	32	Jahwe	NOUN	NN					S		Nom	M
+30004007	1	und	CCONJ	KON								
+30004007	2	auch	ADV	ADV								
+30004007	3	ich	PRON	PPER				1	S		Nom	
+30004007	4	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004007	5	euch	PRON	PPER				2	P		Dat	
+30004007	6	der	DET	ART					S		Acc	M
+30004007	7	Regen	NOUN	NN					S		Nom	M
+30004007	8	entziehen	VERB	VVPP		Part						
+30004007	9	als	ADP	KOKOM								
+30004007	10	noch	CCONJ	KON								
+30004007	11	drei	NUM	CARD								
+30004007	12	Monat	NOUN	NN					P		Nom	M
+30004007	13	bis	CCONJ	KON								
+30004007	14	zu	ADP	APPRART					S		Dat	F
+30004007	15	Ernte	NOUN	NN					S		Nom	F
+30004007	16	sein	AUX	VAFIN		Fin	Past	3	P	Ind		
+30004007	17	und	CCONJ	KON								
+30004007	18	ich	PRON	PPER				1	S		Nom	
+30004007	19	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004007	20	auf	ADP	PTKVZ								
+30004007	21	der	DET	ART					S		Nom	F
+30004007	22	ein	DET	ART					S		Nom	F
+30004007	23	Stadt	NOUN	NN					S		Nom	F
+30004007	24	regnen	VERB	VVINF		Inf						
+30004007	25	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30004007	26	während	SCONJ	KOUS								
+30004007	27	ich	PRON	PPER				1	S		Nom	
+30004007	28	auf	ADP	PTKVZ								
+30004007	29	der	DET	ART					S		Nom	F
+30004007	30	anderer	PRON	PIS					P		Nom	
+30004007	31	Stadt	NOUN	NN					S		Nom	F
+30004007	32	nicht	PART	PTKNEG								
+30004007	33	regnen	VERB	VVINF		Inf						
+30004007	34	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30004007	35	der	DET	ART					S		Nom	M
+30004007	36	ein	DET	ART					S		Nom	F
+30004007	37	Acker	NOUN	NN					S		Nom	M
+30004007	38	werden	AUX	VAFIN		Fin	Past	3	S	Ind		
+30004007	39	beregnen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004007	40	und	CCONJ	KON								
+30004007	41	der	DET	ART					S		Nom	M
+30004007	42	Acker	NOUN	NN					S		Nom	M
+30004007	43	auf	ADP	PTKVZ								
+30004007	44	welcher	DET	PWAT					S		Acc	M
+30004007	45	es	PRON	PPER				3	S		Nom	N
+30004007	46	nicht	PART	PTKNEG								
+30004007	47	regnen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30004007	48	verdorrn	VERB	VVFIN		Fin	Past	3	S	Ind		
+30004008	1	und	CCONJ	KON								
+30004008	2	zwei	NUM	CARD								
+30004008	3	drei	NUM	CARD								
+30004008	4	Stadt	NOUN	NN					P		Nom	F
+30004008	5	wanken	VERB	VVFIN		Fin	Past	3	P	Ind		
+30004008	6	zu	ADP	PTKVZ								
+30004008	7	ein	PRON	ART					S		Nom	M
+30004008	8	Stadt	NOUN	NN					S		Nom	F
+30004008	9	hin	ADV	ADV								
+30004008	10	um	ADP	APPR								
+30004008	11	Wasser	NOUN	NN					S		Nom	N
+30004008	12	zu	ADP	PTKVZ								
+30004008	13	trinken	VERB	VVINF		Inf						
+30004008	14	und	CCONJ	KON								
+30004008	15	werden	AUX	VAFIN		Fin	Past	3	P	Ind		
+30004008	16	nicht	PART	PTKNEG								
+30004008	17	satt	ADV	ADJD	Pos							
+30004008	18	dennoch	ADV	ADV								
+30004008	19	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+30004008	20	ihr	PRON	PPOSAT				3	S		Dat	F
+30004008	21	nicht	PART	PTKNEG								
+30004008	22	bis	CCONJ	KON								
+30004008	23	zu	ADP	PTKVZ								
+30004008	24	mir	PRON	PPER				1	S		Dat	
+30004008	25	umgekehrt	ADV	ADJD	Pos							
+30004008	26	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004008	27	Jahwe	NOUN	NN					S		Nom	M
+30004009	1	ich	PRON	PPER				1	S		Nom	
+30004009	2	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004009	3	euch	PRON	PPER				2	P		Dat	
+30004009	4	mit	ADP	APPR								
+30004009	5	Kornbrand	PROPN	NE					S		Nom	N
+30004009	6	und	CCONJ	KON								
+30004009	7	mit	ADP	APPR								
+30004009	8	Vergilben	NOUN	NN					P		Nom	F
+30004009	9	schlagen	VERB	VVPP		Part						
+30004009	10	ein	DET	ART					S		Nom	F
+30004009	11	groß	ADJ	ADJA	Pos				S		Nom	F
+30004009	12	Zahl	NOUN	NN					S		Nom	F
+30004009	13	eurer	PRON	PPOSAT							Gen	
+30004009	14	Garten	NOUN	NN					P		Nom	M
+30004009	15	und	CCONJ	KON								
+30004009	16	eurer	PRON	PPOSAT							Gen	
+30004009	17	Weinberg	NOUN	NN					P		Nom	M
+30004009	18	und	CCONJ	KON								
+30004009	19	eurer	PRON	PPOSAT							Gen	
+30004009	20	Feige	NOUN	NN					P		Nom	F
+30004009	21	und	CCONJ	KON								
+30004009	22	eurer	PRON	PPOSAT							Gen	
+30004009	23	Olivenbaum	NOUN	NN					P		Nom	M
+30004009	24	fraß	VERB	VVFIN		Fin	Past	3	S	Ind		
+30004009	25	der	DET	ART					S		Nom	F
+30004009	26	Heuschrecke	NOUN	NN					S		Nom	F
+30004009	27	dennoch	ADV	ADV								
+30004009	28	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+30004009	29	ihr	PRON	PPOSAT				3	S		Dat	F
+30004009	30	nicht	PART	PTKNEG								
+30004009	31	bis	CCONJ	KON								
+30004009	32	zu	ADP	PTKVZ								
+30004009	33	mir	PRON	PPER				1	S		Dat	
+30004009	34	umgekehrt	ADV	ADJD	Pos							
+30004009	35	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004009	36	Jahwe	NOUN	NN					S		Nom	M
+30004010	1	ich	PRON	PPER				1	S		Nom	
+30004010	2	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004010	3	der	DET	ART					S		Nom	F
+30004010	4	Pest	NOUN	NN					S		Nom	F
+30004010	5	unter	ADP	APPR								
+30004010	6	euch	PRON	PPER				2	P		Dat	
+30004010	7	gesandt	VERB	VVPP		Part						
+30004010	8	in	ADP	APPR								
+30004010	9	der	DET	ART					S		Nom	M
+30004010	10	Weise	NOUN	NN					S		Nom	F
+30004010	11	Ägypten	PROPN	NE					S		Gen	N
+30004010	12	ich	PRON	PPER				1	S		Nom	
+30004010	13	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004010	14	eure	DET	PPOSAT					S		Nom	F
+30004010	15	Jünglinge	NOUN	NN					P		Nom	M
+30004010	16	mit	ADP	APPR								
+30004010	17	der	DET	ART					S		Dat	M
+30004010	18	schwerte	NOUN	NN					P		Nom	
+30004010	19	töten	VERB	VVPP		Part						
+30004010	20	indem	SCONJ	KOUS								
+30004010	21	zugleich	ADV	ADV								
+30004010	22	eure	DET	PPOSAT					S		Nom	F
+30004010	23	Roß	NOUN	NN					P		Nom	M
+30004010	24	gefangen	VERB	VVPP		Part						
+30004010	25	wegführen	VERB	VVPP		Part						
+30004010	26	werden	AUX	VAFIN		Fin	Past	3	P	Ind		
+30004010	27	und	CCONJ	KON								
+30004010	28	ich	PRON	PPER				1	S		Nom	
+30004010	29	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30004010	30	der	DET	ART					S		Acc	M
+30004010	31	Gestank	NOUN	NN					S		Nom	M
+30004010	32	eurer	PRON	PPOSAT							Gen	
+30004010	33	Heerlager	NOUN	NN					S		Nom	N
+30004010	34	aufsteigen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30004010	35	und	CCONJ	KON								
+30004010	36	zwar	ADV	ADV								
+30004010	37	in	ADP	APPR								
+30004010	38	eure	DET	PPOSAT					S		Nom	F
+30004010	39	Nase	NOUN	NN					S		Nom	F
+30004010	40	dennoch	ADV	ADV								
+30004010	41	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+30004010	42	ihr	PRON	PPOSAT				3	S		Dat	F
+30004010	43	nicht	PART	PTKNEG								
+30004010	44	bis	CCONJ	KON								
+30004010	45	zu	ADP	PTKVZ								
+30004010	46	mir	PRON	PPER				1	S		Dat	
+30004010	47	umgekehrt	ADV	ADJD	Pos							
+30004010	48	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004010	49	Jahwe	NOUN	NN					S		Nom	M
+30004011	1	ich	PRON	PPER				1	S		Nom	
+30004011	2	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004011	3	ein	DET	ART					S		Nom	F
+30004011	4	Umkehrung	NOUN	NN					S		Nom	F
+30004011	5	unter	ADP	APPR								
+30004011	6	euch	PRON	PPER				2	P		Dat	
+30004011	7	anrichten	VERB	VVPP		Part						
+30004011	8	wie	ADP	KOKOM								
+30004011	9	der	DET	ART					S		Nom	F
+30004011	10	Umkehrung	NOUN	NN					S		Nom	F
+30004011	11	von	ADP	APPR								
+30004011	12	Sodom	PROPN	NE					S		Nom	
+30004011	13	und	CCONJ	KON								
+30004011	14	Gomorra	PROPN	NE					S		Nom	
+30004011	15	durch	ADP	APPR								
+30004011	16	Gott	NOUN	NN					S		Nom	M
+30004011	17	und	CCONJ	KON								
+30004011	18	ihr	PRON	PPOSAT				3	S		Dat	F
+30004011	19	Waret	VERB	VAFIN		Fin	Past	2	P	Ind		
+30004011	20	wie	ADP	KOKOM								
+30004011	21	ein	DET	ART					S		Nom	N
+30004011	22	Brandscheit	NOUN	NN					S		Nom	F
+30004011	23	der	DET	ART					S		Nom	N
+30004011	24	aus	ADP	PTKVZ								
+30004011	25	der	DET	ART					S		Dat	M
+30004011	26	Feuer	NOUN	NN					S		Nom	N
+30004011	27	retten	VERB	VVPP		Part						
+30004011	28	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30004011	29	dennoch	ADV	ADV								
+30004011	30	sein	AUX	VAFIN		Fin	Pres	2	P	Ind		
+30004011	31	ihr	PRON	PPOSAT				3	S		Dat	F
+30004011	32	nicht	PART	PTKNEG								
+30004011	33	bis	CCONJ	KON								
+30004011	34	zu	ADP	PTKVZ								
+30004011	35	mir	PRON	PPER				1	S		Dat	
+30004011	36	umgekehrt	ADV	ADJD	Pos							
+30004011	37	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004011	38	Jahwe	NOUN	NN					S		Nom	M
+30004012	1	darum	ADV	PROAV								
+30004012	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30004012	3	ich	PRON	PPER				1	S		Nom	
+30004012	4	dir	PRON	PPER				2	S		Dat	
+30004012	5	also	ADV	ADV								
+30004012	6	tun	VERB	VVINF		Inf						
+30004012	7	Israel	PROPN	NE					S		Nom	N
+30004012	8	weil	SCONJ	KOUS								
+30004012	9	ich	PRON	PPER				1	S		Nom	
+30004012	10	dir	PRON	PPER				2	S		Dat	
+30004012	11	dieser	DET	PDAT					S		Nom	N
+30004012	12	tun	VERB	VVINF		Inf						
+30004012	13	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30004012	14	so	ADV	ADV								
+30004012	15	schick	ADJ	ADJA	Pos				S		Nom	F
+30004012	16	dich	PRON	PPER				2	S		Acc	
+30004012	17	an	ADP	PTKVZ								
+30004012	18	Israel	PROPN	NE					S		Nom	N
+30004012	19	dein	DET	PPOSAT					S		Dat	M
+30004012	20	Gott	NOUN	NN					S		Nom	M
+30004012	21	zu	ADP	PTKVZ								
+30004012	22	begegnen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30004013	1	denn	CCONJ	KON								
+30004013	2	sehen	VERB	VVIMP				2	S	Imp		
+30004013	3	der	DET	ART					S		Nom	M
+30004013	4	der	DET	ART					S		Nom	F
+30004013	5	Berg	NOUN	NN					P		Nom	M
+30004013	6	bilden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004013	7	und	CCONJ	KON								
+30004013	8	der	DET	ART					S		Acc	M
+30004013	9	Wind	NOUN	NN					S		Nom	M
+30004013	10	schaffen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004013	11	und	CCONJ	KON								
+30004013	12	der	DET	ART					S		Dat	M
+30004013	13	Mensch	NOUN	NN					P		Nom	M
+30004013	14	kundtun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004013	15	was	PRON	PWS					S		Nom	N
+30004013	16	sein	AUX	VAINF		Inf						
+30004013	17	Gedanke	NOUN	NN					S		Nom	M
+30004013	18	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30004013	19	der	DET	ART					S		Nom	M
+30004013	20	der	DET	ART					S		Nom	F
+30004013	21	Morgenröte	NOUN	NN					S		Nom	F
+30004013	22	und	CCONJ	KON								
+30004013	23	der	DET	ART					S		Nom	F
+30004013	24	Finsternis	NOUN	NN					S		Nom	F
+30004013	25	machen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30004013	26	und	CCONJ	KON								
+30004013	27	einherschreiten	VERB	VVFIN		Part						
+30004013	28	auf	ADP	PTKVZ								
+30004013	29	der	DET	ART					S		Acc	M
+30004013	30	Höhe	NOUN	NN					P		Nom	F
+30004013	31	der	DET	ART					S		Nom	M
+30004013	32	Erde	NOUN	NN					S		Nom	F
+30004013	33	Jahwe	NOUN	NN					S		Nom	M
+30004013	34	Gott	NOUN	NN					S		Nom	M
+30004013	35	der	DET	ART					S		Nom	M
+30004013	36	Heerschare	NOUN	NN					P		Nom	F
+30004013	37	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30004013	38	sein	AUX	VAINF		Inf						
+30004013	39	Name	NOUN	NN					S		Nom	M
+30005001	1	höret	NOUN	NN					S		Nom	N
+30005001	2	dieser	DET	PDAT					S		Nom	N
+30005001	3	Wort	NOUN	NN					S		Nom	N
+30005001	4	der	DET	ART					S		Nom	N
+30005001	5	ich	PRON	PPER				1	S		Nom	
+30005001	6	über	ADP	APPR								
+30005001	7	euch	PRON	PPER				2	P		Dat	
+30005001	8	erheben	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30005001	9	ein	DET	ART					S		Nom	N
+30005001	10	Klagelied	NOUN	NN					S		Nom	N
+30005001	11	Haus	NOUN	NN					S		Nom	N
+30005001	12	Israel	PROPN	NE					S		Nom	N
+30005002	1	sie	PRON	PPER				3	P		Nom	
+30005002	2	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005002	3	fallen	VERB	VVPP		Part						
+30005002	4	der	DET	ART					S		Nom	F
+30005002	5	Jungfrau	NOUN	NN					S		Nom	F
+30005002	6	Israel	PROPN	NE					S		Nom	N
+30005002	7	sie	PRON	PPER				3	P		Nom	
+30005002	8	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005002	9	nicht	PART	PTKNEG								
+30005002	10	wieder	ADV	ADV								
+30005002	11	aufstehen	VERB	VVINF		Inf						
+30005002	12	sie	PRON	PPER				3	P		Nom	
+30005002	13	liegen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005002	14	hinwerfen	VERB	VVPP		Part						
+30005002	15	auf	ADP	PTKVZ								
+30005002	16	ihr	DET	PPOSAT					S		Dat	N
+30005002	17	Land	NOUN	NN					P		Nom	N
+30005002	18	niemand	PRON	PIS					S		Nom	M
+30005002	19	richten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005002	20	sie	PRON	PPER				3	P		Nom	
+30005002	21	auf	ADP	PTKVZ								
+30005003	1	denn	CCONJ	KON								
+30005003	2	so	ADV	ADV								
+30005003	3	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005003	4	der	DET	ART					S		Nom	M
+30005003	5	Herr	NOUN	NN					S		Nom	M
+30005003	6	Jahwe	NOUN	NN					S		Nom	M
+30005003	7	der	DET	ART					S		Nom	F
+30005003	8	Stadt	NOUN	NN					S		Nom	F
+30005003	9	der	DET	ART					S		Nom	F
+30005003	10	zu	ADP	PTKVZ								
+30005003	11	tausend	NUM	CARD								
+30005003	12	ausziehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005003	13	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005003	14	hundert	NUM	CARD								
+30005003	15	übrigbehalten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30005003	16	und	CCONJ	KON								
+30005003	17	der	DET	ART					S		Nom	F
+30005003	18	zu	ADP	PTKVZ								
+30005003	19	hundert	NUM	CARD								
+30005003	20	ausziehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005003	21	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005003	22	zehn	NUM	CARD								
+30005003	23	übrigbehalten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30005003	24	für	ADP	APPR								
+30005003	25	der	DET	ART					S		Nom	N
+30005003	26	Haus	NOUN	NN					S		Nom	N
+30005003	27	Israel	PROPN	NE					S		Nom	N
+30005004	1	denn	CCONJ	KON								
+30005004	2	so	ADV	ADV								
+30005004	3	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005004	4	Jahwe	NOUN	NN					S		Nom	M
+30005004	5	zu	ADP	APPRART					S		Dat	N
+30005004	6	Haus	NOUN	NN					P		Nom	N
+30005004	7	Israel	PROPN	NE					S		Nom	N
+30005004	8	suchet	PROPN	NE					S		Nom	
+30005004	9	mich	PRON	PPER				1	S		Acc	
+30005004	10	und	CCONJ	KON								
+30005004	11	Lebet	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005005	1	und	CCONJ	KON								
+30005005	2	sucheen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005005	3	nicht	PART	PTKNEG								
+30005005	4	Bethel	PROPN	NE					S		Nom	N
+30005005	5	auf	ADP	PTKVZ								
+30005005	6	und	CCONJ	KON								
+30005005	7	heen	VERB	VVPP		Part						
+30005005	8	nicht	PART	PTKNEG								
+30005005	9	nach	ADP	APPR								
+30005005	10	Gilgal	PROPN	NE					S		Nom	
+30005005	11	und	CCONJ	KON								
+30005005	12	heen	VERB	VVPP		Part						
+30005005	13	nicht	PART	PTKNEG								
+30005005	14	Hinüber	ADV	PROAV								
+30005005	15	nach	ADP	APPR								
+30005005	16	Beerseba	PROPN	NE					S		Nom	N
+30005005	17	denn	CCONJ	KON								
+30005005	18	Gilgal	PROPN	NE					S		Nom	
+30005005	19	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005005	20	gewißlich	ADV	ADJD	Pos							
+30005005	21	wegführen	VERB	VVPP		Part						
+30005005	22	und	CCONJ	KON								
+30005005	23	Bethel	PROPN	NE					S		Nom	N
+30005005	24	zunichte	ADV	ADV								
+30005005	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30005006	1	suchet	PROPN	NE					S		Nom	
+30005006	2	Jahwe	NOUN	NN					S		Nom	M
+30005006	3	und	CCONJ	KON								
+30005006	4	Lebet	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005006	5	damit	ADV	PROAV								
+30005006	6	er	PRON	PPER				3	S		Nom	M
+30005006	7	nicht	PART	PTKNEG								
+30005006	8	in	ADP	APPR								
+30005006	9	der	DET	ART					S		Nom	N
+30005006	10	Haus	NOUN	NN					S		Nom	N
+30005006	11	Josephs	PROPN	NE					S		Nom	
+30005006	12	eindring	NOUN	NN					P		Nom	M
+30005006	13	wie	ADP	KOKOM								
+30005006	14	ein	DET	ART					S		Nom	N
+30005006	15	Feuer	NOUN	NN					S		Nom	N
+30005006	16	und	CCONJ	KON								
+30005006	17	es	PRON	PPER				3	S		Nom	N
+30005006	18	verzehren	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30005006	19	und	CCONJ	KON								
+30005006	20	für	ADP	APPR								
+30005006	21	Bethel	PROPN	NE					S		Nom	N
+30005006	22	niemand	PRON	PIS					S		Nom	M
+30005006	23	da	ADV	ADV								
+30005006	24	sein	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30005006	25	der	DET	ART					S		Nom	M
+30005006	26	es	PRON	PPER				3	S		Nom	N
+30005006	27	löschen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30005007	1	sie	PRON	PPER				3	P		Nom	
+30005007	2	verwandeln	VERB	VVINF		Inf						
+30005007	3	der	DET	ART					S		Nom	N
+30005007	4	Recht	NOUN	NN					S		Nom	N
+30005007	5	in	ADP	APPR								
+30005007	6	Wermut	NOUN	NN					S		Nom	M
+30005007	7	und	CCONJ	KON								
+30005007	8	werfen	VERB	VVINF		Inf						
+30005007	9	der	DET	ART					S		Nom	F
+30005007	10	Gerechtigkeit	NOUN	NN					S		Nom	F
+30005007	11	zu	ADP	PTKVZ								
+30005007	12	Boden	NOUN	NN					S		Nom	M
+30005008	1	sucheen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005008	2	der	DET	ART					S		Acc	M
+30005008	3	der	DET	ART					S		Nom	M
+30005008	4	der	DET	ART					S		Nom	N
+30005008	5	Siebengestirn	PROPN	NE					S		Nom	N
+30005008	6	und	CCONJ	KON								
+30005008	7	der	DET	ART					S		Acc	M
+30005008	8	Orion	PROPN	NE					S		Nom	
+30005008	9	machen	VERB	VVPP		Part						
+30005008	10	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005008	11	und	CCONJ	KON								
+30005008	12	der	DET	ART					S		Acc	M
+30005008	13	Todesschatt	NOUN	NN					P		Nom	M
+30005008	14	in	ADP	APPR								
+30005008	15	Morgen	ADV	NN								
+30005008	16	verwandeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005008	17	und	CCONJ	KON								
+30005008	18	der	DET	ART					S		Acc	M
+30005008	19	Tag	NOUN	NN					S		Nom	M
+30005008	20	zu	ADP	APPRART					S		Dat	F
+30005008	21	Nacht	NOUN	NN					S		Nom	F
+30005008	22	verfinstern	VERB	VVPP		Part						
+30005008	23	der	DET	ART					S		Nom	M
+30005008	24	der	DET	ART					S		Acc	M
+30005008	25	Wasser	NOUN	NN					P		Dat	N
+30005008	26	der	DET	ART					S		Gen	M
+30005008	27	Meer	NOUN	NN					S		Nom	N
+30005008	28	rufen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005008	29	und	CCONJ	KON								
+30005008	30	sie	PRON	PPER				3	P		Nom	
+30005008	31	ausgießt	VERB	VVPP		Part						
+30005008	32	über	ADP	APPR								
+30005008	33	der	DET	ART					S		Nom	F
+30005008	34	Fläche	NOUN	NN					S		Nom	F
+30005008	35	der	DET	ART					S		Nom	M
+30005008	36	Erde	NOUN	NN					S		Nom	F
+30005008	37	Jahwe	NOUN	NN					S		Nom	M
+30005008	38	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005008	39	sein	AUX	VAINF		Inf						
+30005008	40	Name	NOUN	NN					S		Nom	M
+30005009	1	der	DET	ART					S		Nom	M
+30005009	2	Verwüstung	NOUN	NN					S		Nom	F
+30005009	3	losbrechen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30005009	4	lassen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005009	5	über	ADP	APPR								
+30005009	6	der	DET	ART					S		Acc	M
+30005009	7	stark	NOUN	NN					P		Nom	
+30005009	8	und	CCONJ	KON								
+30005009	9	Verwüstung	NOUN	NN					S		Nom	F
+30005009	10	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005009	11	über	ADP	APPR								
+30005009	12	der	DET	ART					S		Nom	F
+30005009	13	Fest	NOUN	NN					P		Nom	N
+30005010	1	sie	PRON	PPER				3	P		Nom	
+30005010	2	hassen	VERB	VVINF		Inf						
+30005010	3	der	DET	ART					S		Acc	M
+30005010	4	der	DET	ART					S		Nom	M
+30005010	5	in	ADP	APPRART					S		Dat	N
+30005010	6	Tor	NOUN	NN					P		Nom	N
+30005010	7	Recht	NOUN	NN					S		Nom	N
+30005010	8	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005010	9	und	CCONJ	KON								
+30005010	10	verabscheuen	VERB	VVINF		Inf						
+30005010	11	der	DET	ART					S		Acc	M
+30005010	12	der	DET	ART					S		Nom	M
+30005010	13	Unsträflichkeit	NOUN	NN					S		Nom	F
+30005010	14	reden	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005011	1	darum	ADV	PROAV								
+30005011	2	weil	SCONJ	KOUS								
+30005011	3	ihr	PRON	PPOSAT				3	S		Dat	F
+30005011	4	der	DET	ART					S		Acc	M
+30005011	5	arme	NOUN	NN					P		Dat	M
+30005011	6	niedertreten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005011	7	und	CCONJ	KON								
+30005011	8	Getreidegabe	NOUN	NN					P		Nom	M
+30005011	9	von	ADP	APPR								
+30005011	10	ihm	PRON	PPER				3	S		Dat	M
+30005011	11	nehmeen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005011	12	habben	VERB	VAFIN				2	P	Imp		
+30005011	13	ihr	PRON	PPOSAT				3	S		Dat	F
+30005011	14	Haus	NOUN	NN					P		Nom	N
+30005011	15	von	ADP	APPR								
+30005011	16	behauenen	VERB	VVFIN		Fin	Past	3	P	Ind		
+30005011	17	Stein	NOUN	NN					P		Dat	M
+30005011	18	bauen	VERB	VVPP		Part						
+30005011	19	und	CCONJ	KON								
+30005011	20	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005011	21	nicht	PART	PTKNEG								
+30005011	22	darin	ADV	PROAV								
+30005011	23	wohnen	VERB	VVINF		Inf						
+30005011	24	lieblich	ADJ	ADJA	Pos				S		Nom	F
+30005011	25	Weinberg	NOUN	NN					P		Nom	M
+30005011	26	pflanzen	VERB	VVPP		Part						
+30005011	27	und	CCONJ	KON								
+30005011	28	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005011	29	der	PRON	PDS							Gen	
+30005011	30	Wein	NOUN	NN					S		Nom	M
+30005011	31	nicht	PART	PTKNEG								
+30005011	32	trinken	VERB	VVINF		Inf						
+30005012	1	denn	CCONJ	KON								
+30005012	2	ich	PRON	PPER				1	S		Nom	
+30005012	3	wissen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005012	4	daß	SCONJ	KOUS								
+30005012	5	eurer	PRON	PPOSAT							Gen	
+30005012	6	Übertretung	NOUN	NN					P		Nom	F
+30005012	7	vieler	PRON	PIS					P		Nom	
+30005012	8	und	CCONJ	KON								
+30005012	9	daß	SCONJ	KOUS								
+30005012	10	eure	DET	PPOSAT					S		Nom	F
+30005012	11	Sünde	NOUN	NN					P		Nom	F
+30005012	12	zahlreich	ADV	ADJD	Pos							
+30005012	13	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30005012	14	sie	PRON	PPER				3	P		Nom	
+30005012	15	bedrängen	VERB	VVINF		Inf						
+30005012	16	der	DET	ART					S		Acc	M
+30005012	17	Gerechten	NOUN	NN					P		Dat	
+30005012	18	nehmen	VERB	VVINF		Inf						
+30005012	19	Lösegeld	NOUN	NN					S		Nom	N
+30005012	20	und	CCONJ	KON								
+30005012	21	beugen	VERB	VVINF		Inf						
+30005012	22	der	DET	ART					S		Nom	N
+30005012	23	Recht	NOUN	NN					S		Nom	N
+30005012	24	der	DET	ART					S		Nom	M
+30005012	25	Dürftige	NOUN	NN					P		Nom	F
+30005012	26	in	ADP	APPRART					S		Dat	N
+30005012	27	Tor	NOUN	NN					P		Nom	N
+30005013	1	darum	ADV	PROAV								
+30005013	2	schweigen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005013	3	der	DET	ART					S		Nom	M
+30005013	4	einsichtige	NOUN	NN					P		Nom	
+30005013	5	in	ADP	APPR								
+30005013	6	dieser	PRON	PDAT					S		Nom	M
+30005013	7	Zeit	NOUN	NN					S		Nom	F
+30005013	8	denn	CCONJ	KON								
+30005013	9	es	PRON	PPER				3	S		Nom	N
+30005013	10	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005013	11	ein	DET	ART					S		Nom	F
+30005013	12	böse	ADV	ADJD	Pos							
+30005013	13	Zeit	NOUN	NN					S		Nom	F
+30005014	1	Trachten	VERB	VVPP		Fin	Pres	3	S	Ind		
+30005014	2	nach	ADP	APPR								
+30005014	3	der	DET	ART					S		Dat	M
+30005014	4	gute	NOUN	NN					P		Nom	
+30005014	5	und	CCONJ	KON								
+30005014	6	nicht	PART	PTKNEG								
+30005014	7	nach	ADP	APPR								
+30005014	8	der	DET	ART					S		Dat	M
+30005014	9	böse	NOUN	NN					P		Nom	
+30005014	10	auf	ADP	PTKVZ								
+30005014	11	daß	SCONJ	KOUS								
+30005014	12	ihr	PRON	PPOSAT				3	S		Dat	F
+30005014	13	Lebet	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005014	14	und	CCONJ	KON								
+30005014	15	Jahwe	NOUN	NN					S		Nom	M
+30005014	16	der	DET	ART					S		Nom	M
+30005014	17	Gott	NOUN	NN					S		Nom	M
+30005014	18	der	DET	ART					S		Nom	M
+30005014	19	Heerschare	NOUN	NN					P		Nom	F
+30005014	20	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005014	21	also	ADV	ADV								
+30005014	22	mit	ADP	APPR								
+30005014	23	euch	PRON	PPER				2	P		Dat	
+30005014	24	sein	AUX	VAINF		Inf						
+30005014	25	wie	ADP	KOKOM								
+30005014	26	ihr	PRON	PPOSAT				3	S		Dat	F
+30005014	27	sageen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005015	1	Hasset	PROPN	NE					S		Nom	F
+30005015	2	der	DET	ART					S		Nom	N
+30005015	3	böse	ADV	ADV								
+30005015	4	und	CCONJ	KON								
+30005015	5	Liebet	PROPN	NE					S		Nom	
+30005015	6	der	DET	ART					S		Nom	N
+30005015	7	gut	ADV	ADV								
+30005015	8	und	CCONJ	KON								
+30005015	9	richten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005015	10	der	DET	ART					S		Nom	N
+30005015	11	Recht	NOUN	NN					S		Nom	N
+30005015	12	auf	ADP	PTKVZ								
+30005015	13	in	ADP	APPRART					S		Dat	N
+30005015	14	Tor	NOUN	NN					P		Nom	N
+30005015	15	vielleicht	ADV	ADV								
+30005015	16	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005015	17	Jahwe	NOUN	NN					S		Nom	M
+30005015	18	der	DET	ART					S		Nom	M
+30005015	19	Gott	NOUN	NN					S		Nom	M
+30005015	20	der	DET	ART					S		Nom	M
+30005015	21	Heerschare	NOUN	NN					P		Nom	F
+30005015	22	der	DET	ART					S		Dat	M
+30005015	23	Überrest	NOUN	NN					S		Nom	M
+30005015	24	Josephs	PROPN	NE					S		Nom	
+30005015	25	gnädig	ADV	ADJD	Pos							
+30005015	26	sein	AUX	VAINF		Inf						
+30005016	1	darum	ADV	PROAV								
+30005016	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005016	3	Jahwe	NOUN	NN					S		Nom	M
+30005016	4	der	DET	ART					S		Nom	M
+30005016	5	Gott	NOUN	NN					S		Nom	M
+30005016	6	der	DET	ART					S		Nom	M
+30005016	7	Heerschare	NOUN	NN					P		Nom	F
+30005016	8	der	DET	ART					S		Nom	M
+30005016	9	Herr	NOUN	NN					S		Nom	M
+30005016	10	also	ADV	ADV								
+30005016	11	auf	ADP	APPR								
+30005016	12	aller	DET	PIS					P		Dat	
+30005016	13	Platz	NOUN	NN					P		Dat	M
+30005016	14	Wehklage	NOUN	NN					S		Nom	F
+30005016	15	und	CCONJ	KON								
+30005016	16	auf	ADP	PTKVZ								
+30005016	17	aller	DET	PIS					P		Dat	
+30005016	18	Gasse	NOUN	NN					P		Nom	F
+30005016	19	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005016	20	man	PRON	PIS					S		Nom	
+30005016	21	sagen	VERB	VVINF		Inf						
+30005016	22	Wehe	NOUN	NN					S		Nom	F
+30005016	23	wehe	ADV	ADJD	Pos							
+30005016	24	und	CCONJ	KON								
+30005016	25	man	PRON	PIS					S		Nom	
+30005016	26	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005016	27	der	DET	ART					S		Acc	M
+30005016	28	Ackermann	PROPN	NE					S		Nom	
+30005016	29	zu	ADP	APPRART					S		Dat	F
+30005016	30	Trauer	NOUN	NN					S		Nom	F
+30005016	31	rufen	VERB	VVINF		Inf						
+30005016	32	und	CCONJ	KON								
+30005016	33	der	DET	ART					S		Nom	F
+30005016	34	der	DET	ART					S		Gen	M
+30005016	35	Klagelied	NOUN	NE					S		Nom	N
+30005016	36	Kundigen	NOUN	VVIZU					P		Dat	
+30005016	37	zu	ADP	APPRART					S		Dat	F
+30005016	38	Wehklage	NOUN	NN					S		Nom	F
+30005017	1	und	CCONJ	KON								
+30005017	2	in	ADP	APPR								
+30005017	3	aller	DET	PIS					P		Dat	
+30005017	4	Weinberg	NOUN	NN					P		Dat	M
+30005017	5	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005017	6	Wehklage	NOUN	NN					S		Nom	F
+30005017	7	sein	AUX	VAINF		Inf						
+30005017	8	denn	CCONJ	KON								
+30005017	9	ich	PRON	PPER				1	S		Nom	
+30005017	10	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30005017	11	durch	ADP	APPR								
+30005017	12	dein	DET	PPOSAT					S		Nom	F
+30005017	13	Mitte	NOUN	NN					S		Nom	F
+30005017	14	ziehen	VERB	VVINF		Inf						
+30005017	15	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005017	16	Jahwe	NOUN	NN					S		Nom	M
+30005018	1	Wehe	NOUN	NN					S		Nom	F
+30005018	2	der	PRON	PDS					P		Dat	
+30005018	3	welcher	DET	PWAT					S		Nom	F
+30005018	4	der	DET	ART					S		Acc	M
+30005018	5	Tag	NOUN	NN					S		Nom	M
+30005018	6	Jahwe	PROPN	NE					S		Gen	
+30005018	7	herbeiwünschen	VERB	ADJA		Inf						
+30005018	8	wozu	ADV	PWAV								
+30005018	9	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30005018	10	euch	PRON	PPER				2	P		Dat	
+30005018	11	der	DET	ART					S		Nom	M
+30005018	12	Tag	NOUN	NN					S		Nom	M
+30005018	13	Jahwe	PROPN	NE					S		Gen	
+30005018	14	sein	AUX	VAINF		Inf						
+30005018	15	er	PRON	PPER				3	S		Nom	M
+30005018	16	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005018	17	Finsternis	NOUN	NN					S		Nom	F
+30005018	18	sein	AUX	VAINF		Inf						
+30005018	19	und	CCONJ	KON								
+30005018	20	nicht	PART	PTKNEG								
+30005018	21	Licht	NOUN	NN					S		Nom	N
+30005019	1	wie	ADP	KOKOM								
+30005019	2	wenn	SCONJ	KOUS								
+30005019	3	jemand	PRON	PIS					S		Nom	M
+30005019	4	vor	ADP	APPR								
+30005019	5	der	DET	ART					S		Dat	M
+30005019	6	Löwe	NOUN	NN					S		Nom	M
+30005019	7	fliehen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005019	8	und	CCONJ	KON								
+30005019	9	es	PRON	PPER				3	S		Nom	N
+30005019	10	begegnen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005019	11	ihm	PRON	PPER				3	S		Dat	M
+30005019	12	ein	DET	ART					S		Nom	N
+30005019	13	Bär	PROPN	NE					S		Nom	M
+30005019	14	und	CCONJ	KON								
+30005019	15	er	PRON	PPER				3	S		Nom	M
+30005019	16	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005019	17	nach	ADP	APPR								
+30005019	18	Haus	NOUN	NN					P		Nom	N
+30005019	19	und	CCONJ	KON								
+30005019	20	stützen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005019	21	sein	DET	PPOSAT					S		Nom	F
+30005019	22	Hand	NOUN	NN					S		Nom	F
+30005019	23	an	ADP	PTKVZ								
+30005019	24	der	DET	ART					S		Nom	F
+30005019	25	Mauer	NOUN	NN					S		Nom	F
+30005019	26	und	CCONJ	KON								
+30005019	27	es	PRON	PPER				3	S		Nom	N
+30005019	28	beißen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005019	29	ihn	PRON	PPER				3	S		Acc	M
+30005019	30	ein	DET	ART					S		Nom	F
+30005019	31	Schlange	NOUN	NN					S		Nom	F
+30005020	1	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005020	2	denn	CCONJ	KON								
+30005020	3	nicht	PART	PTKNEG								
+30005020	4	der	DET	ART					S		Nom	M
+30005020	5	Tag	NOUN	NN					S		Nom	M
+30005020	6	Jahwe	PROPN	NE					S		Gen	
+30005020	7	Finsternis	NOUN	NN					S		Nom	F
+30005020	8	sein	AUX	VAINF		Inf						
+30005020	9	und	CCONJ	KON								
+30005020	10	nicht	PART	PTKNEG								
+30005020	11	Licht	NOUN	NN					S		Nom	N
+30005020	12	und	CCONJ	KON								
+30005020	13	Dunkelheit	NOUN	NN					S		Nom	F
+30005020	14	und	CCONJ	KON								
+30005020	15	nicht	PART	PTKNEG								
+30005020	16	Glanz	NOUN	NN					S		Acc	M
+30005021	1	ich	PRON	PPER				1	S		Nom	
+30005021	2	hassen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30005021	3	ich	PRON	PPER				1	S		Nom	
+30005021	4	Verschmähe	NOUN	NN					S		Nom	F
+30005021	5	eure	DET	PPOSAT					S		Nom	F
+30005021	6	Fest	NOUN	NN					P		Nom	N
+30005021	7	und	CCONJ	KON								
+30005021	8	eure	DET	PPOSAT					S		Nom	F
+30005021	9	Festversammlung	NOUN	NN					P		Nom	F
+30005021	10	mögen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30005021	11	ich	PRON	PPER				1	S		Nom	
+30005021	12	nicht	PART	PTKNEG								
+30005021	13	riechen	VERB	VVINF		Inf						
+30005022	1	denn	CCONJ	KON								
+30005022	2	wenn	SCONJ	KOUS								
+30005022	3	ihr	PRON	PPOSAT				3	S		Dat	F
+30005022	4	mir	PRON	PPER				1	S		Dat	
+30005022	5	Brandopfer	NOUN	NN					S		Nom	M
+30005022	6	und	CCONJ	KON								
+30005022	7	eure	DET	PPOSAT					S		Nom	F
+30005022	8	Speisopfer	NOUN	NN					P		Nom	N
+30005022	9	opferen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005022	10	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30005022	11	ich	PRON	PPER				1	S		Nom	
+30005022	12	kein	DET	PIAT					S		Nom	N
+30005022	13	Wohlgefallen	NOUN	NN					S		Nom	N
+30005022	14	daran	ADV	PROAV								
+30005022	15	und	CCONJ	KON								
+30005022	16	der	DET	ART					S		Nom	N
+30005022	17	Friedensopfer	NOUN	NN					P		Nom	M
+30005022	18	von	ADP	APPR								
+30005022	19	eurer	DET	PPOSAT					S		Dat	M
+30005022	20	Mastvieh	NOUN	NN					S		Nom	M
+30005022	21	mögen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30005022	22	ich	PRON	PPER				1	S		Nom	
+30005022	23	nicht	PART	PTKNEG								
+30005022	24	ansehen	VERB	VVINF		Inf						
+30005023	1	Tue	ADV	FM								
+30005023	2	der	DET	ART					S		Acc	M
+30005023	3	Lärm	NOUN	NN					S		Nom	M
+30005023	4	dein	DET	PPOSAT					S		Dat	F
+30005023	5	Lied	NOUN	NN					P		Nom	N
+30005023	6	von	ADP	APPR								
+30005023	7	mir	PRON	PPER				1	S		Dat	
+30005023	8	hinweg	ADP	APZR								
+30005023	9	und	CCONJ	KON								
+30005023	10	der	DET	ART					S		Nom	N
+30005023	11	Spiel	NOUN	NN					S		Nom	N
+30005023	12	dein	DET	PPOSAT					S		Dat	F
+30005023	13	Harfe	NOUN	NN					P		Nom	F
+30005023	14	mögen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30005023	15	ich	PRON	PPER				1	S		Nom	
+30005023	16	nicht	PART	PTKNEG								
+30005023	17	hören	VERB	VVINF		Inf						
+30005024	1	aber	CCONJ	KON								
+30005024	2	der	DET	ART					S		Nom	N
+30005024	3	Recht	NOUN	NN					S		Nom	N
+30005024	4	wälzen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30005024	5	sich	PRON	PRF				3	S		Acc	
+30005024	6	einher	ADV	APZR								
+30005024	7	wie	ADP	KOKOM								
+30005024	8	Wasser	NOUN	NN					S		Nom	N
+30005024	9	und	CCONJ	KON								
+30005024	10	der	DET	ART					S		Nom	F
+30005024	11	Gerechtigkeit	NOUN	NN					S		Nom	F
+30005024	12	wie	ADP	KOKOM								
+30005024	13	ein	DET	ART					S		Nom	N
+30005024	14	immerfließender	NOUN	NN					P		Nom	M
+30005024	15	Bach	PROPN	NE					S		Nom	
+30005025	1	habben	VERB	VAFIN		Fin	Pres	3	S	Ind		
+30005025	2	ihr	PRON	PPOSAT				3	S		Dat	F
+30005025	3	mir	PRON	PPER				1	S		Dat	
+30005025	4	vierzig	NUM	CARD								
+30005025	5	Jahr	NOUN	NN					P		Nom	N
+30005025	6	in	ADP	APPR								
+30005025	7	der	DET	ART					S		Nom	M
+30005025	8	Wüste	NOUN	NN					S		Nom	F
+30005025	9	Schlachtopfer	NOUN	NN					S		Nom	M
+30005025	10	und	CCONJ	KON								
+30005025	11	Speisopfer	NOUN	NN					P		Nom	N
+30005025	12	dargebrachen	VERB	VVPP		Part						
+30005025	13	Haus	NOUN	NN					S		Nom	N
+30005025	14	Israel	PROPN	NE					S		Nom	N
+30005026	1	ja	PART	PTKANT								
+30005026	2	ihr	PRON	PPOSAT				3	S		Dat	F
+30005026	3	habben	VERB	VAFIN				2	P	Imp		
+30005026	4	der	DET	ART					S		Nom	F
+30005026	5	Hütte	NOUN	NN					S		Nom	F
+30005026	6	eures	DET	PPOSAT					S		Nom	N
+30005026	7	König	PROPN	NE					S		Nom	
+30005026	8	und	CCONJ	KON								
+30005026	9	der	DET	ART					S		Nom	N
+30005026	10	Gestell	NOUN	NN					S		Nom	N
+30005026	11	eurer	PRON	PPOSAT							Gen	
+30005026	12	Götzenbild	NOUN	NN					P		Nom	M
+30005026	13	tragen	VERB	VVPP		Part						
+30005026	14	der	DET	ART					S		Nom	N
+30005026	15	Sternbild	NOUN	NN					S		Nom	N
+30005026	16	eures	DET	PPOSAT					S		Nom	N
+30005026	17	Gott	NOUN	NN					S		Gen	M
+30005026	18	der	DET	ART					S		Nom	F
+30005026	19	ihr	PRON	PPOSAT				3	S		Dat	F
+30005026	20	euch	PRON	PPER				2	P		Dat	
+30005026	21	machen	VERB	VVPP		Part						
+30005026	22	hatteben	VERB	VAFIN		Part						
+30005027	1	so	ADV	ADV								
+30005027	2	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30005027	3	ich	PRON	PPER				1	S		Nom	
+30005027	4	euch	PRON	PPER				2	P		Dat	
+30005027	5	jenseit	ADV	APPR								
+30005027	6	Damaskus	PROPN	NE					S		Nom	N
+30005027	7	wegführen	VERB	VVINF		Inf						
+30005027	8	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30005027	9	Jahwe	NOUN	NN					S		Nom	M
+30005027	10	Gott	NOUN	NN					S		Nom	M
+30005027	11	der	DET	ART					S		Nom	M
+30005027	12	Heerschare	NOUN	NN					P		Nom	F
+30005027	13	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30005027	14	sein	AUX	VAINF		Inf						
+30005027	15	Name	NOUN	NN					S		Nom	M
+30006001	1	Wehe	NOUN	NN					S		Nom	F
+30006001	2	der	DET	ART					S		Acc	M
+30006001	3	Sorglose	ADV	ADJD	Pos							
+30006001	4	in	ADP	APPR								
+30006001	5	Zion	PROPN	NE					S		Nom	F
+30006001	6	und	CCONJ	KON								
+30006001	7	der	DET	ART					S		Acc	M
+30006001	8	sicher	PROPN	NE					S		Nom	
+30006001	9	auf	ADP	PTKVZ								
+30006001	10	der	DET	ART					S		Dat	M
+30006001	11	Berg	NOUN	NN					P		Nom	M
+30006001	12	von	ADP	APPR								
+30006001	13	Samaria	PROPN	NE					S		Nom	N
+30006001	14	der	DET	ART					S		Acc	M
+30006001	15	Vornehmen	NOUN	NN					P		Nom	N
+30006001	16	der	DET	ART					S		Nom	M
+30006001	17	erster	ADJ	ADJA	Pos				S		Dat	M
+30006001	18	der	DET	ART					S		Nom	M
+30006001	19	Nation	NOUN	NN					P		Nom	F
+30006001	20	zu	ADP	PTKVZ								
+30006001	21	welcher	DET	PWAT					S		Acc	M
+30006001	22	der	DET	ART					S		Nom	N
+30006001	23	Haus	NOUN	NN					S		Nom	N
+30006001	24	Israel	PROPN	NE					S		Nom	N
+30006001	25	kommen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006002	1	gehet	ADV	PROAV								
+30006002	2	Hinüber	ADV	PROAV								
+30006002	3	nach	ADP	APPR								
+30006002	4	Kalne	NOUN	NN					S		Nom	F
+30006002	5	und	CCONJ	KON								
+30006002	6	seheen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006002	7	und	CCONJ	KON								
+30006002	8	heen	VERB	VVPP		Part						
+30006002	9	von	ADP	APPR								
+30006002	10	dort	ADV	ADV								
+30006002	11	nach	ADP	APPR								
+30006002	12	Hamath	NOUN	NN					S		Nom	M
+30006002	13	der	DET	ART					S		Nom	M
+30006002	14	groß	ADJ	ADJA	Pos				S		Acc	M
+30006002	15	Stadt	NOUN	NN					S		Nom	F
+30006002	16	und	CCONJ	KON								
+30006002	17	Steiget	NOUN	NN					S		Nom	N
+30006002	18	Hinab	ADV	PTKVZ								
+30006002	19	nach	ADP	APPR								
+30006002	20	Gath	PROPN	NE					S		Nom	
+30006002	21	der	DET	ART					S		Nom	M
+30006002	22	Philister	NOUN	NN					S		Nom	M
+30006002	23	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30006002	24	sie	PRON	PPER				3	P		Nom	
+30006002	25	vorzüglich	ADV	ADJA	Cmp							
+30006002	26	als	ADP	KOKOM								
+30006002	27	dieser	DET	PDAT					S		Nom	F
+30006002	28	Königreich	NOUN	NN					P		Nom	N
+30006002	29	oder	CCONJ	KON								
+30006002	30	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30006002	31	ihr	PRON	PPOSAT				3	S		Dat	F
+30006002	32	Gebiet	NOUN	NN					S		Nom	N
+30006002	33	groß	ADV	ADJD	Cmp							
+30006002	34	als	ADP	KOKOM								
+30006002	35	euer	DET	PPOSAT					S		Nom	M
+30006002	36	Gebiet	NOUN	NN					S		Nom	N
+30006003	1	ihr	PRON	PPOSAT				3	S		Dat	F
+30006003	2	der	DET	ART					S		Nom	F
+30006003	3	der	DET	ART					S		Acc	M
+30006003	4	Tag	NOUN	NN					S		Nom	M
+30006003	5	der	DET	ART					S		Gen	M
+30006003	6	Unglück	NOUN	NN					P		Nom	N
+30006003	7	hinausschieben	VERB	VVINF		Inf						
+30006003	8	und	CCONJ	KON								
+30006003	9	der	DET	ART					S		Acc	M
+30006003	10	Thron	NOUN	NN					S		Nom	M
+30006003	11	der	DET	ART					S		Nom	M
+30006003	12	Gewalttat	NOUN	NN					S		Nom	F
+30006003	13	nah	ADP	APPR								
+30006003	14	rücken	VERB	VVINF		Inf						
+30006004	1	der	DET	ART					S		Nom	F
+30006004	2	auf	ADP	PTKVZ								
+30006004	3	Polster	NOUN	NN					P		Dat	M
+30006004	4	von	ADP	APPR								
+30006004	5	Elfenbein	NOUN	NE					S		Nom	N
+30006004	6	liegen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30006004	7	und	CCONJ	KON								
+30006004	8	auf	ADP	PTKVZ								
+30006004	9	ihr	DET	PPOSAT					S		Acc	M
+30006004	10	Ruhebetten	NOUN	NN					P		Nom	M
+30006004	11	sich	PRON	PRF				3	S		Acc	
+30006004	12	Strecke	VERB	VVINF		Inf						
+30006004	13	und	CCONJ	KON								
+30006004	14	Fettschafe	NOUN	NN					S		Nom	F
+30006004	15	von	ADP	APPR								
+30006004	16	der	DET	ART					S		Nom	M
+30006004	17	Herde	NOUN	NN					S		Nom	F
+30006004	18	essen	VERB	VVINF		Inf						
+30006004	19	und	CCONJ	KON								
+30006004	20	Kälber	NOUN	NN					P		Nom	N
+30006004	21	aus	ADP	PTKVZ								
+30006004	22	der	DET	ART					S		Dat	M
+30006004	23	Maststall	NOUN	NN					S		Nom	M
+30006005	1	der	DET	ART					S		Nom	F
+30006005	2	da	ADV	ADV								
+30006005	3	faseln	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30006005	4	zu	ADP	APPRART					S		Dat	N
+30006005	5	Klange	ADV	NN								
+30006005	6	der	DET	ART					S		Nom	M
+30006005	7	Harfe	NOUN	NN					S		Nom	F
+30006005	8	sich	PRON	PRF				3	S		Acc	
+30006005	9	wie	ADP	KOKOM								
+30006005	10	David	PROPN	NE					S		Nom	M
+30006005	11	Musikinstrument	NOUN	NN					P		Nom	N
+30006005	12	Ersinnen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30006006	1	der	DET	ART					S		Nom	F
+30006006	2	Wein	NOUN	NN					S		Nom	M
+30006006	3	aus	ADP	PTKVZ								
+30006006	4	Schale	NOUN	NN					P		Nom	F
+30006006	5	trinken	VERB	VVINF		Inf						
+30006006	6	und	CCONJ	KON								
+30006006	7	mit	ADP	APPR								
+30006006	8	der	DET	ART					S		Acc	M
+30006006	9	gut	ADV	ADJD	Sup							
+30006006	10	Ölen	NOUN	NN					P		Dat	M
+30006006	11	sich	PRON	PRF				3	S		Acc	
+30006006	12	Salbe	NOUN	NN					P		Nom	F
+30006006	13	und	CCONJ	KON								
+30006006	14	sich	PRON	PRF				3	S		Acc	
+30006006	15	nicht	PART	PTKNEG								
+30006006	16	grämen	VERB	VVINF		Inf						
+30006006	17	über	ADP	APPR								
+30006006	18	der	DET	ART					S		Nom	F
+30006006	19	Wunde	NOUN	NN					S		Nom	F
+30006006	20	Josephs	PROPN	NE					S		Nom	
+30006007	1	darum	ADV	PROAV								
+30006007	2	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30006007	3	sie	PRON	PPER				3	P		Nom	
+30006007	4	nun	ADV	ADV								
+30006007	5	wegführen	VERB	VVPP		Part						
+30006007	6	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30006007	7	an	ADP	PTKVZ								
+30006007	8	der	DET	ART					S		Nom	M
+30006007	9	Spitze	NOUN	NN					S		Nom	F
+30006007	10	der	DET	ART					S		Nom	M
+30006007	11	Weggeführt	NOUN	NN					P		Nom	M
+30006007	12	und	CCONJ	KON								
+30006007	13	der	DET	ART					S		Nom	N
+30006007	14	Gejauchze	NOUN	NN					P		Nom	F
+30006007	15	der	DET	ART					S		Nom	M
+30006007	16	träge	ADV	ADJD	Pos							
+30006007	17	Hingestreckt	NOUN	NN					P		Nom	F
+30006007	18	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30006007	19	aufhören	VERB	VVINF		Inf						
+30006008	1	der	DET	ART					S		Nom	M
+30006008	2	Herr	NOUN	NN					S		Nom	M
+30006008	3	Jahwe	NOUN	NN					S		Nom	M
+30006008	4	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30006008	5	bei	ADP	APPR								
+30006008	6	sich	PRON	PRF				3	S		Acc	
+30006008	7	selbst	ADV	ADV								
+30006008	8	geschworen	VERB	VVPP		Part						
+30006008	9	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006008	10	Jahwe	NOUN	NN					S		Nom	M
+30006008	11	der	DET	ART					S		Nom	M
+30006008	12	Gott	NOUN	NN					S		Nom	M
+30006008	13	der	DET	ART					S		Nom	M
+30006008	14	Heerschare	NOUN	NN					P		Nom	F
+30006008	15	ich	PRON	PPER				1	S		Nom	
+30006008	16	verabscheuen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30006008	17	der	DET	ART					S		Nom	F
+30006008	18	Hoffart	NOUN	NE					S		Nom	F
+30006008	19	Jakobs	PROPN	NE					S		Nom	M
+30006008	20	und	CCONJ	KON								
+30006008	21	hassen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30006008	22	sein	DET	PPOSAT					S		Nom	F
+30006008	23	Palast	NOUN	NN					P		Nom	F
+30006008	24	und	CCONJ	KON								
+30006008	25	ich	PRON	PPER				1	S		Nom	
+30006008	26	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30006008	27	der	DET	ART					S		Nom	F
+30006008	28	Stadt	NOUN	NN					S		Nom	F
+30006008	29	preisgeben	VERB	VVINF		Fin	Pres	3	P	Ind		
+30006008	30	und	CCONJ	KON								
+30006008	31	alle	PRON	PIS					S		Nom	N
+30006008	32	was	PRON	PWS					S		Nom	N
+30006008	33	sie	PRON	PPER				3	P		Nom	
+30006008	34	erfüllen	VERB	VVPP		Part						
+30006009	1	und	CCONJ	KON								
+30006009	2	es	PRON	PPER				3	S		Nom	N
+30006009	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30006009	4	geschehen	VERB	VVPP		Part						
+30006009	5	wenn	SCONJ	KOUS								
+30006009	6	zehn	NUM	CARD								
+30006009	7	Mann	NOUN	NN					P		Nom	M
+30006009	8	in	ADP	APPR								
+30006009	9	ein	DET	ART					S		Dat	M
+30006009	10	Haus	NOUN	NN					P		Nom	N
+30006009	11	übrigbleiben	VERB	VVINF		Inf						
+30006009	12	so	ADV	ADV								
+30006009	13	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30006009	14	sie	PRON	PPER				3	P		Nom	
+30006009	15	sterben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30006010	1	und	CCONJ	KON								
+30006010	2	heben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006010	3	ein	DET	ART					S		Acc	M
+30006010	4	der	DET	ART					S		Nom	M
+30006010	5	gestorbener	NOUN	NN					P		Nom	
+30006010	6	sein	AUX	VAINF		Inf						
+30006010	7	Oheim	PROPN	NE					S		Nom	
+30006010	8	und	CCONJ	KON								
+30006010	9	sein	AUX	VAINF		Inf						
+30006010	10	Bestatter	NOUN	NN					S		Nom	M
+30006010	11	auf	ADP	PTKVZ								
+30006010	12	um	ADP	APPR								
+30006010	13	der	DET	ART					S		Nom	F
+30006010	14	Gebein	NOUN	NN					P		Nom	N
+30006010	15	aus	ADP	PTKVZ								
+30006010	16	der	DET	ART					S		Dat	M
+30006010	17	Haus	NOUN	NN					P		Nom	N
+30006010	18	Hinauszuschaffen	VERB	VVINF		Inf						
+30006010	19	und	CCONJ	KON								
+30006010	20	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006010	21	zu	ADP	PTKVZ								
+30006010	22	der	DET	ART					S		Dat	M
+30006010	23	der	DET	ART					S		Nom	M
+30006010	24	in	ADP	APPRART					S		Dat	N
+30006010	25	innere	NOUN	NN					S		Nom	N
+30006010	26	der	DET	ART					S		Gen	M
+30006010	27	Haus	NOUN	NN					S		Gen	N
+30006010	28	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30006010	29	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30006010	30	noch	CCONJ	KON								
+30006010	31	jemand	PRON	PIS					S		Nom	M
+30006010	32	bei	ADP	APPR								
+30006010	33	dir	PRON	PPER				2	S		Dat	
+30006010	34	und	CCONJ	KON								
+30006010	35	dieser	PRON	PDAT					S		Nom	M
+30006010	36	sagen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006010	37	niemand	PRON	PIS					S		Nom	M
+30006010	38	so	ADV	ADV								
+30006010	39	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30006010	40	er	PRON	PPER				3	S		Nom	M
+30006010	41	sagen	VERB	VVINF		Inf						
+30006010	42	still	ADV	ADJD	Pos							
+30006010	43	denn	CCONJ	KON								
+30006010	44	der	DET	ART					S		Nom	M
+30006010	45	Name	NOUN	NN					S		Nom	M
+30006010	46	Jahwe	PROPN	NE					S		Gen	
+30006010	47	dürfen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30006010	48	nicht	PART	PTKNEG								
+30006010	49	erwähnen	VERB	VVPP		Part						
+30006010	50	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30006011	1	denn	CCONJ	KON								
+30006011	2	sehen	VERB	VVIMP				2	S	Imp		
+30006011	3	Jahwe	NOUN	NN					S		Nom	M
+30006011	4	gebieten	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006011	5	und	CCONJ	KON								
+30006011	6	man	PRON	PIS					S		Nom	
+30006011	7	schlagen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006011	8	der	DET	ART					S		Nom	N
+30006011	9	groß	ADJ	ADJA	Pos				S		Nom	F
+30006011	10	Haus	NOUN	NN					S		Nom	N
+30006011	11	in	ADP	APPR								
+30006011	12	Trumm	NOUN	NN					P		Nom	
+30006011	13	und	CCONJ	KON								
+30006011	14	der	DET	ART					S		Nom	N
+30006011	15	klein	ADJ	ADJA	Pos				S		Nom	F
+30006011	16	Haus	NOUN	NN					S		Nom	N
+30006011	17	in	ADP	APPR								
+30006011	18	Splitter	NOUN	NN					P		Nom	M
+30006012	1	rennen	NOUN	NN					S		Nom	N
+30006012	2	wohl	ADV	ADV								
+30006012	3	Roß	NOUN	NN					P		Nom	M
+30006012	4	auf	ADP	PTKVZ								
+30006012	5	Fels	NOUN	NN					P		Nom	M
+30006012	6	oder	CCONJ	KON								
+30006012	7	pflügen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006012	8	man	PRON	PIS					S		Nom	
+30006012	9	darauf	ADV	PROAV								
+30006012	10	mit	ADP	APPR								
+30006012	11	Rind	NOUN	NN					P		Dat	N
+30006012	12	daß	SCONJ	KOUS								
+30006012	13	ihr	PRON	PPOSAT				3	S		Dat	F
+30006012	14	der	DET	ART					S		Nom	N
+30006012	15	Recht	NOUN	NN					S		Nom	N
+30006012	16	in	ADP	APPR								
+30006012	17	Gift	NOUN	NN					S		Nom	N
+30006012	18	und	CCONJ	KON								
+30006012	19	der	DET	ART					S		Nom	F
+30006012	20	Frucht	NOUN	NN					S		Nom	F
+30006012	21	der	DET	ART					S		Nom	M
+30006012	22	Gerechtigkeit	NOUN	NN					S		Nom	F
+30006012	23	in	ADP	APPR								
+30006012	24	Wermut	NOUN	NN					S		Nom	M
+30006012	25	verwandeln	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006012	26	habben	VERB	VAFIN				2	P	Imp		
+30006013	1	der	DET	ART					S		Nom	F
+30006013	2	ihr	PRON	PPOSAT				3	S		Dat	F
+30006013	3	euch	PRON	PPER				2	P		Dat	
+30006013	4	über	ADP	APPR								
+30006013	5	Nichtiges	PROPN	NE					S		Gen	
+30006013	6	freueen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006013	7	der	DET	ART					S		Nom	F
+30006013	8	ihr	PRON	PPOSAT				3	S		Dat	F
+30006013	9	Sprechet	PROPN	NE					S		Nom	
+30006013	10	haben	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30006013	11	wir	PRON	PPER				1	P		Nom	
+30006013	12	uns	PRON	PPER				1	P		Acc	
+30006013	13	nicht	PART	PTKNEG								
+30006013	14	durch	ADP	APPR								
+30006013	15	unser	DET	PPOSAT					S		Nom	F
+30006013	16	Stärke	NOUN	NN					S		Nom	F
+30006013	17	Horn	NOUN	NN					P		Nom	N
+30006013	18	erwerben	VERB	VVPP		Part						
+30006014	1	denn	CCONJ	KON								
+30006014	2	sehen	VERB	VVIMP				2	S	Imp		
+30006014	3	ich	PRON	PPER				1	S		Nom	
+30006014	4	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30006014	5	wider	ADP	PTKVZ								
+30006014	6	euch	PRON	PPER				2	P		Dat	
+30006014	7	Haus	NOUN	NN					S		Nom	N
+30006014	8	Israel	PROPN	NE					S		Nom	N
+30006014	9	ein	DET	ART					S		Nom	F
+30006014	10	Nation	NOUN	NN					S		Nom	F
+30006014	11	erwecken	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30006014	12	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30006014	13	Jahwe	NOUN	NN					S		Nom	M
+30006014	14	der	DET	ART					S		Nom	M
+30006014	15	Gott	NOUN	NN					S		Nom	M
+30006014	16	der	DET	ART					S		Nom	M
+30006014	17	Heerschare	NOUN	NN					P		Nom	F
+30006014	18	und	CCONJ	KON								
+30006014	19	sie	PRON	PPER				3	P		Nom	
+30006014	20	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30006014	21	euch	PRON	PPER				2	P		Dat	
+30006014	22	bedrücken	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30006014	23	von	ADP	APPR								
+30006014	24	der	DET	ART					S		Dat	M
+30006014	25	Eingange	ADV	ADV								
+30006014	26	Hamath	PROPN	NE					S		Gen	
+30006014	27	an	ADP	PTKVZ								
+30006014	28	bis	CCONJ	KON								
+30006014	29	zu	ADP	APPRART					S		Dat	N
+30006014	30	Bache	NOUN	NN					S		Nom	F
+30006014	31	der	DET	ART					S		Nom	M
+30006014	32	Ebene	NOUN	NN					S		Nom	F
+30007001	1	also	ADV	ADV								
+30007001	2	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007001	3	mich	PRON	PPER				1	S		Acc	
+30007001	4	der	DET	ART					S		Nom	M
+30007001	5	Herr	NOUN	NN					S		Nom	M
+30007001	6	Jahwe	NOUN	NN					S		Nom	M
+30007001	7	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30007001	8	sehen	VERB	VVIMP				2	S	Imp		
+30007001	9	er	PRON	PPER				3	S		Nom	M
+30007001	10	bilden	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007001	11	Heuschrecke	NOUN	NN					P		Nom	F
+30007001	12	in	ADP	APPRART					S		Dat	N
+30007001	13	Anfang	NOUN	NN					S			M
+30007001	14	der	DET	ART					S		Gen	M
+30007001	15	Spätgraswuchse	PROPN	NE					S		Gen	
+30007001	16	und	CCONJ	KON								
+30007001	17	sehen	VERB	VVIMP				2	S	Imp		
+30007001	18	es	PRON	PPER				3	S		Nom	N
+30007001	19	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30007001	20	der	DET	ART					S		Nom	N
+30007001	21	Spätgra	PROPN	NE					S		Gen	
+30007001	22	nach	ADP	APPR								
+30007001	23	der	DET	ART					S		Dat	M
+30007001	24	Königsmähen	NOUN	NN					P		Nom	F
+30007002	1	und	CCONJ	KON								
+30007002	2	es	PRON	PPER				3	S		Nom	N
+30007002	3	geschehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007002	4	als	ADP	KOKOM								
+30007002	5	sie	PRON	PPER				3	P		Nom	
+30007002	6	der	DET	ART					S		Nom	N
+30007002	7	Kraut	NOUN	NN					S		Nom	N
+30007002	8	der	DET	ART					S		Nom	M
+30007002	9	Erde	NOUN	NN					S		Nom	F
+30007002	10	ganz	ADV	ADV								
+30007002	11	abgefressen	VERB	VVPP		Part						
+30007002	12	haben	AUX	VAFIN		Fin	Past	3	P	Ind		
+30007002	13	da	ADV	ADV								
+30007002	14	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007002	15	ich	PRON	PPER				1	S		Nom	
+30007002	16	Herr	NOUN	NN					S		Nom	M
+30007002	17	Jahwe	NOUN	NN					S		Nom	M
+30007002	18	vergib	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30007002	19	doch	CCONJ	KON								
+30007002	20	wie	ADP	KOKOM								
+30007002	21	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+30007002	22	Jakob	PROPN	NE					S		Nom	M
+30007002	23	bestehen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007002	24	denn	CCONJ	KON								
+30007002	25	es	PRON	PPER				3	S		Nom	N
+30007002	26	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007002	27	klein	ADV	ADJD	Pos							
+30007003	1	Jahwe	NOUN	NN					S		Nom	M
+30007003	2	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007003	3	sich	PRON	PRF				3	S		Acc	
+30007003	4	dieser	DET	PDAT					S		Nom	N
+30007003	5	gereuen	VERB	VVPP		Part						
+30007003	6	es	PRON	PPER				3	S		Nom	N
+30007003	7	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30007003	8	nicht	PART	PTKNEG								
+30007003	9	geschehen	VERB	VVPP		Part						
+30007003	10	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007003	11	Jahwe	NOUN	NN					S		Nom	M
+30007004	1	also	ADV	ADV								
+30007004	2	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007004	3	mich	PRON	PPER				1	S		Acc	
+30007004	4	der	DET	ART					S		Nom	M
+30007004	5	Herr	NOUN	NN					S		Nom	M
+30007004	6	Jahwe	NOUN	NN					S		Nom	M
+30007004	7	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30007004	8	sehen	VERB	VVIMP				2	S	Imp		
+30007004	9	der	DET	ART					S		Nom	M
+30007004	10	Herr	NOUN	NN					S		Nom	M
+30007004	11	Jahwe	NOUN	NN					S		Nom	M
+30007004	12	rufen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007004	13	um	ADP	APPR								
+30007004	14	mit	ADP	APPR								
+30007004	15	Feuer	NOUN	NN					S		Nom	N
+30007004	16	zu	ADP	PTKVZ								
+30007004	17	richten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007004	18	und	CCONJ	KON								
+30007004	19	es	PRON	PPER				3	S		Nom	N
+30007004	20	fraß	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007004	21	der	DET	ART					S		Nom	F
+30007004	22	groß	ADJ	ADJA	Pos				S		Nom	F
+30007004	23	Flut	NOUN	NN					S		Nom	F
+30007004	24	und	CCONJ	KON								
+30007004	25	fraß	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007004	26	der	DET	ART					S		Nom	N
+30007004	27	Erbteil	NOUN	NN					S		Nom	M
+30007005	1	da	SCONJ	KOUS								
+30007005	2	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007005	3	ich	PRON	PPER				1	S		Nom	
+30007005	4	Herr	NOUN	NN					S		Nom	M
+30007005	5	Jahwe	NOUN	NN					S		Nom	M
+30007005	6	laß	VERB	VVIMP				2	S	Imp		
+30007005	7	doch	CCONJ	KON								
+30007005	8	ab	ADP	PTKVZ								
+30007005	9	wie	ADP	KOKOM								
+30007005	10	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+30007005	11	Jakob	PROPN	NE					S		Nom	M
+30007005	12	bestehen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007005	13	denn	CCONJ	KON								
+30007005	14	es	PRON	PPER				3	S		Nom	N
+30007005	15	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007005	16	klein	ADV	ADJD	Pos							
+30007006	1	Jahwe	NOUN	NN					S		Nom	M
+30007006	2	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007006	3	sich	PRON	PRF				3	S		Acc	
+30007006	4	dieser	DET	PDAT					S		Nom	N
+30007006	5	gereuen	VERB	VVPP		Part						
+30007006	6	auch	ADV	ADV								
+30007006	7	der	DET	ART					S		Nom	N
+30007006	8	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30007006	9	nicht	PART	PTKNEG								
+30007006	10	geschehen	VERB	VVPP		Part						
+30007006	11	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007006	12	der	DET	ART					S		Nom	M
+30007006	13	Herr	NOUN	NN					S		Nom	M
+30007006	14	Jahwe	NOUN	NN					S		Nom	M
+30007007	1	also	ADV	ADV								
+30007007	2	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007007	3	er	PRON	PPER				3	S		Nom	M
+30007007	4	mich	PRON	PPER				1	S		Acc	
+30007007	5	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30007007	6	sehen	VERB	VVIMP				2	S	Imp		
+30007007	7	der	DET	ART					S		Nom	M
+30007007	8	Herr	NOUN	NN					S		Nom	M
+30007007	9	stehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007007	10	auf	ADP	PTKVZ								
+30007007	11	ein	PRON	ART					S		Nom	M
+30007007	12	senkrechten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007007	13	Mauer	NOUN	NN					S		Nom	F
+30007007	14	und	CCONJ	KON								
+30007007	15	ein	DET	ART					S		Nom	N
+30007007	16	Senkblei	PROPN	NE					S		Nom	
+30007007	17	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30007007	18	in	ADP	APPR								
+30007007	19	sein	DET	PPOSAT					S		Dat	F
+30007007	20	Hand	NOUN	NN					S		Nom	F
+30007008	1	und	CCONJ	KON								
+30007008	2	Jahwe	NOUN	NN					S		Nom	M
+30007008	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007008	4	zu	ADP	PTKVZ								
+30007008	5	mir	PRON	PPER				1	S		Dat	
+30007008	6	was	PRON	PWS					S		Nom	N
+30007008	7	siehst	VERB	VVFIN		Fin	Pres	2	S	Ind		
+30007008	8	du	PRON	PPER				2	S		Nom	
+30007008	9	Amos	PROPN	NE					S		Nom	M
+30007008	10	und	CCONJ	KON								
+30007008	11	ich	PRON	PPER				1	S		Nom	
+30007008	12	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007008	13	ein	DET	ART					S		Nom	M
+30007008	14	Senkblei	PROPN	NE					S		Nom	
+30007008	15	und	CCONJ	KON								
+30007008	16	der	DET	ART					S		Nom	M
+30007008	17	Herr	NOUN	NN					S		Nom	M
+30007008	18	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007008	19	sehen	VERB	VVIMP				2	S	Imp		
+30007008	20	ich	PRON	PPER				1	S		Nom	
+30007008	21	legen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30007008	22	ein	DET	ART					S		Nom	N
+30007008	23	Senkblei	PROPN	NE					S		Nom	
+30007008	24	an	ADP	PTKVZ								
+30007008	25	mein	DET	PPOSAT					S		Nom	N
+30007008	26	Volk	NOUN	NN					S		Nom	N
+30007008	27	Israel	PROPN	NE					S		Nom	N
+30007008	28	in	ADP	APPR								
+30007008	29	sein	DET	PPOSAT					S		Dat	F
+30007008	30	Mitte	NOUN	NN					S		Nom	F
+30007008	31	ich	PRON	PPER				1	S		Nom	
+30007008	32	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30007008	33	fortan	ADV	ADV								
+30007008	34	nicht	PART	PTKNEG								
+30007008	35	mehr	ADV	ADV								
+30007008	36	schonend	ADV	ADJD	Pos							
+30007008	37	an	ADP	PTKVZ								
+30007008	38	ihm	PRON	PPER				3	S		Dat	M
+30007008	39	vorübergehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30007009	1	und	CCONJ	KON								
+30007009	2	der	DET	ART					S		Nom	F
+30007009	3	Höhe	NOUN	NN					P		Nom	F
+30007009	4	Isaaks	PROPN	NE					S		Nom	
+30007009	5	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30007009	6	verwüsten	VERB	VVPP		Part						
+30007009	7	und	CCONJ	KON								
+30007009	8	der	DET	ART					S		Nom	F
+30007009	9	Heiligtümer	NOUN	NN					P		Nom	N
+30007009	10	Israel	PROPN	NE					S		Gen	N
+30007009	11	zerstören	VERB	VVPP		Part						
+30007009	12	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30007009	13	und	CCONJ	KON								
+30007009	14	ich	PRON	PPER				1	S		Nom	
+30007009	15	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30007009	16	mit	ADP	APPR								
+30007009	17	der	DET	ART					S		Dat	M
+30007009	18	schwerte	NOUN	NN					P		Nom	
+30007009	19	wider	ADP	PTKVZ								
+30007009	20	der	DET	ART					S		Nom	N
+30007009	21	Haus	NOUN	NN					S		Nom	N
+30007009	22	Jerobeam	PROPN	NE					S		Gen	
+30007009	23	aufstehen	VERB	VVINF		Inf						
+30007010	1	da	SCONJ	KOUS								
+30007010	2	senden	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007010	3	Amazja	PROPN	NE					S		Nom	M
+30007010	4	der	DET	ART					S		Nom	M
+30007010	5	Priester	NOUN	NN					P		Nom	M
+30007010	6	von	ADP	APPR								
+30007010	7	Bethel	PROPN	NE					S		Nom	N
+30007010	8	zu	ADP	PTKVZ								
+30007010	9	Jerobeam	NOUN	NN					S		Nom	M
+30007010	10	der	DET	ART					S		Dat	M
+30007010	11	König	NOUN	NN					S		Nom	M
+30007010	12	von	ADP	APPR								
+30007010	13	Israel	PROPN	NE					S		Nom	N
+30007010	14	und	CCONJ	KON								
+30007010	15	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007010	16	ihm	PRON	PPER				3	S		Dat	M
+30007010	17	sagen	VERB	VVINF		Inf						
+30007010	18	Amos	PROPN	NE					S		Nom	M
+30007010	19	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007010	20	ein	DET	ART					S		Nom	F
+30007010	21	Verschwörung	NOUN	NN					S		Nom	F
+30007010	22	wider	ADP	PTKVZ								
+30007010	23	dich	PRON	PPER				2	S		Acc	
+30007010	24	anstiften	VERB	VVPP		Part						
+30007010	25	inmitten	ADP	APPR								
+30007010	26	der	DET	ART					S		Gen	M
+30007010	27	Haus	NOUN	NN					S		Gen	N
+30007010	28	Israel	PROPN	NE					S		Nom	N
+30007010	29	der	DET	ART					S		Nom	N
+30007010	30	Land	NOUN	NN					S		Nom	N
+30007010	31	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007010	32	aller	PRON	PIS					P		Nom	
+30007010	33	sein	DET	PPOSAT					S		Nom	F
+30007010	34	Wort	NOUN	NN					P		Nom	N
+30007010	35	nicht	PART	PTKNEG								
+30007010	36	zu	ADP	PTKVZ								
+30007010	37	ertragen	VERB	VVINF		Inf						
+30007010	38	Vermögen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007011	1	denn	CCONJ	KON								
+30007011	2	so	ADV	ADV								
+30007011	3	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30007011	4	Amos	PROPN	NE					S		Nom	M
+30007011	5	Jerobeam	NOUN	NN					S		Nom	M
+30007011	6	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007011	7	durch	ADP	APPRART					S		Acc	N
+30007011	8	Schwert	NOUN	NN					S		Nom	N
+30007011	9	sterben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007011	10	und	CCONJ	KON								
+30007011	11	Israel	PROPN	NE					S		Nom	N
+30007011	12	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007011	13	gewißlich	ADV	ADJD	Pos							
+30007011	14	aus	ADP	PTKVZ								
+30007011	15	sein	DET	PPOSAT					S		Dat	M
+30007011	16	Land	NOUN	NN					P		Nom	N
+30007011	17	wegführen	VERB	VVPP		Part						
+30007011	18	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30007012	1	und	CCONJ	KON								
+30007012	2	Amazja	PROPN	NE					S		Nom	M
+30007012	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007012	4	zu	ADP	PTKVZ								
+30007012	5	Amos	PROPN	NE					S		Nom	M
+30007012	6	Seher	NOUN	NN					S		Nom	M
+30007012	7	gehen	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30007012	8	Entfliehe	VERB	ADV		Fin	Pres	3	S	Sub		
+30007012	9	in	ADP	APPR								
+30007012	10	der	DET	ART					S		Nom	N
+30007012	11	Land	NOUN	NN					S		Nom	N
+30007012	12	Juda	PROPN	NE					S		Nom	M
+30007012	13	und	CCONJ	KON								
+30007012	14	iß	ADP	PTKVZ								
+30007012	15	dort	ADV	ADV								
+30007012	16	dein	DET	PPER					S		Nom	N
+30007012	17	Brot	NOUN	NN					S		Nom	N
+30007012	18	und	CCONJ	KON								
+30007012	19	dort	ADV	ADV								
+30007012	20	magst	X	ADV								
+30007012	21	du	PRON	PPER				2	S		Nom	
+30007012	22	weissagen	VERB	VVINF		Inf						
+30007013	1	aber	CCONJ	KON								
+30007013	2	in	ADP	APPR								
+30007013	3	Bethel	PROPN	NE					S		Nom	N
+30007013	4	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30007013	5	du	PRON	PPER				2	S		Nom	
+30007013	6	fortan	ADV	ADV								
+30007013	7	nicht	PART	PTKNEG								
+30007013	8	mehr	ADV	ADV								
+30007013	9	weissagen	VERB	VVINF		Inf						
+30007013	10	denn	CCONJ	KON								
+30007013	11	dieser	PRON	PDS					S		Nom	N
+30007013	12	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007013	13	ein	DET	ART					S		Nom	N
+30007013	14	Heiligtum	NOUN	NN					S		Nom	N
+30007013	15	der	DET	ART					S		Gen	M
+30007013	16	König	PROPN	NE					S		Nom	
+30007013	17	und	CCONJ	KON								
+30007013	18	dieser	PRON	PDS					S		Nom	N
+30007013	19	ein	DET	ART					S		Nom	N
+30007013	20	königlich	ADJ	ADJA	Pos				S		Nom	M
+30007013	21	Wohnsitz	NOUN	NN					S		Nom	M
+30007014	1	und	CCONJ	KON								
+30007014	2	Amos	PROPN	NE					S		Nom	M
+30007014	3	antworten	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007014	4	und	CCONJ	KON								
+30007014	5	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007014	6	zu	ADP	PTKVZ								
+30007014	7	Amazja	PROPN	NE					S		Nom	M
+30007014	8	ich	PRON	PPER				1	S		Nom	
+30007014	9	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30007014	10	kein	DET	PIAT					S		Nom	N
+30007014	11	Prophet	NOUN	NN					S		Nom	M
+30007014	12	und	CCONJ	KON								
+30007014	13	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30007014	14	kein	DET	PIAT					S		Nom	N
+30007014	15	Prophetensohn	PROPN	NE					S		Nom	M
+30007014	16	sondern	CCONJ	KON								
+30007014	17	ich	PRON	PPER				1	S		Nom	
+30007014	18	sein	AUX	VAFIN		Fin	Past	3	S	Ind		
+30007014	19	ein	DET	ART					S		Nom	N
+30007014	20	Viehhirt	NOUN	NN					P		Nom	N
+30007014	21	und	CCONJ	KON								
+30007014	22	lesen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007014	23	wild	ADJ	ADJA	Pos				S		Nom	F
+30007014	24	Feige	NOUN	NN					P		Nom	F
+30007015	1	und	CCONJ	KON								
+30007015	2	Jahwe	NOUN	NN					S		Nom	M
+30007015	3	nehmen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007015	4	mich	PRON	PPER				1	S		Acc	
+30007015	5	hinter	ADP	APPR								
+30007015	6	der	DET	ART					S		Dat	M
+30007015	7	Kleinvieh	NOUN	NN					S		Nom	N
+30007015	8	Weg	ADV	PTKVZ								
+30007015	9	und	CCONJ	KON								
+30007015	10	Jahwe	NOUN	NN					S		Nom	M
+30007015	11	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30007015	12	zu	ADP	PTKVZ								
+30007015	13	mir	PRON	PPER				1	S		Dat	
+30007015	14	Gehe	VERB	VVIMP				2	S	Imp		
+30007015	15	hin	ADV	ADV								
+30007015	16	weissag	ADJ	ADJA	Pos				S		Nom	F
+30007015	17	mein	DET	PPOSAT					S		Dat	M
+30007015	18	Volke	NOUN	NN					S		Nom	M
+30007015	19	Israel	PROPN	NE					S		Nom	N
+30007016	1	und	CCONJ	KON								
+30007016	2	nun	ADV	ADV								
+30007016	3	hören	VERB	VVFIN		Fin	Pres	3	S	Sub		
+30007016	4	der	DET	ART					S		Nom	N
+30007016	5	Wort	NOUN	NN					S		Nom	N
+30007016	6	Jahwe	PROPN	NE					S		Gen	
+30007016	7	du	PRON	PPER				2	S		Nom	
+30007016	8	sprichst	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30007016	9	du	PRON	PPER				2	S		Nom	
+30007016	10	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30007016	11	nicht	PART	PTKNEG								
+30007016	12	weissagen	VERB	VVINF		Inf						
+30007016	13	über	ADP	APPR								
+30007016	14	Israel	PROPN	NE					S		Nom	N
+30007016	15	und	CCONJ	KON								
+30007016	16	sollst	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30007016	17	nicht	PART	PTKNEG								
+30007016	18	reden	VERB	VVINF		Inf						
+30007016	19	über	ADP	APPR								
+30007016	20	der	DET	ART					S		Nom	N
+30007016	21	Haus	NOUN	NN					S		Nom	N
+30007016	22	Isaak	PROPN	NE					S		Nom	M
+30007017	1	darum	ADV	PROAV								
+30007017	2	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30007017	3	Jahwe	NOUN	NN					S		Nom	M
+30007017	4	also	ADV	ADV								
+30007017	5	dein	PRON	PPOSAT				2	P		Nom	
+30007017	6	Weib	NOUN	NN					S		Nom	N
+30007017	7	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007017	8	zu	ADP	APPRART					S		Dat	F
+30007017	9	Hure	NOUN	NN					S		Nom	F
+30007017	10	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30007017	11	in	ADP	APPR								
+30007017	12	der	DET	ART					S		Nom	M
+30007017	13	Stadt	NOUN	NN					S		Nom	F
+30007017	14	und	CCONJ	KON								
+30007017	15	dein	DET	PPOSAT					S		Nom	F
+30007017	16	Sohn	NOUN	NN					P		Nom	M
+30007017	17	und	CCONJ	KON								
+30007017	18	dein	DET	PPOSAT					S		Nom	F
+30007017	19	Tochter	NOUN	NN					P		Nom	F
+30007017	20	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30007017	21	durch	ADP	APPRART					S		Acc	N
+30007017	22	Schwert	NOUN	NN					S		Nom	N
+30007017	23	fallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007017	24	und	CCONJ	KON								
+30007017	25	dein	DET	PPER					S		Nom	N
+30007017	26	Land	NOUN	NN					S		Nom	N
+30007017	27	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007017	28	verteilen	VERB	VVPP		Part						
+30007017	29	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30007017	30	mit	ADP	APPR								
+30007017	31	der	DET	ART					S		Nom	M
+30007017	32	Meßschnur	PROPN	NE					S		Nom	
+30007017	33	und	CCONJ	KON								
+30007017	34	du	PRON	PPER				2	S		Nom	
+30007017	35	selbst	ADV	ADV								
+30007017	36	wersten	AUX	VAFIN		Fin	Pres	2	S	Ind		
+30007017	37	in	ADP	APPR								
+30007017	38	ein	DET	ART					S		Dat	M
+30007017	39	unrein	ADJ	ADJA	Pos				S		Acc	M
+30007017	40	Land	NOUN	NN					P		Nom	N
+30007017	41	sterben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30007017	42	und	CCONJ	KON								
+30007017	43	Israel	PROPN	NE					S		Nom	N
+30007017	44	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30007017	45	gewißlich	ADV	ADJD	Pos							
+30007017	46	aus	ADP	PTKVZ								
+30007017	47	sein	DET	PPOSAT					S		Dat	M
+30007017	48	Land	NOUN	NN					P		Nom	N
+30007017	49	wegführen	VERB	VVPP		Part						
+30007017	50	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30008001	1	also	ADV	ADV								
+30008001	2	lassen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30008001	3	mich	PRON	PPER				1	S		Acc	
+30008001	4	der	DET	ART					S		Nom	M
+30008001	5	Herr	NOUN	NN					S		Nom	M
+30008001	6	Jahwe	NOUN	NN					S		Nom	M
+30008001	7	sehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30008001	8	sehen	VERB	VVIMP				2	S	Imp		
+30008001	9	ein	DET	ART					S		Nom	N
+30008001	10	Korb	NOUN	NN					S		Nom	M
+30008001	11	mit	ADP	APPR								
+30008001	12	reif	ADJ	ADJA	Pos				S		Dat	M
+30008001	13	Obst	NOUN	NN					S		Nom	N
+30008002	1	und	CCONJ	KON								
+30008002	2	er	PRON	PPER				3	S		Nom	M
+30008002	3	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30008002	4	was	PRON	PWS					S		Nom	N
+30008002	5	siehst	VERB	VVFIN		Fin	Pres	2	S	Ind		
+30008002	6	du	PRON	PPER				2	S		Nom	
+30008002	7	Amos	PROPN	NE					S		Nom	M
+30008002	8	und	CCONJ	KON								
+30008002	9	ich	PRON	PPER				1	S		Nom	
+30008002	10	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30008002	11	ein	DET	ART					S		Acc	M
+30008002	12	Korb	NOUN	NN					S		Nom	M
+30008002	13	mit	ADP	APPR								
+30008002	14	reif	ADJ	ADJA	Pos				S		Dat	M
+30008002	15	Obst	NOUN	NN					S		Nom	N
+30008002	16	und	CCONJ	KON								
+30008002	17	Jahwe	NOUN	NN					S		Nom	M
+30008002	18	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30008002	19	zu	ADP	PTKVZ								
+30008002	20	mir	PRON	PPER				1	S		Dat	
+30008002	21	der	DET	ART					S		Nom	N
+30008002	22	Ende	NOUN	NN					S		Nom	N
+30008002	23	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30008002	24	über	ADP	APPR								
+30008002	25	mein	DET	PPOSAT					S		Nom	N
+30008002	26	Volk	NOUN	NN					S		Nom	N
+30008002	27	Israel	PROPN	NE					S		Nom	N
+30008002	28	kommen	VERB	VVPP		Part						
+30008002	29	ich	PRON	PPER				1	S		Nom	
+30008002	30	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30008002	31	fortan	ADV	ADV								
+30008002	32	nicht	PART	PTKNEG								
+30008002	33	mehr	ADV	ADV								
+30008002	34	schonend	ADV	ADJD	Pos							
+30008002	35	an	ADP	PTKVZ								
+30008002	36	ihm	PRON	PPER				3	S		Dat	M
+30008002	37	vorübergehen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30008003	1	und	CCONJ	KON								
+30008003	2	der	DET	ART					S		Nom	F
+30008003	3	Gesänge	NOUN	NN					P		Nom	M
+30008003	4	der	DET	ART					S		Gen	M
+30008003	5	Palast	ADJ	NN	Pos				S		Nom	N
+30008003	6	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30008003	7	sich	PRON	PRF				3	S		Acc	
+30008003	8	in	ADP	APPR								
+30008003	9	Geheul	NOUN	NN					S		Nom	N
+30008003	10	verwandeln	VERB	VVINF		Inf						
+30008003	11	an	ADP	PTKVZ								
+30008003	12	jener	DET	PDAT					S		Dat	N
+30008003	13	Tag	NOUN	NN					P		Nom	M
+30008003	14	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30008003	15	der	DET	ART					S		Nom	M
+30008003	16	Herr	NOUN	NN					S		Nom	M
+30008003	17	Jahwe	NOUN	NN					S		Nom	M
+30008003	18	Leiche	NOUN	NN					P		Nom	F
+30008003	19	in	ADP	APPR								
+30008003	20	Menge	NOUN	NN					S		Nom	F
+30008003	21	aller	DET	PIAT					P		Gen	
+30008003	22	Ort	NOUN	NN					P		Dat	M
+30008003	23	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30008003	24	er	PRON	PPER				3	S		Nom	M
+30008003	25	sie	PRON	PPER				3	P		Nom	
+30008003	26	hinwerfen	VERB	VVPP		Part						
+30008003	27	still	ADV	ADJD	Pos							
+30008004	1	höret	NOUN	NN					S		Nom	N
+30008004	2	dieser	DET	PDAT					S		Nom	N
+30008004	3	der	DET	ART					S		Nom	F
+30008004	4	ihr	PRON	PPOSAT				3	S		Dat	F
+30008004	5	nach	ADP	APPR								
+30008004	6	der	DET	ART					S		Dat	M
+30008004	7	Dürftige	NOUN	NN					P		Nom	F
+30008004	8	Schnaubet	NOUN	NE					S		Nom	F
+30008004	9	und	CCONJ	KON								
+30008004	10	nach	ADP	APPR								
+30008004	11	der	DET	ART					S		Nom	M
+30008004	12	Vernichtung	NOUN	NN					S		Nom	F
+30008004	13	der	DET	ART					S		Nom	M
+30008004	14	sanftmütigen	NOUN	NN					P		Nom	F
+30008004	15	in	ADP	APPRART					S		Dat	N
+30008004	16	Land	NOUN	NN					P		Nom	N
+30008005	1	und	CCONJ	KON								
+30008005	2	Sprechet	PROPN	NE					S		Nom	
+30008005	3	wann	SCONJ	PWAV								
+30008005	4	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30008005	5	der	DET	ART					S		Nom	M
+30008005	6	Neumond	NOUN	NN					S		Nom	M
+30008005	7	vorüber	ADV	ADV								
+30008005	8	daß	SCONJ	KOUS								
+30008005	9	wir	PRON	PPER				1	P		Nom	
+30008005	10	Getreide	NOUN	NN					S		Nom	N
+30008005	11	verkaufen	VERB	VVINF		Inf						
+30008005	12	und	CCONJ	KON								
+30008005	13	der	DET	ART					S		Nom	M
+30008005	14	Sabbath	PROPN	NE					S		Nom	M
+30008005	15	daß	SCONJ	KOUS								
+30008005	16	wir	PRON	PPER				1	P		Nom	
+30008005	17	der	DET	ART					S		Nom	F
+30008005	18	Kornspeicher	NOUN	NN					S		Nom	M
+30008005	19	auftun	VERB	VVINF		Inf						
+30008005	20	um	ADP	APPR								
+30008005	21	der	DET	ART					S		Nom	N
+30008005	22	Epha	PROPN	NE					S		Nom	
+30008005	23	zu	ADP	PTKVZ								
+30008005	24	verkleinern	VERB	VVINF		Inf						
+30008005	25	und	CCONJ	KON								
+30008005	26	der	DET	ART					S		Acc	M
+30008005	27	sekel	NOUN	NN					S		Nom	M
+30008005	28	zu	ADP	PTKVZ								
+30008005	29	vergrößern	VERB	VVINF		Inf						
+30008005	30	und	CCONJ	KON								
+30008005	31	der	DET	ART					S		Nom	F
+30008005	32	Waage	NOUN	NN					S		Nom	F
+30008005	33	der	DET	ART					S		Gen	M
+30008005	34	Betrug	NOUN	NN					S		Gen	M
+30008005	35	zu	ADP	PTKVZ								
+30008005	36	fälschen	VERB	VVINF		Inf						
+30008006	1	um	ADP	APPR								
+30008006	2	der	DET	ART					S		Nom	F
+30008006	3	arme	NOUN	NN					P		Dat	M
+30008006	4	für	ADP	APPR								
+30008006	5	Geld	NOUN	NN					S		Nom	N
+30008006	6	und	CCONJ	KON								
+30008006	7	der	DET	ART					S		Acc	M
+30008006	8	Dürftige	NOUN	NN					P		Nom	F
+30008006	9	um	ADP	APPR								
+30008006	10	ein	DET	ART					S		Nom	N
+30008006	11	Paar	NOUN	NN					S		Nom	N
+30008006	12	Schuh	NOUN	NN					P		Nom	M
+30008006	13	zu	ADP	PTKVZ								
+30008006	14	kaufen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30008006	15	und	CCONJ	KON								
+30008006	16	damit	ADV	PROAV								
+30008006	17	wir	PRON	PPER				1	P		Nom	
+30008006	18	der	DET	ART					S		Acc	M
+30008006	19	Abfall	NOUN	NN					S		Nom	M
+30008006	20	der	DET	ART					S		Gen	M
+30008006	21	Korn	NOUN	NN					S		Gen	M
+30008006	22	verkaufen	VERB	VVINF		Inf						
+30008007	1	Jahwe	NOUN	NN					S		Nom	M
+30008007	2	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30008007	3	geschworen	VERB	VVPP		Part						
+30008007	4	bei	ADP	APPR								
+30008007	5	der	DET	ART					S		Dat	M
+30008007	6	Stolze	PROPN	NE					S		Nom	M
+30008007	7	Jakobs	PROPN	NE					S		Nom	M
+30008007	8	wenn	SCONJ	KOUS								
+30008007	9	ich	PRON	PPER				1	S		Nom	
+30008007	10	aller	PRON	PIS					P		Nom	
+30008007	11	ihr	DET	PPOSAT					S		Nom	F
+30008007	12	Werk	NOUN	NN					P		Nom	N
+30008007	13	vergessen	VERB	VVPP		Part						
+30008007	14	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30008007	15	ewiglich	ADV	ADJD	Pos							
+30008008	1	sollen	AUX	VMFIN		Fin	Past	3	S	Ind		
+30008008	2	der	DET	ART					S		Nom	N
+30008008	3	Land	NOUN	NN					S		Nom	N
+30008008	4	Darob	ADV	PROAV								
+30008008	5	nicht	PART	PTKNEG								
+30008008	6	erbeben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30008008	7	und	CCONJ	KON								
+30008008	8	jeder	PRON	PIS					S		Nom	M
+30008008	9	der	DET	ART					S		Nom	M
+30008008	10	darin	ADV	PROAV								
+30008008	11	wohnen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30008008	12	nicht	PART	PTKNEG								
+30008008	13	trauern	VERB	VVINF		Inf						
+30008008	14	und	CCONJ	KON								
+30008008	15	es	PRON	PPER				3	S		Nom	N
+30008008	16	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30008008	17	insgesamt	ADV	ADV								
+30008008	18	emporsteigen	VERB	VVINF		Inf						
+30008008	19	wie	ADP	KOKOM								
+30008008	20	der	DET	ART					S		Nom	M
+30008008	21	Nil	PROPN	NE					S		Nom	M
+30008008	22	und	CCONJ	KON								
+30008008	23	Aufwog	NOUN	VVPP					P		Nom	F
+30008008	24	und	CCONJ	KON								
+30008008	25	zurücksinken	VERB	VVFIN		Inf						
+30008008	26	wie	ADP	KOKOM								
+30008008	27	der	DET	ART					S		Nom	M
+30008008	28	Strom	NOUN	NN					S		Nom	M
+30008008	29	Ägypten	PROPN	NE					S		Gen	N
+30008009	1	und	CCONJ	KON								
+30008009	2	es	PRON	PPER				3	S		Nom	N
+30008009	3	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30008009	4	geschehen	VERB	VVPP		Part						
+30008009	5	an	ADP	PTKVZ								
+30008009	6	jener	DET	PDAT					S		Dat	N
+30008009	7	Tag	NOUN	NN					P		Nom	M
+30008009	8	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30008009	9	der	DET	ART					S		Nom	M
+30008009	10	Herr	NOUN	NN					S		Nom	M
+30008009	11	Jahwe	NOUN	NN					S		Nom	M
+30008009	12	da	ADV	ADV								
+30008009	13	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30008009	14	ich	PRON	PPER				1	S		Nom	
+30008009	15	der	DET	ART					S		Nom	F
+30008009	16	Sonne	NOUN	NN					S		Nom	F
+30008009	17	untergehen	VERB	VVINF		Inf						
+30008009	18	lassen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30008009	19	an	ADP	APPRART					S		Dat	M
+30008009	20	Mittag	NOUN	NN					S		Nom	M
+30008009	21	und	CCONJ	KON								
+30008009	22	Finsternis	NOUN	NN					S		Nom	F
+30008009	23	über	ADP	APPR								
+30008009	24	der	DET	ART					S		Nom	F
+30008009	25	Erde	NOUN	NN					S		Nom	F
+30008009	26	bringen	VERB	VVINF		Inf						
+30008009	27	an	ADP	APPRART					S		Dat	M
+30008009	28	lichn	VERB	VVFIN		Fin	Past	3	P	Ind		
+30008009	29	Tag	NOUN	NN					P		Nom	M
+30008010	1	und	CCONJ	KON								
+30008010	2	ich	PRON	PPER				1	S		Nom	
+30008010	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30008010	4	eure	DET	PPOSAT					S		Nom	F
+30008010	5	Fest	NOUN	NN					P		Nom	N
+30008010	6	in	ADP	APPR								
+30008010	7	Trauer	NOUN	NN					S		Nom	F
+30008010	8	verwandeln	VERB	VVINF		Inf						
+30008010	9	und	CCONJ	KON								
+30008010	10	aller	PRON	PIS					P		Nom	
+30008010	11	eure	DET	PPOSAT					S		Nom	F
+30008010	12	Gesänge	NOUN	NN					P		Nom	M
+30008010	13	in	ADP	APPR								
+30008010	14	Klagelied	NOUN	NN					P		Acc	N
+30008010	15	und	CCONJ	KON								
+30008010	16	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30008010	17	auf	ADP	PTKVZ								
+30008010	18	aller	PRON	PIS					P		Nom	
+30008010	19	Lenden	NOUN	NN					P		Dat	
+30008010	20	Sacktuch	NOUN	NE					S		Nom	N
+30008010	21	und	CCONJ	KON								
+30008010	22	auf	ADP	PTKVZ								
+30008010	23	jeder	DET	PIAT					S		Nom	N
+30008010	24	Haupt	NOUN	NN					S		Nom	N
+30008010	25	ein	DET	ART					S		Nom	F
+30008010	26	Glatze	NOUN	NN					S		Nom	F
+30008010	27	bringen	VERB	VVINF		Inf						
+30008010	28	und	CCONJ	KON								
+30008010	29	ich	PRON	PPER				1	S		Nom	
+30008010	30	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30008010	31	es	PRON	PPER				3	S		Nom	N
+30008010	32	machen	VERB	VVINF		Inf						
+30008010	33	gleich	ADV	ADV	Pos							
+30008010	34	der	DET	ART					S		Nom	M
+30008010	35	Trauer	NOUN	NN					S		Nom	F
+30008010	36	um	ADP	APPR								
+30008010	37	der	DET	ART					S		Acc	M
+30008010	38	eingeboren	NOUN	NN					P		Dat	M
+30008010	39	und	CCONJ	KON								
+30008010	40	der	DET	ART					S		Nom	N
+30008010	41	Ende	NOUN	NN					S		Nom	N
+30008010	42	davon	ADV	PROAV								
+30008010	43	wie	ADP	KOKOM								
+30008010	44	ein	DET	ART					S		Acc	M
+30008010	45	bitter	ADJ	ADJA	Pos				S		Dat	M
+30008010	46	Tag	NOUN	NN					S		Nom	M
+30008011	1	sehen	VERB	VVIMP				2	S	Imp		
+30008011	2	Tag	NOUN	NN					P		Nom	M
+30008011	3	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30008011	4	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30008011	5	der	DET	ART					S		Nom	M
+30008011	6	Herr	NOUN	NN					S		Nom	M
+30008011	7	Jahwe	NOUN	NN					S		Nom	M
+30008011	8	da	ADV	ADV								
+30008011	9	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30008011	10	ich	PRON	PPER				1	S		Nom	
+30008011	11	ein	DET	ART					S		Acc	M
+30008011	12	Hunger	NOUN	NN					S		Nom	M
+30008011	13	in	ADP	APPR								
+30008011	14	der	DET	ART					S		Nom	N
+30008011	15	Land	NOUN	NN					S		Nom	N
+30008011	16	senden	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30008011	17	nicht	PART	PTKNEG								
+30008011	18	ein	DET	ART					S		Acc	M
+30008011	19	Hunger	NOUN	NN					S		Nom	M
+30008011	20	nach	ADP	APPR								
+30008011	21	Brot	NOUN	NN					S		Nom	N
+30008011	22	und	CCONJ	KON								
+30008011	23	nicht	PART	PTKNEG								
+30008011	24	ein	DET	ART					S		Acc	M
+30008011	25	Durst	NOUN	NN					S		Nom	M
+30008011	26	nach	ADP	APPR								
+30008011	27	Wasser	NOUN	NN					S		Nom	N
+30008011	28	sondern	CCONJ	KON								
+30008011	29	der	DET	ART					S		Nom	F
+30008011	30	Wort	NOUN	NN					P		Nom	N
+30008011	31	Jahwe	PROPN	NE					S		Gen	
+30008011	32	zu	ADP	PTKVZ								
+30008011	33	hören	VERB	VVINF		Inf						
+30008012	1	und	CCONJ	KON								
+30008012	2	sie	PRON	PPER				3	P		Nom	
+30008012	3	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30008012	4	umherschweifen	VERB	VVINF		Inf						
+30008012	5	von	ADP	APPR								
+30008012	6	Meer	NOUN	NN					S		Nom	N
+30008012	7	zu	ADP	PTKVZ								
+30008012	8	Meer	NOUN	NN					S		Nom	N
+30008012	9	und	CCONJ	KON								
+30008012	10	von	ADP	APPRART					S		Dat	N
+30008012	11	Norden	NOUN	NN					S		Nom	M
+30008012	12	bis	CCONJ	KON								
+30008012	13	zu	ADP	APPRART					S		Dat	N
+30008012	14	Osten	NOUN	NN					S		Nom	M
+30008012	15	sie	PRON	PPER				3	P		Nom	
+30008012	16	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30008012	17	umherlaufen	VERB	VVINF		Inf						
+30008012	18	um	ADP	APPR								
+30008012	19	der	DET	ART					S		Nom	N
+30008012	20	Wort	NOUN	NN					S		Nom	N
+30008012	21	Jahwe	PROPN	NE					S		Gen	
+30008012	22	zu	ADP	PTKVZ								
+30008012	23	suchen	VERB	VVINF		Inf						
+30008012	24	und	CCONJ	KON								
+30008012	25	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30008012	26	es	PRON	PPER				3	S		Nom	N
+30008012	27	nicht	PART	PTKNEG								
+30008012	28	finden	VERB	VVINF		Fin	Pres	3	P	Ind		
+30008013	1	an	ADP	APPR								
+30008013	2	jener	DET	PDAT					S		Dat	N
+30008013	3	Tag	NOUN	NN					P		Nom	M
+30008013	4	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30008013	5	der	DET	ART					S		Nom	F
+30008013	6	schön	ADJ	ADJA	Pos				S		Acc	M
+30008013	7	Jungfraue	NOUN	NN					P		Nom	F
+30008013	8	und	CCONJ	KON								
+30008013	9	der	DET	ART					S		Nom	F
+30008013	10	Jünglinge	NOUN	NN					P		Nom	M
+30008013	11	vor	ADP	APPR								
+30008013	12	Durst	NOUN	NN					S		Nom	M
+30008013	13	verschmachten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30008014	1	der	DET	ART					S		Nom	F
+30008014	2	da	ADV	ADV								
+30008014	3	schwören	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30008014	4	bei	ADP	APPR								
+30008014	5	der	DET	ART					S		Nom	M
+30008014	6	Schuld	NOUN	NN					S		Nom	F
+30008014	7	Samaria	PROPN	NE					S		Gen	
+30008014	8	und	CCONJ	KON								
+30008014	9	sprechen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30008014	10	so	ADV	ADV								
+30008014	11	wahr	ADV	ADJD	Pos							
+30008014	12	dein	DET	PPER					S		Nom	N
+30008014	13	Gott	NOUN	NN					S		Nom	M
+30008014	14	leben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30008014	15	Dan	PROPN	NE					S		Nom	M
+30008014	16	und	CCONJ	KON								
+30008014	17	so	ADV	ADV								
+30008014	18	wahr	ADV	ADJD	Pos							
+30008014	19	der	DET	ART					S		Nom	M
+30008014	20	Weg	NOUN	NN					S		Nom	M
+30008014	21	nach	ADP	APPR								
+30008014	22	Beerseba	PROPN	NE					S		Nom	N
+30008014	23	leben	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30008014	24	und	CCONJ	KON								
+30008014	25	sie	PRON	PPER				3	P		Nom	
+30008014	26	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30008014	27	fallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30008014	28	und	CCONJ	KON								
+30008014	29	nicht	PART	PTKNEG								
+30008014	30	mehr	ADV	ADV								
+30008014	31	aufstehen	VERB	VVINF		Inf						
+30009001	1	und	CCONJ	KON								
+30009001	2	ich	PRON	PPER				1	S		Nom	
+30009001	3	sehen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30009001	4	der	DET	ART					S		Acc	M
+30009001	5	Herr	NOUN	NN					S		Acc	M
+30009001	6	an	ADP	PTKVZ								
+30009001	7	der	DET	ART					S		Dat	M
+30009001	8	Altar	NOUN	NN					S		Nom	M
+30009001	9	stehen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009001	10	und	CCONJ	KON								
+30009001	11	er	PRON	PPER				3	S		Nom	M
+30009001	12	sprechen	VERB	VVFIN		Fin	Past	3	S	Ind		
+30009001	13	Schlage	NOUN	NN					S		Nom	M
+30009001	14	auf	ADP	PTKVZ								
+30009001	15	der	DET	ART					S		Acc	M
+30009001	16	Säulenknauf	NOUN	NN					S		Nom	M
+30009001	17	daß	SCONJ	KOUS								
+30009001	18	der	DET	ART					S		Nom	F
+30009001	19	Schwelle	NOUN	NN					P		Nom	F
+30009001	20	erbeben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009001	21	und	CCONJ	KON								
+30009001	22	zerschmett	VERB	ADV		Fin	Past	3	S	Sub		
+30009001	23	sie	PRON	PPER				3	P		Nom	
+30009001	24	auf	ADP	PTKVZ								
+30009001	25	ihr	DET	PPOSAT					S		Dat	F
+30009001	26	aller	DET	PIAT					P		Gen	
+30009001	27	Haupt	NOUN	NN					S		Nom	N
+30009001	28	und	CCONJ	KON								
+30009001	29	ich	PRON	PPER				1	S		Nom	
+30009001	30	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009001	31	ihr	DET	PPOSAT					S		Acc	M
+30009001	32	Rest	NOUN	NN					S		Nom	M
+30009001	33	mit	ADP	APPR								
+30009001	34	der	DET	ART					S		Dat	M
+30009001	35	schwerte	NOUN	NN					P		Nom	
+30009001	36	umbringen	VERB	VVINF		Inf						
+30009001	37	kein	DET	PIAT					S		Nom	N
+30009001	38	Flüchtling	NOUN	NN					S		Nom	M
+30009001	39	von	ADP	APPR								
+30009001	40	ihnen	PRON	PPER				3	P		Dat	
+30009001	41	sollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30009001	42	entfliehen	VERB	VVINF		Inf						
+30009001	43	und	CCONJ	KON								
+30009001	44	kein	DET	PIAT					S		Nom	N
+30009001	45	Entronnener	NOUN	NN					P		Nom	M
+30009001	46	von	ADP	APPR								
+30009001	47	ihnen	PRON	PPER				3	P		Dat	
+30009001	48	davonkommen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30009002	1	wenn	SCONJ	KOUS								
+30009002	2	sie	PRON	PPER				3	P		Nom	
+30009002	3	in	ADP	APPR								
+30009002	4	der	DET	ART					S		Acc	M
+30009002	5	Scheol	PROPN	NE					S		Nom	M
+30009002	6	einbrechen	VERB	VVINF		Inf						
+30009002	7	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009002	8	von	ADP	APPR								
+30009002	9	dort	ADV	ADV								
+30009002	10	mein	DET	PPOSAT					S		Nom	F
+30009002	11	Hand	NOUN	NN					S		Nom	F
+30009002	12	sie	PRON	PPER				3	P		Nom	
+30009002	13	holen	VERB	VVINF		Inf						
+30009002	14	und	CCONJ	KON								
+30009002	15	wenn	SCONJ	KOUS								
+30009002	16	sie	PRON	PPER				3	P		Nom	
+30009002	17	in	ADP	APPR								
+30009002	18	der	DET	ART					S		Acc	M
+30009002	19	Himmel	NOUN	NN					S		Nom	M
+30009002	20	hinaufsteigen	VERB	VVINF		Inf						
+30009002	21	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009002	22	ich	PRON	PPER				1	S		Nom	
+30009002	23	von	ADP	APPR								
+30009002	24	dort	ADV	ADV								
+30009002	25	sie	PRON	PPER				3	P		Nom	
+30009002	26	Herniederbring	VERB	VVIZU		Inf						
+30009003	1	und	CCONJ	KON								
+30009003	2	wenn	SCONJ	KOUS								
+30009003	3	sie	PRON	PPER				3	P		Nom	
+30009003	4	sich	PRON	PRF				3	S		Acc	
+30009003	5	auf	ADP	PTKVZ								
+30009003	6	der	DET	ART					S		Acc	M
+30009003	7	Gipfel	NOUN	NN					S		Nom	M
+30009003	8	der	DET	ART					S		Gen	M
+30009003	9	Karmel	NOUN	NN					S		Nom	F
+30009003	10	verbergen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30009003	11	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009003	12	ich	PRON	PPER				1	S		Nom	
+30009003	13	von	ADP	APPR								
+30009003	14	dort	ADV	ADV								
+30009003	15	sie	PRON	PPER				3	P		Nom	
+30009003	16	Hervorsuch	VERB	VVINF		Inf						
+30009003	17	und	CCONJ	KON								
+30009003	18	holen	VERB	VVINF		Inf						
+30009003	19	und	CCONJ	KON								
+30009003	20	wenn	SCONJ	KOUS								
+30009003	21	sie	PRON	PPER				3	P		Nom	
+30009003	22	sich	PRON	PRF				3	S		Acc	
+30009003	23	vor	ADP	APPR								
+30009003	24	meinen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009003	25	Auge	NOUN	NN					P		Nom	N
+30009003	26	hinweg	ADP	APZR								
+30009003	27	in	ADP	APPRART					S		Dat	N
+30009003	28	Grund	NOUN	NN					S		Nom	M
+30009003	29	der	DET	ART					S		Gen	M
+30009003	30	Meer	NOUN	NN					S		Nom	N
+30009003	31	verstecken	VERB	VVINF		Inf						
+30009003	32	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009003	33	ich	PRON	PPER				1	S		Nom	
+30009003	34	von	ADP	APPR								
+30009003	35	dort	ADV	ADV								
+30009003	36	der	DET	ART					S		Nom	F
+30009003	37	Schlange	NOUN	NN					S		Nom	F
+30009003	38	entbieten	VERB	VVINF		Inf						
+30009003	39	und	CCONJ	KON								
+30009003	40	sie	PRON	PPER				3	P		Nom	
+30009003	41	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009003	42	sie	PRON	PPER				3	P		Nom	
+30009003	43	beißen	VERB	VVINF		Inf						
+30009004	1	und	CCONJ	KON								
+30009004	2	wenn	SCONJ	KOUS								
+30009004	3	sie	PRON	PPER				3	P		Nom	
+30009004	4	vor	ADP	APPR								
+30009004	5	ihr	DET	PPOSAT					S		Acc	M
+30009004	6	Feind	NOUN	NN					P		Dat	M
+30009004	7	her	ADV	ADV								
+30009004	8	in	ADP	APPR								
+30009004	9	Gefangenschaft	NOUN	NN					S		Nom	F
+30009004	10	ziehen	VERB	VVINF		Inf						
+30009004	11	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009004	12	ich	PRON	PPER				1	S		Nom	
+30009004	13	von	ADP	APPR								
+30009004	14	dort	ADV	ADV								
+30009004	15	der	DET	ART					S		Nom	N
+30009004	16	Schwert	NOUN	NN					S		Nom	N
+30009004	17	entbieten	VERB	VVINF		Inf						
+30009004	18	und	CCONJ	KON								
+30009004	19	es	PRON	PPER				3	S		Nom	N
+30009004	20	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009004	21	sie	PRON	PPER				3	P		Nom	
+30009004	22	umbringen	VERB	VVINF		Inf						
+30009004	23	und	CCONJ	KON								
+30009004	24	ich	PRON	PPER				1	S		Nom	
+30009004	25	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009004	26	mein	DET	PPOSAT					S		Nom	N
+30009004	27	Auge	NOUN	NN					S		Nom	N
+30009004	28	wider	ADP	PTKVZ								
+30009004	29	sie	PRON	PPER				3	P		Nom	
+30009004	30	richten	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009004	31	zu	ADP	APPRART					S		Dat	N
+30009004	32	böse	NOUN	NN					P		Nom	
+30009004	33	und	CCONJ	KON								
+30009004	34	nicht	PART	PTKNEG								
+30009004	35	zu	ADP	APPRART					S		Dat	N
+30009004	36	gute	NOUN	NN					P		Nom	
+30009005	1	und	CCONJ	KON								
+30009005	2	der	DET	ART					S		Nom	M
+30009005	3	Herr	NOUN	NN					S		Nom	M
+30009005	4	Jahwe	NOUN	NN					S		Nom	M
+30009005	5	der	DET	ART					S		Nom	M
+30009005	6	Heerschare	NOUN	NN					P		Nom	F
+30009005	7	der	DET	ART					S		Nom	M
+30009005	8	der	DET	ART					S		Nom	N
+30009005	9	Land	NOUN	NN					S		Nom	N
+30009005	10	anrühren	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009005	11	und	CCONJ	KON								
+30009005	12	es	PRON	PPER				3	S		Nom	N
+30009005	13	zerfließen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009005	14	und	CCONJ	KON								
+30009005	15	es	PRON	PPER				3	S		Nom	N
+30009005	16	trauern	VERB	VVINF		Inf						
+30009005	17	aller	PRON	PIS					P		Nom	
+30009005	18	der	DET	ART					S		Nom	F
+30009005	19	darin	ADV	PROAV								
+30009005	20	wohnen	VERB	VVINF		Inf						
+30009005	21	und	CCONJ	KON								
+30009005	22	es	PRON	PPER				3	S		Nom	N
+30009005	23	steigen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009005	24	Empor	ADV	PROAV								
+30009005	25	insgesamt	ADV	ADV								
+30009005	26	wie	ADP	KOKOM								
+30009005	27	der	DET	ART					S		Nom	M
+30009005	28	Nil	PROPN	NE					S		Nom	M
+30009005	29	und	CCONJ	KON								
+30009005	30	sinken	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009005	31	zurück	ADV	PTKVZ								
+30009005	32	wie	ADP	KOKOM								
+30009005	33	der	DET	ART					S		Nom	M
+30009005	34	Strom	NOUN	NN					S		Nom	M
+30009005	35	Ägypten	PROPN	NE					S		Gen	N
+30009006	1	der	DET	ART					S		Nom	M
+30009006	2	sein	DET	PPOSAT					S		Nom	F
+30009006	3	Obergemächer	PROPN	NE					S		Nom	
+30009006	4	in	ADP	APPRART					S		Dat	N
+30009006	5	Himmel	NOUN	NN					S		Nom	M
+30009006	6	bauen	VERB	VVPP		Part						
+30009006	7	und	CCONJ	KON								
+30009006	8	sein	DET	PPOSAT					S		Nom	F
+30009006	9	Gewölbe	NOUN	NN					P		Nom	N
+30009006	10	über	ADP	APPR								
+30009006	11	der	DET	ART					S		Nom	M
+30009006	12	Erde	NOUN	NN					S		Nom	F
+30009006	13	gründen	VERB	VVPP		Part						
+30009006	14	haben	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009006	15	der	DET	ART					S		Nom	M
+30009006	16	der	DET	ART					S		Acc	M
+30009006	17	Wasser	NOUN	NN					P		Dat	N
+30009006	18	der	DET	ART					S		Gen	M
+30009006	19	Meer	NOUN	NN					S		Nom	N
+30009006	20	rufen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009006	21	und	CCONJ	KON								
+30009006	22	sie	PRON	PPER				3	P		Nom	
+30009006	23	ausgießt	VERB	VVPP		Part						
+30009006	24	über	ADP	APPR								
+30009006	25	der	DET	ART					S		Nom	F
+30009006	26	Fläche	NOUN	NN					S		Nom	F
+30009006	27	der	DET	ART					S		Nom	M
+30009006	28	Erde	NOUN	NN					S		Nom	F
+30009006	29	Jahwe	NOUN	NN					S		Nom	M
+30009006	30	sein	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009006	31	sein	AUX	VAINF		Inf						
+30009006	32	Name	NOUN	NN					S		Nom	M
+30009007	1	Seid	NOUN	VAFIN					S		Acc	N
+30009007	2	ihr	PRON	PPOSAT				3	S		Dat	F
+30009007	3	mir	PRON	PPER				1	S		Dat	
+30009007	4	nicht	PART	PTKNEG								
+30009007	5	wie	ADP	KOKOM								
+30009007	6	der	DET	ART					S		Nom	F
+30009007	7	Kind	NOUN	NN					P		Nom	N
+30009007	8	der	DET	ART					S		Nom	M
+30009007	9	Äthiopier	NOUN	NN					S		Nom	M
+30009007	10	Kind	NOUN	NN					P		Nom	N
+30009007	11	Israel	PROPN	NE					S		Nom	N
+30009007	12	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009007	13	Jahwe	NOUN	NN					S		Nom	M
+30009007	14	Habe	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009007	15	ich	PRON	PPER				1	S		Nom	
+30009007	16	nicht	PART	PTKNEG								
+30009007	17	Israel	PROPN	NE					S		Nom	N
+30009007	18	aus	ADP	PTKVZ								
+30009007	19	der	DET	ART					S		Dat	M
+30009007	20	Land	NOUN	NN					P		Nom	N
+30009007	21	Ägypten	PROPN	NE					S		Nom	N
+30009007	22	Heraufgeführt	PROPN	NN					S		Nom	
+30009007	23	und	CCONJ	KON								
+30009007	24	der	DET	ART					S		Nom	F
+30009007	25	Philister	NOUN	NN					S		Nom	M
+30009007	26	aus	ADP	PTKVZ								
+30009007	27	Kaphtor	NOUN	NN					S		Nom	M
+30009007	28	und	CCONJ	KON								
+30009007	29	der	DET	ART					S		Nom	F
+30009007	30	Syrer	NOUN	NN					P		Nom	M
+30009007	31	aus	ADP	PTKVZ								
+30009007	32	Kir	PROPN	NE					S		Nom	
+30009008	1	sehen	VERB	VVIMP				2	S	Imp		
+30009008	2	der	DET	ART					S		Nom	F
+30009008	3	Auge	NOUN	NN					P		Nom	N
+30009008	4	der	DET	ART					S		Gen	M
+30009008	5	Herr	NOUN	NN					S		Acc	M
+30009008	6	Jahwe	PROPN	NE					S		Gen	
+30009008	7	sein	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30009008	8	wider	ADP	PTKVZ								
+30009008	9	der	DET	ART					S		Nom	N
+30009008	10	sündig	ADJ	ADJA	Pos				S		Nom	F
+30009008	11	Königreich	NOUN	NN					S		Nom	N
+30009008	12	und	CCONJ	KON								
+30009008	13	ich	PRON	PPER				1	S		Nom	
+30009008	14	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30009008	15	es	PRON	PPER				3	S		Nom	N
+30009008	16	von	ADP	APPRART					S		Dat	N
+30009008	17	Erdboden	NOUN	NN					S		Nom	M
+30009008	18	hinweg	ADP	APZR								
+30009008	19	vertilgen	VERB	VVINF		Inf						
+30009008	20	nur	ADV	ADV								
+30009008	21	daß	SCONJ	KOUS								
+30009008	22	ich	PRON	PPER				1	S		Nom	
+30009008	23	der	DET	ART					S		Nom	N
+30009008	24	Haus	NOUN	NN					S		Nom	N
+30009008	25	Jakob	PROPN	NE					S		Nom	M
+30009008	26	nicht	PART	PTKNEG								
+30009008	27	gänzlich	ADV	ADJD	Pos							
+30009008	28	vertilgen	VERB	VVINF		Inf						
+30009008	29	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009008	30	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009008	31	Jahwe	NOUN	NN					S		Nom	M
+30009009	1	denn	CCONJ	KON								
+30009009	2	sehen	VERB	VVIMP				2	S	Imp		
+30009009	3	ich	PRON	PPER				1	S		Nom	
+30009009	4	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30009009	5	gebieten	NOUN	NN					S		Nom	N
+30009009	6	und	CCONJ	KON								
+30009009	7	wollen	AUX	VMFIN		Fin	Pres	3	S	Ind		
+30009009	8	der	DET	ART					S		Nom	N
+30009009	9	Haus	NOUN	NN					S		Nom	N
+30009009	10	Israel	PROPN	NE					S		Nom	N
+30009009	11	unter	ADP	APPR								
+30009009	12	aller	DET	PIS					P		Dat	
+30009009	13	Nation	NOUN	NN					P		Nom	F
+30009009	14	schütteln	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009009	15	wie	ADP	KOKOM								
+30009009	16	Getreide	NOUN	NN					S		Nom	N
+30009009	17	in	ADP	APPR								
+30009009	18	ein	DET	ART					S		Dat	M
+30009009	19	Sieb	NOUN	NN					P		Nom	M
+30009009	20	schütteln	VERB	VVPP		Part						
+30009009	21	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009009	22	und	CCONJ	KON								
+30009009	23	nicht	PART	PTKNEG								
+30009009	24	ein	DET	ART					S		Nom	N
+30009009	25	Körnchen	NOUN	NN					P		Nom	N
+30009009	26	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009009	27	zu	ADP	APPRART					S		Dat	F
+30009009	28	Erde	NOUN	NN					S		Nom	F
+30009009	29	fallen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009010	1	alle	PRON	PIS					P		Nom	
+30009010	2	Sünder	NOUN	NN					P		Nom	M
+30009010	3	meiner	DET	PPOSAT					S		Gen	N
+30009010	4	Volk	NOUN	NN					S		Gen	N
+30009010	5	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30009010	6	durch	ADP	APPRART					S		Acc	N
+30009010	7	Schwert	NOUN	NN					S		Nom	N
+30009010	8	sterben	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009010	9	der	DET	ART					S		Nom	F
+30009010	10	da	ADV	ADV								
+30009010	11	sprechen	VERB	VVINF		Fin	Pres	3	P	Ind		
+30009010	12	der	DET	ART					S		Nom	N
+30009010	13	Unglück	NOUN	NN					S		Nom	N
+30009010	14	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009010	15	uns	PRON	PPER				1	P		Acc	
+30009010	16	nicht	PART	PTKNEG								
+30009010	17	nah	ADJ	ADJA	Pos				S		Acc	M
+30009010	18	und	CCONJ	KON								
+30009010	19	nicht	PART	PTKNEG								
+30009010	20	an	ADP	PTKVZ								
+30009010	21	uns	PRON	PPER				1	P		Acc	
+30009010	22	herankommen	VERB	VVINF		Inf						
+30009011	1	an	ADP	APPR								
+30009011	2	jener	DET	PDAT					S		Dat	N
+30009011	3	Tag	NOUN	NN					P		Nom	M
+30009011	4	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009011	5	ich	PRON	PPER				1	S		Nom	
+30009011	6	der	DET	ART					S		Nom	F
+30009011	7	verfallen	ADJ	ADJA	Pos				S		Nom	F
+30009011	8	Hütte	NOUN	NN					S		Nom	F
+30009011	9	David	PROPN	NE					S		Gen	M
+30009011	10	aufrichten	VERB	VVINF		Inf						
+30009011	11	und	CCONJ	KON								
+30009011	12	ihr	DET	PPOSAT					S		Nom	F
+30009011	13	Riß	NOUN	NN					P		Nom	M
+30009011	14	Vermauer	NOUN	NN					P		Dat	M
+30009011	15	und	CCONJ	KON								
+30009011	16	ihr	DET	PPOSAT					S		Nom	F
+30009011	17	Trumm	NOUN	NN					P		Nom	
+30009011	18	aufrichten	VERB	VVINF		Inf						
+30009011	19	und	CCONJ	KON								
+30009011	20	ich	PRON	PPER				1	S		Nom	
+30009011	21	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009011	22	sie	PRON	PPER				3	P		Nom	
+30009011	23	bauen	VERB	VVINF		Inf						
+30009011	24	wie	ADP	KOKOM								
+30009011	25	in	ADP	APPR								
+30009011	26	der	DET	ART					S		Acc	M
+30009011	27	Tag	NOUN	NN					P		Dat	M
+30009011	28	vor	ADP	APPR								
+30009011	29	alters	ADV	ADV								
+30009012	1	auf	ADP	PTKVZ								
+30009012	2	daß	SCONJ	KOUS								
+30009012	3	sie	PRON	PPER				3	P		Nom	
+30009012	4	der	DET	ART					S		Acc	M
+30009012	5	Überrest	NOUN	NN					S		Nom	M
+30009012	6	Edom	PROPN	NE					S		Gen	
+30009012	7	und	CCONJ	KON								
+30009012	8	all	DET	PIAT								
+30009012	9	der	DET	ART					S		Nom	F
+30009012	10	Nation	NOUN	NN					P		Nom	F
+30009012	11	in	ADP	APPR								
+30009012	12	Besitz	NOUN	NN					S		Nom	M
+30009012	13	nehmen	VERB	VVINF		Inf						
+30009012	14	über	ADP	APPR								
+30009012	15	welcher	DET	PWAT					S		Nom	F
+30009012	16	mein	DET	PPOSAT					S		Nom	N
+30009012	17	Name	NOUN	NN					S		Nom	M
+30009012	18	nennen	VERB	VVPP		Part						
+30009012	19	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30009012	20	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009012	21	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009012	22	Jahwe	NOUN	NN					S		Nom	M
+30009012	23	der	DET	ART					S		Nom	M
+30009012	24	dieser	DET	PDAT					S		Nom	N
+30009012	25	tun	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009013	1	sehen	VERB	VVIMP				2	S	Imp		
+30009013	2	Tag	NOUN	NN					P		Nom	M
+30009013	3	kommen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009013	4	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009013	5	Jahwe	NOUN	NN					S		Nom	M
+30009013	6	da	ADV	ADV								
+30009013	7	der	DET	ART					S		Nom	M
+30009013	8	Pflüger	PROPN	NE					S		Nom	
+30009013	9	an	ADP	PTKVZ								
+30009013	10	der	DET	ART					S		Acc	M
+30009013	11	Schnitter	NOUN	NN					P		Nom	N
+30009013	12	und	CCONJ	KON								
+30009013	13	der	DET	ART					S		Nom	M
+30009013	14	Traubentreter	NOUN	NE					P		Nom	M
+30009013	15	an	ADP	PTKVZ								
+30009013	16	der	DET	ART					S		Acc	M
+30009013	17	Säemann	NOUN	NN					S		Nom	M
+30009013	18	reichen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009013	19	werden	AUX	VAFIN		Fin	Pres	3	S	Ind		
+30009013	20	und	CCONJ	KON								
+30009013	21	der	DET	ART					S		Nom	F
+30009013	22	Berg	NOUN	NN					P		Nom	M
+30009013	23	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30009013	24	Träufeln	VERB	VVINF		Inf						
+30009013	25	von	ADP	APPR								
+30009013	26	Most	NOUN	FM					S		Nom	M
+30009013	27	und	CCONJ	KON								
+30009013	28	aller	PRON	PIS					P		Nom	
+30009013	29	Hügel	NOUN	NN					S		Nom	M
+30009013	30	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30009013	31	zerfließen	VERB	VVINF		Inf						
+30009014	1	und	CCONJ	KON								
+30009014	2	ich	PRON	PPER				1	S		Nom	
+30009014	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009014	4	der	DET	ART					S		Nom	F
+30009014	5	Gefangenschaft	NOUN	NN					S		Nom	F
+30009014	6	meiner	DET	PPOSAT					S		Gen	N
+30009014	7	Volk	NOUN	NN					S		Gen	N
+30009014	8	Israel	PROPN	NE					S		Nom	N
+30009014	9	wenden	VERB	VVINF		Inf						
+30009014	10	und	CCONJ	KON								
+30009014	11	sie	PRON	PPER				3	P		Nom	
+30009014	12	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30009014	13	der	DET	ART					S		Nom	F
+30009014	14	verwüstet	ADJ	ADJA	Pos				S		Acc	M
+30009014	15	Stadt	NOUN	NN					P		Nom	F
+30009014	16	aufbauen	VERB	VVINF		Inf						
+30009014	17	und	CCONJ	KON								
+30009014	18	bewohnen	VERB	VVFIN		Fin	Pres	3	P	Ind		
+30009014	19	und	CCONJ	KON								
+30009014	20	Weinberg	NOUN	NN					P		Nom	M
+30009014	21	Pflanze	NOUN	VVFIN					P		Nom	F
+30009014	22	und	CCONJ	KON								
+30009014	23	der	PRON	PDS							Gen	
+30009014	24	Wein	NOUN	NN					S		Nom	M
+30009014	25	trinken	VERB	VVINF		Inf						
+30009014	26	und	CCONJ	KON								
+30009014	27	der	PRON	PDS							Gen	
+30009014	28	Garten	NOUN	NN					P		Nom	M
+30009014	29	anlegen	VERB	VVINF		Inf						
+30009014	30	und	CCONJ	KON								
+30009014	31	der	PRON	PDS							Gen	
+30009014	32	Frucht	NOUN	NN					S		Nom	F
+30009014	33	essen	VERB	VVINF		Inf						
+30009015	1	und	CCONJ	KON								
+30009015	2	ich	PRON	PPER				1	S		Nom	
+30009015	3	werden	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009015	4	sie	PRON	PPER				3	P		Nom	
+30009015	5	in	ADP	APPR								
+30009015	6	ihr	DET	PPOSAT					S		Dat	N
+30009015	7	Land	NOUN	NN					P		Nom	N
+30009015	8	Pflanze	NOUN	VVFIN					P		Nom	F
+30009015	9	und	CCONJ	KON								
+30009015	10	sie	PRON	PPER				3	P		Nom	
+30009015	11	sollen	AUX	VMFIN		Fin	Pres	3	P	Ind		
+30009015	12	nicht	PART	PTKNEG								
+30009015	13	mehr	ADV	ADV								
+30009015	14	herausrissen	VERB	VVPP		Part						
+30009015	15	werden	AUX	VAFIN		Fin	Pres	3	P	Ind		
+30009015	16	aus	ADP	PTKVZ								
+30009015	17	ihr	DET	PPOSAT					S		Dat	N
+30009015	18	Land	NOUN	NN					P		Nom	N
+30009015	19	der	DET	ART					S		Nom	N
+30009015	20	ich	PRON	PPER				1	S		Nom	
+30009015	21	ihnen	PRON	PPER				3	P		Dat	
+30009015	22	geben	VERB	VVPP		Part						
+30009015	23	haben	AUX	VAFIN		Fin	Pres	3	S	Sub		
+30009015	24	sprechen	VERB	VVFIN		Fin	Pres	3	S	Ind		
+30009015	25	Jahwe	NOUN	NN					S		Nom	M
+30009015	26	dein	DET	PPER					S		Nom	N
+30009015	27	Gott	NOUN	NN					S		Nom	M
