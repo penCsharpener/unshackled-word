@@ -17,6 +17,7 @@
     <Project Path="src/UnshackledWord.Domain.WebApi/UnshackledWord.Domain.WebApi.csproj" />
     <Project Path="src/UnshackledWord.Tooling.AiWorker/UnshackledWord.Tooling.AiWorker.csproj" />
     <Project Path="src/UnshackledWord.Tooling.BibleTagger/UnshackledWord.Tooling.BibleTagger.csproj" />
+    <Project Path="src/UnshackledWord.Tooling.McpServer/UnshackledWord.Tooling.McpServer.csproj" />
     <Project Path="src\UnshackledWord.Application\UnshackledWord.Application.csproj" />
     <Project Path="src\UnshackledWord.Domain\UnshackledWord.Domain.csproj" />
     <Project Path="src\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" />
@@ -33,6 +34,7 @@
     <Project Path="tests\UnshackledWord.Persistence.Sqlite.Tests\UnshackledWord.Persistence.Sqlite.Tests.csproj" />
     <Project Path="tests\UnshackledWord.TestTooling\UnshackledWord.TestTooling.csproj" />
     <Project Path="tests\UnshackledWord.Tooling.SeedDb.Tests\UnshackledWord.Tooling.SeedDb.Tests.csproj" />
+    <Project Path="tests\UnshackledWord.Tooling.McpServer.Tests\UnshackledWord.Tooling.McpServer.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/.misc/">
     <File Path="tests\Directory.Build.props" />
