@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IElb1871WordRepository, Elb1871WordRepository>();
         services.AddScoped<IElb1871VerseRepository, Elb1871VerseRepository>();
         services.AddScoped<ITskRepository, TskRepository>();
+        services.AddScoped<IStepBibleVerseRepository, StepBibleVerseRepository>();
         services.AddScoped<IStrongsLexiconRepository, StrongsLexiconRepository>();
         services.AddScoped<ISblTextRepository, SblTextRepository>();
         services.AddScoped<ISrWordRepository, SrWordRepository>();
