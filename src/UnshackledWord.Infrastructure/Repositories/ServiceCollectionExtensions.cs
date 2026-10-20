@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IElbDashboardRepository, ElbDashboardRepository>();
         services.AddScoped<IElb1871WordRepository, Elb1871WordRepository>();
         services.AddScoped<IElb1871VerseRepository, Elb1871VerseRepository>();
+        services.AddScoped<ITskRepository, TskRepository>();
         services.AddScoped<ISrWordRepository, SrWordRepository>();
         return services;
     }
