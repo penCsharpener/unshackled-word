@@ -413,3 +413,5 @@ temp/*
 /git*.git
 /src/MudBlazorWebApp1
 package-lock.json
+
+compose.override.yml

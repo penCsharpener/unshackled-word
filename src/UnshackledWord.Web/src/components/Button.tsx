@@ -16,6 +16,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: keyof typeof sizes;
 }
 
+export type ButtonStyle = Pick<ButtonProps, "variant" | "size">;
+
+/** Class string of a Button, for elements that must look like one (e.g. router links). */
+export function buttonClasses({ variant = "secondary", size = "md" }: ButtonStyle = {}): string {
+  return `inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${sizes[size]}`;
+}
+
 export function Button({
   variant = "secondary",
   size = "md",
@@ -25,10 +32,6 @@ export function Button({
 }: ButtonProps) {
   return (
     // biome-ignore lint/plugin: this is the one place the native button is wrapped
-    <button
-      type={type}
-      className={`inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
-    />
+    <button type={type} className={`${buttonClasses({ variant, size })} ${className}`} {...props} />
   );
 }

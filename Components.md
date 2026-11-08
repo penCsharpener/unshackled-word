@@ -10,9 +10,4 @@ Rules: design tokens only (Tailwind theme variables from `src/styles/index.css`)
 | `ThemeToggle` | System / light / dark switch, persisted in localStorage. |
 | `LanguageSwitch` | DE / EN switch (i18next), persisted in localStorage. |
 | `AppShell` | Page frame: header with brand, language and theme controls, plus the routed `<Outlet />`. |
-
-## Planned (not yet built)
-
-| Component | Description |
-| --- | --- |
-| `BibleChapterPicker` | Book/chapter selector; port the design from the old Astro/Svelte/Next.js frontends. |
+| `BibleChapterPicker` | OT/NT bar that unrolls a book grid with chapter links (Psalms split in five books); props `books`, `currentBookId`, `currentChapter`, `defaultTestament`. |

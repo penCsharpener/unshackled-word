@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, ScrollRestoration } from "react-router";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -14,6 +14,12 @@ export function AppShell() {
             <NavLink to="/" className="font-scripture text-lg font-semibold text-accent">
               {t("app.name")}
             </NavLink>
+            <NavLink
+              to="/bible"
+              className={({ isActive }) => (isActive ? "text-fg" : "text-fg-muted hover:text-fg")}
+            >
+              {t("nav.bible")}
+            </NavLink>
           </nav>
           <div className="flex flex-wrap items-center gap-4">
             <LanguageSwitch />
@@ -24,6 +30,7 @@ export function AppShell() {
       <main className="mx-auto w-full max-w-page-wide flex-1 px-4 py-8 md:px-8">
         <Outlet />
       </main>
+      <ScrollRestoration />
     </div>
   );
 }

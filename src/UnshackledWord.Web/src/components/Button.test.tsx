@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { Button } from "./Button";
+import { Button, buttonClasses } from "./Button";
 
 describe("Button", () => {
   it("defaults to type=button and fires onClick", async () => {
@@ -25,5 +25,22 @@ describe("Button", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(onClick).not.toHaveBeenCalled();
+  });
+});
+
+describe("buttonClasses", () => {
+  it("returns the classes the Button uses", () => {
+    render(
+      <Button variant="primary" size="sm">
+        Go
+      </Button>,
+    );
+    const classes = buttonClasses({ variant: "primary", size: "sm" });
+    expect(screen.getByRole("button", { name: "Go" }).className).toContain(classes);
+  });
+
+  it("defaults to secondary md", () => {
+    expect(buttonClasses()).toBe(buttonClasses({ variant: "secondary", size: "md" }));
+    expect(buttonClasses()).toContain("px-4 py-2");
   });
 });

@@ -1,0 +1,21 @@
+meta {
+  name: GetChapterText
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}elberfelder/chapterText/bookId/:bookId/chapterId/:chapter
+  body: none
+  auth: inherit
+}
+
+params:path {
+  chapter: 3
+  bookId: 43
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

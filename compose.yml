@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - unshackled_postgres:/var/lib/postgresql/data
+      - unshackled_postgres:/var/lib/postgresql
 
   unshackledword.tooling.db-migration:
     #image: unshackledword.migration.postgres
@@ -90,7 +90,7 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:7654/api
+      - VITE_API_URL=http://localhost:5142/api
     volumes:
       - ./src/UnshackledWord.Web:/app
       - unshackled_web_node_modules:/app/node_modules
