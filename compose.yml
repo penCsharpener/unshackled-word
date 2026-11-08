@@ -56,6 +56,21 @@ services:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
 
+  unshackledword.tooling.mcpserver:
+    #image: unshackledword.tooling.mcpserver
+    depends_on:
+      - unshackledword.tooling.database
+      - unshackledword.tooling.db-migration
+    build:
+      context: .
+      dockerfile: src/UnshackledWord.Tooling.McpServer/Dockerfile
+    ports:
+      - "7655:8080"
+    environment:
+      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
+      - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
+      - UNSHACKLEDWORD_SERILOG__MINIMUMLEVEL__DEFAULT=${MCP_LOG_LEVEL:-Information}
+
   unshackledword.tooling.bibletagger:
     #image: unshackledword.tooling.bibletagger
     build:
