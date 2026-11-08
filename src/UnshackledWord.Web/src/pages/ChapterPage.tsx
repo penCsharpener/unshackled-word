@@ -1,12 +1,18 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { BibleChapterPicker } from "@/components/BibleChapterPicker";
 import { Button, buttonClasses } from "@/components/Button";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
-import { chapterTextQuery, useBibleStructure, useChapterVerses } from "@/lib/bible/queries";
-import type { BibleStructureBook, ChapterRef } from "@/lib/bible/types";
+import { chapterWordsQuery, useBibleStructure, useChapterWords } from "@/lib/bible/queries";
+import type { BibleStructureBook, ChapterRef, HighlightKind } from "@/lib/bible/types";
+import { buildHighlights } from "@/lib/bible/words";
+
+const HIGHLIGHT_CLASSES: Record<HighlightKind, string> = {
+  same: "bg-mark-same",
+  related: "bg-mark-related",
+};
 
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -28,7 +34,13 @@ export function ChapterPage() {
   const books = structure.data;
 
   const ref = parseChapterParams(params.bookId, params.chapter, books);
-  const verses = useChapterVerses(books ? ref : null);
+  const verses = useChapterWords(books ? ref : null);
+  const [hoveredId, setHoveredId] = useState<number>();
+  const highlights = useMemo(() => {
+    const data = verses.data ?? [];
+    const hovered = data.flatMap((v) => v.words).find((w) => w.id === hoveredId);
+    return buildHighlights(hovered, data);
+  }, [verses.data, hoveredId]);
 
   const prev = books && ref ? adjacentChapter(books, ref, -1) : null;
   const next = books && ref ? adjacentChapter(books, ref, 1) : null;
@@ -49,7 +61,7 @@ export function ChapterPage() {
 
   useEffect(() => {
     if (verses.isSuccess && next) {
-      void queryClient.prefetchQuery(chapterTextQuery(next.bookId, next.chapter));
+      void queryClient.prefetchQuery(chapterWordsQuery(next.bookId, next.chapter));
     }
   }, [verses.isSuccess, next, queryClient]);
 
@@ -161,7 +173,25 @@ export function ChapterPage() {
           verses.data.map((v) => (
             <p key={v.verse} id={`v${v.verse}`} className="mt-2 scroll-mt-4">
               <sup className="mr-1 text-xs text-fg-muted">{v.verse}</sup>
-              {v.text}
+              {v.words.map((word) => {
+                const interactive = word.senses.length > 0;
+                const kind = highlights.get(word.id);
+                return (
+                  <Fragment key={word.id}>
+                    {/* biome-ignore lint/a11y/noStaticElementInteractions: hover/focus only drives a visual highlight; tabIndex keeps it keyboard reachable */}
+                    <span
+                      tabIndex={interactive ? 0 : undefined}
+                      onMouseEnter={interactive ? () => setHoveredId(word.id) : undefined}
+                      onMouseLeave={interactive ? () => setHoveredId(undefined) : undefined}
+                      onFocus={interactive ? () => setHoveredId(word.id) : undefined}
+                      onBlur={interactive ? () => setHoveredId(undefined) : undefined}
+                      className={`rounded-sm px-0.5 transition-colors ${kind ? HIGHLIGHT_CLASSES[kind] : ""}`}
+                    >
+                      {word.text}
+                    </span>{" "}
+                  </Fragment>
+                );
+              })}
             </p>
           ))}
       </article>

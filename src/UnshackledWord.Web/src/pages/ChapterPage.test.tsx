@@ -5,7 +5,7 @@ import { createMemoryRouter, RouterProvider, useLocation } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
 import type { BibleStructureBook } from "@/lib/bible/types";
-import { fixtureBooks, fixtureChapterText } from "@/test/fixtures/bibleStructure";
+import { fixtureBooks, fixtureChapterWords } from "@/test/fixtures/bibleStructure";
 import { ChapterPage } from "./ChapterPage";
 
 const john: BibleStructureBook = {
@@ -29,14 +29,14 @@ function stubFetch(chapterStatus = 200) {
     if (url.includes("/meta-bible/structure")) {
       return new Response(JSON.stringify({ books }), { status: 200 });
     }
-    return new Response(JSON.stringify(fixtureChapterText), { status: chapterStatus });
+    return new Response(JSON.stringify(fixtureChapterWords), { status: chapterStatus });
   });
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
 }
 
 const chapterCalls = (fetchMock: ReturnType<typeof stubFetch>) =>
-  fetchMock.mock.calls.filter(([url]) => String(url).includes("chapterText"));
+  fetchMock.mock.calls.filter(([url]) => String(url).includes("chapterWords"));
 
 function renderAt(path: string) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -74,16 +74,29 @@ describe("ChapterPage", () => {
     expect(
       await screen.findByRole("heading", { level: 1, name: "Johannes 3" }),
     ).toBeInTheDocument();
-    await screen.findByText(/Dieser kam zu Jesu/);
+    await screen.findByText("Dieser");
     expect(container.querySelector("#v1")).not.toBeNull();
     expect(container.querySelector("#v3")).not.toBeNull();
     expect(container.querySelector("article")?.getAttribute("lang")).toBe("de");
   });
 
+  it("highlights words sharing a Strong's number on hover", async () => {
+    stubFetch();
+    renderAt("/bible/43/3");
+    const [war] = await screen.findAllByText("war");
+    await userEvent.hover(war as HTMLElement);
+    const same = screen.getAllByText("war");
+    expect(same.every((el) => el.className.includes("bg-mark-same"))).toBe(true);
+    expect(screen.getByText("ist").className).toContain("bg-mark-related");
+    expect(screen.getByText("Mensch").className).not.toContain("bg-mark");
+    await userEvent.unhover(war as HTMLElement);
+    expect(screen.getByText("ist").className).not.toContain("bg-mark");
+  });
+
   it("links to previous and next chapter", async () => {
     stubFetch();
     renderAt("/bible/43/3");
-    await screen.findByText(/Dieser kam zu Jesu/);
+    await screen.findByText("Dieser");
     const prev = screen.getAllByRole("link", { name: /Vorheriges Kapitel/ });
     const next = screen.getAllByRole("link", { name: /Nächstes Kapitel/ });
     expect(prev[0]?.getAttribute("href")).toBe("/bible/43/2");
@@ -120,7 +133,7 @@ describe("ChapterPage", () => {
   it("navigates with ArrowRight, but not from an input", async () => {
     stubFetch();
     renderAt("/bible/43/3");
-    await screen.findByText(/Dieser kam zu Jesu/);
+    await screen.findByText("Dieser");
     const input = document.createElement("input");
     document.body.appendChild(input);
     input.focus();

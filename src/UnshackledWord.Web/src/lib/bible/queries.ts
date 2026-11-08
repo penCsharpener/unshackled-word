@@ -1,11 +1,14 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { bibleApi } from "./api";
 import type { ChapterRef } from "./types";
+import { groupWordsByVerse } from "./words";
 
 export const bibleKeys = {
   structure: ["bible", "structure"] as const,
   chapterText: (bookId: number, chapter: number) =>
     ["bible", "chapterText", bookId, chapter] as const,
+  chapterWords: (bookId: number, chapter: number) =>
+    ["bible", "chapterWords", bookId, chapter] as const,
 };
 
 export const structureQuery = () =>
@@ -33,5 +36,20 @@ export function useChapterVerses(ref: ChapterRef | null) {
     ...chapterTextQuery(ref?.bookId ?? 0, ref?.chapter ?? 0),
     enabled: ref !== null,
     select: (response) => response.verses,
+  });
+}
+
+export const chapterWordsQuery = (bookId: number, chapter: number) =>
+  queryOptions({
+    queryKey: bibleKeys.chapterWords(bookId, chapter),
+    queryFn: ({ signal }) => bibleApi.chapterWords(bookId, chapter, signal),
+    staleTime: Number.POSITIVE_INFINITY,
+    select: (response) => groupWordsByVerse(response.words),
+  });
+
+export function useChapterWords(ref: ChapterRef | null) {
+  return useQuery({
+    ...chapterWordsQuery(ref?.bookId ?? 0, ref?.chapter ?? 0),
+    enabled: ref !== null,
   });
 }

@@ -12,6 +12,8 @@
   --uw-accent: oklch(0.42 0.1 30);
   --uw-accent-fg: oklch(0.99 0.004 85);
   --uw-focus: oklch(0.6 0.15 250);
+  --uw-mark-same: oklch(0.88 0.08 240);
+  --uw-mark-related: oklch(0.9 0.1 150);
 }
 
 :root[data-theme="dark"] {
@@ -25,6 +27,8 @@
   --uw-accent: oklch(0.78 0.1 50);
   --uw-accent-fg: oklch(0.2 0.01 60);
   --uw-focus: oklch(0.72 0.14 250);
+  --uw-mark-same: oklch(0.42 0.09 240);
+  --uw-mark-related: oklch(0.42 0.09 150);
 }
 
 @theme inline {
@@ -37,6 +41,8 @@
   --color-accent: var(--uw-accent);
   --color-accent-fg: var(--uw-accent-fg);
   --color-focus: var(--uw-focus);
+  --color-mark-same: var(--uw-mark-same);
+  --color-mark-related: var(--uw-mark-related);
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
