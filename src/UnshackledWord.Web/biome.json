@@ -1,0 +1,24 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.6.6/schema.json",
+  "files": {
+    "includes": ["**", "!node_modules", "!dist", "!index.html"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100
+  },
+  "css": {
+    "parser": { "tailwindDirectives": true }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": { "preset": "recommended" }
+  },
+  "plugins": ["./biome-plugins/no-raw-button.grit", "./biome-plugins/no-inline-style.grit"],
+  "assist": {
+    "actions": { "source": { "organizeImports": "on" } }
+  }
+}

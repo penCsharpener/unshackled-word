@@ -1,0 +1,8 @@
+language js
+
+or {
+  `<button $props>$children</button>`,
+  `<button $props />`
+} as $el where {
+  register_diagnostic(span=$el, message="Do not use a raw <button>. Use the Button component (see Components.md).", severity="error")
+}

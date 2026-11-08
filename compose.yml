@@ -84,5 +84,18 @@ services:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_APIURL=http://unshackledword.tooling.webapi:8080/api
 
+  unshackledword.web:
+    build:
+      context: src/UnshackledWord.Web
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:7654/api
+    volumes:
+      - ./src/UnshackledWord.Web:/app
+      - unshackled_web_node_modules:/app/node_modules
+      - ./Components.md:/Components.md:ro
+
 volumes:
   unshackled_postgres:
+  unshackled_web_node_modules:

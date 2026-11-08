@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* Design tokens. Components use only these semantic names (bg-surface, text-fg, ...), never raw colors. */
+:root {
+  color-scheme: light;
+  --uw-bg: oklch(0.99 0.004 85);
+  --uw-surface: oklch(1 0 0);
+  --uw-surface-muted: oklch(0.96 0.006 85);
+  --uw-fg: oklch(0.22 0.01 60);
+  --uw-fg-muted: oklch(0.48 0.01 60);
+  --uw-border: oklch(0.88 0.008 80);
+  --uw-accent: oklch(0.42 0.1 30);
+  --uw-accent-fg: oklch(0.99 0.004 85);
+  --uw-focus: oklch(0.6 0.15 250);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --uw-bg: oklch(0.18 0.008 60);
+  --uw-surface: oklch(0.22 0.01 60);
+  --uw-surface-muted: oklch(0.27 0.012 60);
+  --uw-fg: oklch(0.94 0.005 85);
+  --uw-fg-muted: oklch(0.7 0.01 70);
+  --uw-border: oklch(0.34 0.012 60);
+  --uw-accent: oklch(0.78 0.1 50);
+  --uw-accent-fg: oklch(0.2 0.01 60);
+  --uw-focus: oklch(0.72 0.14 250);
+}
+
+@theme inline {
+  --color-bg: var(--uw-bg);
+  --color-surface: var(--uw-surface);
+  --color-surface-muted: var(--uw-surface-muted);
+  --color-fg: var(--uw-fg);
+  --color-fg-muted: var(--uw-fg-muted);
+  --color-border: var(--uw-border);
+  --color-accent: var(--uw-accent);
+  --color-accent-fg: var(--uw-accent-fg);
+  --color-focus: var(--uw-focus);
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+
+  --container-page: 72rem;
+  --container-page-wide: 120rem;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+}

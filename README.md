@@ -33,6 +33,14 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
    * [ ] tagging for theologically themes
    * [ ] tagging for biblical concepts, metaphors and symbols
 
+## Principles
+
+* Licence: the app and all data created with it are CC0. STEP Bible data is downloaded on the fly and never redistributed or changed.
+* Elberfelder 1871 is the base text. Other versions (a modernized literal revision first, later more dynamic or simpler ones up to a children's Bible) are mapping layers on top of it, graded 1–10000, so a reader can slide from literal to simple. All changes are diff-based and versioned.
+* Everyone can suggest changes, the maintainer merges them. AI-made mappings are attributed to their own user and confirmed by humans.
+* Read-only study tools are public, writing requires login.
+* Self-hostable via `docker compose`. The seed runs on first start; only the mapping seed is updated afterwards.
+
 ## Docker Setup
 
 If you want to give this project a go and take a look at the data create a `.env` file in the root of the solution.

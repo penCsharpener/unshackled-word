@@ -1,0 +1,6 @@
+language js
+
+jsx_attribute(name=$name) as $attr where {
+  $name <: `style`,
+  register_diagnostic(span=$attr, message="No inline styles. Use Tailwind classes backed by design tokens.", severity="error")
+}
