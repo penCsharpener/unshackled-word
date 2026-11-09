@@ -43,6 +43,32 @@ public readonly partial record struct StrongsNumber(StrongsLanguage Language, in
         return new(new StrongsNumber(language, int.Parse(match.Groups["num"].Value), extra.Length == 0 ? null : extra), null);
     }
 
+    /// <summary>
+    /// Normalizes user input to the form stored in the STEP tables ("g26" becomes "G0026", "H1254A_B" becomes "H1254A").
+    /// An instance suffix after "_" is dropped, like the occurrence count of the word detail does. Never throws.
+    /// </summary>
+    public static bool TryNormalize(string? input, out string normalized, out bool hebrew)
+    {
+        normalized = string.Empty;
+        hebrew = false;
+        var text = input?.Trim();
+        var underscore = text?.IndexOf('_') ?? -1;
+        if (underscore >= 0)
+        {
+            text = text![..underscore];
+        }
+
+        var value = Parse(text).Value;
+        if (value is null || value.Value.Number < 1)
+        {
+            return false;
+        }
+
+        normalized = value.Value.ToString();
+        hebrew = value.Value.Language == StrongsLanguage.Hebrew;
+        return true;
+    }
+
     public override string ToString()
     {
         return $"{(Language == StrongsLanguage.Greek ? 'G' : 'H')}{Number:D4}{Extra}";

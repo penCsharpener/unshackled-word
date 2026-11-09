@@ -32,3 +32,29 @@ public class StrongsNumberTests
         result.Error.ShouldContain(message);
     }
 }
+
+public class StrongsNumberNormalizeTests
+{
+    [Theory]
+    [InlineData("g26", "G0026", false)]
+    [InlineData("H1254A_B", "H1254A", true)]
+    [InlineData("H9003/{H7225G}", "H7225G", true)]
+    [InlineData("H0853", "H0853", true)]
+    public void TryNormalize_ValidInput(string input, string expected, bool hebrew)
+    {
+        StrongsNumber.TryNormalize(input, out var normalized, out var isHebrew).ShouldBeTrue();
+        normalized.ShouldBe(expected);
+        isHebrew.ShouldBe(hebrew);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("26")]
+    [InlineData("G0")]
+    [InlineData("_A")]
+    public void TryNormalize_InvalidInput(string? input)
+    {
+        StrongsNumber.TryNormalize(input, out _, out _).ShouldBeFalse();
+    }
+}

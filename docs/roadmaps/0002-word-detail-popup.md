@@ -58,13 +58,13 @@ the vocab trainer, the translation-level slider.
 | ✔ | ID | Step | Depends on | Done when |
 |---|---|---|---|---|
 | | | **Phase 1 – frontend on mock data** | | |
-| [ ] | S01 | Word detail contract types in `types.ts` | – | Types from [Contract](#the-contract-typescript) compile; `bun run check` green |
-| [ ] | S02 | `morphology.ts` formatter + `bible.grammar` i18n keys | S01 | `formatMorphology` test table passes in DE and EN |
-| [ ] | S03 | Provider seam `wordDetail.ts` + mock `wordDetail.mock.ts` + `bibleApi.wordDetail` | S01 | `normalizeStrongs` and mock tests pass; source switch via `VITE_WORD_DETAIL_SOURCE` typed |
-| [ ] | S04 | `Button` variant `inline` | – | Button tests incl. new inline case pass; `Components.md` row updated |
-| [ ] | S05 | Pop-up CSS (anchor, sheet) + `--font-original` token in `index.css` | – | `bun run check` green; classes `word-anchor` / `word-popover` exist |
-| [ ] | S06 | Component `WordDetailPopover` + `bible.wordDetail` i18n keys | S02, S04, S05 | Component tests (states, readings, RTL, Escape, close, EN) pass; registered in `Components.md` |
-| [ ] | S07 | Wire pop-up into `ChapterPage` | S03, S06 | Page tests (click, Enter, Escape + focus return, outside click, arrow guard, highlight, chapter change) pass; manual check in dev server |
+| [x] | S01 | Word detail contract types in `types.ts` | – | Types from [Contract](#the-contract-typescript) compile; `bun run check` green |
+| [x] | S02 | `morphology.ts` formatter + `bible.grammar` i18n keys | S01 | `formatMorphology` test table passes in DE and EN |
+| [x] | S03 | Provider seam `wordDetail.ts` + mock `wordDetail.mock.ts` + `bibleApi.wordDetail` | S01 | `normalizeStrongs` and mock tests pass; source switch via `VITE_WORD_DETAIL_SOURCE` typed |
+| [x] | S04 | `Button` variant `inline` | – | Button tests incl. new inline case pass; `Components.md` row updated |
+| [x] | S05 | Pop-up CSS (anchor, sheet) + `--font-original` token in `index.css` | – | `bun run check` green; classes `word-anchor` / `word-popover` exist |
+| [x] | S06 | Component `WordDetailPopover` + `bible.wordDetail` i18n keys | S02, S04, S05 | Component tests (states, readings, RTL, Escape, close, EN) pass; registered in `Components.md` |
+| [x] | S07 | Wire pop-up into `ChapterPage` | S03, S06 | Page tests (click, Enter, Escape + focus return, outside click, arrow guard, highlight, chapter change) pass; manual check in dev server |
 | [x] | S28 | AI mapping data in the pop-up (mock): `mapping`, `coMappedWords`, `hints`, `sharedWithWordIds`, `positionInVerse`; badge, phrase line, "added to „X“", hints, disabled "Zuordnung bearbeiten"; phrase underline in `ChapterPage` | S07 | Mock, popover, `phraseWordIds` and page tests pass; `bun run check` green |
 | | | **Phase 2 – API** | | |
 | [x] | S08 | `FakeDbReader` test wiring in `Infrastructure.Tests` (= roadmap 0001 S08; skip if done) | – | `FakeDbReader` records SQL + parameters; its tests pass |
@@ -87,7 +87,7 @@ the vocab trainer, the translation-level slider.
 | [x] | S20 | Migration `0006_WordDetailIndexes.sql` (Strong's indexes) | – | Migration runs on a fresh and an existing DB |
 | [x] | S21 | `occurrenceCount` per reading | S16, S20 | Count shown ("137× im NT"); repository test passes; response < 50 ms locally |
 | [x] | S22 | Elberfelder renderings (= roadmap 0001 S33) in the pop-up | S16, S20 | "übersetzt mit: Wort (…×), Rede (…×)" shown, top 5 |
-| [ ] | S23 | Occurrence list endpoint + concordance page `/bible/strongs/:strongs` (= 0001 S35) | S20 | Paged list; link "Alle Stellen" in the pop-up; tests pass |
+| [x] | S23 | Occurrence list endpoint + concordance page `/bible/strongs/:strongs` (= 0001 S35) | S20 | Paged list; link "Alle Stellen" in the pop-up; tests pass |
 | [ ] | S24 | Verse cross references (TSK) section | S16 | Section lists TSK targets for the word's verse (existing `ITskRepository`) |
 | [ ] | S25 | People / places brief | S16 | Proper nouns show the `Brief` text of `StepPersonLexicon` / `StepPlaceLexicon` |
 | [ ] | S26 | NT textual-variant hint (SBL apparatus) | S16 | Note "Textvarianten in diesem Vers" when `SblApparatus` has rows |
@@ -1075,9 +1075,18 @@ deserializes into `GetWordDetailResponse`, re-serializes with the API options an
 - **S22** (done; `renderings: [{word, count}]` per reading, case-insensitive grouping, most common spelling shown,
   inflected forms are counted separately) Renderings: query of roadmap 0001 S33 behind `IWordStudyRepository`; pop-up section "Elberfelder übersetzt
   mit" (top 5, CC0 data).
-- **S23** Occurrences: query of 0001 S35, endpoint `GET /api/elberfelder/strongs/{Strongs}/occurrences` with
-  `PaginationRequest` → `PaginationResult`, new page `/bible/strongs/:strongs` (the AstroWeb "Konkordanz"
-  placeholder), pop-up link "Alle Stellen".
+- **S23** (done) Occurrences: query of 0001 S35, endpoint `GET /api/elberfelder/strongsOccurrences/strongs/{Strongs}?page=1&pageSize=50`
+  (page 1-based, pageSize 1–200, 400 on a bad Strong's number or paging; accepts `g26`, `H1254A`, `H1254A_B`).
+  Response `{strongs, language, page, pageSize, totalItems, totalPages, items:[{bibleBookId, chapter, verse, original, before, keyword, keywordSuffix?, after}]}`
+  with token lists `{text, matched}` for the keyword-in-context (KWIC) layout of the concordance page: the keyword spans the first to
+  the last mapped Elberfelder word (words in between: `matched=false`), `keywordSuffix` is punctuation trailing the keyword (drawn outside
+  the keyword box), an unmapped word has an empty keyword and the whole verse in `after`. One item per original word
+  (so `totalItems` equals `occurrenceCount`; a verse with three hits gives three rows), ordered by `LxxRefId`, position, id; Elberfelder
+  verse numbering via `Elb1871Verses`. Draft: `docs/drafts/concordance-kwic-draft.html`.
+  Open for later (defaults taken): no extra sort options (by German rendering or neighbouring word, classic KWIC); the inflected
+  original form is shown, not the lemma; no line cutting on desktop, only the phone cut (3 lines per side with fade, below 40rem);
+  Hebrew rows keep the German context LTR with the original above the keyword; other hits in the same verse are not marked. `GetOccurrencesAsync` on `IWordDetailRepository`, `StrongsOccurrenceService`.
+  Frontend: page `/bible/strongs/:strongs?page=` (`StrongsPage`, the AstroWeb "Konkordanz" placeholder), pop-up link "Alle Stellen".
 - **S24** TSK: `ITskRepository.GetOutgoingAsync(hebRefId, hebRefId, 20)`; section "Querverweise zu diesem Vers";
   links via `chapterPath` + `#v{verse}`. Consider a verse-level UI instead (open question).
 - **S25** People/places: by Strong's, show `Brief` (STEP text, live).

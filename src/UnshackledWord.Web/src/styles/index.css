@@ -105,4 +105,142 @@
       }
     }
   }
+
+  /*
+    Concordance keyword-in-context row (StrongsPage). One occurrence is one grid
+    [left 1fr] [keyword auto] [right 1fr], so the keyword is always centred on the page.
+    Rows: [overflow up auto] [original] [German keyword] [overflow down auto]. The text before the
+    keyword is bottom-aligned (grows upward), the text after is top-aligned (grows downward).
+  */
+  .kwic {
+    --kwic-line: calc(var(--spacing) * 7);
+    --kwic-ref-w: calc(var(--spacing) * 30);
+    --kwic-gap: calc(var(--spacing) * 2);
+    --kwic-clip-lines: 3;
+  }
+
+  .kwic-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-rows: auto var(--kwic-line) var(--kwic-line) auto;
+    column-gap: var(--kwic-gap);
+    line-height: var(--kwic-line);
+  }
+
+  .kwic-left {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    align-self: end;
+    display: grid;
+    grid-template-columns: var(--kwic-ref-w) minmax(0, 1fr);
+    column-gap: var(--kwic-gap);
+    align-items: end;
+  }
+
+  .kwic-ref {
+    white-space: nowrap;
+  }
+
+  .kwic-before,
+  .kwic-after {
+    display: flex;
+    min-width: 0;
+  }
+
+  .kwic-before {
+    align-items: flex-end;
+  }
+
+  .kwic-after {
+    grid-column: 3;
+    grid-row: 3 / 5;
+    align-self: start;
+    align-items: flex-start;
+  }
+
+  .kwic-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .kwic-before .kwic-text {
+    text-align: right;
+  }
+
+  .kwic-original {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: center;
+    white-space: nowrap;
+  }
+
+  .kwic-key {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: center;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  /* Trailing punctuation hangs outside the keyword box so it does not shift the centre. */
+  .kwic-punct {
+    position: absolute;
+    left: 100%;
+  }
+
+  /* Phones: the reference moves above the row, each side is cut to a few lines with a fade. */
+  @media (width < 40rem) {
+    .kwic {
+      --kwic-line: calc(var(--spacing) * 6);
+      --kwic-gap: calc(var(--spacing) * 1.5);
+    }
+
+    .kwic-row {
+      grid-template-rows: auto auto var(--kwic-line) var(--kwic-line) auto;
+    }
+
+    .kwic-left {
+      display: contents;
+    }
+
+    .kwic-ref {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      justify-self: start;
+      line-height: var(--kwic-line);
+    }
+
+    .kwic-before {
+      grid-column: 1;
+      grid-row: 2 / 5;
+      align-self: end;
+    }
+
+    .kwic-after {
+      grid-row: 4 / 6;
+    }
+
+    .kwic-before,
+    .kwic-after {
+      overflow: hidden;
+      max-height: calc(var(--kwic-line) * var(--kwic-clip-lines));
+    }
+
+    .kwic-original {
+      grid-row: 3;
+    }
+
+    .kwic-key {
+      grid-row: 4;
+    }
+
+    .kwic-before[data-clipped] {
+      mask-image: linear-gradient(to bottom, transparent, currentColor var(--kwic-line));
+    }
+
+    .kwic-after[data-clipped] {
+      mask-image: linear-gradient(to top, transparent, currentColor var(--kwic-line));
+    }
+  }
 }

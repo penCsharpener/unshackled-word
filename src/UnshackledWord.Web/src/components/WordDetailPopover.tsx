@@ -1,5 +1,6 @@
 import { useEffect, useId, useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { formatMorphology } from "@/lib/bible/morphology";
 import type {
   CoMappedWord,
@@ -11,7 +12,7 @@ import type {
   OriginalReading,
   WordToken,
 } from "@/lib/bible/types";
-import { mappingStatus } from "@/lib/bible/wordDetail";
+import { mappingStatus, normalizeStrongs } from "@/lib/bible/wordDetail";
 import { Button } from "./Button";
 
 export type WordDetailCloseReason = "escape" | "button" | "outside";
@@ -110,6 +111,8 @@ function ReadingSection({
   const lang = LANG_TAG[reading.language];
   const dir = dirOf(reading.language);
   const label = (key: string) => t(`bible.wordDetail.field.${key}`);
+  const normalized = normalizeStrongs(reading.strongs);
+  const strongsPath = normalized ? `/bible/strongs/${normalized}` : undefined;
 
   return (
     <section
@@ -135,7 +138,17 @@ function ReadingSection({
       {reading.transliteration && <p className="italic text-fg-muted">{reading.transliteration}</p>}
       <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
         <dt className="text-fg-muted">{label("strongs")}</dt>
-        <dd>{reading.strongs}</dd>
+        <dd>
+          <span>{reading.strongs}</span>
+          {strongsPath && (
+            <>
+              {" · "}
+              <Link to={strongsPath} className="text-accent underline">
+                {t("bible.wordDetail.allOccurrences")}
+              </Link>
+            </>
+          )}
+        </dd>
         {reading.lemma && (
           <>
             <dt className="text-fg-muted">{label("lemma")}</dt>

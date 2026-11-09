@@ -238,3 +238,28 @@ export interface GetWordDetailResponse {
   coMappedWords?: CoMappedWord[]; // same verse, sorted by positionInVerse
   hints?: MappingHintKey[];
 }
+
+export interface StrongsOccurrence {
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  original?: string;
+  before: StrongsOccurrenceToken[];
+  keyword: StrongsOccurrenceToken[];
+  /** Punctuation that trailed the keyword; drawn outside the keyword box. */
+  keywordSuffix?: string;
+  after: StrongsOccurrenceToken[];
+}
+export interface StrongsOccurrenceToken {
+  text: string;
+  matched: boolean;
+}
+export interface GetStrongsOccurrencesResponse {
+  strongs: string;
+  language: "greek" | "hebrew";
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  items: StrongsOccurrence[];
+}

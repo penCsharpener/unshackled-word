@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konkordanz KWIC Entwurf</title>
+<style>
+/* Tokens copied from src/UnshackledWord.Web/src/styles/index.css (plus the Tailwind defaults the app relies on). */
+:root {
+  color-scheme: light;
+  --uw-bg: oklch(0.99 0.004 85);
+  --uw-surface: oklch(1 0 0);
+  --uw-surface-muted: oklch(0.96 0.006 85);
+  --uw-fg: oklch(0.22 0.01 60);
+  --uw-fg-muted: oklch(0.48 0.01 60);
+  --uw-border: oklch(0.88 0.008 80);
+  --uw-accent: oklch(0.42 0.1 30);
+  --uw-accent-fg: oklch(0.99 0.004 85);
+  --uw-focus: oklch(0.6 0.15 250);
+  --uw-mark-same: oklch(0.88 0.08 240);
+  --uw-mark-related: oklch(0.9 0.1 150);
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-original: "SBL BibLit", "Noto Serif Hebrew", "Noto Serif", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  --container-page-wide: 120rem;
+  --spacing: 0.25rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-3xl: 1.875rem;
+
+  /* KWIC layout tokens (new, would go into index.css) */
+  --kwic-line: 1.75rem;          /* one line of context = one German keyword line */
+  --kwic-ref-w: 7.5rem;          /* reference column */
+  --kwic-gap: calc(var(--spacing) * 2);
+  --kwic-clip-lines: 0;          /* 0 = no clipping (wide screens) */
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --uw-bg: oklch(0.18 0.008 60);
+  --uw-surface: oklch(0.22 0.01 60);
+  --uw-surface-muted: oklch(0.27 0.012 60);
+  --uw-fg: oklch(0.94 0.005 85);
+  --uw-fg-muted: oklch(0.7 0.01 70);
+  --uw-border: oklch(0.34 0.012 60);
+  --uw-accent: oklch(0.78 0.1 50);
+  --uw-accent-fg: oklch(0.2 0.01 60);
+  --uw-focus: oklch(0.72 0.14 250);
+  --uw-mark-same: oklch(0.42 0.09 240);
+  --uw-mark-related: oklch(0.42 0.09 150);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --uw-bg: oklch(0.18 0.008 60);
+    --uw-surface: oklch(0.22 0.01 60);
+    --uw-surface-muted: oklch(0.27 0.012 60);
+    --uw-fg: oklch(0.94 0.005 85);
+    --uw-fg-muted: oklch(0.7 0.01 70);
+    --uw-border: oklch(0.34 0.012 60);
+    --uw-accent: oklch(0.78 0.1 50);
+    --uw-accent-fg: oklch(0.2 0.01 60);
+    --uw-focus: oklch(0.72 0.14 250);
+    --uw-mark-same: oklch(0.42 0.09 240);
+    --uw-mark-related: oklch(0.42 0.09 150);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background-color: var(--uw-bg);
+  color: var(--uw-fg);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+:focus-visible { outline: 2px solid var(--uw-focus); outline-offset: 2px; }
+a { color: inherit; }
+
+/* AppShell header */
+.shell { display: flex; min-height: 100dvh; flex-direction: column; }
+header { border-bottom: 1px solid var(--uw-border); background: var(--uw-surface); }
+.header-inner {
+  margin-inline: auto; max-width: var(--container-page-wide);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: calc(var(--spacing) * 4); padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+}
+.header-inner nav { display: flex; align-items: center; gap: calc(var(--spacing) * 6); }
+.brand { font-family: var(--font-scripture); font-size: var(--text-lg); font-weight: 600; color: var(--uw-accent); text-decoration: none; }
+.nav-link { color: var(--uw-fg); text-decoration: none; }
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--spacing) * 4); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: var(--radius-md); font: inherit; font-weight: 500;
+  font-size: var(--text-sm); padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  background: transparent; color: var(--uw-fg); cursor: pointer; text-decoration: none;
+}
+.btn:hover { background: var(--uw-surface-muted); }
+.btn[aria-pressed="true"] { background: var(--uw-accent); color: var(--uw-accent-fg); }
+.btn-secondary { border: 1px solid var(--uw-border); background: var(--uw-surface); }
+.btn[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+fieldset { display: flex; gap: calc(var(--spacing) * 1); border: 0; margin: 0; padding: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+main {
+  margin-inline: auto; width: 100%; max-width: var(--container-page-wide); flex: 1;
+  padding: calc(var(--spacing) * 8) calc(var(--spacing) * 4);
+}
+@media (width >= 48rem) {
+  .header-inner, main { padding-inline: calc(var(--spacing) * 8); }
+}
+h1 { margin: 0; font-family: var(--font-scripture); font-size: var(--text-3xl); font-weight: 600; line-height: 1.2; }
+.meta { margin: calc(var(--spacing) * 2) 0 0; color: var(--uw-fg-muted); }
+.draft-tools { margin-top: calc(var(--spacing) * 4); font-size: var(--text-sm); color: var(--uw-fg-muted); }
+
+/* ===== KWIC list ===== */
+.kwic {
+  list-style: none; margin: calc(var(--spacing) * 6) 0 0; padding: 0; position: relative;
+  font-family: var(--font-scripture);
+}
+/* optional guide line through the centre column (draft only) */
+body:has(#guide:checked) .kwic::after {
+  content: ""; position: absolute; inset-block: 0; left: 50%;
+  border-left: 1px dashed var(--uw-focus); pointer-events: none;
+}
+
+/*
+  One occurrence = one grid:
+    columns: [left 1fr] [keyword auto] [right 1fr]  -> keyword centre is exactly the page centre
+    rows:    [overflow-up auto] [original fixed] [german fixed] [overflow-down auto]
+  Left context spans rows 1-3 and is bottom-aligned, so its LAST line sits on the German line and
+  extra lines grow upward. Right context spans rows 3-4 and is top-aligned, so its FIRST line sits
+  on the German line and extra lines grow downward. The fixed rows never absorb growth.
+*/
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: auto var(--kwic-line) var(--kwic-line) auto;
+  column-gap: var(--kwic-gap);
+  padding-block: calc(var(--spacing) * 2);
+  border-bottom: 1px solid var(--uw-border);
+  line-height: var(--kwic-line);
+}
+.row:hover { background: var(--uw-surface-muted); }
+
+.left {
+  grid-column: 1; grid-row: 1 / 4; align-self: end;
+  display: grid; grid-template-columns: var(--kwic-ref-w) minmax(0, 1fr); column-gap: var(--kwic-gap);
+  align-items: end;
+}
+.ref {
+  font-family: var(--font-sans); font-size: var(--text-sm); font-weight: 500;
+  color: var(--uw-accent); white-space: nowrap; text-decoration: underline;
+}
+.ctx { margin: 0; }
+.ctx-left { text-align: right; }
+.right { grid-column: 3; grid-row: 3 / 5; align-self: start; text-align: left; margin: 0; }
+
+.orig {
+  grid-column: 2; grid-row: 2; justify-self: center; white-space: nowrap;
+  font-family: var(--font-original); font-size: var(--text-lg); color: var(--uw-accent);
+}
+.key { grid-column: 2; grid-row: 3; justify-self: center; white-space: nowrap; font-weight: 600; position: relative; }
+/* trailing punctuation hangs outside the keyword box so it does not shift the centre */
+.key .punct { position: absolute; left: 100%; font-weight: 400; }
+.key mark {
+  background: var(--uw-mark-same); color: var(--uw-fg);
+  border-radius: var(--radius-sm); padding-inline: calc(var(--spacing) * 1);
+}
+/* word inside a non-contiguous span ("mit bösen Worten"): shown but not marked */
+.key .gap { font-weight: 400; color: var(--uw-fg-muted); }
+
+/* Phones: reference moves above the row, context is clipped to 3 lines per side. */
+@media (width < 40rem) {
+  :root { --kwic-line: 1.5rem; --kwic-gap: calc(var(--spacing) * 1.5); --kwic-clip-lines: 3; }
+  .kwic { font-size: var(--text-sm); }
+  .row { grid-template-rows: auto auto var(--kwic-line) var(--kwic-line) auto; }
+  .left { display: contents; }
+  .ref { grid-column: 1 / -1; grid-row: 1; justify-self: start; line-height: var(--kwic-line); }
+  .ctx-left {
+    grid-column: 1; grid-row: 2 / 5; align-self: end;
+    /* keep the lines next to the keyword, drop the far ones at the top */
+    display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;
+    max-height: calc(var(--kwic-line) * var(--kwic-clip-lines));
+    -webkit-mask-image: linear-gradient(to bottom, transparent, currentColor var(--kwic-line));
+    mask-image: linear-gradient(to bottom, transparent, currentColor var(--kwic-line));
+  }
+  .ctx-left.short { -webkit-mask-image: none; mask-image: none; }
+  .orig { grid-row: 3; font-size: var(--text-base); }
+  .key { grid-row: 4; }
+  .right {
+    grid-row: 4 / 6; overflow: hidden;
+    max-height: calc(var(--kwic-line) * var(--kwic-clip-lines));
+    -webkit-mask-image: linear-gradient(to top, transparent, currentColor var(--kwic-line));
+    mask-image: linear-gradient(to top, transparent, currentColor var(--kwic-line));
+  }
+  .right.short { -webkit-mask-image: none; mask-image: none; }
+}
+
+.pager { margin-top: calc(var(--spacing) * 6); display: flex; align-items: center; justify-content: space-between; gap: calc(var(--spacing) * 4); }
+.pager span.info { color: var(--uw-fg-muted); }
+.attribution { margin-top: calc(var(--spacing) * 8); font-size: var(--text-xs); color: var(--uw-fg-muted); }
+
+.note {
+  margin-top: calc(var(--spacing) * 8); padding: calc(var(--spacing) * 4) calc(var(--spacing) * 5);
+  border: 1px solid var(--uw-border); border-radius: var(--radius-md); background: var(--uw-surface-muted);
+  font-size: var(--text-sm); max-width: 60rem;
+}
+.note h2 { margin: 0 0 calc(var(--spacing) * 2); font-size: var(--text-base); }
+.note h3 { margin: calc(var(--spacing) * 4) 0 calc(var(--spacing) * 1); font-size: var(--text-sm); }
+.note ul { margin: 0; padding-left: calc(var(--spacing) * 5); }
+.note code { font-size: var(--text-xs); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="header-inner">
+      <nav>
+        <a class="brand" href="#">Unshackled Word</a>
+        <a class="nav-link" href="#">Bibel</a>
+      </nav>
+      <div class="tools">
+        <span class="nav-link">DE · EN</span>
+        <fieldset id="theme">
+          <legend class="sr-only">Farbschema</legend>
+          <button type="button" class="btn" data-t="system" aria-pressed="true">System</button>
+          <button type="button" class="btn" data-t="light" aria-pressed="false">Hell</button>
+          <button type="button" class="btn" data-t="dark" aria-pressed="false">Dunkel</button>
+        </fieldset>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>Alle Stellen zu G3056</h1>
+    <p class="meta">332 Vorkommen · Griechisch</p>
+    <p class="draft-tools"><label><input type="checkbox" id="guide"> Mittellinie anzeigen (nur Entwurf)</label></p>
+
+    <!-- Real data: GET /api/elberfelder/strongsOccurrences/strongs/G3056 + chapterWords for Joh 1, 3Joh 1, Offb 20 -->
+    <ol class="kwic" aria-label="Vorkommen">
+      <li class="row">
+        <div class="left"><a class="ref" href="#">Johannes 1,1</a><p class="ctx ctx-left short" lang="de">Im Anfang war das</p></div>
+        <span class="orig" lang="el">λόγος</span>
+        <span class="key" lang="de"><mark>Wort</mark><span class="punct">,</span></span>
+        <p class="right short" lang="de">und das Wort war bei Gott, und das Wort war Gott.</p>
+      </li>
+      <li class="row">
+        <div class="left"><a class="ref" href="#">Johannes 1,1</a><p class="ctx ctx-left short" lang="de">Im Anfang war das Wort, und das</p></div>
+        <span class="orig" lang="el">λόγος</span>
+        <span class="key" lang="de"><mark>Wort</mark></span>
+        <p class="right short" lang="de">war bei Gott, und das Wort war Gott.</p>
+      </li>
+      <li class="row">
+        <div class="left"><a class="ref" href="#">Johannes 1,1</a><p class="ctx ctx-left short" lang="de">Im Anfang war das Wort, und das Wort war bei Gott, und das</p></div>
+        <span class="orig" lang="el">λόγος</span>
+        <span class="key" lang="de"><mark>Wort</mark></span>
+        <p class="right short" lang="de">war Gott.</p>
+      </li>
+      <li class="row">
+        <div class="left"><a class="ref" href="#">3. Johannes 1,10</a><p class="ctx ctx-left" lang="de">Deshalb, wenn ich komme, will ich seiner Werke gedenken, die er tut, indem er</p></div>
+        <span class="orig" lang="el">λόγοις</span>
+        <span class="key" lang="de"><mark>mit</mark> <span class="gap">bösen</span> <mark>Worten</mark></span>
+        <p class="right" lang="de">wider uns schwatzt; und sich hiermit nicht begnügend, nimmt er selbst die Brüder nicht an und wehrt auch denen, die es wollen, und stößt sie aus der Versammlung.</p>
+      </li>
+      <li class="row">
+        <div class="left"><a class="ref" href="#">Offenbarung 20,4</a><p class="ctx ctx-left" lang="de">Und ich sah Throne, und sie saßen darauf, und es wurde ihnen gegeben, Gericht zu halten; und die Seelen derer, welche um des Zeugnisses Jesu und um des</p></div>
+        <span class="orig" lang="el">λόγον</span>
+        <span class="key" lang="de"><mark>Wortes</mark></span>
+        <p class="right" lang="de">Gottes willen enthauptet waren, und die, welche das Tier nicht angebetet hatten, noch sein Bild, und das Malzeichen nicht angenommen hatten an ihre Stirn und an ihre Hand, und sie lebten und herrschten mit dem Christus tausend Jahre.</p>
+      </li>
+    </ol>
+
+    <nav class="pager" aria-label="Seiten">
+      <span class="btn btn-secondary" aria-disabled="true">‹ Zurück</span>
+      <span class="info">Seite 1 von 7</span>
+      <a class="btn btn-secondary" href="#">Weiter ›</a>
+    </nav>
+    <p class="attribution">Grundtextdaten: STEPBible.org (Tyndale House), CC BY 4.0</p>
+
+    <section class="note" lang="en">
+      <h2>Design note (draft)</h2>
+      <ul>
+        <li><strong>Layout:</strong> every row is a 3-column grid <code>1fr | auto | 1fr</code>, so the keyword's centre is always the page centre. Context before the keyword is right-aligned and grows upward; context after is left-aligned and grows downward. The original word sits directly above the German keyword. The reference sits at the far left, on the keyword line.</li>
+        <li><strong>Mobile (&lt; 40rem):</strong> the reference moves to its own line above the row, the text gets smaller, and each side is cut to 3 lines with a fade (the lines next to the keyword stay). The full verse is one tap away through the reference. Wide screens show all of the text.</li>
+      </ul>
+      <h3>Data / API changes</h3>
+      <ul>
+        <li>The API already returns one item per occurrence (Joh 1,1 = 3 items), so paging and <code>totalItems</code> stay per row.</li>
+        <li>Replace <code>elbWords</code> + <code>verseText</code> with <code>before</code>, <code>keyword</code> tokens (<code>{text, matched}</code>, covering the first to the last matched Elberfelder position, so a word in the gap like "bösen" can be included) and <code>after</code>. Alternatively return all verse tokens plus the matched positions.</li>
+        <li>Order: canon, chapter, verse, then position in the verse.</li>
+      </ul>
+      <h3>Open questions</h3>
+      <ul>
+        <li>Should there be a sort by the German rendering, or by the word before or after the keyword (classic KWIC)?</li>
+        <li>Should the original show the inflected form (current) or the lemma?</li>
+        <li>Should desktop also cut very long context? If so, after how many lines?</li>
+        <li>For Hebrew (RTL): the original goes above the German word, and the German context stays LTR. Is that OK?</li>
+        <li>Should other hits in the same verse (e.g. the 2nd and 3rd "Wort" in Joh 1,1) get a light mark?</li>
+      </ul>
+    </section>
+  </main>
+</div>
+<script>
+// Draft-only theme switch (mirrors the app's ThemeToggle: system/light/dark).
+document.getElementById("theme").addEventListener("click", function (e) {
+  var t = e.target.closest("button"); if (!t) return;
+  var v = t.dataset.t;
+  if (v === "system") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", v);
+  this.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b === t)); });
+});
+</script>
+</body>
+</html>

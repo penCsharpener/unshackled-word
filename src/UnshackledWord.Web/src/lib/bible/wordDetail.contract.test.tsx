@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WordDetailPopover } from "@/components/WordDetailPopover";
 import i18n from "@/i18n";
@@ -21,14 +22,16 @@ describe("wordDetail.sample.json", () => {
 
   it.each(details.map((d) => [d.wordInContext, d] as const))("renders %s", (_name, detail) => {
     render(
-      <WordDetailPopover
-        id="pop"
-        word={{ id: detail.wordId, text: detail.wordInContext, senses: [] }}
-        status="success"
-        detail={detail}
-        onRetry={vi.fn()}
-        onClose={vi.fn()}
-      />,
+      <MemoryRouter>
+        <WordDetailPopover
+          id="pop"
+          word={{ id: detail.wordId, text: detail.wordInContext, senses: [] }}
+          status="success"
+          detail={detail}
+          onRetry={vi.fn()}
+          onClose={vi.fn()}
+        />
+      </MemoryRouter>,
     );
     const first = detail.readings[0];
     if (first) {

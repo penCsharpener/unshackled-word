@@ -1,0 +1,32 @@
+meta {
+  name: GetStrongsOccurrences
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}elberfelder/strongsOccurrences/strongs/:strongs?page=1&pageSize=50
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  pageSize: 50
+}
+
+params:path {
+  strongs: G0026
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  One row per occurrence of the (root) Strong's number, in canon order. Each row carries the original word as written plus
+  the Elberfelder verse split into `before`, `keyword` and `after` token lists ({ text, matched }). The keyword spans the
+  first to the last mapped Elberfelder word; words in between have matched=false. `keywordSuffix` is punctuation that
+  trailed the keyword. Unmapped words have an empty keyword and the whole verse in `after`.
+}

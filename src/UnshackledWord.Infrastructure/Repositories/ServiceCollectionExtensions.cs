@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using UnshackledWord.Application.Features.Backup;
+using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Features.WordDetail;
 using UnshackledWord.Application.Repositories;
 
@@ -22,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWordDetailRepository, WordDetailRepository>();
         services.AddScoped<IHebrewMorphemeRepository, HebrewMorphemeRepository>();
         services.AddScoped<IWordDetailService, WordDetailService>();
+        services.AddScoped<IStrongsOccurrenceService, StrongsOccurrenceService>();
         return services;
     }
 }

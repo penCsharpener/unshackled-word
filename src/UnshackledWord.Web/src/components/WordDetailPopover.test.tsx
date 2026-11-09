@@ -1,10 +1,14 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render as renderPlain, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
 import type { GetWordDetailResponse, OriginalReading, WordToken } from "@/lib/bible/types";
 import { mockWordDetail } from "@/lib/bible/wordDetail.mock";
 import { WordDetailPopover, type WordDetailPopoverProps } from "./WordDetailPopover";
+
+const render = (ui: ReactElement) => renderPlain(<MemoryRouter>{ui}</MemoryRouter>);
 
 const word: WordToken = { id: 1, text: "Wort", senses: [] };
 
@@ -302,5 +306,20 @@ describe("WordDetailPopover", () => {
       expect(screen.getByText("AI suggestion")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Edit mapping" })).toBeDisabled();
     });
+  });
+
+  it("links each reading with a Strong's number to its concordance page", () => {
+    setup({
+      detail: {
+        wordId: 1,
+        wordInContext: "Wort",
+        positionInVerse: 1,
+        readings: [reading({ strongs: "G0444" })],
+      },
+    });
+    expect(screen.getByRole("link", { name: "Alle Stellen" })).toHaveAttribute(
+      "href",
+      "/bible/strongs/G444",
+    );
   });
 });

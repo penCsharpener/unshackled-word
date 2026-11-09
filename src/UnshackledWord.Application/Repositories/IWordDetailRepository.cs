@@ -20,4 +20,7 @@ public interface IWordDetailRepository
 
     /// <summary>The most frequent Elberfelder renderings of this Strong's number (added words excluded), most used first.</summary>
     Task<IReadOnlyList<RenderingRow>> GetRenderingsAsync(string strongs, bool hebrew, int limit, CancellationToken token = default);
+
+    /// <summary>One page of the words with this root Strong's number in canonical order, with the matched Elberfelder word positions and the verse words. Same matching as <see cref="GetOccurrenceCountAsync"/>.</summary>
+    Task<IReadOnlyList<StrongsOccurrenceRow>> GetOccurrencesAsync(string strongs, bool hebrew, int skip, int take, CancellationToken token = default);
 }
