@@ -18,3 +18,12 @@ settings {
   encodeUrl: true
   timeout: 0
 }
+
+docs {
+  Try word ids: a person (NT, Paul in Acts) and a place, then any word in an NT verse that has a variant apparatus (e.g. Matthew 1:5).
+
+  readings[].entity { kind: person|place, name, brief }: STEP person/place list entry matched by the
+  reading's Strong's number (exact, including the letter suffix). English STEP text, shown live (CC BY).
+  hints contains "textVariants" when the SBLGNT apparatus has rows for the verse (NT only). Only the hint,
+  no apparatus text, is returned.
+}

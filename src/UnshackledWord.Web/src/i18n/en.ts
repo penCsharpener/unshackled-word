@@ -140,7 +140,9 @@ export const en: Translation = {
       hint: {
         manyOriginals: "Unusually many original words: this mapping is probably too generous.",
         unclearWordPart: "The mapped word part is unclear.",
+        textVariants: "Textual variants in this verse",
       },
+      entity: { person: "Person", place: "Place" },
       mapping: {
         status: { aiSuggested: "AI suggestion", confirmed: "Confirmed", manual: "Manual" },
         since: {

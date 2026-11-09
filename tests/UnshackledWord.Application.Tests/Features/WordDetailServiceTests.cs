@@ -27,7 +27,7 @@ public class WordDetailServiceTests
     {
         _words.GetWordAsync(id, Arg.Any<CancellationToken>()).Returns(new ElbWordRow
         {
-            Id = id, BibleBookId = bookId, Chapter = 1, Verse = 1, PositionInVerse = position, WordInContext = text, GermanLemma = lemma
+            Id = id, BibleBookId = bookId, Chapter = 1, Verse = 1, HebRefId = bookId * 1_000_000 + 1001, PositionInVerse = position, WordInContext = text, GermanLemma = lemma
         });
     }
 
@@ -170,6 +170,65 @@ public class WordDetailServiceTests
         var detail = await _sut.GetAsync(1);
 
         detail!.Hints.ShouldBe(["manyOriginals", "unclearWordPart"]);
+    }
+
+    [Fact]
+    public async Task GetAsync_ProperNoun_AddsPersonWithCleanedNameAndBrief()
+    {
+        GivenWord(1, 44, "Paulus");
+        GivenGreek(1, new GreekReadingRow { StepWordId = 1, PositionInVerse = 1, Original = "Παῦλος", Strongs = "G3972G", MappingCreatedAt = Created });
+        _words.GetNamedEntityAsync("G3972G", Arg.Any<CancellationToken>())
+            .Returns(new NamedEntityRow { Kind = "person", Name = "a_sample_person", Brief = "A <b>sample</b>  brief." });
+
+        var entity = (await _sut.GetAsync(1))!.Readings.Single().Entity;
+
+        entity.ShouldNotBeNull();
+        entity.Kind.ShouldBe("person");
+        entity.Name.ShouldBe("a sample person");
+        entity.Brief.ShouldBe("A sample brief.");
+    }
+
+    [Fact]
+    public async Task GetAsync_HebrewInstanceSuffix_IsDroppedForPlaceLookup()
+    {
+        GivenWord(1, 1, "Babel");
+        GivenHebrew(1, new HebrewReadingRow { StepWordId = 1, PositionInVerse = 1, Original = "בָּבֶל", Strongs = "H0894_A", MappingCreatedAt = Created });
+        _words.GetNamedEntityAsync("H0894", Arg.Any<CancellationToken>())
+            .Returns(new NamedEntityRow { Kind = "place", Name = "Babel", Brief = "Sample brief." });
+
+        var entity = (await _sut.GetAsync(1))!.Readings.Single().Entity;
+
+        entity!.Kind.ShouldBe("place");
+    }
+
+    [Fact]
+    public async Task GetAsync_NoEntity_OmitsEntity()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+
+        (await _sut.GetAsync(26001))!.Readings.Single().Entity.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetAsync_NtVerseWithApparatus_AddsTextVariantsHint()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+        _words.HasTextVariantsAsync(43001001, Arg.Any<CancellationToken>()).Returns(true);
+
+        (await _sut.GetAsync(26001))!.Hints.ShouldBe(["textVariants"]);
+    }
+
+    [Fact]
+    public async Task GetAsync_OtWord_NeverQueriesApparatus()
+    {
+        GivenWord(1, 1, "Anfang");
+        GivenHebrew(1, new HebrewReadingRow { StepWordId = 1, PositionInVerse = 1, Original = "רֵאשִׁית", Strongs = "H7225G", MappingCreatedAt = Created });
+        _words.HasTextVariantsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(true);
+
+        (await _sut.GetAsync(1))!.Hints.ShouldBeNull();
+        await _words.DidNotReceive().HasTextVariantsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

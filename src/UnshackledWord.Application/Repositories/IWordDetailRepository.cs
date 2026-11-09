@@ -21,6 +21,12 @@ public interface IWordDetailRepository
     /// <summary>The most frequent Elberfelder renderings of this Strong's number (added words excluded), most used first.</summary>
     Task<IReadOnlyList<RenderingRow>> GetRenderingsAsync(string strongs, bool hebrew, int limit, CancellationToken token = default);
 
+    /// <summary>The STEP person or place whose Strong's number equals this one (letter suffix included, compared case-insensitively), or null. Only entries with a brief text.</summary>
+    Task<NamedEntityRow?> GetNamedEntityAsync(string strongs, CancellationToken token = default);
+
+    /// <summary>Whether the SBLGNT apparatus has at least one row for this verse (original verse reference id, NT only).</summary>
+    Task<bool> HasTextVariantsAsync(int refId, CancellationToken token = default);
+
     /// <summary>One page of the words with this root Strong's number in canonical order, with the matched Elberfelder word positions and the verse words. Same matching as <see cref="GetOccurrenceCountAsync"/>.</summary>
     Task<IReadOnlyList<StrongsOccurrenceRow>> GetOccurrencesAsync(string strongs, bool hebrew, int skip, int take, CancellationToken token = default);
 }

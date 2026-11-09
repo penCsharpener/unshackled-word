@@ -56,6 +56,7 @@ public sealed class WordDetailService : IWordDetailService
 
         var lexiconCache = new Dictionary<string, LexiconEntry?>();
         var statsCache = new Dictionary<string, (int Count, List<RenderingResponse> Renderings)>();
+        var entityCache = new Dictionary<string, NamedEntityResponse?>();
         var readings = new List<OriginalReadingResponse>();
         foreach (var row in readingRows)
         {
@@ -72,7 +73,14 @@ public sealed class WordDetailService : IWordDetailService
                 statsCache[strongs] = stats;
             }
 
+            if (!entityCache.TryGetValue(strongs, out var entity))
+            {
+                entity = await FindNamedEntityAsync(strongs, token);
+                entityCache[strongs] = entity;
+            }
+
             var reading = BuildReading(word, row, strongs, entry, morphemesByWord, coRows);
+            reading.Entity = entity;
             if (stats.Count > 0)
             {
                 reading.OccurrenceCount = stats.Count;
@@ -121,6 +129,11 @@ public sealed class WordDetailService : IWordDetailService
         if (rows.Any(r => r.GermanWordPart?.Trim() == "*"))
         {
             hints.Add("unclearWordPart");
+        }
+
+        if (!isHebrew && word.HebRefId > 0 && await _words.HasTextVariantsAsync(word.HebRefId, token))
+        {
+            hints.Add("textVariants");
         }
 
         if (hints.Count > 0)
@@ -337,6 +350,35 @@ public sealed class WordDetailService : IWordDetailService
         var count = await _words.GetOccurrenceCountAsync(strongs, isHebrew, token);
         var renderings = await _words.GetRenderingsAsync(strongs, isHebrew, MaxRenderings, token);
         return (count, renderings.Select(r => new RenderingResponse { Word = r.Word, Count = r.Count }).ToList());
+    }
+
+    private async Task<NamedEntityResponse?> FindNamedEntityAsync(string strongs, CancellationToken token)
+    {
+        // Hebrew root Strong's can carry an instance suffix ("H0085_A"); the person/place lists do not.
+        var key = strongs.Split('_')[0];
+        if (key.Length == 0)
+        {
+            return null;
+        }
+
+        var row = await _words.GetNamedEntityAsync(key, token);
+        if (row is null)
+        {
+            return null;
+        }
+
+        var (brief, _) = LexiconTextCleaner.Clean(row.Brief);
+        if (brief.Length == 0)
+        {
+            return null;
+        }
+
+        return new NamedEntityResponse
+        {
+            Kind = row.Kind,
+            Name = row.Name.Replace('_', ' ').Trim(),
+            Brief = brief,
+        };
     }
 
     private async Task<LexiconEntry?> FindLexiconEntryAsync(string strongs, CancellationToken token)

@@ -41,6 +41,14 @@ public sealed class RenderingRow
     public int Count { get; init; }
 }
 
+/// <summary>STEP person or place entry for a Strong's number: kind is "person" or "place", brief is the one-line STEP description.</summary>
+public sealed class NamedEntityRow
+{
+    public string Kind { get; init; } = default!;
+    public string Name { get; init; } = default!;
+    public string Brief { get; init; } = default!;
+}
+
 public static class CoMappedRelations
 {
     public const string SameOriginal = "sameOriginal";

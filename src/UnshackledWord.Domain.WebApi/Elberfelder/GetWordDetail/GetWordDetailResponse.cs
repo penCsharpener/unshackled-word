@@ -35,6 +35,17 @@ public sealed class OriginalReadingResponse
     /// <summary>Top Elberfelder renderings of this Strong's number, most used first.</summary>
     public List<RenderingResponse>? Renderings { get; set; }
     public List<int>? SharedWithWordIds { get; set; }
+    /// <summary>STEP person or place behind this proper noun, matched by Strong's number.</summary>
+    public NamedEntityResponse? Entity { get; set; }
+}
+
+public sealed class NamedEntityResponse
+{
+    /// <summary>person or place.</summary>
+    public string Kind { get; set; } = default!;
+    public string Name { get; set; } = default!;
+    /// <summary>English one-line STEP description.</summary>
+    public string Brief { get; set; } = default!;
 }
 
 public sealed class RenderingResponse

@@ -178,6 +178,13 @@ export interface Rendering {
   count: number;
 }
 
+/** A person or place of the STEP lists behind a proper noun, matched by Strong's number. */
+export interface NamedEntity {
+  kind: "person" | "place";
+  name: string;
+  brief: string; // English, one line
+}
+
 export interface OriginalReading {
   stepWordId: number;
   language: OriginalLanguage;
@@ -198,6 +205,8 @@ export interface OriginalReading {
   renderings?: Rendering[];
   /** other German words of the verse mapped to this same original word (ids from `coMappedWords`) */
   sharedWithWordIds?: number[];
+  /** set when the Strong's number belongs to a STEP person or place */
+  entity?: NamedEntity;
 }
 
 /** Who wrote the current version of the word's mapping rows. */
@@ -225,7 +234,7 @@ export interface CoMappedWord {
   relation: CoMappedRelation;
 }
 /** Server-derived uncertainty hints (there is no confidence value in the data). */
-export type MappingHintKey = "manyOriginals" | "unclearWordPart";
+export type MappingHintKey = "manyOriginals" | "unclearWordPart" | "textVariants";
 
 export interface GetWordDetailResponse {
   wordId: number;

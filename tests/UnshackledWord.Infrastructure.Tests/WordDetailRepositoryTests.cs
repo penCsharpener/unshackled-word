@@ -133,3 +133,32 @@ public class WordDetailRepositoryOccurrencesTests
         reader.LastParam("Take").ShouldBe(50);
     }
 }
+
+public class WordDetailRepositoryExtrasTests
+{
+    [Fact]
+    public async Task GetNamedEntityAsync_ComparesStrongsAndSearchesPersonsAndPlaces()
+    {
+        var reader = new FakeDbReader().Returns(new NamedEntityRow { Kind = "person", Name = "Paul", Brief = "x" });
+
+        var row = await new WordDetailRepository(reader).GetNamedEntityAsync("G3972G");
+
+        row!.Kind.ShouldBe("person");
+        reader.LastSql.ShouldContain("\"StepPersonLexicon\"");
+        reader.LastSql.ShouldContain("\"StepPlaceLexicon\"");
+        reader.LastSql.ShouldContain("UPPER(@Strongs)");
+        reader.LastParam("Strongs").ShouldBe("G3972G");
+    }
+
+    [Fact]
+    public async Task HasTextVariantsAsync_ChecksTheApparatusOfTheVerse()
+    {
+        var reader = new FakeDbReader();
+        var repository = new WordDetailRepository(reader);
+
+        (await repository.HasTextVariantsAsync(40001005)).ShouldBeFalse();
+
+        reader.LastSql.ShouldContain("\"SblApparatus\"");
+        reader.LastParam("RefId").ShouldBe(40001005);
+    }
+}

@@ -35,7 +35,12 @@
           { "word": "Wort", "count": 112 },
           { "word": "Rede", "count": 14 },
           { "word": "Lehre", "count": 6 }
-        ]
+        ],
+        "entity": {
+          "kind": "person",
+          "name": "Sample Person",
+          "brief": "Hand-written sample description."
+        }
       }
     ],
     "mapping": {
@@ -43,7 +48,7 @@
       "createdAt": "2026-01-02T03:04:05Z",
       "model": "sample-model"
     },
-    "hints": ["unclearWordPart"]
+    "hints": ["unclearWordPart", "textVariants"]
   },
   {
     "wordId": 202,

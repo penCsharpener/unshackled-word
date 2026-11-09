@@ -308,6 +308,34 @@ describe("WordDetailPopover", () => {
     });
   });
 
+  it("shows the person or place and the text-variant hint only when the data has them", () => {
+    setup({
+      detail: {
+        wordId: 1,
+        wordInContext: "Paulus",
+        positionInVerse: 1,
+        hints: ["textVariants"],
+        readings: [
+          reading({
+            strongs: "G3972G",
+            entity: { kind: "person", name: "Sample", brief: "Sample brief." },
+          }),
+        ],
+      },
+    });
+    expect(screen.getByText("Person:")).toBeInTheDocument();
+    expect(screen.getByText("Sample, Sample brief.")).toHaveAttribute("lang", "en");
+    expect(screen.getByRole("note")).toHaveTextContent("Textvarianten in diesem Vers");
+  });
+
+  it("omits the person/place line and the variant note without data", () => {
+    setup({
+      detail: { wordId: 1, wordInContext: "Wort", positionInVerse: 1, readings: [reading({})] },
+    });
+    expect(screen.queryByText("Person:")).not.toBeInTheDocument();
+    expect(screen.queryByRole("note")).not.toBeInTheDocument();
+  });
+
   it("links each reading with a Strong's number to its concordance page", () => {
     setup({
       detail: {

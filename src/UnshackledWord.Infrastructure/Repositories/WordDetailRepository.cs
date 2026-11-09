@@ -208,6 +208,46 @@ public sealed class WordDetailRepository : IWordDetailRepository
         return rows.ToList();
     }
 
+    public async Task<NamedEntityRow?> GetNamedEntityAsync(string strongs, CancellationToken token = default)
+    {
+        const string sql = """
+                           (SELECT 'person' "Kind"
+                                 , spl."Name"
+                                 , spl."Brief"
+                            FROM "unshackled-word"."StepPersonLexicon" spl
+                            WHERE 1=1
+                                AND UPPER(spl."Strongs") = UPPER(@Strongs)
+                                AND spl."Brief" <> ''
+                            ORDER BY spl."Id"
+                            LIMIT 1)
+                           UNION ALL
+                           (SELECT 'place' "Kind"
+                                 , spl."Name"
+                                 , spl."Brief"
+                            FROM "unshackled-word"."StepPlaceLexicon" spl
+                            WHERE 1=1
+                                AND UPPER(spl."Strongs") = UPPER(@Strongs)
+                                AND spl."Brief" <> ''
+                            ORDER BY spl."Id"
+                            LIMIT 1)
+                           LIMIT 1
+                           """;
+
+        return await _dbReader.ReadFirstOrDefaultAsync<NamedEntityRow>(sql, new { Strongs = strongs });
+    }
+
+    public async Task<bool> HasTextVariantsAsync(int refId, CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT EXISTS (SELECT 1
+                                          FROM "unshackled-word"."SblApparatus" sa
+                                          WHERE 1=1
+                                              AND sa."LxxRefId" = @RefId)
+                           """;
+
+        return await _dbReader.ExecuteScalarAsync<bool>(sql, new { RefId = refId });
+    }
+
     public async Task<int> GetOccurrenceCountAsync(string strongs, bool hebrew, CancellationToken token = default)
     {
         const string greekSql = """

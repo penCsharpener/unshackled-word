@@ -89,8 +89,8 @@ the vocab trainer, the translation-level slider.
 | [x] | S22 | Elberfelder renderings (= roadmap 0001 S33) in the pop-up | S16, S20 | "übersetzt mit: Wort (…×), Rede (…×)" shown, top 5 |
 | [x] | S23 | Occurrence list endpoint + concordance page `/bible/strongs/:strongs` (= 0001 S35) | S20 | Paged list; link "Alle Stellen" in the pop-up; tests pass |
 | [ ] | S24 | Verse cross references (TSK) section | S16 | Section lists TSK targets for the word's verse (existing `ITskRepository`) |
-| [ ] | S25 | People / places brief | S16 | Proper nouns show the `Brief` text of `StepPersonLexicon` / `StepPlaceLexicon` |
-| [ ] | S26 | NT textual-variant hint (SBL apparatus) | S16 | Note "Textvarianten in diesem Vers" when `SblApparatus` has rows |
+| [x] | S25 | People / places brief | S16 | Proper nouns show the `Brief` text of `StepPersonLexicon` / `StepPlaceLexicon` |
+| [x] | S26 | NT textual-variant hint (SBL apparatus) | S16 | Note "Textvarianten in diesem Vers" when `SblApparatus` has rows |
 | [ ] | S27 | MCP tool `get_word_detail` reusing `WordDetailService` | S15 | Tool returns formatted detail; MCP tests pass |
 
 ## Background knowledge
@@ -1089,8 +1089,21 @@ deserializes into `GetWordDetailResponse`, re-serializes with the API options an
   Frontend: page `/bible/strongs/:strongs?page=` (`StrongsPage`, the AstroWeb "Konkordanz" placeholder), pop-up link "Alle Stellen".
 - **S24** TSK: `ITskRepository.GetOutgoingAsync(hebRefId, hebRefId, 20)`; section "Querverweise zu diesem Vers";
   links via `chapterPath` + `#v{verse}`. Consider a verse-level UI instead (open question).
-- **S25** People/places: by Strong's, show `Brief` (STEP text, live).
-- **S26** SBL apparatus: NT only, `EXISTS` row for the verse's `LxxRefId`.
+- **S25** (done) People/places: `readings[].entity {kind: person|place, name, brief}`, `IWordDetailRepository.GetNamedEntityAsync`
+  (`UNION ALL` over `StepPersonLexicon` / `StepPlaceLexicon`, `UPPER("Strongs") = UPPER(@Strongs)`, `Brief <> ''`, lowest `Id`).
+  Data check (DB copy): 1581 persons, 480 places, all with a `Strongs` of the form `G3972G` / `H0085` / `H1035G` (letter suffix
+  = STEP disambiguation, equal to `StepGreekWords.DisambiguatedStrongs` and the root of `RootDisambiguatedStrongsInstance`
+  without `_A`). Match is exact including the letter, Hebrew instance suffix stripped in the service; no base-number fallback
+  (it would attach the wrong John). Gaps: `LxxRefId` of both tables is the entity's *first occurrence*, not a per-word link, so it
+  is not used; unnamed persons carry `G0000`/`H0000` (never match); persons sharing one Strong's number (e.g. several
+  Johns differ by letter, so fine) fall back to the lowest `Id`; names with `_` (`father_of_Lazarus`) are shown with spaces;
+  `Brief` is English, shown with `lang="en"`, cleaned with `LexiconTextCleaner`. Table scan without an index on `Strongs`
+  (about 2000 rows, no 0006 dependency). `Article`/`Short` are not shown.
+- **S26** (done) SBL apparatus: NT only, hint key `textVariants` ("Textvarianten in diesem Vers") in `hints`.
+  `IWordDetailRepository.HasTextVariantsAsync(HebRefId)` = `EXISTS` on `SblApparatus."LxxRefId"` (indexed). `Elb1871Words.HebRefId`
+  of NT words equals the apparatus `LxxRefId` (`book*1000000 + chapter*1000 + verse`, checked for Matthew 1:5). 4441 of the NT
+  verses have a row (about 60 % of the NT words are in such verses). The apparatus text itself (Greek, sigla like WH/NA28/RP) is
+  not returned, only the hint, so no SBLGNT text is copied or translated.
 - **S27** MCP `get_word_detail`: parameters `reference` + `word` (German word or position), resolves the
   `Elb1871Words.Id`, calls `WordDetailService`, formats in English via the decoder keys.
 

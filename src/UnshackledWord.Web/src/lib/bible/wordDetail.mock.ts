@@ -3,6 +3,7 @@ import type {
   GetWordDetailResponse,
   MappingHintKey,
   MappingProvenance,
+  NamedEntity,
   OriginalReading,
   WordToken,
 } from "./types";
@@ -11,6 +12,12 @@ import { normalizeStrongs } from "./wordDetail";
 export const MOCK_DELAY_MS = 120;
 
 type MockReading = Omit<OriginalReading, "germanWordPart" | "sharedWithWordIds">;
+
+/** Hand-written mock persons/places keyed by normalized Strong's, no STEP text. */
+const MOCK_ENTITIES: Record<string, NamedEntity> = {
+  G2424: { kind: "person", name: "Sample person", brief: "Hand-written sample description." },
+  H3389: { kind: "place", name: "Sample place", brief: "Hand-written sample description." },
+};
 
 /** Mock readings keyed by normalized Strong's. Hand-written, no STEP text copied. */
 export const MOCK_READINGS: Record<string, MockReading> = {
@@ -276,6 +283,8 @@ export function mockWordDetail(
         strongs: key,
       };
     }
+    const entity = MOCK_ENTITIES[key];
+    if (entity) reading.entity = entity;
     const sharedWith = coMapped
       .filter((c) => {
         const other = verseWords.find((w) => w.id === c.wordId);

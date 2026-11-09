@@ -148,7 +148,9 @@ export const de = {
         manyOriginals:
           "Ungewöhnlich viele Grundtextwörter: Die Zuordnung ist hier vermutlich zu großzügig.",
         unclearWordPart: "Der zugeordnete Wortteil ist unklar.",
+        textVariants: "Textvarianten in diesem Vers",
       },
+      entity: { person: "Person", place: "Ort" },
       mapping: {
         status: { aiSuggested: "KI-Vorschlag", confirmed: "Bestätigt", manual: "Manuell" },
         since: {

@@ -136,6 +136,16 @@ function ReadingSection({
         {reading.original}
       </p>
       {reading.transliteration && <p className="italic text-fg-muted">{reading.transliteration}</p>}
+      {reading.entity && (
+        <p className="mt-1 text-sm">
+          <span className="text-fg-muted">
+            {t(`bible.wordDetail.entity.${reading.entity.kind}`)}:{" "}
+          </span>
+          <span lang="en">
+            {reading.entity.name}, {reading.entity.brief}
+          </span>
+        </p>
+      )}
       <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
         <dt className="text-fg-muted">{label("strongs")}</dt>
         <dd>
