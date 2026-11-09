@@ -4,12 +4,15 @@ const variants = {
   primary: "bg-accent text-accent-fg hover:opacity-90",
   secondary: "border border-border bg-surface text-fg hover:bg-surface-muted",
   ghost: "text-fg hover:bg-surface-muted",
+  inline: "",
 } as const;
 
 const sizes = {
   sm: "px-2 py-1 text-sm",
   md: "px-4 py-2 text-base",
 } as const;
+
+const INLINE_CLASSES = "cursor-pointer rounded-sm px-0.5 transition-colors";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: keyof typeof variants;
@@ -20,6 +23,8 @@ export type ButtonStyle = Pick<ButtonProps, "variant" | "size">;
 
 /** Class string of a Button, for elements that must look like one (e.g. router links). */
 export function buttonClasses({ variant = "secondary", size = "md" }: ButtonStyle = {}): string {
+  // Text-flow buttons (scripture words) keep the font, size and line-height of the surrounding text.
+  if (variant === "inline") return INLINE_CLASSES;
   return `inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${sizes[size]}`;
 }
 

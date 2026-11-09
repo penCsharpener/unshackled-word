@@ -47,6 +47,11 @@
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
 
+  --font-original:
+    "SBL BibLit", "Noto Serif Hebrew", "Noto Serif", "Iowan Old Style", "Palatino Linotype",
+    "Times New Roman", serif;
+
+  --container-popover: 24rem;
   --container-page: 72rem;
   --container-page-wide: 120rem;
 }
@@ -61,5 +66,43 @@
   :focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* The one open word is the anchor; only one word carries this class at a time. */
+  .word-anchor {
+    anchor-name: --uw-word;
+  }
+
+  /* Mobile first and fallback: bottom sheet. Overrides the UA [popover] centering. */
+  .word-popover {
+    position: fixed;
+    inset: auto 0 0 0;
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    max-height: 70dvh;
+    overflow-y: auto;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  @media (width >= 48rem) {
+    @supports (anchor-name: --uw-word) {
+      .word-popover {
+        position-anchor: --uw-word;
+        position-area: block-end span-inline-end;
+        position-try-fallbacks:
+          flip-block,
+          flip-inline,
+          flip-block flip-inline;
+        inset: auto;
+        margin: calc(var(--spacing) * 1) 0;
+        width: max-content;
+        max-width: min(var(--container-popover), calc(100vw - var(--spacing) * 8));
+        max-height: 60dvh;
+        border-radius: var(--radius-lg);
+      }
+    }
   }
 }

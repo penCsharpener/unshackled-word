@@ -43,4 +43,17 @@ describe("buttonClasses", () => {
     expect(buttonClasses()).toBe(buttonClasses({ variant: "secondary", size: "md" }));
     expect(buttonClasses()).toContain("px-4 py-2");
   });
+
+  it("inline variant keeps text-flow classes only", () => {
+    const classes = buttonClasses({ variant: "inline", size: "sm" });
+    expect(classes).not.toContain("inline-flex");
+    expect(classes).not.toContain("font-medium");
+    expect(classes).not.toContain("px-4");
+    expect(classes).toBe(buttonClasses({ variant: "inline" }));
+  });
+
+  it("renders an inline Button with type=button", () => {
+    render(<Button variant="inline">word</Button>);
+    expect(screen.getByRole("button", { name: "word" })).toHaveAttribute("type", "button");
+  });
 });

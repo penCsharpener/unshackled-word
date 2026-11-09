@@ -6,8 +6,9 @@ Rules: design tokens only (Tailwind theme variables from `src/styles/index.css`)
 
 | Component | Description |
 | --- | --- |
-| `Button` | The only button. Variants `primary` / `secondary` / `ghost`, sizes `sm` / `md`; defaults to `type="button"`. |
+| `Button` | The only button. Variants `primary` / `secondary` / `ghost` / `inline` (text flow, inherits font), sizes `sm` / `md`; defaults to `type="button"`. |
 | `ThemeToggle` | System / light / dark switch, persisted in localStorage. |
 | `LanguageSwitch` | DE / EN switch (i18next), persisted in localStorage. |
 | `AppShell` | Page frame: header with brand, language and theme controls, plus the routed `<Outlet />`. |
 | `BibleChapterPicker` | OT/NT bar that unrolls a book grid with chapter links (Psalms split in five books); props `books`, `currentBookId`, `currentChapter`, `defaultTestament`. |
+| `WordDetailPopover` | Pop-up with the Greek/Hebrew readings of one Elberfelder word (native popover; anchored on desktop, bottom sheet on mobile); shows mapping provenance badge (AI suggestion / confirmed / manual), words translated together, uncertainty hints and an edit-mapping action (disabled until `onEditMapping` is passed); props `word`, `status`, `detail`, `isSample`, `onRetry`, `onClose`, `onEditMapping`. |

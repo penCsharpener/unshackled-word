@@ -1,4 +1,10 @@
-import type { ChapterWord, HighlightKind, VerseWords, WordToken } from "./types";
+import type {
+  ChapterWord,
+  GetWordDetailResponse,
+  HighlightKind,
+  VerseWords,
+  WordToken,
+} from "./types";
 
 /** Letters and combining marks only, so "λόγος," and "λόγος" count as the same form. */
 const NON_LETTERS = /[^\p{L}\p{M}]/gu;
@@ -71,4 +77,13 @@ export function buildHighlights(
     }
   }
   return result;
+}
+
+/** Ids of the German words translated together with the open word (its phrase), including the word itself. */
+export function phraseWordIds(detail: GetWordDetailResponse | undefined): Set<number> {
+  const ids = new Set<number>();
+  if (!detail?.coMappedWords?.length) return ids;
+  ids.add(detail.wordId);
+  for (const word of detail.coMappedWords) ids.add(word.wordId);
+  return ids;
 }

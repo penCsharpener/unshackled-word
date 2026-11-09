@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { fixtureChapterWords } from "@/test/fixtures/bibleStructure";
-import { buildHighlights, groupWordsByVerse } from "./words";
+import { buildHighlights, groupWordsByVerse, phraseWordIds } from "./words";
 
 describe("groupWordsByVerse", () => {
   const verses = groupWordsByVerse(fixtureChapterWords.words);
@@ -64,5 +64,27 @@ describe("buildHighlights", () => {
   it("returns nothing for words without senses or no hover", () => {
     expect(buildHighlights(find(1), verses).size).toBe(0);
     expect(buildHighlights(undefined, verses).size).toBe(0);
+  });
+});
+
+describe("phraseWordIds", () => {
+  it("is empty without co-mapped words", () => {
+    expect(phraseWordIds(undefined).size).toBe(0);
+    expect(
+      phraseWordIds({ wordId: 1, wordInContext: "a", positionInVerse: 1, readings: [] }).size,
+    ).toBe(0);
+  });
+
+  it("contains the word and its co-mapped words", () => {
+    const ids = phraseWordIds({
+      wordId: 2,
+      wordInContext: "Anfang",
+      positionInVerse: 2,
+      readings: [],
+      coMappedWords: [
+        { wordId: 1, wordInContext: "Im", positionInVerse: 1, relation: "addedWord" },
+      ],
+    });
+    expect([...ids].sort()).toEqual([1, 2]);
   });
 });

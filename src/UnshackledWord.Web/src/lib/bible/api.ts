@@ -2,6 +2,7 @@ import { api } from "@/lib/api";
 import type {
   GetBibleStructureResponse,
   GetChapterTextResponse,
+  GetWordDetailResponse,
   GetWordsOfChapterResponse,
 } from "./types";
 
@@ -18,4 +19,6 @@ export const bibleApi = {
       `/elberfelder/chapterWords/bookId/${bookId}/chapterId/${chapter}`,
       signal,
     ),
+  wordDetail: (wordId: number, signal?: AbortSignal) =>
+    api.get<GetWordDetailResponse>(`/elberfelder/wordDetail/wordId/${wordId}`, signal),
 };

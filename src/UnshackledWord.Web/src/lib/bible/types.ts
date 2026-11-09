@@ -72,3 +72,161 @@ export interface VerseWords {
 }
 /** `same`: shares a key and the same original form; `related`: shares a key with a different form. */
 export type HighlightKind = "same" | "related";
+
+export type OriginalLanguage = "greek" | "hebrew" | "aramaic";
+
+export type PartOfSpeechKey =
+  | "adjective"
+  | "adverb"
+  | "article"
+  | "conjunction"
+  | "indeclinable"
+  | "interjection"
+  | "noun"
+  | "nounProper"
+  | "nounProperPerson"
+  | "nounProperPlace"
+  | "particle"
+  | "preposition"
+  | "pronoun"
+  | "suffix"
+  | "verb";
+export type TenseKey =
+  | "present"
+  | "imperfect"
+  | "future"
+  | "aorist"
+  | "perfect"
+  | "pluperfect"
+  | "futurePerfect";
+export type VoiceKey = "active" | "middle" | "passive" | "middleOrPassive";
+export type MoodKey =
+  | "indicative"
+  | "subjunctive"
+  | "optative"
+  | "imperative"
+  | "infinitive"
+  | "participle";
+export type PersonKey = "first" | "second" | "third";
+export type CaseKey = "nominative" | "genitive" | "dative" | "accusative" | "vocative";
+export type NumberKey = "singular" | "dual" | "plural";
+export type GenderKey = "masculine" | "feminine" | "neuter" | "common";
+export type DegreeKey = "comparative" | "superlative";
+export type HebrewStemKey =
+  | "qal"
+  | "niphal"
+  | "piel"
+  | "pual"
+  | "hiphil"
+  | "hophal"
+  | "hithpael"
+  | "other";
+export type HebrewFormKey =
+  | "perfect"
+  | "imperfect"
+  | "sequentialPerfect"
+  | "sequentialImperfect"
+  | "cohortative"
+  | "jussive"
+  | "imperative"
+  | "infinitiveAbsolute"
+  | "infinitiveConstruct"
+  | "participleActive"
+  | "participlePassive";
+export type HebrewStateKey = "absolute" | "construct" | "determined";
+
+/** A morphology code plus its decoded parts. Parts are stable keys, translated by i18n (`bible.grammar.*`). */
+export interface Morphology {
+  code: string; // "N-NSM", "V-IAI-3S", "HR/Ncfsa", "HNcmpa"
+  partOfSpeech?: PartOfSpeechKey;
+  tense?: TenseKey; // Greek
+  voice?: VoiceKey; // Greek
+  mood?: MoodKey; // Greek
+  person?: PersonKey;
+  case?: CaseKey; // Greek
+  number?: NumberKey;
+  gender?: GenderKey;
+  degree?: DegreeKey; // Greek
+  stem?: HebrewStemKey; // Hebrew/Aramaic verbs
+  hebrewForm?: HebrewFormKey; // Hebrew/Aramaic verbs
+  state?: HebrewStateKey; // Hebrew/Aramaic nominals
+  /** English STEP description, only when the decoder could not map the code. */
+  description?: string;
+}
+
+/** One part of a Hebrew/Aramaic word (prefix, root, suffix), in word order. */
+export interface Morpheme {
+  role: "prefix" | "root" | "suffix";
+  original: string;
+  strongs?: string; // "H9003"
+  gloss?: string; // English
+  morphology?: Morphology;
+}
+
+export interface LexiconSummary {
+  strongs: string;
+  lemma: string;
+  transliteration?: string;
+  gloss?: string; // English
+  definition?: string; // English, markup stripped, max ~600 chars
+  definitionTruncated?: boolean;
+}
+
+/** One original-language word behind the German word. */
+export interface OriginalReading {
+  stepWordId: number;
+  language: OriginalLanguage;
+  positionInVerse: number; // position in the original verse; readings are sorted by it
+  germanWordPart?: string; // part of the German word this reading covers
+  original: string; // with diacritics
+  transliteration?: string;
+  lemma?: string;
+  strongs: string; // STEP disambiguated root, e.g. "G3056", "H7225G"
+  gloss?: string; // dictionary gloss, English
+  contextGloss?: string; // meaning in this verse, English
+  morphology?: Morphology; // whole word (Hebrew: root part)
+  morphemes?: Morpheme[]; // Hebrew/Aramaic only
+  lexicon?: LexiconSummary;
+  occurrenceCount?: number; // Phase 4 (S21)
+  /** other German words of the verse mapped to this same original word (ids from `coMappedWords`) */
+  sharedWithWordIds?: number[];
+}
+
+/** Who wrote the current version of the word's mapping rows. */
+export type MappingSource = "ai" | "human";
+/** Provenance of the word's mapping (Elb1871GreekMapping / Elb1871HebrewMapping); omitted when unmapped. */
+export interface MappingProvenance {
+  source: MappingSource;
+  createdAt: string; // ISO 8601, current version
+  model?: string; // AI model id, AI only, e.g. "gemini-3.1-flash-lite-preview"
+  confirmedAt?: string; // ISO 8601, a human confirmed the AI mapping
+}
+/** Derived for the badge: AI unconfirmed, AI confirmed by a human, or written by a human. */
+export type MappingStatus = "aiSuggested" | "confirmed" | "manual";
+
+/**
+ * `sameOriginal`: shares at least one original word ("Und die Erde" → וְהָאָרֶץ);
+ * `addedWord`: added by the translator for this word (ParentGermanWordId = this word);
+ * `parent`: the word this added word belongs to.
+ */
+export type CoMappedRelation = "sameOriginal" | "addedWord" | "parent";
+export interface CoMappedWord {
+  wordId: number;
+  wordInContext: string;
+  positionInVerse: number;
+  relation: CoMappedRelation;
+}
+/** Server-derived uncertainty hints (there is no confidence value in the data). */
+export type MappingHintKey = "manyOriginals" | "unclearWordPart";
+
+export interface GetWordDetailResponse {
+  wordId: number;
+  wordInContext: string;
+  positionInVerse: number;
+  germanLemma?: string;
+  isAddedWord?: boolean; // omitted when false
+  readings: OriginalReading[]; // [] = not linked (or added word)
+  mapping?: MappingProvenance;
+  coMappedWords?: CoMappedWord[]; // same verse, sorted by positionInVerse
+  hints?: MappingHintKey[];
+}

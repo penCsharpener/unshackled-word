@@ -1,18 +1,22 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { BibleChapterPicker } from "@/components/BibleChapterPicker";
 import { Button, buttonClasses } from "@/components/Button";
+import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
 import { chapterWordsQuery, useBibleStructure, useChapterWords } from "@/lib/bible/queries";
-import type { BibleStructureBook, ChapterRef, HighlightKind } from "@/lib/bible/types";
-import { buildHighlights } from "@/lib/bible/words";
+import type { BibleStructureBook, ChapterRef, HighlightKind, WordToken } from "@/lib/bible/types";
+import { useWordDetail, wordDetailSource } from "@/lib/bible/wordDetail";
+import { buildHighlights, phraseWordIds } from "@/lib/bible/words";
 
 const HIGHLIGHT_CLASSES: Record<HighlightKind, string> = {
   same: "bg-mark-same",
   related: "bg-mark-related",
 };
+/** Words translated together with the open word; an underline so it combines with the hover highlight. */
+const PHRASE_CLASSES = "underline decoration-accent decoration-2 underline-offset-4";
 
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -36,11 +40,36 @@ export function ChapterPage() {
   const ref = parseChapterParams(params.bookId, params.chapter, books);
   const verses = useChapterWords(books ? ref : null);
   const [hoveredId, setHoveredId] = useState<number>();
+  const [selectedId, setSelectedId] = useState<number>();
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const popoverId = useId();
+  const selectedVerse = verses.data?.find((v) => v.words.some((w) => w.id === selectedId));
+  const selectedWord = selectedVerse?.words.find((w) => w.id === selectedId);
+  const detail = useWordDetail(selectedWord, selectedVerse?.words);
+  const phrase = useMemo(
+    () => phraseWordIds(selectedId !== undefined ? detail.data : undefined),
+    [selectedId, detail.data],
+  );
+  const activeId = hoveredId ?? selectedId;
   const highlights = useMemo(() => {
     const data = verses.data ?? [];
-    const hovered = data.flatMap((v) => v.words).find((w) => w.id === hoveredId);
-    return buildHighlights(hovered, data);
-  }, [verses.data, hoveredId]);
+    const active = data.flatMap((v) => v.words).find((w) => w.id === activeId);
+    return buildHighlights(active, data);
+  }, [verses.data, activeId]);
+
+  function toggle(word: WordToken, element: HTMLElement) {
+    if (selectedId === word.id) {
+      setSelectedId(undefined);
+      return;
+    }
+    triggerRef.current = element;
+    setSelectedId(word.id);
+  }
+
+  function close(reason: WordDetailCloseReason) {
+    setSelectedId(undefined);
+    if (reason !== "outside") triggerRef.current?.focus();
+  }
 
   const prev = books && ref ? adjacentChapter(books, ref, -1) : null;
   const next = books && ref ? adjacentChapter(books, ref, 1) : null;
@@ -52,12 +81,20 @@ export function ChapterPage() {
       if (event.defaultPrevented) return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (isTypingTarget(event.target)) return;
+      if (selectedId !== undefined) return;
       if (event.key === "ArrowLeft" && prevPath) navigate(prevPath);
       if (event.key === "ArrowRight" && nextPath) navigate(nextPath);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [prevPath, nextPath, navigate]);
+  }, [prevPath, nextPath, navigate, selectedId]);
+
+  const bookId = ref?.bookId;
+  const chapterNumber = ref?.chapter;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: closing on every chapter change is the point
+  useEffect(() => {
+    setSelectedId(undefined);
+  }, [bookId, chapterNumber]);
 
   useEffect(() => {
     if (verses.isSuccess && next) {
@@ -178,23 +215,39 @@ export function ChapterPage() {
                 const kind = highlights.get(word.id);
                 return (
                   <Fragment key={word.id}>
-                    {/* biome-ignore lint/a11y/noStaticElementInteractions: hover/focus only drives a visual highlight; tabIndex keeps it keyboard reachable */}
-                    <span
-                      tabIndex={interactive ? 0 : undefined}
+                    <Button
+                      variant="inline"
+                      data-word-trigger=""
+                      aria-haspopup="dialog"
+                      aria-expanded={selectedId === word.id}
+                      aria-controls={selectedId === word.id ? popoverId : undefined}
+                      aria-label={t("bible.wordDetail.trigger", { word: word.text })}
+                      onClick={(e) => toggle(word, e.currentTarget)}
                       onMouseEnter={interactive ? () => setHoveredId(word.id) : undefined}
                       onMouseLeave={interactive ? () => setHoveredId(undefined) : undefined}
                       onFocus={interactive ? () => setHoveredId(word.id) : undefined}
                       onBlur={interactive ? () => setHoveredId(undefined) : undefined}
-                      className={`rounded-sm px-0.5 transition-colors ${kind ? HIGHLIGHT_CLASSES[kind] : ""}`}
+                      className={`${kind ? HIGHLIGHT_CLASSES[kind] : ""} ${phrase.has(word.id) ? PHRASE_CLASSES : ""} ${selectedId === word.id ? "word-anchor" : ""}`}
                     >
                       {word.text}
-                    </span>{" "}
+                    </Button>{" "}
                   </Fragment>
                 );
               })}
             </p>
           ))}
       </article>
+      {selectedWord && (
+        <WordDetailPopover
+          id={popoverId}
+          word={selectedWord}
+          status={detail.status}
+          detail={detail.data}
+          isSample={wordDetailSource === "mock"}
+          onRetry={() => detail.refetch()}
+          onClose={close}
+        />
+      )}
       <footer className="mx-auto mt-8 flex max-w-prose justify-between">
         {renderLink(prev, "previous", true)}
         {renderLink(next, "next", true)}
