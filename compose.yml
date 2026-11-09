@@ -71,19 +71,6 @@ services:
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_SERILOG__MINIMUMLEVEL__DEFAULT=${MCP_LOG_LEVEL:-Information}
 
-  unshackledword.tooling.bibletagger:
-    #image: unshackledword.tooling.bibletagger
-    build:
-      context: .
-      dockerfile: src/UnshackledWord.Tooling.BibleTagger/Dockerfile
-    ports:
-      - "8765:8080"
-    depends_on:
-      - unshackledword.tooling.webapi
-    environment:
-      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
-      - UNSHACKLEDWORD_APIURL=http://unshackledword.tooling.webapi:8080/api
-
   unshackledword.web:
     build:
       context: src/UnshackledWord.Web
