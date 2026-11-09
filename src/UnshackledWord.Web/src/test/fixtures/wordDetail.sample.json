@@ -30,7 +30,12 @@
           "definition": "Hand-written sample definition. It is shortened on purpose.",
           "definitionTruncated": true
         },
-        "occurrenceCount": 42
+        "occurrenceCount": 137,
+        "renderings": [
+          { "word": "Wort", "count": 112 },
+          { "word": "Rede", "count": 14 },
+          { "word": "Lehre", "count": 6 }
+        ]
       }
     ],
     "mapping": {
@@ -89,6 +94,8 @@
           "lemma": "רֵאשִׁית",
           "definition": "Hand-written sample definition."
         },
+        "occurrenceCount": 51,
+        "renderings": [{ "word": "Anfang", "count": 40 }, { "word": "Erstling", "count": 7 }],
         "sharedWithWordIds": [201]
       },
       {

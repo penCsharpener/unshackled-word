@@ -149,6 +149,9 @@ export const de = {
       germanPart: "Wortteil „{{part}}“",
       sample: "Beispieldaten",
       truncated: "(gekürzt)",
+      occurrences: { nt: "{{n}}× im NT", ot: "{{n}}× im AT" },
+      renderings: "übersetzt mit: {{list}}",
+      rendering: "{{word}} ({{n}}×)",
       attribution: "Grundtextdaten: STEPBible.org (Tyndale House), CC BY 4.0",
       language: { greek: "Griechisch", hebrew: "Hebräisch", aramaic: "Aramäisch" },
       field: {
@@ -158,6 +161,7 @@ export const de = {
         morphology: "Grammatik",
         gloss: "Bedeutung (engl.)",
         contextGloss: "Hier (engl.)",
+        occurrences: "Vorkommen",
         morphemes: "Wortbestandteile",
         definition: "Lexikon (engl.)",
       },

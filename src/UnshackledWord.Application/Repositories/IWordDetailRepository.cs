@@ -14,4 +14,10 @@ public interface IWordDetailRepository
 
     /// <summary>Other German words that share a mapping with this word: same original word, added word (child) or parent.</summary>
     Task<IReadOnlyList<CoMappedWordRow>> GetCoMappedWordsAsync(int wordId, bool hebrew, CancellationToken token = default);
+
+    /// <summary>Number of words of the testament (Greek NT or Hebrew/Aramaic OT) with this root Strong's number; Hebrew ignores the instance suffix ("H0853_A" counts as "H0853").</summary>
+    Task<int> GetOccurrenceCountAsync(string strongs, bool hebrew, CancellationToken token = default);
+
+    /// <summary>The most frequent Elberfelder renderings of this Strong's number (added words excluded), most used first.</summary>
+    Task<IReadOnlyList<RenderingRow>> GetRenderingsAsync(string strongs, bool hebrew, int limit, CancellationToken token = default);
 }

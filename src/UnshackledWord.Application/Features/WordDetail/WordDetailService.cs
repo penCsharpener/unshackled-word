@@ -10,6 +10,7 @@ public sealed class WordDetailService : IWordDetailService
 {
     private const int LastHebrewBookId = 39;
     private const int ManyOriginalsThreshold = 3;
+    private const int MaxRenderings = 5;
 
     private readonly IWordDetailRepository _words;
     private readonly IHebrewMorphemeRepository _morphemes;
@@ -54,6 +55,7 @@ public sealed class WordDetailService : IWordDetailService
         }
 
         var lexiconCache = new Dictionary<string, LexiconEntry?>();
+        var statsCache = new Dictionary<string, (int Count, List<RenderingResponse> Renderings)>();
         var readings = new List<OriginalReadingResponse>();
         foreach (var row in readingRows)
         {
@@ -64,7 +66,24 @@ public sealed class WordDetailService : IWordDetailService
                 lexiconCache[strongs] = entry;
             }
 
-            readings.Add(BuildReading(word, row, strongs, entry, morphemesByWord, coRows));
+            if (!statsCache.TryGetValue(strongs, out var stats))
+            {
+                stats = await GetStrongsStatsAsync(strongs, isHebrew, token);
+                statsCache[strongs] = stats;
+            }
+
+            var reading = BuildReading(word, row, strongs, entry, morphemesByWord, coRows);
+            if (stats.Count > 0)
+            {
+                reading.OccurrenceCount = stats.Count;
+            }
+
+            if (stats.Renderings.Count > 0)
+            {
+                reading.Renderings = stats.Renderings;
+            }
+
+            readings.Add(reading);
         }
 
         var response = new GetWordDetailResponse
@@ -307,6 +326,18 @@ public sealed class WordDetailService : IWordDetailService
         CoMappedRelations.AddedWord => 1,
         _ => 2
     };
+
+    private async Task<(int Count, List<RenderingResponse> Renderings)> GetStrongsStatsAsync(string strongs, bool isHebrew, CancellationToken token)
+    {
+        if (string.IsNullOrEmpty(strongs))
+        {
+            return (0, []);
+        }
+
+        var count = await _words.GetOccurrenceCountAsync(strongs, isHebrew, token);
+        var renderings = await _words.GetRenderingsAsync(strongs, isHebrew, MaxRenderings, token);
+        return (count, renderings.Select(r => new RenderingResponse { Word = r.Word, Count = r.Count }).ToList());
+    }
 
     private async Task<LexiconEntry?> FindLexiconEntryAsync(string strongs, CancellationToken token)
     {

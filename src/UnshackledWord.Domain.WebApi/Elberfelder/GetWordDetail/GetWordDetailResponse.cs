@@ -30,8 +30,17 @@ public sealed class OriginalReadingResponse
     public MorphologyResponse? Morphology { get; set; }
     public List<MorphemeResponse>? Morphemes { get; set; }
     public LexiconSummaryResponse? Lexicon { get; set; }
+    /// <summary>Uses of this root Strong's number in its testament (NT for Greek, OT for Hebrew/Aramaic).</summary>
     public int? OccurrenceCount { get; set; }
+    /// <summary>Top Elberfelder renderings of this Strong's number, most used first.</summary>
+    public List<RenderingResponse>? Renderings { get; set; }
     public List<int>? SharedWithWordIds { get; set; }
+}
+
+public sealed class RenderingResponse
+{
+    public string Word { get; set; } = default!;
+    public int Count { get; set; }
 }
 
 public sealed class MorphologyResponse

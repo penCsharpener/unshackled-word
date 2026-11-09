@@ -86,6 +86,18 @@ describe("WordDetailPopover", () => {
     expect(screen.getByText(/STEPBible\.org/)).toBeInTheDocument();
   });
 
+  it("shows the occurrence count and the top renderings", async () => {
+    const detail = await mockWordDetail(
+      { id: 1, text: "Wort", senses: [{ key: "G3056", form: "λόγος" }] },
+      0,
+    );
+    setup({ detail });
+    expect(screen.getByText("137× im NT")).toBeInTheDocument();
+    expect(
+      screen.getByText("übersetzt mit: Wort (112×), Rede (14×), Lehre (6×)"),
+    ).toBeInTheDocument();
+  });
+
   it("shows several readings with word parts in order", () => {
     const detail: GetWordDetailResponse = {
       wordId: 1,

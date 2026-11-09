@@ -34,6 +34,13 @@ public sealed class HebrewReadingRow : ReadingRowBase
     public string? DisambiguatedStrongs { get; init; }
 }
 
+/// <summary>One Elberfelder rendering (most common spelling of the German word, counted case-insensitively) of an original-language Strong's number with its number of uses.</summary>
+public sealed class RenderingRow
+{
+    public string Word { get; init; } = default!;
+    public int Count { get; init; }
+}
+
 public static class CoMappedRelations
 {
     public const string SameOriginal = "sameOriginal";

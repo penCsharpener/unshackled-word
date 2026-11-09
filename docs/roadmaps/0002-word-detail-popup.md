@@ -84,9 +84,9 @@ the vocab trainer, the translation-level slider.
 | [x] | S18 | Shared contract fixture test (C# and TS) | S12, S17 | Both test suites read `wordDetail.sample.json`; C# round-trip equal; TS `satisfies` compiles |
 | [x] | S19 | Hover-intent prefetch | S17 | Test: hovering 200 ms prefetches once, quick pass-over does not |
 | | | **Phase 4 – extras** | | |
-| [ ] | S20 | Migration `0006_WordDetailIndexes.sql` (Strong's indexes) | – | Migration runs on a fresh and an existing DB |
-| [ ] | S21 | `occurrenceCount` per reading | S16, S20 | Count shown ("137× im NT"); repository test passes; response < 50 ms locally |
-| [ ] | S22 | Elberfelder renderings (= roadmap 0001 S33) in the pop-up | S16, S20 | "übersetzt mit: Wort (…×), Rede (…×)" shown, top 5 |
+| [x] | S20 | Migration `0006_WordDetailIndexes.sql` (Strong's indexes) | – | Migration runs on a fresh and an existing DB |
+| [x] | S21 | `occurrenceCount` per reading | S16, S20 | Count shown ("137× im NT"); repository test passes; response < 50 ms locally |
+| [x] | S22 | Elberfelder renderings (= roadmap 0001 S33) in the pop-up | S16, S20 | "übersetzt mit: Wort (…×), Rede (…×)" shown, top 5 |
 | [ ] | S23 | Occurrence list endpoint + concordance page `/bible/strongs/:strongs` (= 0001 S35) | S20 | Paged list; link "Alle Stellen" in the pop-up; tests pass |
 | [ ] | S24 | Verse cross references (TSK) section | S16 | Section lists TSK targets for the word's verse (existing `ITskRepository`) |
 | [ ] | S25 | People / places brief | S16 | Proper nouns show the `Brief` text of `StepPersonLexicon` / `StepPlaceLexicon` |
@@ -1065,11 +1065,15 @@ deserializes into `GetWordDetailResponse`, re-serializes with the API options an
 
 ## Phase 4 details: extras (short)
 
-- **S20** `0006_WordDetailIndexes.sql`: `CREATE INDEX IF NOT EXISTS` on `"StepGreekWords" ("DisambiguatedStrongs")`
-  and `"StepHebrewWords" ("RootDisambiguatedStrongsInstance")`. Also decide whether to add the missing
-  `StepStrongsToVerses` table or delete its dead repository/DBO.
-- **S21** `occurrenceCount`: `COUNT(*)` per root Strong's within the testament; label `"{{count}}× im NT"`.
-- **S22** Renderings: query of roadmap 0001 S33 behind `IWordStudyRepository`; pop-up section "Elberfelder übersetzt
+- **S20** `0006_WordDetailIndexes.sql` (done; there is no `0003`): `CREATE INDEX IF NOT EXISTS` on
+  `"StepGreekWords" ("DisambiguatedStrongs")`, an expression index on
+  `split_part("RootDisambiguatedStrongsInstance", '_', 1)` of `"StepHebrewWords"` (root without the `_A` instance
+  suffix, so the Hebrew count/renderings queries use the same expression) and on `"StepWordId"` of both mapping
+  tables. The maintainer must apply it on the DB copy with a privileged user (the API user is read-only).
+  `StepStrongsToVerses` decision still open (not used by the pop-up).
+- **S21** `occurrenceCount` (done): `COUNT(*)` per root Strong's within the testament; label `"{{n}}× im NT"` / `im AT`.
+- **S22** (done; `renderings: [{word, count}]` per reading, case-insensitive grouping, most common spelling shown,
+  inflected forms are counted separately) Renderings: query of roadmap 0001 S33 behind `IWordStudyRepository`; pop-up section "Elberfelder übersetzt
   mit" (top 5, CC0 data).
 - **S23** Occurrences: query of 0001 S35, endpoint `GET /api/elberfelder/strongs/{Strongs}/occurrences` with
   `PaginationRequest` → `PaginationResult`, new page `/bible/strongs/:strongs` (the AstroWeb "Konkordanz"

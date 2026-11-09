@@ -173,6 +173,11 @@ export interface LexiconSummary {
 }
 
 /** One original-language word behind the German word. */
+export interface Rendering {
+  word: string;
+  count: number;
+}
+
 export interface OriginalReading {
   stepWordId: number;
   language: OriginalLanguage;
@@ -187,7 +192,10 @@ export interface OriginalReading {
   morphology?: Morphology; // whole word (Hebrew: root part)
   morphemes?: Morpheme[]; // Hebrew/Aramaic only
   lexicon?: LexiconSummary;
-  occurrenceCount?: number; // Phase 4 (S21)
+  /** uses of this root Strong's number in its testament (NT for Greek, OT for Hebrew/Aramaic) */
+  occurrenceCount?: number;
+  /** most used Elberfelder renderings of this Strong's number, most used first (top 5) */
+  renderings?: Rendering[];
   /** other German words of the verse mapped to this same original word (ids from `coMappedWords`) */
   sharedWithWordIds?: number[];
 }

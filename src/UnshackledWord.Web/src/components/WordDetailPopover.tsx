@@ -144,6 +144,16 @@ function ReadingSection({
             </dd>
           </>
         )}
+        {reading.occurrenceCount !== undefined && (
+          <>
+            <dt className="text-fg-muted">{label("occurrences")}</dt>
+            <dd>
+              {t(`bible.wordDetail.occurrences.${reading.language === "greek" ? "nt" : "ot"}`, {
+                n: reading.occurrenceCount,
+              })}
+            </dd>
+          </>
+        )}
         {reading.morphology && (
           <>
             <dt className="text-fg-muted">{label("morphology")}</dt>
@@ -166,6 +176,15 @@ function ReadingSection({
           </>
         )}
       </dl>
+      {reading.renderings && reading.renderings.length > 0 && (
+        <p className="mt-2 text-sm">
+          {t("bible.wordDetail.renderings", {
+            list: reading.renderings
+              .map((r) => t("bible.wordDetail.rendering", { word: r.word, n: r.count }))
+              .join(", "),
+          })}
+        </p>
+      )}
       {reading.morphemes && reading.morphemes.length > 0 && (
         <div className="mt-2 text-sm">
           <p className="text-fg-muted">{label("morphemes")}</p>

@@ -141,6 +141,9 @@ export const en: Translation = {
       germanPart: "Word part “{{part}}”",
       sample: "Sample data",
       truncated: "(shortened)",
+      occurrences: { nt: "{{n}}× in the NT", ot: "{{n}}× in the OT" },
+      renderings: "translated as: {{list}}",
+      rendering: "{{word}} ({{n}}×)",
       attribution: "Original-language data: STEPBible.org (Tyndale House), CC BY 4.0",
       language: { greek: "Greek", hebrew: "Hebrew", aramaic: "Aramaic" },
       field: {
@@ -150,6 +153,7 @@ export const en: Translation = {
         morphology: "Grammar",
         gloss: "Meaning",
         contextGloss: "Here",
+        occurrences: "Occurrences",
         morphemes: "Word parts",
         definition: "Lexicon",
       },

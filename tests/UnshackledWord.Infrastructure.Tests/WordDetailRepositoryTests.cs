@@ -61,6 +61,37 @@ public class WordDetailRepositoryTests
         reader.LastParam("WordId").ShouldBe(9);
     }
 
+    [Theory]
+    [InlineData(false, "\"StepGreekWords\"", "\"StepHebrewWords\"")]
+    [InlineData(true, "\"StepHebrewWords\"", "\"StepGreekWords\"")]
+    public async Task GetOccurrenceCountAsync_CountsInTheTestamentOfTheStrongs(bool hebrew, string expected, string notExpected)
+    {
+        var reader = new FakeDbReader().Returns(137);
+
+        var count = await new WordDetailRepository(reader).GetOccurrenceCountAsync("G3056", hebrew);
+
+        count.ShouldBe(137);
+        reader.LastSql.ShouldContain(expected);
+        reader.LastSql.ShouldNotContain(notExpected);
+        reader.LastParam("Strongs").ShouldBe("G3056");
+    }
+
+    [Theory]
+    [InlineData(false, "\"Elb1871GreekMapping\"", "\"Elb1871HebrewMapping\"")]
+    [InlineData(true, "\"Elb1871HebrewMapping\"", "\"Elb1871GreekMapping\"")]
+    public async Task GetRenderingsAsync_PicksTheMappingTableAndPassesLimit(bool hebrew, string expected, string notExpected)
+    {
+        var reader = new FakeDbReader().Returns(new RenderingRow { Word = "Wort", Count = 3 });
+
+        var rows = await new WordDetailRepository(reader).GetRenderingsAsync("G3056", hebrew, 5);
+
+        rows.Single().Word.ShouldBe("Wort");
+        reader.LastSql.ShouldContain(expected);
+        reader.LastSql.ShouldNotContain(notExpected);
+        reader.LastParam("Strongs").ShouldBe("G3056");
+        reader.LastParam("Limit").ShouldBe(5);
+    }
+
     [Fact]
     public async Task HebrewMorphemeRepository_PassesIdsAndSkipsEmptyInput()
     {

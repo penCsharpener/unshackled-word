@@ -207,4 +207,59 @@ public sealed class WordDetailRepository : IWordDetailRepository
         var rows = await _dbReader.ReadAsListAsync<CoMappedWordRow>(hebrew ? hebrewSql : greekSql, new { WordId = wordId });
         return rows.ToList();
     }
+
+    public async Task<int> GetOccurrenceCountAsync(string strongs, bool hebrew, CancellationToken token = default)
+    {
+        const string greekSql = """
+                                SELECT COUNT(*)
+                                FROM "unshackled-word"."StepGreekWords" sgw
+                                WHERE 1=1
+                                    AND sgw."DisambiguatedStrongs" = @Strongs
+                                """;
+
+        const string hebrewSql = """
+                                 SELECT COUNT(*)
+                                 FROM "unshackled-word"."StepHebrewWords" shw
+                                 WHERE 1=1
+                                     AND split_part(shw."RootDisambiguatedStrongsInstance", '_', 1) = split_part(@Strongs, '_', 1)
+                                 """;
+
+        return await _dbReader.ExecuteScalarAsync<int>(hebrew ? hebrewSql : greekSql, new { Strongs = strongs });
+    }
+
+    public async Task<IReadOnlyList<RenderingRow>> GetRenderingsAsync(string strongs, bool hebrew, int limit, CancellationToken token = default)
+    {
+        const string greekSql = """
+                                SELECT MODE() WITHIN GROUP (ORDER BY ew."PlainWord") "Word"
+                                     , COUNT(*)::int "Count"
+                                FROM "unshackled-word"."StepGreekWords" sgw
+                                    JOIN "unshackled-word"."Elb1871GreekMapping" egm ON egm."StepWordId" = sgw."Id"
+                                    JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
+                                WHERE 1=1
+                                    AND sgw."DisambiguatedStrongs" = @Strongs
+                                    AND NOT egm."IsAddedWord"
+                                    AND ew."PlainWord" <> ''
+                                GROUP BY LOWER(ew."PlainWord")
+                                ORDER BY COUNT(*) DESC, MIN(LOWER(ew."PlainWord"))
+                                LIMIT @Limit
+                                """;
+
+        const string hebrewSql = """
+                                 SELECT MODE() WITHIN GROUP (ORDER BY ew."PlainWord") "Word"
+                                      , COUNT(*)::int "Count"
+                                 FROM "unshackled-word"."StepHebrewWords" shw
+                                     JOIN "unshackled-word"."Elb1871HebrewMapping" ehm ON ehm."StepWordId" = shw."Id"
+                                     JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
+                                 WHERE 1=1
+                                     AND split_part(shw."RootDisambiguatedStrongsInstance", '_', 1) = split_part(@Strongs, '_', 1)
+                                     AND NOT ehm."IsAddedWord"
+                                     AND ew."PlainWord" <> ''
+                                 GROUP BY LOWER(ew."PlainWord")
+                                 ORDER BY COUNT(*) DESC, MIN(LOWER(ew."PlainWord"))
+                                 LIMIT @Limit
+                                 """;
+
+        var rows = await _dbReader.ReadAsListAsync<RenderingRow>(hebrew ? hebrewSql : greekSql, new { Strongs = strongs, Limit = limit });
+        return rows.ToList();
+    }
 }

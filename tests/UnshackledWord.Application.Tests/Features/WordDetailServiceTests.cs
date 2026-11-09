@@ -19,6 +19,8 @@ public class WordDetailServiceTests
         _sut = new WordDetailService(_words, _morphemes, _lexicon);
         _words.GetCoMappedWordsAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns([]);
         _lexicon.GetEntriesAsync(Arg.Any<StrongsNumber>(), Arg.Any<CancellationToken>()).Returns([]);
+        _words.GetOccurrenceCountAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns(0);
+        _words.GetRenderingsAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns([]);
     }
 
     private void GivenWord(int id, int bookId, string text, int position = 5, string? lemma = null)
@@ -85,6 +87,45 @@ public class WordDetailServiceTests
         reading.Lexicon!.Definition.ShouldBe("a word spoken");
         reading.Lexicon.DefinitionTruncated.ShouldBeNull();
         reading.Morphemes.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetAsync_NtWord_AddsOccurrenceCountAndTopRenderings()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+        _words.GetOccurrenceCountAsync("G3056", false, Arg.Any<CancellationToken>()).Returns(137);
+        _words.GetRenderingsAsync("G3056", false, 5, Arg.Any<CancellationToken>())
+            .Returns([new RenderingRow { Word = "Wort", Count = 112 }, new RenderingRow { Word = "Rede", Count = 14 }]);
+
+        var reading = (await _sut.GetAsync(26001))!.Readings.Single();
+
+        reading.OccurrenceCount.ShouldBe(137);
+        reading.Renderings!.Select(r => (r.Word, r.Count)).ShouldBe([("Wort", 112), ("Rede", 14)]);
+    }
+
+    [Fact]
+    public async Task GetAsync_NoStatistics_OmitsCountAndRenderings()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+
+        var reading = (await _sut.GetAsync(26001))!.Readings.Single();
+
+        reading.OccurrenceCount.ShouldBeNull();
+        reading.Renderings.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetAsync_OtWord_QueriesHebrewStatistics()
+    {
+        GivenWord(500, 1, "Anfang");
+        GivenHebrew(500, new HebrewReadingRow { StepWordId = 77, PositionInVerse = 1, Original = "בְּרֵאשִׁית", Strongs = "H7225G", MappingCreatedAt = Created });
+        _words.GetOccurrenceCountAsync("H7225G", true, Arg.Any<CancellationToken>()).Returns(51);
+
+        var reading = (await _sut.GetAsync(500))!.Readings.Single();
+
+        reading.OccurrenceCount.ShouldBe(51);
     }
 
     [Fact]

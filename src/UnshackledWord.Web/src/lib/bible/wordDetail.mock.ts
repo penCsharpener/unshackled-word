@@ -39,6 +39,12 @@ export const MOCK_READINGS: Record<string, MockReading> = {
       definition: "Sample text: the real lexicon definition is loaded live from the STEP data.",
       definitionTruncated: true,
     },
+    occurrenceCount: 137,
+    renderings: [
+      { word: "Wort", count: 112 },
+      { word: "Rede", count: 14 },
+      { word: "Lehre", count: 6 },
+    ],
   },
   G1510: {
     stepWordId: 140003,
@@ -123,6 +129,11 @@ export const MOCK_READINGS: Record<string, MockReading> = {
           state: "absolute",
         },
       },
+    ],
+    occurrenceCount: 51,
+    renderings: [
+      { word: "Anfang", count: 40 },
+      { word: "Erstling", count: 7 },
     ],
   },
   H430G: {
