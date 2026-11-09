@@ -145,6 +145,44 @@ describe("ChapterPage", () => {
     await waitFor(() => expect(screen.getByTestId("loc").textContent).toBe("/bible/43/4"));
   });
 
+  describe("hover-intent prefetch", () => {
+    afterEach(() => vi.useRealTimers());
+
+    async function setup() {
+      stubFetch();
+      renderAt("/bible/43/3");
+      await screen.findByText("Dieser");
+      const spy = vi.spyOn(QueryClient.prototype, "prefetchQuery");
+      vi.useFakeTimers();
+      return spy;
+    }
+    const detailCalls = (spy: ReturnType<typeof setup> extends Promise<infer S> ? S : never) =>
+      spy.mock.calls.filter(([options]) => options.queryKey[1] === "wordDetail");
+
+    it("prefetches once after 200 ms of hovering", async () => {
+      const spy = await setup();
+      const mensch = screen.getByText("Mensch");
+      fireEvent.mouseEnter(mensch);
+      vi.advanceTimersByTime(199);
+      expect(detailCalls(spy)).toHaveLength(0);
+      vi.advanceTimersByTime(1);
+      expect(detailCalls(spy)).toHaveLength(1);
+      spy.mockRestore();
+    });
+
+    it("does not prefetch on a quick pass-over or for unmapped words", async () => {
+      const spy = await setup();
+      const mensch = screen.getByText("Mensch");
+      fireEvent.mouseEnter(mensch);
+      vi.advanceTimersByTime(100);
+      fireEvent.mouseLeave(mensch);
+      fireEvent.mouseEnter(screen.getByText("Es"));
+      vi.advanceTimersByTime(500);
+      expect(detailCalls(spy)).toHaveLength(0);
+      spy.mockRestore();
+    });
+  });
+
   describe("word detail pop-up", () => {
     const trigger = (name: string) =>
       screen.getByRole("button", { name: `Grundtext zu „${name}“ anzeigen` });

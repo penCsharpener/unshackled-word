@@ -1,0 +1,132 @@
+[
+  {
+    "wordId": 101,
+    "wordInContext": "Wort",
+    "positionInVerse": 3,
+    "germanLemma": "Wort",
+    "readings": [
+      {
+        "stepWordId": 9001,
+        "language": "greek",
+        "positionInVerse": 3,
+        "original": "λόγος",
+        "transliteration": "logos",
+        "lemma": "λόγος",
+        "strongs": "G3056",
+        "gloss": "sample gloss",
+        "contextGloss": "sample context gloss",
+        "morphology": {
+          "code": "N-NSM",
+          "partOfSpeech": "noun",
+          "case": "nominative",
+          "number": "singular",
+          "gender": "masculine"
+        },
+        "lexicon": {
+          "strongs": "G3056",
+          "lemma": "λόγος",
+          "transliteration": "logos",
+          "gloss": "sample gloss",
+          "definition": "Hand-written sample definition. It is shortened on purpose.",
+          "definitionTruncated": true
+        },
+        "occurrenceCount": 42
+      }
+    ],
+    "mapping": {
+      "source": "ai",
+      "createdAt": "2026-01-02T03:04:05Z",
+      "model": "sample-model"
+    },
+    "hints": ["unclearWordPart"]
+  },
+  {
+    "wordId": 202,
+    "wordInContext": "Anfang",
+    "positionInVerse": 2,
+    "readings": [
+      {
+        "stepWordId": 9002,
+        "language": "hebrew",
+        "positionInVerse": 1,
+        "germanWordPart": "Anfang",
+        "original": "בְּרֵאשִׁית",
+        "transliteration": "be.re.shit",
+        "lemma": "רֵאשִׁית",
+        "strongs": "H7225G",
+        "gloss": "sample gloss",
+        "contextGloss": "sample context gloss",
+        "morphology": {
+          "code": "HR/Ncfsa",
+          "partOfSpeech": "noun",
+          "number": "singular",
+          "gender": "feminine",
+          "state": "absolute"
+        },
+        "morphemes": [
+          {
+            "role": "prefix",
+            "original": "ב",
+            "strongs": "H9003",
+            "gloss": "in",
+            "morphology": { "code": "R", "partOfSpeech": "preposition" }
+          },
+          {
+            "role": "root",
+            "original": "רֵאשִׁית",
+            "strongs": "H7225G",
+            "morphology": {
+              "code": "Ncfsa",
+              "partOfSpeech": "noun",
+              "number": "singular",
+              "gender": "feminine",
+              "state": "absolute"
+            }
+          }
+        ],
+        "lexicon": {
+          "strongs": "H7225G",
+          "lemma": "רֵאשִׁית",
+          "definition": "Hand-written sample definition."
+        },
+        "sharedWithWordIds": [201]
+      },
+      {
+        "stepWordId": 9003,
+        "language": "hebrew",
+        "positionInVerse": 2,
+        "original": "בָּרָא",
+        "strongs": "H1254A",
+        "morphology": {
+          "code": "HVqp3ms",
+          "partOfSpeech": "verb",
+          "stem": "qal",
+          "hebrewForm": "perfect",
+          "person": "third",
+          "number": "singular",
+          "gender": "masculine"
+        }
+      }
+    ],
+    "mapping": {
+      "source": "human",
+      "createdAt": "2026-02-03T04:05:06Z",
+      "confirmedAt": "2026-02-04T05:06:07Z"
+    },
+    "coMappedWords": [
+      { "wordId": 201, "wordInContext": "Im", "positionInVerse": 1, "relation": "sameOriginal" },
+      { "wordId": 203, "wordInContext": "schuf", "positionInVerse": 3, "relation": "addedWord" }
+    ],
+    "hints": ["manyOriginals"]
+  },
+  {
+    "wordId": 301,
+    "wordInContext": "die",
+    "positionInVerse": 1,
+    "isAddedWord": true,
+    "readings": [],
+    "coMappedWords": [
+      { "wordId": 302, "wordInContext": "Erde", "positionInVerse": 2, "relation": "parent" }
+    ]
+  }
+]

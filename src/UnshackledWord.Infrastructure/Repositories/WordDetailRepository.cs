@@ -97,6 +97,7 @@ public sealed class WordDetailRepository : IWordDetailRepository
         const string greekSql = """
                                 WITH own AS (
                                     SELECT egm."StepWordId"
+                                         , egm."IsAddedWord"
                                          , egm."ParentGermanWordId"
                                     FROM "unshackled-word"."Elb1871GreekMapping" egm
                                     WHERE 1=1
@@ -110,8 +111,14 @@ public sealed class WordDetailRepository : IWordDetailRepository
                                 FROM own
                                     JOIN "unshackled-word"."Elb1871GreekMapping" egm ON egm."StepWordId" = own."StepWordId"
                                     JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
+                                    JOIN "unshackled-word"."Elb1871Words" own_word ON own_word."Id" = @WordId
                                 WHERE 1=1
                                     AND egm."ElbWordId" <> @WordId
+                                    AND NOT own."IsAddedWord"
+                                    AND NOT egm."IsAddedWord"
+                                    AND ew."BibleBookId" = own_word."BibleBookId"
+                                    AND ew."Chapter" = own_word."Chapter"
+                                    AND ew."Verse" = own_word."Verse"
                                 UNION ALL
                                 SELECT ew."Id"
                                      , ew."WordInContext"
@@ -120,8 +127,13 @@ public sealed class WordDetailRepository : IWordDetailRepository
                                      , NULL::int
                                 FROM "unshackled-word"."Elb1871GreekMapping" egm
                                     JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
+                                    JOIN "unshackled-word"."Elb1871Words" own_word ON own_word."Id" = @WordId
                                 WHERE 1=1
                                     AND egm."ParentGermanWordId" = @WordId
+                                    AND egm."IsAddedWord"
+                                    AND ew."Verse" = own_word."Verse"
+                                    AND ew."Chapter" = own_word."Chapter"
+                                    AND ew."BibleBookId" = own_word."BibleBookId"
                                 UNION ALL
                                 SELECT ew."Id"
                                      , ew."WordInContext"
@@ -130,11 +142,17 @@ public sealed class WordDetailRepository : IWordDetailRepository
                                      , NULL::int
                                 FROM own
                                     JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = own."ParentGermanWordId"
+                                    JOIN "unshackled-word"."Elb1871Words" own_word ON own_word."Id" = @WordId
+                                WHERE 1=1
+                                    AND ew."Verse" = own_word."Verse"
+                                    AND ew."Chapter" = own_word."Chapter"
+                                    AND ew."BibleBookId" = own_word."BibleBookId"
                                 """;
 
         const string hebrewSql = """
                                  WITH own AS (
                                      SELECT ehm."StepWordId"
+                                          , ehm."IsAddedWord"
                                           , ehm."ParentGermanWordId"
                                      FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                      WHERE 1=1
@@ -148,8 +166,14 @@ public sealed class WordDetailRepository : IWordDetailRepository
                                  FROM own
                                      JOIN "unshackled-word"."Elb1871HebrewMapping" ehm ON ehm."StepWordId" = own."StepWordId"
                                      JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
+                                     JOIN "unshackled-word"."Elb1871Words" own_word ON own_word."Id" = @WordId
                                  WHERE 1=1
                                      AND ehm."ElbWordId" <> @WordId
+                                     AND NOT own."IsAddedWord"
+                                     AND NOT ehm."IsAddedWord"
+                                     AND ew."BibleBookId" = own_word."BibleBookId"
+                                     AND ew."Chapter" = own_word."Chapter"
+                                     AND ew."Verse" = own_word."Verse"
                                  UNION ALL
                                  SELECT ew."Id"
                                       , ew."WordInContext"
@@ -158,8 +182,13 @@ public sealed class WordDetailRepository : IWordDetailRepository
                                       , NULL::int
                                  FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                      JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
+                                     JOIN "unshackled-word"."Elb1871Words" own_word ON own_word."Id" = @WordId
                                  WHERE 1=1
                                      AND ehm."ParentGermanWordId" = @WordId
+                                     AND ehm."IsAddedWord"
+                                     AND ew."Verse" = own_word."Verse"
+                                     AND ew."Chapter" = own_word."Chapter"
+                                     AND ew."BibleBookId" = own_word."BibleBookId"
                                  UNION ALL
                                  SELECT ew."Id"
                                       , ew."WordInContext"
@@ -168,6 +197,11 @@ public sealed class WordDetailRepository : IWordDetailRepository
                                       , NULL::int
                                  FROM own
                                      JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = own."ParentGermanWordId"
+                                     JOIN "unshackled-word"."Elb1871Words" own_word ON own_word."Id" = @WordId
+                                 WHERE 1=1
+                                     AND ew."Verse" = own_word."Verse"
+                                     AND ew."Chapter" = own_word."Chapter"
+                                     AND ew."BibleBookId" = own_word."BibleBookId"
                                  """;
 
         var rows = await _dbReader.ReadAsListAsync<CoMappedWordRow>(hebrew ? hebrewSql : greekSql, new { WordId = wordId });

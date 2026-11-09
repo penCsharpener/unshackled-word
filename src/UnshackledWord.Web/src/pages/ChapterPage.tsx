@@ -8,7 +8,7 @@ import { type WordDetailCloseReason, WordDetailPopover } from "@/components/Word
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
 import { chapterWordsQuery, useBibleStructure, useChapterWords } from "@/lib/bible/queries";
 import type { BibleStructureBook, ChapterRef, HighlightKind, WordToken } from "@/lib/bible/types";
-import { useWordDetail, wordDetailSource } from "@/lib/bible/wordDetail";
+import { useWordDetail, wordDetailQuery, wordDetailSource } from "@/lib/bible/wordDetail";
 import { buildHighlights, phraseWordIds } from "@/lib/bible/words";
 
 const HIGHLIGHT_CLASSES: Record<HighlightKind, string> = {
@@ -16,6 +16,8 @@ const HIGHLIGHT_CLASSES: Record<HighlightKind, string> = {
   related: "bg-mark-related",
 };
 /** Words translated together with the open word; an underline so it combines with the hover highlight. */
+/** Hover/focus must rest this long on a word before its detail is prefetched. */
+const PREFETCH_DELAY_MS = 200;
 const PHRASE_CLASSES = "underline decoration-accent decoration-2 underline-offset-4";
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -56,6 +58,20 @@ export function ChapterPage() {
     const active = data.flatMap((v) => v.words).find((w) => w.id === activeId);
     return buildHighlights(active, data);
   }, [verses.data, activeId]);
+
+  const prefetchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  function startIntent(word: WordToken, verseWords: WordToken[]) {
+    setHoveredId(word.id);
+    clearTimeout(prefetchTimer.current);
+    prefetchTimer.current = setTimeout(() => {
+      void queryClient.prefetchQuery(wordDetailQuery(word, verseWords));
+    }, PREFETCH_DELAY_MS);
+  }
+  function endIntent() {
+    setHoveredId(undefined);
+    clearTimeout(prefetchTimer.current);
+  }
+  useEffect(() => () => clearTimeout(prefetchTimer.current), []);
 
   function toggle(word: WordToken, element: HTMLElement) {
     if (selectedId === word.id) {
@@ -223,10 +239,10 @@ export function ChapterPage() {
                       aria-controls={selectedId === word.id ? popoverId : undefined}
                       aria-label={t("bible.wordDetail.trigger", { word: word.text })}
                       onClick={(e) => toggle(word, e.currentTarget)}
-                      onMouseEnter={interactive ? () => setHoveredId(word.id) : undefined}
-                      onMouseLeave={interactive ? () => setHoveredId(undefined) : undefined}
-                      onFocus={interactive ? () => setHoveredId(word.id) : undefined}
-                      onBlur={interactive ? () => setHoveredId(undefined) : undefined}
+                      onMouseEnter={interactive ? () => startIntent(word, v.words) : undefined}
+                      onMouseLeave={interactive ? endIntent : undefined}
+                      onFocus={interactive ? () => startIntent(word, v.words) : undefined}
+                      onBlur={interactive ? endIntent : undefined}
                       className={`${kind ? HIGHLIGHT_CLASSES[kind] : ""} ${phrase.has(word.id) ? PHRASE_CLASSES : ""} ${selectedId === word.id ? "word-anchor" : ""}`}
                     >
                       {word.text}

@@ -148,4 +148,23 @@ describe("fetchWordDetail", () => {
     await fetchWordDetail({ id: 2, text: "war", senses: [] }, undefined, "api");
     expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/elberfelder/wordDetail/wordId/2");
   });
+
+  it("maps a 404 to the not-linked state", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 404 })),
+    );
+    const detail = await fetchWordDetail({ id: 7, text: "war", senses: [] }, undefined, "api");
+    expect(detail).toEqual({ wordId: 7, wordInContext: "war", positionInVerse: 0, readings: [] });
+  });
+
+  it("still rejects other errors", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 500 })),
+    );
+    await expect(
+      fetchWordDetail({ id: 7, text: "war", senses: [] }, undefined, "api"),
+    ).rejects.toMatchObject({ status: 500 });
+  });
 });

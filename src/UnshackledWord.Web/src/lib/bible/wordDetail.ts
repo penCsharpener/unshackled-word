@@ -1,12 +1,13 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
+import { ApiError } from "@/lib/api";
 import { bibleApi } from "./api";
 import type { GetWordDetailResponse, MappingProvenance, MappingStatus, WordToken } from "./types";
 import { mockWordDetail } from "./wordDetail.mock";
 
 export type WordDetailSource = "mock" | "api";
-/** Phase 1 default is "mock"; Phase 3 (S17) flips the default to "api". */
+/** Default is the real API; `VITE_WORD_DETAIL_SOURCE=mock` (tests) switches to the hand-written mock. */
 export const wordDetailSource: WordDetailSource =
-  import.meta.env.VITE_WORD_DETAIL_SOURCE === "api" ? "api" : "mock";
+  import.meta.env.VITE_WORD_DETAIL_SOURCE === "mock" ? "mock" : "api";
 
 export const wordDetailKeys = {
   detail: (wordId: number) => ["bible", "wordDetail", wordId] as const,
@@ -36,9 +37,14 @@ export function fetchWordDetail(
   source: WordDetailSource = wordDetailSource,
   verseWords: WordToken[] = [],
 ): Promise<GetWordDetailResponse> {
-  return source === "api"
-    ? bibleApi.wordDetail(word.id, signal)
-    : mockWordDetail(word, undefined, verseWords);
+  if (source !== "api") return mockWordDetail(word, undefined, verseWords);
+  return bibleApi.wordDetail(word.id, signal).catch((error: unknown) => {
+    // 404: the word vanished (e.g. after a re-seed); show the "not linked" state instead of an error.
+    if (error instanceof ApiError && error.status === 404) {
+      return { wordId: word.id, wordInContext: word.text, positionInVerse: 0, readings: [] };
+    }
+    throw error;
+  });
 }
 
 export const wordDetailQuery = (word: WordToken, verseWords: WordToken[] = []) =>

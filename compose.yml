@@ -78,6 +78,7 @@ services:
       - "5173:5173"
     environment:
       - VITE_API_URL=http://localhost:5142/api
+      - VITE_WORD_DETAIL_SOURCE=api
     volumes:
       - ./src/UnshackledWord.Web:/app
       - unshackled_web_node_modules:/app/node_modules

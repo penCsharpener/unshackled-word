@@ -80,9 +80,9 @@ the vocab trainer, the translation-level slider.
 | [ ] | S30 | AiWorker + seed import write provenance (AI user id, model constant, `PartOrder`); mapping-seed CSV gains `Model`, `PartOrder`, `ConfirmedAt` columns (CC0, our data) | S29 | Worker insert and `AiMappingImportRunner` tests/manual run fill the columns; old CSVs still import |
 | [ ] | S31 | `IWordDetailRepository.GetCoMappedWordsAsync` + provenance in `WordDetailService` (`mapping`, `coMappedWords`, `sharedWithWordIds`, `hints`, `GermanWordPart` cleanup) | S15 (S29 optional) | Service tests: phrase (Und die Erde), added word ↔ parent, over-assigned `Der` → `manyOriginals`, `*` part → `unclearWordPart`, whole-word part omitted |
 | | | **Phase 3 – swap mock for API** | | |
-| [ ] | S17 | Default source `api`, compose env, 404 handling | S07, S16 | Real data in the dev server; mock still used by tests; `bun run check` green |
-| [ ] | S18 | Shared contract fixture test (C# and TS) | S12, S17 | Both test suites read `wordDetail.sample.json`; C# round-trip equal; TS `satisfies` compiles |
-| [ ] | S19 | Hover-intent prefetch | S17 | Test: hovering 200 ms prefetches once, quick pass-over does not |
+| [x] | S17 | Default source `api`, compose env, 404 handling | S07, S16 | Real data in the dev server; mock still used by tests; `bun run check` green |
+| [x] | S18 | Shared contract fixture test (C# and TS) | S12, S17 | Both test suites read `wordDetail.sample.json`; C# round-trip equal; TS `satisfies` compiles |
+| [x] | S19 | Hover-intent prefetch | S17 | Test: hovering 200 ms prefetches once, quick pass-over does not |
 | | | **Phase 4 – extras** | | |
 | [ ] | S20 | Migration `0006_WordDetailIndexes.sql` (Strong's indexes) | – | Migration runs on a fresh and an existing DB |
 | [ ] | S21 | `occurrenceCount` per reading | S16, S20 | Count shown ("137× im NT"); repository test passes; response < 50 ms locally |
