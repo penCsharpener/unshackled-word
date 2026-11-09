@@ -13,6 +13,7 @@ COPY ["src/UnshackledWord.Persistence.Postgres/", "src/UnshackledWord.Persistenc
 COPY ["src/UnshackledWord.Infrastructure/", "src/UnshackledWord.Infrastructure/"]
 COPY ["src/UnshackledWord.Application/", "src/UnshackledWord.Application/"]
 COPY ["src/UnshackledWord.Domain/", "src/UnshackledWord.Domain/"]
+COPY ["src/UnshackledWord.Domain.WebApi/", "src/UnshackledWord.Domain.WebApi/"]
 
 WORKDIR "/src/src/UnshackledWord.Tooling.McpServer"
 RUN dotnet restore "./UnshackledWord.Tooling.McpServer.csproj"

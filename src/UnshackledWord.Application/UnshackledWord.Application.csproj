@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UnshackledWord.Domain\UnshackledWord.Domain.csproj"/>
+    <ProjectReference Include="..\UnshackledWord.Domain.WebApi\UnshackledWord.Domain.WebApi.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

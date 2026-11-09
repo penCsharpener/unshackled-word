@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using UnshackledWord.Application.Features.Backup;
+using UnshackledWord.Application.Features.WordDetail;
 using UnshackledWord.Application.Repositories;
 
 namespace UnshackledWord.Infrastructure.Repositories;
@@ -18,6 +19,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IStrongsLexiconRepository, StrongsLexiconRepository>();
         services.AddScoped<ISblTextRepository, SblTextRepository>();
         services.AddScoped<ISrWordRepository, SrWordRepository>();
+        services.AddScoped<IWordDetailRepository, WordDetailRepository>();
+        services.AddScoped<IHebrewMorphemeRepository, HebrewMorphemeRepository>();
+        services.AddScoped<IWordDetailService, WordDetailService>();
         return services;
     }
 }

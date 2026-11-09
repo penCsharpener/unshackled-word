@@ -1,0 +1,20 @@
+meta {
+  name: GetWordDetail
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}elberfelder/wordDetail/wordId/:wordId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  wordId: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

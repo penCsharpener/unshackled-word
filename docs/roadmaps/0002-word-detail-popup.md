@@ -67,15 +67,15 @@ the vocab trainer, the translation-level slider.
 | [ ] | S07 | Wire pop-up into `ChapterPage` | S03, S06 | Page tests (click, Enter, Escape + focus return, outside click, arrow guard, highlight, chapter change) pass; manual check in dev server |
 | [x] | S28 | AI mapping data in the pop-up (mock): `mapping`, `coMappedWords`, `hints`, `sharedWithWordIds`, `positionInVerse`; badge, phrase line, "added to „X“", hints, disabled "Zuordnung bearbeiten"; phrase underline in `ChapterPage` | S07 | Mock, popover, `phraseWordIds` and page tests pass; `bun run check` green |
 | | | **Phase 2 – API** | | |
-| [ ] | S08 | `FakeDbReader` test wiring in `Infrastructure.Tests` (= roadmap 0001 S08; skip if done) | – | `FakeDbReader` records SQL + parameters; its tests pass |
-| [ ] | S09 | `GreekMorphologyDecoder` (Domain, pure) | – | Test table of Robinson codes → keys passes |
-| [ ] | S10 | `HebrewMorphologyDecoder` (Domain, pure) | – | Test table of OSHB-style codes (incl. `HR/Ncfsa`, Aramaic `A…`) passes |
-| [ ] | S11 | `LexiconTextCleaner` (Domain, pure) | – | Markup stripped, whitespace collapsed, truncation at word boundary; tests pass |
-| [ ] | S12 | Response contract classes in `Domain.WebApi/Elberfelder/GetWordDetail` | – | Classes compile; serialization test produces the JSON shape of `wordDetail.sample.json` |
-| [ ] | S13 | `IWordDetailRepository` (word + Greek/Hebrew readings) | S08 | Three methods implemented, registered in `AddRepositories()`, SQL/parameter tests pass |
-| [ ] | S14 | `IHebrewMorphemeRepository` (= roadmap 0001 S27) | S08 | Implemented, registered, unit-tested |
-| [ ] | S15 | `WordDetailService` (Application/Features/WordDetail) | S09–S14 | Service tests with substituted repositories pass (NT, OT, multi-reading, added word, no mapping, unknown id) |
-| [ ] | S16 | Endpoint `GetWordDetail` + Bruno request | S15 | `GET /api/elberfelder/wordDetail/wordId/{id}` returns JSON for Joh 1,1 "Wort" and 1Mo 1,1 "Anfang"; 404 for unknown id; `Cache-Control` set |
+| [x] | S08 | `FakeDbReader` test wiring in `Infrastructure.Tests` (= roadmap 0001 S08; skip if done) | – | `FakeDbReader` records SQL + parameters; its tests pass |
+| [x] | S09 | `GreekMorphologyDecoder` (Domain, pure) | – | Test table of Robinson codes → keys passes |
+| [x] | S10 | `HebrewMorphologyDecoder` (Domain, pure) | – | Test table of OSHB-style codes (incl. `HR/Ncfsa`, Aramaic `A…`) passes |
+| [x] | S11 | `LexiconTextCleaner` (Domain, pure) | – | Markup stripped, whitespace collapsed, truncation at word boundary; tests pass |
+| [x] | S12 | Response contract classes in `Domain.WebApi/Elberfelder/GetWordDetail` | – | Classes compile; serialization test produces the JSON shape of `wordDetail.sample.json` |
+| [x] | S13 | `IWordDetailRepository` (word + Greek/Hebrew readings) | S08 | Three methods implemented, registered in `AddRepositories()`, SQL/parameter tests pass |
+| [x] | S14 | `IHebrewMorphemeRepository` (= roadmap 0001 S27) | S08 | Implemented, registered, unit-tested |
+| [x] | S15 | `WordDetailService` (Application/Features/WordDetail) | S09–S14 | Service tests with substituted repositories pass (NT, OT, multi-reading, added word, no mapping, unknown id) |
+| [x] | S16 | Endpoint `GetWordDetail` + Bruno request | S15 | `GET /api/elberfelder/wordDetail/wordId/{id}` returns JSON for Joh 1,1 "Wort" and 1Mo 1,1 "Anfang"; 404 for unknown id; `Cache-Control` set |
 | [ ] | S29 | Migration `0007_MappingProvenance.sql`: on both mapping tables `"CreatedBy" INT NOT NULL DEFAULT <AI user id>`, `"Model" VARCHAR(64) NULL`, `"PartOrder" INT NULL`, `"ConfirmedBy" INT NULL`, `"ConfirmedAt" TIMESTAMPTZ NULL`; versioning per open question 13 | – | Migration runs on fresh and existing DB; existing rows become AI rows |
 | [ ] | S30 | AiWorker + seed import write provenance (AI user id, model constant, `PartOrder`); mapping-seed CSV gains `Model`, `PartOrder`, `ConfirmedAt` columns (CC0, our data) | S29 | Worker insert and `AiMappingImportRunner` tests/manual run fill the columns; old CSVs still import |
 | [ ] | S31 | `IWordDetailRepository.GetCoMappedWordsAsync` + provenance in `WordDetailService` (`mapping`, `coMappedWords`, `sharedWithWordIds`, `hints`, `GermanWordPart` cleanup) | S15 (S29 optional) | Service tests: phrase (Und die Erde), added word ↔ parent, over-assigned `Der` → `manyOriginals`, `*` part → `unclearWordPart`, whole-word part omitted |

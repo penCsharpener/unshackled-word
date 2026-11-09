@@ -8,6 +8,7 @@ WORKDIR /src
 COPY ["src/UnshackledWord.Tooling.SeedDb/", "src/UnshackledWord.Tooling.SeedDb/"]
 COPY ["src/UnshackledWord.Application/", "src/UnshackledWord.Application/"]
 COPY ["src/UnshackledWord.Domain/", "src/UnshackledWord.Domain/"]
+COPY ["src/UnshackledWord.Domain.WebApi/", "src/UnshackledWord.Domain.WebApi/"]
 COPY ["src/UnshackledWord.Infrastructure/", "src/UnshackledWord.Infrastructure/"]
 COPY ["src/UnshackledWord.Persistence.Postgres/", "src/UnshackledWord.Persistence.Postgres/"]
 #COPY ["assets/", "assets/"]

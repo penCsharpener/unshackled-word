@@ -11,6 +11,7 @@ COPY ["src/UnshackledWord.Tooling.Postgres.Migration/", "src/UnshackledWord.Tool
 COPY ["src/UnshackledWord.Infrastructure/", "src/UnshackledWord.Infrastructure/"]
 COPY ["src/UnshackledWord.Application/", "src/UnshackledWord.Application/"]
 COPY ["src/UnshackledWord.Domain/", "src/UnshackledWord.Domain/"]
+COPY ["src/UnshackledWord.Domain.WebApi/", "src/UnshackledWord.Domain.WebApi/"]
 COPY ["src/UnshackledWord.Persistence.Postgres/", "src/UnshackledWord.Persistence.Postgres/"]
 RUN dotnet restore "src/UnshackledWord.Tooling.Postgres.Migration/UnshackledWord.Tooling.Postgres.Migration.csproj"
 
