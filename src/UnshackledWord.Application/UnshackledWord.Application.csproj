@@ -6,6 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
   </ItemGroup>
 

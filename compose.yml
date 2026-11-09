@@ -55,6 +55,7 @@ services:
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
+      - UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=${MAPPING_EDITING_ENABLED:-false}
 
   unshackledword.tooling.mcpserver:
     #image: unshackledword.tooling.mcpserver

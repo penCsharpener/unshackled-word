@@ -88,7 +88,7 @@ the vocab trainer, the translation-level slider.
 | [x] | S21 | `occurrenceCount` per reading | S16, S20 | Count shown ("137× im NT"); repository test passes; response < 50 ms locally |
 | [x] | S22 | Elberfelder renderings (= roadmap 0001 S33) in the pop-up | S16, S20 | "übersetzt mit: Wort (…×), Rede (…×)" shown, top 5 |
 | [x] | S23 | Occurrence list endpoint + concordance page `/bible/strongs/:strongs` (= 0001 S35) | S20 | Paged list; link "Alle Stellen" in the pop-up; tests pass |
-| [ ] | S24 | Verse cross references (TSK) section | S16 | Section lists TSK targets for the word's verse (existing `ITskRepository`) |
+| [x] | S24 | Verse cross references (TSK) section | S16 | Section lists TSK targets for the word's verse (existing `ITskRepository`) |
 | [x] | S25 | People / places brief | S16 | Proper nouns show the `Brief` text of `StepPersonLexicon` / `StepPlaceLexicon` |
 | [x] | S26 | NT textual-variant hint (SBL apparatus) | S16 | Note "Textvarianten in diesem Vers" when `SblApparatus` has rows |
 | [ ] | S27 | MCP tool `get_word_detail` reusing `WordDetailService` | S15 | Tool returns formatted detail; MCP tests pass |
@@ -1087,8 +1087,16 @@ deserializes into `GetWordDetailResponse`, re-serializes with the API options an
   original form is shown, not the lemma; no line cutting on desktop, only the phone cut (3 lines per side with fade, below 40rem);
   Hebrew rows keep the German context LTR with the original above the keyword; other hits in the same verse are not marked. `GetOccurrencesAsync` on `IWordDetailRepository`, `StrongsOccurrenceService`.
   Frontend: page `/bible/strongs/:strongs?page=` (`StrongsPage`, the AstroWeb "Konkordanz" placeholder), pop-up link "Alle Stellen".
-- **S24** TSK: `ITskRepository.GetOutgoingAsync(hebRefId, hebRefId, 20)`; section "Querverweise zu diesem Vers";
-  links via `chapterPath` + `#v{verse}`. Consider a verse-level UI instead (open question).
+- **S24** (done) TSK: **inline** in `wordDetail` (decision for open question 8): `crossReferences[] {bibleBookId, chapter, verse, endVerse?}`
+  plus `crossReferencesTruncated` (omitted when empty/false). `WordDetailService` calls `ITskRepository.GetOutgoingAsync(HebRefId, HebRefId, 21)`
+  (no new SQL), lists the first 20 and flags the 21st row. Inline because the response is already cached 1 h per word, the list is
+  small (~30 B per target) and a lazy endpoint would add a route plus a second loading state for no gain. Every word of a verse gets
+  the same list (verse level). Data: `Tsk` has 378,744 rows over 29,055 verses, `Scope` is an English keyword of the source verse
+  (not shown), order is `Tsk.Id`; up to 113 targets per verse; 44,059 targets are ranges, none crosses a chapter; 21 ranges run
+  backwards (`58009021`→`58009015`) and 2 have start = end, the service swaps/collapses them. Source and targets are translated
+  Lxx→Heb by the repository. Frontend: `CrossReferences` section in `WordDetailPopover` (`<details>`, open up to 5 targets, collapsed
+  above), links `/bible/:bookId/:chapter#v{verse}`, book names via the new `books` prop (ChapterPage passes `useBibleStructure` data).
+  TSK is public domain; no STEP data involved. A verse menu stays possible later (lazy endpoint) if the list should grow.
 - **S25** (done) People/places: `readings[].entity {kind: person|place, name, brief}`, `IWordDetailRepository.GetNamedEntityAsync`
   (`UNION ALL` over `StepPersonLexicon` / `StepPlaceLexicon`, `UPPER("Strongs") = UPPER(@Strongs)`, `Brief <> ''`, lowest `Id`).
   Data check (DB copy): 1581 persons, 480 places, all with a `Strongs` of the form `G3972G` / `H0085` / `H1035G` (letter suffix
@@ -1148,7 +1156,7 @@ deserializes into `GetWordDetailResponse`, re-serializes with the API options an
 6. Are Aramaic words in `StepHebrewWords` marked by a leading `A` in `Grammar`?
 7. Does `StepStrongsLexicon` contain entries for disambiguated extras like `H7225G` / `H0430G`, and Greek variants
    with `Extra`?
-8. Should TSK cross references live in the word pop-up (they are verse level) or in a later verse menu?
+8. ~~Should TSK cross references live in the word pop-up (they are verse level) or in a later verse menu?~~ Decided in S24: inline in the word pop-up, first 20 targets, collapsed above 5; a verse menu can reuse the same data later.
 9. Roving tabindex for words (one tab stop per verse, arrows inside) – conflicts with ArrowLeft/Right chapter
    navigation; worth a separate decision.
 10. MCP access policy is undecided (CLAUDE.md); S27 only adds a read-only tool.

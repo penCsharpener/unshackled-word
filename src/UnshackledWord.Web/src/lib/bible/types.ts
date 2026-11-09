@@ -236,6 +236,14 @@ export interface CoMappedWord {
 /** Server-derived uncertainty hints (there is no confidence value in the data). */
 export type MappingHintKey = "manyOriginals" | "unclearWordPart" | "textVariants";
 
+/** TSK target in Elberfelder numbering; `endVerse` makes it a range inside the same chapter. */
+export interface CrossReference {
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  endVerse?: number;
+}
+
 export interface GetWordDetailResponse {
   wordId: number;
   wordInContext: string;
@@ -246,6 +254,10 @@ export interface GetWordDetailResponse {
   mapping?: MappingProvenance;
   coMappedWords?: CoMappedWord[]; // same verse, sorted by positionInVerse
   hints?: MappingHintKey[];
+  /** TSK cross references of the word's verse (verse level, same list for every word of the verse), TSK order, max 20. */
+  crossReferences?: CrossReference[];
+  /** omitted when false: the verse has more cross references than listed */
+  crossReferencesTruncated?: boolean;
 }
 
 export interface StrongsOccurrence {
@@ -271,4 +283,43 @@ export interface GetStrongsOccurrencesResponse {
   totalItems: number;
   totalPages: number;
   items: StrongsOccurrence[];
+}
+
+export interface VerseMappingGermanWord {
+  id: number;
+  positionInVerse: number;
+  text: string;
+}
+export interface VerseMappingOriginalWord {
+  id: number;
+  position: number;
+  original: string;
+  transliteration?: string;
+  strongs?: string;
+  gloss?: string; // English
+  morphologyCode?: string;
+}
+/**
+ * One mapping row of a verse. A normal link has `stepWordId`; an added word has `isAddedWord`
+ * and `parentElbWordId` (the German word it belongs to) instead.
+ */
+export interface VerseMappingLink {
+  elbWordId: number;
+  stepWordId?: number;
+  isAddedWord: boolean;
+  parentElbWordId?: number;
+}
+export interface GetVerseMappingResponse {
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  language: "greek" | "hebrew";
+  /** false: the editor is read-only (no Save) */
+  editingEnabled: boolean;
+  germanWords: VerseMappingGermanWord[];
+  originalWords: VerseMappingOriginalWord[];
+  links: VerseMappingLink[];
+}
+export interface PutVerseMappingRequest {
+  links: VerseMappingLink[];
 }

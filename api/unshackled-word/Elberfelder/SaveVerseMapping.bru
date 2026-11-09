@@ -1,0 +1,37 @@
+meta {
+  name: SaveVerseMapping
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{url}}elberfelder/verseMapping/bookId/:bookId/chapterId/:chapterId/verseId/:verseId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  verseId: 1
+  chapterId: 1
+  bookId: 43
+}
+
+body:json {
+  {
+    "links": [
+      { "elbWordId": 613300, "stepWordId": 50909, "isAddedWord": false },
+      { "elbWordId": 613303, "isAddedWord": true, "parentElbWordId": 613304 }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Replaces ALL mapping rows of the verse (send the complete mapping; unlinked words have no entry). Returns the saved
+  mapping in the GET shape. 403 unless the server runs with UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=true, 400 with a
+  message per violation, 404 for an unknown verse. Use a scratch database: this writes!
+}

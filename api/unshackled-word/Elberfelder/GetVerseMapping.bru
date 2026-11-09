@@ -1,0 +1,27 @@
+meta {
+  name: GetVerseMapping
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{url}}elberfelder/verseMapping/bookId/:bookId/chapterId/:chapterId/verseId/:verseId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  verseId: 1
+  chapterId: 1
+  bookId: 43
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Mapping editor data of one verse: Elberfelder words, STEP original words and the existing links (Cache-Control: no-store).
+  editingEnabled mirrors the server setting MappingEditing:Enabled. Try book 1 for Hebrew.
+}

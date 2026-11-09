@@ -4,10 +4,13 @@ import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { BibleChapterPicker } from "@/components/BibleChapterPicker";
 import { Button, buttonClasses } from "@/components/Button";
+import { MappingEditor, type MappingSaveError } from "@/components/MappingEditor";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
+import { ApiError } from "@/lib/api";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
 import { chapterWordsQuery, useBibleStructure, useChapterWords } from "@/lib/bible/queries";
 import type { BibleStructureBook, ChapterRef, HighlightKind, WordToken } from "@/lib/bible/types";
+import { useSaveVerseMapping, useVerseMapping } from "@/lib/bible/verseMapping";
 import { useWordDetail, wordDetailQuery, wordDetailSource } from "@/lib/bible/wordDetail";
 import { buildHighlights, phraseWordIds } from "@/lib/bible/words";
 
@@ -43,6 +46,8 @@ export function ChapterPage() {
   const verses = useChapterWords(books ? ref : null);
   const [hoveredId, setHoveredId] = useState<number>();
   const [selectedId, setSelectedId] = useState<number>();
+  const [editingVerse, setEditingVerse] = useState<number>();
+  const editTriggerRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const popoverId = useId();
   const selectedVerse = verses.data?.find((v) => v.words.some((w) => w.id === selectedId));
@@ -58,6 +63,30 @@ export function ChapterPage() {
     const active = data.flatMap((v) => v.words).find((w) => w.id === activeId);
     return buildHighlights(active, data);
   }, [verses.data, activeId]);
+
+  const verseRef = ref && editingVerse !== undefined ? { ...ref, verse: editingVerse } : null;
+  const mapping = useVerseMapping(verseRef);
+  const saveMapping = useSaveVerseMapping();
+
+  function openEditor(verse: number, trigger: HTMLElement | null) {
+    saveMapping.reset();
+    editTriggerRef.current = trigger;
+    setSelectedId(undefined);
+    setEditingVerse(verse);
+  }
+
+  function closeEditor() {
+    setEditingVerse(undefined);
+    saveMapping.reset();
+    editTriggerRef.current?.focus();
+  }
+
+  function saveError(): MappingSaveError | null {
+    if (!saveMapping.isError) return null;
+    const status = saveMapping.error instanceof ApiError ? saveMapping.error.status : 0;
+    if (status === 400) return "validation";
+    return status === 403 ? "forbidden" : "failed";
+  }
 
   const prefetchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   function startIntent(word: WordToken, verseWords: WordToken[]) {
@@ -97,6 +126,7 @@ export function ChapterPage() {
       if (event.defaultPrevented) return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (isTypingTarget(event.target)) return;
+      if (event.target instanceof Element && event.target.closest("[data-mapping-editor]")) return;
       if (selectedId !== undefined) return;
       if (event.key === "ArrowLeft" && prevPath) navigate(prevPath);
       if (event.key === "ArrowRight" && nextPath) navigate(nextPath);
@@ -110,6 +140,7 @@ export function ChapterPage() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: closing on every chapter change is the point
   useEffect(() => {
     setSelectedId(undefined);
+    setEditingVerse(undefined);
   }, [bookId, chapterNumber]);
 
   useEffect(() => {
@@ -223,35 +254,91 @@ export function ChapterPage() {
           <p className="text-fg-muted">{t("bible.chapter.empty")}</p>
         )}
         {verses.isSuccess &&
-          verses.data.map((v) => (
-            <p key={v.verse} id={`v${v.verse}`} className="mt-2 scroll-mt-4">
-              <sup className="mr-1 text-xs text-fg-muted">{v.verse}</sup>
-              {v.words.map((word) => {
-                const interactive = word.senses.length > 0;
-                const kind = highlights.get(word.id);
-                return (
-                  <Fragment key={word.id}>
-                    <Button
-                      variant="inline"
-                      data-word-trigger=""
-                      aria-haspopup="dialog"
-                      aria-expanded={selectedId === word.id}
-                      aria-controls={selectedId === word.id ? popoverId : undefined}
-                      aria-label={t("bible.wordDetail.trigger", { word: word.text })}
-                      onClick={(e) => toggle(word, e.currentTarget)}
-                      onMouseEnter={interactive ? () => startIntent(word, v.words) : undefined}
-                      onMouseLeave={interactive ? endIntent : undefined}
-                      onFocus={interactive ? () => startIntent(word, v.words) : undefined}
-                      onBlur={interactive ? endIntent : undefined}
-                      className={`${kind ? HIGHLIGHT_CLASSES[kind] : ""} ${phrase.has(word.id) ? PHRASE_CLASSES : ""} ${selectedId === word.id ? "word-anchor" : ""}`}
-                    >
-                      {word.text}
-                    </Button>{" "}
-                  </Fragment>
-                );
-              })}
-            </p>
-          ))}
+          verses.data.map((v) => {
+            const editing = editingVerse === v.verse;
+            return (
+              <div key={v.verse} id={`v${v.verse}`} className="verse-row mt-2 scroll-mt-4">
+                <p>
+                  <sup className="mr-1 text-xs text-fg-muted">{v.verse}</sup>
+                  {v.words.map((word) => {
+                    const interactive = word.senses.length > 0;
+                    const kind = highlights.get(word.id);
+                    return (
+                      <Fragment key={word.id}>
+                        <Button
+                          variant="inline"
+                          data-word-trigger=""
+                          aria-haspopup="dialog"
+                          aria-expanded={selectedId === word.id}
+                          aria-controls={selectedId === word.id ? popoverId : undefined}
+                          aria-label={t("bible.wordDetail.trigger", { word: word.text })}
+                          onClick={(e) => toggle(word, e.currentTarget)}
+                          onMouseEnter={interactive ? () => startIntent(word, v.words) : undefined}
+                          onMouseLeave={interactive ? endIntent : undefined}
+                          onFocus={interactive ? () => startIntent(word, v.words) : undefined}
+                          onBlur={interactive ? endIntent : undefined}
+                          className={`${kind ? HIGHLIGHT_CLASSES[kind] : ""} ${phrase.has(word.id) ? PHRASE_CLASSES : ""} ${selectedId === word.id ? "word-anchor" : ""}`}
+                        >
+                          {word.text}
+                        </Button>{" "}
+                      </Fragment>
+                    );
+                  })}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="map-trigger"
+                    aria-expanded={editing}
+                    aria-controls={editing ? `mapping-v${v.verse}` : undefined}
+                    aria-label={t("bible.mapping.triggerLabel", { verse: v.verse })}
+                    onClick={(e) =>
+                      editing ? closeEditor() : openEditor(v.verse, e.currentTarget)
+                    }
+                  >
+                    <span aria-hidden="true">✎</span> {t("bible.mapping.trigger")}
+                  </Button>
+                </p>
+                {editing && (
+                  <div id={`mapping-v${v.verse}`}>
+                    {mapping.isLoading && (
+                      <p role="status" className="mt-3 font-sans text-sm text-fg-muted">
+                        {t("bible.mapping.loading")}
+                      </p>
+                    )}
+                    {mapping.isError && (
+                      <div
+                        role="alert"
+                        className="mt-3 flex flex-wrap items-center gap-4 font-sans text-sm"
+                      >
+                        <p>{t("bible.mapping.loadError")}</p>
+                        <Button variant="secondary" size="sm" onClick={() => mapping.refetch()}>
+                          {t("bible.retry")}
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={closeEditor}>
+                          {t("bible.mapping.actions.close")}
+                        </Button>
+                      </div>
+                    )}
+                    {mapping.data && (
+                      <MappingEditor
+                        data={mapping.data}
+                        reference={`${reference(ref)},${v.verse}`}
+                        saving={saveMapping.isPending}
+                        saveError={saveError()}
+                        onCancel={closeEditor}
+                        onSave={(links) =>
+                          saveMapping.mutate(
+                            { ref: { ...ref, verse: v.verse }, links },
+                            { onSuccess: closeEditor },
+                          )
+                        }
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </article>
       {selectedWord && (
         <WordDetailPopover
@@ -259,9 +346,13 @@ export function ChapterPage() {
           word={selectedWord}
           status={detail.status}
           detail={detail.data}
+          books={books}
           isSample={wordDetailSource === "mock"}
           onRetry={() => detail.refetch()}
           onClose={close}
+          onEditMapping={() => {
+            if (selectedVerse) openEditor(selectedVerse.verse, triggerRef.current);
+          }}
         />
       )}
       <footer className="mx-auto mt-8 flex max-w-prose justify-between">

@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider, useLocation } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
-import type { BibleStructureBook } from "@/lib/bible/types";
+import type { BibleStructureBook, GetVerseMappingResponse } from "@/lib/bible/types";
 import { fixtureBooks, fixtureChapterWords } from "@/test/fixtures/bibleStructure";
 import { ChapterPage } from "./ChapterPage";
 
@@ -309,5 +309,180 @@ describe("ChapterPage", () => {
       expect(trigger("ein").className).toContain("underline");
       expect(trigger("Mensch").className).toContain("bg-mark-same");
     });
+  });
+});
+
+describe("mapping editor", () => {
+  const verseMapping: GetVerseMappingResponse = {
+    bibleBookId: 43,
+    chapter: 3,
+    verse: 1,
+    language: "greek",
+    editingEnabled: true,
+    germanWords: [
+      { id: 1, positionInVerse: 1, text: "Es" },
+      { id: 2, positionInVerse: 2, text: "war" },
+      { id: 3, positionInVerse: 3, text: "ein" },
+      { id: 4, positionInVerse: 4, text: "Mensch" },
+    ],
+    originalWords: [
+      { id: 100, position: 1, original: "ἦν", strongs: "G1510" },
+      { id: 101, position: 2, original: "ἄνθρωπος", strongs: "G0444" },
+    ],
+    links: [
+      { elbWordId: 2, stepWordId: 100, isAddedWord: false },
+      { elbWordId: 4, stepWordId: 101, isAddedWord: false },
+    ],
+  };
+
+  function stubMapping(options: { editingEnabled?: boolean; putStatus?: number } = {}) {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.includes("/meta-bible/structure")) {
+        return new Response(JSON.stringify({ books }), { status: 200 });
+      }
+      if (url.includes("/verseMapping/")) {
+        const body = { ...verseMapping, editingEnabled: options.editingEnabled ?? true };
+        if (init?.method === "PUT") {
+          const status = options.putStatus ?? 200;
+          return new Response(JSON.stringify(status === 200 ? body : { errors: {} }), { status });
+        }
+        const verse = Number(url.split("/verseId/")[1]);
+        return new Response(JSON.stringify({ ...body, verse }), { status: 200 });
+      }
+      return new Response(JSON.stringify(fixtureChapterWords), { status: 200 });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    return fetchMock;
+  }
+
+  const puts = (fetchMock: ReturnType<typeof stubMapping>) =>
+    fetchMock.mock.calls.filter(([, init]) => init?.method === "PUT");
+  const trigger = (verse: number) =>
+    screen.getByRole("button", { name: `Zuordnung von Vers ${verse} bearbeiten` });
+  const editorNode = (key: string) =>
+    document.querySelector(`[data-mapping-editor] [data-node="${key}"]`) as HTMLElement;
+
+  it("opens the editor inline below the verse while the German text stays above", async () => {
+    stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    const editor = await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    const verse = document.querySelector("#v1") as HTMLElement;
+    expect(verse).toContainElement(editor);
+    expect(verse.querySelector("p")).toHaveTextContent("Es war ein Mensch");
+    expect(verse.querySelector("p")?.compareDocumentPosition(editor)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(trigger(1)).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("keeps one verse open at a time", async () => {
+    stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    await userEvent.click(trigger(2));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,2" });
+    expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull();
+  });
+
+  it("closes with Escape, returns focus to the trigger and does not navigate", async () => {
+    stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    await userEvent.keyboard("{ArrowRight}");
+    expect(screen.getByTestId("loc").textContent).toBe("/bible/43/3");
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull();
+    expect(trigger(1)).toHaveFocus();
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => expect(screen.getByTestId("loc").textContent).toBe("/bible/43/4"));
+  });
+
+  it("still highlights words on hover while the editor is open", async () => {
+    stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    await userEvent.hover(screen.getAllByText("war")[0] as HTMLElement);
+    expect(screen.getAllByText("war")[0]?.className).toContain("bg-mark-same");
+  });
+
+  it("saves the whole verse mapping, closes and refreshes the chapter words", async () => {
+    const fetchMock = stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    const before = chapterCalls(fetchMock).length;
+    await userEvent.click(editorNode("g1"));
+    await userEvent.click(editorNode("o100"));
+    await userEvent.click(screen.getByRole("button", { name: "Speichern (1)" }));
+    await waitFor(() =>
+      expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull(),
+    );
+    const [url, init] = puts(fetchMock)[0] ?? [];
+    expect(String(url)).toContain("/elberfelder/verseMapping/bookId/43/chapterId/3/verseId/1");
+    expect(JSON.parse(String(init?.body))).toEqual({
+      links: [
+        { elbWordId: 1, stepWordId: 100, isAddedWord: false },
+        { elbWordId: 2, stepWordId: 100, isAddedWord: false },
+        { elbWordId: 4, stepWordId: 101, isAddedWord: false },
+      ],
+    });
+    await waitFor(() => expect(chapterCalls(fetchMock).length).toBeGreaterThan(before));
+    expect(trigger(1)).toHaveFocus();
+  });
+
+  it("closes on Save without edits and sends nothing", async () => {
+    const fetchMock = stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    await userEvent.click(screen.getByRole("button", { name: "Speichern" }));
+    expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull();
+    expect(puts(fetchMock)).toHaveLength(0);
+  });
+
+  it("keeps the editor open and shows an error when saving fails", async () => {
+    stubMapping({ putStatus: 400 });
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    await userEvent.click(editorNode("g1"));
+    await userEvent.click(editorNode("o100"));
+    await userEvent.click(screen.getByRole("button", { name: "Speichern (1)" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("ungültig");
+    expect(screen.getByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeInTheDocument();
+  });
+
+  it("is read-only when editing is disabled", async () => {
+    stubMapping({ editingEnabled: false });
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    expect(screen.getByText(/noch nicht freigeschaltet/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Speichern/ })).toBeNull();
+  });
+
+  it("opens from the word pop-up", async () => {
+    stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    await userEvent.click(screen.getByText("Mensch"));
+    const dialog = await screen.findByRole("dialog");
+    await userEvent.click(
+      await within(dialog).findByRole("button", { name: "Zuordnung bearbeiten" }),
+    );
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
   });
 });

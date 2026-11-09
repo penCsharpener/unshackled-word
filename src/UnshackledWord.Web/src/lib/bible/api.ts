@@ -3,9 +3,14 @@ import type {
   GetBibleStructureResponse,
   GetChapterTextResponse,
   GetStrongsOccurrencesResponse,
+  GetVerseMappingResponse,
   GetWordDetailResponse,
   GetWordsOfChapterResponse,
+  VerseMappingLink,
 } from "./types";
+
+const verseMappingPath = (bookId: number, chapter: number, verse: number) =>
+  `/elberfelder/verseMapping/bookId/${bookId}/chapterId/${chapter}/verseId/${verse}`;
 
 export const bibleApi = {
   structure: (signal?: AbortSignal) =>
@@ -22,6 +27,10 @@ export const bibleApi = {
     ),
   wordDetail: (wordId: number, signal?: AbortSignal) =>
     api.get<GetWordDetailResponse>(`/elberfelder/wordDetail/wordId/${wordId}`, signal),
+  verseMapping: (bookId: number, chapter: number, verse: number, signal?: AbortSignal) =>
+    api.get<GetVerseMappingResponse>(verseMappingPath(bookId, chapter, verse), signal),
+  saveVerseMapping: (bookId: number, chapter: number, verse: number, links: VerseMappingLink[]) =>
+    api.put<GetVerseMappingResponse>(verseMappingPath(bookId, chapter, verse), { links }),
   strongsOccurrences: (strongs: string, page: number, pageSize: number, signal?: AbortSignal) =>
     api.get<GetStrongsOccurrencesResponse>(
       `/elberfelder/strongsOccurrences/strongs/${encodeURIComponent(strongs)}?page=${page}&pageSize=${pageSize}`,

@@ -124,6 +124,10 @@ The downloaded files are 'cached' in the solution `temp` folder so all subsequen
 Now that the database is setup and seeded you can run the `UnshackledWord.Tooling.WebApi` project.
 Again this will need the same secrets setup as the previous projects to connect to the database.
 
+Writing mappings (`PUT /api/elberfelder/verseMapping/...`, used by the mapping editor) is switched off by default because
+there is no login yet. Enable it only on a trusted instance with the environment variable
+`UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=true` (setting `MappingEditing:Enabled`); see `docs/roadmaps/0003-mapping-editor.md`.
+
 ### Web Frontend
 
 With the API running open the `src\UnshackledWord.AstroWeb` and create an `.env` file in the root of the project with the following content:

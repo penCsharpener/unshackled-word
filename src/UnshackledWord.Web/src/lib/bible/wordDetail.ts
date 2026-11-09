@@ -10,6 +10,7 @@ export const wordDetailSource: WordDetailSource =
   import.meta.env.VITE_WORD_DETAIL_SOURCE === "mock" ? "mock" : "api";
 
 export const wordDetailKeys = {
+  all: ["bible", "wordDetail"] as const,
   detail: (wordId: number) => ["bible", "wordDetail", wordId] as const,
 };
 

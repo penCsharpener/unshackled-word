@@ -12,11 +12,13 @@ public class WordDetailServiceTests
     private readonly IWordDetailRepository _words = Substitute.For<IWordDetailRepository>();
     private readonly IHebrewMorphemeRepository _morphemes = Substitute.For<IHebrewMorphemeRepository>();
     private readonly IStrongsLexiconRepository _lexicon = Substitute.For<IStrongsLexiconRepository>();
+    private readonly ITskRepository _tsk = Substitute.For<ITskRepository>();
     private readonly WordDetailService _sut;
 
     public WordDetailServiceTests()
     {
-        _sut = new WordDetailService(_words, _morphemes, _lexicon);
+        _sut = new WordDetailService(_words, _morphemes, _lexicon, _tsk);
+        _tsk.GetOutgoingAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns([]);
         _words.GetCoMappedWordsAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns([]);
         _lexicon.GetEntriesAsync(Arg.Any<StrongsNumber>(), Arg.Any<CancellationToken>()).Returns([]);
         _words.GetOccurrenceCountAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns(0);
@@ -229,6 +231,71 @@ public class WordDetailServiceTests
 
         (await _sut.GetAsync(1))!.Hints.ShouldBeNull();
         await _words.DidNotReceive().HasTextVariantsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task GetAsync_VerseWithoutTsk_OmitsCrossReferences()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+
+        var result = (await _sut.GetAsync(26001))!;
+
+        result.CrossReferences.ShouldBeNull();
+        result.CrossReferencesTruncated.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetAsync_TskTargets_MapsSingleVersesAndRanges()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+        _tsk.GetOutgoingAsync(43001001, 43001001, 21, Arg.Any<CancellationToken>()).Returns(
+        [
+            new TskCrossReference { SourceHebRefId = 43001001, Scope = "Word", TargetStartHebRefId = 1001001 },
+            new TskCrossReference { SourceHebRefId = 43001001, Scope = "Word", TargetStartHebRefId = 20008022, TargetEndHebRefId = 20008024 },
+            new TskCrossReference { SourceHebRefId = 43001001, Scope = "Word", TargetStartHebRefId = 58009021, TargetEndHebRefId = 58009015 },
+            new TskCrossReference { SourceHebRefId = 43001001, Scope = "Word", TargetStartHebRefId = 19023001, TargetEndHebRefId = 19023001 },
+            new TskCrossReference { SourceHebRefId = 43001001, Scope = "Word", TargetStartHebRefId = 19023006, TargetEndHebRefId = 19024002 },
+        ]);
+
+        var result = (await _sut.GetAsync(26001))!;
+
+        result.CrossReferences!.Select(r => (r.BibleBookId, r.Chapter, r.Verse, r.EndVerse)).ShouldBe(
+        [
+            (1, 1, 1, (int?)null),
+            (20, 8, 22, 24),
+            (58, 9, 15, 21),
+            (19, 23, 1, null),
+            (19, 23, 6, null),
+        ]);
+        result.CrossReferencesTruncated.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetAsync_MoreThanTwentyTskTargets_ListsTwentyAndFlagsTruncation()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+        _tsk.GetOutgoingAsync(43001001, 43001001, 21, Arg.Any<CancellationToken>()).Returns(
+            Enumerable.Range(1, 21).Select(i => new TskCrossReference { SourceHebRefId = 43001001, Scope = "x", TargetStartHebRefId = 1001000 + i }).ToList());
+
+        var result = (await _sut.GetAsync(26001))!;
+
+        result.CrossReferences!.Count.ShouldBe(20);
+        result.CrossReferences[0].Verse.ShouldBe(1);
+        result.CrossReferencesTruncated.ShouldBe(true);
+    }
+
+    [Fact]
+    public async Task GetAsync_WordWithoutMapping_StillGetsVerseCrossReferences()
+    {
+        GivenWord(26001, 43, "Es");
+        GivenGreek(26001);
+        _tsk.GetOutgoingAsync(43001001, 43001001, 21, Arg.Any<CancellationToken>()).Returns(
+            [new TskCrossReference { SourceHebRefId = 43001001, Scope = "x", TargetStartHebRefId = 1001001 }]);
+
+        (await _sut.GetAsync(26001))!.CrossReferences!.Count.ShouldBe(1);
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 import type {
   CoMappedWord,
+  CrossReference,
   GetWordDetailResponse,
   MappingHintKey,
   MappingProvenance,
@@ -200,6 +201,13 @@ const MOCK_ADDED_WORDS = new Set([
   "einer",
   "eines",
 ]);
+/** Public-domain TSK style sample (verse level), the same for every word because the mock has no verse reference. */
+const MOCK_CROSS_REFERENCES: CrossReference[] = [
+  { bibleBookId: 1, chapter: 1, verse: 1 },
+  { bibleBookId: 20, chapter: 8, verse: 22, endVerse: 24 },
+  { bibleBookId: 43, chapter: 1, verse: 1, endVerse: 3 },
+];
+
 const MOCK_MODEL = "gemini-3.1-flash-lite-preview";
 const MOCK_CREATED_AT = "2026-03-14T10:00:00Z";
 const MOCK_CONFIRMED_AT = "2026-10-02T08:30:00Z";
@@ -310,6 +318,7 @@ export function mockWordDetail(
   if (coMapped.length > 0) detail.coMappedWords = coMapped;
   const hints: MappingHintKey[] = readings.length >= 3 ? ["manyOriginals"] : [];
   if (hints.length > 0) detail.hints = hints;
+  if (readings.length > 0) detail.crossReferences = MOCK_CROSS_REFERENCES;
 
   return new Promise((resolve) => {
     setTimeout(() => resolve(detail), delayMs);

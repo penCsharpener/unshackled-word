@@ -24,6 +24,9 @@ docs {
 
   readings[].entity { kind: person|place, name, brief }: STEP person/place list entry matched by the
   reading's Strong's number (exact, including the letter suffix). English STEP text, shown live (CC BY).
+  crossReferences [{ bibleBookId, chapter, verse, endVerse? }]: TSK (public domain) targets of the word's verse
+  in Elberfelder numbering, TSK order, max 20; crossReferencesTruncated is true when there are more. Verse level:
+  all words of a verse return the same list. Try word id 1 (Genesis 1:1) or a word in John 3:16.
   hints contains "textVariants" when the SBLGNT apparatus has rows for the verse (NT only). Only the hint,
   no apparatus text, is returned.
 }

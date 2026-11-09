@@ -13,6 +13,20 @@ public sealed class GetWordDetailResponse
     public MappingProvenanceResponse? Mapping { get; set; }
     public List<CoMappedWordResponse>? CoMappedWords { get; set; }
     public List<string>? Hints { get; set; }
+    /// <summary>TSK (Treasury of Scripture Knowledge, public domain) cross references of the word's verse, TSK order. Verse level, not word level. Omitted when empty.</summary>
+    public List<CrossReferenceResponse>? CrossReferences { get; set; }
+    /// <summary>true or null (never false): the verse has more cross references than <see cref="CrossReferences"/> lists.</summary>
+    public bool? CrossReferencesTruncated { get; set; }
+}
+
+/// <summary>A target verse or verse range in Elberfelder (Hebrew) numbering. Ranges stay within one chapter.</summary>
+public sealed class CrossReferenceResponse
+{
+    public int BibleBookId { get; set; }
+    public int Chapter { get; set; }
+    public int Verse { get; set; }
+    /// <summary>Last verse of a range in the same chapter; omitted for a single verse.</summary>
+    public int? EndVerse { get; set; }
 }
 
 public sealed class OriginalReadingResponse

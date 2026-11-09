@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapping-Editor Entwurf</title>
+<style>
+/* ---- Tokens: copied from src/UnshackledWord.Web/src/styles/index.css (colours, fonts, containers) ----
+   plus the Tailwind v4 defaults the app relies on (--spacing, radius, text sizes). Nothing below uses a raw value
+   other than these tokens. */
+:root {
+  color-scheme: light;
+  --uw-bg: oklch(0.99 0.004 85);
+  --uw-surface: oklch(1 0 0);
+  --uw-surface-muted: oklch(0.96 0.006 85);
+  --uw-fg: oklch(0.22 0.01 60);
+  --uw-fg-muted: oklch(0.48 0.01 60);
+  --uw-border: oklch(0.88 0.008 80);
+  --uw-accent: oklch(0.42 0.1 30);
+  --uw-accent-fg: oklch(0.99 0.004 85);
+  --uw-focus: oklch(0.6 0.15 250);
+  --uw-mark-same: oklch(0.88 0.08 240);
+  --uw-mark-related: oklch(0.9 0.1 150);
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-original: "SBL BibLit", "Noto Serif Hebrew", "Noto Serif", "Iowan Old Style", "Palatino Linotype",
+    "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --container-page: 72rem;
+  --container-prose: 65ch;
+
+  --spacing: 0.25rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-full: 9999px;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --leading-tight: 1.25;
+  --leading-relaxed: 1.625;
+  --border-w: 1px;
+  --border-w-strong: 2px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --uw-bg: oklch(0.18 0.008 60);
+    --uw-surface: oklch(0.22 0.01 60);
+    --uw-surface-muted: oklch(0.27 0.012 60);
+    --uw-fg: oklch(0.94 0.005 85);
+    --uw-fg-muted: oklch(0.7 0.01 70);
+    --uw-border: oklch(0.34 0.012 60);
+    --uw-accent: oklch(0.78 0.1 50);
+    --uw-accent-fg: oklch(0.2 0.01 60);
+    --uw-focus: oklch(0.72 0.14 250);
+    --uw-mark-same: oklch(0.42 0.09 240);
+    --uw-mark-related: oklch(0.42 0.09 150);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --uw-bg: oklch(0.18 0.008 60);
+  --uw-surface: oklch(0.22 0.01 60);
+  --uw-surface-muted: oklch(0.27 0.012 60);
+  --uw-fg: oklch(0.94 0.005 85);
+  --uw-fg-muted: oklch(0.7 0.01 70);
+  --uw-border: oklch(0.34 0.012 60);
+  --uw-accent: oklch(0.78 0.1 50);
+  --uw-accent-fg: oklch(0.2 0.01 60);
+  --uw-focus: oklch(0.72 0.14 250);
+  --uw-mark-same: oklch(0.42 0.09 240);
+  --uw-mark-related: oklch(0.42 0.09 150);
+}
+
+/* ---- Base ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background-color: var(--uw-bg);
+  color: var(--uw-fg);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+}
+:focus-visible { outline: var(--border-w-strong) solid var(--uw-focus); outline-offset: var(--border-w-strong); }
+h1, h2, h3 { line-height: var(--leading-tight); }
+code, pre { font-family: var(--font-mono); font-size: var(--text-sm); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.page { max-width: var(--container-page); margin: 0 auto; padding: 0 calc(var(--spacing) * 4) calc(var(--spacing) * 16); }
+.topbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 3) 0; border-bottom: var(--border-w) solid var(--uw-border);
+}
+.brand { font-family: var(--font-scripture); font-size: var(--text-xl); font-weight: 600; }
+.draft-tag {
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.05em;
+  border: var(--border-w) dashed var(--uw-accent); color: var(--uw-accent);
+  border-radius: var(--radius-full); padding: 0 calc(var(--spacing) * 2); margin-left: calc(var(--spacing) * 2);
+}
+.seg { display: inline-flex; border: var(--border-w) solid var(--uw-border); border-radius: var(--radius-md); overflow: hidden; }
+.seg .btn { border: 0; border-radius: 0; }
+.seg .btn[aria-pressed="true"] { background: var(--uw-surface-muted); color: var(--uw-fg); font-weight: 600; }
+
+/* ---- Button (mirrors the app's single Button: primary / secondary / ghost, sizes sm / md) ---- */
+.btn {
+  font: inherit; font-size: var(--text-sm); line-height: var(--leading-tight);
+  display: inline-flex; align-items: center; gap: calc(var(--spacing) * 1.5);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+  border-radius: var(--radius-md); border: var(--border-w) solid transparent;
+  background: transparent; color: var(--uw-fg); cursor: pointer;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-sm { padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2); font-size: var(--text-xs); }
+.btn-primary { background: var(--uw-accent); color: var(--uw-accent-fg); }
+.btn-secondary { background: var(--uw-surface); border-color: var(--uw-border); }
+.btn-ghost:hover:not(:disabled), .btn-secondary:hover:not(:disabled) { background: var(--uw-surface-muted); }
+
+.intro {
+  max-width: var(--container-prose); margin: calc(var(--spacing) * 6) auto 0;
+  font-size: var(--text-sm); color: var(--uw-fg-muted);
+  border: var(--border-w) dashed var(--uw-border); border-radius: var(--radius-lg); padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+}
+.intro strong { color: var(--uw-fg); }
+.intro ul { margin: calc(var(--spacing) * 1) 0 0; padding-left: calc(var(--spacing) * 5); }
+
+/* ---- Reader ---- */
+.chapter { max-width: var(--container-prose); margin: calc(var(--spacing) * 10) auto 0; }
+.chapter h2 { text-align: center; font-family: var(--font-scripture); font-size: var(--text-3xl); font-weight: 600; margin: 0 0 calc(var(--spacing) * 4); }
+.verses { font-family: var(--font-scripture); font-size: var(--text-lg); line-height: var(--leading-relaxed); }
+@media (width >= 48rem) { .verses { font-size: var(--text-xl); } }
+.verse { position: relative; margin-top: calc(var(--spacing) * 2); }
+.verse-line { margin: 0; }
+.verse-num { font-size: var(--text-xs); color: var(--uw-fg-muted); margin-right: calc(var(--spacing) * 1); vertical-align: super; font-family: var(--font-sans); }
+.edit-trigger {
+  font-family: var(--font-sans); vertical-align: middle; margin-left: calc(var(--spacing) * 1);
+  color: var(--uw-fg-muted); opacity: 0;
+}
+.verse:hover .edit-trigger, .edit-trigger:focus-visible, .verse.is-open .edit-trigger { opacity: 1; }
+@media (pointer: coarse) { .edit-trigger { opacity: 1; } }
+.verse.is-open .edit-trigger { color: var(--uw-accent); }
+
+/* Edit mode: the verse itself becomes the German row (stays in reading position, words get badges). */
+.edit-wrap { position: relative; }
+.verse.is-open .verse-line { line-height: var(--leading-tight); }
+.lines { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: visible; }
+.lines path { fill: none; stroke: var(--uw-focus); stroke-width: var(--border-w-strong); }
+.lines path.added-link { stroke-dasharray: 4 3; }
+
+/* One tile = one word, German or original. Badge on top keeps both rows aligned. */
+.tok {
+  position: relative; z-index: 1;
+  font: inherit; color: inherit; cursor: pointer; text-align: center;
+  display: inline-flex; flex-direction: column; align-items: center; gap: calc(var(--spacing) * 0.5);
+  margin: calc(var(--spacing) * 0.5) 0; padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1.5) calc(var(--spacing) * 1);
+  background: var(--uw-surface); border: var(--border-w) solid transparent; border-radius: var(--radius-md);
+  vertical-align: top; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+}
+.tok:hover { border-color: var(--uw-border); }
+.tok[draggable="true"] { cursor: grab; }
+.tok.is-active { background: var(--uw-mark-same); }
+.tok.is-drop { background: var(--uw-mark-related); border-color: var(--uw-focus); border-style: dashed; }
+.tok.is-selected { border-color: var(--uw-focus); border-width: var(--border-w-strong); padding: calc(var(--spacing) * 0.5 - var(--border-w)) calc(var(--spacing) * 1.5 - var(--border-w)) calc(var(--spacing) * 1 - var(--border-w)); }
+.tok.is-dragging { opacity: 0.5; }
+.tok-text { white-space: nowrap; }
+.tok.is-added .tok-text { font-style: italic; }
+.tok.is-unmapped .tok-text { color: var(--uw-fg-muted); }
+
+.badge {
+  font-family: var(--font-sans); font-size: var(--text-xs); line-height: var(--leading-tight); font-weight: 600;
+  min-width: calc(var(--spacing) * 5); padding: 0 calc(var(--spacing) * 1);
+  border-radius: var(--radius-full); border: var(--border-w) solid var(--uw-fg-muted);
+  background: var(--uw-surface); color: var(--uw-fg); font-variant-numeric: tabular-nums;
+}
+.badge.st-ai { border-style: dashed; color: var(--uw-fg-muted); background: var(--uw-surface-muted); }
+.badge.st-saved { border-color: var(--uw-fg); }
+.badge.st-edited { border-color: var(--uw-accent); background: var(--uw-accent); color: var(--uw-accent-fg); }
+.badge.st-none { border-style: dotted; color: var(--uw-fg-muted); background: transparent; }
+.badge .warn { color: var(--uw-accent); }
+.badge.st-edited .warn { color: var(--uw-accent-fg); }
+
+/* ---- Editor panel (opens below the verse) ---- */
+.panel {
+  /* not positioned: the line overlay (z-index 0) paints above the panel background, tiles (z-index 1) above lines */
+  font-family: var(--font-sans); font-size: var(--text-sm);
+  margin: calc(var(--spacing) * 3) 0 calc(var(--spacing) * 6);
+  border: var(--border-w) solid var(--uw-border); border-radius: var(--radius-lg); background: var(--uw-surface-muted);
+}
+.panel-sec { padding: calc(var(--spacing) * 3); }
+.panel-sec + .panel-sec { border-top: var(--border-w) solid var(--uw-border); }
+.row-label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: calc(var(--spacing) * 2); color: var(--uw-fg-muted); font-size: var(--text-xs); margin-bottom: calc(var(--spacing) * 1); }
+.orig-row { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 1); }
+.orig-row .tok { font-family: var(--font-original); font-size: var(--text-2xl); line-height: var(--leading-tight); padding-left: calc(var(--spacing) * 2); padding-right: calc(var(--spacing) * 2); }
+.orig-row .tok.is-selected { padding-left: calc(var(--spacing) * 2 - var(--border-w)); padding-right: calc(var(--spacing) * 2 - var(--border-w)); }
+.tok.is-unmapped-orig { border: var(--border-w) dashed var(--uw-fg-muted); }
+.tok-sub { font-family: var(--font-sans); font-size: var(--text-xs); color: var(--uw-fg-muted); line-height: var(--leading-tight); white-space: nowrap; }
+.tok-details { display: none; flex-direction: column; align-items: center; }
+.show-details .tok-details { display: flex; }
+.tok-details code { font-size: var(--text-xs); color: var(--uw-fg); }
+
+.info { min-height: calc(var(--spacing) * 6); color: var(--uw-fg); }
+.info .muted { color: var(--uw-fg-muted); }
+.info .orig { font-family: var(--font-original); font-size: var(--text-lg); }
+.chips { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 1.5); margin-top: calc(var(--spacing) * 2); }
+.chip {
+  display: inline-flex; align-items: center; gap: calc(var(--spacing) * 1);
+  border: var(--border-w) solid var(--uw-border); border-radius: var(--radius-full); background: var(--uw-surface);
+  padding: 0 0 0 calc(var(--spacing) * 2.5);
+}
+.chip.st-edited { border-color: var(--uw-accent); }
+.chip.st-ai { border-style: dashed; }
+.chip .orig { font-family: var(--font-original); font-size: var(--text-base); }
+.chip .btn { border-radius: var(--radius-full); padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2); }
+.dropzone {
+  margin-top: calc(var(--spacing) * 2); padding: calc(var(--spacing) * 2); text-align: center; color: var(--uw-fg-muted);
+  border: var(--border-w) dashed var(--uw-border); border-radius: var(--radius-md);
+}
+.dropzone.is-drop { background: var(--uw-mark-related); color: var(--uw-fg); border-color: var(--uw-focus); }
+@media (pointer: coarse) { .dropzone { display: none; } }
+
+.legend { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2) calc(var(--spacing) * 4); align-items: center; color: var(--uw-fg-muted); font-size: var(--text-xs); }
+.legend span { display: inline-flex; align-items: center; gap: calc(var(--spacing) * 1); }
+
+.actions { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2); align-items: center; justify-content: space-between; }
+.actions-group { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2); align-items: center; }
+.redo-form { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2); align-items: center; margin-top: calc(var(--spacing) * 2); }
+.redo-form input {
+  font: inherit; width: calc(var(--spacing) * 16); padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  background: var(--uw-surface); color: var(--uw-fg); border: var(--border-w) solid var(--uw-border); border-radius: var(--radius-sm);
+}
+.diff { margin-top: calc(var(--spacing) * 2); }
+.diff summary { cursor: pointer; color: var(--uw-fg-muted); font-size: var(--text-xs); }
+.diff pre { background: var(--uw-surface); border: var(--border-w) solid var(--uw-border); border-radius: var(--radius-md); padding: calc(var(--spacing) * 2); overflow-x: auto; max-height: calc(var(--spacing) * 60); font-size: var(--text-xs); }
+
+@media (width < 40rem) {
+  .actions { flex-direction: column; align-items: stretch; }
+  .actions-group { justify-content: space-between; }
+  .actions-group.main .btn { flex: 1 1 0; justify-content: center; }
+  .orig-row .tok { font-size: var(--text-xl); }
+}
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(var(--spacing) * 4); transform: translateX(-50%); z-index: 10;
+  max-width: calc(100vw - var(--spacing) * 8); background: var(--uw-fg); color: var(--uw-bg);
+  font-size: var(--text-sm); padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4); border-radius: var(--radius-lg);
+}
+.toast:empty { display: none; }
+
+/* ---- Design note ---- */
+.note { max-width: var(--container-prose); margin: calc(var(--spacing) * 16) auto 0; font-size: var(--text-sm); border-top: var(--border-w) solid var(--uw-border); padding-top: calc(var(--spacing) * 6); }
+.note h2 { font-size: var(--text-2xl); font-family: var(--font-scripture); }
+.note h3 { font-size: var(--text-base); margin-top: calc(var(--spacing) * 6); }
+.note li { margin-top: calc(var(--spacing) * 1); }
+.note code { font-size: var(--text-xs); background: var(--uw-surface-muted); padding: 0 calc(var(--spacing) * 1); border-radius: var(--radius-sm); overflow-wrap: anywhere; }
+.note table { border-collapse: collapse; width: 100%; font-size: var(--text-xs); }
+.note th, .note td { text-align: left; vertical-align: top; border-bottom: var(--border-w) solid var(--uw-border); padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 1); }
+.table-scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <div><span class="brand">Unshackled Word</span><span class="draft-tag">Entwurf</span></div>
+    <div class="seg" role="group" aria-label="Farbschema (nur Entwurf)">
+      <button class="btn btn-sm" type="button" data-theme-set="auto" aria-pressed="true">System</button>
+      <button class="btn btn-sm" type="button" data-theme-set="light" aria-pressed="false">Hell</button>
+      <button class="btn btn-sm" type="button" data-theme-set="dark" aria-pressed="false">Dunkel</button>
+    </div>
+  </header>
+
+  <section class="intro" aria-label="So probierst du den Entwurf aus">
+    <strong>Mapping-Editor, Entwurf zur Freigabe.</strong> Echte Daten (Elb1871-Wörter aus der API, STEP-Wörter und
+    KI-Zuordnung aus der DB), Zustand nur im Speicher. Ausprobieren:
+    <ul>
+      <li>Beim Vers 1 auf <strong>✎ Zuordnung</strong> klicken. Der Editor öffnet sich unter dem Vers.</li>
+      <li><strong>Maus:</strong> deutsches Wort auf ein Urtextwort ziehen (oder umgekehrt) = verbinden. Deutsches
+        Wort auf ein deutsches Wort = „ergänzt, gehört zu …“. Wort auf „Verbindungen lösen“ = alle lösen.</li>
+      <li><strong>Tastatur / Touch:</strong> Wort antippen (auswählen), dann Wort der anderen Zeile antippen =
+        verbinden bzw. wieder lösen. <kbd>Esc</kbd> hebt die Auswahl auf, <kbd>Strg</kbd>+<kbd>Z</kbd> macht rückgängig.</li>
+      <li>Probier in Gen 1,1 „die“ (vor Himmel): die KI hat es auf אֵת gelegt, gehört aber zu הַשָּׁמַיִם.</li>
+    </ul>
+  </section>
+
+  <main id="reader"></main>
+
+  <section class="note" aria-labelledby="note-h">
+    <h2 id="note-h">Design-Notiz</h2>
+
+    <h3>1. Interaktionsmodell</h3>
+    <ul>
+      <li><strong>Inline unter dem Vers.</strong> Der deutsche Vers bleibt an seiner Stelle und wird selbst zur
+        deutschen Zeile (Wörter bekommen Badges, sind ziehbar/antippbar). Darunter öffnet sich das Panel mit den
+        Urtextwörtern, Auswahlinfo, Legende und Aktionen. Nur ein Vers ist offen; beim Wechsel mit ungespeicherten
+        Änderungen wird nachgefragt.</li>
+      <li><strong>Drag &amp; Drop und Auswählen-dann-Antippen sind gleichwertig</strong> und benutzen dieselben
+        Operationen (<code>connect</code>, <code>disconnect</code>, <code>setAdded</code>, <code>clearWord</code>).
+        Ziehen ist der schnelle Weg mit Maus/Stift; Antippen ist der Tastatur- und Touch-Weg (jedes Wort ist ein
+        echter Button, Tab/Enter/Leertaste reichen). Antippen eines bereits verbundenen Wortes löst die
+        Verbindung (umschalten) – dank Rückgängig ungefährlich, Status wird per <code>aria-live</code> angesagt.</li>
+      <li><strong>Telefon:</strong> Drag &amp; Drop ist bei <code>(pointer: coarse)</code> abgeschaltet
+        (<code>draggable=false</code>), weil natives HTML-DnD auf Touch unzuverlässig ist und mit dem Scrollen
+        kollidiert. Dort gilt nur Antippen-Antippen; die Lösen-Ablagefläche wird durch die ✕-Chips ersetzt. Die
+        Urtextwörter umbrechen, die Aktionen stapeln sich in voller Breite.</li>
+      <li><strong>Speichern = Bestätigen.</strong> Speichern ist auch ohne Änderung möglich und bestätigt dann die
+        KI-Vorschläge des Verses. Abbrechen verwirft alles seit dem Öffnen. Rückgängig ist ein Snapshot-Stapel pro
+        offener Sitzung (kein Verlauf über das Speichern hinaus, wie gewünscht).</li>
+    </ul>
+
+    <h3>2. Darstellung der Verbindungen: nummerierte Badges + Linien nur für die aktive Gruppe</h3>
+    <ul>
+      <li>Jede verbundene Gruppe (Zusammenhangskomponente aus deutschen und Urtextwörtern) bekommt eine Nummer in
+        deutscher Lesereihenfolge. Beide Seiten zeigen dieselbe Nummer, ergänzte Wörter zeigen <code>+n</code>
+        (gehört zu Gruppe n), unverbundene Urtextwörter <code>–</code> mit gestricheltem Rand, deutsche Wörter ohne
+        Zuordnung <code>?</code>.</li>
+      <li><strong>Warum Badges statt dauernd sichtbarer Linien:</strong> Die App hat nur zwei Markierungsfarben
+        (<code>mark-same</code>, <code>mark-related</code>), also keine Farbpalette pro Paar. Linien für alle Paare
+        werden im Hebräischen (RTL, Reihenfolge gespiegelt) und bei Zeilenumbruch auf dem Telefon zu einem
+        Kreuzgewirr. Nummern funktionieren bei jeder Breite, in RTL, im Druck und für Farbenblinde.</li>
+      <li>Beim Hovern, Fokussieren oder Auswählen wird die ganze Gruppe mit <code>mark-same</code> hinterlegt und
+        ihre Verbindungen werden als SVG-Kurven gezeichnet (ergänzt → Bezugswort gestrichelt). Eine Gruppe allein ist
+        auch in RTL gut lesbar. <code>mark-related</code> markiert das Ablageziel beim Ziehen.</li>
+      <li>Zustand am Badge: gestrichelt/grau = KI-Vorschlag, durchgezogen = gespeichert (bestätigt), Akzentfarbe =
+        geändert (ungespeichert). Keine Namen, keine Zeitstempel. <code>!</code> = deutsches Wort mit ≥ 3
+        Urtextwörtern (Hinweis auf Überzuordnung).</li>
+      <li>Strong's, Morphologie-Kurzcode und Glosse: immer in der Infozeile für das aktive Wort, auf Wunsch
+        („Details“) unter jedem Urtextwort.</li>
+      <li><strong>RTL:</strong> Die Urtextzeile hat <code>dir="rtl"</code> (erstes Wort rechts), die Transliteration
+        darin <code>dir="ltr"</code>; der deutsche Vers bleibt LTR. Die Zeilenbeschriftung sagt die Leserichtung an.
+        Gleiche Nummern verbinden über die Spiegelung hinweg, die Linie der aktiven Gruppe zeigt die Richtung.</li>
+    </ul>
+
+    <h3>3. Benötigte API-Endpunkte</h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Endpunkt</th><th>Zweck</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET api/elberfelder/mappingEditor/bookId/{b}/chapterId/{c}/verse/{v}</code></td>
+          <td>Deutsche Wörter (id, Position, Text), <strong>alle</strong> Urtextwörter des Verses (id, Position, Text,
+            Transliteration, Strong's, Morphologie-Code, Glosse; Sprache, Richtung) und die aktuellen Zuordnungszeilen
+            (<code>germanWordId</code>, <code>originalWordId|null</code>, <code>isAddedWord</code>,
+            <code>parentGermanWordId</code>, <code>germanWordPart</code>, <code>state: ai|confirmed</code>) plus ein
+            <code>version</code>/ETag für die optimistische Sperre. Öffentlich lesbar.</td></tr>
+        <tr><td><code>PUT api/elberfelder/mappings/verse/{hebRefId}</code></td>
+          <td>Speichert die Änderungen eines Verses als Diff (<code>add</code>, <code>remove</code>,
+            <code>setAdded</code>, <code>confirm</code>), mit <code>If-Match</code>; 409 wenn die KI den Vers inzwischen
+            neu zugeordnet hat. Login nötig. Das Diff-Format ist unten im Editor sichtbar („Diff ansehen“).</td></tr>
+        <tr><td><code>POST api/elberfelder/mappings/aiRedo</code> <code>{ fromHebRefId, toHebRefId }</code></td>
+          <td>Stößt den AiWorker für einen Vers/Versbereich an, 202 + Job-Id; <code>GET …/aiRedo/{jobId}</code> für
+            den Status. Ergebnis ersetzt nur unbestätigte Zeilen (offene Frage, s. u.).</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>4. Datenlücken</h3>
+    <ul>
+      <li><strong>Kein Zustand pro Zeile:</strong> <code>Elb1871GreekMapping</code>/<code>Elb1871HebrewMapping</code>
+        haben weder „bestätigt“ noch Quelle (KI/Mensch). Es braucht mindestens eine Spalte
+        <code>ConfirmedAt</code> (oder <code>Source</code>), damit „gespeichert“ von „KI“ unterscheidbar ist und ein
+        KI-Neulauf bestätigte Zeilen nicht überschreibt.</li>
+      <li><strong>Überzuordnung:</strong> 50.086 Seed-Zeilen haben <code>IsAddedWord = True</code> und trotzdem ein
+        Urtextwort; der Import macht daraus normale Zuordnungen (Joh 18,19 „Der“ → 4 Artikel). Der Editor zeigt nur das
+        Symptom (<code>!</code> ab 3). Ein Bereinigungslauf oder eine Markierung im Lesemodell wäre besser.</li>
+      <li><strong>Bezugswort über Versgrenzen:</strong> <code>ParentGermanWordId</code> kann auf ein Wort eines
+        anderen Verses zeigen; der Editor lässt nur Bezugswörter im selben Vers zu. Der Lese-Endpunkt sollte fremde
+        Bezugswörter mitliefern (nur anzeigen, nicht ziehbar).</li>
+      <li><strong>Versifikation:</strong> Deutsche Wörter hängen an <code>HebRefId</code>, STEP-Wörter an
+        <code>LxxRefId</code>. „Alle Urtextwörter des Verses“ muss die Vereinigung aus STEP-Wörtern des Verses und den
+        über Zuordnungen erreichten Wörtern (Nachbarvers) sein.</li>
+      <li><strong>Wortteile:</strong> Zuordnung ist auf STEP-Wortebene. „Im“ kann nicht direkt auf die Vorsilbe בְּ in
+        בְּרֵאשִׁית zeigen (die KI macht „Im“ deshalb zu „ergänzt → Anfang“). Morphem-Zuordnung über
+        <code>StepHebrewWordsNormalized</code> wäre ein eigener Schritt. <code>GermanWordPart</code> ist meist Rauschen,
+        <code>PartOrder</code> wird verworfen; der Entwurf blendet beides aus.</li>
+      <li><strong>Rolling Seed:</strong> Bestätigte Änderungen müssen zurück in <code>assets/Elb1871Mappings/NN-Book.csv</code>
+        (Schlüssel: Position + Wort, nicht Ids), sonst gehen sie beim nächsten Seed verloren.</li>
+      <li><strong>Brief vs. Daten:</strong> In Joh 1,1 ordnet die KI 1 : 1 zu („Im“ → Ἐν, „Anfang“ → ἀρχῇ), es gibt
+        dort keine Phrase „mehrere deutsche → ein Urtextwort“; τὸν (11) ist unübersetzt. Die Phrase zeigt Gen 1,1
+        („und die“ → וְאֵת), dazu „Im“ als ergänztes Wort. In Joh 1,1 lässt sie sich durch Ziehen von „Im“ auf ἀρχῇ
+        selbst bauen.</li>
+    </ul>
+
+    <h3>5. Vorgeschlagene Aufteilung (React, wenig neue Komponenten)</h3>
+    <ul>
+      <li><strong><code>MappingEditor</code></strong> (neu): Panel unter dem Vers – Urtextzeile, Infozeile mit Chips,
+        Legende, Aktionen, Linien-Overlay (intern, kein eigenes Bauteil). Props <code>verse</code>,
+        <code>data</code>, <code>onSave</code>, <code>onCancel</code>, <code>onAiRedo</code>.</li>
+      <li><strong><code>MappingToken</code></strong> (neu): eine Wortkachel mit Badge für beide Seiten; Props
+        <code>side</code>, <code>badge</code>, <code>state</code>, <code>active</code>, <code>selected</code>,
+        <code>draggable</code>. Alternativ als neue <code>Button</code>-Variante <code>tile</code> – dann nur eine
+        neue Komponente.</li>
+      <li>Logik ohne UI in <code>src/lib/mapping/draft.ts</code>: reiner Reducer (connect, disconnect, setAdded,
+        clearWord, undo), Gruppen-Nummerierung, Wortzustand, Diff. Gut mit Vitest testbar.</li>
+      <li><code>ChapterPage</code>: Zustand <code>editingVerse</code>; der offene Vers rendert seine Wörter als
+        <code>MappingToken</code>. <code>WordDetailPopover.onEditMapping</code> öffnet den Editor für den Vers des
+        Wortes. Wiederverwendet: <code>Button</code> (primary/secondary/ghost), i18n-Schlüssel unter
+        <code>bible.mapping.*</code>.</li>
+    </ul>
+
+    <h3>6. Offene Fragen</h3>
+    <ul>
+      <li>Antippen eines verbundenen Wortes: umschalten (wie im Entwurf) oder nur verbinden und Lösen ausschließlich
+        über ✕?</li>
+      <li>Speichern ohne Änderung = KI-Vorschläge bestätigen: so gewollt, oder ein eigener Knopf „Bestätigen“?</li>
+      <li>KI neu zuordnen: nur unbestätigte Zeilen ersetzen, oder alles im Bereich (mit Warnung)? Wartet die UI auf
+        das Ergebnis oder kommt es später als neuer Vorschlag?</li>
+      <li>Wortteile (<code>GermanWordPart</code>, Morpheme wie בְּ) jetzt schon editierbar machen oder später?</li>
+      <li>Editor im öffentlichen Reader nur nach Login einblenden (Annahme: ja, Lesen bleibt öffentlich)?</li>
+      <li>Ein Vers pro Sitzung reicht, oder soll Speichern direkt zum nächsten Vers springen (Arbeitsfluss beim
+        Durchkorrigieren)?</li>
+    </ul>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ---------- Real data (Elb1871 tokens from API, STEP words + AI mapping rows from DB, read 2026-11-09) ---------- */
+const DATA = [
+  {
+    key: "gen1", title: "1. Mose 1", ref: "1. Mose 1,1", hebRefId: 1001001, lang: "Hebräisch", dir: "rtl",
+    german: [[1, "Im"], [2, "Anfang"], [3, "schuf"], [4, "Gott"], [5, "die"], [6, "Himmel"], [7, "und"], [8, "die"], [9, "Erde."]],
+    original: [
+      [1, "בְּרֵאשִׁ֖ית", "be./re.Shit", "H9003/{H7225G}", "HR/Ncfsa", "in/ beginning"],
+      [2, "בָּרָ֣א", "ba.Ra'", "{H1254A}", "HVqp3ms", "he created"],
+      [3, "אֱלֹהִ֑ים", "'E.lo.Him", "{H0430G}", "HNcmpa", "God"],
+      [4, "אֵ֥ת", "'et", "{H0853}", "HTo", "<obj.>"],
+      [5, "הַשָּׁמַ֖יִם", "ha./sha.Ma.yim", "H9009/{H8064}", "HTd/Ncmpa", "the/ heavens"],
+      [6, "וְאֵ֥ת", "ve./'Et", "H9002/{H0853}", "HC/To", "and/ <obj.>"],
+      [7, "הָאָֽרֶץ׃", "ha./'A.retz", "H9009/{H0776G}\\H9016", "HTd/Ncfsa", "the/ earth"],
+    ],
+    /* Elb1871HebrewMapping: [ElbWordId, StepWordId, IsAddedWord, ParentGermanWordId] */
+    rows: [[1, null, true, 2], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 6], [9, 7]],
+    context: {
+      2: "Und die Erde war wüst und leer, und Finsternis war über der Tiefe; und der Geist Gottes schwebte über den Wassern.",
+      3: "Und Gott sprach: Es werde Licht! und es ward Licht.",
+    },
+  },
+  {
+    key: "joh1", title: "Johannes 1", ref: "Johannes 1,1", hebRefId: 43001001, lang: "Griechisch", dir: "ltr",
+    german: [[613300, "Im"], [613301, "Anfang"], [613302, "war"], [613303, "das"], [613304, "Wort,"], [613305, "und"],
+      [613306, "das"], [613307, "Wort"], [613308, "war"], [613309, "bei"], [613310, "Gott,"], [613311, "und"],
+      [613312, "das"], [613313, "Wort"], [613314, "war"], [613315, "Gott."]],
+    original: [
+      [50909, "Ἐν", "En", "G1722", "PREP", "in/on/among"],
+      [50910, "ἀρχῇ", "archēa", "G0746", "N-DSF", "beginning"],
+      [50911, "ἦν", "ēn", "G1510", "V-IAI-3S", "to be"],
+      [50912, "ὁ", "ho", "G3588", "T-NSM", "the/this/who"],
+      [50913, "λόγος,", "logos", "G3056", "N-NSM", "word"],
+      [50914, "καὶ", "kai", "G2532", "CONJ", "and"],
+      [50915, "ὁ", "ho", "G3588", "T-NSM", "the/this/who"],
+      [50916, "λόγος", "logos", "G3056", "N-NSM", "word"],
+      [50917, "ἦν", "ēn", "G1510", "V-IAI-3S", "to be"],
+      [50918, "πρὸς", "pros", "G4314", "PREP", "to/with"],
+      [50919, "τὸν", "ton", "G3588", "T-ASM", "the/this/who"],
+      [50920, "θεόν,", "theon", "G2316", "N-ASM-T", "God"],
+      [50921, "καὶ", "kai", "G2532", "CONJ", "and"],
+      [50922, "θεὸς", "theos", "G2316", "N-NSM-T", "God"],
+      [50923, "ἦν", "ēn", "G1510", "V-IAI-3S", "to be"],
+      [50924, "ὁ", "ho", "G3588", "T-NSM", "the/this/who"],
+      [50925, "λόγος.", "logos", "G3056", "N-NSM", "word"],
+    ],
+    /* Elb1871GreekMapping */
+    rows: [[613300, 50909], [613301, 50910], [613302, 50911], [613303, 50912], [613304, 50913], [613305, 50914],
+      [613306, 50915], [613307, 50916], [613308, 50917], [613309, 50918], [613310, 50920], [613311, 50921],
+      [613312, 50924], [613313, 50925], [613314, 50923], [613315, 50922]],
+    context: {
+      2: "Dieses war im Anfang bei Gott.",
+      3: "Alles ward durch dasselbe, und ohne dasselbe ward auch nicht eines, das geworden ist.",
+    },
+  },
+];
+
+/* ---------- Persistent (in-memory) "server" state per verse: baseline rows with state ai|saved ---------- */
+const store = {};
+for (const d of DATA) {
+  d.germanById = new Map(d.german.map(([id, text]) => [id, text]));
+  d.origById = new Map(d.original.map(([id, text, tr, strongs, morph, gloss], i) => [id, { id, pos: i + 1, text, tr, strongs, morph, gloss }]));
+  const edges = new Map();
+  const added = new Map();
+  for (const [g, o, isAdded, parent] of d.rows) {
+    if (isAdded) added.set(g, { parent, state: "ai" });
+    else edges.set(ek(g, o), "ai");
+  }
+  store[d.key] = { edges, added };
+}
+function ek(g, o) { return g + "|" + o; }
+function splitEk(k) { const [g, o] = k.split("|"); return [Number(g), Number(o)]; }
+
+/* ---------- Session ---------- */
+let session = null; // { d, work:{edges:Set, added:Map g->parent}, undo:[], selected, hover, dragging, addedMode, details, redoOpen }
+const coarse = window.matchMedia("(pointer: coarse)");
+
+function baselineWork(key) {
+  const s = store[key];
+  return { edges: new Set(s.edges.keys()), added: new Map([...s.added].map(([g, v]) => [g, v.parent])) };
+}
+function cloneWork(w) { return { edges: new Set(w.edges), added: new Map(w.added) }; }
+function commit(mutator, message) {
+  const before = cloneWork(session.work);
+  const changed = mutator(session.work);
+  if (changed === false) { if (message) announce(message); return; }
+  session.undo.push(before);
+  if (message) announce(message);
+  render();
+}
+
+/* Operations (the future reducer in src/lib/mapping/draft.ts) */
+function connect(w, g, o) {
+  if (w.edges.has(ek(g, o))) return false;
+  w.edges.add(ek(g, o));
+  w.added.delete(g);
+}
+function disconnect(w, g, o) { if (!w.edges.delete(ek(g, o))) return false; }
+function setAdded(w, g, parent) {
+  if (g === parent) return false;
+  if (w.added.has(parent)) parent = w.added.get(parent);
+  if (g === parent || w.added.get(g) === parent) return false;
+  for (const k of [...w.edges]) if (splitEk(k)[0] === g) w.edges.delete(k);
+  for (const [child, p] of w.added) if (p === g) w.added.set(child, parent); // re-parent own children
+  w.added.set(g, parent);
+}
+function clearWord(w, side, id) {
+  let n = 0;
+  for (const k of [...w.edges]) { const [g, o] = splitEk(k); if ((side === "g" ? g : o) === id) { w.edges.delete(k); n++; } }
+  if (side === "g" && w.added.delete(id)) n++;
+  if (n === 0) return false;
+}
+
+/* Derived: partners, groups, word state, diff */
+function partners(w, side, id) {
+  const out = [];
+  for (const k of w.edges) { const [g, o] = splitEk(k); if (side === "g" && g === id) out.push(o); if (side === "o" && o === id) out.push(g); }
+  return out;
+}
+function groups(d, w) {
+  const parent = new Map();
+  const find = (x) => { while (parent.get(x) !== x) { parent.set(x, parent.get(parent.get(x))); x = parent.get(x); } return x; };
+  const union = (a, b) => parent.set(find(a), find(b));
+  for (const [g] of d.german) parent.set("g" + g, "g" + g);
+  for (const [o] of d.original) parent.set("o" + o, "o" + o);
+  for (const k of w.edges) { const [g, o] = splitEk(k); union("g" + g, "o" + o); }
+  for (const [g, p] of w.added) union("g" + g, "g" + p);
+  const size = new Map();
+  for (const n of parent.keys()) size.set(find(n), (size.get(find(n)) || 0) + 1);
+  const num = new Map(); let next = 1;
+  const order = [...d.german.map(([g]) => "g" + g), ...d.original.map(([o]) => "o" + o)];
+  for (const n of order) { const r = find(n); if (size.get(r) > 1 && !num.has(r)) num.set(r, next++); }
+  return { root: (n) => find(n), number: (n) => num.get(find(n)) };
+}
+function wordState(d, side, id) {
+  const base = baselineWork(d.key), w = session.work, s = store[d.key];
+  const a = partners(base, side, id).sort().join(), b = partners(w, side, id).sort().join();
+  const addedA = side === "g" ? base.added.get(id) : undefined, addedB = side === "g" ? w.added.get(id) : undefined;
+  if (a !== b || addedA !== addedB) return "edited";
+  const states = partners(w, side, id).map((p) => s.edges.get(side === "g" ? ek(id, p) : ek(p, id)));
+  if (addedB !== undefined) states.push(s.added.get(id).state);
+  if (states.length === 0) return "none";
+  return states.every((x) => x === "saved") ? "saved" : "ai";
+}
+function diff(d) {
+  const base = baselineWork(d.key), w = session.work;
+  const add = [...w.edges].filter((k) => !base.edges.has(k)).map(splitEk).map(([g, o]) => ({ germanWordId: g, originalWordId: o }));
+  const remove = [...base.edges].filter((k) => !w.edges.has(k)).map(splitEk).map(([g, o]) => ({ germanWordId: g, originalWordId: o }));
+  const setAddedOut = [];
+  for (const [g] of d.german) {
+    const a = base.added.get(g), b = w.added.get(g);
+    if (a !== b) setAddedOut.push({ germanWordId: g, isAddedWord: b !== undefined, parentGermanWordId: b ?? null });
+  }
+  return { hebRefId: d.hebRefId, add, remove, setAdded: setAddedOut, confirm: true };
+}
+function isDirty() { const x = diff(session.d); return x.add.length + x.remove.length + x.setAdded.length > 0; }
+
+/* ---------- Rendering ---------- */
+const reader = document.getElementById("reader");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+function renderAll() {
+  reader.innerHTML = DATA.map((d) => `
+    <section class="chapter" aria-labelledby="h-${d.key}">
+      <h2 id="h-${d.key}">${esc(d.title)}</h2>
+      <article class="verses">
+        <div class="verse" id="${d.key}-v1" data-key="${d.key}"></div>
+        ${Object.entries(d.context).map(([v, t]) => `
+          <div class="verse"><p class="verse-line"><span class="verse-num">${v}</span>${esc(t)}
+            <button class="btn btn-ghost btn-sm edit-trigger" type="button" disabled title="Im Entwurf nur Vers 1">✎ Zuordnung</button></p></div>`).join("")}
+      </article>
+    </section>`).join("");
+  for (const d of DATA) renderVerse(d);
+}
+
+function renderVerse(d) {
+  const el = document.getElementById(d.key + "-v1");
+  const open = session && session.d === d;
+  el.classList.toggle("is-open", !!open);
+  const trigger = `<button class="btn btn-ghost btn-sm edit-trigger" type="button" data-act="open" aria-expanded="${open}" aria-controls="${d.key}-panel">✎ Zuordnung</button>`;
+  if (!open) {
+    el.innerHTML = `<p class="verse-line"><span class="verse-num">1</span>${d.german.map(([, t]) => esc(t)).join(" ")} ${trigger}</p>`;
+    return;
+  }
+  const w = session.work, G = groups(d, w);
+  const tile = (side, id, text, extra) => {
+    const node = side + id, num = G.number(node), st = wordState(d, side, id);
+    let badge, cls = "";
+    if (side === "g" && w.added.has(id)) { badge = "+" + (num ?? "?"); cls = " is-added"; }
+    else if (num) badge = String(num);
+    else { badge = side === "g" ? "?" : "–"; cls = side === "g" ? " is-unmapped" : " is-unmapped-orig"; }
+    const over = side === "g" && partners(w, "g", id).length >= 3 ? ' <span class="warn" title="≥ 3 Urtextwörter: Überzuordnung?">!</span>' : "";
+    const label = describe(d, side, id);
+    return `<button type="button" class="tok${cls}" data-node="${node}" data-side="${side}" data-id="${id}"
+      draggable="${!coarse.matches}" aria-pressed="${session.selected === node}" aria-label="${esc(label)}">
+      <span class="badge st-${st}" aria-hidden="true">${badge}${over}</span>${extra(text)}</button>`;
+  };
+  const germanTiles = d.german.map(([id, t]) => tile("g", id, t, (x) => `<span class="tok-text">${esc(x)}</span>`)).join(" ");
+  const origTiles = d.original.map(([id]) => {
+    const o = d.origById.get(id);
+    return tile("o", id, o.text, (x) => `<span class="tok-text" lang="${d.dir === "rtl" ? "he" : "grc"}">${esc(x)}</span>
+      <span class="tok-sub" dir="ltr">${esc(o.tr)}</span>
+      <span class="tok-details tok-sub" dir="ltr"><code>${esc(o.strongs)}</code><code>${esc(o.morph)}</code><span>${esc(o.gloss)}</span></span>`);
+  }).join("");
+  const dirLabel = d.dir === "rtl" ? "liest von rechts nach links ←" : "liest von links nach rechts →";
+  const x = diff(d), changes = x.add.length + x.remove.length + x.setAdded.length;
+
+  el.innerHTML = `
+    <div class="edit-wrap">
+      <svg class="lines" aria-hidden="true"></svg>
+      <p class="verse-line"><span class="verse-num">1</span>${germanTiles} ${trigger}</p>
+      <div class="panel${session.details ? " show-details" : ""}" id="${d.key}-panel" role="region" aria-label="Zuordnung ${esc(d.ref)} bearbeiten">
+        <div class="panel-sec">
+          <div class="row-label"><span>Urtext · ${d.lang} (STEP) · ${dirLabel}</span></div>
+          <div class="orig-row" dir="${d.dir}">${origTiles}</div>
+          <div class="dropzone" data-drop="clear">Wort hierher ziehen = alle seine Verbindungen lösen</div>
+        </div>
+        <div class="panel-sec">
+          <div class="info" id="${d.key}-info" aria-live="polite">${infoHtml(d)}</div>
+          ${chipsHtml(d)}
+        </div>
+        <div class="panel-sec">
+          <div class="legend">
+            <span><span class="badge st-ai">3</span> KI-Vorschlag</span>
+            <span><span class="badge st-saved">3</span> gespeichert</span>
+            <span><span class="badge st-edited">3</span> geändert</span>
+            <span><span class="badge st-ai">+2</span> ergänzt, gehört zu 2</span>
+            <span><span class="badge st-none">–</span> ohne Entsprechung</span>
+            <button class="btn btn-secondary btn-sm" type="button" data-act="details" aria-pressed="${session.details}">Strong's &amp; Morphologie</button>
+          </div>
+        </div>
+        <div class="panel-sec">
+          <div class="actions">
+            <div class="actions-group">
+              <button class="btn btn-secondary btn-sm" type="button" data-act="undo" ${session.undo.length ? "" : "disabled"}>↶ Rückgängig${session.undo.length ? " (" + session.undo.length + ")" : ""}</button>
+              <button class="btn btn-ghost btn-sm" type="button" data-act="redo-toggle" aria-expanded="${session.redoOpen}">KI neu zuordnen (dieser Vers / Versbereich)</button>
+            </div>
+            <div class="actions-group main">
+              <button class="btn btn-secondary" type="button" data-act="cancel">Abbrechen</button>
+              <button class="btn btn-primary" type="button" data-act="save">${changes ? "Speichern (" + changes + ")" : "Speichern = KI bestätigen"}</button>
+            </div>
+          </div>
+          ${session.redoOpen ? `<div class="redo-form">
+              <label>Von Vers <input type="number" min="1" value="1" id="redo-from"></label>
+              <label>bis <input type="number" min="1" value="1" id="redo-to"></label>
+              <button class="btn btn-secondary btn-sm" type="button" data-act="redo-run">Anfordern (Platzhalter)</button>
+            </div>` : ""}
+          <details class="diff"><summary>Diff ansehen (würde an die API gesendet)</summary><pre>${esc(JSON.stringify(x, null, 2))}</pre></details>
+        </div>
+      </div>
+    </div>`;
+  updateHighlight();
+}
+
+function describe(d, side, id) {
+  const w = session.work;
+  if (side === "g") {
+    const t = d.germanById.get(id);
+    if (w.added.has(id)) return `${t}, ergänzt, gehört zu ${d.germanById.get(w.added.get(id))}`;
+    const p = partners(w, "g", id).map((o) => d.origById.get(o).text);
+    return p.length ? `${t}, verbunden mit ${p.join(", ")}` : `${t}, nicht zugeordnet`;
+  }
+  const o = d.origById.get(id);
+  const p = partners(w, "o", id).map((g) => d.germanById.get(g));
+  return `${o.text} ${o.tr}, ${o.strongs}, ${o.morph}, ${o.gloss}; ${p.length ? "verbunden mit " + p.join(", ") : "ohne deutsche Entsprechung"}`;
+}
+
+function focusNode() { return session.selected || session.hover; }
+function infoHtml(d) {
+  const n = focusNode();
+  const sel = session.selected;
+  let lead = "";
+  if (session.addedMode) lead = `<strong>Bezugswort wählen:</strong> tippe das deutsche Wort, zu dem „${esc(d.germanById.get(Number(sel.slice(1))))}“ gehört. <span class="muted">Esc bricht ab.</span>`;
+  else if (sel) lead = sel[0] === "g"
+    ? `<span class="muted">Ausgewählt. Tippe ein Urtextwort, um es zu verbinden oder zu lösen.</span>`
+    : `<span class="muted">Ausgewählt. Tippe ein deutsches Wort, um es zu verbinden oder zu lösen.</span>`;
+  else lead = coarse.matches
+    ? `<span class="muted">Wort antippen zum Auswählen, dann ein Wort der anderen Zeile antippen.</span>`
+    : `<span class="muted">Ziehen zum Verbinden, oder Wort anklicken und dann das Ziel anklicken.</span>`;
+  if (!n) return lead;
+  const side = n[0], id = Number(n.slice(1));
+  let detail;
+  if (side === "o") {
+    const o = d.origById.get(id);
+    detail = `<span class="orig">${esc(o.text)}</span> <span dir="ltr">${esc(o.tr)} · <code>${esc(o.strongs)}</code> · <code>${esc(o.morph)}</code> · ${esc(o.gloss)}</span>`;
+  } else {
+    const w = session.work;
+    const ps = partners(w, "g", id).map((o) => d.origById.get(o));
+    const kids = [...w.added].filter(([, p]) => p === id).map(([g]) => d.germanById.get(g));
+    const rel = w.added.has(id)
+      ? `ergänzt, gehört zu „${esc(d.germanById.get(w.added.get(id)))}“`
+      : ps.length
+        ? "→ " + ps.map((o) => `<span class="orig">${esc(o.text)}</span> <code>${esc(o.strongs)}</code>`).join(", ")
+        : "nicht zugeordnet";
+    detail = `<strong>${esc(d.germanById.get(id))}</strong> ${rel}${kids.length ? ` <span class="muted">(+ ergänzt: ${kids.map(esc).join(", ")})</span>` : ""}`;
+  }
+  return `${detail}<br>${lead}`;
+}
+
+function chipsHtml(d) {
+  const sel = session.selected;
+  if (!sel) return "";
+  const side = sel[0], id = Number(sel.slice(1)), w = session.work, s = store[d.key];
+  const chips = [];
+  if (side === "g" && w.added.has(id)) {
+    const st = s.added.get(id)?.parent === w.added.get(id) ? s.added.get(id).state : "edited";
+    chips.push(`<span class="chip st-${st}">ergänzt → ${esc(d.germanById.get(w.added.get(id)))}
+      <button class="btn btn-ghost" type="button" data-act="unadd" aria-label="Ergänzung lösen">✕</button></span>`);
+  }
+  for (const p of partners(w, side, id)) {
+    const g = side === "g" ? id : p, o = side === "g" ? p : id;
+    const st = s.edges.get(ek(g, o)) || "edited";
+    chips.push(`<span class="chip st-${st}">${esc(d.germanById.get(g))} – <span class="orig">${esc(d.origById.get(o).text)}</span>
+      <button class="btn btn-ghost" type="button" data-act="disconnect" data-g="${g}" data-o="${o}" aria-label="Verbindung ${esc(d.germanById.get(g))} – ${esc(d.origById.get(o).text)} lösen">✕</button></span>`);
+  }
+  const extra = [];
+  if (side === "g" && !w.added.has(id)) extra.push(`<button class="btn btn-secondary btn-sm" type="button" data-act="added-mode" aria-pressed="${session.addedMode}">Als ergänzt markieren…</button>`);
+  if (chips.length) extra.push(`<button class="btn btn-ghost btn-sm" type="button" data-act="clear">Alle lösen</button>`);
+  extra.push(`<button class="btn btn-ghost btn-sm" type="button" data-act="deselect">Auswahl aufheben</button>`);
+  return `<div class="chips">${chips.join("")}${extra.join("")}</div>`;
+}
+
+/* Highlight + connection lines for the active group, without re-rendering tiles. */
+function updateHighlight() {
+  if (!session) return;
+  const d = session.d, el = document.getElementById(d.key + "-v1"), w = session.work, G = groups(d, w);
+  const n = focusNode();
+  const root = n ? G.root(n) : null;
+  const active = new Set();
+  el.querySelectorAll(".tok").forEach((t) => {
+    const on = root && G.root(t.dataset.node) === root && (G.number(t.dataset.node) || t.dataset.node === n);
+    t.classList.toggle("is-active", !!on);
+    t.classList.toggle("is-selected", session.selected === t.dataset.node);
+    if (on) active.add(t.dataset.node);
+  });
+  const info = document.getElementById(d.key + "-info");
+  if (info) info.innerHTML = infoHtml(d);
+  const svg = el.querySelector(".lines"), wrap = el.querySelector(".edit-wrap");
+  if (!svg) return;
+  const base = wrap.getBoundingClientRect();
+  svg.setAttribute("width", base.width); svg.setAttribute("height", base.height);
+  const rect = (node) => el.querySelector(`[data-node="${node}"]`).getBoundingClientRect();
+  const paths = [];
+  for (const k of w.edges) {
+    const [g, o] = splitEk(k);
+    if (!active.has("g" + g)) continue;
+    const a = rect("g" + g), b = rect("o" + o);
+    const x1 = a.left + a.width / 2 - base.left, y1 = a.bottom - base.top, x2 = b.left + b.width / 2 - base.left, y2 = b.top - base.top;
+    const my = (y1 + y2) / 2;
+    paths.push(`<path d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`);
+  }
+  for (const [g, p] of w.added) {
+    if (!active.has("g" + g)) continue;
+    const a = rect("g" + g), b = rect("g" + p);
+    const x1 = a.left + a.width / 2 - base.left, y1 = a.bottom - base.top, x2 = b.left + b.width / 2 - base.left, y2 = b.bottom - base.top;
+    const dip = Math.max(y1, y2) + Math.min(24, Math.abs(x2 - x1) / 3 + 8);
+    paths.push(`<path class="added-link" d="M${x1},${y1} Q${(x1 + x2) / 2},${dip} ${x2},${y2}"/>`);
+  }
+  svg.innerHTML = paths.join("");
+}
+
+function render() {
+  const focused = document.activeElement && document.activeElement.dataset ? (document.activeElement.dataset.node || document.activeElement.dataset.act) : null;
+  for (const d of DATA) renderVerse(d);
+  if (focused && session) {
+    const el = document.getElementById(session.d.key + "-v1");
+    const t = el.querySelector(`[data-node="${focused}"]`) || el.querySelector(`[data-act="${focused}"]`);
+    if (t && !t.disabled) t.focus({ preventScroll: true });
+  }
+}
+
+/* ---------- Actions ---------- */
+let toastTimer;
+function announce(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.textContent = ""), 3200);
+}
+function openEditor(d) {
+  if (session && session.d === d) { cancel(); return; }
+  if (session && isDirty() && !confirm("Ungespeicherte Änderungen in " + session.d.ref + " verwerfen?")) return;
+  session = { d, work: baselineWork(d.key), undo: [], selected: null, hover: null, dragging: null, addedMode: false, details: false, redoOpen: false };
+  render();
+  document.querySelector(`#${d.key}-v1 .tok`)?.focus({ preventScroll: true });
+}
+function cancel() {
+  const key = session.d.key, dirty = isDirty();
+  session = null; render();
+  document.querySelector(`#${key}-v1 [data-act="open"]`)?.focus();
+  announce(dirty ? "Änderungen verworfen." : "Editor geschlossen.");
+}
+function save() {
+  const d = session.d, w = session.work, x = diff(d), n = x.add.length + x.remove.length + x.setAdded.length;
+  store[d.key] = {
+    edges: new Map([...w.edges].map((k) => [k, "saved"])),
+    added: new Map([...w.added].map(([g, p]) => [g, { parent: p, state: "saved" }])),
+  };
+  console.info("PUT api/elberfelder/mappings/verse/" + d.hebRefId, x);
+  session = null; render();
+  document.querySelector(`#${d.key}-v1 [data-act="open"]`)?.focus();
+  announce(n ? `${d.ref}: ${n} Änderung(en) gespeichert, Vers bestätigt.` : `${d.ref}: KI-Vorschläge bestätigt.`);
+}
+function tap(node) {
+  const sel = session.selected;
+  const side = node[0], id = Number(node.slice(1));
+  if (session.addedMode) {
+    if (side === "g" && node !== sel) {
+      const g = Number(sel.slice(1));
+      session.addedMode = false;
+      commit((w) => setAdded(w, g, id), `„${session.d.germanById.get(g)}“ ist ergänzt und gehört zu „${session.d.germanById.get(id)}“.`);
+    } else { session.addedMode = false; render(); }
+    return;
+  }
+  if (!sel || sel === node) { session.selected = sel === node ? null : node; render(); return; }
+  if (sel[0] === side) { session.selected = node; render(); return; }
+  const g = side === "g" ? id : Number(sel.slice(1)), o = side === "o" ? id : Number(sel.slice(1));
+  const dg = session.d.germanById.get(g), dor = session.d.origById.get(o).text;
+  if (session.work.edges.has(ek(g, o))) commit((w) => disconnect(w, g, o), `Verbindung ${dg} – ${dor} gelöst.`);
+  else commit((w) => connect(w, g, o), `${dg} – ${dor} verbunden.`);
+}
+function dropOn(src, target) {
+  const d = session.d;
+  if (target === "clear") { commit((w) => clearWord(w, src[0], Number(src.slice(1))), "Verbindungen gelöst.", ); return; }
+  if (src === target) return;
+  const ss = src[0], ts = target[0], sid = Number(src.slice(1)), tid = Number(target.slice(1));
+  if (ss === "g" && ts === "g") { commit((w) => setAdded(w, sid, tid), `„${d.germanById.get(sid)}“ ist ergänzt und gehört zu „${d.germanById.get(tid)}“.`); return; }
+  if (ss === "o" && ts === "o") { announce("Zwei Urtextwörter lassen sich nicht direkt verbinden."); return; }
+  const g = ss === "g" ? sid : tid, o = ss === "o" ? sid : tid;
+  commit((w) => connect(w, g, o), session.work.edges.has(ek(g, o)) ? "Bereits verbunden." : `${d.germanById.get(g)} – ${d.origById.get(o).text} verbunden.`);
+}
+
+reader.addEventListener("click", (e) => {
+  const tok = e.target.closest(".tok");
+  const act = e.target.closest("[data-act]");
+  const verse = e.target.closest(".verse[data-key]");
+  if (tok && session) { tap(tok.dataset.node); return; }
+  if (!act || !verse) return;
+  const d = DATA.find((x) => x.key === verse.dataset.key);
+  switch (act.dataset.act) {
+    case "open": openEditor(d); break;
+    case "cancel": cancel(); break;
+    case "save": save(); break;
+    case "undo": session.work = session.undo.pop(); announce("Rückgängig gemacht."); render(); break;
+    case "details": session.details = !session.details; render(); break;
+    case "redo-toggle": session.redoOpen = !session.redoOpen; render(); break;
+    case "redo-run": {
+      const f = document.getElementById("redo-from").value, t = document.getElementById("redo-to").value;
+      announce(`Platzhalter: POST api/elberfelder/mappings/aiRedo für ${d.title},${f}–${t}. Ergebnis käme als neue KI-Vorschläge.`);
+      break;
+    }
+    case "disconnect": commit((w) => disconnect(w, Number(act.dataset.g), Number(act.dataset.o)), "Verbindung gelöst."); break;
+    case "unadd": commit((w) => { w.added.delete(Number(session.selected.slice(1))); }, "Ergänzung gelöst."); break;
+    case "clear": commit((w) => clearWord(w, session.selected[0], Number(session.selected.slice(1))), "Alle Verbindungen gelöst."); break;
+    case "added-mode": session.addedMode = !session.addedMode; render(); break;
+    case "deselect": session.selected = null; session.addedMode = false; render(); break;
+  }
+});
+reader.addEventListener("mouseover", (e) => {
+  if (!session) return;
+  const tok = e.target.closest(".tok");
+  const node = tok ? tok.dataset.node : null;
+  if (node !== session.hover) { session.hover = node; updateHighlight(); }
+});
+reader.addEventListener("focusin", (e) => {
+  if (!session) return;
+  const tok = e.target.closest(".tok");
+  if (tok) { session.hover = tok.dataset.node; updateHighlight(); }
+});
+/* Drag & drop (mouse / pen; disabled on coarse pointers) */
+reader.addEventListener("dragstart", (e) => {
+  const tok = e.target.closest(".tok");
+  if (!tok || !session) return;
+  session.dragging = tok.dataset.node;
+  e.dataTransfer.effectAllowed = "link";
+  e.dataTransfer.setData("text/plain", tok.dataset.node);
+  tok.classList.add("is-dragging");
+});
+function validDrop(target) {
+  const src = session && session.dragging;
+  if (!src) return false;
+  if (target === "clear") return true;
+  return target !== src && !(src[0] === "o" && target[0] === "o");
+}
+reader.addEventListener("dragover", (e) => {
+  const t = e.target.closest(".tok, [data-drop]");
+  reader.querySelectorAll(".is-drop").forEach((x) => x !== t && x.classList.remove("is-drop"));
+  if (!t) return;
+  const target = t.dataset.node || t.dataset.drop;
+  if (validDrop(target)) { e.preventDefault(); e.dataTransfer.dropEffect = "link"; t.classList.add("is-drop"); }
+});
+reader.addEventListener("drop", (e) => {
+  const t = e.target.closest(".tok, [data-drop]");
+  if (!t || !session.dragging) return;
+  e.preventDefault();
+  const src = session.dragging; session.dragging = null;
+  dropOn(src, t.dataset.node || t.dataset.drop);
+});
+reader.addEventListener("dragend", () => {
+  if (session) session.dragging = null;
+  reader.querySelectorAll(".is-drop, .is-dragging").forEach((x) => x.classList.remove("is-drop", "is-dragging"));
+});
+document.addEventListener("keydown", (e) => {
+  if (!session) return;
+  if (e.key === "Escape") {
+    if (session.addedMode || session.selected) { session.addedMode = false; session.selected = null; render(); }
+    else cancel();
+  } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && session.undo.length && !e.target.matches("input")) {
+    e.preventDefault(); session.work = session.undo.pop(); announce("Rückgängig gemacht."); render();
+  } else if ((e.key === "Delete" || e.key === "Backspace") && session.selected && e.target.closest(".tok")) {
+    e.preventDefault(); commit((w) => clearWord(w, session.selected[0], Number(session.selected.slice(1))), "Alle Verbindungen gelöst.");
+  }
+});
+window.addEventListener("resize", updateHighlight);
+coarse.addEventListener("change", render);
+
+/* Draft-only theme switch */
+document.querySelectorAll("[data-theme-set]").forEach((b) => b.addEventListener("click", () => {
+  const v = b.dataset.themeSet;
+  if (v === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.dataset.theme = v;
+  document.querySelectorAll("[data-theme-set]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  updateHighlight();
+}));
+
+renderAll();
+</script>
+</body>
+</html>

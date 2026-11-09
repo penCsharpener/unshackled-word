@@ -1,9 +1,12 @@
 import { useEffect, useId, useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { bookName, chapterPath } from "@/lib/bible/books";
 import { formatMorphology } from "@/lib/bible/morphology";
 import type {
+  BibleStructureBook,
   CoMappedWord,
+  CrossReference,
   GetWordDetailResponse,
   MappingProvenance,
   MappingStatus,
@@ -24,6 +27,8 @@ export interface WordDetailPopoverProps {
   word: WordToken;
   status: "pending" | "error" | "success";
   detail?: GetWordDetailResponse;
+  /** book names for the cross reference labels; the numeric book id is shown until they are loaded */
+  books?: BibleStructureBook[];
   /** show the "sample data" badge (mock source) */
   isSample?: boolean;
   onRetry: () => void;
@@ -60,6 +65,53 @@ function Phrase({ detail, coMapped }: { detail: GetWordDetailResponse; coMapped:
         ))}
       </span>
     </p>
+  );
+}
+
+const CROSS_REFERENCES_OPEN_MAX = 5;
+
+/** TSK targets of the word's verse; verse level, so the heading says "this verse". Long lists start collapsed. */
+function CrossReferences({
+  references,
+  truncated,
+  books,
+}: {
+  references: CrossReference[];
+  truncated?: boolean;
+  books?: BibleStructureBook[];
+}) {
+  const { t, i18n } = useTranslation();
+  const label = (r: CrossReference) => {
+    const book = books?.find((b) => b.id === r.bibleBookId);
+    const name = book ? bookName(book, i18n.language) : r.bibleBookId;
+    const verses = r.endVerse ? `${r.verse}\u2013${r.endVerse}` : r.verse;
+    return `${name} ${r.chapter},${verses}`;
+  };
+  return (
+    <details
+      open={references.length <= CROSS_REFERENCES_OPEN_MAX}
+      className="mt-4 text-sm"
+      data-testid="cross-references"
+    >
+      <summary className="cursor-pointer text-fg-muted">
+        {t("bible.wordDetail.crossReferences", { count: references.length })}
+      </summary>
+      <ul className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+        {references.map((r) => (
+          <li key={`${r.bibleBookId}-${r.chapter}-${r.verse}-${r.endVerse ?? 0}`}>
+            <Link
+              to={`${chapterPath({ bookId: r.bibleBookId, chapter: r.chapter })}#v${r.verse}`}
+              className="text-accent underline"
+            >
+              {label(r)}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {truncated && (
+        <p className="mt-1 text-xs text-fg-muted">{t("bible.wordDetail.crossReferencesMore")}</p>
+      )}
+    </details>
   );
 }
 
@@ -249,6 +301,7 @@ export function WordDetailPopover({
   word,
   status,
   detail,
+  books,
   isSample,
   onRetry,
   onClose,
@@ -381,6 +434,13 @@ export function WordDetailPopover({
           ))}
           <p className="mt-4 text-xs text-fg-muted">{t("bible.wordDetail.attribution")}</p>
         </div>
+      )}
+      {success && detail.crossReferences && detail.crossReferences.length > 0 && (
+        <CrossReferences
+          references={detail.crossReferences}
+          truncated={detail.crossReferencesTruncated}
+          books={books}
+        />
       )}
       {success && <MappingFooter mapping={detail.mapping} onEditMapping={onEditMapping} />}
     </div>

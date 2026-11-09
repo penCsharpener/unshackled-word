@@ -1,5 +1,6 @@
 using System.Globalization;
 using UnshackledWord.Application.Repositories;
+using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetWordDetail;
@@ -11,16 +12,19 @@ public sealed class WordDetailService : IWordDetailService
     private const int LastHebrewBookId = 39;
     private const int ManyOriginalsThreshold = 3;
     private const int MaxRenderings = 5;
+    private const int MaxCrossReferences = 20;
 
     private readonly IWordDetailRepository _words;
     private readonly IHebrewMorphemeRepository _morphemes;
     private readonly IStrongsLexiconRepository _lexicon;
+    private readonly ITskRepository _tsk;
 
-    public WordDetailService(IWordDetailRepository words, IHebrewMorphemeRepository morphemes, IStrongsLexiconRepository lexicon)
+    public WordDetailService(IWordDetailRepository words, IHebrewMorphemeRepository morphemes, IStrongsLexiconRepository lexicon, ITskRepository tsk)
     {
         _words = words;
         _morphemes = morphemes;
         _lexicon = lexicon;
+        _tsk = tsk;
     }
 
     public async Task<GetWordDetailResponse?> GetAsync(int wordId, CancellationToken token = default)
@@ -141,7 +145,43 @@ public sealed class WordDetailService : IWordDetailService
             response.Hints = hints;
         }
 
+        if (word.HebRefId > 0)
+        {
+            // One extra row tells whether the list was cut; TSK is verse level, so every word of a verse gets the same list.
+            var tsk = await _tsk.GetOutgoingAsync(word.HebRefId, word.HebRefId, MaxCrossReferences + 1, token);
+            var crossReferences = tsk.Take(MaxCrossReferences).Select(BuildCrossReference).ToList();
+            if (crossReferences.Count > 0)
+            {
+                response.CrossReferences = crossReferences;
+                if (tsk.Count > MaxCrossReferences)
+                {
+                    response.CrossReferencesTruncated = true;
+                }
+            }
+        }
+
         return response;
+    }
+
+    /// <summary>A few TSK ranges run backwards (Heb 9:21-15) and some collapse to one verse; both are normalised, ranges across chapters are cut to their first verse.</summary>
+    private static CrossReferenceResponse BuildCrossReference(TskCrossReference row)
+    {
+        var start = BibleReference.FromRefId(row.TargetStartHebRefId);
+        var reference = new CrossReferenceResponse { BibleBookId = start.BookId, Chapter = start.Chapter, Verse = start.Verse };
+        if (row.TargetEndHebRefId is not { } endRefId || endRefId == row.TargetStartHebRefId)
+        {
+            return reference;
+        }
+
+        var end = BibleReference.FromRefId(endRefId);
+        if (end.BookId != start.BookId || end.Chapter != start.Chapter)
+        {
+            return reference;
+        }
+
+        reference.Verse = Math.Min(start.Verse, end.Verse);
+        reference.EndVerse = Math.Max(start.Verse, end.Verse);
+        return reference;
     }
 
     private static OriginalReadingResponse BuildReading(

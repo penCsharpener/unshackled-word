@@ -4,7 +4,13 @@ import type { ReactElement } from "react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
-import type { GetWordDetailResponse, OriginalReading, WordToken } from "@/lib/bible/types";
+import type {
+  BibleStructureBook,
+  CrossReference,
+  GetWordDetailResponse,
+  OriginalReading,
+  WordToken,
+} from "@/lib/bible/types";
 import { mockWordDetail } from "@/lib/bible/wordDetail.mock";
 import { WordDetailPopover, type WordDetailPopoverProps } from "./WordDetailPopover";
 
@@ -349,5 +355,85 @@ describe("WordDetailPopover", () => {
       "href",
       "/bible/strongs/G444",
     );
+  });
+  describe("cross references", () => {
+    const books: BibleStructureBook[] = [
+      {
+        id: 1,
+        testament: "ot",
+        nameDe: "1. Mose",
+        nameEn: "Genesis",
+        abbreviationDe: "1Mo",
+        abbreviationEn: "Gen",
+        versesPerChapter: [31],
+      },
+      {
+        id: 20,
+        testament: "ot",
+        nameDe: "Sprüche",
+        nameEn: "Proverbs",
+        abbreviationDe: "Spr",
+        abbreviationEn: "Prov",
+        versesPerChapter: [33],
+      },
+    ];
+    const withRefs = (
+      crossReferences?: CrossReference[],
+      crossReferencesTruncated?: boolean,
+    ): GetWordDetailResponse => ({
+      wordId: 1,
+      wordInContext: "Wort",
+      positionInVerse: 1,
+      readings: [reading({})],
+      crossReferences,
+      crossReferencesTruncated,
+    });
+
+    it("lists single verses and ranges as links to the chapter verse", () => {
+      setup({
+        books,
+        detail: withRefs([
+          { bibleBookId: 1, chapter: 1, verse: 1 },
+          { bibleBookId: 20, chapter: 8, verse: 22, endVerse: 24 },
+        ]),
+      });
+      expect(screen.getByText("Querverweise zu diesem Vers (2)")).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "1. Mose 1,1" })).toHaveAttribute(
+        "href",
+        "/bible/1/1#v1",
+      );
+      expect(screen.getByRole("link", { name: "Sprüche 8,22\u201324" })).toHaveAttribute(
+        "href",
+        "/bible/20/8#v22",
+      );
+      expect(screen.getByTestId("cross-references")).toHaveAttribute("open");
+    });
+
+    it("uses English book names and falls back to the book id without structure", async () => {
+      await i18n.changeLanguage("en");
+      setup({ books, detail: withRefs([{ bibleBookId: 1, chapter: 1, verse: 1 }]) });
+      expect(screen.getByRole("link", { name: "Genesis 1,1" })).toBeInTheDocument();
+    });
+
+    it("shows the book id while the structure is not loaded", () => {
+      setup({ detail: withRefs([{ bibleBookId: 20, chapter: 8, verse: 22 }]) });
+      expect(screen.getByRole("link", { name: "20 8,22" })).toBeInTheDocument();
+    });
+
+    it("starts collapsed for long lists and notes truncation", () => {
+      const many = Array.from({ length: 20 }, (_, i) => ({
+        bibleBookId: 1,
+        chapter: 1,
+        verse: i + 1,
+      }));
+      setup({ books, detail: withRefs(many, true) });
+      expect(screen.getByTestId("cross-references")).not.toHaveAttribute("open");
+      expect(screen.getByText(/Weitere Querverweise gibt es/)).toBeInTheDocument();
+    });
+
+    it("renders no section without cross references", () => {
+      setup({ books, detail: withRefs(undefined) });
+      expect(screen.queryByTestId("cross-references")).not.toBeInTheDocument();
+    });
   });
 });

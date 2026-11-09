@@ -51,6 +51,22 @@ public class WordDetailContractTests
     }
 
     [Fact]
+    public void Serialize_CrossReferences_OmitsEndVerseForSingleVerses()
+    {
+        var json = JsonSerializer.Serialize(new GetWordDetailResponse
+        {
+            WordId = 1, WordInContext = "x", PositionInVerse = 2,
+            CrossReferences = [new CrossReferenceResponse { BibleBookId = 1, Chapter = 1, Verse = 1 }, new CrossReferenceResponse { BibleBookId = 20, Chapter = 8, Verse = 22, EndVerse = 24 }],
+            CrossReferencesTruncated = true,
+        }, Options);
+
+        json.ShouldBe(
+            "{\"wordId\":1,\"wordInContext\":\"x\",\"positionInVerse\":2,\"readings\":[]," +
+            "\"crossReferences\":[{\"bibleBookId\":1,\"chapter\":1,\"verse\":1},{\"bibleBookId\":20,\"chapter\":8,\"verse\":22,\"endVerse\":24}]," +
+            "\"crossReferencesTruncated\":true}");
+    }
+
+    [Fact]
     public void Serialize_UnmappedWord_HasEmptyReadingsArrayAndNothingElse()
     {
         var json = JsonSerializer.Serialize(new GetWordDetailResponse { WordId = 1, WordInContext = "x", PositionInVerse = 2 }, Options);
