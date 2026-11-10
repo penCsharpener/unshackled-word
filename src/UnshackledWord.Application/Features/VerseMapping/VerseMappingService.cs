@@ -105,6 +105,7 @@ public sealed class VerseMappingService : IVerseMappingService
                     Position = w.Position,
                     Original = w.Original,
                     Transliteration = NullIfEmpty(w.Transliteration),
+                    Lemma = NullIfEmpty(w.Lemma),
                     Strongs = NullIfEmpty(w.Strongs),
                     Gloss = NullIfEmpty(w.Gloss),
                     MorphologyCode = NullIfEmpty(w.MorphologyCode),

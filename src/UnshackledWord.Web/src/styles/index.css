@@ -2,6 +2,7 @@
 
 /* Design tokens. Components use only these semantic names (bg-surface, text-fg, ...), never raw colors. */
 :root {
+  --app-header-h: calc(var(--spacing) * 16);
   color-scheme: light;
   --uw-bg: oklch(0.99 0.004 85);
   --uw-surface: oklch(1 0 0);
@@ -294,6 +295,20 @@
     position: relative;
   }
 
+  .app-header {
+    height: var(--app-header-h);
+  }
+
+  .sticky-picker {
+    position: sticky;
+    top: var(--app-header-h);
+    z-index: 20;
+    max-height: calc(100dvh - var(--app-header-h));
+    overflow-y: auto;
+    padding-block: calc(var(--spacing) * 2);
+    background: var(--color-bg);
+  }
+
   .map-lines {
     position: absolute;
     inset: 0;
@@ -301,7 +316,7 @@
     height: 100%;
     overflow: visible;
     pointer-events: none;
-    z-index: 0;
+    z-index: 2;
   }
 
   .map-lines path {
@@ -399,6 +414,10 @@
     line-height: var(--leading-tight);
     color: var(--color-fg-muted);
     white-space: nowrap;
+  }
+
+  .map-tok-lemma {
+    font-family: var(--font-original);
   }
 
   .map-tok-details {

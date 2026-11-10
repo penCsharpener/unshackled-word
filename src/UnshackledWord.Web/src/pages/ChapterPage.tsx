@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { BibleChapterPicker } from "@/components/BibleChapterPicker";
 import { Button, buttonClasses } from "@/components/Button";
 import { MappingEditor, type MappingSaveError } from "@/components/MappingEditor";
+import { OriginalVerse } from "@/components/OriginalVerse";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
 import { ApiError } from "@/lib/api";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
@@ -13,6 +14,7 @@ import type { BibleStructureBook, ChapterRef, HighlightKind, WordToken } from "@
 import { useSaveVerseMapping, useVerseMapping } from "@/lib/bible/verseMapping";
 import { useWordDetail, wordDetailQuery, wordDetailSource } from "@/lib/bible/wordDetail";
 import { buildHighlights, phraseWordIds } from "@/lib/bible/words";
+import { useSetHeaderInfo } from "@/lib/headerInfo";
 
 const HIGHLIGHT_CLASSES: Record<HighlightKind, string> = {
   same: "bg-mark-same",
@@ -47,6 +49,11 @@ export function ChapterPage() {
   const [hoveredId, setHoveredId] = useState<number>();
   const [selectedId, setSelectedId] = useState<number>();
   const [editingVerse, setEditingVerse] = useState<number>();
+  const [verseView, setVerseView] = useState<"original" | "align">("original");
+  const [showLemma, setShowLemma] = useState(false);
+  const [showStrongs, setShowStrongs] = useState(false);
+  const [showMorphology, setShowMorphology] = useState(false);
+  const setHeaderInfo = useSetHeaderInfo();
   const editTriggerRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const popoverId = useId();
@@ -57,6 +64,24 @@ export function ChapterPage() {
     () => phraseWordIds(selectedId !== undefined ? detail.data : undefined),
     [selectedId, detail.data],
   );
+  const hoveredVerse = verses.data?.find((v) => v.words.some((w) => w.id === hoveredId));
+  const hoveredWord = hoveredVerse?.words.find((w) => w.id === hoveredId);
+  const hoveredDetail = useWordDetail(hoveredWord, hoveredVerse?.words);
+  const hoveredReading = hoveredWord ? hoveredDetail.data?.readings[0] : undefined;
+  useEffect(() => {
+    if (!hoveredReading) {
+      setHeaderInfo(null);
+      return;
+    }
+    setHeaderInfo({
+      original: hoveredReading.original,
+      lemma: hoveredReading.lemma,
+      strongs: hoveredReading.strongs,
+      morphology: hoveredReading.morphology,
+      language: hoveredReading.language,
+    });
+  }, [hoveredReading, setHeaderInfo]);
+  useEffect(() => () => setHeaderInfo(null), [setHeaderInfo]);
   const activeId = hoveredId ?? selectedId;
   const highlights = useMemo(() => {
     const data = verses.data ?? [];
@@ -72,7 +97,29 @@ export function ChapterPage() {
     saveMapping.reset();
     editTriggerRef.current = trigger;
     setSelectedId(undefined);
+    setVerseView("align");
     setEditingVerse(verse);
+  }
+
+  /** Eye icon: original text first, a second click opens the mapping, a third closes; Ctrl/Cmd+click jumps to the mapping. */
+  function cycleVerse(verse: number, trigger: HTMLElement, direct: boolean) {
+    if (editingVerse !== verse) {
+      if (direct) {
+        openEditor(verse, trigger);
+        return;
+      }
+      saveMapping.reset();
+      editTriggerRef.current = trigger;
+      setSelectedId(undefined);
+      setVerseView("original");
+      setEditingVerse(verse);
+      return;
+    }
+    if (verseView === "original") {
+      setVerseView("align");
+      return;
+    }
+    closeEditor();
   }
 
   function closeEditor() {
@@ -228,7 +275,9 @@ export function ChapterPage() {
   return (
     <>
       <title>{title}</title>
-      <BibleChapterPicker books={books} currentBookId={book.id} currentChapter={ref.chapter} />
+      <div className="sticky-picker">
+        <BibleChapterPicker books={books} currentBookId={book.id} currentChapter={ref.chapter} />
+      </div>
       <header className="mt-6 flex items-center justify-between gap-4">
         {renderLink(prev, "previous", false)}
         <h1 className="text-center font-scripture text-3xl font-semibold md:text-4xl">
@@ -257,7 +306,7 @@ export function ChapterPage() {
           verses.data.map((v) => {
             const editing = editingVerse === v.verse;
             return (
-              <div key={v.verse} id={`v${v.verse}`} className="verse-row mt-2 scroll-mt-4">
+              <div key={v.verse} id={`v${v.verse}`} className="verse-row mt-2 scroll-mt-32">
                 <p>
                   <sup className="mr-1 text-xs text-fg-muted">{v.verse}</sup>
                   {v.words.map((word) => {
@@ -290,12 +339,29 @@ export function ChapterPage() {
                     className="map-trigger"
                     aria-expanded={editing}
                     aria-controls={editing ? `mapping-v${v.verse}` : undefined}
-                    aria-label={t("bible.mapping.triggerLabel", { verse: v.verse })}
-                    onClick={(e) =>
-                      editing ? closeEditor() : openEditor(v.verse, e.currentTarget)
-                    }
+                    aria-label={t(
+                      !editing
+                        ? "bible.mapping.triggerLabel"
+                        : verseView === "original"
+                          ? "bible.mapping.triggerLabelOriginal"
+                          : "bible.mapping.triggerLabelAlign",
+                      { verse: v.verse },
+                    )}
+                    onClick={(e) => cycleVerse(v.verse, e.currentTarget, e.ctrlKey || e.metaKey)}
                   >
-                    <span aria-hidden="true">✎</span> {t("bible.mapping.trigger")}
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="size-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
                   </Button>
                 </p>
                 {editing && (
@@ -319,7 +385,19 @@ export function ChapterPage() {
                         </Button>
                       </div>
                     )}
-                    {mapping.data && (
+                    {mapping.data && verseView === "original" && (
+                      <OriginalVerse
+                        data={mapping.data}
+                        reference={`${reference(ref)},${v.verse}`}
+                        showLemma={showLemma}
+                        onToggleLemma={() => setShowLemma(!showLemma)}
+                        showStrongs={showStrongs}
+                        showMorphology={showMorphology}
+                        onToggleStrongs={() => setShowStrongs(!showStrongs)}
+                        onToggleMorphology={() => setShowMorphology(!showMorphology)}
+                      />
+                    )}
+                    {mapping.data && verseView === "align" && (
                       <MappingEditor
                         data={mapping.data}
                         reference={`${reference(ref)},${v.verse}`}

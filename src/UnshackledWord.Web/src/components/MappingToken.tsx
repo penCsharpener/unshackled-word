@@ -24,7 +24,8 @@ export interface MappingTokenProps {
   /** accessible name: word, its connections and, for originals, the grammar */
   label: string;
   lang?: string;
-  transliteration?: string;
+  /** dictionary form of an original word, shown under it */
+  lemma?: string;
   /** Strong's, morphology and gloss; only drawn when `showDetails` */
   details?: ReactNode;
   showDetails?: boolean;
@@ -54,7 +55,7 @@ export function MappingToken({
   draggable,
   label,
   lang,
-  transliteration,
+  lemma,
   details,
   showDetails,
   onSelect,
@@ -103,9 +104,9 @@ export function MappingToken({
       <span className="map-tok-text" lang={lang}>
         {text}
       </span>
-      {transliteration && (
-        <span className="map-tok-sub" dir="ltr" aria-hidden="true">
-          {transliteration}
+      {lemma && (
+        <span className="map-tok-sub map-tok-lemma" lang={lang} aria-hidden="true">
+          {lemma}
         </span>
       )}
       {showDetails && details && (

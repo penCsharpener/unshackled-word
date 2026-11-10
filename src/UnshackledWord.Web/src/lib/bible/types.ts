@@ -295,6 +295,7 @@ export interface VerseMappingOriginalWord {
   position: number;
   original: string;
   transliteration?: string;
+  lemma?: string; // dictionary form
   strongs?: string;
   gloss?: string; // English
   morphologyCode?: string;

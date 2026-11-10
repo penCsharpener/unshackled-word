@@ -37,6 +37,7 @@ public sealed class VerseMappingOriginalWord
 
     public string Original { get; set; } = string.Empty;
     public string? Transliteration { get; set; }
+    public string? Lemma { get; set; }
     public string? Strongs { get; set; }
     public string? Gloss { get; set; }
     public string? MorphologyCode { get; set; }

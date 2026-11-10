@@ -359,7 +359,9 @@ describe("mapping editor", () => {
   const puts = (fetchMock: ReturnType<typeof stubMapping>) =>
     fetchMock.mock.calls.filter(([, init]) => init?.method === "PUT");
   const trigger = (verse: number) =>
-    screen.getByRole("button", { name: `Zuordnung von Vers ${verse} bearbeiten` });
+    screen.getByRole("button", { name: new RegExp(`Vers ${verse}\\b`) });
+  /** Ctrl+click on the eye jumps straight to the mapping editor. */
+  const openAlign = (verse: number) => fireEvent.click(trigger(verse), { ctrlKey: true });
   const editorNode = (key: string) =>
     document.querySelector(`[data-mapping-editor] [data-node="${key}"]`) as HTMLElement;
 
@@ -367,7 +369,7 @@ describe("mapping editor", () => {
     stubMapping();
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     const editor = await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
     const verse = document.querySelector("#v1") as HTMLElement;
     expect(verse).toContainElement(editor);
@@ -382,18 +384,33 @@ describe("mapping editor", () => {
     stubMapping();
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
-    await userEvent.click(trigger(2));
+    openAlign(2);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,2" });
     expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull();
+  });
+
+  it("eye icon cycles original text, mapping, closed", async () => {
+    stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    fireEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Grundtext Johannes 3,1" });
+    expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull();
+    fireEvent.click(trigger(1));
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    fireEvent.click(trigger(1));
+    await waitFor(() =>
+      expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull(),
+    );
   });
 
   it("closes with Escape, returns focus to the trigger and does not navigate", async () => {
     stubMapping();
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
     await userEvent.keyboard("{ArrowRight}");
     expect(screen.getByTestId("loc").textContent).toBe("/bible/43/3");
@@ -408,7 +425,7 @@ describe("mapping editor", () => {
     stubMapping();
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
     await userEvent.hover(screen.getAllByText("war")[0] as HTMLElement);
     expect(screen.getAllByText("war")[0]?.className).toContain("bg-mark-same");
@@ -418,7 +435,7 @@ describe("mapping editor", () => {
     const fetchMock = stubMapping();
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
     const before = chapterCalls(fetchMock).length;
     await userEvent.click(editorNode("g1"));
@@ -444,7 +461,7 @@ describe("mapping editor", () => {
     const fetchMock = stubMapping();
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
     await userEvent.click(screen.getByRole("button", { name: "Speichern" }));
     expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull();
@@ -455,7 +472,7 @@ describe("mapping editor", () => {
     stubMapping({ putStatus: 400 });
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
     await userEvent.click(editorNode("g1"));
     await userEvent.click(editorNode("o100"));
@@ -468,7 +485,7 @@ describe("mapping editor", () => {
     stubMapping({ editingEnabled: false });
     renderAt("/bible/43/3");
     await screen.findByText("Dieser");
-    await userEvent.click(trigger(1));
+    openAlign(1);
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
     expect(screen.getByText(/noch nicht freigeschaltet/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Speichern/ })).toBeNull();

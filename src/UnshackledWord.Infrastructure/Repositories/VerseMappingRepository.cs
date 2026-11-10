@@ -84,6 +84,7 @@ public static class VerseMappingSql
                                           , sgw."PositionInVerse" "Position"
                                           , sgw."Greek" "Original"
                                           , sgw."Transliteration"
+                                          , sgw."Lemma"
                                           , sgw."DisambiguatedStrongs" "Strongs"
                                           , sgw."Gloss"
                                           , sgw."Morphology" "MorphologyCode"
@@ -104,10 +105,19 @@ public static class VerseMappingSql
                                            , shw."PositionInVerse" "Position"
                                            , shw."Hebrew" "Original"
                                            , shw."Transliteration"
+                                           , lex."OriginalWord" "Lemma"
                                            , shw."RootDisambiguatedStrongsInstance" "Strongs"
                                            , shw."Gloss"
                                            , shw."Grammar" "MorphologyCode"
                                       FROM "unshackled-word"."StepHebrewWords" shw
+                                          LEFT JOIN LATERAL (SELECT ssl."OriginalWord"
+                                                             FROM "unshackled-word"."StepStrongsLexicon" ssl
+                                                             WHERE 1=1
+                                                                 AND ssl."LanguageId" IN (0, 1)
+                                                                 AND ssl."Number" = (regexp_match(shw."RootDisambiguatedStrongsInstance", '^H0*(\d+)'))[1]::int
+                                                             ORDER BY (ssl."Extra" IS NOT DISTINCT FROM (regexp_match(shw."RootDisambiguatedStrongsInstance", '^H\d+([A-Za-z])'))[1]) DESC
+                                                                    , ssl."Extra"
+                                                             LIMIT 1) lex ON TRUE
                                       WHERE 1=1
                                           AND shw."LxxRefId" IN (SELECT DISTINCT ew."HebRefId"
                                                                  FROM "unshackled-word"."Elb1871Words" ew

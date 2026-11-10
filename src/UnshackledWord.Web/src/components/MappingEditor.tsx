@@ -317,7 +317,7 @@ export function MappingEditor({
         : t("bible.mapping.label.germanUnmapped", { word });
     }
     const o = originalById.get(id);
-    const word = [o?.original, o?.transliteration, o?.strongs, o?.morphologyCode, o?.gloss]
+    const word = [o?.original, o?.lemma, o?.strongs, o?.morphologyCode, o?.gloss]
       .filter(Boolean)
       .join(", ");
     const list = partners(work, "o", id).map(germanName);
@@ -372,7 +372,7 @@ export function MappingEditor({
             {o.original}
           </span>{" "}
           <span dir="ltr">
-            {[o.transliteration, o.strongs, o.morphologyCode, o.gloss].filter(Boolean).join(" · ")}
+            {[o.lemma, o.strongs, o.morphologyCode, o.gloss].filter(Boolean).join(" · ")}
           </span>
           {partners(work, "o", id).length === 0 && (
             <span className="text-fg-muted"> · {t("bible.mapping.info.originalUnmapped")}</span>
@@ -588,7 +588,7 @@ export function MappingEditor({
                   side="o"
                   text={word.original}
                   lang={originalLang}
-                  transliteration={word.transliteration}
+                  lemma={word.lemma}
                   badge={number ? String(number) : "–"}
                   status={wordStatus(base, work, "o", word.id)}
                   unmapped={number === undefined}

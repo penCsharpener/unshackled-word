@@ -22,7 +22,7 @@ const data: GetVerseMappingResponse = {
       id: 10,
       position: 1,
       original: "בְּרֵאשִׁית",
-      transliteration: "be.reShit",
+      lemma: "רֵאשִׁית",
       strongs: "H7225G",
       gloss: "beginning",
       morphologyCode: "HR/Ncfsa",
