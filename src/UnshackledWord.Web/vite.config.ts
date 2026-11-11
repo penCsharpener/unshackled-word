@@ -10,6 +10,10 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    host: true, // listen on all interfaces so the LAN can reach the dev server
+    allowedHosts: true,
+    // Same-origin /api so LAN clients don't need to reach the API host directly.
+    proxy: { "/api": process.env.API_PROXY_TARGET ?? "http://host.docker.internal:5142" },
     watch: { usePolling: true },
   },
   test: {

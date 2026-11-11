@@ -92,6 +92,21 @@ export function ChapterPage() {
   const verseRef = ref && editingVerse !== undefined ? { ...ref, verse: editingVerse } : null;
   const mapping = useVerseMapping(verseRef);
   const saveMapping = useSaveVerseMapping();
+  const [hoveredOriginalId, setHoveredOriginalId] = useState<number>();
+  /** German and original word ids linked to the hovered word in the open original-text view. */
+  const linked = useMemo(() => {
+    const german = new Set<number>();
+    const original = new Set<number>();
+    const links = verseView === "original" ? (mapping.data?.links ?? []) : [];
+    for (const l of links) {
+      if (l.stepWordId === undefined) continue;
+      if (hoveredId === l.elbWordId || hoveredOriginalId === l.stepWordId) {
+        german.add(l.elbWordId);
+        original.add(l.stepWordId);
+      }
+    }
+    return { german, original };
+  }, [mapping.data, verseView, hoveredId, hoveredOriginalId]);
 
   function openEditor(verse: number, trigger: HTMLElement | null) {
     saveMapping.reset();
@@ -249,9 +264,11 @@ export function ChapterPage() {
       return (
         <span
           aria-disabled="true"
-          className={`${buttonClasses({ variant: "ghost", size: "sm" })} opacity-50`}
+          className={`${buttonClasses({ variant: "ghost", size: "md" })} opacity-50`}
         >
-          <span aria-hidden="true">{arrow}</span>
+          <span aria-hidden="true" className="text-4xl leading-none">
+            {arrow}
+          </span>
           <span className="sr-only">
             {t(direction === "previous" ? "bible.chapter.noPrevious" : "bible.chapter.noNext")}
           </span>
@@ -263,11 +280,13 @@ export function ChapterPage() {
       <Link
         to={chapterPath(target)}
         aria-label={t(`bible.chapter.${direction}`, { reference: label })}
-        className={buttonClasses({ variant: "ghost", size: "sm" })}
+        className={buttonClasses({ variant: "ghost", size: "md" })}
       >
-        {direction === "previous"
-          ? `${arrow} ${withLabel ? label : ""}`
-          : `${withLabel ? label : ""} ${arrow}`}
+        {direction === "next" && withLabel && label}
+        <span aria-hidden="true" className="text-4xl leading-none">
+          {arrow}
+        </span>
+        {direction === "previous" && withLabel && label}
       </Link>
     );
   }
@@ -275,7 +294,7 @@ export function ChapterPage() {
   return (
     <>
       <title>{title}</title>
-      <div className="sticky-picker">
+      <div className="sticky-picker -mx-4 -mt-8 px-4 md:-mx-8 md:px-8">
         <BibleChapterPicker books={books} currentBookId={book.id} currentChapter={ref.chapter} />
       </div>
       <header className="mt-6 flex items-center justify-between gap-4">
@@ -326,7 +345,7 @@ export function ChapterPage() {
                           onMouseLeave={interactive ? endIntent : undefined}
                           onFocus={interactive ? () => startIntent(word, v.words) : undefined}
                           onBlur={interactive ? endIntent : undefined}
-                          className={`${kind ? HIGHLIGHT_CLASSES[kind] : ""} ${phrase.has(word.id) ? PHRASE_CLASSES : ""} ${selectedId === word.id ? "word-anchor" : ""}`}
+                          className={`${linked.german.has(word.id) ? "bg-mark-linked" : kind ? HIGHLIGHT_CLASSES[kind] : ""} ${phrase.has(word.id) ? PHRASE_CLASSES : ""} ${selectedId === word.id ? "word-anchor" : ""}`}
                         >
                           {word.text}
                         </Button>{" "}
@@ -389,6 +408,8 @@ export function ChapterPage() {
                       <OriginalVerse
                         data={mapping.data}
                         reference={`${reference(ref)},${v.verse}`}
+                        linkedIds={linked.original}
+                        onHoverWord={setHoveredOriginalId}
                         showLemma={showLemma}
                         onToggleLemma={() => setShowLemma(!showLemma)}
                         showStrongs={showStrongs}

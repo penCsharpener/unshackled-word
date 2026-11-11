@@ -58,13 +58,13 @@ export function BibleChapterPicker({
 
   return (
     <nav aria-label={t("bible.picker.label")} onKeyDown={handleKeyDown}>
-      <div className="flex gap-2">
+      <div className="flex">
         {testaments.map((testament) => (
           <Button
             key={testament}
             id={tabId(testament)}
             variant={openTestament === testament ? "primary" : "secondary"}
-            className="flex-1"
+            className="flex-1 rounded-none! border-0!"
             disabled={!books}
             aria-expanded={openTestament === testament}
             aria-controls={PANEL_ID}
@@ -82,7 +82,7 @@ export function BibleChapterPicker({
         <section
           id={PANEL_ID}
           aria-label={t(`bible.testament.${openTestament}`)}
-          className="mt-2 grid grid-cols-1 gap-2 border border-border bg-surface p-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8"
+          className="mt-2 grid grid-cols-1 gap-2 bg-surface p-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8"
         >
           {groups.map((group) => {
             const expanded = activeExpandedKey === group.key;
@@ -90,7 +90,7 @@ export function BibleChapterPicker({
             const book = books?.find((candidate) => candidate.id === group.bookId);
             const name = book ? bookName(book, i18n.language) : bookTitle;
             return (
-              <div key={group.key} className="border border-border">
+              <div key={group.key}>
                 <h3 className="bg-surface-muted text-sm font-semibold">
                   <Button
                     variant="ghost"

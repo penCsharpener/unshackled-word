@@ -15,6 +15,7 @@
   --uw-focus: oklch(0.6 0.15 250);
   --uw-mark-same: oklch(0.88 0.08 240);
   --uw-mark-related: oklch(0.9 0.1 150);
+  --uw-mark-linked: oklch(0.9 0.14 95);
 }
 
 :root[data-theme="dark"] {
@@ -30,6 +31,7 @@
   --uw-focus: oklch(0.72 0.14 250);
   --uw-mark-same: oklch(0.42 0.09 240);
   --uw-mark-related: oklch(0.42 0.09 150);
+  --uw-mark-linked: oklch(0.5 0.1 90);
 }
 
 @theme inline {
@@ -44,6 +46,7 @@
   --color-focus: var(--uw-focus);
   --color-mark-same: var(--uw-mark-same);
   --color-mark-related: var(--uw-mark-related);
+  --color-mark-linked: var(--uw-mark-linked);
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
@@ -305,8 +308,8 @@
     z-index: 20;
     max-height: calc(100dvh - var(--app-header-h));
     overflow-y: auto;
-    padding-block: calc(var(--spacing) * 2);
-    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
   }
 
   .map-lines {

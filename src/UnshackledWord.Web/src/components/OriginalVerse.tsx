@@ -7,6 +7,10 @@ export interface OriginalVerseProps {
   data: GetVerseMappingResponse;
   /** e.g. "Johannes 3,1" */
   reference: string;
+  /** Original words to highlight (linked to the hovered German word). */
+  linkedIds?: ReadonlySet<number>;
+  /** Called with the hovered original word id, or undefined when the pointer leaves. */
+  onHoverWord?: (id: number | undefined) => void;
   showLemma: boolean;
   showStrongs: boolean;
   showMorphology: boolean;
@@ -19,6 +23,8 @@ export interface OriginalVerseProps {
 export function OriginalVerse({
   data,
   reference,
+  linkedIds,
+  onHoverWord,
   showLemma,
   showStrongs,
   showMorphology,
@@ -47,16 +53,20 @@ export function OriginalVerse({
             // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only hover hint; the same data is in the word popover
             <span
               key={word.id}
-              className="inline-flex flex-col items-center"
-              onMouseEnter={() =>
+              className={`inline-flex flex-col items-center rounded-sm ${linkedIds?.has(word.id) ? "bg-mark-linked" : ""}`}
+              onMouseEnter={() => {
+                onHoverWord?.(word.id);
                 setInfo({
                   original: word.original,
                   strongs: word.strongs,
                   morphologyCode: word.morphologyCode,
                   language: data.language,
-                })
-              }
-              onMouseLeave={() => setInfo(null)}
+                });
+              }}
+              onMouseLeave={() => {
+                onHoverWord?.(undefined);
+                setInfo(null);
+              }}
             >
               <span>{word.original}</span>
               {showLemma && word.lemma && (

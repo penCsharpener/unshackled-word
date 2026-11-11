@@ -11,7 +11,7 @@ export function AppShell() {
   return (
     <HeaderInfoProvider>
       <div className="flex min-h-dvh flex-col">
-        <header className="app-header sticky top-0 z-30 border-b border-border bg-surface">
+        <header className="app-header sticky top-0 z-30 bg-surface">
           <div className="mx-auto flex h-full max-w-page-wide items-center justify-between gap-4 px-4 md:px-8">
             <nav className="flex items-center gap-6">
               <NavLink to="/" className="font-scripture text-lg font-semibold text-accent">
