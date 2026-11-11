@@ -1,4 +1,4 @@
-CREATE TABLE "unshackled-word"."StepGreekWords"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepGreekWords"
 (
     "Id"                   SERIAL PRIMARY KEY,
     "LxxRefId"             INTEGER                          NOT NULL,
@@ -30,14 +30,14 @@ CREATE TABLE "unshackled-word"."StepGreekWords"
 );
 
 -- Index for rapid scripture lookups (Book, Chapter, Verse)
-CREATE INDEX "IX_StepGreekWords_Book_Chapter_Verse"
+CREATE INDEX IF NOT EXISTS "IX_StepGreekWords_Book_Chapter_Verse"
     ON "unshackled-word"."StepGreekWords" ("LxxRefId");
 
 -- Index for word-based searches (Greek text)
-CREATE INDEX "IX_StepGreekWords_GreekNoDiacritics"
+CREATE INDEX IF NOT EXISTS "IX_StepGreekWords_GreekNoDiacritics"
     ON "unshackled-word"."StepGreekWords" ("GreekNoDiacritics");
 
-CREATE TABLE "unshackled-word"."StepHebrewWords"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepHebrewWords"
 (
     "Id"                               SERIAL PRIMARY KEY,
     "LxxRefId"                         INTEGER                          NOT NULL,
@@ -61,14 +61,14 @@ CREATE TABLE "unshackled-word"."StepHebrewWords"
 );
 
 -- Index for rapid scripture lookups (Book, Chapter, Verse)
-CREATE INDEX "IX_StepHebrewWords_Book_Chapter_Verse"
+CREATE INDEX IF NOT EXISTS "IX_StepHebrewWords_Book_Chapter_Verse"
     ON "unshackled-word"."StepHebrewWords" ("LxxRefId");
 
 -- Index for word-based searches (Hebrew text)
-CREATE INDEX "IX_StepHebrewWords_HebrewNoDiacritics"
+CREATE INDEX IF NOT EXISTS "IX_StepHebrewWords_HebrewNoDiacritics"
     ON "unshackled-word"."StepHebrewWords" ("HebrewNoDiacritics");
 
-CREATE TABLE "unshackled-word"."StepHebrewWordsNormalized"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepHebrewWordsNormalized"
 (
     "Id"               SERIAL PRIMARY KEY,
     "IsRoot"           BOOLEAN     NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE "unshackled-word"."StepHebrewWordsNormalized"
     "StrongsNumber"    VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords"
 (
     "StepHebrewWordsId"              INTEGER     NOT NULL,
     "StepHebrewWordsNormalizedId"    INTEGER     NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords"
         FOREIGN KEY ("StepHebrewWordsNormalizedId") REFERENCES "unshackled-word"."StepHebrewWordsNormalized" ("Id")
 );
 
-CREATE TABLE "unshackled-word"."StepStrongsLexicon"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepStrongsLexicon"
 (
     "Id"                       SERIAL PRIMARY KEY,
     "LanguageId"               INTEGER                         NOT NULL,
@@ -108,14 +108,14 @@ CREATE TABLE "unshackled-word"."StepStrongsLexicon"
 );
 
 -- Index for searching by Morphology codes (useful for grammatical analysis queries)
-CREATE INDEX "IX_StepStrongsLexicon_Morphology" ON "unshackled-word"."StepStrongsLexicon" ("Morphology");
+CREATE INDEX IF NOT EXISTS "IX_StepStrongsLexicon_Morphology" ON "unshackled-word"."StepStrongsLexicon" ("Morphology");
 
 -- Index for Gloss (useful for prefix searches or exact matches of English meanings)
 -- Note: If you plan to do full-text search on long Glosses, consider a GIN index instead.
-CREATE INDEX "IX_StepStrongsLexicon_Gloss" ON "unshackled-word"."StepStrongsLexicon" ("Gloss");
+CREATE INDEX IF NOT EXISTS "IX_StepStrongsLexicon_Gloss" ON "unshackled-word"."StepStrongsLexicon" ("Gloss");
 
 
-CREATE TABLE "unshackled-word"."StepUnifiedStrongs"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepUnifiedStrongs"
 (
     "Id"                   SERIAL PRIMARY KEY,
     "StepStrongsLexiconId" INT NOT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE "unshackled-word"."StepUnifiedStrongs"
     "Extra"                VARCHAR(5)
 );
 
-CREATE TABLE "unshackled-word"."StepStrongsToText"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepStrongsToText"
 (
     "Id"               SERIAL PRIMARY KEY,
     "LanguageId"       INT     NOT NULL,
@@ -138,7 +138,7 @@ CREATE TABLE "unshackled-word"."StepStrongsToText"
 );
 
 
-CREATE TABLE "unshackled-word"."StepHebrewMorphology"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepHebrewMorphology"
 (
     "Id"           INTEGER PRIMARY KEY,
     "Code"         VARCHAR(50) COLLATE "und-x-icu"  NOT NULL,
@@ -155,11 +155,11 @@ CREATE TABLE "unshackled-word"."StepHebrewMorphology"
     "Voice"        VARCHAR(50) COLLATE "und-x-icu"
 );
 
-CREATE INDEX "IX_StepHebrewMorphology_Code"
+CREATE INDEX IF NOT EXISTS "IX_StepHebrewMorphology_Code"
     ON "unshackled-word"."StepHebrewMorphology" ("Code");
 
 
-CREATE TABLE "unshackled-word"."StepGreekMorphology"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepGreekMorphology"
 (
     "Id"           INTEGER PRIMARY KEY,
     "Code"         VARCHAR(50)  NOT NULL COLLATE "und-x-icu",
@@ -176,12 +176,12 @@ CREATE TABLE "unshackled-word"."StepGreekMorphology"
     "NameType"     VARCHAR(100) COLLATE "und-x-icu"
 );
 
-CREATE INDEX "IX_StepGreekMorphology_Code"
+CREATE INDEX IF NOT EXISTS "IX_StepGreekMorphology_Code"
     ON "unshackled-word"."StepGreekMorphology" ("Code");
 
 
 
-CREATE TABLE "unshackled-word"."StepOtherLexicon"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepOtherLexicon"
 (
     "Id"               SERIAL PRIMARY KEY,
     "Name"             varchar(255)  NOT NULL,
@@ -197,9 +197,9 @@ CREATE TABLE "unshackled-word"."StepOtherLexicon"
     "Article"          text          NOT NULL
 );
 
-CREATE INDEX "IdxStepOtherLexiconRefId" ON "unshackled-word"."StepOtherLexicon" ("LxxRefId");
+CREATE INDEX IF NOT EXISTS "IdxStepOtherLexiconRefId" ON "unshackled-word"."StepOtherLexicon" ("LxxRefId");
 
-CREATE TABLE "unshackled-word"."StepPersonLexicon"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepPersonLexicon"
 (
     "Id"               SERIAL PRIMARY KEY,
     "Name"             varchar(255) NOT NULL,
@@ -215,9 +215,9 @@ CREATE TABLE "unshackled-word"."StepPersonLexicon"
     "Article"          text
 );
 
-CREATE INDEX "IdxStepPersonLexiconLxxRefId" ON "unshackled-word"."StepPersonLexicon" ("LxxRefId");
+CREATE INDEX IF NOT EXISTS "IdxStepPersonLexiconLxxRefId" ON "unshackled-word"."StepPersonLexicon" ("LxxRefId");
 
-CREATE TABLE "unshackled-word"."StepPersonLexiconRelations"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepPersonLexiconRelations"
 (
     "Id"              SERIAL PRIMARY KEY,
     "PersonLexiconId" integer      NOT NULL,
@@ -227,9 +227,9 @@ CREATE TABLE "unshackled-word"."StepPersonLexiconRelations"
     "RelationType"    varchar(100) NOT NULL
 );
 
-CREATE INDEX "IdxStepPersonLexiconRelationsLxxRefId" ON "unshackled-word"."StepPersonLexiconRelations" ("LxxRefId");
+CREATE INDEX IF NOT EXISTS "IdxStepPersonLexiconRelationsLxxRefId" ON "unshackled-word"."StepPersonLexiconRelations" ("LxxRefId");
 
-CREATE TABLE "unshackled-word"."StepPlaceLexicon"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StepPlaceLexicon"
 (
     "Id"               integer GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
     "Name"             varchar(255)  NOT NULL,
@@ -247,10 +247,10 @@ CREATE TABLE "unshackled-word"."StepPlaceLexicon"
     "Article"          text          NOT NULL
 );
 
-CREATE INDEX "IdxStepPlaceLexiconLxxRefId" ON "unshackled-word"."StepPlaceLexicon" ("LxxRefId");
+CREATE INDEX IF NOT EXISTS "IdxStepPlaceLexiconLxxRefId" ON "unshackled-word"."StepPlaceLexicon" ("LxxRefId");
 
 
-CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."Elb1871GreekMapping"
 (
     "Id"                 SERIAL PRIMARY KEY,
     "ElbWordId"          INT                      NOT NULL,
@@ -268,13 +268,13 @@ CREATE TABLE "unshackled-word"."Elb1871GreekMapping"
     CONSTRAINT "UqElbStepGreekMapping" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepWordId")
 );
 
-CREATE INDEX "IdxElbGreekMappingWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
-CREATE INDEX "IdxElbGreekMappingHebRefId" ON "unshackled-word"."Elb1871GreekMapping" ("HebRefId");
-CREATE INDEX "IdxElbGreekMappingStepWordId" ON "unshackled-word"."Elb1871GreekMapping" ("StepWordId");
-CREATE INDEX "IdxElbGreekMappingStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
+CREATE INDEX IF NOT EXISTS "IdxElbGreekMappingWordId" ON "unshackled-word"."Elb1871GreekMapping" ("ElbWordId");
+CREATE INDEX IF NOT EXISTS "IdxElbGreekMappingHebRefId" ON "unshackled-word"."Elb1871GreekMapping" ("HebRefId");
+CREATE INDEX IF NOT EXISTS "IdxElbGreekMappingStepWordId" ON "unshackled-word"."Elb1871GreekMapping" ("StepWordId");
+CREATE INDEX IF NOT EXISTS "IdxElbGreekMappingStrongs" ON "unshackled-word"."Elb1871GreekMapping" ("StrongsNumber");
 
 
-CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."Elb1871HebrewMapping"
 (
     "Id"                 SERIAL PRIMARY KEY,
     "ElbWordId"          INT                      NOT NULL,
@@ -289,12 +289,12 @@ CREATE TABLE "unshackled-word"."Elb1871HebrewMapping"
     CONSTRAINT "UqElbStepHebrew" UNIQUE NULLS NOT DISTINCT ("ElbWordId", "StepWordId")
 );
 
-CREATE INDEX "IdxElbHebrewMappingWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
-CREATE INDEX "IdxElbHebrewMappingHebRefId" ON "unshackled-word"."Elb1871HebrewMapping" ("HebRefId");
-CREATE INDEX "IdxElbHebrewMappingHebStepWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("StepWordId");
+CREATE INDEX IF NOT EXISTS "IdxElbHebrewMappingWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("ElbWordId");
+CREATE INDEX IF NOT EXISTS "IdxElbHebrewMappingHebRefId" ON "unshackled-word"."Elb1871HebrewMapping" ("HebRefId");
+CREATE INDEX IF NOT EXISTS "IdxElbHebrewMappingHebStepWordId" ON "unshackled-word"."Elb1871HebrewMapping" ("StepWordId");
 
 
-CREATE TABLE "unshackled-word"."StrongsNumbers"
+CREATE TABLE IF NOT EXISTS "unshackled-word"."StrongsNumbers"
 (
     "Id"               SERIAL PRIMARY KEY,
     "LanguageId"       INTEGER NOT NULL, -- Enum: Hebrew=0, Aramaic=1, Greek=2
@@ -307,4 +307,4 @@ CREATE TABLE "unshackled-word"."StrongsNumbers"
     "Order"            INTEGER NOT NULL
 );
 
-CREATE INDEX "IX_StrongsNumbers_LanguageId_Number" ON "unshackled-word"."StrongsNumbers" ("LanguageId", "Number");
+CREATE INDEX IF NOT EXISTS "IX_StrongsNumbers_LanguageId_Number" ON "unshackled-word"."StrongsNumbers" ("LanguageId", "Number");

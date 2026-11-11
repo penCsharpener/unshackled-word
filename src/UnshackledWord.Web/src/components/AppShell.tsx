@@ -4,6 +4,7 @@ import { HeaderInfoProvider } from "@/lib/headerInfo";
 import { HeaderWordInfo } from "./HeaderWordInfo";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { ThemeToggle } from "./ThemeToggle";
+import { UserMenu } from "./UserMenu";
 
 export function AppShell() {
   const { t } = useTranslation();
@@ -44,6 +45,7 @@ export function AppShell() {
             <div className="flex h-14 items-center gap-4 md:h-full">
               <LanguageSwitch />
               <ThemeToggle />
+              <UserMenu />
             </div>
           </div>
         </header>

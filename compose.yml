@@ -47,6 +47,7 @@ services:
       - unshackledword.tooling.database
       - unshackledword.tooling.seed-db
       - unshackledword.tooling.db-migration
+      - mailpit
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
@@ -56,6 +57,24 @@ services:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=${MAPPING_EDITING_ENABLED:-false}
+      # Accounts: links in emails and the passkey origin derive from the frontend URL.
+      - UNSHACKLEDWORD_APP__FRONTENDBASEURL=${FRONTEND_BASE_URL:-http://localhost:5173}
+      - UNSHACKLEDWORD_APP__REQUIRESECURECOOKIES=${REQUIRE_SECURE_COOKIES:-true}
+      - UNSHACKLEDWORD_REGISTRATION__MODE=${REGISTRATION_MODE:-Open}
+      # Email goes to the mailpit sandbox by default; override Security/Username/Password for a real provider.
+      - UNSHACKLEDWORD_EMAIL__SMTPHOST=${EMAIL_SMTP_HOST:-mailpit}
+      - UNSHACKLEDWORD_EMAIL__SMTPPORT=${EMAIL_SMTP_PORT:-1025}
+      - UNSHACKLEDWORD_EMAIL__SECURITY=${EMAIL_SECURITY:-None}
+      - UNSHACKLEDWORD_EMAIL__USERNAME=${EMAIL_USERNAME:-}
+      - UNSHACKLEDWORD_EMAIL__PASSWORD=${EMAIL_PASSWORD:-}
+      - UNSHACKLEDWORD_EMAIL__FROMADDRESS=${EMAIL_FROM_ADDRESS:-noreply@unshackled-word.local}
+
+  # Local SMTP sandbox with a catch-all web inbox (http://localhost:8025); nothing ever leaves the machine.
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:1025:1025" # SMTP
+      - "127.0.0.1:8025:8025" # web UI
 
   unshackledword.tooling.mcpserver:
     #image: unshackledword.tooling.mcpserver

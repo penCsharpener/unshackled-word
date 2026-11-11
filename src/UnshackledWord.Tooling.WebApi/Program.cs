@@ -2,6 +2,7 @@ using System.Text.Json;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
+using UnshackledWord.Tooling.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Extensions;
 
 namespace UnshackledWord.Tooling.WebApi;
@@ -15,14 +16,13 @@ public partial class Program
         builder.Services.AddSerilog((_, logger) => logger.ReadFrom.Configuration(builder.Configuration));
         builder.Services.AddFastEndpoints()
             .SwaggerDocument();
-        builder.Services.AddAuthentication();
-        builder.Services.AddAuthorization();
+        builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
+        AddLocalSecrets(builder.Configuration);
+        builder.Services.AddAuth(builder.Configuration);
         builder.Services.AddWebApiServices(builder.Configuration);
 
         builder.Services.AddOpenApi();
         builder.Services.AddCors();
-        builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
-        AddLocalSecrets(builder.Configuration);
 
         var app = builder.Build();
 
@@ -30,13 +30,17 @@ public partial class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            // The session cookie needs credentialed CORS, which forbids a wildcard origin: reflect the caller instead.
+            // (The Vite dev server normally proxies /api same-origin, so this only matters for direct calls.)
+            app.UseCors(x => x.SetIsOriginAllowed(_ => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
         }
 
         if (app.Environment.IsProduction())
         {
             app.UseHttpsRedirection();
-            app.UseCors();
+            app.UseCors(x => x
+                .WithOrigins(app.Configuration.GetSection("App").Get<AppOptions>()?.FrontendBaseUrl.TrimEnd('/') ?? string.Empty)
+                .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
         }
 
         app.UseAuthentication();
@@ -59,7 +63,11 @@ public partial class Program
             };
             x.Endpoints.Configurator = ep =>
             {
-                ep.AllowAnonymous();
+                // Everything is public unless it opts in with [RequiresLogin] (account endpoints under /api/auth).
+                if (!ep.EndpointType.IsDefined(typeof(RequiresLoginAttribute), false))
+                {
+                    ep.AllowAnonymous();
+                }
             };
         }).UseSwaggerGen();
 
