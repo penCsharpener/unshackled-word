@@ -7,22 +7,30 @@ namespace UnshackledWord.Application.Tests.Features;
 
 public class StrongsOccurrenceServiceTests
 {
-    private readonly IWordDetailRepository _words = Substitute.For<IWordDetailRepository>();
+    private static readonly StrongsOccurrenceFilter None = StrongsOccurrenceFilter.None;
+
+    private readonly IStrongsLexiconRepository _lexicon = Substitute.For<IStrongsLexiconRepository>();
+    private readonly IStrongsStatsRepository _stats = Substitute.For<IStrongsStatsRepository>();
     private readonly StrongsOccurrenceService _sut;
 
     public StrongsOccurrenceServiceTests()
     {
-        _sut = new StrongsOccurrenceService(_words);
+        _sut = new StrongsOccurrenceService(_lexicon, _stats);
+    }
+
+    private static bool Same(IReadOnlyList<string> actual, params string[] expected)
+    {
+        return actual.SequenceEqual(expected);
     }
 
     [Fact]
     public async Task GetAsync_Greek_NormalizesAndPages()
     {
-        _words.GetOccurrenceCountAsync("G0026", false, Arg.Any<CancellationToken>()).Returns(116);
-        _words.GetOccurrencesAsync("G0026", false, 50, 50, Arg.Any<CancellationToken>())
+        _stats.CountOccurrencesAsync(Arg.Is<IReadOnlyList<string>>(k => Same(k, "G0026")), false, None, Arg.Any<CancellationToken>()).Returns(116);
+        _stats.GetOccurrencesAsync(Arg.Is<IReadOnlyList<string>>(k => Same(k, "G0026")), false, None, 50, 50, Arg.Any<CancellationToken>())
             .Returns([new StrongsOccurrenceRow { BibleBookId = 40, Chapter = 24, Verse = 12, Original = "ἀγάπη", MatchedPositions = [2], VersePositions = [1, 2], VerseWords = ["Die", "Liebe"] }]);
 
-        var result = await _sut.GetAsync("g26", 2, 50);
+        var result = await _sut.GetAsync("g26", 2, 50, None);
 
         result!.Strongs.ShouldBe("G0026");
         result.Language.ShouldBe("greek");
@@ -35,25 +43,52 @@ public class StrongsOccurrenceServiceTests
     [Fact]
     public async Task GetAsync_Hebrew_StripsInstanceSuffixAndKeepsRootLetter()
     {
-        _words.GetOccurrenceCountAsync("H1254A", true, Arg.Any<CancellationToken>()).Returns(1);
-        _words.GetOccurrencesAsync("H1254A", true, 0, 50, Arg.Any<CancellationToken>()).Returns([new StrongsOccurrenceRow { BibleBookId = 1, Chapter = 1, Verse = 1 }]);
+        _stats.CountOccurrencesAsync(Arg.Is<IReadOnlyList<string>>(k => Same(k, "H1254A")), true, None, Arg.Any<CancellationToken>()).Returns(1);
+        _stats.GetOccurrencesAsync(Arg.Is<IReadOnlyList<string>>(k => Same(k, "H1254A")), true, None, 0, 50, Arg.Any<CancellationToken>())
+            .Returns([new StrongsOccurrenceRow { BibleBookId = 1, Chapter = 1, Verse = 1 }]);
 
-        var result = await _sut.GetAsync("H1254A_B", 1, 50);
+        var result = await _sut.GetAsync("H1254A_B", 1, 50, None);
 
         result!.Language.ShouldBe("hebrew");
         result.Items.Single().Keyword.ShouldBeEmpty();
     }
 
     [Fact]
+    public async Task GetAsync_NumberWithoutLetter_UsesEveryLexiconVariantAsKey()
+    {
+        _lexicon.GetEntriesAsync(Arg.Any<StrongsNumber>(), Arg.Any<CancellationToken>())
+            .Returns([new LexiconEntry { Number = 3004, Extra = "G" }, new LexiconEntry { Number = 3004, Extra = "H" }]);
+        _stats.CountOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), false, Arg.Any<StrongsOccurrenceFilter>(), Arg.Any<CancellationToken>()).Returns(0);
+
+        await _sut.GetAsync("G3004", 1, 50, None);
+
+        await _stats.Received(1).CountOccurrencesAsync(Arg.Is<IReadOnlyList<string>>(k => Same(k, "G3004", "G3004G", "G3004H")), false, None, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task GetAsync_BookAndRendering_ReachTheRepository()
+    {
+        var filter = new StrongsOccurrenceFilter(44, "versammlung");
+        _stats.CountOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), false, filter, Arg.Any<CancellationToken>()).Returns(20);
+        _stats.GetOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), false, filter, 0, 50, Arg.Any<CancellationToken>())
+            .Returns([new StrongsOccurrenceRow { BibleBookId = 44, Chapter = 5, Verse = 11 }]);
+
+        var result = await _sut.GetAsync("G1577", 1, 50, filter);
+
+        result!.TotalItems.ShouldBe(20);
+        result.Items.Single().BibleBookId.ShouldBe(44);
+    }
+
+    [Fact]
     public async Task GetAsync_PageBeyondTotal_ReturnsEmptyItemsWithoutQueryingRows()
     {
-        _words.GetOccurrenceCountAsync("G0026", false, Arg.Any<CancellationToken>()).Returns(10);
+        _stats.CountOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), false, None, Arg.Any<CancellationToken>()).Returns(10);
 
-        var result = await _sut.GetAsync("G26", 5, 50);
+        var result = await _sut.GetAsync("G26", 5, 50, None);
 
         result!.Items.ShouldBeEmpty();
         result.TotalItems.ShouldBe(10);
-        await _words.DidNotReceive().GetOccurrencesAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+        await _stats.DidNotReceive().GetOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<bool>(), Arg.Any<StrongsOccurrenceFilter>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
     }
 
     [Theory]
@@ -63,7 +98,7 @@ public class StrongsOccurrenceServiceTests
     [InlineData("X12")]
     public async Task GetAsync_InvalidStrongs_ReturnsNull(string strongs)
     {
-        (await _sut.GetAsync(strongs, 1, 50)).ShouldBeNull();
+        (await _sut.GetAsync(strongs, 1, 50, None)).ShouldBeNull();
     }
 
     [Theory]
@@ -71,7 +106,7 @@ public class StrongsOccurrenceServiceTests
     [InlineData(1, 0)]
     public async Task GetAsync_InvalidPaging_ReturnsNull(int page, int pageSize)
     {
-        (await _sut.GetAsync("G26", page, pageSize)).ShouldBeNull();
+        (await _sut.GetAsync("G26", page, pageSize, None)).ShouldBeNull();
     }
 
     private static StrongsOccurrenceResponse Map(int[]? matched, params string[] words)

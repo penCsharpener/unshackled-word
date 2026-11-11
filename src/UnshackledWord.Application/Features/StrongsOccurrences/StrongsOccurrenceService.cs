@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetStrongsOccurrences;
@@ -6,24 +7,30 @@ namespace UnshackledWord.Application.Features.StrongsOccurrences;
 
 public sealed class StrongsOccurrenceService : IStrongsOccurrenceService
 {
-    private readonly IWordDetailRepository _words;
+    private readonly IStrongsLexiconRepository _lexicon;
+    private readonly IStrongsStatsRepository _stats;
 
-    public StrongsOccurrenceService(IWordDetailRepository words)
+    public StrongsOccurrenceService(IStrongsLexiconRepository lexicon, IStrongsStatsRepository stats)
     {
-        _words = words;
+        _lexicon = lexicon;
+        _stats = stats;
     }
 
-    public async Task<GetStrongsOccurrencesResponse?> GetAsync(string strongs, int page, int pageSize, CancellationToken token = default)
+    public async Task<GetStrongsOccurrencesResponse?> GetAsync(string strongs, int page, int pageSize, StrongsOccurrenceFilter filter, CancellationToken token = default)
     {
         if (!StrongsNumber.TryNormalize(strongs, out var normalized, out var hebrew) || page < 1 || pageSize < 1)
         {
             return null;
         }
 
-        var total = await _words.GetOccurrenceCountAsync(normalized, hebrew, token);
+        var parsed = StrongsNumber.Parse(normalized).Value!.Value;
+        var entries = await _lexicon.GetEntriesAsync(parsed, token);
+        var keys = StrongsMatchKeys.Resolve(normalized, parsed, entries);
+
+        var total = await _stats.CountOccurrencesAsync(keys, hebrew, filter, token);
         var rows = total == 0 || (long)(page - 1) * pageSize >= total
             ? []
-            : await _words.GetOccurrencesAsync(normalized, hebrew, (page - 1) * pageSize, pageSize, token);
+            : await _stats.GetOccurrencesAsync(keys, hebrew, filter, (page - 1) * pageSize, pageSize, token);
 
         return new GetStrongsOccurrencesResponse
         {

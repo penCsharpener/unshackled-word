@@ -110,30 +110,6 @@ public class WordDetailRepositoryTests
     }
 }
 
-public class WordDetailRepositoryOccurrencesTests
-{
-    [Theory]
-    [InlineData(false, "\"StepGreekWords\"", "\"StepHebrewWords\"", "\"Elb1871GreekMapping\"")]
-    [InlineData(true, "\"StepHebrewWords\"", "\"StepGreekWords\"", "\"Elb1871HebrewMapping\"")]
-    public async Task GetOccurrencesAsync_PicksTheTablesOfTheTestamentAndPages(bool hebrew, string expected, string notExpected, string mapping)
-    {
-        var reader = new FakeDbReader().Returns(new StrongsOccurrenceRow { BibleBookId = 40, Chapter = 24, Verse = 12 });
-
-        var rows = await new WordDetailRepository(reader).GetOccurrencesAsync("G0026", hebrew, 100, 50);
-
-        rows.Count.ShouldBe(1);
-        reader.LastSql.ShouldContain(expected);
-        reader.LastSql.ShouldNotContain(notExpected);
-        reader.LastSql.ShouldContain(mapping);
-        reader.LastSql.ShouldContain("\"Elb1871Verses\"");
-        reader.LastSql.ShouldContain("\"Elb1871Words\"");
-        reader.LastSql.ShouldContain("LIMIT @Take OFFSET @Skip");
-        reader.LastParam("Strongs").ShouldBe("G0026");
-        reader.LastParam("Skip").ShouldBe(100);
-        reader.LastParam("Take").ShouldBe(50);
-    }
-}
-
 public class WordDetailRepositoryExtrasTests
 {
     [Fact]

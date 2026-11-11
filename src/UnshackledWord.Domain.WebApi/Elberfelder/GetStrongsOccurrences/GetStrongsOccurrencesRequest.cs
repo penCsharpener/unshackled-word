@@ -11,4 +11,10 @@ public sealed class GetStrongsOccurrencesRequest
     public int Page { get; set; } = 1;
 
     public int PageSize { get; set; } = DefaultPageSize;
+
+    /// <summary>Optional Elberfelder book (1-66).</summary>
+    public int? Book { get; set; }
+
+    /// <summary>Optional German word key (a <c>key</c> of the Strong's summary renderings), compared lower-cased.</summary>
+    public string? Rendering { get; set; }
 }

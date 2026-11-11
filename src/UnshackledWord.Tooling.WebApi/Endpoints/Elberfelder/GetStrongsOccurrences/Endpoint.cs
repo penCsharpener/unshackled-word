@@ -1,6 +1,6 @@
 using FastEndpoints;
-using FluentValidation;
 using UnshackledWord.Application.Features.StrongsOccurrences;
+using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetStrongsOccurrences;
 
@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<GetStrongsOccurrencesRequest, GetStrongsOccurre
 
     public override async Task HandleAsync(GetStrongsOccurrencesRequest req, CancellationToken ct)
     {
-        var result = await _service.GetAsync(req.Strongs, req.Page, req.PageSize, ct);
+        var result = await _service.GetAsync(req.Strongs, req.Page, req.PageSize, new StrongsOccurrenceFilter(req.Book, req.Rendering), ct);
         if (result is null)
         {
             await Send.ErrorsAsync(400, ct);
@@ -41,10 +41,6 @@ public class GetStrongsOccurrencesValidator : Validator<GetStrongsOccurrencesReq
 {
     public GetStrongsOccurrencesValidator()
     {
-        RuleFor(x => x.Strongs)
-            .Must(s => StrongsNumber.TryNormalize(s, out _, out _))
-            .WithMessage("Strong's number must look like 'G26' or 'H1254A'.");
-        RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
-        RuleFor(x => x.PageSize).InclusiveBetween(1, GetStrongsOccurrencesRequest.MaxPageSize);
+        Include(new GetStrongsOccurrencesRequestValidator());
     }
 }

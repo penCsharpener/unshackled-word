@@ -285,6 +285,71 @@ export interface GetStrongsOccurrencesResponse {
   items: StrongsOccurrence[];
 }
 
+/** Optional filters of the Strong's concordance; `rendering` is a `StrongsRendering.key`. */
+export interface StrongsOccurrenceFilters {
+  /** Elberfelder book id 1-66. */
+  book?: number;
+  rendering?: string;
+}
+
+export interface StrongsBookStat {
+  bibleBookId: number;
+  count: number;
+  verseCount: number;
+}
+export interface StrongsRendering {
+  /** Display spelling. */
+  word: string;
+  /** Filter value for `strongsOccurrences?rendering=`. */
+  key: string;
+  count: number;
+}
+/** One lexicon variant, only present when the number was requested without a letter (G3004 = G3004G + G3004H). */
+export interface StrongsVariant {
+  strongs: string;
+  lemma: string;
+  transliteration?: string;
+  gloss?: string;
+  count: number;
+}
+export interface GetStrongsSummaryResponse {
+  strongs: string;
+  language: OriginalLanguage;
+  lemma?: string;
+  transliteration?: string;
+  /** English STEP gloss. */
+  gloss?: string;
+  occurrenceCount: number;
+  verseCount: number;
+  mappedCount: number;
+  unmappedCount: number;
+  byBook: StrongsBookStat[];
+  renderings: StrongsRendering[];
+  variants?: StrongsVariant[];
+}
+
+export type WordStatsTestament = "all" | "ot" | "nt";
+export interface WordStatsOriginal {
+  strongs: string;
+  language: OriginalLanguage;
+  lemma?: string;
+  transliteration?: string;
+  gloss?: string;
+  /** Occurrences of this Strong's number rendered with the word. */
+  count: number;
+  /** All occurrences of the Strong's number. */
+  totalCount: number;
+}
+export interface GetWordStatsResponse {
+  word: string;
+  testament: WordStatsTestament;
+  occurrenceCount: number;
+  verseCount: number;
+  unmappedCount: number;
+  byBook: StrongsBookStat[];
+  originals: WordStatsOriginal[];
+}
+
 export interface VerseMappingGermanWord {
   id: number;
   positionInVerse: number;

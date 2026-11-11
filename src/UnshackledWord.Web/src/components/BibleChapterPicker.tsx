@@ -21,6 +21,19 @@ function tabId(testament: Testament): string {
   return `bible-picker-tab-${testament}`;
 }
 
+/** Books are as wide as they have chapters (about ten per column, 1 to 6 columns) and wrap to the next row. */
+const BOOK_BASIS: Record<number, string> = {
+  1: "sm:basis-28",
+  2: "sm:basis-20",
+  3: "sm:basis-30",
+  4: "sm:basis-40",
+  5: "sm:basis-50",
+  6: "sm:basis-60",
+};
+function bookColumns(chapterCount: number): number {
+  return Math.min(6, Math.max(1, Math.ceil(chapterCount / 10)));
+}
+
 export function BibleChapterPicker({
   books,
   currentBookId,
@@ -82,15 +95,16 @@ export function BibleChapterPicker({
         <section
           id={PANEL_ID}
           aria-label={t(`bible.testament.${openTestament}`)}
-          className="mt-2 grid grid-cols-1 gap-2 bg-surface p-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8"
+          className="mt-2 grid grid-cols-1 gap-2 bg-surface p-2 sm:flex sm:flex-wrap"
         >
           {groups.map((group) => {
             const expanded = activeExpandedKey === group.key;
+            const columns = bookColumns(group.chapters.length);
             const bookTitle = group.title;
             const book = books?.find((candidate) => candidate.id === group.bookId);
             const name = book ? bookName(book, i18n.language) : bookTitle;
             return (
-              <div key={group.key}>
+              <div key={group.key} className={`sm:grow ${BOOK_BASIS[columns]}`}>
                 <h3 className="bg-surface-muted text-sm font-semibold">
                   <Button
                     variant="ghost"
@@ -105,7 +119,7 @@ export function BibleChapterPicker({
                   >
                     {bookTitle}
                   </Button>
-                  <span className="hidden px-3 py-1 sm:block">{bookTitle}</span>
+                  <span className="hidden whitespace-nowrap px-3 py-1 sm:block">{bookTitle}</span>
                 </h3>
                 <div className={expanded ? "flex flex-wrap" : "hidden flex-wrap sm:flex"}>
                   {group.chapters.map((chapter) => {
@@ -120,7 +134,7 @@ export function BibleChapterPicker({
                         })}
                         aria-current={isCurrent ? "page" : undefined}
                         onClick={() => setOpenTestament(null)}
-                        className={`flex h-10 grow basis-10 items-center justify-center text-sm hover:bg-accent hover:text-accent-fg ${
+                        className={`flex h-10 grow basis-10 ${columns === 1 ? "sm:basis-full" : ""} items-center justify-center text-sm hover:bg-accent hover:text-accent-fg ${
                           isCurrent ? "bg-accent text-accent-fg" : "text-fg"
                         }`}
                       >

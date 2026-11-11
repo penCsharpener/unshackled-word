@@ -2,7 +2,8 @@
 
 /* Design tokens. Components use only these semantic names (bg-surface, text-fg, ...), never raw colors. */
 :root {
-  --app-header-h: calc(var(--spacing) * 16);
+  /* Mobile: menu row (14) + word-info row (12); from md the info sits in the menu row. */
+  --app-header-h: calc(var(--spacing) * 26);
   color-scheme: light;
   --uw-bg: oklch(0.99 0.004 85);
   --uw-surface: oklch(1 0 0);
@@ -16,6 +17,22 @@
   --uw-mark-same: oklch(0.88 0.08 240);
   --uw-mark-related: oklch(0.9 0.1 150);
   --uw-mark-linked: oklch(0.9 0.14 95);
+  /* Categorical chart slots (BookBarChart sections, DonutChart slices) and the empty track. */
+  --uw-chart-1: #2a78d6;
+  --uw-chart-2: #eb6834;
+  --uw-chart-3: #1baf7a;
+  --uw-chart-4: #eda100;
+  --uw-chart-5: #e87ba4;
+  --uw-chart-6: #008300;
+  --uw-chart-7: #6250d6;
+  --uw-chart-8: #e34948;
+  --uw-chart-empty: oklch(0.9 0.006 80);
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --app-header-h: calc(var(--spacing) * 16);
+  }
 }
 
 :root[data-theme="dark"] {
@@ -32,6 +49,15 @@
   --uw-mark-same: oklch(0.42 0.09 240);
   --uw-mark-related: oklch(0.42 0.09 150);
   --uw-mark-linked: oklch(0.5 0.1 90);
+  --uw-chart-1: #3987e5;
+  --uw-chart-2: #d95926;
+  --uw-chart-3: #199e70;
+  --uw-chart-4: #c98500;
+  --uw-chart-5: #d55181;
+  --uw-chart-6: #008300;
+  --uw-chart-7: #9085e9;
+  --uw-chart-8: #e66767;
+  --uw-chart-empty: oklch(0.3 0.01 60);
 }
 
 @theme inline {
@@ -47,6 +73,15 @@
   --color-mark-same: var(--uw-mark-same);
   --color-mark-related: var(--uw-mark-related);
   --color-mark-linked: var(--uw-mark-linked);
+  --color-chart-1: var(--uw-chart-1);
+  --color-chart-2: var(--uw-chart-2);
+  --color-chart-3: var(--uw-chart-3);
+  --color-chart-4: var(--uw-chart-4);
+  --color-chart-5: var(--uw-chart-5);
+  --color-chart-6: var(--uw-chart-6);
+  --color-chart-7: var(--uw-chart-7);
+  --color-chart-8: var(--uw-chart-8);
+  --color-chart-empty: var(--uw-chart-empty);
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
@@ -497,5 +532,292 @@
 
   .map-chip[data-status="edited"] {
     border-color: var(--color-accent);
+  }
+}
+
+/* Charts (BookBarChart / DonutChart). Bars and arcs are SVG shapes sized by attributes; colour comes from the slot. */
+@layer components {
+  [data-slot="1"] {
+    --chart-c: var(--color-chart-1);
+  }
+  [data-slot="2"] {
+    --chart-c: var(--color-chart-2);
+  }
+  [data-slot="3"] {
+    --chart-c: var(--color-chart-3);
+  }
+  [data-slot="4"] {
+    --chart-c: var(--color-chart-4);
+  }
+  [data-slot="5"] {
+    --chart-c: var(--color-chart-5);
+  }
+  [data-slot="6"] {
+    --chart-c: var(--color-chart-6);
+  }
+  [data-slot="7"] {
+    --chart-c: var(--color-chart-7);
+  }
+  [data-slot="8"] {
+    --chart-c: var(--color-chart-8);
+  }
+
+  .chart-swatch {
+    flex: none;
+    width: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 3);
+    border-radius: var(--radius-sm);
+    background: var(--chart-c);
+  }
+
+  .bookchart {
+    --bookchart-plot-h: calc(var(--spacing) * 36);
+  }
+
+  .bookchart-bar {
+    fill: var(--chart-c);
+    transition: opacity 0.15s;
+  }
+
+  .bookchart-bar-zero {
+    fill: var(--color-chart-empty);
+    transform: translateY(-2px);
+  }
+
+  /* Phones and the "list" view: one row per book with occurrences. */
+  .bookchart-toggle {
+    display: none;
+  }
+
+  .bookchart-cols {
+    display: none;
+    margin-top: calc(var(--spacing) * 2);
+  }
+
+  .bookchart-row {
+    display: grid;
+    grid-template-columns: calc(var(--spacing) * 12) minmax(0, 1fr) calc(var(--spacing) * 8);
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    font-size: var(--text-sm);
+  }
+
+  .bookchart-track {
+    display: block;
+    width: 100%;
+    height: calc(var(--spacing) * 3);
+  }
+
+  /* Column layout: one <li> per book, count above the bar, abbreviations in two staggered rows. */
+  .bookchart-cols > li {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .bookchart-col {
+    display: grid;
+    width: 100%;
+  }
+
+  .bookchart-plot {
+    height: var(--bookchart-plot-h);
+    padding-top: 1.4em;
+    font-size: var(--text-xs);
+  }
+
+  .bookchart-plot svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .bookchart-val {
+    fill: var(--color-fg-muted);
+  }
+
+  .bookchart-abbr {
+    padding-top: calc(var(--spacing) * 1);
+    font-size: var(--text-xs);
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .bookchart-cols > li:nth-child(even) .bookchart-abbr {
+    padding-top: calc(var(--spacing) * 5);
+  }
+
+  .bookchart-cols > li:nth-child(even) .bookchart-abbr::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: calc(var(--bookchart-plot-h) + 2px);
+    height: calc(var(--spacing) * 3.5);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .bookchart-cols > li[data-zero] .bookchart-abbr {
+    color: var(--color-fg-muted);
+    opacity: 0.7;
+  }
+
+  .bookchart-cols > li:hover .bookchart-bar,
+  .bookchart-cols > li:focus-within .bookchart-bar {
+    filter: brightness(1.12);
+  }
+
+  .bookchart[data-has-selection] li:not([data-selected]) .bookchart-bar {
+    opacity: 0.4;
+  }
+
+  .bookchart-tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% - var(--bookchart-plot-h) + var(--spacing) * 6);
+    left: 50%;
+    z-index: 2;
+    translate: -50% 0;
+    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-fg);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+  }
+
+  .bookchart-cols > li:hover .bookchart-tip,
+  .bookchart-cols > li:focus-within .bookchart-tip {
+    display: block;
+  }
+
+  @container (width >= 40rem) {
+    .bookchart-toggle {
+      display: block;
+    }
+
+    .bookchart[data-view="chart"] .bookchart-cols {
+      display: flex;
+    }
+
+    .bookchart[data-view="chart"] .bookchart-list {
+      display: none;
+    }
+
+    .bookchart-row {
+      grid-template-columns: calc(var(--spacing) * 40) minmax(0, 1fr) calc(var(--spacing) * 10);
+    }
+  }
+
+  @container (width >= 100rem) {
+    .bookchart {
+      --bookchart-plot-h: calc(var(--spacing) * 48);
+    }
+  }
+
+  @container (width >= 150rem) {
+    .bookchart-parts[data-both] {
+      grid-template-columns: 39fr 27fr;
+      gap: calc(var(--spacing) * 8);
+    }
+
+    .bookchart-plot,
+    .bookchart-abbr {
+      font-size: var(--text-sm);
+    }
+  }
+
+  /* DonutChart: ring is an SVG circle per slice (pathLength 100), legend beside it. */
+  .donut-body {
+    display: grid;
+    grid-template-columns: calc(var(--spacing) * 32) minmax(0, 1fr);
+    align-items: center;
+    gap: calc(var(--spacing) * 4);
+  }
+
+  @container (width >= 40rem) {
+    .donut-body {
+      grid-template-columns: calc(var(--spacing) * 44) minmax(0, 1fr);
+    }
+  }
+
+  .donut-ring {
+    position: relative;
+    aspect-ratio: 1;
+  }
+
+  .donut-ring svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    rotate: -90deg;
+  }
+
+  .donut-track,
+  .donut-seg {
+    fill: none;
+    stroke-width: 7;
+  }
+
+  .donut-track {
+    stroke: var(--color-chart-empty);
+  }
+
+  .donut-seg {
+    stroke: var(--chart-c);
+    transition: opacity 0.15s;
+  }
+
+  .donut[data-filtered] .donut-seg:not([data-active]) {
+    opacity: 0.25;
+  }
+
+  .donut-center {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    text-align: center;
+  }
+
+  .donut-center-label {
+    max-width: calc(var(--spacing) * 24);
+    color: var(--color-fg-muted);
+    font-size: var(--text-xs);
+    line-height: 1.2;
+  }
+
+  .donut-slice {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: calc(var(--spacing) * 2);
+    font-size: var(--text-sm);
+  }
+
+  .donut-slice .chart-swatch {
+    align-self: center;
+  }
+
+  .donut-slice-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .donut-slice-count {
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .donut-slice[data-active] {
+    font-weight: 600;
+  }
+
+  .donut-slice[data-active] .donut-slice-count {
+    color: var(--color-fg);
   }
 }

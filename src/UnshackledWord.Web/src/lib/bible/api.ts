@@ -3,10 +3,14 @@ import type {
   GetBibleStructureResponse,
   GetChapterTextResponse,
   GetStrongsOccurrencesResponse,
+  GetStrongsSummaryResponse,
   GetVerseMappingResponse,
   GetWordDetailResponse,
+  GetWordStatsResponse,
   GetWordsOfChapterResponse,
+  StrongsOccurrenceFilters,
   VerseMappingLink,
+  WordStatsTestament,
 } from "./types";
 
 const verseMappingPath = (bookId: number, chapter: number, verse: number) =>
@@ -31,9 +35,29 @@ export const bibleApi = {
     api.get<GetVerseMappingResponse>(verseMappingPath(bookId, chapter, verse), signal),
   saveVerseMapping: (bookId: number, chapter: number, verse: number, links: VerseMappingLink[]) =>
     api.put<GetVerseMappingResponse>(verseMappingPath(bookId, chapter, verse), { links }),
-  strongsOccurrences: (strongs: string, page: number, pageSize: number, signal?: AbortSignal) =>
-    api.get<GetStrongsOccurrencesResponse>(
-      `/elberfelder/strongsOccurrences/strongs/${encodeURIComponent(strongs)}?page=${page}&pageSize=${pageSize}`,
+  strongsOccurrences: (
+    strongs: string,
+    page: number,
+    pageSize: number,
+    filters: StrongsOccurrenceFilters = {},
+    signal?: AbortSignal,
+  ) => {
+    const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+    if (filters.book !== undefined) query.set("book", String(filters.book));
+    if (filters.rendering !== undefined) query.set("rendering", filters.rendering);
+    return api.get<GetStrongsOccurrencesResponse>(
+      `/elberfelder/strongsOccurrences/strongs/${encodeURIComponent(strongs)}?${query}`,
+      signal,
+    );
+  },
+  strongsSummary: (strongs: string, signal?: AbortSignal) =>
+    api.get<GetStrongsSummaryResponse>(
+      `/elberfelder/strongsSummary/strongs/${encodeURIComponent(strongs)}`,
+      signal,
+    ),
+  wordStats: (word: string, testament: WordStatsTestament, signal?: AbortSignal) =>
+    api.get<GetWordStatsResponse>(
+      `/elberfelder/wordStats?${new URLSearchParams({ word, testament })}`,
       signal,
     ),
 };
