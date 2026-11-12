@@ -195,11 +195,11 @@ function BulkSession({
       };
     }
     return {
-      from: initialFrom ? [initialFrom] : [],
+      from: url.prefill?.from ?? (initialFrom ? [initialFrom] : []),
       fromInput: "",
       to: "",
       pos: "",
-      original: [],
+      original: url.prefill?.original ?? [],
       scope: "all",
       testament: books.find((b) => b.id === bookId)?.testament ?? "nt",
       bookId,

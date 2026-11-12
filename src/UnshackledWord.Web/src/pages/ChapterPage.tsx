@@ -217,6 +217,19 @@ export function ChapterPage() {
     document.getElementById(hash.slice(1))?.scrollIntoView();
   }, [verses.isSuccess, hash]);
 
+  // `?map=<verse>` (data-quality jump) opens the mapping editor of that verse once per chapter visit
+  const mapParam = new URLSearchParams(location.search).get("map");
+  const mapVerse = mapParam && /^\d+$/.test(mapParam) ? Number(mapParam) : undefined;
+  const openedMapKey = useRef<string | undefined>(undefined);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: openEditor only resets local state
+  useEffect(() => {
+    if (!verses.isSuccess || mapVerse === undefined) return;
+    const key = `${bookId}:${chapterNumber}:${mapVerse}`;
+    if (openedMapKey.current === key || !verses.data.some((v) => v.verse === mapVerse)) return;
+    openedMapKey.current = key;
+    openEditor(mapVerse, null);
+  }, [verses.isSuccess, verses.data, bookId, chapterNumber, mapVerse]);
+
   if (structure.isError) {
     return (
       <div role="alert" className="flex flex-wrap items-center gap-4">

@@ -56,6 +56,8 @@ export interface BulkUrlState {
   size: PageSize;
   /** explicit choice of the grouping; null = automatic (original when the server says ambiguous) */
   group: GroupMode | null;
+  /** `?dlg=search&from=…&orig=…`: source lemmas / original keys prefilled in the search form (shared links). */
+  prefill?: { from: string[]; original: string[] };
 }
 
 const OWN_KEYS = [
@@ -94,6 +96,12 @@ export function parseBulkUrl(params: URLSearchParams): BulkUrlState {
   const size = parsePageSize(params.get("size"));
   const grp = params.get("grp");
   const group: GroupMode | null = grp === "form" || grp === "original" ? grp : null;
+  if (step === "search") {
+    const from = params.getAll("from").filter((value) => value.trim() !== "");
+    const original = params.getAll("orig").filter(isOriginalKey);
+    if (from.length > 0 || original.length > 0)
+      return { step, query: null, page, size, group, prefill: { from, original } };
+  }
   if (step !== "review") return { step, query: null, page, size, group };
 
   const scopeParam = params.get("scope");

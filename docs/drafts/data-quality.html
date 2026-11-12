@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datenqualität Mockup</title>
+<style>
+/* ------------------------------------------------------------------
+   Design tokens, copied from src/UnshackledWord.Web/src/styles/index.css
+   (+ chart tokens from strongs-stats.html). NEW tokens of this draft are marked "NEW".
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+  --spacing: 0.25rem;
+  --radius-sm: 0.25rem; --radius-md: 0.375rem; --radius-lg: 0.5rem;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-original: "SBL BibLit", "Noto Serif Hebrew", "Noto Serif", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  --container-page-wide: 120rem;
+
+  --uw-bg: oklch(0.99 0.004 85);
+  --uw-surface: oklch(1 0 0);
+  --uw-surface-muted: oklch(0.96 0.006 85);
+  --uw-fg: oklch(0.22 0.01 60);
+  --uw-fg-muted: oklch(0.48 0.01 60);
+  --uw-border: oklch(0.88 0.008 80);
+  --uw-accent: oklch(0.42 0.1 30);
+  --uw-accent-fg: oklch(0.99 0.004 85);
+  --uw-focus: oklch(0.6 0.15 250);
+  --uw-mark-same: oklch(0.88 0.08 240);
+  --uw-chart-1: #2a78d6; --uw-chart-2: #eb6834; --uw-chart-3: #1baf7a; --uw-chart-4: #eda100;
+  --uw-chart-5: #e87ba4; --uw-chart-6: #008300; --uw-chart-7: #6250d6; --uw-chart-8: #e34948;
+  --uw-chart-empty: oklch(0.9 0.006 80);
+  /* NEW: sequential heat ramp (blue, one hue), 0 = no gap ... 5 = >= 20 % gap */
+  --uw-heat-0: #f4f2ee; --uw-heat-1: #cde2fb; --uw-heat-2: #86b6ef; --uw-heat-3: #3987e5; --uw-heat-4: #1c5cab; --uw-heat-5: #0d366b;
+  /* NEW: status, always with icon + label */
+  --uw-sev-error: #d03b3b; --uw-sev-warning: #fab219; --uw-sev-info: #2a78d6; --uw-sev-ok: #0ca30c;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --uw-bg: oklch(0.18 0.008 60); --uw-surface: oklch(0.22 0.01 60); --uw-surface-muted: oklch(0.27 0.012 60);
+  --uw-fg: oklch(0.94 0.005 85); --uw-fg-muted: oklch(0.7 0.01 70); --uw-border: oklch(0.34 0.012 60);
+  --uw-accent: oklch(0.78 0.1 50); --uw-accent-fg: oklch(0.2 0.01 60); --uw-focus: oklch(0.72 0.14 250);
+  --uw-mark-same: oklch(0.42 0.09 240);
+  --uw-chart-1: #3987e5; --uw-chart-2: #d95926; --uw-chart-3: #199e70; --uw-chart-4: #c98500;
+  --uw-chart-5: #d55181; --uw-chart-6: #008300; --uw-chart-7: #9085e9; --uw-chart-8: #e66767;
+  --uw-chart-empty: oklch(0.3 0.01 60);
+  --uw-heat-0: #2b2a27; --uw-heat-1: #184f95; --uw-heat-2: #256abf; --uw-heat-3: #3987e5; --uw-heat-4: #6da7ec; --uw-heat-5: #b7d3f6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --uw-bg: oklch(0.18 0.008 60); --uw-surface: oklch(0.22 0.01 60); --uw-surface-muted: oklch(0.27 0.012 60);
+    --uw-fg: oklch(0.94 0.005 85); --uw-fg-muted: oklch(0.7 0.01 70); --uw-border: oklch(0.34 0.012 60);
+    --uw-accent: oklch(0.78 0.1 50); --uw-accent-fg: oklch(0.2 0.01 60); --uw-focus: oklch(0.72 0.14 250);
+    --uw-mark-same: oklch(0.42 0.09 240);
+    --uw-chart-1: #3987e5; --uw-chart-2: #d95926; --uw-chart-3: #199e70; --uw-chart-4: #c98500;
+    --uw-chart-5: #d55181; --uw-chart-6: #008300; --uw-chart-7: #9085e9; --uw-chart-8: #e66767;
+    --uw-chart-empty: oklch(0.3 0.01 60);
+    --uw-heat-0: #2b2a27; --uw-heat-1: #184f95; --uw-heat-2: #256abf; --uw-heat-3: #3987e5; --uw-heat-4: #6da7ec; --uw-heat-5: #b7d3f6;
+  }
+}
+[data-section="law"]{--c:var(--uw-chart-1)} [data-section="history"]{--c:var(--uw-chart-2)}
+[data-section="wisdom"]{--c:var(--uw-chart-3)} [data-section="prophets"]{--c:var(--uw-chart-4)}
+[data-section="gospels"]{--c:var(--uw-chart-5)} [data-section="paul"]{--c:var(--uw-chart-6)}
+[data-section="general"]{--c:var(--uw-chart-7)} [data-section="revelation"]{--c:var(--uw-chart-8)}
+[data-sev="error"]{--s:var(--uw-sev-error)} [data-sev="warning"]{--s:var(--uw-sev-warning)}
+[data-sev="info"]{--s:var(--uw-sev-info)} [data-sev="ok"]{--s:var(--uw-sev-ok)}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--uw-bg); color: var(--uw-fg); font-family: var(--font-sans); line-height: 1.5; }
+:focus-visible { outline: 2px solid var(--uw-focus); outline-offset: 2px; }
+h1, h2, h3, p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.muted { color: var(--uw-fg-muted); }
+.orig { font-family: var(--font-original); color: var(--uw-accent); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---- mockup-only toolbar ---- */
+.mock-bar { position: sticky; top: 0; z-index: 9; display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*2); align-items: center;
+  padding: calc(var(--spacing)*2) calc(var(--spacing)*4); background: var(--uw-surface-muted); border-bottom: 1px solid var(--uw-border); font-size: var(--text-sm); }
+.mock-bar strong { margin-right: calc(var(--spacing)*1); }
+.mock-toast { margin-left: auto; color: var(--uw-fg-muted); font-size: var(--text-xs); max-width: 40rem; overflow-wrap: anywhere; }
+
+/* ---- Button (variants of the existing component) ---- */
+.btn { font: inherit; font-size: var(--text-sm); cursor: pointer; border: 1px solid var(--uw-border); background: var(--uw-surface); color: var(--uw-fg);
+  border-radius: var(--radius-md); padding: calc(var(--spacing)*1) calc(var(--spacing)*3); }
+.btn:hover { background: var(--uw-surface-muted); }
+.btn[aria-pressed="true"] { background: var(--uw-accent); color: var(--uw-accent-fg); border-color: var(--uw-accent); }
+.btn-primary { background: var(--uw-accent); color: var(--uw-accent-fg); border-color: var(--uw-accent); }
+.btn-ghost { border-color: transparent; background: transparent; color: var(--uw-accent); padding-inline: calc(var(--spacing)*1); }
+.btn-ghost:hover { text-decoration: underline; background: transparent; }
+.btn-inline { border: 0; background: none; padding: 0; color: var(--uw-accent); text-decoration: underline; font: inherit; cursor: pointer; text-align: start; }
+.btn-sm { font-size: var(--text-xs); padding: 0 calc(var(--spacing)*2); }
+.seg-group { display: inline-flex; gap: calc(var(--spacing)*1); flex-wrap: wrap; }
+.field { display: grid; gap: calc(var(--spacing)*1); font-size: var(--text-sm); }
+.input, .select { font: inherit; font-size: var(--text-sm); color: var(--uw-fg); background: var(--uw-surface); border: 1px solid var(--uw-border);
+  border-radius: var(--radius-md); padding: calc(var(--spacing)*1.5) calc(var(--spacing)*2); min-width: 0; }
+
+/* ---- page frame ---- */
+.frame { margin-inline: auto; width: 100%; max-width: var(--container-page-wide); container-type: inline-size; }
+.frame[data-phone] { max-width: 375px; border-inline: 1px dashed var(--uw-border); }
+main { padding: calc(var(--spacing)*8) calc(var(--spacing)*4); display: grid; gap: calc(var(--spacing)*10); }
+@container (width >= 48rem) { main { padding-inline: calc(var(--spacing)*8); } }
+section > h2 { font-family: var(--font-scripture); font-size: var(--text-xl); font-weight: 600; }
+section > h2 + p { font-size: var(--text-sm); color: var(--uw-fg-muted); }
+@container (width >= 48rem) { section > h2 { font-size: var(--text-2xl); } }
+.card { border: 1px solid var(--uw-border); border-radius: var(--radius-lg); background: var(--uw-surface); padding: calc(var(--spacing)*4); display: grid; gap: calc(var(--spacing)*3); align-content: start; min-width: 0; }
+.card h3 { font-family: var(--font-scripture); font-size: var(--text-lg); font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--spacing)*2); }
+.spread { justify-content: space-between; }
+
+/* ---- header ---- */
+.page-head h1 { font-family: var(--font-scripture); font-size: var(--text-2xl); font-weight: 600; }
+@container (width >= 48rem) { .page-head h1 { font-size: var(--text-3xl); } }
+.stat-line { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*1) calc(var(--spacing)*4); font-size: var(--text-sm); color: var(--uw-fg-muted); margin-top: calc(var(--spacing)*1); }
+.stat-line b { color: var(--uw-fg); }
+.facets { margin-top: calc(var(--spacing)*4); }
+.banner { margin-top: calc(var(--spacing)*3); font-size: var(--text-sm); border-left: 3px solid var(--uw-sev-info); background: var(--uw-surface-muted); padding: calc(var(--spacing)*2) calc(var(--spacing)*3); border-radius: var(--radius-sm); }
+
+/* ---- StatTile (NEW) ---- */
+.tile-group { display: grid; gap: calc(var(--spacing)*2); margin-top: calc(var(--spacing)*4); }
+.tile-group h3 { font-size: var(--text-sm); font-weight: 600; color: var(--uw-fg-muted); text-transform: uppercase; letter-spacing: .04em; }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: calc(var(--spacing)*2); }
+@container (width >= 40rem) { .tiles { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@container (width >= 72rem) { .tiles { grid-template-columns: repeat(6, minmax(0,1fr)); } }
+.tile { font: inherit; text-align: start; cursor: pointer; color: inherit; background: var(--uw-surface); border: 1px solid var(--uw-border); border-left: 4px solid var(--s);
+  border-radius: var(--radius-lg); padding: calc(var(--spacing)*3); display: grid; gap: calc(var(--spacing)*1); align-content: start; min-width: 0; }
+.tile:hover { background: var(--uw-surface-muted); }
+.tile[aria-current="true"] { outline: 2px solid var(--uw-accent); outline-offset: -1px; }
+.tile .t-head { display: flex; justify-content: space-between; gap: calc(var(--spacing)*1); font-size: var(--text-xs); color: var(--uw-fg-muted); }
+.tile .t-title { font-size: var(--text-sm); font-weight: 600; line-height: 1.3; }
+.tile .t-val { font-size: var(--text-2xl); font-weight: 600; line-height: 1.1; }
+.tile .t-sub { font-size: var(--text-xs); color: var(--uw-fg-muted); display: none; }
+@container (width >= 40rem) { .tile .t-sub { display: block; } }
+@container (width >= 150rem) { .tile .t-val { font-size: var(--text-3xl); } }
+.sev { display: inline-flex; align-items: center; gap: calc(var(--spacing)*1); font-size: var(--text-xs); white-space: nowrap; color: var(--uw-fg); }
+.sev::before { content: ""; width: .7em; height: .7em; background: var(--s); flex: none; }
+.sev[data-sev="error"]::before { border-radius: 1px; rotate: 45deg; }           /* diamond = error */
+.sev[data-sev="warning"]::before { clip-path: polygon(50% 0, 100% 100%, 0 100%); } /* triangle = check */
+.sev[data-sev="info"]::before, .sev[data-sev="ok"]::before { border-radius: 50%; } /* dot = note / clean */
+.skel { display: inline-block; height: .8em; border-radius: var(--radius-sm); background: var(--uw-border); width: 60%; }
+
+/* ---- unmapped panels ---- */
+.panels { display: grid; gap: calc(var(--spacing)*4); margin-top: calc(var(--spacing)*3); }
+@container (width >= 72rem) { .panels { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+.fn-toggle { margin-top: calc(var(--spacing)*2); font-size: var(--text-sm); }
+.big { font-size: var(--text-3xl); font-weight: 600; line-height: 1; }
+
+/* DonutChart (existing) */
+.donut-body { display: grid; gap: calc(var(--spacing)*3); align-items: center; }
+@container (width >= 40rem) { .donut-body { grid-template-columns: calc(var(--spacing)*32) minmax(0,1fr); } }
+@container (width >= 150rem) { .donut-body { grid-template-columns: calc(var(--spacing)*44) minmax(0,1fr); } }
+.ring { position: relative; aspect-ratio: 1; width: calc(var(--spacing)*32); }
+@container (width >= 150rem) { .ring { width: calc(var(--spacing)*44); } }
+.ring svg { width: 100%; height: 100%; rotate: -90deg; display: block; }
+.ring circle { fill: none; stroke-width: 7; }
+.ring .track { stroke: var(--uw-chart-empty); }
+.ring .seg { stroke: var(--c); cursor: pointer; }
+.ring .seg[data-legit] { opacity: .45; }
+.donut[data-filtered] .seg:not([data-active]) { opacity: .2; }
+.ring .center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; pointer-events: none; }
+.ring .center b { font-size: var(--text-2xl); line-height: 1; }
+.ring .center span { font-size: var(--text-xs); color: var(--uw-fg-muted); }
+.slices { display: grid; gap: calc(var(--spacing)*1); font-size: var(--text-sm); }
+.slices li { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: calc(var(--spacing)*2); align-items: center; }
+.slices li[data-legit] .lbl { color: var(--uw-fg-muted); }
+.swatch { width: calc(var(--spacing)*3); height: calc(var(--spacing)*3); border-radius: var(--radius-sm); background: var(--c); }
+.slot-1{--c:var(--uw-chart-1)} .slot-2{--c:var(--uw-chart-2)} .slot-3{--c:var(--uw-chart-3)} .slot-4{--c:var(--uw-chart-4)}
+.slot-5{--c:var(--uw-chart-5)} .slot-6{--c:var(--uw-chart-6)} .slot-7{--c:var(--uw-chart-7)} .slot-8{--c:var(--uw-chart-8)}
+
+/* RankedBarList (NEW) + BookBarChart list view (existing) share the row grid */
+.ranked { display: grid; gap: calc(var(--spacing)*1.5); }
+.ranked > li { display: grid; gap: calc(var(--spacing)*1); }
+.rk { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr) auto; gap: calc(var(--spacing)*2); align-items: center; font-size: var(--text-sm); }
+.rk .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rk .track { display: block; height: calc(var(--spacing)*3); background: var(--uw-chart-empty); border-radius: 0 4px 4px 0; }
+.rk .bar { display: block; height: 100%; width: calc(var(--v) * 100%); min-width: 2px; background: var(--c, var(--uw-chart-1)); border-radius: 0 4px 4px 0; }
+.rk .val { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rk .val small { color: var(--uw-fg-muted); margin-left: calc(var(--spacing)*1); }
+.ranked li[data-selected] .rk { font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*1); }
+.chip { font-size: var(--text-xs); border: 1px solid var(--uw-border); border-radius: var(--radius-sm); padding: 0 calc(var(--spacing)*1.5); display: inline-flex; gap: calc(var(--spacing)*1); align-items: center; }
+.chip.sev::before { width: .55em; height: .55em; }
+.expand { border-left: 2px solid var(--uw-border); margin-left: calc(var(--spacing)*2); padding-left: calc(var(--spacing)*3); display: grid; gap: calc(var(--spacing)*2); }
+
+/* ---- CoverageHeatmap (NEW) ---- */
+.heat-tools { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*3); align-items: center; justify-content: space-between; margin-top: calc(var(--spacing)*3); }
+.heat-legend { display: flex; align-items: center; gap: calc(var(--spacing)*1); font-size: var(--text-xs); color: var(--uw-fg-muted); flex-wrap: wrap; }
+.heat-legend i { background: var(--h); display: inline-block; width: calc(var(--spacing)*5); height: calc(var(--spacing)*3); border-radius: 2px; }
+.heat { display: grid; gap: 2px; margin-top: calc(var(--spacing)*3); }
+.heat-row { display: grid; grid-template-columns: minmax(0,1fr); gap: 2px; align-items: start; }
+@container (width >= 40rem) { .heat-row { grid-template-columns: calc(var(--spacing)*12) minmax(0,1fr); } }
+.heat-row .bk { font-size: var(--text-xs); color: var(--uw-fg-muted); line-height: calc(var(--spacing)*3); }
+.heat-cells { display: flex; flex-wrap: wrap; gap: 2px; }
+.cell { width: calc(var(--spacing)*3); height: calc(var(--spacing)*3); padding: 0; border: 0; border-radius: 2px; cursor: pointer; background: var(--h); }
+@container (width >= 150rem) { .cell { width: calc(var(--spacing)*4); height: calc(var(--spacing)*4); } .heat-row .bk { line-height: calc(var(--spacing)*4); } }
+.cell[aria-pressed="true"] { outline: 2px solid var(--uw-fg); outline-offset: 1px; }
+.cell:hover { outline: 1px solid var(--uw-fg); }
+.cell[data-off] { outline: 2px dashed var(--uw-sev-error); outline-offset: -2px; }
+.h0{--h:var(--uw-heat-0)} .h1{--h:var(--uw-heat-1)} .h2{--h:var(--uw-heat-2)} .h3{--h:var(--uw-heat-3)} .h4{--h:var(--uw-heat-4)} .h5{--h:var(--uw-heat-5)}
+.heat-sep { font-size: var(--text-xs); font-weight: 600; color: var(--uw-fg-muted); margin-top: calc(var(--spacing)*2); text-transform: uppercase; letter-spacing: .04em; }
+.heat-info { font-size: var(--text-sm); min-height: 1.5em; }
+
+/* ---- Explorer ---- */
+.explorer { display: grid; gap: calc(var(--spacing)*4); margin-top: calc(var(--spacing)*3); }
+.search-row { display: grid; gap: calc(var(--spacing)*2); }
+@container (width >= 48rem) { .search-row { grid-template-columns: auto minmax(0,1fr) calc(var(--spacing)*48); align-items: end; } }
+.trail ol { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*1); align-items: center; font-size: var(--text-sm); }
+.trail li + li::before { content: "›"; color: var(--uw-fg-muted); margin-right: calc(var(--spacing)*1); }
+.trail [aria-current] { font-weight: 600; text-decoration: none; color: var(--uw-fg); cursor: default; }
+.url-line { font-size: var(--text-xs); color: var(--uw-fg-muted); overflow-wrap: anywhere; font-family: ui-monospace, monospace; }
+.cands { display: grid; gap: calc(var(--spacing)*1); }
+.cands .btn { display: flex; width: 100%; gap: calc(var(--spacing)*2); align-items: baseline; flex-wrap: wrap; text-align: start; }
+.result { display: grid; gap: calc(var(--spacing)*4); }
+@container (width >= 72rem) { .result { grid-template-columns: minmax(0,3fr) minmax(0,2fr); align-items: start; } }
+.res-head h3 { font-family: var(--font-scripture); font-size: var(--text-xl); font-weight: 600; }
+.res-head h3 .orig { font-weight: 400; }
+.res-head .tr { font-style: italic; font-weight: 400; }
+
+/* ---- FindingsTable (NEW) ---- */
+.f-tools { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*2); align-items: center; justify-content: space-between; margin-top: calc(var(--spacing)*3); }
+table.findings { width: 100%; border-collapse: collapse; font-size: var(--text-sm); display: none; margin-top: calc(var(--spacing)*3); }
+.findings th { text-align: start; font-size: var(--text-xs); color: var(--uw-fg-muted); font-weight: 600; border-bottom: 1px solid var(--uw-border); padding: calc(var(--spacing)*2); }
+.findings td { border-bottom: 1px solid var(--uw-border); padding: calc(var(--spacing)*2); vertical-align: top; }
+.findings tr:hover td { background: var(--uw-surface-muted); }
+.findings .jumps { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*1); }
+.ctx { font-family: var(--font-scripture); color: var(--uw-fg-muted); }
+.ctx mark { background: var(--uw-mark-same); color: var(--uw-fg); border-radius: 2px; padding-inline: 2px; }
+.fcards { display: grid; gap: calc(var(--spacing)*2); margin-top: calc(var(--spacing)*3); }
+.fcards .card { gap: calc(var(--spacing)*1.5); padding: calc(var(--spacing)*3); font-size: var(--text-sm); }
+@container (width >= 40rem) { table.findings { display: table; } .fcards { display: none; } }
+@container (width < 72rem) { .findings .col-gloss { display: none; } }
+.pager { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*2); align-items: center; justify-content: space-between; margin-top: calc(var(--spacing)*3); font-size: var(--text-sm); }
+.badge { font-size: var(--text-xs); border-radius: var(--radius-sm); padding: 0 calc(var(--spacing)*1.5); background: var(--uw-surface-muted); color: var(--uw-fg-muted); border: 1px dashed var(--uw-border); }
+
+/* EmptyState / error (existing EmptyState, FormError) */
+.empty { border: 1px dashed var(--uw-border); border-radius: var(--radius-lg); padding: calc(var(--spacing)*4); font-size: var(--text-sm); color: var(--uw-fg-muted); display: grid; gap: calc(var(--spacing)*2); justify-items: start; }
+.empty b { color: var(--uw-fg); }
+.err { border-left: 3px solid var(--uw-sev-error); padding: calc(var(--spacing)*2) calc(var(--spacing)*3); font-size: var(--text-sm); display: flex; gap: calc(var(--spacing)*3); align-items: center; flex-wrap: wrap; background: var(--uw-surface-muted); border-radius: var(--radius-sm); }
+</style>
+</head>
+<body>
+<div class="mock-bar" role="toolbar" aria-label="Mockup-Steuerung">
+  <strong>Mockup</strong>
+  <span class="seg-group" id="mTheme">
+    <button class="btn btn-sm" data-theme-set="system" aria-pressed="true">System</button>
+    <button class="btn btn-sm" data-theme-set="light" aria-pressed="false">Hell</button>
+    <button class="btn btn-sm" data-theme-set="dark" aria-pressed="false">Dunkel</button>
+  </span>
+  <button class="btn btn-sm" id="mPhone" aria-pressed="false">375 px</button>
+  <span class="seg-group" id="mState">
+    <button class="btn btn-sm" data-state="ok" aria-pressed="true">Daten</button>
+    <button class="btn btn-sm" data-state="loading" aria-pressed="false">Lädt</button>
+    <button class="btn btn-sm" data-state="error" aria-pressed="false">Fehler</button>
+    <button class="btn btn-sm" data-state="never" aria-pressed="false">Nie berechnet</button>
+  </span>
+  <span class="mock-toast" id="toast" aria-live="polite">Klicks auf Sprung-Links zeigen hier das Ziel.</span>
+</div>
+
+<div class="frame" id="frame">
+<main id="main"></main>
+</div>
+
+<script>
+/* ===================== dummy data ===================== */
+const BOOKS = [["1Mo",50],["2Mo",40],["3Mo",27],["4Mo",36],["5Mo",34],["Jos",24],["Ri",21],["Rt",4],["1Sam",31],["2Sam",24],["1Kö",22],["2Kö",25],["1Chr",29],["2Chr",36],["Esr",10],["Neh",13],["Est",10],["Hi",42],["Ps",150],["Spr",31],["Pred",12],["Hl",8],["Jes",66],["Jer",52],["Kla",5],["Hes",48],["Dan",12],["Hos",14],["Joel",4],["Am",9],["Ob",1],["Jon",4],["Mi",7],["Nah",3],["Hab",3],["Zeph",3],["Hag",2],["Sach",14],["Mal",4],
+ ["Mt",28],["Mk",16],["Lk",24],["Joh",21],["Apg",28],["Röm",16],["1Kor",16],["2Kor",13],["Gal",6],["Eph",6],["Phil",4],["Kol",4],["1Thes",5],["2Thes",3],["1Tim",6],["2Tim",4],["Tit",3],["Phlm",1],["Heb",13],["Jak",5],["1Pet",5],["2Pet",3],["1Joh",5],["2Joh",1],["3Joh",1],["Jud",1],["Off",22]]
+  .map(([abbr, chapters], i) => ({ id: i + 1, abbr, chapters, ot: i < 39 }));
+const section = id => id <= 5 ? "law" : id <= 17 ? "history" : id <= 22 ? "wisdom" : id <= 39 ? "prophets" : id <= 44 ? "gospels" : id <= 58 ? "paul" : id <= 65 ? "general" : "revelation";
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const HOT = { "19:119": .24, "26:40": .31, "26:41": .27, "26:42": .22, "13:1": .14, "13:6": .12, "43:18": .08, "66:13": .21, "4:7": .11, "44:7": .06, "6:15": .13, "6:19": .16 };
+const COVERAGE = BOOKS.map(b => ({ book: b, cells: Array.from({ length: b.chapters }, (_, i) => {
+  const key = b.id + ":" + (i + 1); const total = 400 + Math.round(rnd() * 500);
+  const share = HOT[key] ?? (rnd() < .06 ? .02 + rnd() * .05 : rnd() * .018) * (b.ot ? .8 : 1.4);
+  return { chapter: i + 1, total, unaligned: Math.round(total * share) }; }) }));
+const heatStep = s => s < .01 ? 0 : s < .02 ? 1 : s < .05 ? 2 : s < .1 ? 3 : s < .2 ? 4 : 5;
+
+const CHECKS = [
+  { code: "U1", g: "mapping", title: "Deutsch ohne Grundtext", count: 24318, err: 1204, prev: 24410, sub: "davon 1.204 Inhaltswörter", sev: "error" },
+  { code: "U2", g: "mapping", title: "Griechisch ohne Deutsch", count: 13579, err: 412, prev: 13590, sub: "412 Inhaltswörter", sev: "error" },
+  { code: "U3", g: "mapping", title: "Hebräisch ohne Deutsch", count: 11378, err: 1866, prev: 11378, sub: "1.866 Inhaltswörter", sev: "error" },
+  { code: "C1", g: "mapping", title: "Kapitel mit Lücken", count: 37, err: 9, prev: 41, sub: "9 Kapitel ≥ 20 %", sev: "warning" },
+  { code: "M1", g: "mapping", title: "Lemma → viele Strong's", count: 318, err: 0, prev: 318, sub: "Lemmata ≥ 50×", sev: "warning" },
+  { code: "M2", g: "mapping", title: "Strong's-Ausreißer", count: 2140, err: 0, prev: 2201, sub: "Anteil < 5 %", sev: "warning" },
+  { code: "M3", g: "mapping", title: "Wortart passt nicht", count: 6612, err: 0, prev: 6650, sub: "ohne AT-Funktionswörter", sev: "warning" },
+  { code: "M4", g: "mapping", title: "Inhalt ↔ Funktionswort", count: 1486, err: 1486, prev: 1490, sub: "AT 902 · NT 584", sev: "error" },
+  { code: "L1", g: "lemma", title: "Ohne Lemma", count: 0, err: 0, prev: 6, sub: "alle Wörter getaggt", sev: "ok" },
+  { code: "L2", g: "lemma", title: "Lemma = Form", count: 912, err: 0, prev: 930, sub: "flektierte Formen", sev: "warning" },
+  { code: "L3", g: "lemma", title: "Form mit mehreren Lemmata", count: 287, err: 0, prev: 287, sub: "Minderheit < 10 %", sev: "warning" },
+  { code: "L4", g: "lemma", title: "Lemma mit mehreren Wortarten", count: 164, err: 0, prev: 170, sub: "ohne erlaubte Paare", sev: "warning" },
+  { code: "L5", g: "lemma", title: "Merkmale passen nicht", count: 73, err: 73, prev: 73, sub: "z. B. Tempus am Nomen", sev: "error" },
+  { code: "E1", g: "lemma", title: "Zuletzt bearbeitet", count: 1342, err: 0, prev: 1100, sub: "letzte 30 Tage", sev: "info" },
+];
+const UNMAPPED = {
+  german: { title: "Deutsch ohne Grundtext", code: "U1", unit: "Wörter", total: 24318,
+    byClass: [["DET","Artikel (DET)",9120,1],["AUX","Hilfsverb (AUX)",6410,1],["ADP","Präposition (ADP)",3210,1],["PRON","Pronomen (PRON)",2510,1],["NOUN","Nomen (NOUN)",702,0],["VERB","Verb (VERB)",388,0],["ADJ","Adjektiv (ADJ)",114,0],["other","Sonstige",1864,1]],
+    top: [["Herr~NOUN","Herr","NOUN",61],["Gott~NOUN","Gott","NOUN",48],["sagen~VERB","sagen","VERB",44],["Volk~NOUN","Volk","NOUN",31],["Sohn~NOUN","Sohn","NOUN",22],["Haus~NOUN","Haus","NOUN",19],["gehen~VERB","gehen","VERB",17],["König~NOUN","König","NOUN",15],["Tag~NOUN","Tag","NOUN",12],["Mann~NOUN","Mann","NOUN",11]] },
+  greek: { title: "Griechisch ohne Deutsch", code: "U2", unit: "Wörter", total: 13579,
+    byClass: [["T","Artikel (T)",8920,1],["notNaTr","nicht in NA/TR",1698,1],["CONJ","Konjunktion",1320,1],["PRT","Partikel",822,1],["N","Nomen (N)",241,0],["V","Verb (V)",171,0],["other","Sonstige",407,1]],
+    top: [["G2316","θεός","theos",38],["G2424","Ἰησοῦς","Iēsous",12],["G2962","κύριος","kyrios",29],["G3004","λέγω","legō",24],["G3956","πᾶς","pas",21],["G1161","δέ","de",19],["G3756","οὐ","ou",14],["G0846","αὐτός","autos",13],["G1063","γάρ","gar",11],["G1520","εἷς","heis",9]] },
+  hebrew: { title: "Hebräisch ohne Deutsch", code: "U3", unit: "Wörter", total: 11378,
+    byClass: [["HTo","Objektmarker אֵת",4070,1],["ketiv","Ketiv/Qere",1210,1],["C","Konjunktion",2130,1],["R","Präposition",1702,1],["N","Nomen (N)",1188,0],["V","Verb (V)",678,0],["other","Sonstige",400,1]],
+    top: [["H3068","יְהוָה","YHWH",54],["H0430","אֱלֹהִים","elohim",33],["H0559","אָמַר","amar",31],["H1121","בֵּן","ben",28],["H3605","כֹּל","kol",26],["H1697","דָּבָר","dabar",19],["H4428","מֶלֶךְ","melek",17],["H3117","יוֹם","yom",14],["H0776","אֶרֶץ","erets",12],["H5971","עַם","am",10]] },
+};
+
+/* lexicon (explorer, original side) */
+const LEX = [
+  { s: "G2424", lang: "G", w: "Ἰησοῦς", t: "Iēsous", g: "Jesus", cls: "N-PRI", occ: 917, un: 12,
+    r: [["Jesus","PROPN",866,[]],["Jesu","PROPN",21,["minority"]],["Josua","PROPN",3,["minority"]],["der","DET",6,["minority","posConflict","contentFunction"]],["er","PRON",5,["minority","posConflict"]],["Herr","NOUN",4,["minority"]]] },
+  { s: "G2316", lang: "G", w: "θεός", t: "theos", g: "God", cls: "N", occ: 1317, un: 38,
+    r: [["Gott","NOUN",1210,[]],["Götter","NOUN",8,["minority"]],["göttlich","ADJ",6,["minority","posConflict"]],["der","DET",13,["minority","contentFunction"]],["Gottes","NOUN",42,["minority"]]] },
+  { s: "G2962", lang: "G", w: "κύριος", t: "kyrios", g: "lord", cls: "N", occ: 717, un: 29,
+    r: [["Herr","NOUN",636,[]],["Jehova","PROPN",18,["minority"]],["Besitzer","NOUN",7,["minority"]],["Meister","NOUN",4,["minority"]],["sein","AUX",3,["minority","posConflict","contentFunction"]]] },
+  { s: "G3056", lang: "G", w: "λόγος", t: "logos", g: "word", cls: "N", occ: 330, un: 4,
+    r: [["Wort","NOUN",268,[]],["Rede","NOUN",31,[]],["Rechenschaft","NOUN",8,["minority"]],["Sache","NOUN",7,["minority"]],["Grund","NOUN",3,["minority"]]] },
+  { s: "G1577", lang: "G", w: "ἐκκλησία", t: "ekklēsia", g: "church, assembly", cls: "N", occ: 114, un: 0,
+    r: [["Versammlung","NOUN",111,[]],["Gemeinde","NOUN",3,["minority"]]] },
+  { s: "G3588", lang: "G", w: "ὁ", t: "ho", g: "the", cls: "T", occ: 19734, un: 8920,
+    r: [["der","DET",9810,[]],["welcher","PRON",312,[]],["Gott","NOUN",13,["minority","contentFunction"]],["Jesus","PROPN",4,["minority","contentFunction"]]] },
+  { s: "H0430", lang: "H", w: "אֱלֹהִים", t: "elohim", g: "God, gods", cls: "N", occ: 2602, un: 33,
+    r: [["Gott","NOUN",2310,[]],["Götter","NOUN",204,[]],["Richter","NOUN",3,["minority"]],["göttlich","ADJ",2,["minority","posConflict"]]] },
+  { s: "H3068", lang: "H", w: "יְהוָה", t: "YHWH", g: "LORD", cls: "N-Np", occ: 6828, un: 54,
+    r: [["Jehova","PROPN",5122,[]],["Jahwe","NOUN",1180,["posConflict"]],["Herr","NOUN",410,[]],["Gott","NOUN",62,["minority"]]] },
+  { s: "H0136", lang: "H", w: "אֲדֹנָי", t: "adonai", g: "Lord", cls: "N", occ: 439, un: 2,
+    r: [["Herr","NOUN",421,[]],["Gebieter","NOUN",9,["minority"]],["Jehova","PROPN",7,["minority"]]] },
+  { s: "H1697", lang: "H", w: "דָּבָר", t: "dabar", g: "word, thing", cls: "N", occ: 1441, un: 19,
+    r: [["Wort","NOUN",702,[]],["Sache","NOUN",388,[]],["Geschichte","NOUN",120,[]],["Angelegenheit","NOUN",51,[]],["Ding","NOUN",44,[]],["etwas","PRON",12,["minority","posConflict"]]] },
+  { s: "H0853", lang: "H", w: "אֵת", t: "et", g: "[object marker]", cls: "HTo", occ: 11003, un: 4070,
+    r: [["der","DET",5210,[]],["ihn","PRON",1102,[]],["Gott","NOUN",9,["minority","contentFunction"]]] },
+];
+/* German lemma side */
+const GER = {
+  "gott~NOUN": { lemma: "Gott", pos: "NOUN", sources: [["H0430",2310,[]],["G2316",1210,[]],["H0410",231,[]],["H0433",57,[]],["G3588",13,["minority","contentFunction"]],["H3068",62,["minority"]],["added",48,[]]],
+    forms: [["Gott",3104,[]],["Gottes",1302,[["Gottes","NOUN",42]]],["Götter",8,[["Götter","NOUN",204]]],["Gotte",3,[]]] },
+  "herr~NOUN": { lemma: "Herr", pos: "NOUN", sources: [["G2962",636,[]],["H0136",421,[]],["H0113",302,[]],["H3068",410,["posConflict"]],["G1203",10,[]],["G2424",4,["minority"]],["added",61,[]]],
+    forms: [["Herr",1302,[]],["Herrn",688,[]],["Herren",80,[]],["Herrn",4,[["Herrn","NOUN",4]]]] },
+  "jesus~PROPN": { lemma: "Jesus", pos: "PROPN", sources: [["G2424",866,[]],["G3588",4,["minority","contentFunction"]],["none",2,[]]],
+    forms: [["Jesus",702,[["Jesus","NOUN",3]]],["Jesu",140,[["Jesu","PROPN",21]]],["Jesum",31,[]]] },
+  "der~DET": { lemma: "der", pos: "DET", sources: [["G3588",9810,[]],["H0853",5210,[]],["added",9120,[]],["G2424",6,["minority","posConflict","contentFunction"]],["G2316",13,["minority","contentFunction"]]],
+    forms: [["der",9200,[["der","PRON",1210]]],["die",8800,[["die","PRON",900]]],["das",5400,[]],["den",4100,[]]] },
+  "wort~NOUN": { lemma: "Wort", pos: "NOUN", sources: [["H1697",702,[]],["G3056",268,[]],["G4487",60,[]],["H0565",28,[]],["added",3,[]]],
+    forms: [["Wort",620,[]],["Worte",380,[]],["Wortes",30,[]],["Wörter",2,[]]] },
+  "jehova~PROPN": { lemma: "Jehova", pos: "PROPN", sources: [["H3068",5122,[]],["G2962",18,["minority"]],["H0136",7,["minority"]]],
+    forms: [["Jehova",5100,[["Jehova","NOUN",22]]],["Jehovas",47,[]]] },
+};
+const POS = ["NOUN","PROPN","VERB","AUX","ADJ","ADV","DET","PRON","ADP","CCONJ","SCONJ","PART","NUM","INTJ"];
+const FLAG_LBL = { minority: ["Minderheit","warning"], posConflict: ["Wortart passt nicht","warning"], contentFunction: ["Inhalt ↔ Funktion","error"], properNoun: ["Eigenname","info"] };
+const VERSES = [
+  [43,1,1,"Im Anfang war das {Wort}, und das Wort war bei Gott"],[43,18,19,"{Der} Hohepriester nun fragte Jesum über seine Jünger"],[40,1,21,"und du sollst seinen Namen {Jesus} heißen"],
+  [1,1,1,"Im Anfang schuf {Gott} die Himmel und die Erde"],[2,3,15,"{Jehova}, der Gott eurer Väter, hat mich zu euch gesandt"],[19,119,105,"Dein {Wort} ist Leuchte meinem Fuße"],
+  [26,40,6,"Und er ging zu dem {Tore}, dessen Vorderseite gegen Osten gerichtet war"],[44,7,59,"und sie steinigten den Stephanus, welcher betete und {sprach}"],[45,8,28,"daß denen, die {Gott} lieben, alle Dinge zum Guten mitwirken"],
+  [66,13,1,"Und ich sah aus dem Meere ein {Tier} aufsteigen"],[5,6,4,"Höre, Israel: {Jehova}, unser Gott, ist ein einiger Jehova"],[42,2,11,"denn euch ist heute ein Erretter geboren, welcher ist Christus, der {Herr}"]];
+
+/* findings per check (dummy) */
+const FINDING_TPL = {
+  U1: [[1,"Herr","NOUN",null,null,"error","Inhaltswort ohne Grundtext"],[0,"der","DET",null,null,"info","Artikel hinzugefügt"],[6,"Tore","NOUN",null,null,"error","keine Zuordnungszeile (none)"],[4,"Jehova","PROPN",null,null,"error","Inhaltswort ohne Grundtext"]],
+  U2: [[1,null,null,"λόγος","G3056","error","Nomen ohne Deutsch"],[2,null,null,"ὁ","G3588","info","Artikel"],[7,null,null,"εἶπεν","G3004","error","Verb ohne Deutsch"]],
+  U3: [[4,null,null,"יְהוָה","H3068","error","Nomen ohne Deutsch"],[3,null,null,"אֵת","H0853","info","Objektmarker"],[10,null,null,"אֱלֹהֵינוּ","H0430","error","Nomen ohne Deutsch"]],
+  M3: [[1,"Der","DET","Ἰησοῦς","G2424","warning","Wortart DET ↔ N"],[11,"Herr","NOUN","ὁ","G3588","warning","Wortart NOUN ↔ T"],[8,"Gott","NOUN","τόν","G3588","warning","Wortart NOUN ↔ T"]],
+  M4: [[11,"Herr","NOUN","ὁ","G3588","error","Inhaltswort → Artikel"],[8,"Gott","NOUN","τόν","G3588","error","Inhaltswort → Artikel"]],
+  L2: [[6,"Tore","NOUN",null,null,"warning","Lemma »Tore« = Form, Dativ Sg."],[7,"sprach","VERB",null,null,"warning","Lemma »sprach« = Form, finit"]],
+  L5: [[9,"Tier","NOUN",null,null,"error","Tempus am Nomen (Past)"],[5,"Wort","NOUN",null,null,"error","Genus fehlt"]],
+};
+function findingsFor(code) {
+  const tpl = FINDING_TPL[code] ?? FINDING_TPL[code.startsWith("L") ? "L2" : code.startsWith("U") ? "U1" : "M3"];
+  return Array.from({ length: 12 }, (_, i) => { const [v, de, pos, or, st, sev, why] = tpl[i % tpl.length]; const vv = VERSES[(v + i) % VERSES.length];
+    return { check: code, severity: sev, bibleBookId: vv[0], chapter: vv[1], verse: vv[2], ctx: vv[3], elbWordId: 100000 + i * 37, stepWordId: st ? 5000 + i : undefined,
+      german: de ?? vv[3].match(/\{(.+?)\}/)[1], pos, original: or, strongs: st, detail: why, fixed: i === 5 }; });
+}
+
+/* ===================== search (transliteration tolerant) ===================== */
+const fold = s => s.toLowerCase().normalize("NFD").replace(/\p{Mn}/gu, "").replace(/[.\-ʼʽ'’]/g, "").replace(/ς/g, "σ")
+  .replace(/ph/g, "f").replace(/kh|ch/g, "x").replace(/sh|š/g, "s").replace(/ts|tz|ṣ/g, "z").replace(/w/g, "v");
+const skeleton = s => fold(s).replace(/[aeiouy]/g, "");
+function normStrongs(q) { const m = q.trim().toUpperCase().match(/^([GH])?0*(\d{1,4})[A-Z]?$/); if (!m) return null; return { lang: m[1], n: m[2].padStart(4, "0") }; }
+function searchOriginal(q) {
+  const out = []; const ns = normStrongs(q); const fq = fold(q); if (!fq) return out;
+  for (const e of LEX) {
+    let by = null;
+    if (ns && e.s.slice(1) === ns.n && (!ns.lang || ns.lang === e.lang)) by = "strongs";
+    else if (fold(e.w) === fq || fold(e.w).startsWith(fq)) by = "script";
+    else if (fold(e.t).startsWith(fq)) by = "translit";
+    else if (e.lang === "H" && fq.length >= 2 && skeleton(e.t).startsWith(skeleton(q)) && skeleton(q).length >= 2) by = "skeleton";
+    else if (e.g.toLowerCase().split(/[^a-z]+/).includes(fq)) by = "gloss";
+    if (by) out.push({ ...e, by });
+  }
+  const order = ["strongs","script","translit","skeleton","gloss"];
+  return out.sort((a, b) => order.indexOf(a.by) - order.indexOf(b.by) || b.occ - a.occ);
+}
+function searchGerman(q, pos) {
+  const fq = q.trim().toLowerCase(); if (!fq) return [];
+  const seen = new Map();
+  for (const [k, v] of Object.entries(GER)) {
+    if (pos && v.pos !== pos) continue;
+    const count = v.sources.reduce((a, s) => a + s[1], 0);
+    if (v.lemma.toLowerCase().startsWith(fq)) seen.set(k, { key: k, lemma: v.lemma, pos: v.pos, count, by: "lemma" });
+    else if (v.forms.some(f => f[0].toLowerCase().startsWith(fq))) seen.set(k, { key: k, lemma: v.lemma, pos: v.pos, count, by: "form" });
+  }
+  for (const e of LEX) for (const r of e.r) { const k = r[0].toLowerCase() + "~" + r[1];
+    if (!seen.has(k) && (!pos || r[1] === pos) && r[0].toLowerCase().startsWith(fq)) seen.set(k, { key: k, lemma: r[0], pos: r[1], count: r[2], by: "lemma" }); }
+  return [...seen.values()].sort((a, b) => b.count - a.count);
+}
+const lexOf = s => LEX.find(e => e.s === s) ?? { s, lang: s[0], w: "—", t: "—", g: "(kein Mock-Eintrag)", cls: "?", occ: 40, un: 1, r: [["(Beispiel)","NOUN",39,[]]] };
+function germanDetail(key) {
+  if (GER[key]) return GER[key];
+  const [l, pos] = key.split("~"); const lemma = l.charAt(0).toUpperCase() === l.charAt(0) ? l : l;
+  const sources = []; for (const e of LEX) for (const r of e.r) if (r[0].toLowerCase() === l.toLowerCase() && (!pos || r[1] === pos)) sources.push([e.s, r[2], r[3]]);
+  const display = (LEX.flatMap(e => e.r).find(r => r[0].toLowerCase() === l.toLowerCase()) ?? [l])[0];
+  return { lemma: display, pos, sources: sources.length ? sources.sort((a, b) => b[1] - a[1]) : [["none", 1, []]], forms: [[display, sources.reduce((a, s) => a + s[1], 0) || 1, []]] };
+}
+
+/* ===================== state ===================== */
+const S = { mode: "ok", t: "", book: "", check: "U1", facet: "", x: "o", q: "G2424", pos: "", trail: ["o:G2424"], text: "Jesus", expanded: null,
+  unmappedView: { german: "top", greek: "top", hebrew: "top" }, withFunction: false, heatMetric: "german", heatSel: null, donutSel: {}, page: 1 };
+
+const $ = s => document.querySelector(s);
+const fmt = n => n.toLocaleString("de-DE");
+const pct = (a, b) => (b ? (a / b * 100) : 0).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " %";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const bookAbbr = id => BOOKS[id - 1].abbr;
+const langAttr = s => s && s[0] === "H" ? 'lang="he" dir="rtl"' : 'lang="grc"';
+const sevLbl = { error: "Fehler", warning: "Prüfen", info: "Hinweis", ok: "Unauffällig" };
+function toast(msg) { $("#toast").textContent = msg; }
+function urlState() {
+  const p = new URLSearchParams(); if (S.t) p.set("t", S.t); if (S.book) p.set("book", S.book); p.set("check", S.check); if (S.facet) p.set("f", S.facet);
+  p.set("x", S.x); if (S.q) p.set("q", S.q); if (S.trail.length) p.set("trail", S.trail.join(",")); return "/edit/quality?" + p.toString().replace(/%2C/g, ",").replace(/%7E/g, "~").replace(/%3A/g, ":");
+}
+
+/* ===================== render pieces ===================== */
+function donut(id, slices, center, centerLabel) {
+  const total = slices.reduce((a, s) => a + s.value, 0); let off = 0; const sel = S.donutSel[id];
+  const segs = slices.map((s, i) => { const len = s.value / total * 100; const gap = Math.min(.6, len / 3);
+    const el = `<circle class="seg slot-${i + 1}" cx="20" cy="20" r="15.9" pathLength="100" stroke-dasharray="${Math.max(len - gap, .1)} ${100 - Math.max(len - gap, .1)}" stroke-dashoffset="${-off}" ${s.legit ? "data-legit" : ""} ${sel === s.key ? "data-active" : ""} data-donut="${id}" data-key="${s.key}"><title>${esc(s.label)}: ${fmt(s.value)}</title></circle>`;
+    off += len; return el; }).join("");
+  const active = slices.find(s => s.key === sel);
+  return `<div class="donut" ${sel ? "data-filtered" : ""}><div class="donut-body">
+    <div class="ring"><svg viewBox="0 0 40 40" aria-hidden="true"><circle class="track" cx="20" cy="20" r="15.9"/>${segs}</svg>
+      <div class="center"><b class="num">${fmt(active ? active.value : center)}</b><span>${esc(active ? active.label : centerLabel)}</span></div></div>
+    <ul class="slices">${slices.map((s, i) => `<li ${s.legit ? "data-legit" : ""}><span class="swatch slot-${i + 1}"></span>
+      <button class="btn-inline lbl" data-donut="${id}" data-key="${s.key}" aria-pressed="${sel === s.key}">${esc(s.label)}${s.legit ? ' <span class="muted">· meist korrekt</span>' : ""}</button>
+      <span class="num muted">${fmt(s.value)} · ${pct(s.value, total)}</span></li>`).join("")}</ul></div></div>`;
+}
+function ranked(items, opts = {}) {
+  const max = Math.max(...items.map(i => i.value), 1);
+  return `<ol class="ranked">${items.map(it => `<li ${opts.selected === it.key ? "data-selected" : ""}>
+    <div class="rk"><span class="lbl">${it.labelHtml}</span><span class="track" aria-hidden="true"><span class="bar" style="--v:${it.value / max}"></span></span>
+    <span class="val">${fmt(it.value)}${it.share != null ? `<small>${pct(it.value, it.share)}</small>` : ""}</span></div>
+    ${it.flags?.length ? `<div class="chips">${it.flags.map(f => `<span class="chip sev" data-sev="${FLAG_LBL[f][1]}">${FLAG_LBL[f][0]}</span>`).join("")}</div>` : ""}
+    ${it.after ?? ""}</li>`).join("")}</ol>`;
+}
+function bookList(counts) {
+  const max = Math.max(...counts.map(c => c[1]), 1);
+  return `<ol class="ranked">${counts.map(([id, v]) => `<li><div class="rk" data-section="${section(id)}"><button class="btn-inline lbl" data-book="${id}">${bookAbbr(id)}</button>
+    <span class="track" aria-hidden="true"><span class="bar" style="--v:${v / max}"></span></span><span class="val">${fmt(v)}</span></div></li>`).join("")}</ol>`;
+}
+function skeletonCard(h) { return `<div class="card" aria-busy="true"><h3>${h}</h3><div class="empty"><span class="skel"></span><span class="skel"></span><span class="skel"></span></div></div>`; }
+function errorBox(what) { return `<div class="err" role="alert"><span><b>${what}</b> konnte nicht geladen werden.</span><button class="btn btn-sm" data-retry>Erneut versuchen</button></div>`; }
+
+function renderHeader() {
+  return `<section class="page-head" aria-labelledby="h-title">
+    <h1 id="h-title">Datenqualität</h1>
+    <div class="stat-line"><span>Stand <b>12.11.2026 14:05</b></span><span><b>722.418</b> deutsche Wörter</span><span><b>448.312</b> Grundtextwörter</span>
+      <button class="btn btn-ghost btn-sm" data-refresh>${S.refreshing ? "Wird berechnet …" : "Neu berechnen"}</button></div>
+    <div class="banner">Daten sind älter als die letzte Änderung (12.11.2026 14:31, Massenersetzung »Theil« → »Teil«). <button class="btn-inline" data-refresh>Neu berechnen</button></div>
+    <div class="row facets" role="group" aria-label="Filter für die ganze Seite">
+      <span class="seg-group">${[["","Alle"],["ot","AT"],["nt","NT"]].map(([v, l]) => `<button class="btn btn-sm" data-t="${v}" aria-pressed="${S.t === v}">${l}</button>`).join("")}</span>
+      <label class="row"><span class="sr-only">Buch</span><select class="select" id="bookSel"><option value="">Alle Bücher</option>${BOOKS.filter(b => !S.t || (S.t === "ot") === b.ot).map(b => `<option value="${b.id}" ${String(b.id) === S.book ? "selected" : ""}>${b.abbr}</option>`).join("")}</select></label>
+      ${S.t || S.book ? `<button class="btn btn-ghost btn-sm" data-reset>Filter zurücksetzen</button>` : ""}
+    </div></section>`;
+}
+function renderTiles() {
+  const group = (g, label) => `<div class="tile-group"><h3>${label}</h3><div class="tiles">${CHECKS.filter(c => c.g === g).map(c => {
+    if (S.mode === "loading") return `<div class="tile" data-sev="info" aria-busy="true"><span class="t-head"><span>${c.code}</span></span><span class="t-title">${c.title}</span><span class="skel"></span></div>`;
+    const d = c.count - c.prev; const sev = c.count === 0 ? "ok" : c.sev;
+    return `<button class="tile" data-sev="${sev}" data-check="${c.code}" aria-current="${S.check === c.code}">
+      <span class="t-head"><span>${c.code}</span><span class="sev" data-sev="${sev}">${sevLbl[sev]}</span></span>
+      <span class="t-title">${c.title}</span><span class="t-val num">${fmt(c.count)}</span>
+      <span class="t-sub">${c.sub}${d ? ` · ${d > 0 ? "+" : "−"}${fmt(Math.abs(d))} seit letzter Berechnung` : ""}</span></button>`; }).join("")}</div></div>`;
+  return `<section aria-labelledby="h-over"><h2 id="h-over">Übersicht</h2><p>Klick auf eine Kachel öffnet die Befunde unten.</p>
+    ${S.mode === "error" ? errorBox("Die Übersicht") : group("mapping", "Zuordnung") + group("lemma", "Lemma")}</section>`;
+}
+function renderUnmapped() {
+  const card = side => {
+    const u = UNMAPPED[side]; if (S.mode === "loading") return skeletonCard(u.title);
+    const slices = u.byClass.map(([key, label, value, legit]) => ({ key, label, value, legit }));
+    const view = S.unmappedView[side];
+    const content = slices.filter(s => !s.legit).reduce((a, s) => a + s.value, 0);
+    let list;
+    if (view === "books") {
+      const counts = BOOKS.filter(b => side === "german" || (side === "greek") !== b.ot).map(b => [b.id, Math.round(((b.id * 7919) % 97) / 97 * 900 * (b.chapters / 30) + 5)]).sort((a, b) => b[1] - a[1]).slice(0, 12);
+      list = `<p class="muted">Top 12 Bücher (BookBarChart, Listenansicht)</p>` + bookList(counts);
+    } else {
+      list = ranked(u.top.map(([key, a, b, v]) => ({ key, value: S.withFunction ? v + 40 : v,
+        labelHtml: side === "german" ? `<button class="btn-inline" data-filter="d:${key.toLowerCase()}">${esc(a)}</button> <span class="muted">${b}</span>`
+          : `<button class="btn-inline" data-filter="o:${key}"><span class="orig" ${langAttr(key)}>${esc(a)}</span></button> <span class="muted">${key}</span>` })));
+    }
+    return `<div class="card"><div class="row spread"><h3>${u.title}</h3><span class="muted">${u.code}</span></div>
+      <p><span class="big num">${fmt(content)}</span> <span class="muted">Inhaltswörter · ${fmt(u.total)} gesamt</span></p>
+      ${donut(side, slices, u.total, u.unit)}
+      <div class="row spread"><b>${view === "books" ? "Nach Büchern" : "Häufigste (Inhaltswörter)"}</b>
+        <span class="row"><button class="btn btn-ghost btn-sm" data-uview="${side}">${view === "books" ? "Häufigste" : "Nach Büchern"}</button></span></div>
+      ${list}</div>`;
+  };
+  return `<section aria-labelledby="h-un"><h2 id="h-un">Ohne Zuordnung</h2>
+    <p>Gedämpfte Klassen (Artikel, Hilfsverben, Objektmarker, Lesarten) sind meist korrekt. Klick auf ein Segment filtert die Befunde.</p>
+    <label class="row fn-toggle"><input type="checkbox" id="withFn" ${S.withFunction ? "checked" : ""}> <span>auch Funktionswörter in »Häufigste«</span></label>
+    ${S.mode === "error" ? errorBox("Die Zuordnungslücken") : `<div class="panels">${card("german")}${card("greek")}${card("hebrew")}</div>`}</section>`;
+}
+function renderHeat() {
+  if (S.mode === "loading") return `<section aria-labelledby="h-heat"><h2 id="h-heat">Abdeckung je Kapitel</h2>${skeletonCard("C1")}</section>`;
+  const books = COVERAGE.filter(r => (!S.t || (S.t === "ot") === r.book.ot) && (!S.book || String(r.book.id) === S.book));
+  let rows = "", lastOt = null, ri = 0;
+  for (const r of books) {
+    if (r.book.ot !== lastOt) { rows += `<div class="heat-sep" role="presentation">${r.book.ot ? "Altes Testament" : "Neues Testament"}</div>`; lastOt = r.book.ot; }
+    rows += `<div class="heat-row" role="row"><span class="bk" role="rowheader">${r.book.abbr}</span><span class="heat-cells">${r.cells.map(c => {
+      const m = S.heatMetric === "german" ? c.unaligned : Math.round(c.unaligned * .8); const s = m / c.total; const key = r.book.id + ":" + c.chapter;
+      return `<button class="cell h${heatStep(s)}" role="gridcell" tabindex="${ri === 0 && c.chapter === 1 ? 0 : -1}" data-cell="${key}" data-row="${ri}" data-col="${c.chapter - 1}" aria-pressed="${S.heatSel === key}" title="${r.book.abbr} ${c.chapter}: ${pct(m, c.total)} (${m} von ${c.total})" aria-label="${r.book.abbr} ${c.chapter}: ${pct(m, c.total)}"></button>`; }).join("")}</span></div>`;
+    ri++;
+  }
+  let info = "Zelle wählen: Befunde des Kapitels erscheinen unten.";
+  if (S.heatSel) { const [b, c] = S.heatSel.split(":").map(Number); const cell = COVERAGE[b - 1].cells[c - 1];
+    info = `<b>${bookAbbr(b)} ${c}</b>: ${pct(cell.unaligned, cell.total)} nicht zugeordnet (${cell.unaligned} von ${cell.total}) · <a href="#" data-jump="/bible/${b}/${c}?map=1">Kapitel öffnen</a> · Befunde unten gefiltert`; }
+  return `<section aria-labelledby="h-heat"><h2 id="h-heat">Abdeckung je Kapitel</h2>
+    <p>C1 · Farbe = Anteil nicht zugeordneter Inhaltswörter (Artikel und Objektmarker ausgenommen), dunkel = schlecht.</p>
+    <div class="heat-tools"><span class="seg-group" role="group" aria-label="Messgröße"><button class="btn btn-sm" data-hm="german" aria-pressed="${S.heatMetric === "german"}">Deutsch</button><button class="btn btn-sm" data-hm="source" aria-pressed="${S.heatMetric === "source"}">Grundtext</button></span>
+      <span class="heat-legend" aria-hidden="true">0 %${[0,1,2,3,4,5].map(i => `<i class="h${i}"></i>`).join("")}≥ 20 % <span>(Stufen 1 · 2 · 5 · 10 · 20 %)</span></span></div>
+    <div class="heat" role="grid" aria-label="Abdeckung: Bücher × Kapitel" id="heat">${rows}</div>
+    <p class="heat-info" aria-live="polite">${info}</p></section>`;
+}
+function renderExplorer() {
+  const tabs = `<span class="seg-group" role="group" aria-label="Seite"><button class="btn" data-x="o" aria-pressed="${S.x === "o"}">Grundtext</button><button class="btn" data-x="d" aria-pressed="${S.x === "d"}">Deutsch</button></span>`;
+  const posSel = `<label class="field"><span>Wortart</span><select class="select" id="posSel" ${S.x === "o" ? "disabled" : ""}><option value="">Alle Wortarten</option>${POS.map(p => `<option ${S.pos === p ? "selected" : ""}>${p}</option>`).join("")}</select></label>`;
+  const input = `<label class="field"><span>${S.x === "o" ? "Strong's, Wort, Umschrift oder Englisch" : "Lemma oder Wortform"}</span>
+    <input class="input" id="q" type="search" value="${esc(S.text)}" placeholder="${S.x === "o" ? "z. B. G2424, iesous, ιησους, dbr, word" : "z. B. Gott, Jesu, der"}" autocomplete="off"></label>`;
+  const crumbs = S.trail.map((c, i) => { const [side, v] = [c[0], c.slice(2)]; const label = side === "o" ? `${v} <span class="orig" ${langAttr(v)}>${esc(lexOf(v).w)}</span>` : (() => { const [l, p] = v.split("~"); const d = germanDetail(v); return `${esc(d.lemma ?? l)}${p ? ` <span class="muted">(${p})</span>` : ""}`; })();
+    return `<li>${i === S.trail.length - 1 ? `<span aria-current="page">${label}</span>` : `<button class="btn-inline" data-crumb="${i}">${label}</button>`}</li>`; }).join("");
+  const trail = S.trail.length ? `<nav class="trail" aria-label="Filterverlauf"><div class="row spread"><ol><li class="muted">Filterverlauf:</li>${crumbs}</ol><button class="btn btn-ghost btn-sm" data-cleartrail>Verlauf leeren</button></div></nav>` : "";
+  return `<section aria-labelledby="h-ex"><h2 id="h-ex">Erkunden</h2>
+    <p>Wie wurde ein Wort zugeordnet? Klick auf eine Zeile startet einen neuen Filter auf der anderen Seite; »Stellen« zeigt die Verse.</p>
+    <div class="explorer"><div class="search-row">${tabs}${input}${posSel}</div>${trail}
+      <p class="url-line">URL: ${esc(urlState())}</p>
+      <div id="exResult" aria-live="polite">${renderExplorerResult()}</div></div></section>`;
+}
+function hitsList(kind, key) {
+  const rows = VERSES.slice(0, 6).map((v, i) => ({ v, id: 200000 + i * 13 }));
+  return `<div class="expand"><ul class="cands">${rows.map(({ v, id }) => `<li class="row spread"><span><b>${bookAbbr(v[0])} ${v[1]},${v[2]}</b> <span class="ctx">${esc(v[3]).replace(/\{(.+?)\}/, "<mark>$1</mark>")}</span></span>
+      <span class="row">${jumpButtons({ bibleBookId: v[0], chapter: v[1], verse: v[2], elbWordId: id, stepWordId: 7000 + id % 97, strongs: kind === "o" ? key : undefined, lemma: kind === "d" ? key : undefined })}</span></li>`).join("")}</ul>
+    <div class="row muted">1–6 von 21 <button class="btn btn-sm">Weitere</button></div></div>`;
+}
+function renderExplorerResult() {
+  if (S.mode === "loading") return `<div class="empty" aria-busy="true"><span class="skel"></span><span class="skel"></span></div>`;
+  if (S.mode === "error") return errorBox("Die Suche");
+  if (S.x === "o") {
+    if (!S.q) { const c = searchOriginal(S.text);
+      if (!S.text.trim()) return `<div class="empty"><b>Suchbegriff eingeben</b>Vokale und Akzente werden ignoriert; Englisch findet Glossen; »dbr« findet דָּבָר.</div>`;
+      if (!c.length) return `<div class="empty"><b>Nichts gefunden für »${esc(S.text)}«.</b>Vokale/Akzente werden ignoriert; Englisch findet Glossen. Beispiele im Mock: Jesus, theos, kyrios, logos, dabar, dbr, elohim, YHWH, word, lord.</div>`;
+      return `<p class="muted">${c.length} Treffer – Enter nimmt den ersten.</p><ul class="cands">${c.map(e => `<li><button class="btn" data-filter="o:${e.s}"><b>${e.s}</b> <span class="orig" ${langAttr(e.s)}>${e.w}</span> <i>${e.t}</i> <span class="muted">${esc(e.g)} · ${fmt(e.occ)}×</span> <span class="chip">${{ strongs: "Strong's", script: "Grundtext", translit: "Umschrift", skeleton: "Konsonanten", gloss: "Englisch" }[e.by]}</span></button></li>`).join("")}</ul>`; }
+    const e = lexOf(S.q); const total = e.r.reduce((a, r) => a + r[2], 0);
+    const items = e.r.map(([l, p, v, flags]) => ({ key: l.toLowerCase() + "~" + p, value: v, share: total, flags,
+      labelHtml: `<button class="btn-inline" data-filter="d:${l.toLowerCase()}~${p}">${esc(l)}</button> <span class="muted">${p}</span>`,
+      after: `<div class="row"><button class="btn btn-ghost btn-sm" data-expand="${l}~${p}" aria-expanded="${S.expanded === l + "~" + p}">${S.expanded === l + "~" + p ? "Stellen ausblenden" : "Stellen"}</button><a class="btn btn-ghost btn-sm" href="#" data-jump="/edit/lemmas?dlg=bulk&from=${encodeURIComponent(l)}&orig=${e.s}">Ersetzen</a></div>${S.expanded === l + "~" + p ? hitsList("o", e.s) : ""}` }));
+    return `<div class="result"><div class="card res-head"><h3>${e.s} – <span class="orig" ${langAttr(e.s)}>${e.w}</span> – <span class="tr">${e.t}</span></h3>
+        <p class="muted"><span lang="en">${esc(e.g)}</span> · Klasse ${e.cls} · <a href="#" data-jump="/bible/strongs/${e.s}">Strong's-Seite</a></p>
+        <div class="stat-line"><span><b>${fmt(e.occ)}</b> Vorkommen</span><span><b>${fmt(e.occ - e.un)}</b> zugeordnet</span><span><b>${fmt(e.un)}</b> ohne Deutsch</span></div>
+        <b>Deutsche Wiedergaben</b><span class="sr-only">${e.r.length} Wiedergaben für ${e.s}</span>${ranked(items)}</div>
+      <div class="card"><h3>Anteile</h3>${donut("ex-o", e.r.slice(0, 8).map(([l, p, v]) => ({ key: l + "~" + p, label: `${l} (${p})`, value: v })), total, "zugeordnet")}</div></div>`;
+  }
+  if (!S.q) { const c = searchGerman(S.text, S.pos);
+    if (!S.text.trim()) return `<div class="empty"><b>Lemma oder Wortform eingeben</b>Groß-/Kleinschreibung egal, Präfix genügt.</div>`;
+    if (!c.length) return `<div class="empty"><b>Nichts gefunden für »${esc(S.text)}«${S.pos ? ` (${S.pos})` : ""}.</b>Beispiele im Mock: Gott, Herr, Jesus, Jesu, der, Wort, Jehova.</div>`;
+    return `<p class="muted">${c.length} Treffer</p><ul class="cands">${c.map(e => `<li><button class="btn" data-filter="d:${e.key}"><b>${esc(e.lemma)}</b> <span class="muted">${e.pos} · ${fmt(e.count)}×</span> <span class="chip">${e.by === "form" ? "Form" : "Lemma"}</span></button></li>`).join("")}</ul>`; }
+  const d = germanDetail(S.q); const total = d.sources.reduce((a, s) => a + s[1], 0);
+  const items = d.sources.map(([k, v, flags]) => { const e = k.length > 4 && /^[GH]\d/.test(k) ? lexOf(k) : null;
+    return { key: k, value: v, share: total, flags,
+      labelHtml: e ? `<button class="btn-inline" data-filter="o:${k}">${k}</button> <span class="orig" ${langAttr(k)}>${e.w}</span> <span class="muted" lang="en">${esc(e.g)}</span>` : `<span class="muted">${k === "added" ? "hinzugefügt (ohne Grundtext)" : "ohne Zuordnung"}</span>`,
+      after: `<div class="row"><button class="btn btn-ghost btn-sm" data-expand="${k}" aria-expanded="${S.expanded === k}">${S.expanded === k ? "Stellen ausblenden" : "Stellen"}</button></div>${S.expanded === k ? hitsList("d", d.lemma) : ""}` }; });
+  return `<div class="result"><div class="card res-head"><h3>${esc(d.lemma)} <span class="muted">${d.pos ?? "alle Wortarten"}</span></h3>
+      <div class="stat-line"><span><b>${fmt(total)}</b> Vorkommen</span><span><b>${d.sources.filter(s => /^[GH]/.test(s[0])).length}</b> Strong's</span>
+        <a href="#" data-jump="/edit/lemmas?dlg=bulk&from=${encodeURIComponent(d.lemma)}">Massenersetzung öffnen</a></div>
+      <b>Grundtext dahinter</b>${ranked(items)}</div>
+    <div class="card"><h3>Formen</h3><ul class="cands">${d.forms.map(([f, c, other]) => `<li><div class="rk"><span class="lbl">${esc(f)}</span><span></span><span class="val">${fmt(c)}</span></div>
+      ${other.length ? `<div class="chips">auch als ${other.map(([l, p, n]) => `<button class="chip btn-inline" data-filter="d:${l.toLowerCase()}~${p}">${esc(l)} ${p} · ${n}×</button>`).join(" ")}</div>` : ""}</li>`).join("")}</ul></div></div>`;
+}
+function jumpButtons(f) {
+  const b = f.bibleBookId, c = f.chapter, v = f.verse; const out = [];
+  out.push(`<a class="btn btn-sm" href="#" data-jump="/bible/${b}/${c}?map=${v}&w=${f.elbWordId}${f.stepWordId ? "&s=" + f.stepWordId : ""}#v${v}">Zuordnung<span class="sr-only"> (neuer Tab)</span></a>`);
+  out.push(`<a class="btn btn-sm" href="#" data-jump="/edit/lemmas/${b}/${c}?word=${f.elbWordId}">Lemma<span class="sr-only"> (neuer Tab)</span></a>`);
+  if (f.strongs) out.push(`<button class="btn btn-sm btn-ghost" data-filter="o:${f.strongs}">Filtern</button>`);
+  else if (f.lemma || f.german) out.push(`<button class="btn btn-sm btn-ghost" data-filter="d:${(f.lemma ?? f.german).toLowerCase()}${f.pos ? "~" + f.pos : ""}">Filtern</button>`);
+  return out.join("");
+}
+function renderFindings() {
+  const c = CHECKS.find(x => x.code === S.check);
+  let body;
+  if (S.mode === "loading") body = `<div class="empty" aria-busy="true"><span class="skel"></span><span class="skel"></span><span class="skel"></span></div>`;
+  else if (S.mode === "error") body = errorBox("Die Befunde");
+  else if (c.count === 0) body = `<div class="empty"><b>Keine Befunde – gut so.</b><span class="sev" data-sev="ok">Unauffällig</span></div>`;
+  else {
+    const rows = findingsFor(c.code);
+    const sev = f => `<span class="sev" data-sev="${f.severity}">${sevLbl[f.severity]}</span>`;
+    const ref = f => `<b>${bookAbbr(f.bibleBookId)} ${f.chapter},${f.verse}</b>${f.fixed ? ' <span class="badge">bereits behoben?</span>' : ""}`;
+    const orig = f => f.original ? `<span class="orig" ${langAttr(f.strongs)}>${esc(f.original)}</span> <span class="muted">${f.strongs}</span>` : '<span class="muted">—</span>';
+    const de = f => `${esc(f.german)} ${f.pos ? `<span class="muted">${f.pos}</span>` : ""}`;
+    body = `<table class="findings"><thead><tr><th scope="col">Stelle</th><th scope="col">Deutsch</th><th scope="col">Grundtext</th><th scope="col" class="col-gloss">Kontext</th><th scope="col">Grund</th><th scope="col"><span class="sr-only">Schwere</span></th><th scope="col">Öffnen</th></tr></thead>
+      <tbody>${rows.map(f => `<tr><td>${ref(f)}</td><td>${de(f)}</td><td>${orig(f)}</td><td class="col-gloss ctx">${esc(f.ctx).replace(/\{(.+?)\}/, "<mark>$1</mark>")}</td><td>${esc(f.detail)}</td><td>${sev(f)}</td><td><span class="jumps">${jumpButtons(f)}</span></td></tr>`).join("")}</tbody></table>
+      <ul class="fcards">${rows.map(f => `<li class="card"><div class="row spread">${ref(f)}${sev(f)}</div><div>${de(f)} → ${orig(f)}</div><div class="ctx">${esc(f.ctx).replace(/\{(.+?)\}/, "<mark>$1</mark>")}</div><div class="muted">${esc(f.detail)}</div><div class="row">${jumpButtons(f)}</div></li>`).join("")}</ul>
+      <div class="pager"><span class="muted">1–12 von ${fmt(c.count)}</span><span class="row"><label class="row"><span>Pro Seite</span><select class="select"><option>50</option><option>100</option><option>250</option></select></label>
+        <button class="btn btn-sm" disabled>Zurück</button><span>Seite 1</span><button class="btn btn-sm">Weiter</button></span></div>`;
+  }
+  const facets = [S.facet && `Klasse: ${S.facet}`, S.heatSel && `Kapitel: ${bookAbbr(+S.heatSel.split(":")[0])} ${S.heatSel.split(":")[1]}`, S.book && `Buch: ${bookAbbr(+S.book)}`, S.t && (S.t === "ot" ? "AT" : "NT")].filter(Boolean);
+  return `<section aria-labelledby="h-f"><h2 id="h-f">Befunde · ${c.code} ${c.title}</h2>
+    <div class="f-tools"><span class="chips">${facets.length ? facets.map(f => `<span class="chip">${f}</span>`).join("") + `<button class="btn btn-ghost btn-sm" data-clearf>Facetten entfernen</button>` : '<span class="muted">Keine Facetten</span>'}</span>
+      <label class="row"><input type="checkbox" checked> <span>nur Inhaltswörter</span></label></div>${body}</section>`;
+}
+function render() {
+  const keepFocus = document.activeElement?.id;
+  if (S.mode === "never") {
+    $("#main").innerHTML = renderHeader().replace(/<div class="banner">[\s\S]*?<\/div>/, "") + `<div class="empty"><b>Noch nicht berechnet.</b>Die Prüfdaten werden einmalig berechnet (ca. 20 s) und danach nach jeder Massenänderung automatisch erneuert.<button class="btn btn-primary" data-refresh>Jetzt berechnen</button></div>`;
+  } else $("#main").innerHTML = renderHeader() + renderTiles() + renderUnmapped() + renderHeat() + renderExplorer() + renderFindings();
+  if (keepFocus) { const el = document.getElementById(keepFocus); if (el) { el.focus(); if (el.setSelectionRange && el.value) el.setSelectionRange(el.value.length, el.value.length); } }
+}
+
+/* ===================== interactions ===================== */
+function setFilter(token) {
+  const side = token[0], v = token.slice(2);
+  S.x = side; S.q = v; S.expanded = null; S.text = side === "o" ? v : germanDetail(v).lemma;
+  if (side === "d") S.pos = v.split("~")[1] ?? "";
+  if (S.trail[S.trail.length - 1] !== token) S.trail = [...S.trail, token].slice(-8);
+  render(); $("#h-ex").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  $("#h-ex").setAttribute("tabindex", "-1"); $("#h-ex").focus({ preventScroll: true });
+}
+document.addEventListener("click", ev => {
+  const t = ev.target.closest("[data-theme-set],[data-state],#mPhone,[data-check],[data-t],[data-reset],[data-donut],[data-uview],[data-book],[data-hm],[data-cell],[data-x],[data-filter],[data-crumb],[data-cleartrail],[data-expand],[data-jump],[data-refresh],[data-clearf],[data-retry]");
+  if (!t) return; const d = t.dataset;
+  if (d.themeSet) { document.querySelectorAll("[data-theme-set]").forEach(b => b.setAttribute("aria-pressed", b === t)); d.themeSet === "system" ? document.documentElement.removeAttribute("data-theme") : document.documentElement.setAttribute("data-theme", d.themeSet); return; }
+  if (d.state) { document.querySelectorAll("[data-state]").forEach(b => b.setAttribute("aria-pressed", b === t)); S.mode = d.state; return render(); }
+  if (t.id === "mPhone") { const on = t.getAttribute("aria-pressed") !== "true"; t.setAttribute("aria-pressed", on); on ? $("#frame").setAttribute("data-phone", "") : $("#frame").removeAttribute("data-phone"); return; }
+  if (d.jump) { ev.preventDefault(); return toast("Neuer Tab: " + d.jump); }
+  if (d.check) { S.check = d.check; S.facet = ""; render(); return $("#h-f").scrollIntoView({ block: "start" }); }
+  if (d.t !== undefined) { S.t = d.t; S.book = ""; return render(); }
+  if ("reset" in d) { S.t = ""; S.book = ""; return render(); }
+  if (d.donut) { S.donutSel[d.donut] = S.donutSel[d.donut] === d.key ? null : d.key;
+    if (UNMAPPED[d.donut]) { S.check = UNMAPPED[d.donut].code; S.facet = S.donutSel[d.donut] ?? ""; } return render(); }
+  if (d.uview) { S.unmappedView[d.uview] = S.unmappedView[d.uview] === "books" ? "top" : "books"; return render(); }
+  if (d.book) { S.book = d.book; return render(); }
+  if (d.hm) { S.heatMetric = d.hm; return render(); }
+  if (d.cell) { S.heatSel = S.heatSel === d.cell ? null : d.cell; S.check = S.heatMetric === "german" ? "U1" : (+d.cell.split(":")[0] > 39 ? "U2" : "U3"); render(); return document.querySelector(`[data-cell="${d.cell}"]`)?.focus(); }
+  if (d.x) { if (S.x !== d.x) { S.x = d.x; S.q = ""; S.text = ""; S.pos = ""; } render(); return $("#q").focus(); }
+  if (d.filter) return setFilter(d.filter);
+  if (d.crumb) { const i = +d.crumb; const tok = S.trail[i]; S.trail = S.trail.slice(0, i); return setFilter(tok); }
+  if ("cleartrail" in d) { S.trail = S.q ? [S.x + ":" + S.q] : []; return render(); }
+  if (d.expand) { S.expanded = S.expanded === d.expand ? null : d.expand; return render(); }
+  if ("refresh" in d) { S.refreshing = true; if (S.mode === "never") S.mode = "ok"; render(); setTimeout(() => { S.refreshing = false; render(); toast("Neu berechnet (Mock)."); }, 1500); return; }
+  if ("clearf" in d) { S.facet = ""; S.heatSel = null; S.book = ""; S.t = ""; S.donutSel = {}; return render(); }
+  if ("retry" in d) { document.querySelectorAll("[data-state]").forEach(b => b.setAttribute("aria-pressed", b.dataset.state === "ok")); S.mode = "ok"; return render(); }
+});
+let deb; document.addEventListener("input", ev => {
+  if (ev.target.id === "q") { S.text = ev.target.value; clearTimeout(deb); deb = setTimeout(() => {
+      S.q = ""; const ns = S.x === "o" ? searchOriginal(S.text) : []; if (S.x === "o" && ns.length === 1 && ns[0].by === "strongs") return setFilter("o:" + ns[0].s);
+      $("#exResult").innerHTML = renderExplorerResult(); }, 250); }
+});
+document.addEventListener("change", ev => {
+  if (ev.target.id === "bookSel") { S.book = ev.target.value; render(); }
+  if (ev.target.id === "posSel") { S.pos = ev.target.value; if (S.q) { const l = S.q.split("~")[0]; S.q = ""; S.text = germanDetail(l + (S.pos ? "~" + S.pos : "")).lemma || l; } $("#exResult").innerHTML = renderExplorerResult(); }
+  if (ev.target.id === "withFn") { S.withFunction = ev.target.checked; render(); }
+});
+document.addEventListener("keydown", ev => {
+  if (ev.target.id === "q" && ev.key === "Enter") { clearTimeout(deb); S.q = "";
+    const first = S.x === "o" ? searchOriginal(S.text)[0] : searchGerman(S.text, S.pos)[0];
+    if (first) setFilter(S.x === "o" ? "o:" + first.s : "d:" + first.key); return; }
+  const cell = ev.target.closest?.(".cell"); if (!cell) return;
+  const r = +cell.dataset.row, c = +cell.dataset.col; let next = null;
+  if (ev.key === "ArrowRight") next = [r, c + 1]; if (ev.key === "ArrowLeft") next = [r, c - 1];
+  if (ev.key === "ArrowDown") next = [r + 1, c]; if (ev.key === "ArrowUp") next = [r - 1, c];
+  if (!next) return; ev.preventDefault();
+  let el = document.querySelector(`.cell[data-row="${next[0]}"][data-col="${next[1]}"]`);
+  if (!el && (ev.key === "ArrowDown" || ev.key === "ArrowUp")) { const row = document.querySelectorAll(`.cell[data-row="${next[0]}"]`); el = row[row.length - 1]; }
+  if (el) { cell.tabIndex = -1; el.tabIndex = 0; el.focus(); }
+});
+render();
+</script>
+</body>
+</html>

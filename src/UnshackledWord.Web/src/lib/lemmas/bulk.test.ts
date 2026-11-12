@@ -184,6 +184,13 @@ describe("URL state", () => {
     expect(parsed.size).toBe(100);
   });
 
+  it("prefills the search step from from/orig (data-quality jump links)", () => {
+    const parsed = parseBulkUrl(new URLSearchParams("dlg=search&from=Gott&orig=G2316&orig=bogus"));
+    expect(parsed.step).toBe("search");
+    expect(parsed.prefill).toEqual({ from: ["Gott"], original: ["G2316"] });
+    expect(parseBulkUrl(new URLSearchParams("dlg=search")).prefill).toBeUndefined();
+  });
+
   it("opens the search step when a review link has no usable search", () => {
     expect(parseBulkUrl(new URLSearchParams("dlg=review&page=2")).step).toBe("search");
     expect(parseBulkUrl(new URLSearchParams("dlg=review&from=a&to=a")).step).toBe("search");

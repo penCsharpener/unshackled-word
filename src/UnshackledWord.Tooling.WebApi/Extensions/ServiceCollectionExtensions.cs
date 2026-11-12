@@ -25,6 +25,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<BackupFileService>();
         services.AddScoped<Endpoints.Lemmas.ILemmaRepository, Endpoints.Lemmas.LemmaRepository>();
         services.AddScoped<Endpoints.Lemmas.ILemmaBulkRepository, Endpoints.Lemmas.LemmaBulkRepository>();
+        services.AddSingleton<Endpoints.DataQuality.StrongsLexiconIndex>();
+        services.AddSingleton<Endpoints.DataQuality.DqRefreshCoordinator>();
+        services.AddScoped<Endpoints.DataQuality.IDqFactsRepository, Endpoints.DataQuality.DqFactsRepository>();
+        services.AddScoped<Endpoints.DataQuality.IDqCheckRepository, Endpoints.DataQuality.DqCheckRepository>();
+        services.AddScoped<Endpoints.DataQuality.IDqExplorerRepository, Endpoints.DataQuality.DqExplorerRepository>();
+        services.AddScoped<Endpoints.DataQuality.DqOverviewService>();
         return services;
     }
 }

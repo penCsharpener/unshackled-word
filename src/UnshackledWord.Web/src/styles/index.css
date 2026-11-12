@@ -27,6 +27,18 @@
   --uw-chart-7: #6250d6;
   --uw-chart-8: #e34948;
   --uw-chart-empty: oklch(0.9 0.006 80);
+  /* Sequential heat ramp (CoverageHeatmap): 0 = no gap ... 5 = largest gap. */
+  --uw-heat-0: #f4f2ee;
+  --uw-heat-1: #cde2fb;
+  --uw-heat-2: #86b6ef;
+  --uw-heat-3: #3987e5;
+  --uw-heat-4: #1c5cab;
+  --uw-heat-5: #0d366b;
+  /* Status colours (data-quality severity); always paired with an icon and a label. */
+  --uw-sev-error: #d03b3b;
+  --uw-sev-warning: #fab219;
+  --uw-sev-info: #2a78d6;
+  --uw-sev-ok: #0ca30c;
 }
 
 @media (min-width: 48rem) {
@@ -58,6 +70,17 @@
   --uw-chart-7: #9085e9;
   --uw-chart-8: #e66767;
   --uw-chart-empty: oklch(0.3 0.01 60);
+  /* Dark steps run toward light: more gap = brighter. */
+  --uw-heat-0: #2b2a27;
+  --uw-heat-1: #184f95;
+  --uw-heat-2: #256abf;
+  --uw-heat-3: #3987e5;
+  --uw-heat-4: #6da7ec;
+  --uw-heat-5: #b7d3f6;
+  --uw-sev-error: #d03b3b;
+  --uw-sev-warning: #fab219;
+  --uw-sev-info: #2a78d6;
+  --uw-sev-ok: #0ca30c;
 }
 
 @theme inline {
@@ -82,6 +105,16 @@
   --color-chart-7: var(--uw-chart-7);
   --color-chart-8: var(--uw-chart-8);
   --color-chart-empty: var(--uw-chart-empty);
+  --color-heat-0: var(--uw-heat-0);
+  --color-heat-1: var(--uw-heat-1);
+  --color-heat-2: var(--uw-heat-2);
+  --color-heat-3: var(--uw-heat-3);
+  --color-heat-4: var(--uw-heat-4);
+  --color-heat-5: var(--uw-heat-5);
+  --color-sev-error: var(--uw-sev-error);
+  --color-sev-warning: var(--uw-sev-warning);
+  --color-sev-info: var(--uw-sev-info);
+  --color-sev-ok: var(--uw-sev-ok);
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;

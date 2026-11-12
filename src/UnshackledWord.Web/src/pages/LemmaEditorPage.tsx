@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useBlocker, useParams } from "react-router";
+import { Link, useBlocker, useParams, useSearchParams } from "react-router";
 import { BibleChapterPicker } from "@/components/BibleChapterPicker";
 import { Button, buttonClasses } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
@@ -140,6 +140,10 @@ function ChapterEditor({
   canEdit: boolean;
   books: readonly BibleStructureBook[];
 }) {
+  const [searchParams] = useSearchParams();
+  // `?word=<elbWordId>` (data-quality jump) opens the grid on that word
+  const wordParam = searchParams.get("word");
+  const focusWordId = wordParam && /^\d+$/.test(wordParam) ? Number(wordParam) : undefined;
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const maps = useLemmaValueMaps(true);
@@ -422,6 +426,7 @@ function ChapterEditor({
           onEdit={onEdit}
           onResetRow={onResetRow}
           onActiveWordChange={setActiveWord}
+          focusWordId={focusWordId}
           onSave={() => void save()}
           headerActions={
             canEdit

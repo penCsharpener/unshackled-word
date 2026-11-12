@@ -75,6 +75,14 @@ export function UserMenu() {
           >
             {t("lemmas.menu")}
           </Link>
+          <Link
+            role="menuitem"
+            to="/edit/quality"
+            className="rounded-md px-2 py-1 hover:bg-surface-muted"
+            onClick={() => setOpen(false)}
+          >
+            {t("quality.nav")}
+          </Link>
           {user.roles?.includes("admin") && (
             <Link
               role="menuitem"

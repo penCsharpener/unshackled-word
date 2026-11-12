@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { AdminInvitationsPage } from "@/pages/AdminInvitationsPage";
 import { BiblePage } from "@/pages/BiblePage";
 import { ChapterPage } from "@/pages/ChapterPage";
+import { DataQualityPage } from "@/pages/DataQualityPage";
 import { ForgotPasswordPage, MagicLinkRequestPage } from "@/pages/EmailRequestPage";
 import { HomePage } from "@/pages/HomePage";
 import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
         element: <LemmaEditorPage />,
         handle: { layout: "fill" },
       },
+      { path: "edit/quality", element: <DataQualityPage /> },
       { path: "admin/invitations", element: <AdminInvitationsPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

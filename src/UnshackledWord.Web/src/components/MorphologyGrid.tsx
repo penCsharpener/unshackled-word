@@ -53,6 +53,8 @@ export interface MorphologyGridProps {
   onResetRow: (wordId: number) => void;
   /** The row under the cursor (or focused card), for the context line. */
   onActiveWordChange?: (word: LemmaWord | null) => void;
+  /** Word to scroll to and activate once it is in `words` (e.g. `?word=` of the data-quality jump); applied once per id. */
+  focusWordId?: number;
   /** Ctrl+S inside the grid. */
   onSave?: () => void;
   /**
@@ -237,6 +239,7 @@ export function MorphologyGrid({
   onEdit,
   onResetRow,
   onActiveWordChange,
+  focusWordId,
   onSave,
   headerActions,
 }: MorphologyGridProps) {
@@ -279,6 +282,8 @@ export function MorphologyGrid({
     onActiveWordChange?.(activeWord);
   }, [activeWord, onActiveWordChange]);
 
+  const focusedFromProp = useRef<number | undefined>(undefined);
+
   const virtualizer = useVirtualizer({
     count: words.length,
     getScrollElement: () => scrollRef.current,
@@ -320,6 +325,16 @@ export function MorphologyGrid({
     element.style.setProperty("--lemma-pad-bottom", `${Math.max(0, padBottom)}px`);
     element.style.setProperty("--lemma-pad-gap", `${Math.max(0, gapHeight)}px`);
   });
+
+  useEffect(() => {
+    if (focusWordId === undefined || focusedFromProp.current === focusWordId) return;
+    const index = indexById.get(focusWordId);
+    if (index === undefined) return;
+    focusedFromProp.current = focusWordId;
+    setActive({ wordId: focusWordId, col: "lemma" });
+    // after layout: the scroll container is measured only once the rows are mounted
+    requestAnimationFrame(() => virtualizer.scrollToIndex(index, { align: "center" }));
+  }, [focusWordId, indexById, virtualizer]);
 
   // Moves the real focus to the cursor cell after keyboard navigation.
   // biome-ignore lint/correctness/useExhaustiveDependencies: runs only on explicit focus requests
