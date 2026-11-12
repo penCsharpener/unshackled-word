@@ -67,6 +67,14 @@ export function UserMenu() {
           >
             {t("auth.passkeys.title")}
           </Link>
+          <Link
+            role="menuitem"
+            to="/edit/lemmas"
+            className="rounded-md px-2 py-1 hover:bg-surface-muted"
+            onClick={() => setOpen(false)}
+          >
+            {t("lemmas.menu")}
+          </Link>
           {user.roles?.includes("admin") && (
             <Link
               role="menuitem"

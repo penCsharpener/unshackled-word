@@ -23,6 +23,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
         services.AddScoped<BackupFileService>();
+        services.AddScoped<Endpoints.Lemmas.ILemmaRepository, Endpoints.Lemmas.LemmaRepository>();
+        services.AddScoped<Endpoints.Lemmas.ILemmaBulkRepository, Endpoints.Lemmas.LemmaBulkRepository>();
         return services;
     }
 }

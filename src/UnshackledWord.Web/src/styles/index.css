@@ -821,3 +821,64 @@
     color: var(--color-fg);
   }
 }
+
+@layer components {
+  /* Lemma editor grid: column widths are measured from the labels and set as --lemma-cols. */
+  .lemma-row {
+    display: grid;
+    grid-template-columns: var(--lemma-cols);
+    width: max-content;
+    min-width: 100%;
+  }
+
+  /* Virtualized rows: spacers stand in for the rows outside the window. */
+  /* Phones: the page scrolls, the card list gets a viewport-based window so it can be virtualized. */
+  .lemma-cards-height {
+    height: calc(100dvh - var(--app-header-h) - 8rem);
+    min-height: 20rem;
+  }
+
+  .lemma-pad-top {
+    height: var(--lemma-pad-top, 0px);
+  }
+
+  /* Review list: a row after a gap (kept cursor row apart from the window) is pushed down by the gap. */
+  [data-gap] {
+    margin-top: var(--lemma-pad-gap, 0px);
+  }
+
+  .lemma-pad-gap {
+    height: var(--lemma-pad-gap, 0px);
+  }
+
+  .lemma-pad-bottom {
+    height: var(--lemma-pad-bottom, 0px);
+  }
+}
+
+@layer components {
+  /* Bulk lemma replace review list: checkbox | place | context | change | verse button. */
+  .bulk-row {
+    display: grid;
+    grid-template-columns: 1.5rem 6rem minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    column-gap: calc(var(--spacing) * 3);
+  }
+
+  @media (width < 48rem) {
+    .bulk-row {
+      grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+      row-gap: calc(var(--spacing) * 1);
+    }
+
+    .bulk-ctx {
+      grid-column: 2 / -1;
+      grid-row: 2;
+    }
+
+    .bulk-orig {
+      grid-column: 2 / -1;
+      grid-row: 3;
+    }
+  }
+}

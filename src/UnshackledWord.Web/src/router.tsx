@@ -5,6 +5,7 @@ import { BiblePage } from "@/pages/BiblePage";
 import { ChapterPage } from "@/pages/ChapterPage";
 import { ForgotPasswordPage, MagicLinkRequestPage } from "@/pages/EmailRequestPage";
 import { HomePage } from "@/pages/HomePage";
+import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
 import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PasskeysPage } from "@/pages/PasskeysPage";
@@ -30,6 +31,12 @@ export const router = createBrowserRouter([
       { path: "magic-link-login", element: <MagicLinkLoginPage /> },
       { path: "verify-email", element: <VerifyEmailPage /> },
       { path: "account/passkeys", element: <PasskeysPage /> },
+      { path: "edit/lemmas", element: <LemmaEditorPage />, handle: { layout: "fill" } },
+      {
+        path: "edit/lemmas/:bookId/:chapter",
+        element: <LemmaEditorPage />,
+        handle: { layout: "fill" },
+      },
       { path: "admin/invitations", element: <AdminInvitationsPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

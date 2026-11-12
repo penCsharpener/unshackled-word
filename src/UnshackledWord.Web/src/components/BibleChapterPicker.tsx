@@ -2,7 +2,7 @@ import { type KeyboardEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { bookName, buildPickerGroups, chapterPath } from "@/lib/bible/books";
-import type { BibleStructureBook, PickerGroup, Testament } from "@/lib/bible/types";
+import type { BibleStructureBook, ChapterRef, PickerGroup, Testament } from "@/lib/bible/types";
 import { Button } from "./Button";
 
 const PANEL_ID = "bible-picker-panel";
@@ -15,6 +15,8 @@ export interface BibleChapterPickerProps {
   currentChapter?: number;
   /** testament open on first render; omitted = collapsed */
   defaultTestament?: Testament;
+  /** link target of a chapter; defaults to the reader (`chapterPath`) */
+  chapterHref?: (ref: ChapterRef) => string;
 }
 
 function tabId(testament: Testament): string {
@@ -39,6 +41,7 @@ export function BibleChapterPicker({
   currentBookId,
   currentChapter,
   defaultTestament,
+  chapterHref = chapterPath,
 }: BibleChapterPickerProps) {
   const { t, i18n } = useTranslation();
   const [openTestament, setOpenTestament] = useState<Testament | null>(defaultTestament ?? null);
@@ -127,7 +130,7 @@ export function BibleChapterPicker({
                     return (
                       <Link
                         key={chapter}
-                        to={chapterPath({ bookId: group.bookId, chapter })}
+                        to={chapterHref({ bookId: group.bookId, chapter })}
                         aria-label={t("bible.picker.chapterLink", {
                           book: name,
                           chapter,

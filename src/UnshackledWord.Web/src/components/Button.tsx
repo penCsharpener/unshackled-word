@@ -2,7 +2,8 @@ import type { ButtonHTMLAttributes } from "react";
 
 const variants = {
   primary: "bg-accent text-accent-fg hover:opacity-90",
-  secondary: "border border-border bg-surface text-fg hover:bg-surface-muted",
+  secondary:
+    "border border-border bg-surface text-fg hover:bg-surface-muted aria-pressed:border-accent aria-pressed:bg-mark-same",
   ghost: "text-fg hover:bg-surface-muted",
   inline: "",
 } as const;

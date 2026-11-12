@@ -37,6 +37,10 @@ describe("UserMenu", () => {
       "href",
       "/account/passkeys",
     );
+    expect(screen.getByRole("menuitem", { name: /lemmas|Lemmata/i })).toHaveAttribute(
+      "href",
+      "/edit/lemmas",
+    );
     await userEvent.click(screen.getByRole("menuitem", { name: "Sign out" }));
     expect(await screen.findByRole("link", { name: "Sign in" })).toBeInTheDocument();
     await waitFor(() =>
