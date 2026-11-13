@@ -198,6 +198,9 @@ public sealed class BulkApplyRequest
     public string[] ExpectedOriginal { get; set; } = [];
 
     public string? Note { get; set; }
+
+    /// <summary>Optional STTS tag set on every listed word together with the new lemma; rows whose part of speech does not accept it are reported as stale with reason "stts" (nothing written).</summary>
+    public string? Stts { get; set; }
 }
 
 public sealed class BulkApplyResponse
@@ -217,7 +220,7 @@ public sealed class BulkStaleDetail
 {
     public int WordId { get; set; }
 
-    /// <summary>"lemma" (lemma changed or morphology row missing) or "original" (the alignment changed).</summary>
+    /// <summary>"lemma" (lemma changed or morphology row missing), "original" (the alignment changed) or "stts" (the requested STTS tag does not fit the part of speech).</summary>
     public string Reason { get; set; } = string.Empty;
 
     /// <summary>Current lemma, for reason "lemma".</summary>

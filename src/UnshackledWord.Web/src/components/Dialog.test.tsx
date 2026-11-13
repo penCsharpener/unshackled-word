@@ -73,4 +73,16 @@ describe("Dialog", () => {
     expect(onClose).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Schließen" })).toBeDisabled();
   });
+
+  it("keeps the title as the accessible name when it is hidden and can dock at the top", () => {
+    render(
+      <Dialog open onClose={() => {}} title="Suche" titleHidden placement="top" size="lg">
+        <input aria-label="Feld" />
+      </Dialog>,
+    );
+    const dialog = screen.getByRole("dialog", { name: "Suche" });
+    expect(screen.getByRole("heading", { name: "Suche" }).parentElement).toHaveClass("sr-only");
+    expect(dialog).toHaveClass("md:mt-12");
+    expect(dialog).not.toHaveClass("m-auto");
+  });
 });

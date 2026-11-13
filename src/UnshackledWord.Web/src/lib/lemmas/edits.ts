@@ -63,7 +63,11 @@ export interface BuiltChanges {
   incompleteWordIds: number[];
 }
 
-export function buildChanges(edits: Edits): BuiltChanges {
+/**
+ * `bases` are the loaded values per word: the STTS tag is only sent when the user changed it (null = keep the
+ * stored tag), so a row that keeps a legacy pair is not rejected when only its part of speech changes.
+ */
+export function buildChanges(edits: Edits, bases?: ReadonlyMap<number, WordValues>): BuiltChanges {
   const changes: LemmaWordChange[] = [];
   const incompleteWordIds: number[] = [];
   for (const [wordId, values] of edits) {
@@ -73,6 +77,7 @@ export function buildChanges(edits: Edits): BuiltChanges {
       continue;
     }
     const change: LemmaWordChange = { wordId, lemma, partOfSpeech: values.partOfSpeech };
+    if (values.stts !== null && values.stts !== bases?.get(wordId)?.stts) change.stts = values.stts;
     for (const field of MORPH_FIELDS) {
       const value = values[field];
       if (value !== null) change[field] = value;

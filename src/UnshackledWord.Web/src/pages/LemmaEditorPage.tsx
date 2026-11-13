@@ -25,6 +25,7 @@ import {
   dropEdits,
   type Edits,
   resetRow,
+  valuesOf,
 } from "@/lib/lemmas/edits";
 import {
   type ChapterStats,
@@ -37,6 +38,7 @@ import {
 import { buildLabels } from "@/lib/lemmas/labels";
 import { lemmaKeys, useLemmaChapter, useLemmaValueMaps } from "@/lib/lemmas/queries";
 import { buildRules } from "@/lib/lemmas/rules";
+import { buildStts } from "@/lib/lemmas/stts";
 import type { EditableField, LemmaChapterResponse, LemmaWord } from "@/lib/lemmas/types";
 import { useBulkUrl } from "@/lib/lemmas/useBulkUrl";
 
@@ -151,6 +153,7 @@ function ChapterEditor({
 
   const labels = useMemo(() => buildLabels(maps.data, i18n.language), [maps.data, i18n.language]);
   const rules = useMemo(() => buildRules(maps.data?.rules), [maps.data]);
+  const stts = useMemo(() => buildStts(maps.data, labels), [maps.data, labels]);
 
   const [edits, setEdits] = useState<Edits>(NO_EDITS);
   // Filters are applied to the edits as they were when the filter last changed, so a row that stops
@@ -180,7 +183,13 @@ function ChapterEditor({
     () => [...new Set((words ?? []).map((w) => w.lemma).filter((l): l is string => !!l))].sort(),
     [words],
   );
-  const built = useMemo(() => buildChanges(edits), [edits]);
+  const bases = useMemo(
+    () => new Map((words ?? []).map((w) => [w.wordId, valuesOf(w)] as const)),
+    [words],
+  );
+  const basesRef = useRef(bases);
+  basesRef.current = bases;
+  const built = useMemo(() => buildChanges(edits, bases), [edits, bases]);
   const dirty = edits.size > 0;
 
   // Only leaving the page is blocked; the bulk dialog and its paging change just the search params.
@@ -222,7 +231,7 @@ function ChapterEditor({
   const savingRef = useRef(false);
 
   const save = useCallback(async () => {
-    const { changes, incompleteWordIds } = buildChanges(editsRef.current);
+    const { changes, incompleteWordIds } = buildChanges(editsRef.current, basesRef.current);
     if (changes.length === 0 && incompleteWordIds.length === 0) return true;
     if (savingRef.current || !canEdit || incompleteWordIds.length > 0) return false;
     savingRef.current = true;
@@ -420,6 +429,7 @@ function ChapterEditor({
           edits={edits}
           labels={labels}
           rules={rules}
+          stts={stts}
           hiddenColumns={hidden}
           readOnly={!canEdit}
           lemmaSuggestions={suggestions}
@@ -457,6 +467,10 @@ function ChapterEditor({
           chapter={chapter}
           books={books}
           partOfSpeechOptions={labels.partOfSpeech ?? []}
+          sttsOptions={(labels.stts ?? []).map((o) => ({
+            value: o.value,
+            label: `${o.value} – ${o.label}`,
+          }))}
           dirtyCount={edits.size}
           onSaveGrid={save}
           onApplied={() => {

@@ -20,6 +20,27 @@ public sealed class GetWordStatsResponse
 
     /// <summary>The Strong's numbers behind the word, most used first.</summary>
     public List<WordOriginalResponse> Originals { get; set; } = [];
+
+    /// <summary>Snapshot only: the lemma the typed word was resolved to ("ging" gives "gehen"). Absent for unknown words and in the live fallback.</summary>
+    public string? Lemma { get; set; }
+
+    /// <summary>Snapshot only: the part of speech of the resolved lemma when exactly one (or the requested) PoS is selected, else absent (summed over PoS).</summary>
+    public string? Pos { get; set; }
+
+    /// <summary>Snapshot only: every lemma + PoS the word resolves to (for a PoS switch), most frequent first.</summary>
+    public List<WordLemmaCandidate>? Candidates { get; set; }
+
+    /// <summary>When the stats snapshot was last refreshed; absent while the live fallback answered.</summary>
+    public DateTime? StatsRefreshedAt { get; set; }
+}
+
+public sealed class WordLemmaCandidate
+{
+    public string Lemma { get; set; } = string.Empty;
+    public string? Pos { get; set; }
+
+    /// <summary>Occurrences of this lemma + PoS over the whole Bible.</summary>
+    public int Occurrences { get; set; }
 }
 
 public sealed class WordOriginalResponse

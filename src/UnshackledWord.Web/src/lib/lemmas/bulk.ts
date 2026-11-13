@@ -19,6 +19,8 @@ export type GroupMode = "form" | "original";
 export interface BulkQuery {
   from: string[];
   to: string;
+  /** optional STTS tag set together with the new lemma; empty/absent = keep the stored tags */
+  stts?: string;
   /** part-of-speech code, "" = all */
   pos: string;
   /** original-language group keys (G4680, H2450, added, none); empty = all */
@@ -64,6 +66,7 @@ const OWN_KEYS = [
   "dlg",
   "from",
   "to",
+  "stts",
   "pos",
   "orig",
   "scope",
@@ -112,6 +115,7 @@ export function parseBulkUrl(params: URLSearchParams): BulkUrlState {
   const query: BulkQuery = {
     from: params.getAll("from").filter((value) => value.trim() !== ""),
     to: params.get("to") ?? "",
+    ...(params.get("stts") ? { stts: params.get("stts") as string } : {}),
     pos: params.get("pos") ?? "",
     original: params.getAll("orig").filter(isOriginalKey),
     scope,
@@ -144,6 +148,7 @@ export function withBulkUrl(
     const { query } = next;
     for (const lemma of query.from) result.append("from", lemma);
     result.set("to", query.to);
+    if (query.stts) result.set("stts", query.stts);
     if (query.pos) result.set("pos", query.pos);
     for (const key of query.original) result.append("orig", key);
     result.set("scope", query.scope);
@@ -627,7 +632,7 @@ export const itemId = (item: ListItem): string =>
         : `v:${item.row.wordId}`;
 
 export interface StaleInfo {
-  reason: "lemma" | "original";
+  reason: "lemma" | "original" | "stts";
   lemma?: string;
   origKey?: string;
 }

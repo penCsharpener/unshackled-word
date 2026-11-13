@@ -8,6 +8,7 @@ import { ForgotPasswordPage, MagicLinkRequestPage } from "@/pages/EmailRequestPa
 import { HomePage } from "@/pages/HomePage";
 import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
 import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
+import { MaintainerPage } from "@/pages/MaintainerPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PasskeysPage } from "@/pages/PasskeysPage";
 import { RegisterPage } from "@/pages/RegisterPage";
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
         handle: { layout: "fill" },
       },
       { path: "edit/quality", element: <DataQualityPage /> },
+      { path: "edit/maintainer", element: <MaintainerPage /> },
       { path: "admin/invitations", element: <AdminInvitationsPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

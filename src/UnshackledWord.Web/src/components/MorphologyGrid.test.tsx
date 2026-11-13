@@ -4,10 +4,12 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
 import { applyEdit, type Edits } from "@/lib/lemmas/edits";
 import { buildRules } from "@/lib/lemmas/rules";
+import { buildStts } from "@/lib/lemmas/stts";
 import { chapterWords, labelsDe, valueMaps } from "@/test/fixtures/lemmas";
 import { MorphologyGrid, type MorphologyGridProps } from "./MorphologyGrid";
 
 const rules = buildRules(valueMaps.rules);
+const stts = buildStts(valueMaps, labelsDe);
 
 async function setup(props: Partial<MorphologyGridProps> = {}) {
   const onEdit = vi.fn();
@@ -17,6 +19,7 @@ async function setup(props: Partial<MorphologyGridProps> = {}) {
       edits={new Map()}
       labels={labelsDe}
       rules={rules}
+      stts={stts}
       hiddenColumns={new Set()}
       onEdit={onEdit}
       onResetRow={vi.fn()}
@@ -68,7 +71,7 @@ describe("MorphologyGrid", () => {
   });
 
   it("tabs to the next editable cell and skips not-applicable ones", async () => {
-    await setup();
+    await setup({ hiddenColumns: new Set(["stts"]) });
     cell(3, "partOfSpeech").focus();
     await userEvent.keyboard("{Tab}");
     // ADP allows nothing: no editable cell follows, so Tab leaves the grid
@@ -129,5 +132,80 @@ describe("MorphologyGrid", () => {
     await setup({ hiddenColumns: new Set(["plain", "tense"]) });
     expect(screen.queryByRole("columnheader", { name: "Tempus" })).toBeNull();
     expect(screen.getByRole("columnheader", { name: "Kasus" })).toBeInTheDocument();
+  });
+
+  it("shows the STTS tag with its label as tooltip", async () => {
+    await setup({ words: [{ ...chapterWords[0]!, stts: "NN" }] });
+    const stts = cell(1, "stts");
+    expect(within(stts).getByText("NN")).toBeInTheDocument();
+    expect(stts).toHaveAttribute("title", expect.stringContaining("normales Nomen"));
+    expect(within(stts).queryByRole("button")).toBeNull();
+  });
+
+  it("flags a tag that does not fit and proposes the matching one, applied only on click", async () => {
+    const { onEdit } = await setup({ words: [{ ...chapterWords[1]!, wordId: 1, stts: "NN" }] });
+    const accept = within(cell(1, "stts")).getByRole("button", { name: /übernehmen: VVFIN/ });
+    expect(onEdit).not.toHaveBeenCalled();
+    await userEvent.click(accept);
+    expect(onEdit).toHaveBeenCalledWith(expect.objectContaining({ wordId: 1 }), "stts", "VVFIN");
+  });
+
+  it("offers only the tags that accept the part of speech, plus a way to show all", async () => {
+    await setup({ words: [{ ...chapterWords[1]!, wordId: 1, stts: "VVFIN" }] });
+    cell(1, "stts").focus();
+    await userEvent.keyboard("{Enter}");
+    const select = screen.getByRole("combobox", { name: /STTS/ });
+    const labels = within(select)
+      .getAllByRole("option")
+      .map((o) => o.textContent);
+    expect(labels).toContain("VVFIN – finites Vollverb");
+    expect(labels).not.toContain("NN – normales Nomen");
+    await userEvent.selectOptions(select, "alle anzeigen");
+    const all = within(screen.getByRole("combobox", { name: /STTS/ })).getAllByRole("option");
+    expect(all.map((o) => o.textContent)).toContain("NN – normales Nomen");
+  });
+
+  it("renders the STTS dropdown and the inline proposal in the card layout", async () => {
+    class NarrowObserver {
+      constructor(private callback: ResizeObserverCallback) {}
+      observe(target: Element) {
+        this.callback(
+          [
+            {
+              target,
+              contentRect: { width: 375 },
+              borderBoxSize: [{ blockSize: 220, inlineSize: 375 }],
+            } as unknown as ResizeObserverEntry,
+          ],
+          this as never,
+        );
+      }
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("ResizeObserver", NarrowObserver);
+    try {
+      const onEdit = vi.fn();
+      render(
+        <MorphologyGrid
+          words={[{ ...chapterWords[1]!, wordId: 1, stts: "NN" }]}
+          edits={new Map()}
+          labels={labelsDe}
+          rules={rules}
+          stts={stts}
+          hiddenColumns={new Set()}
+          onEdit={onEdit}
+          onResetRow={vi.fn()}
+        />,
+      );
+      const select = await screen.findByRole("combobox", { name: /STTS/ });
+      expect(
+        within(select).getByRole("option", { name: "VVFIN – finites Vollverb" }),
+      ).toBeInTheDocument();
+      await userEvent.click(screen.getByRole("button", { name: "übernehmen: VVFIN" }));
+      expect(onEdit).toHaveBeenCalledWith(expect.anything(), "stts", "VVFIN");
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

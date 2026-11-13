@@ -34,7 +34,8 @@ public class Endpoint : Endpoint<GetStrongsSummaryRequest, GetStrongsSummaryResp
                 return;
         }
 
-        HttpContext.Response.Headers.CacheControl = "public, max-age=3600";
+        // Short cache: the frontend polls this while a stats refresh runs and must see the new timestamp soon after it finished.
+        HttpContext.Response.Headers.CacheControl = result.Response!.StatsRefreshing ? "no-store" : "public, max-age=60";
         await Send.OkAsync(result.Response!, ct);
     }
 }

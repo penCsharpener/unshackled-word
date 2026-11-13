@@ -60,6 +60,8 @@ export const bulkApi = {
   apply: (body: {
     from: string[];
     to: string;
+    /** optional STTS tag for every listed word (must fit its part of speech) */
+    stts?: string;
     wordIds: number[];
     /** parallel to wordIds: the original key the user saw ("" = added / none) */
     expectedOriginal: string[];

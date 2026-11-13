@@ -23,6 +23,13 @@ public sealed class DatabaseSeedSettings
     public ByzantineSettings ByzantineSettings { get; set; } = default!;
     public OpenScripturesGithubSettings OpenScripturesGithub { get; set; } = default!;
     public StepBibleData StepBibleData { get; set; } = default!;
+
+    /// <summary>
+    /// Later starts replace the mapping rows of every verse that was not changed since the last seed import with the repo's newer
+    /// mapping seed (roadmap 0010.10). Verses changed locally are kept and listed in the report. Set to false to never touch mappings
+    /// after the first import. The morphology seed is never updated after the first import.
+    /// </summary>
+    public bool UpdateMappingSeed { get; set; } = true;
 }
 
 public sealed class Elberfelder1871

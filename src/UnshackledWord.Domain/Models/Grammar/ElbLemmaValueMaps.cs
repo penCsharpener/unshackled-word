@@ -15,7 +15,7 @@ public sealed record FieldValueMap(string Field, IReadOnlyList<ValueLabel> Value
 
 /// <summary>
 /// Single source of truth for the abbreviated values in "Elb1871Morphology" (UD-style tags written by the
-/// lemmatizer/AI worker, plus STTS in <c>Stts</c>). Field names are the camelCase JSON property names.
+/// lemmatizer/AI worker, plus STTS in <c>Stts</c>; the STTS list must agree with the SttsTags table, see SttsTagDrift). Field names are the camelCase JSON property names.
 /// </summary>
 public static class ElbLemmaValueMaps
 {
@@ -154,22 +154,30 @@ public static class ElbLemmaValueMaps
             new("PDAT", "attributives Demonstrativpronomen", "attributive demonstrative pronoun"),
             new("PDS", "substituierendes Demonstrativpronomen", "substituting demonstrative pronoun"),
             new("PIAT", "attributives Indefinitpronomen", "attributive indefinite pronoun"),
+            new("PIDAT", "attributierendes Indefinitpronomen mit Determiner", "attributive indefinite pronoun with determiner"),
             new("PIS", "substituierendes Indefinitpronomen", "substituting indefinite pronoun"),
             new("PPER", "irreflexives Personalpronomen", "irreflexive personal pronoun"),
             new("PPOSAT", "attributives Possessivpronomen", "attributive possessive pronoun"),
+            new("PPOSS", "substituierendes Possessivpronomen", "substituting possessive pronoun"),
+            new("PRELAT", "attributives Relativpronomen", "attributive relative pronoun"),
+            new("PRELS", "substituierendes Relativpronomen", "substituting relative pronoun"),
             new("PRF", "reflexives Personalpronomen", "reflexive personal pronoun"),
             new("PROAV", "Pronominaladverb", "pronominal adverb"),
             new("PTKA", "Partikel bei Adjektiv oder Adverb", "particle with adjective or adverb"),
             new("PTKANT", "Antwortpartikel", "answer particle"),
             new("PTKNEG", "Negationspartikel", "negation particle"),
             new("PTKVZ", "abgetrennter Verbzusatz", "separated verb particle"),
+            new("PTKZU", "\"zu\" vor Infinitiv", "\"zu\" before infinitive"),
             new("PWAT", "attributives Interrogativpronomen", "attributive interrogative pronoun"),
             new("PWAV", "adverbiales Interrogativ-/Relativpronomen", "adverbial interrogative or relative pronoun"),
             new("PWS", "substituierendes Interrogativpronomen", "substituting interrogative pronoun"),
+            new("TRUNC", "Kompositions-Erstglied", "truncated compound first element"),
             new("VAFIN", "finites Hilfsverb", "finite auxiliary verb"),
+            new("VAIMP", "Imperativ Hilfsverb", "auxiliary verb imperative"),
             new("VAINF", "Infinitiv Hilfsverb", "auxiliary verb infinitive"),
             new("VAPP", "Partizip Perfekt Hilfsverb", "auxiliary verb past participle"),
             new("VMFIN", "finites Modalverb", "finite modal verb"),
+            new("VMINF", "Infinitiv Modalverb", "modal verb infinitive"),
             new("VMPP", "Partizip Perfekt Modalverb", "modal verb past participle"),
             new("VVFIN", "finites Vollverb", "finite full verb"),
             new("VVIMP", "Imperativ Vollverb", "full verb imperative"),
@@ -177,6 +185,9 @@ public static class ElbLemmaValueMaps
             new("VVIZU", "Infinitiv mit zu", "infinitive with zu"),
             new("VVPP", "Partizip Perfekt Vollverb", "full verb past participle"),
             new("XY", "Nichtwort / Sonderzeichen", "non-word or special character"),
+            new("$(", "satzinterne Interpunktion", "sentence-internal punctuation"),
+            new("$,", "Komma", "comma"),
+            new("$.", "satzbeendende Interpunktion", "sentence-final punctuation"),
         ]),
     ];
 

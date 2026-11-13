@@ -1,16 +1,17 @@
 import { MORPH_FIELDS, type MorphField } from "./types";
 
-export type FixedColumnKey = "verse" | "context" | "plain" | "lemma" | "partOfSpeech";
+export type FixedColumnKey = "verse" | "context" | "plain" | "lemma" | "partOfSpeech" | "stts";
 export type ColumnKey = FixedColumnKey | MorphField;
 
 /** Columns the user may hide (the menu); Vers, Wort im Kontext, Lemma and Wortart always stay. */
-export const HIDEABLE_COLUMNS: readonly ColumnKey[] = ["plain", ...MORPH_FIELDS];
+export const HIDEABLE_COLUMNS: readonly ColumnKey[] = ["plain", "stts", ...MORPH_FIELDS];
 export const ALL_COLUMNS: readonly ColumnKey[] = [
   "verse",
   "context",
   "plain",
   "lemma",
   "partOfSpeech",
+  "stts",
   ...MORPH_FIELDS,
 ];
 
@@ -29,6 +30,7 @@ const FIXED_WIDTH: Record<FixedColumnKey, string> = {
   plain: "7rem",
   lemma: "9rem",
   partOfSpeech: "10rem",
+  stts: "13rem",
 };
 
 /** Horizontal room of a native select besides its text: padding plus the arrow. */

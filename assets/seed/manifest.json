@@ -1,0 +1,1016 @@
+{
+  "format": 1,
+  "exportedAt": "2026-11-13T15:15:46Z",
+  "baseText": {
+    "file": "elberfelder1871-theword-export.txt",
+    "sha256": "162bf2b4adc8f5e35d94f5c290dee1a74202fd77401dd44422e9ff36b7346878",
+    "words": 722257
+  },
+  "morphology": {
+    "seedVersion": "499a9eddbd41bab909a1f6c34ac3927e4c0d9cd69f356312052e160e3f9670f1",
+    "rows": 722753,
+    "files": [
+      {
+        "path": "morphology/01-Genesis.csv",
+        "rows": 36087,
+        "sha256": "a03d9b2becc420e5d901ef0acc468c9a62e4c00cb150cc4cc39ab4a82ddb1919"
+      },
+      {
+        "path": "morphology/02-Exodus.csv",
+        "rows": 29324,
+        "sha256": "ec0a83cfcfcc8f2aa82742b8c4a10a77319f49893006b03d556b3c0f003784b4"
+      },
+      {
+        "path": "morphology/03-Leviticus.csv",
+        "rows": 21872,
+        "sha256": "b0a5e416bea02f4e0c432dbb34cf33cb34a428439795f37707e0bf5a05828097"
+      },
+      {
+        "path": "morphology/04-Numbers.csv",
+        "rows": 28131,
+        "sha256": "ab0f31fd5ec4b64e6fd387ef4db7c7999409e1b3fd9ebbfd55862b9b27cb4511"
+      },
+      {
+        "path": "morphology/05-Deuteronomy.csv",
+        "rows": 26000,
+        "sha256": "4af399fefd236ce66f926d61470aa9c3a64b25c74eee1d9bf123f51c4ee43a88"
+      },
+      {
+        "path": "morphology/06-Joshua.csv",
+        "rows": 17196,
+        "sha256": "e7e3729d7e93c4de2d26f889b7ddba4eb30df06e6f3263ee3cbb632c8acac0c1"
+      },
+      {
+        "path": "morphology/07-Judges.csv",
+        "rows": 17552,
+        "sha256": "6c1e0b732388a00507f12aeaaf025a4b410c961740abbdd209d74bdfe6e25d8c"
+      },
+      {
+        "path": "morphology/08-Ruth.csv",
+        "rows": 2385,
+        "sha256": "73148d4056681bb34903402e0b8251dd426af5473aaa7649a5b1ab89d074b0ac"
+      },
+      {
+        "path": "morphology/09-1 Samuel.csv",
+        "rows": 23555,
+        "sha256": "f2984ad4c479051439c4f8750cae0dc48a3f19dfd8a651a6005d870e60c44153"
+      },
+      {
+        "path": "morphology/10-2 Samuel.csv",
+        "rows": 19411,
+        "sha256": "e9fd9049b5f7441569d9b0b5eb348969ced4cb876180fb33c2c8bf889ad21c55"
+      },
+      {
+        "path": "morphology/11-1 Kings.csv",
+        "rows": 22901,
+        "sha256": "ba448d2ed1ebc19e86d0600b538df4b3a6dc088366d13524e67d22b6a312506b"
+      },
+      {
+        "path": "morphology/12-2 Kings.csv",
+        "rows": 21761,
+        "sha256": "1fc3008d54e6e6341e50c375493c087798575dda530461c596de63947d6b8e43"
+      },
+      {
+        "path": "morphology/13-1 Chronicles.csv",
+        "rows": 18214,
+        "sha256": "b5adbbc00cf07254bbb3ec8a76a2ebea222c807a7a30d8ffac5b94824d713307"
+      },
+      {
+        "path": "morphology/14-2 Chronicles.csv",
+        "rows": 23901,
+        "sha256": "888d73a63f5d511a248a6fff979190cab35b6282b4745c04038885ab0a068876"
+      },
+      {
+        "path": "morphology/15-Ezra.csv",
+        "rows": 6433,
+        "sha256": "610001f2f8f8109768d7d57ba38ca558f449c9df16926e3e56d32db67a30205e"
+      },
+      {
+        "path": "morphology/16-Nehemiah.csv",
+        "rows": 9474,
+        "sha256": "8d50546a458e1289b15fc5bb1faf31ec89ba8b1739e6738d4a7c914d4fa1109e"
+      },
+      {
+        "path": "morphology/17-Esther.csv",
+        "rows": 5347,
+        "sha256": "048b21b15b98c2a578c80d236656f851524577fe92f189670b3dec156bc65d70"
+      },
+      {
+        "path": "morphology/18-Job.csv",
+        "rows": 16645,
+        "sha256": "c84d0750f78b183d03b03782d213b953ae6caf7c4fbe5ca8a110c6e32e669f6f"
+      },
+      {
+        "path": "morphology/19-Psalms.csv",
+        "rows": 38535,
+        "sha256": "3d082ec693eb6c9ba1c0dd6a7ee051e21c116959715e1e863b400a6cd2f85a78"
+      },
+      {
+        "path": "morphology/20-Proverbs.csv",
+        "rows": 13576,
+        "sha256": "2cafa2ba953fde01bd10b8d3dcdaafd0f275f6b9d4a8fdb19d7dcf29f62b9b5f"
+      },
+      {
+        "path": "morphology/21-Ecclesiastes.csv",
+        "rows": 5254,
+        "sha256": "61348c3fb68f4bf28827be659a911181498f1b30ef4bf7391115f2e1daef9d38"
+      },
+      {
+        "path": "morphology/22-Song of Solomon.csv",
+        "rows": 2390,
+        "sha256": "eaaf88c481eb7cae9309cb700b0bf54aaff923a2b6465b0e7ac07adff7ace924"
+      },
+      {
+        "path": "morphology/23-Isaiah.csv",
+        "rows": 32922,
+        "sha256": "14ed102d29e17efa887221ecff764208745a817632da552ca4cf1a9a88202e9a"
+      },
+      {
+        "path": "morphology/24-Jeremiah.csv",
+        "rows": 38412,
+        "sha256": "0afcc45915319093f0f883c18a7ce19ec64520d9bf3934d408416853fef95cc0"
+      },
+      {
+        "path": "morphology/25-Lamentations.csv",
+        "rows": 2943,
+        "sha256": "e0509c17c92cb09be2d2bb57a739c0181f13a510ca8814e867126fbe969234dc"
+      },
+      {
+        "path": "morphology/26-Ezekiel.csv",
+        "rows": 34960,
+        "sha256": "652d301677846ba5a0ffc453ab2e1ebf6a343892e6ea8c80fd162f3960e62a58"
+      },
+      {
+        "path": "morphology/27-Daniel.csv",
+        "rows": 10755,
+        "sha256": "bc9c98b9204c54e31df4acfedcacc4c3ecc263540c5d98d99a5240e429a58132"
+      },
+      {
+        "path": "morphology/28-Hosea.csv",
+        "rows": 4713,
+        "sha256": "1d3efeb2cae1abec60ad9be71f7c3e40c5b0457d87cc38aad62720d4055b9dd2"
+      },
+      {
+        "path": "morphology/29-Joel.csv",
+        "rows": 1769,
+        "sha256": "9399e41c94d92108c1fd50dd415e924984f2eafd10f45b20d13e1e480f4a387b"
+      },
+      {
+        "path": "morphology/30-Amos.csv",
+        "rows": 3776,
+        "sha256": "973eeb30f43e6767b8c6555b2d3d4243a9cf5e7970ff6626dbdbd5c6383b2cee"
+      },
+      {
+        "path": "morphology/31-Obadiah.csv",
+        "rows": 568,
+        "sha256": "a84a02fe7f30e61178bf8eb98d14a695ea3b198badd48f862463c9600a8c034b"
+      },
+      {
+        "path": "morphology/32-Jonah.csv",
+        "rows": 1248,
+        "sha256": "d7a688f6cea26c7e1fe12341af5823db85128e61d269088089c06edbda5ca97a"
+      },
+      {
+        "path": "morphology/33-Micah.csv",
+        "rows": 2736,
+        "sha256": "e0d6a9e3c328888fa80a3c3844cfe932bbdd829bd5476ffe004a3416d4dc5fd0"
+      },
+      {
+        "path": "morphology/34-Nahum.csv",
+        "rows": 1087,
+        "sha256": "9ac5c5750b93323c67a5a88ee47ae6b0256c650eb197dbefddb4e0683c3f7563"
+      },
+      {
+        "path": "morphology/35-Habakkuk.csv",
+        "rows": 1304,
+        "sha256": "4e03f42aa50374f7b5d3c85ceeda6401e34d14df5b7d439066a495488366784b"
+      },
+      {
+        "path": "morphology/36-Zephaniah.csv",
+        "rows": 1386,
+        "sha256": "7862bf3fe3f21302ef3022bbe2cba527b77efa97935ff1f711403a2630ef3a81"
+      },
+      {
+        "path": "morphology/37-Haggai.csv",
+        "rows": 993,
+        "sha256": "a2ac68b2e4653f1faca0d2244b8a8a2fd1c94e1ee1dec721d1104d084c5c3aaa"
+      },
+      {
+        "path": "morphology/38-Zechariah.csv",
+        "rows": 5716,
+        "sha256": "49a83c27c8db5dcec783c6be99fc9f0fe125c2a6c61eaccd05b5e717dea3d762"
+      },
+      {
+        "path": "morphology/39-Malachi.csv",
+        "rows": 1636,
+        "sha256": "1c4679238161bdb70c9d79013d171e752368af86781521fb835451bec7af19a5"
+      },
+      {
+        "path": "morphology/40-Matthew.csv",
+        "rows": 22285,
+        "sha256": "468a952c9669d9a869a8330fec427a5098400b71376c23ef3737b4f96b907aa1"
+      },
+      {
+        "path": "morphology/41-Mark.csv",
+        "rows": 14302,
+        "sha256": "9fa8079246da6b68ac34e7a77b441a41818a0389177736d2ec341dab15955fe4"
+      },
+      {
+        "path": "morphology/42-Luke.csv",
+        "rows": 24296,
+        "sha256": "f322d9b0241830c48aa221892f9b20fa3b7b37ef4540970e8e98c685aaf60512"
+      },
+      {
+        "path": "morphology/43-John.csv",
+        "rows": 18439,
+        "sha256": "19eb76c2375331ede0517804494017e5be3403960087fa148ea02e9dc8b5f78c"
+      },
+      {
+        "path": "morphology/44-Acts.csv",
+        "rows": 23177,
+        "sha256": "6fe9bd681371c394231d294f2ab536b41fd25f37bb1913985ef54963bca673da"
+      },
+      {
+        "path": "morphology/45-Romans.csv",
+        "rows": 8762,
+        "sha256": "e48b8686d892b41477e21dc7985e520e54addd754218340b0439f6519b00fd63"
+      },
+      {
+        "path": "morphology/46-1 Corinthians.csv",
+        "rows": 8718,
+        "sha256": "1e07da178c06f6b37ab66086a2999314475d613b2a22f1bf8fdc309ddc4633f4"
+      },
+      {
+        "path": "morphology/47-2 Corinthians.csv",
+        "rows": 5702,
+        "sha256": "54404b129ebd45aca67ca55efdb72e0b01207122907f5f1cff58ae12dd6535c7"
+      },
+      {
+        "path": "morphology/48-Galatians.csv",
+        "rows": 2860,
+        "sha256": "a465b4b788afe8771345b8b45aca0b8cc0f3517462aa7d8e834d20ae1a133d3a"
+      },
+      {
+        "path": "morphology/49-Ephesians.csv",
+        "rows": 2809,
+        "sha256": "9b48d1c826c5a7addd5fccfdf41f567b4bf63f926b75a9e3a26cfa6e053050d8"
+      },
+      {
+        "path": "morphology/50-Philippians.csv",
+        "rows": 2056,
+        "sha256": "107651d0f616a35c80e25426d4da8937d28f318cd30a46e965005de427dd6dd6"
+      },
+      {
+        "path": "morphology/51-Colossians.csv",
+        "rows": 1902,
+        "sha256": "f21e4261553b8d0d07ec8fa54727a8900df636310621a00e190120db8c16847c"
+      },
+      {
+        "path": "morphology/52-1 Thessalonians.csv",
+        "rows": 1738,
+        "sha256": "0d6e71348942c849b97b1b444f60f12ccdb26bd2e2e9fb2b31ff83180377835f"
+      },
+      {
+        "path": "morphology/53-2 Thessalonians.csv",
+        "rows": 977,
+        "sha256": "d2562ecbedb86802d362b523198fd5a5a38acea1a7726ca29bb7bcbed509dcbb"
+      },
+      {
+        "path": "morphology/54-1 Timothy.csv",
+        "rows": 2096,
+        "sha256": "377e1bd329b62b38abd0ed41c57fbfcb5ce9e8f82937c8712ddae35af13dc28f"
+      },
+      {
+        "path": "morphology/55-2 Timothy.csv",
+        "rows": 1559,
+        "sha256": "349b8668dc2af7f12e5b8288d35c90a30d2f926ec814fe5565d8a96e4289db6f"
+      },
+      {
+        "path": "morphology/56-Titus.csv",
+        "rows": 857,
+        "sha256": "d14e42ff683963ef6f349743b4a98666776738fbcf2e0b6d393b489774030822"
+      },
+      {
+        "path": "morphology/57-Philemon.csv",
+        "rows": 420,
+        "sha256": "3947fae28515fff7527d3b2404e5a1ad631ac93545ca9415229f367f08509e41"
+      },
+      {
+        "path": "morphology/58-Hebrews.csv",
+        "rows": 6464,
+        "sha256": "cc3379f8da296e4767116035908eeaa52a1886a17bca00817c92fe635ae15647"
+      },
+      {
+        "path": "morphology/59-James.csv",
+        "rows": 2173,
+        "sha256": "d432029e6780dc81d1459c79041cb82ee4d419eb986a877ebdb0d993786f5e8f"
+      },
+      {
+        "path": "morphology/60-1 Peter.csv",
+        "rows": 2234,
+        "sha256": "92adc4b7e53abf07f92bd67c67c8471846c0cbef5cb8ed5faade3691351dafc2"
+      },
+      {
+        "path": "morphology/61-2 Peter.csv",
+        "rows": 1427,
+        "sha256": "7ca02d1cc9c3d468849658bf3799d612d29bfa7404c19468c852e4d14a020214"
+      },
+      {
+        "path": "morphology/62-1 John.csv",
+        "rows": 2371,
+        "sha256": "58ca3bc3ee2f5a4c2a06ac29620f094c52cd574abf9f8f5c742ecd9e27cc9118"
+      },
+      {
+        "path": "morphology/63-2 John.csv",
+        "rows": 288,
+        "sha256": "7a3e84132ff6c6f6a72281370e995fa8892a32f93d6738868782046350b4d2d8"
+      },
+      {
+        "path": "morphology/64-3 John.csv",
+        "rows": 289,
+        "sha256": "061ae8787857c169badf14964b4db1cd8afb2ef5fbac5cb060b74389511ec508"
+      },
+      {
+        "path": "morphology/65-Jude.csv",
+        "rows": 559,
+        "sha256": "fce5b4cced3be0025fe31a870c1ca8ba72ae90f189e18d37c764c0e458f51a4e"
+      },
+      {
+        "path": "morphology/66-Revelation.csv",
+        "rows": 11125,
+        "sha256": "f31e2503542c2cab0e93770b48f9b0fba4e7a88f9c04d0dc98830abf10d31d93"
+      }
+    ],
+    "anchorFiles": [
+      {
+        "path": "anchors/01-Genesis.csv",
+        "rows": 50,
+        "sha256": "154435d3862541ca0bd7715ca6bfa20ae9b6405c8d6b4287163f4e9472e541dd"
+      },
+      {
+        "path": "anchors/02-Exodus.csv",
+        "rows": 40,
+        "sha256": "7de4df3efa7b0ab5a35130d1072d9b1c70c61c3923488d6e730c2c9cacdd930d"
+      },
+      {
+        "path": "anchors/03-Leviticus.csv",
+        "rows": 27,
+        "sha256": "f983335b023e65a64401388c7775164b090eb70e4363799301e3993f1a8a9908"
+      },
+      {
+        "path": "anchors/04-Numbers.csv",
+        "rows": 36,
+        "sha256": "d530d11fbe55d1345e823b9f6f31ad517297ece42d71182a559ed50ef36740c4"
+      },
+      {
+        "path": "anchors/05-Deuteronomy.csv",
+        "rows": 34,
+        "sha256": "24141b3a90c0ee559f40a0f5ecb398869809d2560568680b53b91b2dedf561de"
+      },
+      {
+        "path": "anchors/06-Joshua.csv",
+        "rows": 24,
+        "sha256": "3704c51086b20554b4dd3d61aa732d5c403c4832e01f7d560762d73d6f228372"
+      },
+      {
+        "path": "anchors/07-Judges.csv",
+        "rows": 21,
+        "sha256": "293adeb22a2b6bbb48fff22e2372a903f45f5456e901726ec967c9189c833980"
+      },
+      {
+        "path": "anchors/08-Ruth.csv",
+        "rows": 4,
+        "sha256": "6355d5831c8ada767ca19f20cfc6fd86896f52564ee330a77fc2735c4c0be0c9"
+      },
+      {
+        "path": "anchors/09-1 Samuel.csv",
+        "rows": 31,
+        "sha256": "b4dfe4f78ef8537d11e26dd624cd9b2f7c35b6f9c793b3ab9a7131428f06b7a8"
+      },
+      {
+        "path": "anchors/10-2 Samuel.csv",
+        "rows": 24,
+        "sha256": "438d81528447fa8c064a8010c0c54c950c9a3990f96dd30b8518587663571944"
+      },
+      {
+        "path": "anchors/11-1 Kings.csv",
+        "rows": 22,
+        "sha256": "78c8b8f0b1b5cb4dcb98a9bc16d7b8e4249548b23e496167b091ee7495daf549"
+      },
+      {
+        "path": "anchors/12-2 Kings.csv",
+        "rows": 25,
+        "sha256": "7b4f31496c31c8fd342f9abc1a2a332c28ae35a706003abed0f146effe6c1213"
+      },
+      {
+        "path": "anchors/13-1 Chronicles.csv",
+        "rows": 29,
+        "sha256": "7b30ed6aedf5726a3e5b76a8588a6bc64a6060b0c6cbab81b94bffe8d4b3be16"
+      },
+      {
+        "path": "anchors/14-2 Chronicles.csv",
+        "rows": 36,
+        "sha256": "58c5af62ce2ef063589074103cc1dac832a1ba5c1c4911dd4278416c9aca1157"
+      },
+      {
+        "path": "anchors/15-Ezra.csv",
+        "rows": 10,
+        "sha256": "5758fce5d7ff430d03cbdec101bb053ed520d2b4892224a3d48e93b7a8abc4f4"
+      },
+      {
+        "path": "anchors/16-Nehemiah.csv",
+        "rows": 13,
+        "sha256": "452da7321fc9ad1565300373b403ddfc0067f404935088e0b48cd7d0ff039656"
+      },
+      {
+        "path": "anchors/17-Esther.csv",
+        "rows": 10,
+        "sha256": "768d5a9259b7e123a4226d8b7c7a3f898ff03233d2b1d06150897744ba43e8b7"
+      },
+      {
+        "path": "anchors/18-Job.csv",
+        "rows": 42,
+        "sha256": "81769eaa03db8e733d2aed7944c26b7abfd6c7e5e9168a9b1f4a532bb200104c"
+      },
+      {
+        "path": "anchors/19-Psalms.csv",
+        "rows": 150,
+        "sha256": "59d481c80aa11e57192c7f1fe6414062a642b1cf2d01aa6b5483c522894676ee"
+      },
+      {
+        "path": "anchors/20-Proverbs.csv",
+        "rows": 31,
+        "sha256": "fd58fc8c01e78d8ffa057cbd618def186ecf67ca16cfbe8960082adc9fcc9f73"
+      },
+      {
+        "path": "anchors/21-Ecclesiastes.csv",
+        "rows": 12,
+        "sha256": "011f205157350c3cd514f63116fcc1d60d90b4f21af50a984d9c76b600bd1990"
+      },
+      {
+        "path": "anchors/22-Song of Solomon.csv",
+        "rows": 8,
+        "sha256": "2f00aa3c56bc3f8ea8a3ffd628fc9517984aa12b9d0c5b9f63a66d5543eaeec9"
+      },
+      {
+        "path": "anchors/23-Isaiah.csv",
+        "rows": 66,
+        "sha256": "71072f2092dda730da12853a017dfa8f32bf53dc118b223d8145be7c29e6cbff"
+      },
+      {
+        "path": "anchors/24-Jeremiah.csv",
+        "rows": 52,
+        "sha256": "1bc93ca65856ecba06db524c91875011c3df506b00077ebde48330e774e34a11"
+      },
+      {
+        "path": "anchors/25-Lamentations.csv",
+        "rows": 5,
+        "sha256": "3632012888c5cf8f8489a269dfc7a78d8a7a034d987041a572d3937ce9c3f1ae"
+      },
+      {
+        "path": "anchors/26-Ezekiel.csv",
+        "rows": 48,
+        "sha256": "acac5552725f17a41ea2ca132fd5841e6d4e44d9b5c59efda57344ed4d724936"
+      },
+      {
+        "path": "anchors/27-Daniel.csv",
+        "rows": 12,
+        "sha256": "5c581ed932fd11b4e4cecae210cb3ec2301c77ee34fdfcb69ffdd021fb687b50"
+      },
+      {
+        "path": "anchors/28-Hosea.csv",
+        "rows": 14,
+        "sha256": "bed5db9ac837ac55619900da38e94c78c9c2daacaaa3e681b4e1f29a9a2b4b67"
+      },
+      {
+        "path": "anchors/29-Joel.csv",
+        "rows": 4,
+        "sha256": "48c3d19aff4cbf63e2cfcd838c8456b5d648b4a4f5162cf79ce01ce83c634a68"
+      },
+      {
+        "path": "anchors/30-Amos.csv",
+        "rows": 9,
+        "sha256": "98aa4e4e406509fc93039cbf2d0c4699d09bcba1604c97795e138c0b276d3bc8"
+      },
+      {
+        "path": "anchors/31-Obadiah.csv",
+        "rows": 1,
+        "sha256": "e01eee8dd2022715a3678caf7c7abde9064df4fd4c2feeb60acfa3c092709981"
+      },
+      {
+        "path": "anchors/32-Jonah.csv",
+        "rows": 4,
+        "sha256": "dac57bdc5934a9b1df390d92794b8678d0decf8142cc9d7862dfa5b779adcb32"
+      },
+      {
+        "path": "anchors/33-Micah.csv",
+        "rows": 7,
+        "sha256": "7558463e1ac2d8dee1a9dcbe545bf7665366f8b7863c7d3e517ac53f73372c98"
+      },
+      {
+        "path": "anchors/34-Nahum.csv",
+        "rows": 3,
+        "sha256": "51695376cee30cadc3bd03d3fa97cad6652598da682c3a2963ae33d5169f0691"
+      },
+      {
+        "path": "anchors/35-Habakkuk.csv",
+        "rows": 3,
+        "sha256": "8eff6cd7491b4b08ddc38f4e9adc5922c833b1d5868b7aa3e1ffb2bb228479dc"
+      },
+      {
+        "path": "anchors/36-Zephaniah.csv",
+        "rows": 3,
+        "sha256": "83d5a9486bd4b351a820f2ab8f484d3078897945d975bb2df7c4556eeea867e0"
+      },
+      {
+        "path": "anchors/37-Haggai.csv",
+        "rows": 2,
+        "sha256": "9f9750c7d682e00019a1ac4f813806d00e4959b334912ecdb23459ed7fe42cb7"
+      },
+      {
+        "path": "anchors/38-Zechariah.csv",
+        "rows": 14,
+        "sha256": "a150f52c555f92d8ccc58d69332139b3111314d7069e7d084efeb743047d3c16"
+      },
+      {
+        "path": "anchors/39-Malachi.csv",
+        "rows": 3,
+        "sha256": "ed747a6b241d0ea837d9740ba6999f1f9a3d5ee999c689a588456a63617a2ade"
+      },
+      {
+        "path": "anchors/40-Matthew.csv",
+        "rows": 28,
+        "sha256": "43e8db3460c6f4026a5ca43acf1a0ab41fcb2d978d00ed890af368ee658d15c0"
+      },
+      {
+        "path": "anchors/41-Mark.csv",
+        "rows": 16,
+        "sha256": "56c4f4e7338742568b4f071aae079db404319587c285193bff55d19caccbffb4"
+      },
+      {
+        "path": "anchors/42-Luke.csv",
+        "rows": 24,
+        "sha256": "9e09863115c18318001fb09addd6c1d06485756309f7a95874276db47d3d9bf0"
+      },
+      {
+        "path": "anchors/43-John.csv",
+        "rows": 21,
+        "sha256": "4378c71ea6dff17bc594c683b8488297be21c88ca7c230833982ef676ceb8c35"
+      },
+      {
+        "path": "anchors/44-Acts.csv",
+        "rows": 28,
+        "sha256": "ea658ef20830d831d3798855fa75277c682456bcaa50b13efa6f3b864899d7fa"
+      },
+      {
+        "path": "anchors/45-Romans.csv",
+        "rows": 16,
+        "sha256": "8b148b156768030f23ec0562bb4a63800570042014a14ee35710a7aca2feb7b4"
+      },
+      {
+        "path": "anchors/46-1 Corinthians.csv",
+        "rows": 16,
+        "sha256": "c4f4fa25de251c523f1fe33f6b351f16c5e01f358451c9a11faf5f7bcd84c5a7"
+      },
+      {
+        "path": "anchors/47-2 Corinthians.csv",
+        "rows": 13,
+        "sha256": "ce77eb4c2ef28c034613094ec0e01be855c0920e9a6d79d13fec7d0e11bf1759"
+      },
+      {
+        "path": "anchors/48-Galatians.csv",
+        "rows": 6,
+        "sha256": "1e100309780591ca2c721c1536015bc834143c74ad9d50413d2bb92a23b043a9"
+      },
+      {
+        "path": "anchors/49-Ephesians.csv",
+        "rows": 6,
+        "sha256": "3ce76cf1780bc5f1200260ac674e3c5799171676236431ffd94bbdada74361e7"
+      },
+      {
+        "path": "anchors/50-Philippians.csv",
+        "rows": 4,
+        "sha256": "d668e59abf144af39a190bcd3f9d0beb5ccf882987a4caa30fc5d5d1cf50e7e0"
+      },
+      {
+        "path": "anchors/51-Colossians.csv",
+        "rows": 4,
+        "sha256": "57e244960827ebb8c42060afe89380dde2909a9116f22896fab0c19e90623840"
+      },
+      {
+        "path": "anchors/52-1 Thessalonians.csv",
+        "rows": 5,
+        "sha256": "33b2d2d875273aa365d38c8eb148b57db072e13f43f6dfcb3b4caf5cf46638c7"
+      },
+      {
+        "path": "anchors/53-2 Thessalonians.csv",
+        "rows": 3,
+        "sha256": "0440621f16aa8fc3848bdbbcdb55d4488f2dd3cddc5cb4a6830f8fb272f23906"
+      },
+      {
+        "path": "anchors/54-1 Timothy.csv",
+        "rows": 6,
+        "sha256": "6ada0c6b81c3826daf31a16ee2fb54c6e919644fcd2e1f78ea2209f6f579472a"
+      },
+      {
+        "path": "anchors/55-2 Timothy.csv",
+        "rows": 4,
+        "sha256": "3d2d32bcef00ab273a1fb44e7c3aa9be47a4fcd1b1cd6c5ffae5637b6acd3e03"
+      },
+      {
+        "path": "anchors/56-Titus.csv",
+        "rows": 3,
+        "sha256": "44fea961bbe4b852747c0f81f952a0fc86c5263c4542952f6a2afddeb3ea24f6"
+      },
+      {
+        "path": "anchors/57-Philemon.csv",
+        "rows": 1,
+        "sha256": "6ee435e38b4a0a2555c1942cc5b6d4fa49331c21780aafdce743917823deac5d"
+      },
+      {
+        "path": "anchors/58-Hebrews.csv",
+        "rows": 13,
+        "sha256": "6a782753ab7f76b30502df3b1822b8f5f959cd3f7aa6dc2241900bd3c7dffc14"
+      },
+      {
+        "path": "anchors/59-James.csv",
+        "rows": 5,
+        "sha256": "aa5ec83976cd157e524324c42bd1950981fd5b3a5e7304559c7c5f2748d57021"
+      },
+      {
+        "path": "anchors/60-1 Peter.csv",
+        "rows": 5,
+        "sha256": "d201e8d0906b9abcd226ab1c485c5f0353ebea52bfe612dd6589ef407d4dd545"
+      },
+      {
+        "path": "anchors/61-2 Peter.csv",
+        "rows": 3,
+        "sha256": "9f19964533810fac25fdfc712632473a81d3486373365a398fa11e6f5a6294c8"
+      },
+      {
+        "path": "anchors/62-1 John.csv",
+        "rows": 5,
+        "sha256": "84201a65a4fcb70c3f70e6c4849507fc34b21f6bfba5339ee508711d3220a3b3"
+      },
+      {
+        "path": "anchors/63-2 John.csv",
+        "rows": 1,
+        "sha256": "cf918521c1173f636013eff82a2eda69b0102ed58d028a0f568f83007781924e"
+      },
+      {
+        "path": "anchors/64-3 John.csv",
+        "rows": 1,
+        "sha256": "28d1b6305ea751142d46fa2a41767ae30648b94f360a8a0a3094a1210ebcd1b3"
+      },
+      {
+        "path": "anchors/65-Jude.csv",
+        "rows": 1,
+        "sha256": "3fa060f15c93480b7070b2f43877c1e9778caf3832e5deaa8a1f00971126747a"
+      },
+      {
+        "path": "anchors/66-Revelation.csv",
+        "rows": 22,
+        "sha256": "ea82a6d87628932b9f5edecb74152d6580b29720d9550ddc1340d598e46404f3"
+      }
+    ]
+  },
+  "mappings": {
+    "format": 2,
+    "folder": "Elb1871Mappings",
+    "seedVersion": "da83b4eedb6686b8aee8127cca98033c24f4240aed2c1d06bc250844b1f46354",
+    "rows": 726487,
+    "files": [
+      {
+        "path": "01-Genesis.csv",
+        "rows": 36198,
+        "sha256": "0253c20375915f6b6ab2116462fe5d661a19eb26e1c55f3d5bd53d17f819dd83"
+      },
+      {
+        "path": "02-Exodus.csv",
+        "rows": 29799,
+        "sha256": "0acf4314626601f55f93ae715145fa0d33ca4b04c851c23ecdfc3cb64a83e0c1"
+      },
+      {
+        "path": "03-Leviticus.csv",
+        "rows": 22054,
+        "sha256": "bf094ae4ff98df420b966788a33eb8f8f5aee4a63b71066702bc2d64ca2f351c"
+      },
+      {
+        "path": "04-Numbers.csv",
+        "rows": 28552,
+        "sha256": "f8e5ae53110f63e34c5090658abd45484654f0cee15d8fcbc06156928d01a322"
+      },
+      {
+        "path": "05-Deuteronomy.csv",
+        "rows": 26108,
+        "sha256": "138ea25370204f505fa9893b2a7d72517b6e675bc58c1b012746e1baa8284854"
+      },
+      {
+        "path": "06-Joshua.csv",
+        "rows": 17345,
+        "sha256": "5879c74cefb6c14645f80a79679537d1dc46c7a6b0d8959ab88f5cd5f960d6c0"
+      },
+      {
+        "path": "07-Judges.csv",
+        "rows": 17605,
+        "sha256": "ab8cc9a67fbde6b22ded46eee03955303995b3656583cdada1355cb6873caf5e"
+      },
+      {
+        "path": "08-Ruth.csv",
+        "rows": 2386,
+        "sha256": "d71a4d56042fc45c0d4d4002800ed4310d5607b85331e3ea4fdd86a56b6b2d6c"
+      },
+      {
+        "path": "09-1 Samuel.csv",
+        "rows": 23647,
+        "sha256": "d49c7d2b2b32238ffc0ed2bda4b284f7e37d95c3056cff786bd8e227446d5546"
+      },
+      {
+        "path": "10-2 Samuel.csv",
+        "rows": 19521,
+        "sha256": "19664f537c1cbcf58ca166ddc934fc667f25663731217b40289b71de66aec143"
+      },
+      {
+        "path": "11-1 Kings.csv",
+        "rows": 23022,
+        "sha256": "f2b688d4040bffc1a9703a518bf8eb9ad328fa508122454d37434ad445079b37"
+      },
+      {
+        "path": "12-2 Kings.csv",
+        "rows": 21863,
+        "sha256": "74197b9cd84f2dcd8b02a4da99cc4300dbec723d32d8bcc4e8bc2b81dbe890af"
+      },
+      {
+        "path": "13-1 Chronicles.csv",
+        "rows": 18470,
+        "sha256": "14ff0afc9fb86f0995226d53efa44c205a217db753fadfd09dcc4e782dc4e11e"
+      },
+      {
+        "path": "14-2 Chronicles.csv",
+        "rows": 24011,
+        "sha256": "1d81c892e915011b03737568ca2b600c68451c63245a8824c03fc0c1e656d342"
+      },
+      {
+        "path": "15-Ezra.csv",
+        "rows": 6570,
+        "sha256": "0e48a786caf490dce5683560da183df8797650255a19a9f3a76d3d3414268a4d"
+      },
+      {
+        "path": "16-Nehemiah.csv",
+        "rows": 9640,
+        "sha256": "8cc4b6c097090b119a73f7d8052d12d47fe11691324f7ba8b1ed0d7afdd4a8cc"
+      },
+      {
+        "path": "17-Esther.csv",
+        "rows": 5359,
+        "sha256": "da9bb44b60a654c345c0e0f39463eea5ac46b562576069af8dfbf159fd58f2d9"
+      },
+      {
+        "path": "18-Job.csv",
+        "rows": 16698,
+        "sha256": "a761230899cb2e91a8a796d46e52d8f8030863f41483abf16fa8ade1c8ec76a2"
+      },
+      {
+        "path": "19-Psalms.csv",
+        "rows": 38695,
+        "sha256": "fa55ba3be9c2924097f0f2c263f12d32b1a0bb336c7e26591254d2045949fa16"
+      },
+      {
+        "path": "20-Proverbs.csv",
+        "rows": 13656,
+        "sha256": "1b8268c2a224f5929344f3a76455cf35aee9efdeab491583a111ee886985775c"
+      },
+      {
+        "path": "21-Ecclesiastes.csv",
+        "rows": 5257,
+        "sha256": "c4d3aaddc973be5bab247c06e7293890b7525d6f5a81f48e7bac007d612236ca"
+      },
+      {
+        "path": "22-Song of Solomon.csv",
+        "rows": 2391,
+        "sha256": "466cbe7fb411fe3d75b4c83d99a9845559ed08b24d0ca990245ffa6766b8fa7b"
+      },
+      {
+        "path": "23-Isaiah.csv",
+        "rows": 33045,
+        "sha256": "e83fa400ada467f265c3f6978fdefe533f93d653f4c21a8df8c08056b35bb9b5"
+      },
+      {
+        "path": "24-Jeremiah.csv",
+        "rows": 38519,
+        "sha256": "a8848e987eaee17926ce7f1ff42b0057441a4744289dc69f832c45b37d9317a7"
+      },
+      {
+        "path": "25-Lamentations.csv",
+        "rows": 2952,
+        "sha256": "b338a6e568f516d26398eb2e6148ef902f5d43f25d027be6da006efb25b9d365"
+      },
+      {
+        "path": "26-Ezekiel.csv",
+        "rows": 35211,
+        "sha256": "1738e695cfd8c5e1623b0c5b067d23a990225c914bed5cbb720780a09dd252c9"
+      },
+      {
+        "path": "27-Daniel.csv",
+        "rows": 10836,
+        "sha256": "f62002b4b4db983de388d1b88237c6f441eaeddba2ddfffaf28de3aa08335600"
+      },
+      {
+        "path": "28-Hosea.csv",
+        "rows": 4745,
+        "sha256": "de4c720229ed9e1a4d4ed4448cd9be7f768d2f4f8c440e886bfab05c7f8df790"
+      },
+      {
+        "path": "29-Joel.csv",
+        "rows": 1772,
+        "sha256": "5447a30580bfbfcce761a4d60460baec094c0f656a3c625a55914d1e3b6ed0b1"
+      },
+      {
+        "path": "30-Amos.csv",
+        "rows": 3782,
+        "sha256": "83a62d28f683290941cb6104e87ca07e87ca030afd75ccdf0eb1b2cefa904169"
+      },
+      {
+        "path": "31-Obadiah.csv",
+        "rows": 572,
+        "sha256": "8b98df3c1a3e0127886ec9f367a844a262b5df49286db7660e86665446a99efb"
+      },
+      {
+        "path": "32-Jonah.csv",
+        "rows": 1247,
+        "sha256": "5fcf826564ff36463ab64c3aa77bdcd4b6370ca39fb9ee35385d4bbede5a65b6"
+      },
+      {
+        "path": "33-Micah.csv",
+        "rows": 2741,
+        "sha256": "089d3286202f00a74e2c00d81928076587d1b57d02104c96954e22bdf8ea28f4"
+      },
+      {
+        "path": "34-Nahum.csv",
+        "rows": 1092,
+        "sha256": "69a6f75c9bac3416b36010d9068c1d6dcaab4da5ed5936c7502936c2bccd65c0"
+      },
+      {
+        "path": "35-Habakkuk.csv",
+        "rows": 1303,
+        "sha256": "55cf1282f3dee0728c2e69ea07281c0c15628742da867bebd0911b5a5e74950c"
+      },
+      {
+        "path": "36-Zephaniah.csv",
+        "rows": 1394,
+        "sha256": "65f02b54b0d0a490f21ea356a45f6166b59c86f6636a84938ff4957b4b44c025"
+      },
+      {
+        "path": "37-Haggai.csv",
+        "rows": 994,
+        "sha256": "6dd1b671e14d666a915a05bc0eff04036189a00ffec298ba6266e2901804ba90"
+      },
+      {
+        "path": "38-Zechariah.csv",
+        "rows": 5722,
+        "sha256": "f0d0c4e9d43a42054aa94d388545e0bfadba395fe751ab880fbb1d4094275b5f"
+      },
+      {
+        "path": "39-Malachi.csv",
+        "rows": 1642,
+        "sha256": "777bc9976ffd46787d9327f2abfd547662a9671cf336e6749e09804bc5124027"
+      },
+      {
+        "path": "40-Matthew.csv",
+        "rows": 22290,
+        "sha256": "c9d933bcb2f654864f95e9f7a4afd6ec04217ed917c87de822a249e736bfdfdd"
+      },
+      {
+        "path": "41-Mark.csv",
+        "rows": 14308,
+        "sha256": "645c3fc8438c71f7735dd92a473600a0ffae3447fd26781c90decaf555797b15"
+      },
+      {
+        "path": "42-Luke.csv",
+        "rows": 24363,
+        "sha256": "fc8e3ff94315a3458816bfa6337f02f9ed3ac5ea48feb5476766e07ef03e6303"
+      },
+      {
+        "path": "43-John.csv",
+        "rows": 18452,
+        "sha256": "9eed965f794b59431087ebe59b7aba2f8c867ce0d2cd797626290c22d35e84e7"
+      },
+      {
+        "path": "44-Acts.csv",
+        "rows": 23192,
+        "sha256": "992950f378466d4c2a5000f5833331103eb3bde63e6b06f554d4cfe2e2230a54"
+      },
+      {
+        "path": "45-Romans.csv",
+        "rows": 8782,
+        "sha256": "23bdd851844dac204a36664fe6951c3f0f1b44294f3f2c9d20d3210a96fe9427"
+      },
+      {
+        "path": "46-1 Corinthians.csv",
+        "rows": 8724,
+        "sha256": "2b77493654ece5b2ef3353a9c85be9aeeb65c1d4874877a13a5092c20d2e3af2"
+      },
+      {
+        "path": "47-2 Corinthians.csv",
+        "rows": 5716,
+        "sha256": "bf19cf501287c5adbd5d6fff9378bd113408415d4bfd10d47011d225ec31a0b0"
+      },
+      {
+        "path": "48-Galatians.csv",
+        "rows": 2870,
+        "sha256": "22974c2d0bc057cedaaaa67c199cf6e98533440d334801d9d8088f6cbae8b1c3"
+      },
+      {
+        "path": "49-Ephesians.csv",
+        "rows": 2816,
+        "sha256": "72674c8b62e5c28b399568d441bb7090c89e4a1514ca0b00b0541d19e64a96de"
+      },
+      {
+        "path": "50-Philippians.csv",
+        "rows": 2067,
+        "sha256": "f66e0dee3d50fda537ff3157bfb7513d346369088c8f9835198c26c253589fdb"
+      },
+      {
+        "path": "51-Colossians.csv",
+        "rows": 1902,
+        "sha256": "f6d0f2ed68a6286878b978e8ab92c5e17d6c52b9e31b4e3c4a5c3fa4d0f43818"
+      },
+      {
+        "path": "52-1 Thessalonians.csv",
+        "rows": 1739,
+        "sha256": "1408f289b64e5ea1ccae61103893e6d70062f851b8ca126c93601ec58189a3da"
+      },
+      {
+        "path": "53-2 Thessalonians.csv",
+        "rows": 977,
+        "sha256": "b270363a501a2501086b729851f445a01ce758252bf127e7bdda24469e98faeb"
+      },
+      {
+        "path": "54-1 Timothy.csv",
+        "rows": 2096,
+        "sha256": "8a0c8a04b3aad6e1b6a2db69003edf2a10119ef6535609d6533f0d3fd8922e6c"
+      },
+      {
+        "path": "55-2 Timothy.csv",
+        "rows": 1559,
+        "sha256": "36874f2a07d845ad5be1b6f4f6ae9600a609f841724c2aa5c590e29faf02a9e5"
+      },
+      {
+        "path": "56-Titus.csv",
+        "rows": 857,
+        "sha256": "d5d6c91890dbc0561f14003a753ded0b778ab4cb538062b3790ae192b7706d8e"
+      },
+      {
+        "path": "57-Philemon.csv",
+        "rows": 423,
+        "sha256": "4b5c4d8b4f0440a7f71762251880967bd734d644ebd7b3ac1108fc35192c4634"
+      },
+      {
+        "path": "58-Hebrews.csv",
+        "rows": 6464,
+        "sha256": "94aa27129281ea13d4ccf145c8e34f019761c79fd9f17e9be137f0347ba56d5a"
+      },
+      {
+        "path": "59-James.csv",
+        "rows": 2174,
+        "sha256": "50651279e3ec3a80735490ea5f508258ae73228d71aa41f21f82cfe18a2b64ea"
+      },
+      {
+        "path": "60-1 Peter.csv",
+        "rows": 2234,
+        "sha256": "29d25a9f6e082c68bb91a822670171dcce00107da0938c3486c1711e030c3145"
+      },
+      {
+        "path": "61-2 Peter.csv",
+        "rows": 1427,
+        "sha256": "3b7e610cd9745a08ac5dac2fc52367e0cea1c69005aa4aa673d771ad50a2041e"
+      },
+      {
+        "path": "62-1 John.csv",
+        "rows": 2371,
+        "sha256": "94add977a00e1544e635f95033e63972cd8e0a156d2af4d891f01497b3546394"
+      },
+      {
+        "path": "63-2 John.csv",
+        "rows": 288,
+        "sha256": "087e364e50aa2fb7f687e5c908cd7a3e098100eac81896cd1b9ba87b81ce8bbc"
+      },
+      {
+        "path": "64-3 John.csv",
+        "rows": 289,
+        "sha256": "9630b73d1259431fc5e675abf250b393cb234d6f67a1952fe8a3ab1242b580f4"
+      },
+      {
+        "path": "65-Jude.csv",
+        "rows": 559,
+        "sha256": "8176003fbaf686a11363657f5bf49a3a9df236d8ca26793eb3d39a7fcf7a7611"
+      },
+      {
+        "path": "66-Revelation.csv",
+        "rows": 11132,
+        "sha256": "1afbe5691393f82abeb61bf14df8fa342fe9b4fff674f8b2b8df8e7b6013cd6c"
+      }
+    ],
+    "anchorFiles": []
+  }
+}

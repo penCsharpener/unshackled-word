@@ -4,6 +4,7 @@ using FluentValidation;
 using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Domain.WebApi.Lemmas;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.Stts;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.UpdateChapter;
 
@@ -11,10 +12,12 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.UpdateChapter;
 public sealed class Endpoint : Endpoint<UpdateLemmaChapterRequest, UpdateLemmaChapterResponse>
 {
     private readonly ILemmaRepository _repository;
+    private readonly LemmaSttsGuard _sttsGuard;
 
-    public Endpoint(ILemmaRepository repository)
+    public Endpoint(ILemmaRepository repository, LemmaSttsGuard sttsGuard)
     {
         _repository = repository;
+        _sttsGuard = sttsGuard;
     }
 
     public override void Configure()
@@ -28,6 +31,9 @@ public sealed class Endpoint : Endpoint<UpdateLemmaChapterRequest, UpdateLemmaCh
     public override async Task HandleAsync(UpdateLemmaChapterRequest req, CancellationToken ct)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        foreach (var error in await _sttsGuard.CheckAsync(req.Changes, ct)) AddError(error);
+        ThrowIfAnyErrors();
+
         var missing = await _repository.ApplyAsync(req.Changes, userId, ct);
         if (missing.Count > 0)
         {

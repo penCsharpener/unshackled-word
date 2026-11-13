@@ -12,10 +12,22 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(method: string, path: string, body?: unknown, signal?: AbortSignal) {
+export interface RequestOptions {
+  /** Pass `no-cache` to revalidate against the server instead of reusing a fresh HTTP cache entry. */
+  cache?: RequestCache;
+}
+
+async function request<T>(
+  method: string,
+  path: string,
+  body?: unknown,
+  signal?: AbortSignal,
+  options: RequestOptions = {},
+) {
   const response = await fetch(`${baseUrl}${path}`, {
     method,
     signal,
+    cache: options.cache,
     credentials: "include",
     headers: body === undefined ? undefined : { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
@@ -32,7 +44,8 @@ async function request<T>(method: string, path: string, body?: unknown, signal?:
 
 /** Typed fetch helpers for the Web API. Responses are camelCase JSON with nulls omitted. */
 export const api = {
-  get: <T>(path: string, signal?: AbortSignal) => request<T>("GET", path, undefined, signal),
+  get: <T>(path: string, signal?: AbortSignal, options?: RequestOptions) =>
+    request<T>("GET", path, undefined, signal, options),
   post: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("POST", path, body, signal),
   put: <T>(path: string, body: unknown, signal?: AbortSignal) =>

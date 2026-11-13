@@ -1,11 +1,12 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
+using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Domain.WebApi.DataQuality;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality;
 
 /// <summary>Runs the single background refresh and tells whether one is running (one API instance; the flag is process-wide).</summary>
-public sealed class DqRefreshCoordinator
+public sealed class DqRefreshCoordinator : IStatsRefreshStatus
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<DqRefreshCoordinator> _logger;
@@ -70,8 +71,10 @@ public sealed class DqOverviewService
         var response = new OverviewResponse
         {
             RefreshedAt = state.RefreshedAt,
+            StatsRefreshedAt = state.StatsRefreshedAt,
             Refreshing = _coordinator.IsRunning,
             LastEditAt = await _facts.GetLastEditAtAsync(ct),
+            SeedImports = [.. await _facts.GetSeedImportsAsync(ct)],
         };
         if (state.RefreshedAt is null || !state.IsPopulated) return response;
 
@@ -107,10 +110,17 @@ public sealed class DqOverviewService
             [.. DqChecks.Codes.Select((code, i) => new OverviewCheck { Code = code, Tier = 1, Count = counts[i].Count, ErrorCount = counts[i].ErrorCount, Sub = counts[i].Sub })]);
     }
 
+    /// <summary>
+    /// Facts first (RefreshedAt and the check counts are saved), then the Stats* views and StatsRefreshedAt. If the stats step fails the exception
+    /// propagates to the coordinator (logged, flag released) and StatsRefreshedAt keeps its old value while RefreshedAt is already new.
+    /// </summary>
     public async Task RefreshAsync(CancellationToken ct)
     {
         await _facts.RefreshViewAsync(ct);
         var snapshot = await ComputeAsync(new DqFacets(null, null), ct);
         await _facts.SaveCountsAsync(snapshot.Checks.ToDictionary(c => c.Code, c => c.Count), ct);
+
+        await _facts.RefreshStatsViewsAsync(ct);
+        await _facts.SaveStatsRefreshedAtAsync(ct);
     }
 }

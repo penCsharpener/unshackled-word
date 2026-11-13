@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import type { GetStrongsOccurrencesResponse } from "@/lib/bible/types";
 import { fixtureStructure } from "@/test/fixtures/bibleStructure";
 import { fixtureSummary, fixtureWordStats } from "@/test/fixtures/strongsStats";
@@ -41,6 +42,7 @@ const page1: GetStrongsOccurrencesResponse = {
 function stubFetch(occurrences: Response, summary?: Response) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
+    if (url.includes("/auth/me")) return new Response("", { status: 401 });
     if (url.includes("/meta-bible/structure"))
       return new Response(JSON.stringify(fixtureStructure));
     if (url.includes("/strongsSummary/")) {
@@ -63,7 +65,9 @@ function renderAt(path: string) {
   );
   return render(
     <QueryClientProvider client={client}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </QueryClientProvider>,
   );
 }

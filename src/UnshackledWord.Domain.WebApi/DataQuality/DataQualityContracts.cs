@@ -15,10 +15,35 @@ public sealed class OverviewRequest : DqFacetsRequest;
 public sealed class OverviewResponse
 {
     public DateTime? RefreshedAt { get; set; }
+
+    /// <summary>Last successful refresh of the mapping stats views (Strong's page, word stats, smart search); absent until the first one.</summary>
+    public DateTime? StatsRefreshedAt { get; set; }
     public bool Refreshing { get; set; }
     public DateTime? LastEditAt { get; set; }
+
+    /// <summary>Latest repo-seed imports per kind (<c>SeedImports</c>, roadmap 0010.4f/0010.10f); empty on installs that never imported a seed.</summary>
+    public List<SeedImportInfo> SeedImports { get; set; } = [];
     public OverviewTotals Totals { get; set; } = new();
     public List<OverviewCheck> Checks { get; set; } = [];
+}
+
+/// <summary>One row of <c>SeedImports</c>: an import (VersesUpdated is null) or a mapping seed update (counts of verses replaced / kept).</summary>
+public sealed class SeedImportInfo
+{
+    /// <summary><c>morphology</c> or <c>mappings</c>.</summary>
+    public string Kind { get; set; } = string.Empty;
+    public string SeedVersion { get; set; } = string.Empty;
+    public DateTime? ExportedAt { get; set; }
+    public DateTime ImportedAt { get; set; }
+    public int Rows { get; set; }
+
+    /// <summary>Seed lines that could not be placed on the freshly parsed text (listed in the report).</summary>
+    public int Orphaned { get; set; }
+    public int? VersesUpdated { get; set; }
+    public int? VersesKeptLocal { get; set; }
+
+    /// <summary>Report file relative to the repo, e.g. <c>temp/seed-report/morphology-0123456789ab.csv</c>.</summary>
+    public string ReportPath { get; set; } = string.Empty;
 }
 
 public sealed class OverviewTotals
@@ -119,7 +144,7 @@ public sealed class CoverageChapter
 
 public sealed class CheckRequest : DqFacetsRequest
 {
-    /// <summary>Check code (route): U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5.</summary>
+    /// <summary>Check code (route): U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5 L6 L7.</summary>
     public string Code { get; set; } = string.Empty;
 
     public int Page { get; set; } = 1;
@@ -127,7 +152,7 @@ public sealed class CheckRequest : DqFacetsRequest
     public string? Pos { get; set; }
     public string? Lang { get; set; }
 
-    /// <summary>Original class key (U2/U3: also notNaTr, HTo, ketiv; M3: G:N / H:N or N with lang); L5: the field.</summary>
+    /// <summary>Original class key (U2/U3: also notNaTr, HTo, ketiv; M3: G:N / H:N or N with lang); L5: the field; L6/L7: the STTS tag (L6: "-" = empty), together with pos = UD tag.</summary>
     public string? Class { get; set; }
 
     public int? Chapter { get; set; }
@@ -189,6 +214,10 @@ public sealed class Finding
     public string? German { get; set; }
     public string? Lemma { get; set; }
     public string? Pos { get; set; }
+
+    /// <summary>L6/L7: the STTS tag of the word (null when empty).</summary>
+    public string? Stts { get; set; }
+
     public string? Original { get; set; }
     public string? Strongs { get; set; }
     public string? Gloss { get; set; }

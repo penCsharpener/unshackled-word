@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { chapterWords, valueMaps, word } from "@/test/fixtures/lemmas";
+import { chapterWords, labelsDe, valueMaps, word } from "@/test/fixtures/lemmas";
 import { dropdownWidth, navColumns, visibleColumns } from "./columns";
 import { applyEdit, buildChanges, dirtyFields, type Edits, resetRow, valuesOf } from "./edits";
 import { chapterStats, filterWords, NO_FILTERS } from "./filter";
 import { moveCell, nextEditable, typeToPick } from "./gridNav";
 import { applicableFields, buildRules, clearInapplicable, invalidFields } from "./rules";
+import { buildStts } from "./stts";
 
 const rules = buildRules(valueMaps.rules);
 const none: Edits = new Map();
@@ -170,5 +171,39 @@ describe("columns", () => {
     expect(navColumns(new Set())).not.toContain("verse");
     expect(dropdownWidth(["a", "Präteritum"], "Tempus")).toContain("12ch");
     expect(dropdownWidth([], "Modus")).toContain("5ch");
+  });
+});
+
+describe("STTS in edits", () => {
+  const base = { ...valuesOf(word(1, { lemma: "x", partOfSpeech: "VERB", stts: "NN" })) };
+
+  it("sends the tag only when the user changed it", () => {
+    const w = word(1, { lemma: "x", partOfSpeech: "VERB", stts: "NN" });
+    const bases = new Map([[1, base]]);
+
+    const pos = applyEdit(new Map(), w, rules, "partOfSpeech", "NOUN");
+    expect(buildChanges(pos, bases).changes[0]).not.toHaveProperty("stts");
+
+    const tag = applyEdit(pos, w, rules, "stts", "VVFIN");
+    expect(buildChanges(tag, bases).changes[0]?.stts).toBe("VVFIN");
+  });
+
+  it("never changes the tag when the part of speech changes", () => {
+    const w = word(1, { lemma: "x", partOfSpeech: "VERB", stts: "NN" });
+    const edited = applyEdit(new Map(), w, rules, "partOfSpeech", "ADP");
+    expect(edited.get(1)?.stts).toBe("NN");
+  });
+
+  it("flags mismatches, proposes by part of speech and verb form, and filters options", () => {
+    const helper = buildStts(valueMaps, labelsDe);
+    expect(helper.mismatch("VERB", "NN")).toBe(true);
+    expect(helper.mismatch("NOUN", "NN")).toBe(false);
+    expect(helper.mismatch("VERB", null)).toBe(false);
+    expect(helper.proposal("VERB", "Fin", null)).toBe("VVFIN");
+    expect(helper.proposal("ADP", null, null)).toBe("APPR");
+    expect(helper.proposal("X", null, null)).toBeNull();
+    expect(helper.options("VERB", null, false).map((o) => o.value)).toEqual(["VVFIN", "VVINF"]);
+    expect(helper.options("VERB", "NN", false).map((o) => o.value)).toContain("NN");
+    expect(helper.options("VERB", null, true)).toHaveLength(4);
   });
 });

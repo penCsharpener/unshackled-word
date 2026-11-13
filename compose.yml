@@ -53,10 +53,14 @@ services:
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
     ports:
       - "7654:8080"
+    volumes:
+      - ./assets:/src/assets:ro
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=${MAPPING_EDITING_ENABLED:-false}
+      # Seed export download (maintainer menu): the assets folder is only read (base text hash, existing manifest); nothing is written there.
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONASSETSPATH=/src/assets
       # Accounts: links in emails and the passkey origin derive from the frontend URL.
       - UNSHACKLEDWORD_APP__FRONTENDBASEURL=${FRONTEND_BASE_URL:-http://localhost:5173}
       - UNSHACKLEDWORD_APP__REQUIRESECURECOOKIES=${REQUIRE_SECURE_COOKIES:-true}

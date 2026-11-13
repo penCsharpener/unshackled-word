@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
 import { CoverageHeatmap } from "@/components/CoverageHeatmap";
-import { FindingsTable } from "@/components/FindingsTable";
+import { type FindingColumn, FindingsTable } from "@/components/FindingsTable";
 import { RankedBarList } from "@/components/RankedBarList";
 import { bookName } from "@/lib/bible/books";
 import type { BibleStructureBook } from "@/lib/bible/types";
@@ -14,6 +14,7 @@ import type { QualityPatch, QualityUrlState, TrailEntry } from "@/lib/quality/ur
 import { useJumps } from "./useJumps";
 
 const COUNT_SCALE = [1, 10, 100, 1000, 10000] as const;
+const STTS_COLUMNS: FindingColumn[] = ["ref", "german", "stts", "pos", "detail", "severity"];
 
 function matrixRows(matrix: CheckMatrix) {
   return matrix.rows.map((row) => ({
@@ -223,6 +224,7 @@ export function Findings({
               onPage={(page) => update({ page })}
               onPageSize={(size) => update({ size: size as 50 | 100 | 250 })}
               books={books}
+              columns={code === "L6" || code === "L7" ? STTS_COLUMNS : undefined}
               jumps={jumps}
               loading={query.isFetching}
               error={query.isError}

@@ -302,6 +302,8 @@ export interface StrongsRendering {
   word: string;
   /** Filter value for `strongsOccurrences?rendering=`. */
   key: string;
+  /** Part of speech (snapshot mode only). */
+  pos?: string;
   count: number;
 }
 /** One lexicon variant, only present when the number was requested without a letter (G3004 = G3004G + G3004H). */
@@ -326,6 +328,10 @@ export interface GetStrongsSummaryResponse {
   byBook: StrongsBookStat[];
   renderings: StrongsRendering[];
   variants?: StrongsVariant[];
+  /** When the stats snapshot was computed; absent while the live fallback answers. */
+  statsRefreshedAt?: string | null;
+  /** True while a refresh runs on the server. */
+  statsRefreshing: boolean;
 }
 
 export type WordStatsTestament = "all" | "ot" | "nt";
@@ -340,8 +346,19 @@ export interface WordStatsOriginal {
   /** All occurrences of the Strong's number. */
   totalCount: number;
 }
+export interface WordStatsCandidate {
+  lemma: string;
+  pos?: string;
+  occurrences: number;
+}
 export interface GetWordStatsResponse {
+  /** Snapshot mode: the resolved lemma display. */
   word: string;
+  lemma?: string;
+  pos?: string;
+  /** All lemma/PoS matches of the typed word, most frequent first (the answering one included). */
+  candidates?: WordStatsCandidate[];
+  statsRefreshedAt?: string | null;
   testament: WordStatsTestament;
   occurrenceCount: number;
   verseCount: number;
@@ -388,4 +405,73 @@ export interface GetVerseMappingResponse {
 }
 export interface PutVerseMappingRequest {
   links: VerseMappingLink[];
+}
+
+/** Smart-search lookup (`search/originals`), see roadmap 0008.5. */
+export interface OriginalsLookupOriginal {
+  strongs: string;
+  language: OriginalLanguage;
+  lemma?: string;
+  gloss?: string;
+  count: number;
+  share: number;
+  totalCount: number;
+}
+export interface OriginalsLookupLemma {
+  lemma: string;
+  word: string;
+  pos?: string;
+  occurrences: number;
+  lemmaOccurrences: number;
+  highFrequency: boolean;
+  originals: OriginalsLookupOriginal[];
+}
+export interface OriginalsLookupToken {
+  token: string;
+  lemmas: OriginalsLookupLemma[];
+}
+export interface OriginalsLookupResponse {
+  statsRefreshedAt: string;
+  tokens: OriginalsLookupToken[];
+}
+export interface OriginalsLookupOptions {
+  top?: number;
+  includeFrequent?: boolean;
+}
+
+export interface VerseSearchToken {
+  text: string;
+  matched: boolean;
+}
+export interface VerseSearchHit {
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  tokens: VerseSearchToken[];
+}
+export interface VerseSearchQueryToken {
+  text: string;
+  lexemes: string[];
+  /** Only present when the word was widened by lemma ("ging" also finds forms of "gehen"). */
+  lemmas?: string[];
+}
+export interface VerseSearchBookCount {
+  bookId: number;
+  count: number;
+}
+export interface SearchVersesResponse {
+  query: string;
+  total: number;
+  page: number;
+  pageSize: number;
+  tokens: VerseSearchQueryToken[];
+  /** Hits per book for the whole query, independent of the book filter and of paging. */
+  bookCounts: VerseSearchBookCount[];
+  hits: VerseSearchHit[];
+}
+export interface SearchVersesOptions {
+  page?: number;
+  pageSize?: number;
+  /** Restricts the hits to one book (the counts per book stay unfiltered). */
+  bookId?: number | null;
 }

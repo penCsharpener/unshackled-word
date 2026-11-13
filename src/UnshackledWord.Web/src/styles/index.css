@@ -765,9 +765,22 @@
   /* DonutChart: ring is an SVG circle per slice (pathLength 100), legend beside it. */
   .donut-body {
     display: grid;
-    grid-template-columns: calc(var(--spacing) * 32) minmax(0, 1fr);
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
     gap: calc(var(--spacing) * 4);
+  }
+
+  .donut-body > ul {
+    width: 100%;
+  }
+
+  /* Narrow cards stack the legend under the ring so long labels (Strong's number + lemma) are not cut. */
+  @container (width >= 28rem) {
+    .donut-body {
+      grid-template-columns: calc(var(--spacing) * 32) minmax(0, 1fr);
+      justify-items: stretch;
+      align-items: center;
+    }
   }
 
   @container (width >= 40rem) {
@@ -779,6 +792,13 @@
   .donut-ring {
     position: relative;
     aspect-ratio: 1;
+    width: calc(var(--spacing) * 32);
+  }
+
+  @container (width >= 28rem) {
+    .donut-ring {
+      width: auto;
+    }
   }
 
   .donut-ring svg {

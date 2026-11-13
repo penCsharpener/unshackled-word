@@ -3,6 +3,7 @@ using UnshackledWord.Application.Features.Backup;
 using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Application.Features.VerseMapping;
+using UnshackledWord.Application.Features.VerseSearch;
 using UnshackledWord.Application.Features.WordDetail;
 using UnshackledWord.Application.Repositories;
 
@@ -31,6 +32,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IStrongsStatsRepository, StrongsStatsRepository>();
         services.AddScoped<IStrongsSummaryService, StrongsSummaryService>();
         services.AddScoped<IWordStatsService, WordStatsService>();
+        services.AddScoped<ISearchOriginalsService, SearchOriginalsService>();
+        services.AddScoped<IVerseSearchRepository, VerseSearchRepository>();
+        services.AddScoped<IVerseSearchService, VerseSearchService>();
         return services;
     }
 }

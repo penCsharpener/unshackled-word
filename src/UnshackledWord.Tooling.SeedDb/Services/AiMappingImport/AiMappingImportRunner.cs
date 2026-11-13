@@ -1,18 +1,22 @@
+using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Mappings;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.AiMappingImport;
 
 public sealed class AiMappingImportRunner : IRunner
 {
     private readonly AiMappingImportRunnerRepository _repository;
+    private readonly MappingSeedImporter _seedImporter;
     private readonly ILogger<AiMappingImportRunner> _logger;
 
-    public AiMappingImportRunner(AiMappingImportRunnerRepository repository, ILogger<AiMappingImportRunner> logger)
+    public AiMappingImportRunner(AiMappingImportRunnerRepository repository, MappingSeedImporter seedImporter, ILogger<AiMappingImportRunner> logger)
     {
         _repository = repository;
+        _seedImporter = seedImporter;
         _logger = logger;
     }
 
@@ -24,6 +28,18 @@ public sealed class AiMappingImportRunner : IRunner
         if (gkCount > 0 || hebCount > 0)
         {
             _logger.LogWarning("Mappings are already present: Greek {gkCount} / Hebrew {hebCount}", gkCount, hebCount);
+
+            // The one seed that may change after the first start: verses nobody edited get the repo's newer mapping seed (roadmap 0010.10).
+            await _seedImporter.UpdateAsync(_seedImporter.CreateLayout(), token);
+            return;
+        }
+
+        var layout = _seedImporter.CreateLayout();
+        var seed = await _seedImporter.LoadSourceAsync(layout, token);
+
+        if (seed is { Format: MappingSeedFormat.Anchored })
+        {
+            await _seedImporter.ImportAsync(layout, seed, token);
             return;
         }
 
@@ -122,5 +138,11 @@ public sealed class AiMappingImportRunner : IRunner
 
         await _repository.InsertMappingsAsync(greekMappings, "Greek");
         await _repository.InsertMappingsAsync(hebMappings, "Hebrew");
+
+        // Format 1 files: remember what was imported, so a later format 2 seed can update the verses nobody changed in between.
+        if (seed is not null)
+        {
+            await _seedImporter.RecordLegacyImportAsync(seed, token);
+        }
     }
 }

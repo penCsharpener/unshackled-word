@@ -10,6 +10,7 @@ export const fixtureSummary: GetStrongsSummaryResponse = {
   verseCount: 110,
   mappedCount: 113,
   unmappedCount: 3,
+  statsRefreshing: false,
   byBook: [
     { bibleBookId: 40, count: 80, verseCount: 75 },
     { bibleBookId: 66, count: 36, verseCount: 35 },
@@ -17,6 +18,17 @@ export const fixtureSummary: GetStrongsSummaryResponse = {
   renderings: [
     { word: "Liebe", key: "liebe", count: 90 },
     { word: "Lieben", key: "lieben", count: 20 },
+  ],
+};
+
+/** Snapshot mode: lemma + part of speech per rendering, the same lemma with two parts of speech. */
+export const fixtureSnapshotSummary: GetStrongsSummaryResponse = {
+  ...fixtureSummary,
+  statsRefreshedAt: "2026-11-12T10:30:00Z",
+  renderings: [
+    { word: "Liebe", key: "liebe", pos: "NOUN", count: 80 },
+    { word: "lieben", key: "lieben", pos: "VERB", count: 20 },
+    { word: "lieben", key: "lieben", pos: "NOUN", count: 6 },
   ],
 };
 

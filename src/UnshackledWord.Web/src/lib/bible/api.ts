@@ -8,6 +8,10 @@ import type {
   GetWordDetailResponse,
   GetWordStatsResponse,
   GetWordsOfChapterResponse,
+  OriginalsLookupOptions,
+  OriginalsLookupResponse,
+  SearchVersesOptions,
+  SearchVersesResponse,
   StrongsOccurrenceFilters,
   VerseMappingLink,
   WordStatsTestament,
@@ -50,14 +54,30 @@ export const bibleApi = {
       signal,
     );
   },
-  strongsSummary: (strongs: string, signal?: AbortSignal) =>
+  strongsSummary: (strongs: string, signal?: AbortSignal, fresh = false) =>
     api.get<GetStrongsSummaryResponse>(
       `/elberfelder/strongsSummary/strongs/${encodeURIComponent(strongs)}`,
       signal,
+      fresh ? { cache: "no-cache" } : undefined,
     ),
-  wordStats: (word: string, testament: WordStatsTestament, signal?: AbortSignal) =>
-    api.get<GetWordStatsResponse>(
-      `/elberfelder/wordStats?${new URLSearchParams({ word, testament })}`,
-      signal,
-    ),
+  wordStats: (word: string, testament: WordStatsTestament, pos?: string, signal?: AbortSignal) => {
+    const query = new URLSearchParams({ word, testament });
+    if (pos) query.set("pos", pos);
+    return api.get<GetWordStatsResponse>(`/elberfelder/wordStats?${query}`, signal);
+  },
+  originalsLookup: (q: string, options: OriginalsLookupOptions = {}, signal?: AbortSignal) => {
+    const query = new URLSearchParams({ q });
+    if (options.top !== undefined) query.set("top", String(options.top));
+    if (options.includeFrequent) query.set("includeFrequent", "true");
+    return api.get<OriginalsLookupResponse>(`/elberfelder/search/originals?${query}`, signal);
+  },
+  searchVerses: (q: string, options: SearchVersesOptions = {}, signal?: AbortSignal) => {
+    const query = new URLSearchParams({
+      q,
+      page: String(options.page ?? 1),
+      pageSize: String(options.pageSize ?? 20),
+    });
+    if (options.bookId) query.set("bookId", String(options.bookId));
+    return api.get<SearchVersesResponse>(`/elberfelder/search/verses?${query}`, signal);
+  },
 };

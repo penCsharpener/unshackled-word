@@ -26,6 +26,7 @@ import { dirtyFields, type Edits, valuesOf } from "@/lib/lemmas/edits";
 import { type Cell, moveCell, type NavKey, nextEditable, typeToPick } from "@/lib/lemmas/gridNav";
 import { type Labels, labelOf, titleOf } from "@/lib/lemmas/labels";
 import { applicableFields, invalidFields, type Rules } from "@/lib/lemmas/rules";
+import { SHOW_ALL_STTS, type SttsHelper } from "@/lib/lemmas/stts";
 import {
   type EditableField,
   type LemmaWord,
@@ -34,7 +35,7 @@ import {
   type WordValues,
 } from "@/lib/lemmas/types";
 import { Button } from "./Button";
-import { Select } from "./Select";
+import { Select, type SelectOption } from "./Select";
 import { TextField } from "./TextField";
 
 export interface MorphologyGridProps {
@@ -44,6 +45,8 @@ export interface MorphologyGridProps {
   edits: Edits;
   labels: Labels;
   rules: Rules;
+  /** STTS dropdown filter and proposals; without it every tag is offered and nothing is flagged. */
+  stts?: SttsHelper;
   hiddenColumns: ReadonlySet<ColumnKey>;
   /** No editing: the cursor still moves, nothing opens an editor. */
   readOnly?: boolean;
@@ -89,7 +92,7 @@ function isMorph(key: ColumnKey): key is MorphField {
   return (MORPH_FIELDS as readonly string[]).includes(key);
 }
 function fieldOf(key: ColumnKey): EditableField | null {
-  if (key === "lemma" || key === "partOfSpeech" || isMorph(key)) return key;
+  if (key === "lemma" || key === "partOfSpeech" || key === "stts" || isMorph(key)) return key;
   return null;
 }
 
@@ -173,7 +176,7 @@ function SelectEditor({
 }: {
   label: string;
   value: string;
-  options: Labels[string];
+  options: readonly SelectOption[];
   onChange: (value: string) => void;
   onDone: (done: EditorDone) => void;
   autoOpen: boolean;
@@ -233,6 +236,7 @@ export function MorphologyGrid({
   edits,
   labels,
   rules,
+  stts,
   hiddenColumns,
   readOnly = false,
   lemmaSuggestions = [],
@@ -349,7 +353,7 @@ export function MorphologyGrid({
 
   function isEditable(word: LemmaWord, key: ColumnKey): boolean {
     if (readOnly) return false;
-    if (key === "lemma" || key === "partOfSpeech") return true;
+    if (key === "lemma" || key === "partOfSpeech" || key === "stts") return true;
     if (!isMorph(key)) return false;
     const values = editedValues(word);
     return applicableFields(rules, values.partOfSpeech, values.verbForm).has(key);
@@ -463,6 +467,17 @@ export function MorphologyGrid({
     }
   }
 
+  const [showAllStts, setShowAllStts] = useState(false);
+  function editorOptions(field: EditableField, values: WordValues): readonly SelectOption[] {
+    if (field !== "stts") return labels[field] ?? [];
+    const options =
+      stts?.options(values.partOfSpeech, values.stts, showAllStts) ?? labels.stts ?? [];
+    const all = labels.stts?.length ?? 0;
+    return showAllStts || options.length >= all
+      ? options
+      : [...options, { value: SHOW_ALL_STTS, label: t("lemmas.grid.sttsShowAll") }];
+  }
+
   function renderCell(word: LemmaWord, key: ColumnKey, rowIndex: number): ReactNode {
     const values = editedValues(word);
     const base = valuesOf(word);
@@ -502,9 +517,12 @@ export function MorphologyGrid({
             <SelectEditor
               label={label}
               value={values[field] ?? ""}
-              options={labels[field] ?? []}
+              options={editorOptions(field, values)}
               autoOpen={openedByPointer}
-              onChange={(value) => onEdit(word, field, value || null)}
+              onChange={(value) => {
+                if (value === SHOW_ALL_STTS) setShowAllStts(true);
+                else onEdit(word, field, value || null);
+              }}
               onDone={(done) => finishEdit(word, done)}
             />
           )}
@@ -551,6 +569,39 @@ export function MorphologyGrid({
           </span>
         );
         title = t("lemmas.grid.notApplicable", { pos });
+      } else if (key === "stts" && value) {
+        const wrong = stts?.mismatch(values.partOfSpeech, value) ?? false;
+        const proposed = wrong
+          ? stts?.proposal(values.partOfSpeech, values.verbForm, values.mood)
+          : null;
+        content = (
+          <span className="flex min-w-0 items-center gap-1">
+            {wrong && <span aria-hidden="true">⚠</span>}
+            <span className="truncate">{value}</span>
+            {wrong && <span className="sr-only">{t("lemmas.grid.sttsMismatchShort")}</span>}
+            {proposed && !readOnly && (
+              <Button
+                size="sm"
+                tabIndex={-1}
+                className="px-1 py-0"
+                title={t("lemmas.grid.sttsAcceptTitle", { tag: proposed, pos })}
+                onMouseDown={(event) => event.stopPropagation()}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onEdit(word, "stts", proposed);
+                }}
+              >
+                {t("lemmas.grid.sttsAccept", { tag: proposed })}
+              </Button>
+            )}
+          </span>
+        );
+        title = [
+          titleOf(labels, "stts", value),
+          wrong ? t("lemmas.grid.sttsMismatch", { tag: value, pos }) : "",
+        ]
+          .filter(Boolean)
+          .join("\n");
       } else if (!value && (key === "lemma" || key === "partOfSpeech")) {
         content = (
           <span className="italic text-fg-muted underline decoration-dashed">
@@ -615,6 +666,7 @@ export function MorphologyGrid({
                     base={valuesOf(word)}
                     labels={labels}
                     rules={rules}
+                    stts={stts}
                     readOnly={readOnly}
                     listId={listId}
                     onEdit={(field, value) => onEdit(word, field, value)}
@@ -735,6 +787,7 @@ function WordCard({
   base,
   labels,
   rules,
+  stts,
   readOnly,
   listId,
   onEdit,
@@ -747,6 +800,7 @@ function WordCard({
   base: WordValues;
   labels: Labels;
   rules: Rules;
+  stts: SttsHelper | undefined;
   readOnly: boolean;
   listId: string;
   onEdit: (field: EditableField, value: string | null) => void;
@@ -759,6 +813,13 @@ function WordCard({
   const dirty = dirtyFields(base, values).length > 0;
   const pos = labelOf(labels, "partOfSpeech", values.partOfSpeech) || t("lemmas.grid.noPos");
   const fields = MORPH_FIELDS.filter((field) => allowed.has(field));
+  const [showAllStts, setShowAllStts] = useState(false);
+  const sttsOptions =
+    stts?.options(values.partOfSpeech, values.stts, showAllStts) ?? labels.stts ?? [];
+  const sttsWrong = stts?.mismatch(values.partOfSpeech, values.stts) ?? false;
+  const sttsProposed = sttsWrong
+    ? stts?.proposal(values.partOfSpeech, values.verbForm, values.mood)
+    : null;
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: focus bubbling only feeds the context line
     <div onFocus={onFocus} className="flex flex-col gap-2">
@@ -809,6 +870,33 @@ function WordCard({
           options={[{ value: "", label: "–" }, ...(labels.partOfSpeech ?? [])]}
           onChange={(value) => onEdit("partOfSpeech", value || null)}
         />
+        <Select
+          label={t("lemmas.columns.stts")}
+          size="md"
+          value={values.stts ?? ""}
+          disabled={readOnly}
+          options={[
+            { value: "", label: "–" },
+            ...sttsOptions,
+            ...(showAllStts || sttsOptions.length >= (labels.stts?.length ?? 0)
+              ? []
+              : [{ value: SHOW_ALL_STTS, label: t("lemmas.grid.sttsShowAll") }]),
+          ]}
+          onChange={(value) => {
+            if (value === SHOW_ALL_STTS) setShowAllStts(true);
+            else onEdit("stts", value || null);
+          }}
+        />
+        {sttsWrong && (
+          <p className="flex items-center gap-2 text-sm text-accent">
+            <span>⚠ {t("lemmas.grid.sttsMismatch", { tag: values.stts, pos })}</span>
+            {sttsProposed && !readOnly && (
+              <Button size="sm" onClick={() => onEdit("stts", sttsProposed)}>
+                {t("lemmas.grid.sttsAccept", { tag: sttsProposed })}
+              </Button>
+            )}
+          </p>
+        )}
         {fields.length > 0 && (
           <div className="grid grid-cols-2 gap-2">
             {fields.map((field) => (

@@ -1,0 +1,22 @@
+meta {
+  name: GetWordStats
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}elberfelder/wordStats?word=ging&testament=all&pos=VERB
+  body: none
+  auth: none
+}
+
+params:query {
+  word: ging
+  testament: all
+  ~pos: VERB
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

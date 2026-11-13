@@ -142,4 +142,57 @@ public class StrongsStatsRepositoryTests
         reader.LastParam("Skip").ShouldBe(100);
         reader.LastParam("Take").ShouldBe(50);
     }
+
+    [Theory]
+    [InlineData(false, "G")]
+    [InlineData(true, "H")]
+    public async Task GetSnapshotStrongsAsync_ReadsTheStatsView_ForTheLanguage(bool hebrew, string lang)
+    {
+        var reader = new FakeDbReader().Returns(new SnapshotStrongsRow { Strongs = "G3004G", Occurrences = 3 });
+
+        var rows = await new StrongsStatsRepository(reader).GetSnapshotStrongsAsync(Keys, hebrew);
+
+        rows.Single().Occurrences.ShouldBe(3);
+        reader.LastSql.ShouldContain("\"StatsStrongs\"");
+        reader.LastSql.ShouldNotContain("DqWordFacts");
+        reader.LastParam("Lang").ShouldBe(lang);
+        ((string[])reader.LastParam("Keys")!).ShouldBe(Keys);
+    }
+
+    [Fact]
+    public async Task GetSnapshotRenderingsAsync_GroupsByLemmaAndPos_OverTheKeys()
+    {
+        var reader = new FakeDbReader().Returns(new SnapshotRenderingRow { Word = "gehen", Key = "gehen", Pos = "VERB", Count = 2 });
+
+        await new StrongsStatsRepository(reader).GetSnapshotRenderingsAsync(Keys, false);
+
+        reader.LastSql.ShouldContain("\"StatsStrongsRenderings\"");
+        reader.LastSql.ShouldContain("GROUP BY r.\"GermanKey\", r.\"Pos\"");
+    }
+
+    [Fact]
+    public async Task ResolveSnapshotLemmasAsync_UsesTheFormTable_AndTheLemmaOnlyAsFallback()
+    {
+        var reader = new FakeDbReader().Returns(new SnapshotLemmaRow { Key = "gehen", Pos = "VERB" });
+
+        await new StrongsStatsRepository(reader).ResolveSnapshotLemmasAsync("ging");
+
+        reader.LastSql.ShouldContain("\"StatsGermanLemma\"");
+        reader.LastSql.ShouldContain("\"StatsGermanForms\"");
+        reader.LastSql.ShouldContain("NOT EXISTS (SELECT 1 FROM \"unshackled-word\".\"StatsGermanForms\"");
+        reader.LastParam("Word").ShouldBe("ging");
+    }
+
+    [Fact]
+    public async Task GetSnapshotLemmaOriginalsAsync_PassesLemmaPairsAndTop()
+    {
+        var reader = new FakeDbReader().Returns(new SnapshotLemmaOriginalRow { Key = "gehen", Strongs = "G4198" });
+
+        await new StrongsStatsRepository(reader).GetSnapshotLemmaOriginalsAsync([new SnapshotLemmaKey("gehen", "VERB"), new SnapshotLemmaKey("und", null)], 3);
+
+        ((string[])reader.LastParam("Keys")!).ShouldBe(["gehen", "und"]);
+        ((string?[])reader.LastParam("Poss")!).ShouldBe(["VERB", null]);
+        reader.LastParam("Top").ShouldBe(3);
+        reader.LastSql.ShouldContain("IS NOT DISTINCT FROM");
+    }
 }

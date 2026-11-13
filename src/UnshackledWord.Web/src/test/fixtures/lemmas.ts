@@ -22,6 +22,27 @@ export const valueMaps: ValueMapsResponse = {
     },
     { field: "case", values: [{ code: "Dat", labelDe: "Dativ", labelEn: "dative" }] },
     { field: "number", values: [{ code: "S", labelDe: "Singular", labelEn: "singular" }] },
+    {
+      field: "stts",
+      values: [
+        { code: "NN", labelDe: "normales Nomen", labelEn: "common noun" },
+        { code: "VVFIN", labelDe: "finites Vollverb", labelEn: "finite full verb" },
+        { code: "VVINF", labelDe: "Infinitiv Vollverb", labelEn: "full verb infinitive" },
+        { code: "APPR", labelDe: "Präposition", labelEn: "preposition" },
+      ],
+    },
+  ],
+  sttsTags: [
+    { tag: "NN", upos: "NOUN", allowedUpos: ["NOUN", "PROPN"] },
+    { tag: "VVFIN", upos: "VERB", allowedUpos: ["VERB", "AUX"] },
+    { tag: "VVINF", upos: "VERB", allowedUpos: ["VERB", "AUX"] },
+    { tag: "APPR", upos: "ADP", allowedUpos: ["ADP"] },
+  ],
+  sttsProposals: [
+    { partOfSpeech: "VERB", verbForm: "Fin", stts: "VVFIN" },
+    { partOfSpeech: "VERB", stts: "VVFIN" },
+    { partOfSpeech: "NOUN", stts: "NN" },
+    { partOfSpeech: "ADP", stts: "APPR" },
   ],
   rules: [
     {

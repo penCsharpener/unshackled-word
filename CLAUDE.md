@@ -17,7 +17,7 @@ Free (no copyright/licence strings) Bible study data in German, Greek and Hebrew
 - **Scale:** expected to stay small.
 - **Backend:** .NET 10 (upgrade to 11 later is simple), FastEndpoints, Serilog, FluentValidation, Postgres 18+, Dapper only. EF Core (old BibleTagger) is obsolete. Raw SQL follows the project's SQL-formatting skill for raw string literals.
 - **Frontend (new, replaces Astro/Svelte/Next.js/Blazor experiments, which are reference for functionality only; the Bible chapter picker design is worth porting):** React 19+ SPA, TypeScript 7+, Vite 8 (Rolldown), Tailwind v4, Bun 1.4+, Biome. Clean modern layout, light/dark mode, mobile through 4k. UI in German and English via i18n.
-- **Frontend conventions:** develop only inside Docker containers (no host `node_modules`). Use design tokens only, no hardcoded colors/spacing/font sizes. Check `Components.md` before building and register every new component there. Propose new components in chat first; prefer a prop/variant over a new component. Never add a dependency without asking. Run type check and lint before finishing. Planned: Biome rules against arbitrary Tailwind values, inline styles and raw `<button>`, plus a CI script scanning for banned patterns and duplicate component names.
+- **Frontend conventions:** develop only inside Docker containers (no host `node_modules`). Use design tokens only, no hardcoded colors/spacing/font sizes. Check `Components.md` (repo root) before building and register every new component there. Propose new components in chat first; prefer a prop/variant over a new component. Never add a dependency without asking. Run type check and lint before finishing. Planned: Biome rules against arbitrary Tailwind values, inline styles and raw `<button>`, plus a CI script scanning for banned patterns and duplicate component names.
 
 ## Commands
 
@@ -31,11 +31,11 @@ dotnet watch run --project src/UnshackledWord.Tooling.WebApi         # 3. API (r
 dotnet watch run --project src/UnshackledWord.Tooling.BibleTagger    # Blazor tagging UI (run-web.ps1)
 dotnet build UnshackledWord.slnx
 dotnet test                                                          # tests use Microsoft Testing Platform (see tests/Directory.Build.props)
-dotnet test --project tests/UnshackledWord.Domain.Tests              # single project
-dotnet test --project tests/UnshackledWord.Domain.Tests --filter-method "*Name*"   # single test (MTP filter syntax; .NET 10 SDK)
+dotnet test tests/UnshackledWord.Domain.Tests                        # single project (this SDK rejects `dotnet test --project`)
+dotnet run --project tests/UnshackledWord.Domain.Tests -- --filter-method "*Name*"   # single test: test projects are MTP executables, filters go after `--`
 ```
 
-The new frontend is `src/UnshackledWord.Web` (React/Vite/Bun/Tailwind/Biome/Vitest, not in the `.slnx`). It runs only in Docker (service `unshackledword.web`, port 5173, `node_modules` in a named volume). Run its commands inside the container, e.g. `docker compose run --rm --no-deps unshackledword.web bun run check` (typecheck + lint + `check:components` + tests); `bun run format` auto-fixes. Dev server: `docker compose up unshackledword.web`. API base URL comes from `VITE_API_URL`. Components live flat in `src/components` and must be listed in `Components.md`.
+The new frontend is `src/UnshackledWord.Web` (React/Vite/Bun/Tailwind/Biome/Vitest, not in the `.slnx`). It runs only in Docker (service `unshackledword.web`, port 5173, `node_modules` in a named volume). Run its commands inside the container, e.g. `docker compose run --rm --no-deps unshackledword.web bun run check` (typecheck + lint + `check:components` + tests); `bun run format` auto-fixes. Dev server: `docker compose up unshackledword.web`. API base URL comes from `VITE_API_URL`. Components live flat in `src/components` and must be listed in `Components.md` (repo root, mounted into the web container).
 
 Old frontends (reference only, each independent, in `src/`): `UnshackledWord.AstroWeb` (`npm install && npm run dev`, needs `.env` with `PUBLIC_API_DOMAIN=http://localhost:5142/api`, Biome for lint), `UnshackledWord.SvelteWeb` (bun), `UnshackledWord.ElbTagger.WebApp` (Next.js). Only AstroWeb is documented in README; the other two are not in the `.slnx`.
 

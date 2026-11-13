@@ -85,6 +85,8 @@ export interface LemmaBulkEditProps {
   chapter: number;
   books: readonly BibleStructureBook[];
   partOfSpeechOptions: readonly SelectOption[];
+  /** STTS tags offered as the optional target tag of the change. */
+  sttsOptions?: readonly SelectOption[];
   /** Number of unsaved grid rows; the dialog is blocked while it is above 0. */
   dirtyCount: number;
   /** Saves the grid (existing flow); resolves true when everything was saved. */
@@ -97,6 +99,7 @@ interface Form {
   from: string[];
   fromInput: string;
   to: string;
+  stts: string;
   pos: string;
   original: string[];
   scope: BulkScope;
@@ -174,6 +177,7 @@ function BulkSession({
   chapter,
   books,
   partOfSpeechOptions,
+  sttsOptions = [],
   dirtyCount,
   onSaveGrid,
   onApplied,
@@ -189,6 +193,7 @@ function BulkSession({
     if (url.query) {
       return {
         ...url.query,
+        stts: url.query.stts ?? "",
         from: [...url.query.from],
         original: [...url.query.original],
         fromInput: "",
@@ -198,6 +203,7 @@ function BulkSession({
       from: url.prefill?.from ?? (initialFrom ? [initialFrom] : []),
       fromInput: "",
       to: "",
+      stts: "",
       pos: "",
       original: url.prefill?.original ?? [],
       scope: "all",
@@ -308,6 +314,7 @@ function BulkSession({
     const next: BulkQuery = {
       from: form.from,
       to: form.to.trim(),
+      stts: form.stts,
       pos: form.pos,
       original: form.original,
       scope: form.scope,
@@ -400,6 +407,7 @@ function BulkSession({
       const result = await bulkApi.apply({
         from: query.from,
         to: query.to,
+        stts: query.stts || undefined,
         wordIds,
         expectedOriginal,
       });
@@ -500,6 +508,7 @@ function BulkSession({
       from: [...previous.from],
       fromInput: "",
       to: "",
+      stts: "",
       pos: previous.pos,
       original: keys,
       scope: previous.scope,
@@ -560,6 +569,7 @@ function BulkSession({
         books={books}
         language={language}
         partOfSpeechOptions={partOfSpeechOptions}
+        sttsOptions={sttsOptions}
         onSubmit={submitSearch}
       />
     );
@@ -683,6 +693,9 @@ function BulkSession({
               )}
               {[...staleBanner.values()].some((info) => info.reason === "original") && (
                 <p>{t("lemmas.bulk.review.staleTextOriginal")}</p>
+              )}
+              {[...staleBanner.values()].some((info) => info.reason === "stts") && (
+                <p>{t("lemmas.bulk.review.staleTextStts", { tag: query.stts })}</p>
               )}
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void jumpToStale(query, [...staleBanner.keys()])}>
@@ -963,6 +976,7 @@ function SearchStep({
   books,
   language,
   partOfSpeechOptions,
+  sttsOptions,
   onSubmit,
 }: {
   form: Form;
@@ -970,6 +984,7 @@ function SearchStep({
   books: readonly BibleStructureBook[];
   language: string;
   partOfSpeechOptions: readonly SelectOption[];
+  sttsOptions: readonly SelectOption[];
   onSubmit: () => void;
 }) {
   const { t } = useTranslation();
@@ -1190,6 +1205,13 @@ function SearchStep({
             onChange={(pos) => patch({ pos })}
           />
           <p className="text-sm text-fg-muted">{t("lemmas.bulk.search.posHelp")}</p>
+          <Select
+            label={t("lemmas.bulk.search.stts")}
+            value={form.stts ?? ""}
+            options={[{ value: "", label: t("lemmas.bulk.search.sttsKeep") }, ...sttsOptions]}
+            onChange={(stts) => patch({ stts })}
+          />
+          <p className="text-sm text-fg-muted">{t("lemmas.bulk.search.sttsHelp")}</p>
           <Select
             label={t("lemmas.bulk.search.original")}
             value={form.original[0] ?? ""}
@@ -1737,13 +1759,15 @@ function ReviewList({
               {staleInfo && (
                 <span className="ml-1 font-medium text-accent">
                   <span aria-hidden="true">! </span>
-                  {staleInfo.reason === "original"
-                    ? staleInfo.origKey
-                      ? t("lemmas.bulk.review.staleOriginalNow", { value: staleInfo.origKey })
-                      : t("lemmas.bulk.review.staleOriginal")
-                    : staleInfo.lemma
-                      ? t("lemmas.bulk.review.staleNow", { value: staleInfo.lemma })
-                      : t("lemmas.bulk.review.stale")}
+                  {staleInfo.reason === "stts"
+                    ? t("lemmas.bulk.review.staleStts")
+                    : staleInfo.reason === "original"
+                      ? staleInfo.origKey
+                        ? t("lemmas.bulk.review.staleOriginalNow", { value: staleInfo.origKey })
+                        : t("lemmas.bulk.review.staleOriginal")
+                      : staleInfo.lemma
+                        ? t("lemmas.bulk.review.staleNow", { value: staleInfo.lemma })
+                        : t("lemmas.bulk.review.stale")}
                 </span>
               )}
             </span>

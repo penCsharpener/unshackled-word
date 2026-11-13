@@ -1,24 +1,32 @@
-import { type ReactNode, useId } from "react";
+import { type ReactNode, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/lib/auth/AuthContext";
+import { hasWriteRole } from "@/lib/auth/roles";
 import { useBibleStructure } from "@/lib/bible/queries";
 import {
   germanGloss,
   isShownStrongs,
   originalTextAttributes,
+  renderingSliceKey,
+  sliceRenderingKey,
   statsTestaments,
-  useStrongsSummary,
+  useStatsRefresh,
   useWordStats,
 } from "@/lib/bible/strongsStats";
 import type {
   GetStrongsSummaryResponse,
   OriginalLanguage,
+  StrongsRendering,
   Testament,
+  WordStatsCandidate,
   WordStatsOriginal,
 } from "@/lib/bible/types";
+import { formatStamp } from "@/lib/format";
 import { BookBarChart } from "./BookBarChart";
 import { Button } from "./Button";
 import { DonutChart, type DonutSlice } from "./DonutChart";
 import { EmptyState } from "./EmptyState";
+import { FormError } from "./FormError";
 
 const DONUT_TESTAMENTS: readonly Testament[] = ["ot", "nt"];
 
@@ -58,18 +66,77 @@ function originalSlice(
   };
 }
 
+/** Part-of-speech tag as a label (`VERB` becomes "Verb"); unknown tags are shown as they are. */
+function usePosLabel() {
+  const { t } = useTranslation();
+  return (pos: string) => t(`bible.pos.${pos}`, { defaultValue: pos });
+}
+
+/** "ging -> gehen, Verb": which lemma the typed word was resolved to. */
+function ResolvedLemma({ typed, lemma, pos }: { typed: string; lemma: string; pos?: string }) {
+  const { t } = useTranslation();
+  const posLabel = usePosLabel();
+  const same = typed.toLowerCase() === lemma.toLowerCase();
+  return (
+    <span lang="de" className="mt-1 block text-fg-muted" data-testid="resolved-lemma">
+      {same ? lemma : t("bible.stats.donut.resolved", { typed, lemma })}
+      {pos ? `, ${posLabel(pos)}` : null}
+    </span>
+  );
+}
+
+/** One button per lemma/PoS candidate when a word has several readings (Gang: Nomen, gehen: Verb). */
+function PosSwitch({
+  candidates,
+  active,
+  onSelect,
+}: {
+  candidates: WordStatsCandidate[];
+  active?: string;
+  onSelect: (pos: string | undefined) => void;
+}) {
+  const { t } = useTranslation();
+  const posLabel = usePosLabel();
+  // The API answers per part of speech with its most frequent lemma, so a second lemma with the same PoS
+  // (a tagging error such as "Ging" next to "gehen") cannot be chosen; offer one button per PoS.
+  const options = candidates.filter(
+    (candidate, index) => candidates.findIndex((c) => c.pos === candidate.pos) === index,
+  );
+  return (
+    <fieldset className="mt-2 flex flex-wrap items-center gap-1">
+      <legend className="sr-only">{t("bible.stats.donut.posSwitch")}</legend>
+      {options.map((candidate) => (
+        <Button
+          key={candidate.pos ?? candidate.lemma}
+          size="sm"
+          aria-pressed={candidate.pos === active}
+          onClick={() => onSelect(candidate.pos)}
+        >
+          {candidate.pos ? posLabel(candidate.pos) : candidate.lemma}
+          {" · "}
+          {candidate.occurrences}
+        </Button>
+      ))}
+    </fieldset>
+  );
+}
+
 /** Donut: the Strong's numbers behind one German word in one testament. */
 function WordStatsDonut({
   word,
+  pos: initialPos,
   testament,
   summary,
 }: {
   word: string;
+  /** Part of speech of the rendering this donut belongs to; the switch can change it. */
+  pos?: string;
   testament: Testament;
   summary: GetStrongsSummaryResponse;
 }) {
   const { t } = useTranslation();
-  const stats = useWordStats(word, testament);
+  const [chosenPos, setChosenPos] = useState<string | undefined>(initialPos);
+  const stats = useWordStats(word, testament, chosenPos);
   const title = t("bible.stats.donut.inTestament", {
     word,
     testament: t(`bible.stats.donut.testamentDative.${testament}`),
@@ -91,6 +158,14 @@ function WordStatsDonut({
     );
   }
   const data = stats.data;
+  const candidates = data?.candidates ?? [];
+  const resolved = data?.lemma ? (
+    <ResolvedLemma typed={word} lemma={data.lemma} pos={data.pos} />
+  ) : null;
+  const posSwitch =
+    new Set(candidates.map((c) => c.pos)).size > 1 ? (
+      <PosSwitch candidates={candidates} active={data?.pos} onSelect={setChosenPos} />
+    ) : null;
   if (!data || data.occurrenceCount === 0 || data.originals.length === 0) {
     return (
       <EmptyState title={title}>
@@ -98,20 +173,32 @@ function WordStatsDonut({
           word,
           testament: t(`bible.stats.donut.testamentDative.${testament}`),
         })}
+        {resolved}
+        {posSwitch}
       </EmptyState>
     );
   }
   return (
     <DonutChart
       title={title}
-      subtitle={t("bible.stats.donut.total", {
-        count: data.occurrenceCount,
-        verses: data.verseCount,
-      })}
+      subtitle={
+        <>
+          {t("bible.stats.donut.total", {
+            count: data.occurrenceCount,
+            verses: data.verseCount,
+          })}
+          {resolved}
+        </>
+      }
       note={
-        data.unmappedCount > 0
-          ? t("bible.stats.donut.unmapped", { count: data.unmappedCount })
-          : undefined
+        data.unmappedCount > 0 || posSwitch ? (
+          <>
+            {data.unmappedCount > 0
+              ? t("bible.stats.donut.unmapped", { count: data.unmappedCount })
+              : null}
+            {posSwitch}
+          </>
+        ) : undefined
       }
       slices={data.originals.map((original) =>
         originalSlice(
@@ -148,10 +235,13 @@ export function StrongsStatsHeader({
   onSelectBook,
   onSelectRendering,
 }: StrongsStatsHeaderProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const posLabel = usePosLabel();
   const donutsId = useId();
   const composedId = useId();
-  const summaryQuery = useStrongsSummary(strongs);
+  const statsRefresh = useStatsRefresh(strongs);
+  const summaryQuery = statsRefresh.summary;
   const structure = useBibleStructure();
   const summary = summaryQuery.data;
   const books = structure.data;
@@ -197,10 +287,17 @@ export function StrongsStatsHeader({
   const testaments = statsTestaments(summary.language, summary.byBook);
   const totalBooks = books?.filter((book) => testaments.includes(book.testament)).length;
   const chartKey = testaments.length === 2 ? "all" : (testaments[0] ?? "nt");
-  const selectedRendering =
-    summary.renderings.find((r) => r.key === rendering)?.word ??
-    rendering ??
-    summary.renderings[0]?.word;
+  const selectedRow = summary.renderings.find((r) => r.key === rendering);
+  const selectedRendering = selectedRow?.word ?? rendering ?? summary.renderings[0]?.word;
+  const selectedPos = selectedRow
+    ? selectedRow.pos
+    : rendering
+      ? undefined
+      : summary.renderings[0]?.pos;
+  const canRefresh = hasWriteRole(user) && !statsRefresh.forbidden;
+  const stamp = summary.statsRefreshedAt
+    ? t("bible.strongs.statsStand", { date: formatStamp(summary.statsRefreshedAt, i18n.language) })
+    : t("bible.strongs.statsLive");
 
   return (
     <div className="@container grid gap-8">
@@ -296,22 +393,30 @@ export function StrongsStatsHeader({
                       ? t("bible.stats.donut.unmapped", { count: summary.unmappedCount })
                       : undefined
                   }
-                  slices={summary.renderings.map((r) => ({
-                    key: r.key,
-                    label: <span lang="de">{r.word}</span>,
-                    text: r.word,
-                    value: r.count,
-                  }))}
+                  slices={summary.renderings.map((r) => renderingSlice(r, posLabel))}
                   centerLabel={t("bible.stats.donut.centerTranslations")}
-                  activeKey={rendering ?? null}
-                  onSelectSlice={onSelectRendering}
+                  activeKey={
+                    rendering === undefined
+                      ? null
+                      : renderingSliceKey(
+                          summary.renderings.find((r) => r.key === rendering) ?? {
+                            key: rendering,
+                            word: rendering,
+                            count: 0,
+                          },
+                        )
+                  }
+                  onSelectSlice={(key) =>
+                    onSelectRendering(key === null ? null : sliceRenderingKey(key))
+                  }
                   filterLabel={t("bible.stats.donut.filterTranslation")}
                 />
                 {selectedRendering
                   ? DONUT_TESTAMENTS.map((testament) => (
                       <WordStatsDonut
-                        key={`${selectedRendering}-${testament}`}
+                        key={`${selectedRendering}-${selectedPos ?? ""}-${testament}`}
                         word={selectedRendering}
+                        pos={selectedPos}
                         testament={testament}
                         summary={summary}
                       />
@@ -322,6 +427,38 @@ export function StrongsStatsHeader({
           </section>
         </>
       )}
+
+      <footer className="flex flex-wrap items-center gap-2 text-sm text-fg-muted">
+        <span>{statsRefresh.refreshing ? t("bible.strongs.statsRefreshing") : stamp}</span>
+        {canRefresh ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={statsRefresh.refreshing}
+            title={t("quality.refreshHint")}
+            onClick={statsRefresh.refresh}
+          >
+            {t("quality.refresh")}
+          </Button>
+        ) : null}
+        {statsRefresh.failed ? <FormError message={t("quality.refreshFailed")} /> : null}
+      </footer>
     </div>
   );
+}
+
+/** A rendering row: the lemma (or form) with its part of speech when the snapshot knows it. */
+function renderingSlice(r: StrongsRendering, posLabel: (pos: string) => string): DonutSlice {
+  const text = r.pos ? `${r.word}, ${posLabel(r.pos)}` : r.word;
+  return {
+    key: renderingSliceKey(r),
+    label: (
+      <>
+        <span lang="de">{r.word}</span>
+        {r.pos ? <span className="text-fg-muted">, {posLabel(r.pos)}</span> : null}
+      </>
+    ),
+    text,
+    value: r.count,
+  };
 }

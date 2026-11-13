@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, Ref } from "react";
 
 const variants = {
   primary: "bg-accent text-accent-fg hover:opacity-90",
@@ -18,6 +18,7 @@ const INLINE_CLASSES = "cursor-pointer rounded-sm px-0.5 transition-colors";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: keyof typeof variants;
   size?: keyof typeof sizes;
+  ref?: Ref<HTMLButtonElement>;
 }
 
 export type ButtonStyle = Pick<ButtonProps, "variant" | "size">;

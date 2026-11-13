@@ -10,7 +10,7 @@ import { Button, buttonClasses } from "./Button";
 import { FormError } from "./FormError";
 import { Select } from "./Select";
 
-export type FindingColumn = "ref" | "german" | "original" | "detail" | "severity";
+export type FindingColumn = "ref" | "german" | "original" | "stts" | "pos" | "detail" | "severity";
 
 export interface FindingJump {
   key: string;
@@ -208,6 +208,12 @@ export function FindingsTable({
             {has("original") ? (
               <th className="py-2 pr-3 font-medium">{t("quality.findings.original")}</th>
             ) : null}
+            {has("stts") ? (
+              <th className="py-2 pr-3 font-medium">{t("quality.findings.stts")}</th>
+            ) : null}
+            {has("pos") ? (
+              <th className="py-2 pr-3 font-medium">{t("quality.findings.pos")}</th>
+            ) : null}
             {has("detail") ? (
               <th className="py-2 pr-3 font-medium">{t("quality.findings.detail")}</th>
             ) : null}
@@ -241,6 +247,8 @@ export function FindingsTable({
                   <Original finding={finding} />
                 </td>
               ) : null}
+              {has("stts") ? <td className="py-2 pr-3">{finding.stts ?? "–"}</td> : null}
+              {has("pos") ? <td className="py-2 pr-3">{finding.pos ?? "–"}</td> : null}
               {has("detail") ? <td className="py-2 pr-3">{detail(finding)}</td> : null}
               {has("severity") ? (
                 <td className="py-2 pr-3">
@@ -267,6 +275,12 @@ export function FindingsTable({
             </div>
             {has("german") ? <Word finding={finding} /> : null}
             {has("original") ? <Original finding={finding} /> : null}
+            {has("stts") || has("pos") ? (
+              <span className="text-fg-muted">
+                {t("quality.findings.stts")}: {finding.stts ?? "–"} · {t("quality.findings.pos")}:{" "}
+                {finding.pos ?? "–"}
+              </span>
+            ) : null}
             {has("detail") ? <span className="text-fg-muted">{detail(finding)}</span> : null}
             {jumpButtons(finding)}
           </li>

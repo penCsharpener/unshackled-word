@@ -16,10 +16,29 @@ export interface CheckSummary {
   sub?: { key: string; count: number };
 }
 
+/** One `SeedImports` row (roadmap 0010): an import, or a mapping seed update when `versesUpdated` is set. */
+export interface SeedImport {
+  kind: "morphology" | "mappings";
+  seedVersion: string;
+  exportedAt?: string | null;
+  importedAt: string;
+  rows: number;
+  /** Seed lines that could not be placed on the freshly parsed text. */
+  orphaned: number;
+  versesUpdated?: number | null;
+  versesKeptLocal?: number | null;
+  /** Report file relative to the repo, `temp/seed-report/...`. */
+  reportPath: string;
+}
+
 export interface OverviewResponse {
   refreshedAt?: string | null;
+  /** Last successful refresh of the mapping stats snapshot; absent until the first one. */
+  statsRefreshedAt?: string | null;
   refreshing: boolean;
   lastEditAt?: string;
+  /** Absent or empty on installs that never imported a repo seed. */
+  seedImports?: SeedImport[];
   totals: { germanWords: number; sourceWords: number };
   checks: CheckSummary[];
 }
@@ -77,6 +96,8 @@ export interface Finding {
   german?: string;
   lemma?: string;
   pos?: string;
+  /** L6/L7: STTS tag of the word */
+  stts?: string;
   original?: string;
   strongs?: string;
   gloss?: string;

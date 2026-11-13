@@ -3,19 +3,30 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import type { GetStrongsSummaryResponse, GetWordStatsResponse } from "@/lib/bible/types";
 import { fixtureStructure } from "@/test/fixtures/bibleStructure";
-import { fixtureSummary, fixtureWordStats } from "@/test/fixtures/strongsStats";
+import {
+  fixtureSnapshotSummary,
+  fixtureSummary,
+  fixtureWordStats,
+} from "@/test/fixtures/strongsStats";
 import { StrongsStatsHeader, type StrongsStatsHeaderProps } from "./StrongsStatsHeader";
 
 interface Responses {
+  me?: () => Response;
+  refresh?: () => Response;
   summary?: () => Response;
   wordStats?: (url: string) => Response;
 }
 
-function stubFetch({ summary, wordStats }: Responses = {}) {
-  const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+function stubFetch({ summary, wordStats, me, refresh }: Responses = {}) {
+  const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
+    if (url.includes("/auth/me")) return me?.() ?? new Response("", { status: 401 });
+    if (url.includes("/dataQuality/refresh") && init?.method === "POST") {
+      return refresh?.() ?? new Response(JSON.stringify({ refreshing: true }), { status: 202 });
+    }
     if (url.includes("/meta-bible/structure"))
       return new Response(JSON.stringify(fixtureStructure));
     if (url.includes("/strongsSummary/")) {
@@ -38,7 +49,9 @@ function renderHeader(props: Partial<StrongsStatsHeaderProps> = {}) {
   const handlers = { onSelectBook: vi.fn(), onSelectRendering: vi.fn() };
   render(
     <QueryClientProvider client={client}>
-      <StrongsStatsHeader strongs="G26" {...handlers} {...props} />
+      <AuthProvider>
+        <StrongsStatsHeader strongs="G26" {...handlers} {...props} />
+      </AuthProvider>
     </QueryClientProvider>,
   );
   return handlers;
@@ -228,5 +241,156 @@ describe("StrongsStatsHeader", () => {
     expect(
       await screen.findByRole("heading", { name: "“Liebe” in the New Testament" }),
     ).toBeVisible();
+  });
+});
+
+const asRole = (role: string) => () =>
+  json({ userId: 1, email: "m@example.org", displayName: "M", roles: [role] } as never);
+
+describe("StrongsStatsHeader snapshot stats", () => {
+  it("shows lemma and part of speech per rendering and the snapshot date", async () => {
+    stubFetch({ summary: () => json(fixtureSnapshotSummary) });
+    renderHeader();
+
+    expect(await screen.findByRole("button", { name: "Liebe, Nomen" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "lieben, Verb" })).toBeVisible();
+    // The same lemma with two parts of speech is two rows.
+    expect(screen.getByRole("button", { name: "lieben, Nomen" })).toBeVisible();
+    expect(screen.getByText(/^Statistik: Stand /)).toBeVisible();
+    expect(screen.queryByRole("button", { name: "Neu berechnen" })).not.toBeInTheDocument();
+  });
+
+  it("reports the lemma key for a slice and loads the word stats with its part of speech", async () => {
+    const user = userEvent.setup();
+    const fetchMock = stubFetch({ summary: () => json(fixtureSnapshotSummary) });
+    const handlers = renderHeader({ rendering: "lieben" });
+
+    await user.click(await screen.findByRole("button", { name: "Liebe, Nomen" }));
+    expect(handlers.onSelectRendering).toHaveBeenCalledWith("liebe");
+    await waitFor(() =>
+      expect(
+        statsCalls(fetchMock).some((url) => url.includes("word=lieben&testament=nt&pos=VERB")),
+      ).toBe(true),
+    );
+  });
+
+  it("states the resolved lemma and switches the part of speech", async () => {
+    const user = userEvent.setup();
+    const fetchMock = stubFetch({
+      summary: () => json(fixtureSnapshotSummary),
+      wordStats: (url) =>
+        json({
+          ...fixtureWordStats,
+          word: "Gang",
+          lemma: "gehen",
+          pos: url.includes("pos=VERB") ? "VERB" : "NOUN",
+          candidates: [
+            { lemma: "gehen", pos: "VERB", occurrences: 900 },
+            { lemma: "Gang", pos: "NOUN", occurrences: 40 },
+          ],
+        }),
+    });
+    renderHeader();
+
+    const lines = await screen.findAllByTestId("resolved-lemma");
+    expect(lines[0]).toHaveTextContent("Liebe → gehen, Nomen");
+
+    await user.click(
+      (await screen.findAllByRole("button", { name: /^Verb · 900$/ }))[0] as HTMLElement,
+    );
+    await waitFor(() =>
+      expect(statsCalls(fetchMock).some((url) => url.endsWith("&pos=VERB"))).toBe(true),
+    );
+  });
+
+  it("offers one switch button per part of speech even when two lemmas share it", async () => {
+    stubFetch({
+      summary: () => json(fixtureSnapshotSummary),
+      wordStats: () =>
+        json({
+          ...fixtureWordStats,
+          word: "ging",
+          lemma: "gehen",
+          pos: "VERB",
+          candidates: [
+            { lemma: "gehen", pos: "VERB", occurrences: 1513 },
+            { lemma: "Ging", pos: "VERB", occurrences: 1 },
+            { lemma: "Gang", pos: "NOUN", occurrences: 6 },
+          ],
+        }),
+    });
+    renderHeader();
+
+    const verbs = await screen.findAllByRole("button", { name: /^Verb · / });
+    expect(verbs[0]).toHaveTextContent("Verb · 1513");
+    expect(verbs[0]).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByRole("button", { name: "Verb · 1" })).not.toBeInTheDocument();
+    expect((await screen.findAllByRole("button", { name: /^Nomen · 6$/ })).length).toBeGreaterThan(
+      0,
+    );
+  });
+
+  it("hides the refresh button from anonymous users and readers", async () => {
+    stubFetch({ summary: () => json(fixtureSnapshotSummary), me: asRole("reader") });
+    renderHeader();
+    await screen.findByText(/^Statistik: Stand /);
+    expect(screen.queryByRole("button", { name: "Neu berechnen" })).not.toBeInTheDocument();
+  });
+
+  it("refreshes: 202, then 'wird berechnet', then the new timestamp", async () => {
+    const user = userEvent.setup();
+    let summaryCalls = 0;
+    const fetchMock = stubFetch({
+      me: asRole("Maintainer"),
+      summary: () => {
+        summaryCalls += 1;
+        if (summaryCalls === 1) return json(fixtureSnapshotSummary);
+        if (summaryCalls === 2) {
+          return json({ ...fixtureSnapshotSummary, statsRefreshing: true });
+        }
+        return json({ ...fixtureSnapshotSummary, statsRefreshedAt: "2026-11-13T08:00:00Z" });
+      },
+    });
+    renderHeader();
+
+    await user.click(await screen.findByRole("button", { name: "Neu berechnen" }));
+    expect(await screen.findByText("Statistik wird berechnet …")).toBeVisible();
+    expect(
+      fetchMock.mock.calls.some(
+        ([url, init]) => String(url).endsWith("/dataQuality/refresh") && init?.method === "POST",
+      ),
+    ).toBe(true);
+    // Polls every 5 s until the timestamp changes.
+    await waitFor(() => expect(screen.getByText(/^Statistik: Stand 13\.11\./)).toBeVisible(), {
+      timeout: 8000,
+    });
+    expect(screen.getByRole("button", { name: "Neu berechnen" })).toBeEnabled();
+  }, 12000);
+
+  it("treats 409 as already running", async () => {
+    const user = userEvent.setup();
+    stubFetch({
+      me: asRole("admin"),
+      summary: () => json(fixtureSnapshotSummary),
+      refresh: () => new Response("", { status: 409 }),
+    });
+    renderHeader();
+    await user.click(await screen.findByRole("button", { name: "Neu berechnen" }));
+    expect(await screen.findByText("Statistik wird berechnet …")).toBeVisible();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("hides the button after a 403", async () => {
+    const user = userEvent.setup();
+    stubFetch({
+      me: asRole("maintainer"),
+      summary: () => json(fixtureSnapshotSummary),
+      refresh: () => new Response("", { status: 403 }),
+    });
+    renderHeader();
+    await user.click(await screen.findByRole("button", { name: "Neu berechnen" }));
+    await waitFor(() =>
+      expect(screen.queryByRole("button", { name: "Neu berechnen" })).not.toBeInTheDocument(),
+    );
   });
 });

@@ -119,6 +119,78 @@ Depending on your internet connection and the performance of your machine this c
 The dataset is quite big and some of the sources need to be downloaded first.
 The downloaded files are 'cached' in the solution `temp` folder so all subsequent runs will be faster.
 
+### Seed
+
+Everything the project creates itself (German morphology and lemma corrections, word mappings, the STTS tag list; later the Elb1871 revision) is exported
+into this repo as CSV and imported again on fresh installs. A new `docker compose up` therefore starts with the maintainer's current data. Roadmap:
+`docs/roadmaps/0010-export-import-seed.md`.
+
+**What is in the repo**
+
+| Path | Content |
+|---|---|
+| `assets/seed/stts-tags.csv` | the 54 STTS tags (labels de/en, default and allowed UD tags) for the `SttsTags` table |
+| `assets/seed/morphology/NN-Book.csv` | one line per German word: `Ref,Pos,Form,Lemma,Upos,Stts,Feats`, complete (also words without a lemma) |
+| `assets/seed/anchors/NN-Book.csv` | per chapter: word count and fingerprint of the token list |
+| `assets/seed/manifest.json` | format version, hash of the base text, row count and SHA-256 per file, `exportedAt` |
+| `assets/Elb1871Mappings/NN-Book.csv` | German word to Greek/Hebrew word mappings, **format 2** |
+
+Migrations create schema only. All seed data is CSV and is imported after all migrations have run.
+
+**Keys and anchoring.** No row carries a database id. A German word is `Ref` (`BBCCCVVV`: book, chapter, verse), `Pos` (position in the verse) and `Form`
+(the word); a word part adds `Part`. A STEP word is `SrcRef` (the STEP verse), `SrcPos` and `SrcHash` (8 hex characters of a SHA-256 over the normalised
+STEP word). Because a new install parses the base text itself, positions can differ from the exporter's database. On import every chapter whose
+fingerprint matches is taken as it is; for the other chapters the old and the new token list are aligned (Myers diff) and each line is classified
+`Exact`, `Shifted`, `Modified` (a one-word replacement between equal neighbours, e.g. a typo fix) or `Orphaned`. Orphans are never guessed: they are
+not imported, they are listed in a report and counted in the table `SeedImports`, and the data-quality page shows the count.
+
+**Licence rule.** The app and everything it creates is CC0. STEP Bible data is downloaded on the fly and is never redistributed or modified: the mapping
+CSV contains no STEP text, only the 8-hex `SrcHash` (it cannot be turned back into the word), and there are no Greek or Hebrew letters in it. Check:
+`rg -n '[\p{Greek}\p{Hebrew}]' assets/Elb1871Mappings` must print nothing. Format 2 replaces the earlier format 1 of `assets/Elb1871Mappings`, which had
+the STEP word text (`StepWord`) and was matched by verse, position and exact word text (3,041 of 726,487 rows were silently dropped on a fresh install). The importer
+still reads format 1 for self-hosters who keep an old export; the files in the repo are format 2 only.
+
+**Maintainer routine** (run against your own database, from the repo root; configure the connection like the SeedDb project above):
+
+```sh
+dotnet run --project src/UnshackledWord.Tooling.SeedDb -- export-seed                       # morphology + mappings (--only morphology|mappings, --out DIR)
+dotnet run --project src/UnshackledWord.Tooling.SeedDb -- anchor-check                      # read-only: how many words of the DB match a fresh parse of assets/
+dotnet run --project src/UnshackledWord.Tooling.SeedDb -- rebase --confirm-backup           # after a parser or base-text fix, see below
+git diff --stat assets/seed assets/Elb1871Mappings && git add assets && git commit
+```
+
+An export is deterministic: without database changes a second export is byte-identical except the `exportedAt` line of the manifest, and one edited lemma is a
+one-line diff. `rebase` is for the moment you fix `ElberfelderParser` or `assets/elberfelder1871-theword-export.txt`: it exports, rebuilds the German words
+from the fixed assets, imports morphology and mappings through the anchored importers again and writes reports. It needs a database backup first
+(`--confirm-backup`) and refuses to run while Mapping v2 holds rows. Exports are never written by the API.
+
+**What `docker compose up` does**
+
+| Start | STTS tags, morphology | Mappings |
+|---|---|---|
+| First, empty volume | migrations, then `SttsSeedRunner`, the German text, `MorphologySeedRunner` (then `RefreshVerseLemmaText`), the STEP data, `AiMappingImportRunner`: all imported and re-anchored | imported |
+| Later, same seed | skipped (tables not empty) | skipped (same `SeedVersion`) |
+| Later, newer mapping seed in the repo | skipped: morphology is never updated after the first import | updated verse by verse (see below) |
+
+Mapping update: after each import the database remembers a content hash per verse (`SeedVerseState`). A newer seed replaces a verse only when its rows still
+hash to the remembered value; a verse that was changed locally (mapping editor, or a self-hoster's own data) is kept and listed in the report. Set
+`AppSettings:DatabaseSeeding:UpdateMappingSeed` to `false` (compose: `UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__UPDATEMAPPINGSEED=false`) to turn updates off.
+
+**Reports** go to `temp/seed-report/` (not committed): `morphology-<version>.csv` and `mappings-<version>.csv` (everything that is not an exact match: class, old key,
+new key, form), `mappings-update-<version>.csv` and `mappings-update-<version>-verses.csv` (per verse: updated or kept local), `anchor-check.csv`. The
+data-quality page shows "Seed: Stand ..., importiert ..., N Zeilen nicht zuordenbar" and, after an update, "Zuordnungs-Seed aktualisiert: X Verse, Y lokal geändert
+behalten" with the report path (`GET api/dataQuality/overview`, field `seedImports`).
+
+**Verifying a round trip** (export, fresh install, export again):
+
+1. `export-seed --out <dir-A>` against the source database.
+2. `docker compose down -v && docker compose up` (on a scratch project name, or `dotnet run` of Migration and SeedDb against an empty throwaway Postgres).
+3. `export-seed --out <dir-B>` against the fresh database and `diff -r <dir-A> <dir-B>`: the files are identical except the lines the reports list as orphans
+   (and keys that were shifted to a new position, which the report lists as `Shifted`).
+
+Measured on the maintainer's data (2026-11-13): 721,054 of 721,552 morphology rows and 725,513 of 726,487 mapping rows are placed on a fresh parse
+(498 and 974 orphans; the old format dropped 3,041); the seed is about 74 MB raw in git (about 12 MB packed).
+
 ### Web API
 
 Now that the database is setup and seeded you can run the `UnshackledWord.Tooling.WebApi` project.
@@ -127,6 +199,55 @@ Again this will need the same secrets setup as the previous projects to connect 
 Writing mappings (`PUT /api/elberfelder/verseMapping/...`, used by the mapping editor) is switched off by default because
 there is no login yet. Enable it only on a trusted instance with the environment variable
 `UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=true` (setting `MappingEditing:Enabled`); see `docs/roadmaps/0003-mapping-editor.md`.
+
+### Data quality and word statistics
+
+The Strong's page, the word statistics and the data-quality page read from a *snapshot*: the materialized views
+`DqWordFacts` (migration `0012`, rebuilt by `0014`) and `StatsStrongs`, `StatsStrongsRenderings`, `StatsGermanLemma`,
+`StatsGermanForms` (`0013`, rebuilt by `0014`). They pre-aggregate the German words (lemma + part of speech) against
+the Strong's numbers of the mapping, so a page does not have to group 700k+ words per request.
+
+- A snapshot is only refreshed by the "Neu berechnen" buttons (data-quality page and Strong's page, `POST api/dataQuality/refresh`, roles
+  `Admin`/`Maintainer`). Nothing else starts a refresh, not startup, not the seed, not the migrations. A full refresh takes
+  about 40 s on the full data; the pages show "wird berechnet …" and the new "Statistik: Stand …" time afterwards.
+- The views are created empty. While `StatsRefreshedAt` is not set (fresh install, never refreshed) the Strong's page and
+  the word statistics fall back to the live SQL, which gives the same answers more slowly and per form instead of per
+  lemma + part of speech; the footer then says the numbers are live.
+- After changing mappings or lemmas, refresh once to bring the snapshot in line. The snapshot holds STEP-derived values, so it stays
+  in your own database and is never exported to the repo seed.
+- `0014_AddedWordLinks.sql` drops and recreates `DqWordFacts` together with the four `Stats*` views; run the migrations
+  (`run-db-migration.ps1`), then refresh.
+
+See `docs/roadmaps/0008-mapping-stats-snapshot.md` for the design, measured sizes and the verification.
+
+### Search
+
+The Bible reader has a search overlay (`F` or the magnifier icon on every `/bible...` route). It uses two read-only,
+public endpoints: `GET api/elberfelder/search/verses` (verse full text search) and `GET api/elberfelder/search/originals`
+(per query word: the mapped Greek/Hebrew words by frequency, from the roadmap 0008 snapshot). The old experiments
+`search/german` and `fts/single` are gone.
+
+- **Query syntax:** words are AND-ed (`ich bin der Weg`); `"in quotes"` is a phrase; a leading `-` excludes a word or
+  phrase (`Gott -Herr`); `oder` / `or` separates alternatives (`Herr oder Jahwe`). At most 8 words and 200 characters.
+  The search starts 300 ms after the last keystroke (at once on space or Enter), from 2 characters.
+- **Full text configuration:** migration `0015_VerseSearch.sql` adds the text search configuration
+  `"unshackled-word".uw_german` (German snowball stemmer, **no stop words**, so `ich bin` and `daß` work; `daß` = `dass`,
+  `Füße` = `fuesse`) and rebuilds `Elb1871Verses."SearchVector"` with a GIN index. The query is built in C#
+  (`VerseSearchQueryBuilder`), user text never reaches SQL as a tsquery.
+- **Lemma widening:** migration `0016_VerseLemmaText.sql` adds `Elb1871Verses."LemmaText"` (the lemmas of a verse from
+  `Elb1871Morphology`, indexed with weight B). A single query word is also matched by its lemma(s): `ging` finds
+  forms of `gehen`; at most the 3 most frequent lemmas per word, never for phrases or excluded words. The overlay says
+  which lemma was used. The lemma of a word comes from the snapshot of roadmap 0008, so before the first "Neu berechnen"
+  the search is stem-only and after lemma edits it lags until the next refresh.
+- **Relevance order:** literal stem hits (weight A) come before lemma-only hits (weight B), `ts_rank_cd`; ties are in
+  Bible order. Hits are returned as word tokens with `matched` flags (no HTML), plus hits per book for the bar chart.
+- **Where `LemmaText` is refreshed:** `"unshackled-word"."RefreshVerseLemmaText"(int[] hebRefIds)` recomputes the
+  column for the given verses (`NULL` = all). The lemma editor (single save, chapter save) and the bulk edit
+  transactions (apply and revert) call it in the same transaction as the lemma change. **Every new write path to
+  `Elb1871Morphology` has to call it too, and the morphology seed import of roadmap 0010 (0010.4) must call
+  `RefreshVerseLemmaText(NULL)` once after its import**; otherwise the search keeps stale lemmas.
+
+See `docs/roadmaps/0009-smart-search.md` for the design and measurements.
 
 ### Web Frontend
 

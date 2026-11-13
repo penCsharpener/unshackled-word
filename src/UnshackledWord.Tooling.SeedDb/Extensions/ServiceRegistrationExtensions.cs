@@ -14,9 +14,11 @@ using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
 using UnshackledWord.Tooling.SeedDb.Services.LocalOnly;
 using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
+using UnshackledWord.Tooling.SeedDb.Services.RepoSeed;
 using UnshackledWord.Tooling.SeedDb.Services.SBL.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible;
+using UnshackledWord.Tooling.SeedDb.Services.SttsSeed;
 using UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
 namespace UnshackledWord.Tooling.SeedDb.Extensions;
@@ -28,6 +30,8 @@ public static partial class ServiceRegistrationExtensions
         services.AddInfrastructureServices();
         services.AddSingleton(configuration);
         services.AddScoped<SeedingService>();
+        services.AddScoped<SttsSeedRunner>();
+        services.AddRepoSeedServices();
         services.AddScoped<SrRunner>();
         services.AddScoped<TskRunner>();
         services.AddScoped<GbtRunner>();

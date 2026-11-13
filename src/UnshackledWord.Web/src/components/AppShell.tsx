@@ -1,9 +1,14 @@
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink, Outlet, ScrollRestoration, useMatches } from "react-router";
+import { NavLink, Outlet, ScrollRestoration, useLocation, useMatches } from "react-router";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { HeaderInfoProvider } from "@/lib/headerInfo";
+import { SEARCH_ICON_PATHS } from "@/lib/search/icon";
+import { useSearchHotkey } from "@/lib/search/useSearchHotkey";
+import { Button } from "./Button";
 import { HeaderWordInfo } from "./HeaderWordInfo";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { SearchOverlay } from "./SearchOverlay";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 
@@ -15,6 +20,19 @@ export function AppShell() {
   const fill = useMatches().some(
     (match) => (match.handle as { layout?: string } | undefined)?.layout === "fill",
   );
+
+  // The search belongs to the reading area: reader, book picker and Strong's page.
+  const { pathname } = useLocation();
+  const searchAvailable = pathname === "/bible" || pathname.startsWith("/bible/");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchButton = useRef<HTMLButtonElement>(null);
+  const wasOpen = useRef(false);
+  useSearchHotkey(searchAvailable && !searchOpen, () => setSearchOpen(true));
+  // Closing returns focus to the magnifier (the dialog restores the element focused before it opened).
+  useEffect(() => {
+    if (wasOpen.current && !searchOpen) searchButton.current?.focus({ preventScroll: true });
+    wasOpen.current = searchOpen;
+  }, [searchOpen]);
 
   return (
     <HeaderInfoProvider>
@@ -60,6 +78,33 @@ export function AppShell() {
               <HeaderWordInfo />
             </div>
             <div className="flex h-14 items-center gap-4 md:h-full">
+              {searchAvailable && (
+                <Button
+                  ref={searchButton}
+                  variant="ghost"
+                  size="sm"
+                  aria-label={t("search.open")}
+                  title={t("search.open")}
+                  aria-keyshortcuts="f"
+                  aria-haspopup="dialog"
+                  onClick={() => setSearchOpen(true)}
+                >
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="size-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {SEARCH_ICON_PATHS.map((d) => (
+                      <path key={d} d={d} />
+                    ))}
+                  </svg>
+                </Button>
+              )}
               <LanguageSwitch />
               <ThemeToggle />
               <UserMenu />
@@ -73,6 +118,9 @@ export function AppShell() {
         >
           <Outlet />
         </main>
+        {searchAvailable && (
+          <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+        )}
         <ScrollRestoration />
       </div>
     </HeaderInfoProvider>

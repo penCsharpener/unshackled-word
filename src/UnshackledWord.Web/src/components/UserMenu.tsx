@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { hasWriteRole } from "@/lib/auth/roles";
 import { Button, buttonClasses } from "./Button";
 
 /** Header slot: "Sign in" while logged out, else an avatar button with a menu (passkeys, sign out). */
@@ -83,6 +84,16 @@ export function UserMenu() {
           >
             {t("quality.nav")}
           </Link>
+          {hasWriteRole(user) && (
+            <Link
+              role="menuitem"
+              to="/edit/maintainer"
+              className="rounded-md px-2 py-1 hover:bg-surface-muted"
+              onClick={() => setOpen(false)}
+            >
+              {t("maintainer.nav")}
+            </Link>
+          )}
           {user.roles?.includes("admin") && (
             <Link
               role="menuitem"

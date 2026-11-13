@@ -7,9 +7,11 @@ import { EmptyState } from "@/components/EmptyState";
 import { FormError } from "@/components/FormError";
 import { Select } from "@/components/Select";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { hasWriteRole } from "@/lib/auth/roles";
 import { bookName } from "@/lib/bible/books";
 import { useBibleStructure } from "@/lib/bible/queries";
 import { formatNumber } from "@/lib/chart";
+import { formatStamp } from "@/lib/format";
 import { qualityKeys, useQualityOverview, useRefreshQuality } from "@/lib/quality/queries";
 import type { TestamentFacet } from "@/lib/quality/types";
 import { resetFacetsPatch } from "@/lib/quality/url";
@@ -20,14 +22,13 @@ import { Findings } from "./quality/Findings";
 import { OverviewSection } from "./quality/OverviewSection";
 import { UnmappedSection } from "./quality/UnmappedSection";
 
-const WRITE_ROLES = ["admin", "maintainer"];
 const TESTAMENTS: (TestamentFacet | "")[] = ["", "ot", "nt"];
 
 export function DataQualityPage() {
   const { t, i18n } = useTranslation();
   const { status, user } = useAuth();
   const authed = status === "authenticated";
-  const canRefresh = !!user?.roles?.some((role) => WRITE_ROLES.includes(role.toLowerCase()));
+  const canRefresh = hasWriteRole(user);
   const { state, update, openFilter, goToCrumb } = useQualityUrl();
   const client = useQueryClient();
   const structure = useBibleStructure();
@@ -69,11 +70,8 @@ export function DataQualityPage() {
   const refreshing = !!data?.refreshing || refresh.isPending;
   const stale =
     !!data?.lastEditAt && !!refreshedAt && new Date(data.lastEditAt) > new Date(refreshedAt);
-  const date =
-    refreshedAt &&
-    new Intl.DateTimeFormat(i18n.language, { dateStyle: "short", timeStyle: "short" }).format(
-      new Date(refreshedAt),
-    );
+  const date = refreshedAt && formatStamp(refreshedAt, i18n.language);
+  const statsRefreshedAt = data?.statsRefreshedAt ?? null;
 
   const refreshButton = (primary: boolean, label: string) =>
     canRefresh ? (
@@ -81,6 +79,7 @@ export function DataQualityPage() {
         variant={primary ? "primary" : "ghost"}
         size={primary ? "md" : "sm"}
         disabled={refreshing}
+        title={t("quality.refreshHint")}
         onClick={() => refresh.mutate()}
       >
         {refreshing ? t("quality.refreshing") : label}
@@ -102,11 +101,38 @@ export function DataQualityPage() {
         {data && refreshedAt ? (
           <p className="text-sm text-fg-muted">
             {t("quality.stand", { date })} ·{" "}
+            {statsRefreshedAt
+              ? t("quality.statsStand", { date: formatStamp(statsRefreshedAt, i18n.language) })
+              : t("quality.statsNone")}{" "}
+            ·{" "}
             {t("quality.totals", {
               germanWords: formatNumber(data.totals.germanWords, i18n.language),
               sourceWords: formatNumber(data.totals.sourceWords, i18n.language),
             })}
           </p>
+        ) : null}
+        {data?.seedImports?.length ? (
+          <ul className="grid gap-1 text-sm text-fg-muted">
+            {data.seedImports.map((seed) => (
+              <li
+                key={`${seed.kind}-${seed.seedVersion}-${seed.importedAt}`}
+                title={seed.reportPath}
+              >
+                {seed.versesUpdated == null
+                  ? t("quality.seed.import", {
+                      kind: t(`quality.seed.kinds.${seed.kind}`),
+                      exported: seed.exportedAt ? formatStamp(seed.exportedAt, i18n.language) : "?",
+                      imported: formatStamp(seed.importedAt, i18n.language),
+                      count: seed.orphaned,
+                    })
+                  : t("quality.seed.update", {
+                      updated: seed.versesUpdated,
+                      kept: seed.versesKeptLocal ?? 0,
+                      report: seed.reportPath,
+                    })}
+              </li>
+            ))}
+          </ul>
         ) : null}
         {refresh.isError ? <FormError message={t("quality.refreshFailed")} /> : null}
         {stale ? (

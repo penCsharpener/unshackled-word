@@ -17,10 +17,15 @@ export interface DialogProps {
   dismissible?: boolean;
   /** Body without padding and scrolling, for content that scrolls itself (virtual lists). */
   bare?: boolean;
+  /** `top` docks the dialog near the top edge from md (command palette); `center` is the default. */
+  placement?: "center" | "top";
+  /** Keeps the title for assistive tech only (the content is self-explanatory, e.g. a search box). */
+  titleHidden?: boolean;
   children: ReactNode;
 }
 
 const sizes = { md: "md:max-w-2xl", lg: "md:max-w-5xl" } as const;
+const placements = { center: "m-auto", top: "mx-auto md:mt-12 md:mb-auto" } as const;
 
 /**
  * Modal dialog on the native `<dialog>` element: focus trap, inert page, top layer and Esc come from
@@ -36,6 +41,8 @@ export function Dialog({
   footer,
   dismissible = true,
   bare = false,
+  placement = "center",
+  titleHidden = false,
   children,
 }: DialogProps) {
   const { t } = useTranslation();
@@ -79,14 +86,18 @@ export function Dialog({
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && canDismiss.current) close.current();
       }}
-      className={`m-auto w-full ${sizes[size]} max-h-dvh flex-col overflow-hidden rounded-lg border border-border bg-surface p-0 text-fg backdrop:bg-fg/40 open:flex md:max-h-5/6 max-md:h-dvh max-md:max-w-none max-md:rounded-none ${
-        size === "lg" ? "md:h-5/6" : ""
+      className={`${placements[placement]} w-full ${sizes[size]} max-h-dvh flex-col overflow-hidden rounded-lg border border-border bg-surface p-0 text-fg backdrop:bg-fg/40 open:flex md:max-h-5/6 max-md:h-dvh max-md:max-w-none max-md:rounded-none ${
+        size === "lg" ? (placement === "top" ? "md:h-4/5" : "md:h-5/6") : ""
       }`}
     >
       {open && (
         <>
-          <header className="flex items-start gap-3 border-b border-border px-4 py-3">
-            <div className="min-w-0 flex-1">
+          <header
+            className={`flex items-start gap-3 px-4 ${
+              titleHidden ? "justify-end pt-2" : "border-b border-border py-3"
+            }`}
+          >
+            <div className={titleHidden ? "sr-only" : "min-w-0 flex-1"}>
               <h2 id={titleId} className="text-lg font-semibold">
                 {title}
               </h2>

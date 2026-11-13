@@ -9,4 +9,9 @@ public sealed class GetWordStatsRequest
 
     /// <summary>"all", "ot" or "nt" (case-insensitive).</summary>
     public string Testament { get; set; } = "all";
+
+    /// <summary>Optional part-of-speech filter (case-insensitive) on the resolved lemma, e.g. "VERB"; without it all PoS are summed. Snapshot only.</summary>
+    public string? Pos { get; set; }
+
+    public const int MaxPosLength = 20;
 }

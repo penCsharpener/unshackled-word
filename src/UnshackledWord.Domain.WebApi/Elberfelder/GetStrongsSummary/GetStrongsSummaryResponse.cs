@@ -35,6 +35,12 @@ public sealed class GetStrongsSummaryResponse
 
     /// <summary>Only set when the request matched more than one lexicon key (number given without a letter).</summary>
     public List<StrongsVariantResponse>? Variants { get; set; }
+
+    /// <summary>When the stats snapshot behind the numbers was last refreshed; absent while it was never refreshed (the page then shows live numbers, renderings keyed by form).</summary>
+    public DateTime? StatsRefreshedAt { get; set; }
+
+    /// <summary>True while a stats/facts refresh runs on the server (poll until <see cref="StatsRefreshedAt"/> changes).</summary>
+    public bool StatsRefreshing { get; set; }
 }
 
 public sealed class StrongsBookCountResponse
@@ -46,8 +52,15 @@ public sealed class StrongsBookCountResponse
 
 public sealed class StrongsRenderingResponse
 {
+    /// <summary>Snapshot: the German lemma (most frequent spelling); live fallback: the most frequent form.</summary>
     public string Word { get; set; } = string.Empty;
+
+    /// <summary>Lower-cased lemma (snapshot) or form (fallback); the filter value of the concordance.</summary>
     public string Key { get; set; } = string.Empty;
+
+    /// <summary>Part of speech of the German lemma ("VERB", "NOUN" ...); absent in the live fallback and for words without morphology. The same lemma with two PoS is two rows.</summary>
+    public string? Pos { get; set; }
+
     public int Count { get; set; }
 }
 

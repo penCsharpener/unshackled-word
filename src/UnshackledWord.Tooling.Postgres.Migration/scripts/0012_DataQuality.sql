@@ -3,6 +3,8 @@
 -- ONLY from Elb1871Morphology (Elb1871Words.Lemma is obsolete and never read). Strong's comes from the STEP word tables,
 -- never from Elb1871GreekMapping.StrongsNumber (stale).
 --
+-- NOTE: 0014_AddedWordLinks.sql drops and recreates this view with the added-word fix (an added-word link is no longer 'aligned').
+--
 -- Idempotent: safe to run again. The view is created WITH NO DATA; the API fills it (POST api/dataQuality/refresh).
 -- The statements run as the API's own DB user (unshackledrw owns the tables), so no extra grants are needed;
 -- a read-only user would need: GRANT SELECT ON "unshackled-word"."DqWordFacts", "unshackled-word"."DqRefreshState".

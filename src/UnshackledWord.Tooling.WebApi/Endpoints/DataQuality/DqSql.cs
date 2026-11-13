@@ -18,6 +18,17 @@ internal static class DqSql
 {
     public const string Facts = "\"unshackled-word\".\"DqWordFacts\"";
 
+    /// <summary>The mapping stats views (migration 0013) in refresh order; all read DqWordFacts only, so any order works after the facts refresh.</summary>
+    public static readonly IReadOnlyList<string> StatsViews = ["StatsStrongsRenderings", "StatsStrongs", "StatsGermanLemma", "StatsGermanForms"];
+
+    /// <summary>One REFRESH statement per stats view, in <see cref="StatsViews"/> order: plain for views not yet populated (CONCURRENTLY needs data), CONCURRENTLY otherwise so readers keep the old snapshot.</summary>
+    public static IReadOnlyList<string> StatsRefreshStatements(IReadOnlySet<string> populatedViews) =>
+    [
+        .. StatsViews.Select(view => populatedViews.Contains(view)
+            ? $"REFRESH MATERIALIZED VIEW CONCURRENTLY \"unshackled-word\".\"{view}\""
+            : $"REFRESH MATERIALIZED VIEW \"unshackled-word\".\"{view}\"")
+    ];
+
     public static readonly string ContentPosList = InList(PosClassRules.ContentGermanPos);
     public static readonly string HebrewFunctionPosList = InList(PosClassRules.HebrewFunctionWordPos);
 
@@ -69,12 +80,13 @@ internal static class DqSql
     /// <summary>
     /// Paged finding rows with ~5 words of verse context. <paramref name="ctes"/> is an optional "WITH ..." prefix (also used by the count query).
     /// </summary>
-    public static string PagedFindings(string ctes, string where) => $"""
+    public static string PagedFindings(string ctes, string where, string join = "", string extraColumns = "") => $"""
         {ctes}
         SELECT p.*
              , ctx."Context" AS "Context"
-        FROM (SELECT {FactColumns}
+        FROM (SELECT {FactColumns}{extraColumns}
               FROM {Facts} f
+              {join}
               WHERE {where}
               ORDER BY {FindingOrder}
               LIMIT @take OFFSET @skip) p
@@ -87,10 +99,11 @@ internal static class DqSql
         ORDER BY {FindingOrder}
         """;
 
-    public static string CountFindings(string ctes, string where) => $"""
+    public static string CountFindings(string ctes, string where, string join = "") => $"""
         {ctes}
         SELECT count(*)
         FROM {Facts} f
+        {join}
         WHERE {where}
         """;
 
@@ -128,4 +141,9 @@ public sealed class FactRow
     public bool? InTr { get; set; }
     public string? HebType { get; set; }
     public string? Context { get; set; }
+
+    /// <summary>L6/L7 only: the live STTS tag and part of speech of Elb1871Morphology.</summary>
+    public string? Stts { get; set; }
+
+    public string? LivePos { get; set; }
 }

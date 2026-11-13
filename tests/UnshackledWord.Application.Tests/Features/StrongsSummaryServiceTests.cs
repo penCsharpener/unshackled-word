@@ -8,11 +8,20 @@ public class StrongsSummaryServiceTests
 {
     private readonly IStrongsLexiconRepository _lexicon = Substitute.For<IStrongsLexiconRepository>();
     private readonly IStrongsStatsRepository _stats = Substitute.For<IStrongsStatsRepository>();
+    private readonly IStatsRefreshStatus _refreshStatus = Substitute.For<IStatsRefreshStatus>();
     private readonly StrongsSummaryService _sut;
 
     public StrongsSummaryServiceTests()
     {
-        _sut = new StrongsSummaryService(_lexicon, _stats);
+        _sut = new StrongsSummaryService(_lexicon, _stats, _refreshStatus);
+    }
+
+    private static readonly DateTime StatsAt = new(2026, 11, 13, 8, 0, 0, DateTimeKind.Utc);
+
+    private void GivenSnapshot(params SnapshotStrongsRow[] rows)
+    {
+        _stats.GetSnapshotRefreshedAtAsync(Arg.Any<CancellationToken>()).Returns(StatsAt);
+        _stats.GetSnapshotStrongsAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns(rows);
     }
 
     private void GivenEntries(params LexiconEntry[] entries)
@@ -142,5 +151,89 @@ public class StrongsSummaryServiceTests
     public async Task InvalidStrongs_IsInvalid(string strongs)
     {
         (await _sut.GetAsync(strongs)).Status.ShouldBe(StrongsSummaryStatus.Invalid);
+    }
+
+    [Fact]
+    public async Task NeverRefreshed_UsesTheLivePath_WithoutSnapshotFields()
+    {
+        GivenEntries(Entry(1577, null));
+        GivenBooks(new StrongsBookCountRow { BibleBookId = 44, Count = 2, VerseCount = 2 });
+
+        var r = (await _sut.GetAsync("G1577")).Response!;
+
+        r.StatsRefreshedAt.ShouldBeNull();
+        r.Renderings.ShouldAllBe(x => x.Pos == null);
+        await _stats.DidNotReceive().GetSnapshotStrongsAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Snapshot_SumsKeysAndBooks_AndKeepsOneRowPerLemmaAndPos()
+    {
+        GivenEntries(Entry(3004, "G", "λέγω", "say"), Entry(3004, "H", "λέγω", "tell"));
+        GivenSnapshot(
+            new SnapshotStrongsRow { Strongs = "G3004G", Occurrences = 6, MappedCount = 5, BookCounts = "[{\"b\":40,\"c\":4,\"v\":3},{\"b\":41,\"c\":2,\"v\":2}]" },
+            new SnapshotStrongsRow { Strongs = "G3004H", Occurrences = 4, MappedCount = 4, BookCounts = "[{\"b\":40,\"c\":1,\"v\":1},{\"b\":42,\"c\":3,\"v\":3}]" });
+        _stats.GetSnapshotRenderingsAsync(Arg.Any<IReadOnlyList<string>>(), false, Arg.Any<CancellationToken>()).Returns(
+        [
+            new SnapshotRenderingRow { Word = "sagen", Key = "sagen", Pos = "VERB", Count = 7 },
+            new SnapshotRenderingRow { Word = "Sage", Key = "sage", Pos = "NOUN", Count = 1 },
+            new SnapshotRenderingRow { Word = "Sage", Key = "sage", Pos = "VERB", Count = 1 }
+        ]);
+        _refreshStatus.IsRunning.Returns(false);
+
+        var r = (await _sut.GetAsync("G3004")).Response!;
+
+        r.OccurrenceCount.ShouldBe(10);
+        r.MappedCount.ShouldBe(9);
+        r.UnmappedCount.ShouldBe(1);
+        r.VerseCount.ShouldBe(9);
+        r.ByBook.Select(b => (b.BibleBookId, b.Count, b.VerseCount)).ShouldBe([(40, 5, 4), (41, 2, 2), (42, 3, 3)]);
+        r.StatsRefreshedAt.ShouldBe(StatsAt);
+        r.StatsRefreshing.ShouldBeFalse();
+        r.Renderings.Select(x => (x.Key, x.Pos, x.Count)).ShouldBe([("sagen", "VERB", 7), ("sage", "NOUN", 1), ("sage", "VERB", 1)]);
+        r.Variants!.ToDictionary(v => v.Strongs, v => v.Count).ShouldContainKeyAndValue("G3004G", 6);
+        r.Variants!.Single(v => v.Strongs == "G3004H").Count.ShouldBe(4);
+        await _stats.DidNotReceive().GetBookCountsAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Snapshot_WithoutAnyRowAndWithoutLexicon_IsNotFound()
+    {
+        GivenEntries();
+        GivenSnapshot();
+
+        (await _sut.GetAsync("G9999")).Status.ShouldBe(StrongsSummaryStatus.NotFound);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task StatsRefreshing_FollowsTheCoordinator(bool running)
+    {
+        GivenEntries(Entry(1577, null));
+        GivenSnapshot(new SnapshotStrongsRow { Strongs = "G1577", Occurrences = 1, MappedCount = 1, BookCounts = "[{\"b\":44,\"c\":1,\"v\":1}]" });
+        _refreshStatus.IsRunning.Returns(running);
+
+        (await _sut.GetAsync("G1577")).Response!.StatsRefreshing.ShouldBe(running);
+    }
+
+    [Fact]
+    public async Task StatsRefreshing_IsAlsoSetOnTheLivePath()
+    {
+        GivenEntries(Entry(1577, null));
+        GivenBooks(new StrongsBookCountRow { BibleBookId = 44, Count = 1, VerseCount = 1 });
+        _refreshStatus.IsRunning.Returns(true);
+
+        (await _sut.GetAsync("G1577")).Response!.StatsRefreshing.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task Snapshot_HebrewLanguage_UsesTheLiveAramaicCount()
+    {
+        GivenEntries(Entry(426, null, "אֱלָהּ", "God", languageId: 0));
+        GivenSnapshot(new SnapshotStrongsRow { Strongs = "H0426", Occurrences = 10, MappedCount = 10, BookCounts = "[{\"b\":27,\"c\":10,\"v\":9}]" });
+        _stats.GetAramaicCountAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<CancellationToken>()).Returns(9);
+
+        (await _sut.GetAsync("H426")).Response!.Language.ShouldBe("aramaic");
     }
 }

@@ -1,0 +1,55 @@
+Tag,LabelDe,LabelEn,DescriptionDe,DescriptionEn,ExampleDe,Upos,AllowedUpos,Alias,IsPunctuation,SortOrder
+ADJA,attributives Adjektiv,attributive adjective,Attributives Adjektiv (STTS),Attributive adjective (STTS),das große Haus,ADJ,ADJ|VERB|NUM|DET|PRON,,false,1
+ADJD,adverbiales/prädikatives Adjektiv,adverbial or predicative adjective,Adverbiales/prädikatives Adjektiv (STTS),Adverbial or predicative adjective (STTS),er fährt schnell / das Haus ist groß,ADJ,ADJ|ADV|VERB,,false,2
+ADV,Adverb,adverb,Adverb (STTS),Adverb (STTS),"schon, bald, doch",ADV,ADV|CCONJ|SCONJ|PART,,false,3
+APPO,Postposition,postposition,Postposition (STTS),Postposition (STTS),ihm zufolge,ADP,ADP,,false,4
+APPR,Präposition,preposition,Präposition (STTS),Preposition (STTS),"in der Stadt, ohne mich",ADP,ADP|SCONJ,,false,5
+APPRART,Präposition mit Artikel,preposition with article,Präposition mit Artikel (STTS),Preposition with article (STTS),"im (in dem), zur (zu der)",ADP,ADP,,false,6
+APZR,Zirkumposition rechts,right part of circumposition,Zirkumposition rechts (STTS),Right part of circumposition (STTS),von jetzt an,ADP,ADP|ADV,,false,7
+ART,Artikel,article,Artikel (STTS),Article (STTS),"der, die, das, ein, eine",DET,DET,,false,8
+CARD,Kardinalzahl,cardinal number,Kardinalzahl (STTS),Cardinal number (STTS),"zwei Männer, dem 1. Mai",NUM,NUM,,false,9
+FM,Fremdsprachliches Material,foreign-language material,Fremdsprachliches Material (STTS),Foreign-language material (STTS),"Hosanna, Eli",X,X|PROPN|NOUN|ADV|ADJ|VERB|AUX|INTJ|PRON|DET|NUM|ADP|CCONJ|SCONJ|PART,,false,10
+ITJ,Interjektion,interjection,Interjektion (STTS),Interjection (STTS),"mhm, ach, tja",INTJ,INTJ,,false,11
+KOKOM,Vergleichskonjunktion,comparative conjunction,Vergleichskonjunktion (STTS),Comparative conjunction (STTS),"als, wie",CCONJ,CCONJ|SCONJ|ADP,,false,12
+KON,nebenordnende Konjunktion,coordinating conjunction,Nebenordnende Konjunktion (STTS),Coordinating conjunction (STTS),"und, oder, aber",CCONJ,CCONJ|SCONJ|ADV,,false,13
+KOUI,unterordnende Konjunktion mit zu-Infinitiv,subordinating conjunction with zu-infinitive,Unterordnende Konjunktion mit zu-Infinitiv (STTS),Subordinating conjunction with zu-infinitive (STTS),"um zu leben, anstatt zu fragen",SCONJ,SCONJ,,false,14
+KOUS,unterordnende Konjunktion mit Satz,subordinating conjunction with clause,Unterordnende Konjunktion mit Satz (STTS),Subordinating conjunction with clause (STTS),"weil, dass, ob, damit",SCONJ,SCONJ|ADP,,false,15
+NE,Eigenname,proper noun,Eigenname (STTS),Proper noun (STTS),"Hans, Hamburg, HSV",PROPN,PROPN|NOUN|X,,false,16
+NN,normales Nomen,common noun,Normales Nomen (STTS),Common noun (STTS),"Tisch, Herr, Liebe",NOUN,NOUN|PROPN|X,,false,17
+PDAT,attributives Demonstrativpronomen,attributive demonstrative pronoun,Attributives Demonstrativpronomen (STTS),Attributive demonstrative pronoun (STTS),"dieser Mann, jener Tag",DET,DET|PRON,,false,18
+PDS,substituierendes Demonstrativpronomen,substituting demonstrative pronoun,Substituierendes Demonstrativpronomen (STTS),Substituting demonstrative pronoun (STTS),"dieser, jener, derjenige",PRON,PRON|DET,,false,19
+PIAT,attributives Indefinitpronomen,attributive indefinite pronoun,Attributives Indefinitpronomen (STTS),Attributive indefinite pronoun (STTS),"kein Mensch, alle Dinge",DET,DET|PRON|ADJ|NUM,,false,20
+PIDAT,attributierendes Indefinitpronomen mit Determiner,attributive indefinite pronoun with determiner,Attributierendes Indefinitpronomen mit Determiner (STTS),Attributive indefinite pronoun with determiner (STTS),"die beiden Brüder, der eine Mann",DET,DET|PRON|ADJ,,false,21
+PIS,substituierendes Indefinitpronomen,substituting indefinite pronoun,Substituierendes Indefinitpronomen (STTS),Substituting indefinite pronoun (STTS),"alle, man, jemand, nichts",PRON,PRON|DET|NUM|ADJ,,false,22
+PPER,irreflexives Personalpronomen,irreflexive personal pronoun,Irreflexives Personalpronomen (STTS),Irreflexive personal pronoun (STTS),"ich, er, ihm, mich, dir",PRON,PRON,,false,23
+PPOSAT,attributives Possessivpronomen,attributive possessive pronoun,Attributives Possessivpronomen (STTS),Attributive possessive pronoun (STTS),"mein Buch, deine Mutter",DET,DET|PRON,,false,24
+PPOSS,substituierendes Possessivpronomen,substituting possessive pronoun,Substituierendes Possessivpronomen (STTS),Substituting possessive pronoun (STTS),"meins, deins, seiner, ihrer",PRON,PRON|DET,,false,25
+PRELAT,attributives Relativpronomen,attributive relative pronoun,Attributives Relativpronomen (STTS),Attributive relative pronoun (STTS),"der Mann, dessen Hund ...",DET,DET|PRON,,false,26
+PRELS,substituierendes Relativpronomen,substituting relative pronoun,Substituierendes Relativpronomen (STTS),Substituting relative pronoun (STTS),"der Mann, der ...; was",PRON,PRON|DET,,false,27
+PRF,reflexives Personalpronomen,reflexive personal pronoun,Reflexives Personalpronomen (STTS),Reflexive personal pronoun (STTS),"sich, einander, dich, mir",PRON,PRON,,false,28
+PROAV,Pronominaladverb,pronominal adverb,Pronominaladverb (STTS),Pronominal adverb (STTS),"dafür, dabei, deswegen, damit",ADV,ADV|PRON,PAV,false,29
+PTKA,Partikel bei Adjektiv oder Adverb,particle with adjective or adverb,Partikel bei Adjektiv oder Adverb (STTS),Particle with adjective or adverb (STTS),"am schönsten, zu schnell",PART,PART|ADV,,false,30
+PTKANT,Antwortpartikel,answer particle,Antwortpartikel (STTS),Answer particle (STTS),"ja, nein, danke, bitte",PART,PART|ADV|INTJ,,false,31
+PTKNEG,Negationspartikel,negation particle,Negationspartikel (STTS),Negation particle (STTS),nicht,PART,PART|ADV,,false,32
+PTKVZ,abgetrennter Verbzusatz,separated verb particle,Abgetrennter Verbzusatz (STTS),Separated verb particle (STTS),"er kommt an, er fährt weg",ADP,ADP|ADV|PART,,false,33
+PTKZU,"""zu"" vor Infinitiv","""zu"" before infinitive","""zu"" vor Infinitiv (STTS)","""zu"" before infinitive (STTS)","zu gehen, zu sein",PART,PART,,false,34
+PWAT,attributives Interrogativpronomen,attributive interrogative pronoun,Attributives Interrogativpronomen (STTS),Attributive interrogative pronoun (STTS),"welche Frau, wessen Haus",DET,DET|PRON,,false,35
+PWAV,adverbiales Interrogativ-/Relativpronomen,adverbial interrogative or relative pronoun,Adverbiales Interrogativ-/Relativpronomen (STTS),Adverbial interrogative or relative pronoun (STTS),"warum, wo, wann, wie",ADV,ADV|SCONJ|PRON,,false,36
+PWS,substituierendes Interrogativpronomen,substituting interrogative pronoun,Substituierendes Interrogativpronomen (STTS),Substituting interrogative pronoun (STTS),"wer, was",PRON,PRON|DET,,false,37
+TRUNC,Kompositions-Erstglied,truncated compound first element,Kompositions-Erstglied (STTS),Truncated compound first element (STTS),An- und Verkauf,X,X|NOUN|ADJ|VERB|PROPN,,false,38
+VAFIN,finites Hilfsverb,finite auxiliary verb,Finites Hilfsverb (STTS),Finite auxiliary verb (STTS),"du bist, wir haben, es wird",AUX,AUX|VERB,,false,39
+VAIMP,Imperativ Hilfsverb,auxiliary verb imperative,Imperativ Hilfsverb (STTS),Auxiliary verb imperative (STTS),"sei still!, werdet nicht müde",AUX,AUX|VERB,,false,40
+VAINF,Infinitiv Hilfsverb,auxiliary verb infinitive,Infinitiv Hilfsverb (STTS),Auxiliary verb infinitive (STTS),"werden, sein, haben",AUX,AUX|VERB,,false,41
+VAPP,Partizip Perfekt Hilfsverb,auxiliary verb past participle,Partizip Perfekt Hilfsverb (STTS),Auxiliary verb past participle (STTS),"gewesen, gehabt, geworden",AUX,AUX|VERB,,false,42
+VMFIN,finites Modalverb,finite modal verb,Finites Modalverb (STTS),Finite modal verb (STTS),"dürfen, sollen, will",AUX,AUX|VERB,,false,43
+VMINF,Infinitiv Modalverb,modal verb infinitive,Infinitiv Modalverb (STTS),Modal verb infinitive (STTS),"wollen, können (Infinitiv)",AUX,AUX|VERB,,false,44
+VMPP,Partizip Perfekt Modalverb,modal verb past participle,Partizip Perfekt Modalverb (STTS),Modal verb past participle (STTS),"gekonnt, gesollt",AUX,AUX|VERB,,false,45
+VVFIN,finites Vollverb,finite full verb,Finites Vollverb (STTS),Finite full verb (STTS),"du gehst, wir kommen an",VERB,VERB|AUX,,false,46
+VVIMP,Imperativ Vollverb,full verb imperative,Imperativ Vollverb (STTS),Full verb imperative (STTS),"komm!, bleibt!",VERB,VERB|AUX,,false,47
+VVINF,Infinitiv Vollverb,full verb infinitive,Infinitiv Vollverb (STTS),Full verb infinitive (STTS),"gehen, ankommen",VERB,VERB|AUX,,false,48
+VVIZU,Infinitiv mit zu,infinitive with zu,Infinitiv mit zu (STTS),Infinitive with zu (STTS),"anzukommen, loszulassen",VERB,VERB,,false,49
+VVPP,Partizip Perfekt Vollverb,full verb past participle,Partizip Perfekt Vollverb (STTS),Full verb past participle (STTS),"gegangen, angekommen",VERB,VERB|AUX|ADJ,,false,50
+XY,Nichtwort / Sonderzeichen,non-word or special character,Nichtwort / Sonderzeichen (STTS),Non-word or special character (STTS),"3:7, H2O, D2XW3",X,X|PROPN|NOUN|PRON,,false,51
+$(,satzinterne Interpunktion,sentence-internal punctuation,Satzinterne Interpunktion (STTS),Sentence-internal punctuation (STTS),""" ( ) [ ] - ",PUNCT,PUNCT,,true,52
+"$,",Komma,comma,Komma (STTS),Comma (STTS),",",PUNCT,PUNCT,,true,53
+$.,satzbeendende Interpunktion,sentence-final punctuation,Satzbeendende Interpunktion (STTS),Sentence-final punctuation (STTS),. ? ! ; :,PUNCT,PUNCT,,true,54

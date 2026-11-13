@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lemma Editor Mockup</title>
+<style>
+/* ------------------------------------------------------------------
+   Design tokens, copied from src/UnshackledWord.Web/src/styles/index.css.
+   This draft proposes NO new colour tokens (dirty = mark-linked, error/conflict = accent).
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+  --spacing: 0.25rem;
+  --radius-sm: 0.25rem; --radius-md: 0.375rem; --radius-lg: 0.5rem;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --container-page-wide: 120rem;
+
+  --uw-bg: oklch(0.99 0.004 85);
+  --uw-surface: oklch(1 0 0);
+  --uw-surface-muted: oklch(0.96 0.006 85);
+  --uw-fg: oklch(0.22 0.01 60);
+  --uw-fg-muted: oklch(0.48 0.01 60);
+  --uw-border: oklch(0.88 0.008 80);
+  --uw-accent: oklch(0.42 0.1 30);
+  --uw-accent-fg: oklch(0.99 0.004 85);
+  --uw-focus: oklch(0.6 0.15 250);
+  --uw-mark-same: oklch(0.88 0.08 240);
+  --uw-mark-linked: oklch(0.9 0.14 95);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --uw-bg: oklch(0.18 0.008 60);
+  --uw-surface: oklch(0.22 0.01 60);
+  --uw-surface-muted: oklch(0.27 0.012 60);
+  --uw-fg: oklch(0.94 0.005 85);
+  --uw-fg-muted: oklch(0.7 0.01 70);
+  --uw-border: oklch(0.34 0.012 60);
+  --uw-accent: oklch(0.78 0.1 50);
+  --uw-accent-fg: oklch(0.2 0.01 60);
+  --uw-focus: oklch(0.72 0.14 250);
+  --uw-mark-same: oklch(0.42 0.09 240);
+  --uw-mark-linked: oklch(0.5 0.1 90);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --uw-bg: oklch(0.18 0.008 60);
+    --uw-surface: oklch(0.22 0.01 60);
+    --uw-surface-muted: oklch(0.27 0.012 60);
+    --uw-fg: oklch(0.94 0.005 85);
+    --uw-fg-muted: oklch(0.7 0.01 70);
+    --uw-border: oklch(0.34 0.012 60);
+    --uw-accent: oklch(0.78 0.1 50);
+    --uw-accent-fg: oklch(0.2 0.01 60);
+    --uw-focus: oklch(0.72 0.14 250);
+    --uw-mark-same: oklch(0.42 0.09 240);
+    --uw-mark-linked: oklch(0.5 0.1 90);
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { display: flex; flex-direction: column; height: 100dvh; background: var(--uw-bg); color: var(--uw-fg); font-family: var(--font-sans); }
+h1, h2, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--uw-focus); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.muted { color: var(--uw-fg-muted); }
+
+/* ---- mockup-only toolbar ---- */
+.mock-bar { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*2); align-items: center; flex: none;
+  padding: calc(var(--spacing)*2) calc(var(--spacing)*4); background: var(--uw-surface-muted); border-bottom: 1px solid var(--uw-border); font-size: var(--text-sm); }
+.mock-bar strong { margin-right: calc(var(--spacing)*2); }
+
+/* ---- Button (variants primary / secondary / ghost, sizes sm / md); aria-pressed = NEW pressed style ---- */
+.btn { font: inherit; font-size: var(--text-sm); cursor: pointer; border: 1px solid var(--uw-border); background: var(--uw-surface); color: var(--uw-fg);
+  border-radius: var(--radius-md); padding: calc(var(--spacing)*1) calc(var(--spacing)*2); white-space: nowrap; }
+.btn:hover { background: var(--uw-surface-muted); }
+.btn[aria-pressed="true"] { background: var(--uw-accent); color: var(--uw-accent-fg); border-color: var(--uw-accent); }
+.btn-primary { background: var(--uw-accent); color: var(--uw-accent-fg); border-color: var(--uw-accent); }
+.btn-primary:hover { background: var(--uw-accent); opacity: .9; }
+.btn-ghost { border-color: transparent; background: transparent; }
+.btn-md { font-size: var(--text-base); padding: calc(var(--spacing)*2) calc(var(--spacing)*4); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---- frame (AppShell) ---- */
+.frame { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-inline: auto; width: 100%; overflow: auto; }
+.frame[data-phone] { max-width: 375px; border-inline: 1px dashed var(--uw-border); }
+.app-header { flex: none; position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: calc(var(--spacing)*6); height: calc(var(--spacing)*14);
+  padding-inline: calc(var(--spacing)*4); border-bottom: 1px solid var(--uw-border); background: var(--uw-surface); }
+.brand { font-family: var(--font-scripture); font-size: var(--text-lg); font-weight: 600; color: var(--uw-accent); }
+.app-header nav { display: flex; gap: calc(var(--spacing)*6); align-items: center; }
+.app-header .spacer { flex: 1; }
+.app-header a { color: var(--uw-fg-muted); text-decoration: none; }
+.user-wrap { position: relative; }
+.avatar { width: calc(var(--spacing)*8); height: calc(var(--spacing)*8); border-radius: 999px; padding: 0; background: var(--uw-accent); color: var(--uw-accent-fg); border: none; }
+.user-menu { position: absolute; right: 0; top: 100%; margin-top: calc(var(--spacing)*2); z-index: 40; min-width: 14rem; display: flex; flex-direction: column; gap: calc(var(--spacing)*1);
+  border: 1px solid var(--uw-border); border-radius: var(--radius-md); background: var(--uw-surface); padding: calc(var(--spacing)*2); font-size: var(--text-sm); }
+.user-menu[hidden] { display: none; }
+.user-menu a { padding: calc(var(--spacing)*1) calc(var(--spacing)*2); border-radius: var(--radius-md); color: var(--uw-fg); }
+.user-menu a:hover, .user-menu a[aria-current] { background: var(--uw-surface-muted); }
+.user-menu .new { font-size: var(--text-xs); color: var(--uw-accent); margin-left: calc(var(--spacing)*1); }
+
+/* ---- page: app-like layout (only the grid scrolls) ---- */
+main { flex: 1; min-height: 0; width: 100%; max-width: var(--container-page-wide); margin-inline: auto;
+  display: grid; grid-template-rows: auto auto auto minmax(0, 1fr) auto; gap: calc(var(--spacing)*3);
+  padding: calc(var(--spacing)*4) calc(var(--spacing)*4) 0; }
+main[data-layout="cards"] { display: block; flex: none; min-height: auto; }
+main[data-layout="cards"] > * + * { margin-top: calc(var(--spacing)*3); }
+@media (min-width: 48rem) { main { padding-inline: calc(var(--spacing)*8); } }
+
+.ed-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: calc(var(--spacing)*2) calc(var(--spacing)*6); }
+.ed-head h1 { font-family: var(--font-scripture); font-size: var(--text-2xl); font-weight: 600; }
+.ed-sum { font-size: var(--text-sm); color: var(--uw-fg-muted); margin-top: calc(var(--spacing)*1); }
+.ed-sum b { color: var(--uw-fg); }
+.hint { font-size: var(--text-xs); color: var(--uw-fg-muted); max-width: 34rem; }
+
+/* BibleChapterPicker (existing look, simplified) */
+.picker { width: 100%; }
+.picker-bar { display: flex; gap: calc(var(--spacing)*2); align-items: center; flex-wrap: wrap; }
+.picker-panel { margin-top: calc(var(--spacing)*2); border: 1px solid var(--uw-border); border-radius: var(--radius-lg); padding: calc(var(--spacing)*3); background: var(--uw-surface);
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(3.5rem, 1fr)); gap: calc(var(--spacing)*1); }
+.picker-panel[hidden] { display: none; }
+.picker-panel .btn { text-align: center; }
+.picker-panel .chapters { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(2.5rem, 1fr)); gap: calc(var(--spacing)*1);
+  padding-top: calc(var(--spacing)*2); border-top: 1px solid var(--uw-border); }
+
+/* filters */
+.filters { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*2) calc(var(--spacing)*3); align-items: center; font-size: var(--text-sm); }
+.field { display: flex; align-items: center; gap: calc(var(--spacing)*2); }
+.field input, .field select { font: inherit; font-size: var(--text-sm); color: var(--uw-fg); background: var(--uw-surface); border: 1px solid var(--uw-border);
+  border-radius: var(--radius-md); padding: calc(var(--spacing)*1) calc(var(--spacing)*2); }
+.field input[type="search"] { width: 14rem; max-width: 60vw; }
+.filters .count { margin-left: auto; color: var(--uw-fg-muted); }
+.menu-wrap { position: relative; }
+.col-menu { position: absolute; z-index: 30; top: 100%; left: 0; margin-top: calc(var(--spacing)*1); min-width: 13rem; display: grid; gap: calc(var(--spacing)*1);
+  padding: calc(var(--spacing)*2); border: 1px solid var(--uw-border); border-radius: var(--radius-md); background: var(--uw-surface); }
+.col-menu[hidden] { display: none; }
+.col-menu label { display: flex; gap: calc(var(--spacing)*2); align-items: center; padding: calc(var(--spacing)*1); }
+details.keys summary { cursor: pointer; color: var(--uw-fg-muted); }
+details.keys dl { position: absolute; z-index: 30; margin: calc(var(--spacing)*1) 0 0; padding: calc(var(--spacing)*3); display: grid; grid-template-columns: auto auto; gap: calc(var(--spacing)*1) calc(var(--spacing)*4);
+  border: 1px solid var(--uw-border); border-radius: var(--radius-md); background: var(--uw-surface); font-size: var(--text-xs); }
+details.keys dt { font-family: ui-monospace, monospace; }
+details.keys dd { margin: 0; }
+
+/* context line: verse of the active row, word marked */
+.context { font-family: var(--font-scripture); font-size: var(--text-base); line-height: 1.5; padding: calc(var(--spacing)*2) calc(var(--spacing)*3);
+  background: var(--uw-surface-muted); border-radius: var(--radius-md); min-height: 2.75rem; }
+.context .ref { font-family: var(--font-sans); font-size: var(--text-xs); color: var(--uw-fg-muted); margin-right: calc(var(--spacing)*2); }
+.context mark { background: var(--uw-mark-same); color: inherit; border-radius: var(--radius-sm); padding-inline: 2px; }
+
+/* ---- MorphologyGrid (proposed): div-based ARIA grid, verse = rowgroup ---- */
+.gscroll { min-height: 0; overflow: auto; border: 1px solid var(--uw-border); border-radius: var(--radius-lg); background: var(--uw-surface);
+  scroll-padding-top: calc(var(--spacing)*10); scroll-padding-left: 14rem; }
+.grid { width: max-content; min-width: 100%; font-size: var(--text-sm); }
+.ghead { position: sticky; top: 0; z-index: 3; }
+.row { display: flex; height: calc(var(--spacing)*9); border-bottom: 1px solid var(--uw-border); background: var(--uw-surface); }
+.ghead .row { background: var(--uw-surface-muted); font-weight: 600; font-size: var(--text-xs); }
+.vgroup { content-visibility: auto; contain-intrinsic-size: auto 18rem; }
+.vgroup + .vgroup { border-top: 2px solid var(--uw-border); }
+.cell { flex: none; display: flex; align-items: center; gap: calc(var(--spacing)*1); padding-inline: calc(var(--spacing)*2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  background: inherit; cursor: default; }
+.cell > span.v { overflow: hidden; text-overflow: ellipsis; }
+.c-v { width: 3.5rem; position: sticky; left: 0; z-index: 1; justify-content: space-between; color: var(--uw-fg-muted); font-variant-numeric: tabular-nums; }
+.c-ctx { width: 10.5rem; position: sticky; left: 3.5rem; z-index: 1; font-family: var(--font-scripture); font-size: var(--text-base); box-shadow: 1px 0 0 var(--uw-border); }
+.ghead .c-ctx { font-family: var(--font-sans); font-size: var(--text-xs); }
+.c-plain { width: 9rem; color: var(--uw-fg-muted); }
+.c-lemma { width: 10.5rem; }
+.c-upos { width: 8.5rem; }
+.c-f { width: 7rem; }
+.row[data-active-row] { background: var(--uw-surface-muted); }
+.row[data-dirty] .c-v { box-shadow: inset 3px 0 0 var(--uw-accent); }
+.row[data-conflict] { outline: 2px solid var(--uw-accent); outline-offset: -2px; }
+.cell[data-editable] { cursor: pointer; }
+.cell[data-active] { box-shadow: inset 0 0 0 1px var(--uw-focus); }
+.cell:focus { outline: 2px solid var(--uw-focus); outline-offset: -2px; }
+.cell[data-changed] { background: var(--uw-mark-linked); }
+.cell[data-na] { color: var(--uw-fg-muted); opacity: .55; }
+.cell[data-invalid] { color: var(--uw-accent); }
+.cell[data-invalid] .v { text-decoration: line-through wavy; }
+.missing { font-style: italic; color: var(--uw-fg-muted); border-bottom: 1px dashed var(--uw-fg-muted); }
+.cell input, .cell select { width: 100%; font: inherit; font-size: var(--text-sm); color: var(--uw-fg); background: var(--uw-surface);
+  border: 1px solid var(--uw-focus); border-radius: var(--radius-sm); padding: 2px calc(var(--spacing)*1); }
+.reset { padding: 0 calc(var(--spacing)*1); font-size: var(--text-sm); }
+.conflict-note { display: flex; flex-wrap: wrap; gap: calc(var(--spacing)*2); align-items: center; padding: calc(var(--spacing)*2) calc(var(--spacing)*3) calc(var(--spacing)*2) 14rem;
+  font-size: var(--text-sm); background: var(--uw-surface-muted); border-bottom: 1px solid var(--uw-border); position: sticky; left: 0; width: min(100%, 60rem); }
+.conflict-note b { color: var(--uw-accent); }
+.skel { height: calc(var(--spacing)*3); border-radius: var(--radius-sm); background: var(--uw-surface-muted); width: 70%; }
+
+/* ---- EmptyState (existing) ---- */
+.empty-state { border: 1px dashed var(--uw-border); border-radius: var(--radius-lg); padding: calc(var(--spacing)*6); display: grid; gap: calc(var(--spacing)*3); justify-items: start; align-self: start; }
+.empty-state h2 { font-size: var(--text-lg); }
+.empty-state p { font-size: var(--text-sm); color: var(--uw-fg-muted); max-width: 40rem; }
+.form-error { color: var(--uw-accent); font-weight: 500; font-size: var(--text-sm); }
+
+/* ---- SaveBar (proposed) ---- */
+.savebar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--spacing)*2) calc(var(--spacing)*3); padding: calc(var(--spacing)*3) 0 calc(var(--spacing)*4);
+  border-top: 1px solid var(--uw-border); background: var(--uw-bg); font-size: var(--text-sm); }
+main[data-layout="cards"] .savebar { position: sticky; bottom: 0; z-index: 5; padding-inline: calc(var(--spacing)*1); }
+.savebar[hidden] { display: none; }
+.savebar .msg { flex: 1 1 16rem; }
+.savebar .msg small { display: block; color: var(--uw-fg-muted); }
+.savebar .actions { display: flex; gap: calc(var(--spacing)*2); flex-wrap: wrap; }
+
+/* ---- cards (phone) ---- */
+.cards { display: grid; gap: calc(var(--spacing)*2); }
+.card-verse { position: sticky; top: calc(var(--spacing)*14); z-index: 4; background: var(--uw-bg); font-size: var(--text-sm); font-weight: 600;
+  padding: calc(var(--spacing)*2) 0 calc(var(--spacing)*1); border-bottom: 2px solid var(--uw-border); }
+.cgroup { content-visibility: auto; contain-intrinsic-size: auto 40rem; display: grid; gap: calc(var(--spacing)*2); }
+.card { border: 1px solid var(--uw-border); border-radius: var(--radius-lg); background: var(--uw-surface); padding: calc(var(--spacing)*3); display: grid; gap: calc(var(--spacing)*2); }
+.card[data-dirty] { box-shadow: inset 3px 0 0 var(--uw-accent); }
+.card header { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--spacing)*2); }
+.card-word { font-family: var(--font-scripture); font-size: var(--text-lg); }
+.badge { font-size: var(--text-xs); border-radius: 999px; padding: 0 calc(var(--spacing)*2); background: var(--uw-mark-linked); }
+.card-fields { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--spacing)*2); }
+.card-fields label { display: grid; gap: 2px; font-size: var(--text-xs); color: var(--uw-fg-muted); }
+.card-fields .wide { grid-column: 1 / -1; }
+.card-fields input, .card-fields select { font: inherit; font-size: var(--text-base); color: var(--uw-fg); background: var(--uw-surface); border: 1px solid var(--uw-border);
+  border-radius: var(--radius-md); padding: calc(var(--spacing)*2); min-height: 2.75rem; }
+.card-fields [data-changed] { background: var(--uw-mark-linked); }
+.card-fields .invalid { grid-column: 1 / -1; color: var(--uw-accent); font-size: var(--text-sm); display: flex; gap: calc(var(--spacing)*2); align-items: center; }
+</style>
+</head>
+<body>
+
+<div class="mock-bar" role="toolbar" aria-label="Mockup-Steuerung">
+  <strong>Mockup</strong>
+  <span>Theme:</span>
+  <button class="btn" data-theme-set="system" aria-pressed="true">System</button>
+  <button class="btn" data-theme-set="light" aria-pressed="false">Hell</button>
+  <button class="btn" data-theme-set="dark" aria-pressed="false">Dunkel</button>
+  <span>· Breite:</span>
+  <button class="btn" data-width="full" aria-pressed="true">Fenster</button>
+  <button class="btn" data-width="phone" aria-pressed="false">375 px</button>
+  <span>· Zustand:</span>
+  <button class="btn" data-scenario="normal" aria-pressed="true">Joh 1,1–5</button>
+  <button class="btn" data-scenario="big" aria-pressed="false">Großes Kapitel (≈ 4 400 Zeilen)</button>
+  <button class="btn" data-scenario="none" aria-pressed="false">Kein Kapitel</button>
+  <button class="btn" data-scenario="loading" aria-pressed="false">Laden</button>
+  <button class="btn" data-scenario="error" aria-pressed="false">Ladefehler</button>
+  <button class="btn" data-scenario="anon" aria-pressed="false">Nicht angemeldet</button>
+  <label><input type="checkbox" id="mock-conflict"> nächstes Speichern erzeugt Konflikt</label>
+</div>
+
+<div class="frame" id="frame">
+  <header class="app-header">
+    <nav><span class="brand">Unshackled Word</span><a href="#">Bibel</a></nav>
+    <span class="spacer"></span>
+    <span class="muted">DE</span>
+    <div class="user-wrap" id="user-wrap"></div>
+  </header>
+  <main id="page"></main>
+</div>
+
+<datalist id="lemma-list"></datalist>
+
+<script>
+/* ===== code -> label maps (served by the backend; codes here follow Universal Dependencies, see design doc) ===== */
+const LABELS = {
+  upos: { VERB: "verb", AUX: "hilfsverb", NOUN: "substantiv", PROPN: "eigenname", ADJ: "adjektiv", ADV: "adverb", DET: "artikel", PRON: "pronomen",
+    ADP: "präposition", CCONJ: "konjunktion", SCONJ: "subjunktion", PART: "partikel", NUM: "numerale", INTJ: "interjektion" },
+  Degree: { Pos: "positiv", Cmp: "komparativ", Sup: "superlativ" },
+  VerbForm: { Fin: "finit", Inf: "infinitiv", Part: "partizip" },
+  Tense: { Pres: "präsens", Past: "präteritum" },
+  Person: { 1: "1. person", 2: "2. person", 3: "3. person" },
+  Number: { Sing: "singular", Plur: "plural" },
+  Mood: { Ind: "indikativ", Sub: "konjunktiv", Imp: "imperativ" },
+  Case: { Nom: "nominativ", Gen: "genitiv", Dat: "dativ", Acc: "akkusativ" },
+  Gender: { Masc: "maskulinum", Fem: "femininum", Neut: "neutrum" },
+};
+const FEATS = ["Degree", "VerbForm", "Tense", "Person", "Number", "Mood", "Case", "Gender"];
+const COLS = [
+  { k: "v", t: "Vers", cls: "c-v" }, { k: "ctx", t: "Wort im Kontext", cls: "c-ctx" }, { k: "plain", t: "Wort (bereinigt)", cls: "c-plain" },
+  { k: "lemma", t: "Lemma", cls: "c-lemma" }, { k: "upos", t: "Wortart", cls: "c-upos" },
+  { k: "Degree", t: "Steigerung" }, { k: "VerbForm", t: "Verbform" }, { k: "Tense", t: "Tempus" }, { k: "Person", t: "Person" },
+  { k: "Number", t: "Numerus" }, { k: "Mood", t: "Modus" }, { k: "Case", t: "Kasus" }, { k: "Gender", t: "Genus" },
+].map((c) => ({ ...c, cls: c.cls || "c-f c-" + c.k }));
+const TOGGLEABLE = ["plain", ...FEATS];
+
+/* Which features a part of speech allows (single source of truth, served with the label maps). */
+function allowed(upos, verbForm) {
+  switch (upos) {
+    case "VERB": case "AUX": return verbForm === "Fin" ? ["VerbForm", "Tense", "Person", "Number", "Mood"] : ["VerbForm"];
+    case "NOUN": case "PROPN": case "DET": return ["Number", "Case", "Gender"];
+    case "ADJ": return ["Degree", "Number", "Case", "Gender"];
+    case "ADV": return ["Degree"];
+    case "PRON": return ["Person", "Number", "Case", "Gender"];
+    case "NUM": return ["Case", "Gender"];
+    default: return [];
+  }
+}
+
+/* ===== sample data: Johannes 1,1–5 (Elberfelder 1871) ===== */
+const AB = { D: "Degree", VF: "VerbForm", T: "Tense", P: "Person", N: "Number", M: "Mood", C: "Case", G: "Gender" };
+const WAR = "war|sein|AUX|VF=Fin T=Past P=3 N=Sing M=Ind", DAS = "das|der|DET|N=Sing C=Nom G=Neut", UND = "und|und|CCONJ";
+const JOH = [
+  [1, ["Im|in|ADP", "Anfang|Anfang|NOUN|N=Sing C=Dat G=Masc", WAR, DAS, "Wort,|Wort|NOUN|N=Sing C=Nom G=Neut", UND, DAS, "Wort|Wort|NOUN|N=Sing C=Nom G=Neut", WAR,
+    "bei|bei|ADP", "Gott,|Gott|NOUN|N=Sing C=Dat G=Masc", UND, DAS, "Wort|Wort|NOUN|N=Sing C=Nom G=Neut", WAR, "Gott.|Gott|NOUN|N=Sing C=Nom G=Masc"]],
+  [2, ["Dieses|dieser|PRON|N=Sing C=Nom G=Neut", WAR, "im|in|ADP", "Anfang|Anfang|NOUN|N=Sing C=Dat G=Masc", "bei|bei|ADP", "Gott.|Gott|NOUN|N=Sing C=Dat G=Masc"]],
+  [3, ["Alles|alle|PRON|N=Sing C=Nom G=Neut", "ward|werden|VERB|VF=Fin T=Past P=3 N=Sing M=Ind", "durch|durch|ADP", "dasselbe,||PRON|N=Sing C=Acc G=Neut", UND, "ohne|ohne|ADP",
+    "dasselbe||PRON|N=Sing C=Acc G=Neut", "ward||VERB|VF=Fin T=Past P=3 N=Sing M=Ind", "auch|auch|ADV", "nicht|nicht|PART", "eines,||", "das|der|PRON|N=Sing C=Nom G=Neut",
+    "geworden|werden|VERB|VF=Part", "ist.|sein|AUX|VF=Fin T=Pres P=3 N=Sing M=Ind"]],
+  [4, ["In|in|ADP", "ihm|er|PRON|P=3 N=Sing C=Dat G=Masc", WAR, DAS, "Leben,|Leben|NOUN|N=Sing C=Nom G=Neut", UND, DAS, "Leben|Leben|NOUN|N=Sing C=Nom G=Neut", WAR, DAS,
+    "Licht|Licht|NOUN|T=Pres N=Sing C=Nom G=Neut", "der|der|DET|N=Plur C=Gen", "Menschen.||NOUN|N=Plur C=Gen G=Masc"]],
+  [5, ["Und|und|CCONJ", DAS, "Licht|Licht|NOUN|N=Sing C=Nom G=Neut", "scheint|scheinen|VERB|VF=Fin T=Pres P=3 N=Sing M=Ind", "in|in|ADP", "der|der|DET|N=Sing C=Dat G=Fem",
+    "Finsternis,|Finsternis|NOUN|N=Sing C=Dat G=Fem", UND, "die|der|DET|N=Sing C=Nom G=Fem", "Finsternis|Finsternis|NOUN|N=Sing C=Nom G=Fem",
+    "hat|haben|AUX|VF=Fin T=Pres P=3 N=Sing M=Ind", "es|es|PRON|P=3 N=Sing C=Acc G=Neut", "nicht|nicht|PART", "erfaßt.||VERB|VF=Part"]],
+];
+function parseWord(s, v, id) {
+  const [ctx, lemma = "", upos = "", feats = ""] = s.split("|");
+  const m = { lemma, upos }; FEATS.forEach((f) => (m[f] = ""));
+  feats.split(" ").filter(Boolean).forEach((p) => { const [a, val] = p.split("="); m[AB[a]] = val; });
+  return { id, v, ctx, plain: ctx.replace(/[.,;:!?»«()]/g, ""), orig: { ...m }, cur: { ...m }, conflict: null };
+}
+function buildWords(big) {
+  const words = []; let id = 1;
+  if (!big) { JOH.forEach(([v, ws]) => ws.forEach((s) => words.push(parseWord(s, v, id++)))); return words; }
+  for (let v = 1; v <= 176; v++) { const a = JOH[v % 5][1], b = JOH[(v + 2) % 5][1]; [...a, ...b].forEach((s) => words.push(parseWord(s, v, id++))); }
+  return words;
+}
+
+/* ===== state ===== */
+const state = {
+  scenario: "normal", chapter: "Johannes 1", words: [], visible: [], q: "", pos: "", onlyMissing: false,
+  hidden: new Set(), active: null, editing: false, layout: "grid", saving: false, saveMsg: "", confirmDiscard: false, pickerOpen: null, pickerBook: null, userMenu: false,
+};
+const page = document.getElementById("page");
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const byId = (id) => state.words.find((w) => w.id === id);
+const lab = (k, code) => (code ? (LABELS[k === "upos" ? "upos" : k]?.[code] ?? code) : "");
+const isDirty = (w) => Object.keys(w.cur).some((k) => w.cur[k] !== w.orig[k]);
+const isInvalid = (w) => FEATS.some((f) => w.cur[f] && !allowed(w.cur.upos, w.cur.VerbForm).includes(f));
+const colTitle = (k) => COLS.find((c) => c.k === k).t;
+const ref = (w) => `${state.chapter.split(" ")[1] ?? ""},${w.v}`;
+
+function computeVisible() {
+  const q = state.q.trim().toLowerCase();
+  state.visible = state.words.filter((w) => (!q || w.ctx.toLowerCase().includes(q) || w.cur.lemma.toLowerCase().includes(q))
+    && (!state.onlyMissing || !w.cur.lemma) && (!state.pos || (state.pos === "-" ? !w.cur.upos : w.cur.upos === state.pos))).map((w) => w.id);
+}
+
+/* ===== render: page frame ===== */
+function renderUser() {
+  const wrap = document.getElementById("user-wrap");
+  if (state.scenario === "anon") { wrap.innerHTML = `<button class="btn">Anmelden</button>`; return; }
+  wrap.innerHTML = `<button class="avatar" aria-haspopup="menu" aria-expanded="${state.userMenu}" aria-label="Benutzermenü" id="avatar">A</button>
+    <div class="user-menu" role="menu" ${state.userMenu ? "" : "hidden"}>
+      <span class="muted" style="padding:0 calc(var(--spacing)*2)">angemeldet</span>
+      <a role="menuitem" href="#">Passkeys</a>
+      <a role="menuitem" href="#" aria-current="page">Lemmata bearbeiten<span class="new">neu</span></a>
+      <a role="menuitem" href="#">Einladungen</a>
+      <a role="menuitem" href="#">Abmelden</a>
+    </div>`;
+  document.getElementById("avatar").onclick = () => { state.userMenu = !state.userMenu; renderUser(); };
+}
+
+const OT = "1Mo 2Mo 3Mo 4Mo 5Mo Jos Ri Rt 1Sam 2Sam 1Kö 2Kö 1Chr 2Chr Esr Neh Est Hi Ps Spr Pred Hl Jes Jer Kla Hes Dan Hos Joel Am Ob Jona Mi Nah Hab Zeph Hag Sach Mal".split(" ");
+const NT = "Mt Mk Lk Joh Apg Röm 1Kor 2Kor Gal Eph Phil Kol 1Thes 2Thes 1Tim 2Tim Tit Phlm Hebr Jak 1Petr 2Petr 1Joh 2Joh 3Joh Jud Offb".split(" ");
+const FULL = { Joh: "Johannes", Ps: "Psalm", Mt: "Matthäus", "1Mo": "1. Mose" };
+
+function headHtml() {
+  const missing = state.words.filter((w) => !w.cur.lemma).length, invalid = state.words.filter(isInvalid).length;
+  const sum = state.words.length ? `${esc(state.chapter)} · <b>${state.words.length.toLocaleString("de")}</b> Wörter · <b>${missing}</b> ohne Lemma · <b>${invalid}</b> Unstimmigkeit${invalid === 1 ? "" : "en"}` : "Kein Kapitel geladen";
+  const panel = state.pickerOpen ? `<div class="picker-panel" role="group" aria-label="${state.pickerOpen === "ot" ? "Altes" : "Neues"} Testament">
+      ${(state.pickerOpen === "ot" ? OT : NT).map((b) => `<button class="btn btn-ghost" data-book="${b}" aria-pressed="${state.pickerBook === b}">${b}</button>`).join("")}
+      ${state.pickerBook ? `<div class="chapters">${Array.from({ length: state.pickerBook === "Ps" ? 150 : 21 }, (_, i) => `<a class="btn" href="#" data-chap="${i + 1}">${i + 1}</a>`).join("")}</div>` : ""}
+    </div>` : "";
+  return `<div class="ed-head">
+      <div><h1>Lemmata bearbeiten</h1><p class="ed-sum" id="sum">${sum}</p></div>
+      <p class="hint">Anmeldung erforderlich. Gespeicherte Änderungen sind Vorschläge unter deinem Namen; übernommen werden sie, wenn der Maintainer sie zusammenführt.</p>
+    </div>
+    <div class="picker"><nav class="picker-bar" aria-label="Kapitel wählen">
+      <button class="btn" data-testament="ot" aria-expanded="${state.pickerOpen === "ot"}">Altes Testament ▾</button>
+      <button class="btn" data-testament="nt" aria-expanded="${state.pickerOpen === "nt"}">Neues Testament ▾</button>
+      <span class="muted">Ps 119 öffnet das große Kapitel</span></nav>${panel}</div>`;
+}
+
+function filtersHtml() {
+  const missing = state.words.filter((w) => !w.cur.lemma).length;
+  const posOpts = [["", "alle"], ["-", "ohne wortart"], ...Object.entries(LABELS.upos)].map(([v, l]) => `<option value="${v}" ${state.pos === v ? "selected" : ""}>${l}</option>`).join("");
+  const shown = COLS.filter((c) => !state.hidden.has(c.k)).length;
+  return `<div class="filters" role="search">
+    <label class="field"><span>Suchen</span><input type="search" id="q" value="${esc(state.q)}" placeholder="Wort oder Lemma"></label>
+    <label class="field"><span>Wortart</span><select id="pos">${posOpts}</select></label>
+    <button class="btn" id="only-missing" aria-pressed="${state.onlyMissing}">Nur ohne Lemma (${missing})</button>
+    ${state.layout === "grid" ? `<div class="menu-wrap"><button class="btn" id="cols-btn" aria-expanded="false" aria-controls="col-menu">Spalten (${shown}/${COLS.length}) ▾</button>
+      <div class="col-menu" id="col-menu" hidden>${TOGGLEABLE.map((k) => `<label><input type="checkbox" data-col="${k}" ${state.hidden.has(k) ? "" : "checked"}> ${colTitle(k)}</label>`).join("")}
+        <button class="btn btn-ghost" id="cols-all">Alle anzeigen</button></div></div>
+    <details class="keys"><summary>Tastatur</summary><dl>
+      <dt>↑ ↓ ← →</dt><dd>Zelle wechseln</dd><dt>Enter / F2</dt><dd>bearbeiten; Enter übernimmt und geht eine Zeile tiefer</dd>
+      <dt>Tab / ⇧Tab</dt><dd>nächstes / voriges bearbeitbares Feld</dd><dt>Buchstabe</dt><dd>Lemma: Eingabe beginnen · Auswahl: passenden Wert wählen</dd>
+      <dt>Entf</dt><dd>Wert leeren</dd><dt>Esc</dt><dd>Bearbeitung abbrechen</dd><dt>Bild ↑ ↓, Strg+Pos1/Ende</dt><dd>blättern, Anfang/Ende</dd><dt>Strg+S</dt><dd>alle Änderungen speichern</dd>
+    </dl></details>` : ""}
+    <span class="count" aria-live="polite" id="count">zeige ${state.visible.length.toLocaleString("de")} von ${state.words.length.toLocaleString("de")}</span>
+  </div>`;
+}
+
+/* ===== grid ===== */
+function cellHtml(w, c, first) {
+  const a = state.active, act = a && a.id === w.id && a.c === c.k;
+  const base = `role="gridcell" class="cell ${c.cls}" data-c="${c.k}" tabindex="${act ? 0 : -1}" ${act ? "data-active" : ""}`;
+  if (c.k === "v") {
+    const dirty = isDirty(w);
+    return `<div ${base.replace('role="gridcell"', 'role="rowheader"')}><span>${first ? w.v : ""}${w.conflict ? ' <b title="Konflikt">!</b>' : ""}</span>${dirty ? `<button class="btn btn-ghost reset" data-reset="${w.id}" tabindex="-1" aria-label="Zeile ${esc(w.ctx)} zurücksetzen" title="Zeile zurücksetzen">↺</button>` : ""}${dirty ? '<span class="sr-only">geändert</span>' : ""}</div>`;
+  }
+  if (c.k === "ctx") return `<div ${base} title="${esc(w.ctx)} · ${ref(w)}">${esc(w.ctx)}</div>`;
+  if (c.k === "plain") return `<div ${base}>${esc(w.plain)}</div>`;
+  const val = w.cur[c.k], before = w.orig[c.k], changed = val !== before;
+  const chg = changed ? `data-changed title="vorher: ${esc(lab(c.k, before) || "leer")}${before ? ` (${esc(before)})` : ""}"` : "";
+  if (c.k === "lemma") return `<div ${base} data-editable ${chg}>${val ? `<span class="v">${esc(val)}</span>` : '<span class="missing">fehlt</span>'}</div>`;
+  if (c.k === "upos") return `<div ${base} data-editable ${chg || (val ? `title="${esc(lab("upos", val))} (${esc(val)})"` : "")}>${val ? `<span class="v">${esc(lab("upos", val))}</span>` : '<span class="missing">fehlt</span>'}</div>`;
+  const ok = allowed(w.cur.upos, w.cur.VerbForm).includes(c.k);
+  if (!ok && !val) return `<div ${base} data-na aria-disabled="true" title="für ${esc(lab("upos", w.cur.upos) || "diese Wortart")} nicht vorgesehen">–</div>`;
+  if (!ok) return `<div ${base} data-invalid title="${esc(lab(c.k, val))} (${esc(val)}): für ${esc(lab("upos", w.cur.upos))} nicht vorgesehen. Entf leert den Wert.">⚠ <span class="v">${esc(lab(c.k, val))}</span><span class="sr-only">, unzulässig</span></div>`;
+  return `<div ${base} data-editable ${chg || (val ? `title="${esc(lab(c.k, val))} (${esc(val)})"` : "")}>${val ? `<span class="v">${esc(lab(c.k, val))}</span>` : ""}${changed ? '<span class="sr-only">, geändert</span>' : ""}</div>`;
+}
+function rowHtml(w, first, idx) {
+  const act = state.active && state.active.id === w.id;
+  const note = w.conflict ? `<div class="conflict-note" role="row"><span role="gridcell"><b>Konflikt:</b> ${esc(w.conflict.by)} hat am ${esc(w.conflict.at)} das Lemma auf »${esc(w.conflict.server)}« gesetzt. Dein Wert: »${esc(w.cur.lemma)}«.</span>
+      <button class="btn" data-keep="${w.id}">Meinen Wert behalten</button><button class="btn" data-take="${w.id}">Serverwert übernehmen</button></div>` : "";
+  return `<div class="row" role="row" data-id="${w.id}" aria-rowindex="${idx + 2}" ${act ? "data-active-row" : ""} ${isDirty(w) ? "data-dirty" : ""} ${w.conflict ? "data-conflict" : ""}>${COLS.map((c) => cellHtml(w, c, first)).join("")}</div>${note}`;
+}
+function gridHtml() {
+  if (!state.visible.length) return `<div class="empty-state"><h2>Keine Wörter passen zum Filter</h2><p>Suche oder Filter liefern in ${esc(state.chapter)} keine Treffer.</p><button class="btn" id="reset-filter">Filter zurücksetzen</button></div>`;
+  const groups = []; let last = null, idx = 0;
+  for (const id of state.visible) { const w = byId(id); if (!last || last.v !== w.v) { last = { v: w.v, rows: [] }; groups.push(last); } last.rows.push(rowHtml(w, last.rows.length === 0, idx++)); }
+  const hideCls = [...state.hidden].map((k) => "hide-" + k).join(" ");
+  return `<div class="gscroll" id="gscroll"><div class="grid ${hideCls}" id="grid" role="grid" aria-label="Wörter von ${esc(state.chapter)}" aria-rowcount="${state.visible.length + 1}" aria-colcount="${COLS.length}">
+    <div class="ghead" role="rowgroup"><div class="row" role="row" aria-rowindex="1">${COLS.map((c) => `<div role="columnheader" class="cell ${c.cls}">${c.t}</div>`).join("")}</div></div>
+    ${groups.map((g) => `<div class="vgroup" role="rowgroup" aria-label="Vers ${g.v}">${g.rows.join("")}</div>`).join("")}</div></div>`;
+}
+const hideStyle = document.createElement("style");
+hideStyle.textContent = TOGGLEABLE.map((k) => `.grid.hide-${k} .c-${k}{display:none}`).join("");
+document.head.append(hideStyle);
+
+/* ===== cards (phone) ===== */
+function cardHtml(w) {
+  const a = allowed(w.cur.upos, w.cur.VerbForm);
+  const sel = (k) => {
+    const opts = Object.entries(LABELS[k]).map(([code, l]) => `<option value="${code}" title="${code}" ${w.cur[k] === code ? "selected" : ""}>${l}</option>`).join("");
+    return `<label ${k === "upos" ? 'class="wide"' : ""}>${colTitle(k)}<select data-f="${k}" ${w.cur[k] !== w.orig[k] ? "data-changed" : ""}><option value="">–</option>${opts}</select></label>`;
+  };
+  const invalid = FEATS.filter((f) => w.cur[f] && !a.includes(f)).map((f) => `<p class="invalid">⚠ ${colTitle(f)}: ${esc(lab(f, w.cur[f]))} ist für ${esc(lab("upos", w.cur.upos))} nicht vorgesehen <button class="btn" data-clear="${f}">Leeren</button></p>`).join("");
+  return `<article class="card" data-id="${w.id}" ${isDirty(w) ? "data-dirty" : ""} aria-label="${esc(w.ctx)}, ${ref(w)}">
+    <header><span class="muted">${ref(w)}</span><span class="card-word">${esc(w.ctx)}</span>${w.plain !== w.ctx ? `<span class="muted">${esc(w.plain)}</span>` : ""}
+      ${isDirty(w) ? `<span class="badge">geändert</span><button class="btn btn-ghost" data-reset="${w.id}" aria-label="Wort zurücksetzen">↺</button>` : ""}</header>
+    ${w.conflict ? `<p class="invalid">Konflikt: ${esc(w.conflict.by)} setzte »${esc(w.conflict.server)}«. <button class="btn" data-keep="${w.id}">Meinen behalten</button><button class="btn" data-take="${w.id}">Server übernehmen</button></p>` : ""}
+    <div class="card-fields">
+      <label class="wide">Lemma<input data-f="lemma" list="lemma-list" value="${esc(w.cur.lemma)}" placeholder="fehlt" ${w.cur.lemma !== w.orig.lemma ? "data-changed" : ""}></label>
+      ${sel("upos")}${FEATS.filter((f) => a.includes(f)).map(sel).join("")}${invalid}
+    </div></article>`;
+}
+function cardsHtml() {
+  if (!state.visible.length) return `<div class="empty-state"><h2>Keine Wörter passen zum Filter</h2><button class="btn" id="reset-filter">Filter zurücksetzen</button></div>`;
+  const groups = []; let last = null;
+  for (const id of state.visible) { const w = byId(id); if (!last || last.v !== w.v) { last = { v: w.v, cards: [] }; groups.push(last); } last.cards.push(cardHtml(w)); }
+  return `<div class="cards">${groups.map((g) => `<section><h2 class="card-verse">Vers ${g.v}</h2><div class="cgroup">${g.cards.join("")}</div></section>`).join("")}</div>`;
+}
+
+/* ===== save bar ===== */
+function saveBarHtml() {
+  const dirty = state.words.filter(isDirty).length, conflicts = state.words.filter((w) => w.conflict).length;
+  if (!dirty && !state.saveMsg) return `<div class="savebar" id="savebar" hidden></div>`;
+  let msg, actions;
+  if (state.saving) { msg = `Speichere ${dirty} Änderung${dirty === 1 ? "" : "en"} …`; actions = `<button class="btn btn-md btn-primary" disabled>Speichern …</button>`; }
+  else if (state.confirmDiscard) { msg = `${dirty} Änderung${dirty === 1 ? "" : "en"} wirklich verwerfen? Das lässt sich nicht rückgängig machen.`; actions = `<button class="btn btn-md" id="discard-yes">Ja, verwerfen</button><button class="btn btn-md btn-primary" id="discard-no">Abbrechen</button>`; }
+  else if (!dirty) { msg = state.saveMsg; actions = ""; }
+  else {
+    msg = conflicts ? `<span class="form-error">${conflicts} Konflikt: Wort wurde inzwischen geändert. Bitte in der markierten Zeile auflösen.</span>`
+      : `<b>${dirty}</b> ${dirty === 1 ? "Wort" : "Wörter"} geändert${state.saveMsg ? ` · ${state.saveMsg}` : ""}<small>Wird als Vorschlag gespeichert (Strg+S).</small>`;
+    actions = `<button class="btn btn-md btn-ghost" id="discard">Verwerfen</button><button class="btn btn-md btn-primary" id="save" ${conflicts ? "disabled" : ""}>Vorschlag speichern</button>`;
+  }
+  return `<div class="savebar" id="savebar" role="region" aria-label="Änderungen"><p class="msg" aria-live="polite">${msg}</p><div class="actions">${actions}</div></div>`;
+}
+
+/* ===== main render ===== */
+const frameEl = document.getElementById("frame");
+const layoutFor = () => (frameEl.clientWidth < 768 ? "cards" : "grid");
+function render() {
+  state.layout = layoutFor();
+  renderUser();
+  page.dataset.layout = state.layout;
+  const s = state.scenario;
+  if (s === "anon") {
+    page.innerHTML = `<div><h1 style="font-family:var(--font-scripture);font-size:var(--text-2xl)">Lemmata bearbeiten</h1></div>
+      <div class="empty-state"><h2>Anmeldung erforderlich</h2><p>Das Bearbeiten von Lemmata und Morphologie ist nur für angemeldete Mitarbeitende möglich. Lesen und Studieren bleibt ohne Anmeldung offen.</p><button class="btn btn-md btn-primary">Anmelden</button></div>`;
+    return;
+  }
+  const head = headHtml();
+  if (s === "none") { page.innerHTML = head + `<div class="empty-state"><h2>Kein Kapitel gewählt</h2><p>Wähle oben ein Buch und Kapitel. Alle Wörter des Kapitels erscheinen dann in einer Tabelle, eine Zeile pro Wort.</p></div>`; bindHead(); return; }
+  if (s === "loading") {
+    const skel = Array.from({ length: 14 }, () => `<div class="row">${COLS.map((c) => `<div class="cell ${c.cls}"><span class="skel"></span></div>`).join("")}</div>`).join("");
+    page.innerHTML = head + `<div></div><p class="context muted">Kapitel wird geladen …</p><div class="gscroll" aria-busy="true"><div class="grid">${skel}</div></div><div></div>`; bindHead(); return;
+  }
+  if (s === "error") {
+    page.innerHTML = head + `<div class="empty-state"><h2>Kapitel konnte nicht geladen werden</h2><p class="form-error" role="alert">Der Server antwortet nicht (HTTP 503).</p><button class="btn" id="retry">Erneut versuchen</button></div>`;
+    bindHead(); document.getElementById("retry").onclick = () => load("normal"); return;
+  }
+  page.innerHTML = head + filtersHtml() + (state.layout === "grid" ? `<p class="context" id="context"></p>` + gridHtml() : cardsHtml()) + saveBarHtml();
+  bindHead(); bindFilters(); bindSave();
+  if (state.layout === "grid") { bindGrid(); renderContext(); } else bindCards();
+  document.getElementById("lemma-list").innerHTML = [...new Set(state.words.map((w) => w.cur.lemma).filter(Boolean))].sort().map((l) => `<option value="${esc(l)}">`).join("");
+}
+function refreshChrome() {
+  const sum = document.getElementById("sum"); if (sum) { const tmp = document.createElement("div"); tmp.innerHTML = headHtml(); sum.innerHTML = tmp.querySelector("#sum").innerHTML; }
+  const om = document.getElementById("only-missing"); if (om) om.textContent = `Nur ohne Lemma (${state.words.filter((w) => !w.cur.lemma).length})`;
+  const sb = document.getElementById("savebar"); if (sb) { sb.outerHTML = saveBarHtml(); bindSave(); }
+}
+function updateRow(id) {
+  const w = byId(id), el = page.querySelector(`.row[data-id="${id}"]`); if (!el) return;
+  const idx = state.visible.indexOf(id), prev = state.visible[idx - 1];
+  const first = !prev || byId(prev).v !== w.v;
+  if (el.nextElementSibling?.classList.contains("conflict-note")) el.nextElementSibling.remove();
+  el.outerHTML = rowHtml(w, first, idx);
+  refreshChrome();
+}
+function renderContext() {
+  const el = document.getElementById("context"); if (!el) return;
+  const a = state.active && byId(state.active.id);
+  if (!a) { el.innerHTML = `<span class="muted">Zelle wählen, um den Vers hier im Zusammenhang zu sehen.</span>`; return; }
+  const verse = state.words.filter((w) => w.v === a.v);
+  el.innerHTML = `<span class="ref">${esc(state.chapter.split(" ")[0])} ${ref(a)}</span>` + verse.map((w) => (w.id === a.id ? `<mark>${esc(w.ctx)}</mark>` : esc(w.ctx))).join(" ");
+}
+
+/* ===== bindings ===== */
+function bindHead() {
+  page.querySelectorAll("[data-testament]").forEach((b) => (b.onclick = () => { state.pickerOpen = state.pickerOpen === b.dataset.testament ? null : b.dataset.testament; state.pickerBook = null; render(); }));
+  page.querySelectorAll("[data-book]").forEach((b) => (b.onclick = () => { state.pickerBook = b.dataset.book; render(); }));
+  page.querySelectorAll("[data-chap]").forEach((a) => (a.onclick = (e) => {
+    e.preventDefault();
+    if (state.words.some(isDirty) && !confirm("Ungespeicherte Änderungen verwerfen und Kapitel wechseln?")) return;
+    const big = state.pickerBook === "Ps" && a.dataset.chap === "119";
+    state.pickerOpen = null; load(big ? "big" : "normal", `${FULL[state.pickerBook] ?? state.pickerBook} ${a.dataset.chap}`);
+  }));
+}
+function bindFilters() {
+  const q = document.getElementById("q");
+  q.oninput = () => { state.q = q.value; computeVisible(); rerenderBody(); };
+  document.getElementById("pos").onchange = (e) => { state.pos = e.target.value; computeVisible(); rerenderBody(); };
+  document.getElementById("only-missing").onclick = () => { state.onlyMissing = !state.onlyMissing; computeVisible(); render(); };
+  const cb = document.getElementById("cols-btn");
+  if (cb) {
+    const menu = document.getElementById("col-menu");
+    cb.onclick = () => { menu.hidden = !menu.hidden; cb.setAttribute("aria-expanded", String(!menu.hidden)); };
+    menu.querySelectorAll("[data-col]").forEach((i) => (i.onchange = () => { i.checked ? state.hidden.delete(i.dataset.col) : state.hidden.add(i.dataset.col); applyHidden(); }));
+    document.getElementById("cols-all").onclick = () => { state.hidden.clear(); render(); };
+  }
+}
+function applyHidden() {
+  const g = document.getElementById("grid"); if (g) g.className = "grid " + [...state.hidden].map((k) => "hide-" + k).join(" ");
+  document.getElementById("cols-btn").textContent = `Spalten (${COLS.filter((c) => !state.hidden.has(c.k)).length}/${COLS.length}) ▾`;
+}
+function rerenderBody() {
+  // keep search focus: re-render only the list part
+  const old = page.querySelector(".gscroll, .cards, main > .empty-state");
+  const tmp = document.createElement("div"); tmp.innerHTML = state.layout === "grid" ? gridHtml() : cardsHtml();
+  old.replaceWith(tmp.firstElementChild);
+  document.getElementById("count").textContent = `zeige ${state.visible.length.toLocaleString("de")} von ${state.words.length.toLocaleString("de")}`;
+  if (state.layout === "grid") bindGrid(); else bindCards();
+  bindSave();
+}
+function bindSave() {
+  const s = document.getElementById("save"); if (s) s.onclick = save;
+  const d = document.getElementById("discard"); if (d) d.onclick = () => { state.confirmDiscard = true; refreshChrome(); document.getElementById("discard-no")?.focus(); };
+  const y = document.getElementById("discard-yes"); if (y) y.onclick = () => { state.words.forEach((w) => { w.cur = { ...w.orig }; w.conflict = null; }); state.confirmDiscard = false; render(); };
+  const n = document.getElementById("discard-no"); if (n) n.onclick = () => { state.confirmDiscard = false; refreshChrome(); };
+  const r = document.getElementById("reset-filter"); if (r) r.onclick = () => { state.q = ""; state.pos = ""; state.onlyMissing = false; computeVisible(); render(); };
+}
+function save() {
+  if (state.saving || !state.words.some(isDirty)) return;
+  state.saving = true; refreshChrome();
+  setTimeout(() => {
+    state.saving = false;
+    const dirty = state.words.filter(isDirty);
+    const conflictBox = document.getElementById("mock-conflict");
+    if (conflictBox.checked) {
+      conflictBox.checked = false;
+      const c = dirty.find((w) => w.cur.lemma !== w.orig.lemma) || dirty[0];
+      c.conflict = { server: "derselbe", by: "KI-Mapping", at: "12.11.2026, 10:14" };
+      dirty.filter((w) => w !== c).forEach((w) => (w.orig = { ...w.cur }));
+      state.saveMsg = `${dirty.length - 1} gespeichert`;
+    } else {
+      dirty.forEach((w) => (w.orig = { ...w.cur }));
+      state.saveMsg = `✓ ${dirty.length} Änderung${dirty.length === 1 ? "" : "en"} als Vorschlag gespeichert`;
+      setTimeout(() => { state.saveMsg = ""; refreshChrome(); }, 3500);
+    }
+    render(); focusActive();
+  }, 900);
+}
+function resolveConflict(id, keep) {
+  const w = byId(id);
+  if (keep) w.orig.lemma = w.conflict.server; else { w.cur.lemma = w.conflict.server; w.orig.lemma = w.conflict.server; }
+  w.conflict = null; state.saveMsg = ""; render();
+}
+
+/* ----- grid interaction ----- */
+const navCols = () => COLS.filter((c) => c.k !== "v" && !state.hidden.has(c.k)).map((c) => c.k);
+function isEditable(w, k) { return k === "lemma" || k === "upos" || (FEATS.includes(k) && allowed(w.cur.upos, w.cur.VerbForm).includes(k)); }
+function cellEl(id, k) { return page.querySelector(`.row[data-id="${id}"] [data-c="${k}"]`); }
+function setActive(id, k, focus = true) {
+  const prev = state.active; state.active = { id, c: k };
+  if (prev) { const pr = page.querySelector(`.row[data-id="${prev.id}"]`); pr?.removeAttribute("data-active-row"); const pc = cellEl(prev.id, prev.c); if (pc) { pc.removeAttribute("data-active"); pc.tabIndex = -1; } }
+  const row = page.querySelector(`.row[data-id="${id}"]`); row?.setAttribute("data-active-row", "");
+  const el = cellEl(id, k); if (!el) return;
+  el.setAttribute("data-active", ""); el.tabIndex = 0;
+  if (focus) { el.focus({ preventScroll: true }); el.scrollIntoView({ block: "nearest", inline: "nearest" }); }
+  if (!prev || prev.id !== id) renderContext();
+}
+function focusActive() { if (state.active && state.layout === "grid") setActive(state.active.id, state.active.c); }
+function move(dr, dc) {
+  const rows = state.visible, cols = navCols(); if (!state.active) return setActive(rows[0], "lemma");
+  let r = rows.indexOf(state.active.id), c = cols.indexOf(state.active.c);
+  r = Math.max(0, Math.min(rows.length - 1, r + dr)); c = Math.max(0, Math.min(cols.length - 1, c + dc));
+  setActive(rows[r], cols[c]);
+}
+function tabMove(dir) {
+  const rows = state.visible, cols = navCols();
+  let r = rows.indexOf(state.active.id), c = cols.indexOf(state.active.c);
+  for (let i = 0; i < rows.length * cols.length; i++) {
+    c += dir; if (c >= cols.length) { c = 0; r++; } if (c < 0) { c = cols.length - 1; r--; }
+    if (r < 0 || r >= rows.length) return;
+    if (isEditable(byId(rows[r]), cols[c])) return setActive(rows[r], cols[c]);
+  }
+}
+function commit(w, k, val) {
+  w.cur[k] = val ?? "";
+  if (k === "upos" || k === "VerbForm") { const a = allowed(w.cur.upos, w.cur.VerbForm); FEATS.forEach((f) => { if (!a.includes(f) && f !== "VerbForm") w.cur[f] = ""; }); if (!a.includes("VerbForm")) w.cur.VerbForm = ""; }
+}
+function startEdit(initial) {
+  const { id, c: k } = state.active, w = byId(id); if (!isEditable(w, k)) return;
+  const el = cellEl(id, k); state.editing = true;
+  if (k === "lemma") {
+    el.innerHTML = `<input list="lemma-list" aria-label="Lemma für ${esc(w.ctx)}" value="${esc(initial ?? w.cur.lemma)}">`;
+  } else {
+    const opts = Object.entries(LABELS[k]).map(([code, l]) => `<option value="${code}" title="${code}" ${w.cur[k] === code ? "selected" : ""}>${l} · ${code}</option>`).join("");
+    el.innerHTML = `<select aria-label="${colTitle(k)} für ${esc(w.ctx)}"><option value="">–</option>${opts}</select>`;
+  }
+  const ctl = el.firstElementChild; ctl.focus(); if (k === "lemma" && initial === undefined) ctl.select();
+  const finish = (save, after) => {
+    if (!state.editing) return; state.editing = false;
+    if (save) commit(w, k, k === "lemma" ? ctl.value.trim() : ctl.value);
+    updateRow(id); setActive(id, k); if (after) after();
+  };
+  ctl.onkeydown = (e) => {
+    e.stopPropagation();
+    if (e.key === "Escape") { e.preventDefault(); finish(false); }
+    else if (e.key === "Enter") { e.preventDefault(); finish(true, () => move(e.shiftKey ? -1 : 1, 0)); }
+    else if (e.key === "Tab") { e.preventDefault(); finish(true, () => tabMove(e.shiftKey ? -1 : 1)); }
+    else if ((e.ctrlKey || e.metaKey) && e.key === "s") { e.preventDefault(); finish(true, save); }
+  };
+  ctl.onblur = () => finish(true);
+}
+let typeBuf = "", typeAt = 0;
+function bindGrid() {
+  const grid = document.getElementById("grid"); if (!grid) return;
+  if (!state.active && state.visible.length) state.active = { id: state.visible[0], c: "lemma" };
+  if (state.active && !state.visible.includes(state.active.id)) state.active = { id: state.visible[0], c: state.active.c };
+  const a = state.active && cellEl(state.active.id, state.active.c); if (a) { a.tabIndex = 0; a.setAttribute("data-active", ""); }
+  grid.onclick = (e) => {
+    const rb = e.target.closest("[data-reset]"); if (rb) { const w = byId(+rb.dataset.reset); w.cur = { ...w.orig }; w.conflict = null; updateRow(w.id); return; }
+    const kb = e.target.closest("[data-keep],[data-take]"); if (kb) return resolveConflict(+(kb.dataset.keep || kb.dataset.take), !!kb.dataset.keep);
+    const cell = e.target.closest("[data-c]"); if (!cell || state.editing) return;
+    const id = +cell.closest(".row").dataset.id, k = cell.dataset.c; if (k === "v") return;
+    const wasActive = state.active && state.active.id === id && state.active.c === k;
+    setActive(id, k);
+    if (k !== "lemma" || wasActive) startEdit(); // selects open on first click, lemma on second
+  };
+  grid.ondblclick = (e) => { if (!state.editing && e.target.closest("[data-c='lemma']")) startEdit(); };
+  grid.onkeydown = (e) => {
+    if (state.editing || !state.active) return;
+    const w = byId(state.active.id), k = state.active.c, cols = navCols();
+    const map = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1], PageUp: [-15, 0], PageDown: [15, 0] };
+    if (map[e.key]) { e.preventDefault(); return move(...map[e.key]); }
+    if (e.key === "Home") { e.preventDefault(); return e.ctrlKey ? setActive(state.visible[0], k) : setActive(w.id, cols[0]); }
+    if (e.key === "End") { e.preventDefault(); return e.ctrlKey ? setActive(state.visible.at(-1), k) : setActive(w.id, cols.at(-1)); }
+    if (e.key === "Tab") { e.preventDefault(); return tabMove(e.shiftKey ? -1 : 1); }
+    if (e.key === "Enter" || e.key === "F2") { e.preventDefault(); return startEdit(); }
+    if (e.key === "Delete" || e.key === "Backspace") {
+      if (k === "lemma" || k === "upos" || FEATS.includes(k)) { e.preventDefault(); if (w.cur[k]) { commit(w, k, ""); updateRow(w.id); setActive(w.id, k); } }
+      return;
+    }
+    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (k === "lemma") { e.preventDefault(); return startEdit(e.key); }
+      if (isEditable(w, k)) { // type-to-pick
+        e.preventDefault(); const now = Date.now(); typeBuf = now - typeAt < 700 ? typeBuf + e.key.toLowerCase() : e.key.toLowerCase(); typeAt = now;
+        const hits = Object.entries(LABELS[k]).filter(([code, l]) => l.startsWith(typeBuf) || code.toLowerCase().startsWith(typeBuf));
+        if (!hits.length) return;
+        const cur = hits.findIndex(([code]) => code === w.cur[k]);
+        const pick = typeBuf.length === 1 && cur >= 0 ? hits[(cur + 1) % hits.length] : hits[0];
+        commit(w, k, pick[0]); updateRow(w.id); setActive(w.id, k);
+      }
+    }
+  };
+}
+function bindCards() {
+  const list = page.querySelector(".cards"); if (!list) return;
+  list.onchange = (e) => {
+    const f = e.target.dataset.f; if (!f) return;
+    const card = e.target.closest(".card"), w = byId(+card.dataset.id);
+    commit(w, f, f === "lemma" ? e.target.value.trim() : e.target.value);
+    card.outerHTML = cardHtml(w); refreshChrome();
+  };
+  list.onclick = (e) => {
+    const card = e.target.closest(".card"); if (!card) return; const w = byId(+card.dataset.id);
+    const t = e.target.closest("[data-clear],[data-reset],[data-keep],[data-take]"); if (!t) return;
+    if (t.dataset.keep || t.dataset.take) return resolveConflict(w.id, !!t.dataset.keep);
+    if (t.dataset.clear) commit(w, t.dataset.clear, ""); else { w.cur = { ...w.orig }; w.conflict = null; }
+    card.outerHTML = cardHtml(w); refreshChrome();
+  };
+}
+document.addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "s" && !state.editing) { e.preventDefault(); save(); } });
+window.addEventListener("beforeunload", (e) => { if (state.words.some(isDirty)) e.preventDefault(); });
+
+/* ===== scenarios / layout ===== */
+function load(s, chapter) {
+  state.scenario = "loading"; state.chapter = chapter || (s === "big" ? "Psalm 119" : "Johannes 1"); state.active = null; state.saveMsg = "";
+  state.q = ""; state.pos = ""; state.onlyMissing = false; render();
+  setTimeout(() => { state.scenario = s; state.words = buildWords(s === "big"); computeVisible(); render(); press("data-scenario", s); }, 500);
+}
+function setScenario(s) {
+  press("data-scenario", s);
+  if (s === "normal" || s === "big") return load(s);
+  state.scenario = s; if (s === "none" || s === "error") { state.words = []; state.visible = []; } render();
+}
+function press(attr, val) { document.querySelectorAll(`[${attr}]`).forEach((b) => b.setAttribute("aria-pressed", String(b.getAttribute(attr) === val))); }
+document.querySelectorAll("[data-theme-set]").forEach((b) => (b.onclick = () => {
+  const v = b.dataset.themeSet; if (v === "system") document.documentElement.removeAttribute("data-theme"); else document.documentElement.dataset.theme = v; press("data-theme-set", v); }));
+document.querySelectorAll("[data-width]").forEach((b) => (b.onclick = () => { document.getElementById("frame").toggleAttribute("data-phone", b.dataset.width === "phone"); press("data-width", b.dataset.width); relayout(); }));
+document.querySelectorAll("[data-scenario]").forEach((b) => (b.onclick = () => setScenario(b.dataset.scenario)));
+
+const relayout = () => { if (layoutFor() !== state.layout && !state.editing) render(); };
+new ResizeObserver(relayout).observe(frameEl);
+window.addEventListener("resize", relayout);
+if (document.getElementById("frame").clientWidth < 1440) state.hidden.add("plain"); // default: PlainWord column only on wide screens
+load("normal");
+</script>
+</body>
+</html>

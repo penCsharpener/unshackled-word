@@ -1,5 +1,6 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
 import { DonutChart, type DonutChartProps, type DonutSlice } from "./DonutChart";
@@ -142,5 +143,24 @@ describe("DonutChart", () => {
     setup({ onSelectSlice: () => {}, filterLabel: "Strong", activeKey: "H4744" });
     expect(screen.getByText("of 127")).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Show all" })).toBeInTheDocument();
+  });
+
+  it("links the legend entries when sliceHref is given, except for Other", () => {
+    const onNavigate = vi.fn();
+    render(
+      <MemoryRouter>
+        <DonutChart
+          title="Originale"
+          slices={slices}
+          sliceHref={(key) => `/bible/strongs/${key}`}
+          onSliceNavigate={onNavigate}
+        />
+      </MemoryRouter>,
+    );
+    const link = screen.getByRole("link", { name: /H6951/ });
+    expect(link).toHaveAttribute("href", "/bible/strongs/H6951");
+    expect(screen.queryByRole("table")).toBeNull();
+    fireEvent.click(link);
+    expect(onNavigate).toHaveBeenCalled();
   });
 });

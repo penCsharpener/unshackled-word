@@ -290,6 +290,20 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
         FOR UPDATE OF m
         """;
 
+    private const string PartOfSpeechOfWordsSql = """
+        SELECT w."Id"           AS "WordId"
+             , m."PartOfSpeech" AS "PartOfSpeech"
+        FROM unnest(@wordIds) AS i("WordId")
+            JOIN "unshackled-word"."Elb1871Words" w ON w."Id" = i."WordId"
+            JOIN "unshackled-word"."Elb1871Morphology" m ON m."HebRefId" = w."HebRefId" AND m."PositionInVerse" = w."PositionInVerse"
+        """;
+
+    private const string AllowedUposSql = """
+        SELECT s."AllowedUpos" AS "AllowedUpos"
+        FROM "unshackled-word"."SttsTags" s
+        WHERE s."Tag" = @stts
+        """;
+
     private const string InsertChangeSetSql = """
         INSERT INTO "unshackled-word"."Elb1871MorphologyChangeSets" ("UserId", "Kind", "FromLemma", "ToLemma", "Scope", "Note", "WordCount", "RevertOf")
         VALUES (@userId, @kind, @fromLemma, @toLemma, @scope::jsonb, @note, @wordCount, @revertOf)
@@ -302,6 +316,7 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
             SELECT m."Id"    AS "MorphologyId"
                  , w."Id"    AS "WordId"
                  , m."Lemma" AS "OldLemma"
+                 , m."Stts"  AS "OldStts"
                  , k."Key"   AS "OrigKey"
             FROM "unshackled-word"."Elb1871Morphology" m
                 JOIN "unshackled-word"."Elb1871Words" w ON w."HebRefId" = m."HebRefId" AND w."PositionInVerse" = m."PositionInVerse"
@@ -313,9 +328,10 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
         (
             UPDATE "unshackled-word"."Elb1871Morphology" m
             SET "Lemma" = @to
+              , "Stts" = COALESCE(@stts::varchar, m."Stts")
             FROM "Old" o
             WHERE m."Id" = o."MorphologyId"
-            RETURNING m."HebRefId", m."PositionInVerse", m."PartOfSpeech", m."Degree", m."VerbForm", m."Tense", m."Person", m."Number", m."Mood", m."Case", m."Gender", o."WordId", o."OldLemma", o."OrigKey"
+            RETURNING m."HebRefId", m."PositionInVerse", m."PartOfSpeech", m."Stts", m."Degree", m."VerbForm", m."Tense", m."Person", m."Number", m."Mood", m."Case", m."Gender", o."WordId", o."OldLemma", o."OldStts", o."OrigKey"
         )
         , "Audited" AS
         (
@@ -326,8 +342,8 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
                  , @userId
                  , @changeSetId
                  , u."OrigKey"
-                 , jsonb_build_object('Lemma', u."OldLemma", 'PartOfSpeech', u."PartOfSpeech", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
-                 , jsonb_build_object('Lemma', @to::text, 'PartOfSpeech', u."PartOfSpeech", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
+                 , jsonb_build_object('Lemma', u."OldLemma", 'PartOfSpeech', u."PartOfSpeech", 'Stts', u."OldStts", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
+                 , jsonb_build_object('Lemma', @to::text, 'PartOfSpeech', u."PartOfSpeech", 'Stts', u."Stts", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
             FROM "Updated" u
             RETURNING 1
         )
@@ -349,6 +365,8 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
             SELECT m."Id"                       AS "MorphologyId"
                  , e."ElbWordId"                AS "WordId"
                  , e."BeforeValues" ->> 'Lemma' AS "RestoredLemma"
+                 , m."Stts"                     AS "CurrentStts"
+                 , CASE WHEN e."BeforeValues" ? 'Stts' AND m."Stts" IS NOT DISTINCT FROM e."AfterValues" ->> 'Stts' THEN e."BeforeValues" ->> 'Stts' ELSE m."Stts" END AS "RestoredStts"
                  , e."OriginalKey"              AS "OriginalKey"
                  , m."Lemma"                    AS "CurrentLemma"
             FROM "unshackled-word"."Elb1871MorphologyEdits" e
@@ -362,9 +380,10 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
         (
             UPDATE "unshackled-word"."Elb1871Morphology" m
             SET "Lemma" = c."RestoredLemma"
+              , "Stts" = c."RestoredStts"
             FROM "Candidates" c
             WHERE m."Id" = c."MorphologyId"
-            RETURNING m."HebRefId", m."PositionInVerse", m."PartOfSpeech", m."Degree", m."VerbForm", m."Tense", m."Person", m."Number", m."Mood", m."Case", m."Gender", c."WordId", c."CurrentLemma", c."RestoredLemma", c."OriginalKey"
+            RETURNING m."HebRefId", m."PositionInVerse", m."PartOfSpeech", m."Degree", m."VerbForm", m."Tense", m."Person", m."Number", m."Mood", m."Case", m."Gender", c."WordId", c."CurrentLemma", c."RestoredLemma", c."CurrentStts", c."RestoredStts", c."OriginalKey"
         )
         , "Audited" AS
         (
@@ -375,12 +394,21 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
                  , @userId
                  , @newChangeSetId
                  , u."OriginalKey"
-                 , jsonb_build_object('Lemma', u."CurrentLemma", 'PartOfSpeech', u."PartOfSpeech", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
-                 , jsonb_build_object('Lemma', u."RestoredLemma", 'PartOfSpeech', u."PartOfSpeech", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
+                 , jsonb_build_object('Lemma', u."CurrentLemma", 'PartOfSpeech', u."PartOfSpeech", 'Stts', u."CurrentStts", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
+                 , jsonb_build_object('Lemma', u."RestoredLemma", 'PartOfSpeech', u."PartOfSpeech", 'Stts', u."RestoredStts", 'Degree', u."Degree", 'VerbForm', u."VerbForm", 'Tense', u."Tense", 'Person', u."Person", 'Number', u."Number", 'Mood', u."Mood", 'Case', u."Case", 'Gender', u."Gender")
             FROM "Updated" u
             RETURNING 1
         )
         SELECT count(*) FROM "Audited"
+        """;
+
+    // Keeps Elb1871Verses."LemmaText" (and with it the verse search vector) in step with the morphology rows written in the same transaction.
+    private const string RefreshLemmaTextOfWordsSql = """
+        SELECT "unshackled-word"."RefreshVerseLemmaText"(ARRAY(SELECT DISTINCT w."HebRefId" FROM "unshackled-word"."Elb1871Words" w WHERE w."Id" = ANY(@wordIds)))
+        """;
+
+    private const string RefreshLemmaTextOfChangeSetSql = """
+        SELECT "unshackled-word"."RefreshVerseLemmaText"(ARRAY(SELECT DISTINCT e."HebRefId" FROM "unshackled-word"."Elb1871MorphologyEdits" e WHERE e."ChangeSetId" = @changeSetId))
         """;
 
     private const string CountSetRowsSql = """
@@ -546,6 +574,17 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
                 details.Add(new BulkStaleDetail { WordId = id, Reason = "original", OrigKey = actual });
         }
 
+        if (request.Stts is not null && details.Count == 0)
+        {
+            // Every listed row is edited, so the requested tag has to be allowed for its part of speech.
+            var allowed = await connection.QuerySingleOrDefaultAsync<string[]>(new CommandDefinition(AllowedUposSql, new { stts = request.Stts }, transaction, cancellationToken: ct)) ?? [];
+            var partsOfSpeech = (await connection.QueryAsync<PosRow>(new CommandDefinition(PartOfSpeechOfWordsSql, new { wordIds }, transaction, cancellationToken: ct)))
+                .ToDictionary(r => r.WordId, r => r.PartOfSpeech);
+            details.AddRange(wordIds
+                .Where(id => !partsOfSpeech.TryGetValue(id, out var pos) || !allowed.Contains(pos))
+                .Select(id => new BulkStaleDetail { WordId = id, Reason = "stts" }));
+        }
+
         if (details.Count > 0)
         {
             transaction.Rollback();
@@ -570,6 +609,7 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
             origKeys = wordIds.Select(id => keys[id]).ToArray(),
             from = from.ToArray(),
             to,
+            stts = request.Stts,
             userId,
             changeSetId,
         }, transaction, cancellationToken: ct));
@@ -579,6 +619,8 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
             transaction.Rollback();
             throw new InvalidOperationException($"Bulk lemma update touched {updated} rows, expected {wordIds.Length}; rolled back.");
         }
+
+        await connection.ExecuteAsync(new CommandDefinition(RefreshLemmaTextOfWordsSql, new { wordIds }, transaction, cancellationToken: ct));
 
         transaction.Commit();
         return ([], changeSetId, updated);
@@ -617,8 +659,15 @@ public sealed class LemmaBulkRepository : ILemmaBulkRepository
         }
 
         await connection.ExecuteAsync(new CommandDefinition(FinishRevertSql, new { restored, newChangeSetId, changeSetId }, transaction, cancellationToken: ct));
+        await connection.ExecuteAsync(new CommandDefinition(RefreshLemmaTextOfChangeSetSql, new { changeSetId }, transaction, cancellationToken: ct));
         transaction.Commit();
         return new RevertResult(RevertStatus.Ok, newChangeSetId, restored, total - restored);
+    }
+
+    private sealed class PosRow
+    {
+        public int WordId { get; init; }
+        public string PartOfSpeech { get; init; } = string.Empty;
     }
 
     private sealed class LockedRow

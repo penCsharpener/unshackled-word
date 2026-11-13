@@ -56,5 +56,6 @@ public sealed class Validator : Validator<BulkApplyRequest>
             .Must((x, expected) => expected.Length == x.WordIds.Length).WithMessage("expectedOriginal must have the same length as wordIds.")
             .Must(expected => expected.All(OriginalLanguageRules.IsValidExpectedOriginal)).WithMessage("expectedOriginal entries must be \"\", added, none or a G/H Strong's key.");
         RuleFor(x => x.Note).MaximumLength(LemmaBulkRules.MaxNoteLength);
+        RuleFor(x => x.Stts).Must(c => ElbLemmaValueMaps.IsValid(ElbLemmaValueMaps.Stts, c)).When(x => x.Stts is not null).WithMessage("Unknown stts code.");
     }
 }

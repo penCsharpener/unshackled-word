@@ -1,0 +1,23 @@
+meta {
+  name: SearchVerses
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}elberfelder/search/verses?q=ich bin "der Weg" -Engel&page=1&pageSize=20
+  body: none
+  auth: none
+}
+
+params:query {
+  q: ich bin "der Weg" -Engel
+  page: 1
+  pageSize: 20
+  ~bookId: 43
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

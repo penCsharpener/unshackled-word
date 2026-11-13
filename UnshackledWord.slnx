@@ -35,6 +35,7 @@
     <Project Path="tests\UnshackledWord.TestTooling\UnshackledWord.TestTooling.csproj" />
     <Project Path="tests\UnshackledWord.Tooling.SeedDb.Tests\UnshackledWord.Tooling.SeedDb.Tests.csproj" />
     <Project Path="tests\UnshackledWord.Tooling.McpServer.Tests\UnshackledWord.Tooling.McpServer.Tests.csproj" />
+    <Project Path="tests\UnshackledWord.Tooling.WebApi.Tests\UnshackledWord.Tooling.WebApi.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/.misc/">
     <File Path="tests\Directory.Build.props" />

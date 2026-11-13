@@ -9,7 +9,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality;
 public static class DqChecks
 {
     /// <summary>Must-tier checks served by checks/{code} and listed in the overview, in tile order.</summary>
-    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5"];
+    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5", "L6", "L7"];
 
     public static bool IsKnown(string code) => Codes.Contains(code);
 }
@@ -37,6 +37,21 @@ public sealed class DqCheckRepository : IDqCheckRepository
     }
 
     private const int GroupTimeoutSeconds = 120;
+
+    /// <summary>L6 class value for words without an STTS tag.</summary>
+    public const string EmptyStts = "-";
+
+    private const string MorphologyJoin = """
+        JOIN "unshackled-word"."Elb1871Morphology" m ON m."HebRefId" = f."HebRefId" AND m."PositionInVerse" = f."PositionInVerse"
+        """;
+
+    private const string SttsUnknown = """
+        (m."Stts" IS NULL OR NOT EXISTS (SELECT 1 FROM "unshackled-word"."SttsTags" s WHERE s."Tag" = m."Stts"))
+        """;
+
+    private const string SttsMismatch = """
+        (m."Stts" IS NOT NULL AND EXISTS (SELECT 1 FROM "unshackled-word"."SttsTags" s WHERE s."Tag" = m."Stts" AND m."PartOfSpeech" <> ALL(s."AllowedUpos")))
+        """;
 
     // German PoS vs original class not in the expected table (exempt: PoS X, no class).
     private const string Mismatch = """
@@ -106,6 +121,7 @@ public sealed class DqCheckRepository : IDqCheckRepository
         public string Ctes { get; set; } = string.Empty;
         public string ItemsWhere { get; set; } = "true";
         public string? GroupInner { get; set; }
+        public string Join { get; set; } = string.Empty;
     }
 
     private static void AddCommon(DynamicParameters p, CheckRequest r)
@@ -236,6 +252,9 @@ public sealed class DqCheckRepository : IDqCheckRepository
                 return BuildL4(f, group is not null);
             case "L5":
                 return new Spec { ItemsWhere = $"f.\"GermanRowNo\" = 1 AND f.\"HasMorphology\"{f}{filters}" };
+            case "L6":
+            case "L7":
+                return BuildStts(r, f, p);
             default:
                 throw new ArgumentOutOfRangeException(nameof(r), r.Code, "Unknown check");
         }
@@ -381,6 +400,58 @@ public sealed class DqCheckRepository : IDqCheckRepository
         };
     }
 
+    /// <summary>
+    /// L6 (STTS empty or not in SttsTags) and L7 (STTS does not accept the part of speech). Both read Elb1871Morphology live, joined to
+    /// the facts rows of the German words, so DqWordFacts needs no STTS column. pos = UD tag, class = STTS tag.
+    /// </summary>
+    private static Spec BuildStts(CheckRequest r, string f, DynamicParameters p)
+    {
+        var where = new StringBuilder("f.\"GermanRowNo\" = 1");
+        where.Append(r.Code == "L6" ? $" AND {SttsUnknown}" : $" AND {SttsMismatch}");
+        where.Append(f);
+        if (!string.IsNullOrEmpty(r.Pos))
+        {
+            where.Append(" AND m.\"PartOfSpeech\" = @pos");
+            p.Add("pos", r.Pos);
+        }
+
+        if (!string.IsNullOrEmpty(r.Class))
+        {
+            where.Append(r.Class == EmptyStts ? " AND m.\"Stts\" IS NULL" : " AND m.\"Stts\" = @sttsTag");
+            p.Add("sttsTag", r.Class);
+        }
+
+        if (r.Chapter is { } chapter)
+        {
+            where.Append(" AND f.\"Chapter\" = @chapter");
+            p.Add("chapter", chapter);
+        }
+
+        return new Spec { ItemsWhere = where.ToString(), Join = MorphologyJoin };
+    }
+
+    private async Task<CheckMatrix> GetSttsMatrixAsync(System.Data.IDbConnection connection, CheckRequest r, DqFacets facets, CancellationToken ct)
+    {
+        var sql = $"""
+            SELECT m."PartOfSpeech"                  AS "Pos"
+                 , COALESCE(m."Stts", '{EmptyStts}') AS "Lang"
+                 , ''                                AS "OrigClass"
+                 , count(*)::int                     AS "Count"
+            FROM {DqSql.Facts} f
+                {MorphologyJoin}
+            WHERE f."GermanRowNo" = 1
+                AND {(r.Code == "L6" ? SttsUnknown : SttsMismatch)}{facets.Predicate}
+            GROUP BY m."PartOfSpeech", m."Stts"
+            """;
+        var rows = (await connection.QueryAsync<MatrixRow>(new CommandDefinition(sql, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct))).ToList();
+        return new CheckMatrix
+        {
+            Rows = [.. rows.Select(x => x.Pos).Distinct().Order()],
+            Columns = [.. rows.Select(x => x.Lang).Distinct().Order()],
+            Cells = [.. rows.Select(x => new MatrixCell { Row = x.Pos, Column = x.Lang, Count = x.Count, Expected = false })],
+        };
+    }
+
     private static Spec BuildL3(string f, bool hasGroup)
     {
         var inner = $"""
@@ -475,6 +546,7 @@ public sealed class DqCheckRepository : IDqCheckRepository
         if (r.Code == "M3") response.Matrix = await GetMatrixAsync(connection, facets, ct);
         if (r.Code == "M4") response.Groups = await GetM4GroupsAsync(connection, facets, p, ct);
         if (r.Code == "L5") return await GetL5Async(response, r, facets, connection, p, ct);
+        if (r.Code is "L6" or "L7") response.Matrix = await GetSttsMatrixAsync(connection, r, facets, ct);
 
         var aggregated = spec.GroupInner is not null;
         if (aggregated && r.Group is null)
@@ -485,8 +557,9 @@ public sealed class DqCheckRepository : IDqCheckRepository
             return response;
         }
 
-        response.Total = await connection.ExecuteScalarAsync<int>(new CommandDefinition(DqSql.CountFindings(spec.Ctes, spec.ItemsWhere), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct));
-        var rows = (await connection.QueryAsync<FactRow>(new CommandDefinition(DqSql.PagedFindings(spec.Ctes, spec.ItemsWhere), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct))).ToList();
+        response.Total = await connection.ExecuteScalarAsync<int>(new CommandDefinition(DqSql.CountFindings(spec.Ctes, spec.ItemsWhere, spec.Join), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct));
+        var extraColumns = r.Code is "L6" or "L7" ? ", m.\"Stts\" AS \"Stts\", m.\"PartOfSpeech\" AS \"LivePos\"" : string.Empty;
+        var rows = (await connection.QueryAsync<FactRow>(new CommandDefinition(DqSql.PagedFindings(spec.Ctes, spec.ItemsWhere, spec.Join, extraColumns), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct))).ToList();
         var lexicon = await _lexicon.GetManyAsync(FindingFactory.StrongsOf(rows), ct);
         response.Items = [.. rows.Select(row => FindingFactory.Create(r.Code, row, lexicon, r.Group))];
         return response;
@@ -684,6 +757,14 @@ public sealed class DqCheckRepository : IDqCheckRepository
                 }
 
                 return new CheckCount(count, count, sub);
+            }
+            case "L6":
+            case "L7":
+            {
+                var p = new DynamicParameters();
+                var spec = BuildSpec(new CheckRequest { Code = code }, facets, p);
+                var count = await connection.ExecuteScalarAsync<int>(new CommandDefinition(DqSql.CountFindings(spec.Ctes, spec.ItemsWhere, spec.Join), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct));
+                return new CheckCount(count, code == "L6" ? count : 0, null);
             }
             case "L5":
             {

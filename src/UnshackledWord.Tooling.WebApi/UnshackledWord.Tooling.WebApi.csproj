@@ -23,6 +23,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <InternalsVisibleTo Include="UnshackledWord.Tooling.WebApi.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>

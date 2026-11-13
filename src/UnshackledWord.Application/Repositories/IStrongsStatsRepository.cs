@@ -31,4 +31,27 @@ public interface IStrongsStatsRepository
 
     /// <summary>One page of the concordance in canonical order, with matched Elberfelder positions and the verse words.</summary>
     Task<IReadOnlyList<StrongsOccurrenceRow>> GetOccurrencesAsync(IReadOnlyList<string> keys, bool hebrew, StrongsOccurrenceFilter filter, int skip, int take, CancellationToken token = default);
+
+    // ---- Snapshot readers (Stats* materialized views, roadmap 0008). Only meaningful when GetSnapshotRefreshedAtAsync is not null. ----
+
+    /// <summary>When the stats views were last refreshed successfully; null before the first refresh (readers then use the live SQL).</summary>
+    Task<DateTime?> GetSnapshotRefreshedAtAsync(CancellationToken token = default);
+
+    /// <summary>Per match key: occurrences, mapped count and per-book counts of a Strong's number.</summary>
+    Task<IReadOnlyList<SnapshotStrongsRow>> GetSnapshotStrongsAsync(IReadOnlyList<string> keys, bool hebrew, CancellationToken token = default);
+
+    /// <summary>German lemma + PoS renderings of the keys (counts summed over the keys), most used first. Added words are never renderings.</summary>
+    Task<IReadOnlyList<SnapshotRenderingRow>> GetSnapshotRenderingsAsync(IReadOnlyList<string> keys, bool hebrew, CancellationToken token = default);
+
+    /// <summary>Hebrew-table words with Aramaic grammar for the keys (not in the snapshot; live, one Strong's number).</summary>
+    Task<int> GetAramaicCountAsync(IReadOnlyList<string> keys, CancellationToken token = default);
+
+    /// <summary>Resolves a lower-cased German token to the lemma + PoS rows its form maps to (StatsGermanForms); only when it is no known form, the lemma rows with that key. Most frequent first.</summary>
+    Task<IReadOnlyList<SnapshotLemmaRow>> ResolveSnapshotLemmasAsync(string word, CancellationToken token = default);
+
+    /// <summary>The originals behind the given lemma + PoS pairs, summed per Strong's key; lang "G"/"H" restricts to one testament, null takes both.</summary>
+    Task<IReadOnlyList<WordOriginalRow>> GetSnapshotWordOriginalsAsync(IReadOnlyList<SnapshotLemmaKey> lemmas, string? lang, CancellationToken token = default);
+
+    /// <summary>The top originals per lemma + PoS pair (count descending), with lexicon data.</summary>
+    Task<IReadOnlyList<SnapshotLemmaOriginalRow>> GetSnapshotLemmaOriginalsAsync(IReadOnlyList<SnapshotLemmaKey> lemmas, int top, CancellationToken token = default);
 }

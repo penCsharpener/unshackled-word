@@ -5,9 +5,10 @@ using UnshackledWord.Domain.Models.Study;
 namespace UnshackledWord.Infrastructure.Repositories;
 
 /// <summary>
-/// The German word key is the lower-cased lemma, falling back to the exact form: Elb1871Words.Lemma is empty in the DB today
-/// (the Elb1871Lemmatizer output is not seeded yet), so for now the key is the lower-cased form. The expression must stay identical
-/// to the index IX_Elb1871Words_GermanKey_Book (migration 0007).
+/// Live path: the German word key is the lower-cased Elb1871Words.Lemma (obsolete, empty in the DB), falling back to the exact form, so it is
+/// the lower-cased form. The expression must stay identical to the index IX_Elb1871Words_GermanKey_Book (migration 0007). Used only until the
+/// first stats refresh. Snapshot path (Get/Resolve/Snapshot*): the Stats* views of migration 0013, keyed by the Elb1871Morphology lemma + PoS.
+/// The concordance rendering filter accepts both keys (morphology lemma or exact form).
 /// </summary>
 public sealed class StrongsStatsRepository : IStrongsStatsRepository
 {
@@ -249,6 +250,208 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
         return rows.ToList();
     }
 
+    // ---- Snapshot readers: the Stats* materialized views built on DqWordFacts (migration 0013). ----
+
+    // Lexicon entry of a Strong's key (columns "Strongs" and "Lang" of the outer row); same match as the live word-originals query.
+    private const string LexiconLateral = """
+                                          LEFT JOIN LATERAL (
+                                              SELECT ssl."LanguageId"
+                                                   , ssl."OriginalWord"
+                                                   , ssl."Transliteration"
+                                                   , ssl."Gloss"
+                                              FROM "unshackled-word"."StepStrongsLexicon" ssl
+                                              WHERE 1=1
+                                                  AND ssl."LanguageId" = ANY(CASE WHEN o."Lang" = 'G' THEN ARRAY[2] ELSE ARRAY[0, 1] END)
+                                                  AND ssl."Number" = substring(o."Strongs" from '^[GH](\d+)')::int
+                                                  AND COALESCE(ssl."Extra", '') = substring(o."Strongs" from '^[GH]\d+([A-Za-z]*)$')
+                                              ORDER BY ssl."LanguageId"
+                                              LIMIT 1
+                                          ) lex ON TRUE
+                                          """;
+
+    public async Task<DateTime?> GetSnapshotRefreshedAtAsync(CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT s."StatsRefreshedAt"
+                           FROM "unshackled-word"."DqRefreshState" s
+                           WHERE 1=1
+                               AND s."Id" = 1
+                           """;
+
+        return await _dbReader.ExecuteScalarAsync<DateTime?>(sql);
+    }
+
+    public async Task<IReadOnlyList<SnapshotStrongsRow>> GetSnapshotStrongsAsync(IReadOnlyList<string> keys, bool hebrew, CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT s."StrongsKey" "Strongs"
+                                , s."Occurrences"
+                                , s."MappedCount"
+                                , s."BookCounts"::text "BookCounts"
+                           FROM "unshackled-word"."StatsStrongs" s
+                           WHERE 1=1
+                               AND s."Lang" = @Lang::char(1)
+                               AND s."StrongsKey" = ANY(@Keys)
+                           """;
+
+        var rows = await _dbReader.ReadAsListAsync<SnapshotStrongsRow>(sql, new { Lang = hebrew ? "H" : "G", Keys = keys.ToArray() });
+        return rows.ToList();
+    }
+
+    public async Task<IReadOnlyList<SnapshotRenderingRow>> GetSnapshotRenderingsAsync(IReadOnlyList<string> keys, bool hebrew, CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT (array_agg(r."GermanDisplay" ORDER BY r."SourceCount" DESC))[1] "Word"
+                                , r."GermanKey" "Key"
+                                , r."Pos"
+                                , SUM(r."SourceCount")::int "Count"
+                           FROM "unshackled-word"."StatsStrongsRenderings" r
+                           WHERE 1=1
+                               AND r."Lang" = @Lang::char(1)
+                               AND r."StrongsKey" = ANY(@Keys)
+                           GROUP BY r."GermanKey", r."Pos"
+                           ORDER BY SUM(r."SourceCount") DESC, r."GermanKey", r."Pos"
+                           """;
+
+        var rows = await _dbReader.ReadAsListAsync<SnapshotRenderingRow>(sql, new { Lang = hebrew ? "H" : "G", Keys = keys.ToArray() });
+        return rows.ToList();
+    }
+
+    public async Task<int> GetAramaicCountAsync(IReadOnlyList<string> keys, CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT COUNT(*)::int
+                           FROM "unshackled-word"."StepHebrewWords" shw
+                           WHERE 1=1
+                               AND split_part(shw."RootDisambiguatedStrongsInstance", '_', 1) = ANY(@Keys)
+                               AND shw."Grammar" LIKE 'A%'
+                           """;
+
+        return await _dbReader.ExecuteScalarAsync<int>(sql, new { Keys = keys.ToArray() });
+    }
+
+    public async Task<IReadOnlyList<SnapshotLemmaRow>> ResolveSnapshotLemmasAsync(string word, CancellationToken token = default)
+    {
+        const string sql = """
+                           WITH picked AS (
+                               SELECT f."GermanKey"
+                                    , f."Pos"
+                               FROM "unshackled-word"."StatsGermanForms" f
+                               WHERE 1=1
+                                   AND f."PlainLower" = @Word
+                               UNION
+                               SELECT l."GermanKey"
+                                    , l."Pos"
+                               FROM "unshackled-word"."StatsGermanLemma" l
+                               WHERE 1=1
+                                   AND l."GermanKey" = @Word
+                                   AND NOT EXISTS (SELECT 1 FROM "unshackled-word"."StatsGermanForms" f WHERE f."PlainLower" = @Word)
+                           )
+                           SELECT l."GermanKey" "Key"
+                                , l."Pos"
+                                , l."GermanDisplay" "Word"
+                                , l."Occurrences"
+                                , (SELECT SUM(x."Occurrences") FROM "unshackled-word"."StatsGermanLemma" x WHERE x."GermanKey" = l."GermanKey")::int "LemmaOccurrences"
+                                , l."UnmappedCount"
+                                , l."BookCounts"::text "BookCounts"
+                           FROM picked p
+                               JOIN "unshackled-word"."StatsGermanLemma" l ON l."GermanKey" = p."GermanKey" AND l."Pos" IS NOT DISTINCT FROM p."Pos"
+                           ORDER BY l."Occurrences" DESC, l."GermanKey", l."Pos"
+                           """;
+
+        var rows = await _dbReader.ReadAsListAsync<SnapshotLemmaRow>(sql, new { Word = word });
+        return rows.ToList();
+    }
+
+    public async Task<IReadOnlyList<WordOriginalRow>> GetSnapshotWordOriginalsAsync(IReadOnlyList<SnapshotLemmaKey> lemmas, string? lang, CancellationToken token = default)
+    {
+        const string head = """
+                            WITH c AS (
+                                SELECT k."Key"
+                                     , k."Pos"
+                                FROM unnest(@Keys::text[], @Poss::text[]) AS k("Key", "Pos")
+                            ), o AS (
+                                SELECT r."Lang"
+                                     , r."StrongsKey" "Strongs"
+                                     , SUM(r."SourceCount")::int "Count"
+                                FROM c
+                                    JOIN "unshackled-word"."StatsStrongsRenderings" r ON r."GermanKey" = c."Key" AND r."Pos" IS NOT DISTINCT FROM c."Pos"
+                                WHERE 1=1
+                                    AND (@Lang::text IS NULL OR r."Lang" = @Lang::text::char(1))
+                                GROUP BY r."Lang", r."StrongsKey"
+                            )
+                            SELECT o."Strongs"
+                                 , o."Count"
+                                 , ss."Occurrences" "TotalCount"
+                                 , lex."LanguageId" "LexiconLanguageId"
+                                 , lex."OriginalWord" "Lemma"
+                                 , lex."Transliteration"
+                                 , lex."Gloss"
+                            FROM o
+                                JOIN "unshackled-word"."StatsStrongs" ss ON ss."Lang" = o."Lang" AND ss."StrongsKey" = o."Strongs"
+                            """;
+        const string tail = """
+
+                            ORDER BY o."Count" DESC, o."Strongs"
+                            """;
+
+        var rows = await _dbReader.ReadAsListAsync<WordOriginalRow>(head + "\n" + LexiconLateral + tail,
+            new { Keys = lemmas.Select(l => l.Key).ToArray(), Poss = lemmas.Select(l => l.Pos).ToArray(), Lang = lang });
+        return rows.ToList();
+    }
+
+    public async Task<IReadOnlyList<SnapshotLemmaOriginalRow>> GetSnapshotLemmaOriginalsAsync(IReadOnlyList<SnapshotLemmaKey> lemmas, int top, CancellationToken token = default)
+    {
+        const string head = """
+                            WITH c AS (
+                                SELECT k."Key"
+                                     , k."Pos"
+                                FROM unnest(@Keys::text[], @Poss::text[]) AS k("Key", "Pos")
+                            ), p AS (
+                                SELECT c."Key"
+                                     , c."Pos"
+                                     , r."Lang"
+                                     , r."StrongsKey"
+                                     , r."SourceCount"
+                                     , SUM(r."SourceCount") OVER (PARTITION BY c."Key", c."Pos") "LemmaTotal"
+                                     , ROW_NUMBER() OVER (PARTITION BY c."Key", c."Pos" ORDER BY r."SourceCount" DESC, r."StrongsKey") "Rn"
+                                FROM c
+                                    JOIN "unshackled-word"."StatsStrongsRenderings" r ON r."GermanKey" = c."Key" AND r."Pos" IS NOT DISTINCT FROM c."Pos"
+                            ), o AS (
+                                SELECT p."Key"
+                                     , p."Pos"
+                                     , p."Lang"
+                                     , p."StrongsKey" "Strongs"
+                                     , p."SourceCount" "Count"
+                                     , p."LemmaTotal"::int "LemmaTotal"
+                                     , p."Rn"
+                                FROM p
+                                WHERE 1=1
+                                    AND p."Rn" <= @Top
+                            )
+                            SELECT o."Key"
+                                 , o."Pos"
+                                 , o."Strongs"
+                                 , o."Count"
+                                 , o."LemmaTotal"
+                                 , ss."Occurrences" "TotalCount"
+                                 , lex."LanguageId" "LexiconLanguageId"
+                                 , lex."OriginalWord" "Lemma"
+                                 , lex."Transliteration"
+                                 , lex."Gloss"
+                            FROM o
+                                JOIN "unshackled-word"."StatsStrongs" ss ON ss."Lang" = o."Lang" AND ss."StrongsKey" = o."Strongs"
+                            """;
+        const string tail = """
+
+                            ORDER BY o."Key", o."Pos", o."Rn"
+                            """;
+
+        var rows = await _dbReader.ReadAsListAsync<SnapshotLemmaOriginalRow>(head + "\n" + LexiconLateral + tail,
+            new { Keys = lemmas.Select(l => l.Key).ToArray(), Poss = lemmas.Select(l => l.Pos).ToArray(), Top = top });
+        return rows.ToList();
+    }
+
     public async Task<int> CountOccurrencesAsync(IReadOnlyList<string> keys, bool hebrew, StrongsOccurrenceFilter filter, CancellationToken token = default)
     {
         const string greekSql = """
@@ -267,10 +470,11 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                     AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                              FROM "unshackled-word"."Elb1871GreekMapping" egm
                                                                                  JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
+                                                                                 LEFT JOIN "unshackled-word"."Elb1871Morphology" m ON m."HebRefId" = ew."HebRefId" AND m."PositionInVerse" = ew."PositionInVerse"
                                                                              WHERE 1=1
                                                                                  AND egm."StepWordId" = sgw."Id"
                                                                                  AND NOT egm."IsAddedWord"
-                                                                                 AND LOWER(COALESCE(NULLIF(ew."Lemma", ''), ew."PlainWord")) = LOWER(@Rendering::text)))
+                                                                                 AND (LOWER(m."Lemma") = LOWER(@Rendering::text) OR LOWER(ew."PlainWord") = LOWER(@Rendering::text))))
                                 """;
 
         const string hebrewSql = """
@@ -289,10 +493,11 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                      AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                               FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                                                                   JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
+                                                                                  LEFT JOIN "unshackled-word"."Elb1871Morphology" m ON m."HebRefId" = ew."HebRefId" AND m."PositionInVerse" = ew."PositionInVerse"
                                                                               WHERE 1=1
                                                                                   AND ehm."StepWordId" = shw."Id"
                                                                                   AND NOT ehm."IsAddedWord"
-                                                                                  AND LOWER(COALESCE(NULLIF(ew."Lemma", ''), ew."PlainWord")) = LOWER(@Rendering::text)))
+                                                                                  AND (LOWER(m."Lemma") = LOWER(@Rendering::text) OR LOWER(ew."PlainWord") = LOWER(@Rendering::text))))
                                  """;
 
         return await _dbReader.ExecuteScalarAsync<int>(hebrew ? hebrewSql : greekSql, new { Keys = keys.ToArray(), filter.Book, filter.Rendering });
@@ -320,10 +525,11 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                         AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                                  FROM "unshackled-word"."Elb1871GreekMapping" egm
                                                                                      JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
+                                                                                     LEFT JOIN "unshackled-word"."Elb1871Morphology" m ON m."HebRefId" = ew."HebRefId" AND m."PositionInVerse" = ew."PositionInVerse"
                                                                                  WHERE 1=1
                                                                                      AND egm."StepWordId" = sgw."Id"
                                                                                      AND NOT egm."IsAddedWord"
-                                                                                     AND LOWER(COALESCE(NULLIF(ew."Lemma", ''), ew."PlainWord")) = LOWER(@Rendering::text)))
+                                                                                     AND (LOWER(m."Lemma") = LOWER(@Rendering::text) OR LOWER(ew."PlainWord") = LOWER(@Rendering::text))))
                                     ORDER BY sgw."LxxRefId", sgw."PositionInVerse", sgw."Id"
                                     LIMIT @Take OFFSET @Skip
                                 ), elb AS (
@@ -375,10 +581,11 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                          AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                                   FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                                                                       JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
+                                                                                      LEFT JOIN "unshackled-word"."Elb1871Morphology" m ON m."HebRefId" = ew."HebRefId" AND m."PositionInVerse" = ew."PositionInVerse"
                                                                                   WHERE 1=1
                                                                                       AND ehm."StepWordId" = shw."Id"
                                                                                       AND NOT ehm."IsAddedWord"
-                                                                                      AND LOWER(COALESCE(NULLIF(ew."Lemma", ''), ew."PlainWord")) = LOWER(@Rendering::text)))
+                                                                                      AND (LOWER(m."Lemma") = LOWER(@Rendering::text) OR LOWER(ew."PlainWord") = LOWER(@Rendering::text))))
                                      ORDER BY shw."LxxRefId", shw."PositionInVerse", shw."Id"
                                      LIMIT @Take OFFSET @Skip
                                  ), elb AS (

@@ -72,3 +72,24 @@ describe("UserMenu admin link", () => {
     expect(screen.queryByRole("menuitem", { name: "Invitations" })).toBeNull();
   });
 });
+
+describe("UserMenu maintenance link", () => {
+  async function open(roles: string[]) {
+    stubApi({ "GET /auth/me": () => json({ ...me, roles }) });
+    renderWithAuth(<UserMenu />);
+    await userEvent.click(await screen.findByRole("button", { name: /Ada/ }));
+  }
+
+  it("shows Maintenance for maintainers, right after data quality", async () => {
+    await open(["user", "maintainer"]);
+    const items = screen.getAllByRole("menuitem").map((item) => item.textContent);
+    const link = screen.getByRole("menuitem", { name: "Maintenance" });
+    expect(link).toHaveAttribute("href", "/edit/maintainer");
+    expect(items.indexOf("Maintenance")).toBe(items.indexOf("Data quality") + 1);
+  });
+
+  it("hides Maintenance for plain users", async () => {
+    await open(["user"]);
+    expect(screen.queryByRole("menuitem", { name: "Maintenance" })).toBeNull();
+  });
+});

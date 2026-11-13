@@ -13,6 +13,7 @@ public sealed class LemmaEditFieldsValidator : AbstractValidator<LemmaEditFields
     {
         RuleFor(x => x.Lemma).NotEmpty().Must(l => l.Trim().Length > 0).MaximumLength(MaxLemmaLength);
         RuleFor(x => x.PartOfSpeech).NotEmpty().Must(c => ElbLemmaValueMaps.IsValid(ElbLemmaValueMaps.PartOfSpeech, c)).WithMessage("Unknown part of speech code.");
+        OptionalCode(x => x.Stts, ElbLemmaValueMaps.Stts);
         OptionalCode(x => x.Degree, ElbLemmaValueMaps.Degree);
         OptionalCode(x => x.VerbForm, ElbLemmaValueMaps.VerbForm);
         OptionalCode(x => x.Tense, ElbLemmaValueMaps.Tense);

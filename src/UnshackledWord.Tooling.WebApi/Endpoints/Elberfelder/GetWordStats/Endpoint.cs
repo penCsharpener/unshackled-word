@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<GetWordStatsRequest, GetWordStatsResponse>
 
     public override async Task HandleAsync(GetWordStatsRequest req, CancellationToken ct)
     {
-        var result = await _service.GetAsync(req.Word, req.Testament, ct);
+        var result = await _service.GetAsync(req.Word, req.Testament, req.Pos, ct);
         if (result is null)
         {
             await Send.ErrorsAsync(400, ct);

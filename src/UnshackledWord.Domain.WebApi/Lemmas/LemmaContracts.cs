@@ -31,10 +31,33 @@ public sealed class ApplicabilityRuleEntry
     public IReadOnlyList<VerbFormRuleEntry>? ByVerbForm { get; set; }
 }
 
+/// <summary>An STTS tag with its default UD tag and every UD tag accepted with it (from the SttsTags table).</summary>
+public sealed class SttsTagEntry
+{
+    public string Tag { get; set; } = string.Empty;
+    public string Upos { get; set; } = string.Empty;
+    public IReadOnlyList<string> AllowedUpos { get; set; } = [];
+}
+
+/// <summary>The STTS tag proposed for a UD part of speech; verbForm / mood refine it (null = any).</summary>
+public sealed class SttsProposalEntry
+{
+    public string PartOfSpeech { get; set; } = string.Empty;
+    public string? VerbForm { get; set; }
+    public string? Mood { get; set; }
+    public string Stts { get; set; } = string.Empty;
+}
+
 public sealed class ValueMapsResponse
 {
     public IReadOnlyList<ValueMapField> Fields { get; set; } = [];
     public IReadOnlyList<ApplicabilityRuleEntry> Rules { get; set; } = [];
+
+    /// <summary>STTS tags of the table (labels are in Fields, field "stts"); the editor filters the dropdown by AllowedUpos.</summary>
+    public IReadOnlyList<SttsTagEntry> SttsTags { get; set; } = [];
+
+    /// <summary>Most specific rule first; the first rule that matches wins.</summary>
+    public IReadOnlyList<SttsProposalEntry> SttsProposals { get; set; } = [];
 }
 
 public sealed class GetLemmaChapterRequest
@@ -52,6 +75,7 @@ public class LemmaWordRow
     public string? PlainWord { get; set; }
     public string? Lemma { get; set; }
     public string? PartOfSpeech { get; set; }
+    public string? Stts { get; set; }
     public string? Degree { get; set; }
     public string? VerbForm { get; set; }
     public string? Tense { get; set; }
@@ -61,6 +85,9 @@ public class LemmaWordRow
     public string? Case { get; set; }
     public string? Gender { get; set; }
     public bool HasMorphology { get; set; }
+
+    /// <summary>Set when Stts does not fit PartOfSpeech: the tag that would (never applied automatically).</summary>
+    public string? ProposedStts { get; set; }
 }
 
 public sealed class LemmaChapterResponse
@@ -70,11 +97,15 @@ public sealed class LemmaChapterResponse
     public IReadOnlyList<LemmaWordRow> Words { get; set; } = [];
 }
 
-/// <summary>Full replacement of the editable fields: a null morphology field clears it. Stts is left untouched.</summary>
+/// <summary>
+/// Full replacement of the editable fields: a null morphology field clears it. Stts is the exception: null leaves it untouched,
+/// a tag sets it (it must exist and, when it or the part of speech changes, be allowed together with the part of speech).
+/// </summary>
 public class LemmaEditFields
 {
     public string Lemma { get; set; } = string.Empty;
     public string PartOfSpeech { get; set; } = string.Empty;
+    public string? Stts { get; set; }
     public string? Degree { get; set; }
     public string? VerbForm { get; set; }
     public string? Tense { get; set; }

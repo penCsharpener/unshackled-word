@@ -91,7 +91,7 @@ export interface LemmaVerseResponse {
 /** Why a row was refused by the apply: its lemma changed, or its original-language mapping did. */
 export interface BulkStaleDetail {
   wordId: number;
-  reason: "lemma" | "original";
+  reason: "lemma" | "original" | "stts";
   lemma?: string;
   origKey?: string;
 }

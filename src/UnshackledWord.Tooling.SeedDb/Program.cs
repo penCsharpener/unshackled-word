@@ -1,5 +1,6 @@
 using Serilog;
 using UnshackledWord.Tooling.SeedDb.Extensions;
+using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 
 namespace UnshackledWord.Tooling.SeedDb;
 
@@ -9,7 +10,19 @@ public partial class Program
     {
         var builder = Host.CreateApplicationBuilder(args);
         builder.Services.AddSeedDbServices(builder.Configuration);
-        builder.Services.AddHostedService<Worker>();
+        var arguments = new VerbArguments(args);
+
+        // A command on the command line (export-seed, anchor-check) replaces the seeding pipeline.
+        if (arguments.Verb is not null)
+        {
+            builder.Services.AddSingleton(arguments);
+            builder.Services.AddHostedService<VerbWorker>();
+        }
+        else
+        {
+            builder.Services.AddHostedService<Worker>();
+        }
+
         builder.Services.AddSerilog((sp, loggerConfig) => loggerConfig.ReadFrom.Configuration(builder.Configuration));
         builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
         AddLocalSecrets(builder.Configuration);

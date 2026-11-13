@@ -3,6 +3,7 @@ using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetStrongsOccurrences;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetStrongsSummary;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetWordStats;
+using UnshackledWord.Domain.WebApi.Elberfelder.SearchOriginals;
 
 namespace UnshackledWord.Application.Features.StrongsStats;
 
@@ -30,6 +31,30 @@ public sealed class GetWordStatsRequestValidator : AbstractValidator<GetWordStat
         RuleFor(x => x.Testament)
             .Must(t => WordStatsService.ResolveTestament(t) is not null)
             .WithMessage("Testament must be 'all', 'ot' or 'nt'.");
+        RuleFor(x => x.Pos)
+            .MaximumLength(GetWordStatsRequest.MaxPosLength)
+            .Matches(@"^[A-Za-z_]+$")
+            .When(x => !string.IsNullOrEmpty(x.Pos));
+    }
+}
+
+public sealed class SearchOriginalsRequestValidator : AbstractValidator<SearchOriginalsRequest>
+{
+    public SearchOriginalsRequestValidator()
+    {
+        RuleFor(x => x.Q)
+            .NotEmpty()
+            .MaximumLength(SearchOriginalsRequest.MaxQueryLength);
+        RuleFor(x => SearchTokenizer.Tokenize(x.Q))
+            .Must(t => t.Count >= 1)
+            .WithName(nameof(SearchOriginalsRequest.Q))
+            .WithMessage("Query must contain at least one word.")
+            .Must(t => t.Count <= SearchOriginalsRequest.MaxTokens)
+            .WithMessage($"Query may contain at most {SearchOriginalsRequest.MaxTokens} different words.")
+            .Must(t => t.All(w => w.Length <= SearchOriginalsRequest.MaxTokenLength))
+            .WithMessage($"A word may have at most {SearchOriginalsRequest.MaxTokenLength} letters.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Q) && x.Q.Length <= SearchOriginalsRequest.MaxQueryLength);
+        RuleFor(x => x.Top).InclusiveBetween(1, SearchOriginalsRequest.MaxTop);
     }
 }
 

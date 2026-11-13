@@ -1,5 +1,6 @@
 import { type ReactNode, useId } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { donutSegments, formatNumber, formatPercent, MAX_DONUT_SLOTS } from "@/lib/chart";
 import { Button } from "./Button";
 import { Select } from "./Select";
@@ -28,6 +29,10 @@ export interface DonutChartProps {
   /** Makes legend entries buttons and, with `filterLabel`, adds a select; `null` clears. */
   onSelectSlice?: (key: string | null) => void;
   filterLabel?: string;
+  /** Turns legend entries into links to this path (e.g. a detail page); "Other" stays plain text. */
+  sliceHref?: (key: string) => string;
+  /** Called when such a link is followed, e.g. to close the surrounding dialog. */
+  onSliceNavigate?: () => void;
 }
 
 const OTHER_KEY = "__other";
@@ -47,6 +52,8 @@ export function DonutChart({
   activeKey = null,
   onSelectSlice,
   filterLabel,
+  sliceHref,
+  onSliceNavigate,
 }: DonutChartProps) {
   const { t, i18n } = useTranslation();
   const headingId = useId();
@@ -74,7 +81,7 @@ export function DonutChart({
   const active = shown.find((s) => s.key === activeKey);
   const emphasised = active?.key ?? shown.find((s) => s.highlight)?.key;
   const interactive = onSelectSlice !== undefined;
-  const showTable = !interactive;
+  const showTable = !interactive && sliceHref === undefined;
 
   const toggle = (key: string) => onSelectSlice?.(activeKey === key ? null : key);
 
@@ -167,6 +174,14 @@ export function DonutChart({
                   >
                     {slice.label}
                   </Button>
+                ) : sliceHref && slice.key !== OTHER_KEY ? (
+                  <Link
+                    to={sliceHref(slice.key)}
+                    onClick={onSliceNavigate}
+                    className="donut-slice-label text-left hover:underline"
+                  >
+                    {slice.label}
+                  </Link>
                 ) : (
                   <span className="donut-slice-label">{slice.label}</span>
                 )}
@@ -183,25 +198,27 @@ export function DonutChart({
       </div>
 
       {showTable ? (
-        <table className="sr-only">
-          <caption>{title}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{t("chart.donut.tableEntry")}</th>
-              <th scope="col">{t("chart.donut.tableCount")}</th>
-              <th scope="col">{t("chart.donut.tableShare")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shown.map((slice) => (
-              <tr key={slice.key}>
-                <th scope="row">{slice.label}</th>
-                <td>{formatNumber(slice.value, language)}</td>
-                <td>{formatPercent(slice.value, total, language)}</td>
+        <div className="sr-only">
+          <table>
+            <caption>{title}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{t("chart.donut.tableEntry")}</th>
+                <th scope="col">{t("chart.donut.tableCount")}</th>
+                <th scope="col">{t("chart.donut.tableShare")}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {shown.map((slice) => (
+                <tr key={slice.key}>
+                  <th scope="row">{slice.label}</th>
+                  <td>{formatNumber(slice.value, language)}</td>
+                  <td>{formatPercent(slice.value, total, language)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : null}
 
       {note ? <figcaption className="text-xs text-fg-muted">{note}</figcaption> : null}

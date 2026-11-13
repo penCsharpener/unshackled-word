@@ -10,6 +10,7 @@ public sealed class DqState
 {
     public DateTime? RefreshedAt { get; init; }
     public DateTime? PreviousRefreshedAt { get; init; }
+    public DateTime? StatsRefreshedAt { get; init; }
     public string? Counts { get; init; }
     public string? PreviousCounts { get; init; }
     public bool IsPopulated { get; init; }
@@ -22,10 +23,19 @@ public interface IDqFactsRepository
 
     Task<DateTime?> GetLastEditAtAsync(CancellationToken ct);
 
+    /// <summary>Latest <c>SeedImports</c> row per kind, and per kind the latest update row when it is not that one.</summary>
+    Task<IReadOnlyList<SeedImportInfo>> GetSeedImportsAsync(CancellationToken ct);
+
     /// <summary>Refreshes the materialized view (concurrently once populated); the timestamp is set by <see cref="SaveCountsAsync"/>.</summary>
     Task RefreshViewAsync(CancellationToken ct);
 
     Task SaveCountsAsync(IReadOnlyDictionary<string, int> counts, CancellationToken ct);
+
+    /// <summary>Refreshes the four Stats* views in dependency-free order on one connection (<see cref="DqSql.StatsViews"/>): plain while a view is unpopulated, CONCURRENTLY afterwards. They read DqWordFacts, so call this after <see cref="RefreshViewAsync"/>.</summary>
+    Task RefreshStatsViewsAsync(CancellationToken ct);
+
+    /// <summary>Stamps DqRefreshState.StatsRefreshedAt with now(); only after <see cref="RefreshStatsViewsAsync"/> succeeded.</summary>
+    Task SaveStatsRefreshedAtAsync(CancellationToken ct);
 
     Task<OverviewTotals> GetTotalsAsync(DqFacets facets, CancellationToken ct);
 
@@ -50,6 +60,7 @@ public sealed class DqFactsRepository : IDqFactsRepository
     private const string SelectState = """
         SELECT s."RefreshedAt"            AS "RefreshedAt"
              , s."PreviousRefreshedAt"    AS "PreviousRefreshedAt"
+             , s."StatsRefreshedAt"       AS "StatsRefreshedAt"
              , s."Counts"::text           AS "Counts"
              , s."PreviousCounts"::text   AS "PreviousCounts"
              , COALESCE((SELECT v.ispopulated FROM pg_matviews v WHERE v.schemaname = 'unshackled-word' AND v.matviewname = 'DqWordFacts'), false) AS "IsPopulated"
@@ -62,6 +73,13 @@ public sealed class DqFactsRepository : IDqFactsRepository
         FROM "unshackled-word"."Elb1871MorphologyEdits" e
         """;
 
+    private const string SelectSeedImports = """
+        SELECT DISTINCT ON (s."Kind", (s."VersesUpdated" IS NOT NULL))
+            s."Kind", s."SeedVersion", s."ExportedAt", s."ImportedAt", s."Rows", s."Orphaned", s."VersesUpdated", s."VersesKeptLocal"
+        FROM "unshackled-word"."SeedImports" s
+        ORDER BY s."Kind", (s."VersesUpdated" IS NOT NULL), s."ImportedAt" DESC, s."Id" DESC
+        """;
+
     private const string UpdateCounts = """
         UPDATE "unshackled-word"."DqRefreshState"
         SET "PreviousRefreshedAt" = "RefreshedAt"
@@ -69,6 +87,20 @@ public sealed class DqFactsRepository : IDqFactsRepository
           , "RefreshedAt" = now()
           , "Counts" = @counts::jsonb
         WHERE "Id" = 1
+        """;
+
+    private const string UpdateStatsRefreshedAt = """
+        UPDATE "unshackled-word"."DqRefreshState"
+        SET "StatsRefreshedAt" = now()
+        WHERE "Id" = 1
+        """;
+
+    private const string SelectPopulatedStatsViews = """
+        SELECT v.matviewname
+        FROM pg_matviews v
+        WHERE v.schemaname = 'unshackled-word'
+          AND v.matviewname = ANY(@names)
+          AND v.ispopulated
         """;
 
     public async Task<DqState> GetStateAsync(CancellationToken ct)
@@ -83,6 +115,21 @@ public sealed class DqFactsRepository : IDqFactsRepository
         return await connection.ExecuteScalarAsync<DateTime?>(new CommandDefinition(SelectLastEdit, cancellationToken: ct));
     }
 
+    public async Task<IReadOnlyList<SeedImportInfo>> GetSeedImportsAsync(CancellationToken ct)
+    {
+        using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
+        var rows = (await connection.QueryAsync<SeedImportInfo>(new CommandDefinition(SelectSeedImports, cancellationToken: ct))).ToList();
+        foreach (var row in rows)
+        {
+            var version = row.SeedVersion.Length >= 12 ? row.SeedVersion[..12] : row.SeedVersion;
+            row.ReportPath = row.VersesUpdated is null
+                ? $"temp/seed-report/{row.Kind}-{version}.csv"
+                : $"temp/seed-report/{row.Kind}-update-{version}.csv";
+        }
+
+        return rows;
+    }
+
     public async Task RefreshViewAsync(CancellationToken ct)
     {
         using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
@@ -91,6 +138,22 @@ public sealed class DqFactsRepository : IDqFactsRepository
             ? "REFRESH MATERIALIZED VIEW CONCURRENTLY \"unshackled-word\".\"DqWordFacts\""
             : "REFRESH MATERIALIZED VIEW \"unshackled-word\".\"DqWordFacts\"";
         await connection.ExecuteAsync(new CommandDefinition(sql, commandTimeout: RefreshTimeoutSeconds, cancellationToken: ct));
+    }
+
+    public async Task RefreshStatsViewsAsync(CancellationToken ct)
+    {
+        using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
+        var populated = (await connection.QueryAsync<string>(new CommandDefinition(SelectPopulatedStatsViews, new { names = DqSql.StatsViews.ToArray() }, cancellationToken: ct))).ToHashSet();
+        foreach (var sql in DqSql.StatsRefreshStatements(populated))
+        {
+            await connection.ExecuteAsync(new CommandDefinition(sql, commandTimeout: RefreshTimeoutSeconds, cancellationToken: ct));
+        }
+    }
+
+    public async Task SaveStatsRefreshedAtAsync(CancellationToken ct)
+    {
+        using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
+        await connection.ExecuteAsync(new CommandDefinition(UpdateStatsRefreshedAt, cancellationToken: ct));
     }
 
     public async Task SaveCountsAsync(IReadOnlyDictionary<string, int> counts, CancellationToken ct)

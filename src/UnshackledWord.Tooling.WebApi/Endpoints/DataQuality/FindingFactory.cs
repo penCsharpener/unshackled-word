@@ -24,7 +24,8 @@ internal static class FindingFactory
             Lang = r.Lang,
             German = r.Plain,
             Lemma = r.Lemma,
-            Pos = r.Pos,
+            Pos = r.LivePos ?? r.Pos,
+            Stts = r.Stts,
             Original = r.SourceWord,
             Strongs = r.StrongsBase,
             Gloss = string.IsNullOrEmpty(gloss) ? null : gloss,
@@ -65,6 +66,10 @@ internal static class FindingFactory
                 return (UnmappedRules.Warning, $"Wortform „{r.Plain}“ mit abweichendem Lemma „{r.Lemma}“");
             case "L4":
                 return (UnmappedRules.Warning, $"Lemma „{r.Lemma}“ mit abweichender Wortart {r.Pos}");
+            case "L6":
+                return (UnmappedRules.Error, r.Stts is null ? "STTS fehlt" : $"STTS „{r.Stts}“ ist unbekannt");
+            case "L7":
+                return (UnmappedRules.Warning, $"STTS „{r.Stts}“ passt nicht zur Wortart {r.LivePos ?? r.Pos}");
             case "L5":
                 var issues = MorphologyIssues.Evaluate(new MorphologyValues(r.Pos, r.VerbForm, r.Degree, r.Tense, r.Person, r.Number, r.Mood, r.Case, r.Gender));
                 return (UnmappedRules.Warning, issues.Count == 0 ? "Merkmale auffällig" : string.Join("; ", issues.Select(i => $"{i.Field}: {IssueText(i.Kind)}")));
