@@ -102,4 +102,32 @@ describe("OriginalVerse margin", () => {
     await user.hover(word());
     expect(await screen.findByTestId("original-word-info")).toHaveAttribute("data-below");
   });
+
+  it("shows only one card when the pointer moves over several verses", async () => {
+    const user = userEvent.setup();
+    const word = (id: number, original: string) => ({
+      id,
+      position: 1,
+      original,
+      strongs: `G${id}`,
+      lemma: original,
+    });
+    render(
+      <MemoryRouter>
+        <OriginalVerse
+          variant="margin"
+          reference="a"
+          data={{ language: "greek", originalWords: [word(1, "α")] }}
+        />
+        <OriginalVerse
+          variant="margin"
+          reference="b"
+          data={{ language: "greek", originalWords: [word(2, "β")] }}
+        />
+      </MemoryRouter>,
+    );
+    await user.hover(screen.getByRole("link", { name: /α/ }));
+    await user.hover(screen.getByRole("link", { name: /β/ }));
+    expect(screen.getAllByTestId("original-word-info")).toHaveLength(1);
+  });
 });

@@ -32,6 +32,9 @@ export interface OriginalVerseProps {
 
 const TIP_WIDTH = 256; // keep in sync with `w-64`
 const TIP_GAP = 8;
+/** Closes the card of the verse that shows one: only one card exists at a time, quick moves over many verses leave no trail. */
+let closeShownTip: (() => void) | undefined;
+
 const TIP_HIDE_DELAY = 500; // ms, long enough to move from the word onto the card
 
 /** Plain original-language text of one verse for casual readers; Strong's and morphology can be added per word. */
@@ -65,6 +68,10 @@ export function OriginalVerse({
   // Ctrl held = pin: the card stays until Ctrl is released and the pointer is off word and card
   const ctrlHeld = useRef(false);
   const cancelHide = () => clearTimeout(hideTimer.current);
+  const closeNow = useRef(() => {
+    clearTimeout(hideTimer.current);
+    setTip(null);
+  }).current;
   const scheduleHide = () => {
     cancelHide();
     hideTimer.current = setTimeout(() => {
@@ -86,6 +93,7 @@ export function OriginalVerse({
       window.removeEventListener("keydown", track);
       window.removeEventListener("keyup", track);
       cancelHide();
+      if (closeShownTip === closeNow) closeShownTip = undefined;
     };
   }, []);
 
@@ -98,6 +106,8 @@ export function OriginalVerse({
             const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
             const enter = (element: HTMLElement) => {
               cancelHide();
+              if (closeShownTip && closeShownTip !== closeNow) closeShownTip();
+              closeShownTip = closeNow;
               onHoverWord?.(word.id);
               const rect = element.getBoundingClientRect();
               setTip({
