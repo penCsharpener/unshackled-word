@@ -3,6 +3,7 @@ using FluentValidation;
 using UnshackledWord.Domain.Models.DataQuality;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.Hits;
 
@@ -20,6 +21,7 @@ public sealed class Endpoint : Endpoint<HitsRequest, HitsResponse>
     {
         Get("hits");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "Verse hits of an explorer filter (strongs and / or lemma [+ pos]); strongs may be added | none together with lemma. Each hit carries ~5 words of context.");
     }
 

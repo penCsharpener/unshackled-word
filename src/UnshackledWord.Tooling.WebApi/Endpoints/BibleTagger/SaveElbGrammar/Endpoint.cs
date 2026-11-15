@@ -1,9 +1,12 @@
 using FastEndpoints;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.WebApi.BibleTagger.SaveElbGrammar;
+using UnshackledWord.Application.Features.Auth;
+using UnshackledWord.Tooling.WebApi.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.BibleTagger.SaveElbGrammar;
 
+[RequiresLogin]
 public sealed class Endpoint : Ep.Req<SaveElbGrammarRequest>.Res<SaveElbGrammarResponse>
 {
     private readonly IElb1871WordRepository _elbRepo;
@@ -17,6 +20,7 @@ public sealed class Endpoint : Ep.Req<SaveElbGrammarRequest>.Res<SaveElbGrammarR
     {
         Post("grammar");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
     }
 
     public override async Task<SaveElbGrammarResponse> ExecuteAsync(SaveElbGrammarRequest req, CancellationToken ct)

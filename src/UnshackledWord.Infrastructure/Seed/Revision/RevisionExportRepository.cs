@@ -5,7 +5,7 @@ using UnshackledWord.Infrastructure.Seed.Mappings;
 
 namespace UnshackledWord.Infrastructure.Seed.Revision;
 
-/// <summary>The active variants of one book and their mapping lines, as the seed files hold them.</summary>
+/// <summary>The variants of one book and their mapping lines, as the seed files hold them.</summary>
 public sealed class RevisionBookData
 {
     public required List<RevisionVerseSeedLine> Verses { get; init; }
@@ -45,10 +45,8 @@ public sealed class RevisionExportRepository
              , (rv."MappingReviewedAt" IS NOT NULL) AS "Reviewed"
         FROM "unshackled-word"."RevisionVerses" rv
             JOIN "unshackled-word"."Revisions" rev ON rev."Id" = rv."RevisionId"
-            LEFT JOIN "unshackled-word"."RevisionVerses" b ON b."Id" = rv."BasedOnRevisionVerseId"
-            LEFT JOIN "unshackled-word"."Revisions" brev ON brev."Id" = b."RevisionId"
-        WHERE rv."IsActive"
-            AND rv."HebRefId" BETWEEN @FromRefId AND @ToRefId
+            LEFT JOIN "unshackled-word"."Revisions" brev ON brev."Id" = rv."BasedOnRevisionId"
+        WHERE rv."HebRefId" BETWEEN @FromRefId AND @ToRefId
         ORDER BY rv."HebRefId"
                , rev."Level"
         """;
@@ -73,17 +71,13 @@ public sealed class RevisionExportRepository
             LEFT JOIN "unshackled-word"."StepHebrewWords" sh ON m."Lang" = 'H' AND sh."Id" = m."StepWordId"
             LEFT JOIN "unshackled-word"."StepGreekWords" sg ON m."Lang" = 'G' AND sg."Id" = m."StepWordId"
             LEFT JOIN "unshackled-word"."RevisionWords" pw ON pw."Id" = m."ParentRevisionWordId"
-        WHERE rv."IsActive"
-            AND rv."HebRefId" BETWEEN @FromRefId AND @ToRefId
+        WHERE rv."HebRefId" BETWEEN @FromRefId AND @ToRefId
             AND (m."IsAddedWord" OR COALESCE(sh."Id", sg."Id") IS NOT NULL)
         """;
 
     private const string CountActiveMapping = """
         SELECT count(*)
         FROM "unshackled-word"."RevisionMapping" m
-            JOIN "unshackled-word"."RevisionWords" rw ON rw."Id" = m."RevisionWordId"
-            JOIN "unshackled-word"."RevisionVerses" rv ON rv."Id" = rw."RevisionVerseId"
-        WHERE rv."IsActive"
         """;
 
     public async Task<List<RevisionLevelSeedLine>> ReadLevelsAsync()

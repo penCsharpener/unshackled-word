@@ -18,6 +18,15 @@ public sealed class GetChapterOriginalsResponse
     public string Language { get; set; } = string.Empty;
 
     public List<VerseOriginalsResponse> Verses { get; set; } = [];
+
+    /// <summary>English gloss and shortened lexicon text per Strong's number of the chapter (key as in the words' <c>Strongs</c>), for the hover info; null (omitted) when none.</summary>
+    public Dictionary<string, ChapterLexiconResponse>? Lexicon { get; set; }
+}
+
+public sealed class ChapterLexiconResponse
+{
+    public string? Gloss { get; set; }
+    public string? Definition { get; set; }
 }
 
 public sealed class VerseOriginalsResponse

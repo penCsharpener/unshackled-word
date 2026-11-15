@@ -6,15 +6,19 @@ import { VersionHistory } from "./VersionHistory";
 
 const versions = [
   {
+    auditId: 2,
     version: 2,
+    action: "text" as const,
     text: "Gott liebte die Welt",
-    createdAt: "2026-01-02T10:00:00Z",
-    createdBy: "anna",
+    at: "2026-01-02T10:00:00Z",
+    by: "anna",
   },
   {
+    auditId: 1,
     version: 1,
+    action: "text" as const,
     text: "Gott hat die Welt geliebt",
-    createdAt: "2026-01-01T10:00:00Z",
+    at: "2026-01-01T10:00:00Z",
     note: "Start",
   },
 ];
@@ -36,6 +40,40 @@ describe("VersionHistory", () => {
     expect(items[0]?.querySelector("ins")).toHaveTextContent("liebte");
     expect(items[0]?.querySelector("del")).toHaveTextContent("hat");
     expect(items[1]).toHaveTextContent("Start");
+  });
+
+  it("shows mapping saves as a sub-line under their version and withdrawals as own entries", () => {
+    const withHistory = [
+      {
+        auditId: 5,
+        version: 2,
+        action: "withdraw" as const,
+        text: "x",
+        at: "2026-01-05T10:00:00Z",
+      },
+      {
+        auditId: 4,
+        version: 2,
+        action: "mapping" as const,
+        text: "Gott liebte die Welt",
+        at: "2026-01-04T10:00:00Z",
+        by: "bob",
+      },
+      ...versions,
+    ];
+    render(
+      <VersionHistory versions={withHistory} onRestore={() => {}} onRemove={() => {}} canRemove />,
+    );
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(3);
+    expect(items[0]).toHaveTextContent("Revision dieser Stufe entfernt");
+    expect(within(items[0] as HTMLElement).queryByRole("button")).toBeNull();
+    expect(items[1]).toHaveTextContent("v2");
+    expect(items[1]).toHaveTextContent("Zuordnung gespeichert");
+    expect(items[1]).toHaveTextContent("bob");
+    expect(items[2]).not.toHaveTextContent("Zuordnung gespeichert");
+    // the diff of v2 still compares against the previous text entry, not the mapping entry
+    expect(items[1]?.querySelector("del")).toHaveTextContent("hat");
   });
 
   it("restores the text of a version", async () => {

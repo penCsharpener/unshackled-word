@@ -518,6 +518,18 @@ describe("mapping editor", () => {
     expect(screen.getByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeInTheDocument();
   });
 
+  it("shows a no-permission message when saving is answered with 403", async () => {
+    stubMapping({ putStatus: 403 });
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    openAlign(1);
+    await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+    await userEvent.click(editorNode("g1"));
+    await userEvent.click(editorNode("o100"));
+    await userEvent.click(screen.getByRole("button", { name: "Speichern (1)" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Keine Berechtigung");
+  });
+
   it("is read-only when editing is disabled", async () => {
     stubMapping({ editingEnabled: false });
     renderAt("/bible/43/3");

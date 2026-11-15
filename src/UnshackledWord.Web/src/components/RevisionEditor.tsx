@@ -207,7 +207,7 @@ export function RevisionEditor({ verseRef, reference, onClose }: RevisionEditorP
           )}
           {mappingOpen && mapping.data && (
             <MappingEditor
-              data={toMappingData(mapping.data, mapping.data.isActive)}
+              data={toMappingData(mapping.data, true)}
               reference={reference}
               review={reviewMarkers(mapping.data, saved.carry)}
               saving={saveMapping.isPending}

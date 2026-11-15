@@ -26,6 +26,8 @@ public class Worker : BackgroundService
             DeployChanges.To
                 .PostgresqlDatabase(connectionString)
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+                // Each script is atomic: a failure halfway through a destructive script (e.g. 0024) leaves the database untouched.
+                .WithTransactionPerScript()
                 .LogTo(loggerFactory)
                 .Build();
 

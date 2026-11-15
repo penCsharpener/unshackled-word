@@ -10,6 +10,9 @@ export interface HeaderWordInfo {
   /** raw morphology code, used when no decoded morphology is available */
   morphologyCode?: string;
   language?: "greek" | "hebrew" | "aramaic";
+  /** English Strong's gloss and (shortened) lexicon text, shown by the stacked hover card only */
+  gloss?: string;
+  definition?: string;
   /** shown in the page margin from 1024px (the reader), so the header leaves it out there */
   inMargin?: boolean;
 }

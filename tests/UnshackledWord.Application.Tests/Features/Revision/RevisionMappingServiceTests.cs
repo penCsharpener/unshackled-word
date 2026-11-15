@@ -12,9 +12,9 @@ public class RevisionMappingServiceTests
 
     private RevisionMappingService Service() => new(_repository, _verseMapping);
 
-    private void Variant(int id = 50, bool active = true)
+    private void Variant(int id = 50)
     {
-        _repository.GetHeaderAsync(id, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = id, HebRefId = 43003016, Level = 200, Version = 2, IsActive = active });
+        _repository.GetHeaderAsync(id, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = id, HebRefId = 43003016, Level = 200, Version = 2 });
         _repository.GetWordsAsync(id, Arg.Any<CancellationToken>()).Returns([
             new RevisionWordRow { Id = 501, PositionInVerse = 1, WordInContext = "Denn", BasePositionInVerse = 1, Change = "same" },
             new RevisionWordRow { Id = 502, PositionInVerse = 2, WordInContext = "einzigen", BasePositionInVerse = 2, Change = "changed" },
@@ -69,16 +69,15 @@ public class RevisionMappingServiceTests
     }
 
     [Fact]
-    public async Task GetAsync_ReportsAnEndedVersionAsInactive_AndUsesHebrewForOldTestament()
+    public async Task GetAsync_UsesHebrewForOldTestament()
     {
-        _repository.GetHeaderAsync(7, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = 7, HebRefId = 1001001, Level = 200, Version = 1, IsActive = false });
+        _repository.GetHeaderAsync(7, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = 7, HebRefId = 1001001, Level = 200, Version = 1 });
         _repository.GetWordsAsync(7, Arg.Any<CancellationToken>()).Returns([]);
         _repository.GetMappingAsync(7, Arg.Any<CancellationToken>()).Returns([]);
         _verseMapping.GetOriginalWordsAsync(true, 1, 1, 1, Arg.Any<CancellationToken>()).Returns([]);
 
         var response = (await Service().GetAsync(7))!;
 
-        response.IsActive.ShouldBeFalse();
         response.Language.ShouldBe("hebrew");
     }
 
@@ -89,15 +88,6 @@ public class RevisionMappingServiceTests
     public async Task SaveAsync_ReturnsNotFound_WhenTheVariantDoesNotExist()
     {
         (await Service().SaveAsync(1, [], 5)).Outcome.ShouldBe(SaveRevisionMappingOutcome.NotFound);
-    }
-
-    [Fact]
-    public async Task SaveAsync_ReturnsConflict_WhenTheVariantIsNoLongerActive()
-    {
-        Variant(active: false);
-
-        (await Service().SaveAsync(50, [], 5)).Outcome.ShouldBe(SaveRevisionMappingOutcome.Conflict);
-        await _repository.DidNotReceive().ReplaceMappingAsync(Arg.Any<int>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<RevisionMappingRow>>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -132,7 +122,7 @@ public class RevisionMappingServiceTests
     }
 
     [Fact]
-    public async Task SaveAsync_ReturnsConflict_WhenTheVariantWasEndedDuringTheSave()
+    public async Task SaveAsync_ReturnsConflict_WhenTheVariantWasWithdrawnOrRewrittenDuringTheSave()
     {
         Variant();
         _repository.GetMappingAsync(50, Arg.Any<CancellationToken>()).Returns([]);

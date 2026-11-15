@@ -4,6 +4,7 @@ using Fido2NetLib.Objects;
 using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Domain.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Auth.GetPasskeyLoginOptions;
 
@@ -15,6 +16,7 @@ public sealed class GetPasskeyLoginOptionsResponse
 }
 
 /// <summary>Starts a passkey sign-in ceremony. Anonymous: this is how a signed-out visitor authenticates.</summary>
+[RateLimitGroup(RateLimitGroups.Auth)]
 public sealed class Endpoint : Endpoint<GetPasskeyLoginOptionsRequest, GetPasskeyLoginOptionsResponse>
 {
     private readonly IAuthRepository _repository;

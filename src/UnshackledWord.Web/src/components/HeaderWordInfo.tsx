@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { formatMorphology } from "@/lib/bible/morphology";
+import { normalizeStrongs } from "@/lib/bible/wordDetail";
 import { type HeaderWordInfo as HeaderWordInfoData, useHeaderInfo } from "@/lib/headerInfo";
 
 /**
@@ -20,7 +22,7 @@ export function HeaderWordInfo() {
 export function WordInfoCard({ info }: { info: HeaderWordInfoData }) {
   return (
     <div className="rounded-md border border-border bg-surface-muted p-3 shadow-sm">
-      <WordInfoBody info={info} className="items-start text-start" wrap />
+      <WordInfoBody info={info} className="items-start text-start" wrap stacked />
     </div>
   );
 }
@@ -29,10 +31,13 @@ function WordInfoBody({
   info,
   className,
   wrap = false,
+  stacked = false,
 }: {
   info: HeaderWordInfoData;
   className: string;
   wrap?: boolean;
+  /** every source-language item on its own line (a Hebrew word next to Latin text breaks the line direction), plus gloss and lexicon text */
+  stacked?: boolean;
 }) {
   const { t } = useTranslation();
   const truncate = wrap ? "" : "truncate";
@@ -42,6 +47,41 @@ function WordInfoBody({
     : (info.morphologyCode ?? "");
   const lang = info.language === "hebrew" ? "he" : info.language === "aramaic" ? "arc" : "grc";
   const showLemma = info.lemma && info.lemma !== info.original;
+  const dir = info.language === "hebrew" || info.language === "aramaic" ? "rtl" : "ltr";
+  if (stacked) {
+    return (
+      <div className={`flex min-w-0 flex-col gap-1 leading-tight ${className}`} aria-live="off">
+        <p lang={lang} dir={dir} className="w-full font-original text-xl text-fg">
+          {info.original}
+        </p>
+        {showLemma && (
+          <p className="w-full text-sm text-fg-muted">
+            {t("bible.mapping.headerInfo.lemma")}
+            <span lang={lang} dir={dir} className="block font-original">
+              {info.lemma}
+            </span>
+          </p>
+        )}
+        {(info.strongs || morphology) && (
+          <p className="w-full text-xs text-fg-muted" dir="ltr">
+            {info.strongs && <StrongsLink value={info.strongs} />}
+            {info.strongs && morphology && " · "}
+            {morphology}
+          </p>
+        )}
+        {info.gloss && (
+          <p lang="en" className="w-full text-sm text-fg">
+            {info.gloss}
+          </p>
+        )}
+        {info.definition && (
+          <p lang="en" className="w-full text-xs text-fg-muted">
+            <LinkedStrongs text={info.definition} />
+          </p>
+        )}
+      </div>
+    );
+  }
   return (
     <div className={`flex min-w-0 flex-col leading-tight ${className}`} aria-live="off">
       <p className={`max-w-full ${truncate}`}>
@@ -60,5 +100,30 @@ function WordInfoBody({
       </p>
       {morphology && <p className={`max-w-full text-xs text-fg-muted ${truncate}`}>{morphology}</p>}
     </div>
+  );
+}
+
+const STRONGS_IN_TEXT = /\b([GH]\d{1,4}[A-Za-z]?)\b/g;
+
+/** A Strong's number as a link to its page; plain text when it is not a valid number. */
+function StrongsLink({ value }: { value: string }) {
+  const strongs = normalizeStrongs(value);
+  if (!strongs) return <>{value}</>;
+  return (
+    <Link to={`/bible/strongs/${strongs}`} className="text-accent underline">
+      {value}
+    </Link>
+  );
+}
+
+/** Lexicon text with every Strong's number in it (e.g. "H7225H") turned into a link. */
+function LinkedStrongs({ text }: { text: string }) {
+  return text.split(STRONGS_IN_TEXT).map((part, index) =>
+    index % 2 === 1 ? (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static split of one string
+      <StrongsLink key={index} value={part} />
+    ) : (
+      part
+    ),
   );
 }

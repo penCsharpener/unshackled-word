@@ -1,5 +1,17 @@
 export const de = {
   app: { name: "Unshackled Word" },
+  rateLimit: {
+    general:
+      "Zu viele Anfragen. Bitte {{wait}} erneut versuchen – angemeldete Nutzer sind nicht begrenzt.",
+    search:
+      "Zu viele Suchanfragen. Bitte {{wait}} erneut versuchen – angemeldete Nutzer sind nicht begrenzt.",
+    auth: "Zu viele Anmeldeversuche. Bitte {{wait}} erneut versuchen.",
+    inSeconds: "in {{seconds}} s",
+    soon: "in Kürze",
+    ready: "Das Limit ist aufgehoben.",
+    signIn: "Anmelden",
+    reload: "Neu laden",
+  },
   nav: { about: "Über" },
   theme: { label: "Darstellung", light: "Hell", dark: "Dunkel", system: "System" },
   language: { label: "Sprache", de: "Deutsch", en: "English" },
@@ -424,11 +436,13 @@ export const de = {
       },
       error: {
         validation: "Die Zuordnung ist ungültig und wurde nicht gespeichert.",
-        forbidden: "Das Bearbeiten ist nicht freigeschaltet.",
+        forbidden: "Keine Berechtigung zum Bearbeiten.",
         failed: "Die Zuordnung konnte nicht gespeichert werden.",
       },
     },
     sidePanel: {
+      previewLoading: "Vers wird geladen …",
+      previewError: "Vers konnte nicht geladen werden.",
       rail: "Randspalte",
       modeGroup: "Inhalt der Randspalte",
       headingTsk: "Querverweise (TSK)",
@@ -1126,6 +1140,7 @@ export const de = {
     refreshNow: "Jetzt berechnen",
     refreshing: "Wird berechnet …",
     refreshFailed: "Berechnung konnte nicht gestartet werden.",
+    noPermission: "Du hast keine Berechtigung, die Datenqualität einzusehen.",
     loginRequired: {
       title: "Anmeldung erforderlich",
       text: "Die Datenqualität ist nur für angemeldete Nutzer sichtbar.",
@@ -1427,6 +1442,8 @@ export const de = {
     empty: "Noch keine Versionen.",
     version: "v{{version}}",
     restore: "wiederherstellen",
+    mappingSaved: "Zuordnung gespeichert",
+    withdrawn: "Revision dieser Stufe entfernt",
     remove: "Revision dieser Stufe entfernen",
     confirmTitle: "Revision dieser Stufe entfernen?",
     confirmBody: "Auf dieser Stufe wird wieder der Wortlaut der Elberfelder 1871 angezeigt.",

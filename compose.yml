@@ -69,6 +69,10 @@ services:
       - UNSHACKLEDWORD_APP__FRONTENDBASEURL=${FRONTEND_BASE_URL:-http://localhost:5173}
       - UNSHACKLEDWORD_APP__REQUIRESECURECOOKIES=${REQUIRE_SECURE_COOKIES:-true}
       - UNSHACKLEDWORD_REGISTRATION__MODE=${REGISTRATION_MODE:-Open}
+      # Rate limiting of anonymous callers (roadmap 0015). Off by default. Behind a reverse proxy also set REVERSE_PROXY_NETWORK
+      # (CIDR of the proxy, e.g. 172.16.0.0/12) so X-Forwarded-For is trusted; empty means the header is ignored.
+      - UNSHACKLEDWORD_RATELIMITING__ENABLED=${RATE_LIMITING_ENABLED:-false}
+      - UNSHACKLEDWORD_REVERSEPROXY__KNOWNNETWORKS__0=${REVERSE_PROXY_NETWORK:-}
       # Email goes to the mailpit sandbox by default; override Security/Username/Password for a real provider.
       - UNSHACKLEDWORD_EMAIL__SMTPHOST=${EMAIL_SMTP_HOST:-mailpit}
       - UNSHACKLEDWORD_EMAIL__SMTPPORT=${EMAIL_SMTP_PORT:-1025}

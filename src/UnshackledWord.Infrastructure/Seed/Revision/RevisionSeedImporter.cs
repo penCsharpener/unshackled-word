@@ -104,12 +104,10 @@ public sealed class RevisionSeedImporter
 
         var levels = await _repository.ReadLevelsAsync();
         var plans = await PlanAllAsync(source, levels, token);
-        var ids = new Dictionary<(int, int), int>();
 
         foreach (var plan in plans.Variants)
         {
-            var parent = plan.ParentLevel is { } level && ids.TryGetValue((plan.Line.Ref, level), out var parentId) ? parentId : (int?)null;
-            ids[plan.Key] = await session.WriteVariantAsync(ToWrite(plan, parent));
+            await session.WriteVariantAsync(ToWrite(plan));
             await session.UpsertStateAsync(source.SeedVersion, plan.Line.Ref, plan.Line.Level, plan.Hash);
         }
 
@@ -187,14 +185,10 @@ public sealed class RevisionSeedImporter
         }
 
         using var session = await _repository.BeginWriteAsync(token);
-        var ids = new Dictionary<(int, int), int>();
 
         foreach (var plan in plans.Variants.Where(p => outcomes.TryGetValue(p.Key, out var o) && o is RevisionOutcome.Replaced or RevisionOutcome.New))
         {
-            var parent = plan.ParentLevel is { } level
-                ? ids.TryGetValue((plan.Line.Ref, level), out var parentId) ? parentId : await session.GetActiveIdAsync(plan.Line.Ref, level)
-                : null;
-            ids[plan.Key] = await session.WriteVariantAsync(ToWrite(plan, parent));
+            await session.WriteVariantAsync(ToWrite(plan));
         }
 
         foreach (var (key, outcome) in outcomes)
@@ -509,7 +503,7 @@ public sealed class RevisionSeedImporter
         return RevisionVariantHash.Compute(verse, lines);
     }
 
-    private static RevisionVariantWrite ToWrite(VariantPlan plan, int? parentId)
+    private static RevisionVariantWrite ToWrite(VariantPlan plan)
     {
         var words = plan.Words.ToDictionary(w => w.Position);
 
@@ -520,7 +514,7 @@ public sealed class RevisionSeedImporter
             VerseText = plan.VerseText,
             BaseHash = plan.Line.BaseHash,
             Note = string.IsNullOrWhiteSpace(plan.Line.Note) ? null : plan.Line.Note.Trim(),
-            BasedOnRevisionVerseId = parentId,
+            ParentLevel = plan.ParentLevel,
             Reviewed = plan.Line.Reviewed,
             Lang = RevisionSql.Lang(plan.Line.Ref / 1_000_000),
             Words = plan.Tokens

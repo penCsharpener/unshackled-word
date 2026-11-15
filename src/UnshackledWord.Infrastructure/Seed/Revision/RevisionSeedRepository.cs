@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Infrastructure.Repositories;
 
 namespace UnshackledWord.Infrastructure.Seed.Revision;
 
@@ -37,7 +38,9 @@ public sealed class RevisionVariantWrite
     public required string VerseText { get; init; }
     public required string BaseHash { get; init; }
     public string? Note { get; init; }
-    public int? BasedOnRevisionVerseId { get; init; }
+
+    /// <summary>Level of the revision this text was started from (seed column <c>BasedOnLevel</c>); resolved to revision and version at write time.</summary>
+    public int? ParentLevel { get; init; }
     public bool Reviewed { get; init; }
     public required string Lang { get; init; }
     public required IReadOnlyList<RevisionWordWrite> Words { get; init; }
@@ -145,36 +148,64 @@ public sealed class RevisionWriteSession : IDisposable
 {
     private const int CommandTimeoutSeconds = 900;
 
-    private const string EndActive = """
-        UPDATE "unshackled-word"."RevisionVerses"
-        SET "IsActive"      = false
-          , "EndedAt"       = now()
-          , "EndedByUserId" = NULL
-        WHERE "HebRefId" = @HebRefId
-            AND "RevisionId" = (SELECT r."Id" FROM "unshackled-word"."Revisions" r WHERE r."Level" = @Level AND NOT r."IsBase")
-            AND "IsActive"
-        """;
-
-    private const string LastVersion = """
-        SELECT max(rv."Version")
-        FROM "unshackled-word"."RevisionVerses" rv
-        WHERE rv."HebRefId" = @HebRefId
-            AND rv."RevisionId" = (SELECT r."Id" FROM "unshackled-word"."Revisions" r WHERE r."Level" = @Level AND NOT r."IsBase")
-        """;
-
-    private const string ActiveId = """
+    private const string LiveRow = """
         SELECT rv."Id"
+             , rv."Version"
         FROM "unshackled-word"."RevisionVerses" rv
         WHERE rv."HebRefId" = @HebRefId
             AND rv."RevisionId" = (SELECT r."Id" FROM "unshackled-word"."Revisions" r WHERE r."Level" = @Level AND NOT r."IsBase")
-            AND rv."IsActive"
+        """;
+
+    private const string ParentRow = """
+        SELECT rv."RevisionId"
+             , rv."Version"
+        FROM "unshackled-word"."RevisionVerses" rv
+            JOIN "unshackled-word"."Revisions" r ON r."Id" = rv."RevisionId"
+        WHERE rv."HebRefId" = @HebRefId
+            AND r."Level" = @Level
+            AND NOT r."IsBase"
+        """;
+
+    // A verse without a live row continues from the highest audited version, so a variant that left the seed and comes back does not restart at 1.
+    private const string NextVersion = """
+        SELECT COALESCE(max(a."Version"), 0) + 1
+        FROM "unshackled-word"."RevisionVerseAudit" a
+        WHERE a."HebRefId" = @HebRefId
+            AND a."RevisionId" = (SELECT r."Id" FROM "unshackled-word"."Revisions" r WHERE r."Level" = @Level AND NOT r."IsBase")
         """;
 
     private const string InsertVerse = """
         INSERT INTO "unshackled-word"."RevisionVerses"
-            ("HebRefId", "RevisionId", "Version", "VerseText", "BaseTextHash", "Note", "CreatedByUserId", "BasedOnRevisionVerseId", "MappingReviewedAt")
-        VALUES (@HebRefId, (SELECT r."Id" FROM "unshackled-word"."Revisions" r WHERE r."Level" = @Level AND NOT r."IsBase"), @Version, @VerseText, @BaseHash, @Note, NULL, @BasedOnRevisionVerseId, CASE WHEN @Reviewed THEN now() END)
+            ("HebRefId", "RevisionId", "Version", "VerseText", "BaseTextHash", "Note", "CreatedByUserId", "UpdatedByUserId", "BasedOnRevisionId", "BasedOnVersion", "MappingReviewedAt")
+        VALUES (@HebRefId, (SELECT r."Id" FROM "unshackled-word"."Revisions" r WHERE r."Level" = @Level AND NOT r."IsBase"), @Version, @VerseText, @BaseHash, @Note, NULL, NULL, @BasedOnRevisionId, @BasedOnVersion, CASE WHEN @Reviewed THEN now() END)
         RETURNING "Id"
+        """;
+
+    private const string UpdateVerse = """
+        UPDATE "unshackled-word"."RevisionVerses"
+        SET "Version"                 = @Version
+          , "VerseText"               = @VerseText
+          , "BaseTextHash"            = @BaseHash
+          , "Note"                    = @Note
+          , "BasedOnRevisionId"       = @BasedOnRevisionId
+          , "BasedOnVersion"          = @BasedOnVersion
+          , "UpdatedByUserId"         = NULL
+          , "UpdatedAt"               = now()
+          , "MappingReviewedAt"       = CASE WHEN @Reviewed THEN now() END
+          , "MappingReviewedByUserId" = NULL
+        WHERE "Id" = @Id
+        """;
+
+    private const string DeleteWords = """
+        DELETE
+        FROM "unshackled-word"."RevisionWords"
+        WHERE "RevisionVerseId" = @Id
+        """;
+
+    private const string DeleteVerse = """
+        DELETE
+        FROM "unshackled-word"."RevisionVerses"
+        WHERE "Id" = @Id
         """;
 
     private const string InsertWords = """
@@ -223,27 +254,60 @@ public sealed class RevisionWriteSession : IDisposable
         _transaction = transaction;
     }
 
-    public async Task<int?> GetActiveIdAsync(int hebRefId, int level)
-    {
-        return await _connection.ExecuteScalarAsync<int?>(ActiveId, new { HebRefId = hebRefId, Level = level }, _transaction);
-    }
-
-    /// <summary>Ends the active variant of (verse, level) without a successor (seed update: the variant left the seed).</summary>
+    /// <summary>
+    /// Withdraws the variant of (verse, level) (seed update: the variant left the seed): writes the <c>withdraw</c> audit row, then deletes the
+    /// live row; words and mapping go with it (cascade). Nothing happens when there is no live row.
+    /// </summary>
     public async Task EndActiveAsync(int hebRefId, int level)
     {
-        await _connection.ExecuteAsync(EndActive, new { HebRefId = hebRefId, Level = level }, _transaction);
+        var live = await _connection.QueryFirstOrDefaultAsync<LiveVerse>(LiveRow, new { HebRefId = hebRefId, Level = level }, _transaction);
+
+        if (live is null)
+        {
+            return;
+        }
+
+        await RevisionAuditWriter.WriteAsync(_connection, _transaction, live.Id, RevisionAuditAction.Withdraw, null);
+        await _connection.ExecuteAsync(DeleteVerse, new { live.Id }, _transaction);
     }
 
-    /// <summary>Ends the active variant of the same (verse, level), if any, and inserts the new version with its words and mapping. Returns the new <c>RevisionVerses."Id"</c>.</summary>
+    /// <summary>
+    /// Writes the variant of (verse, level) with its words and mapping: updates the live row in place (version + 1, words replaced, mapping review
+    /// taken from the seed) or inserts it (version continues from the audit). Returns the stable <c>RevisionVerses."Id"</c>.
+    /// </summary>
     public async Task<int> WriteVariantAsync(RevisionVariantWrite variant)
     {
-        await EndActiveAsync(variant.HebRefId, variant.Level);
-        var last = await _connection.ExecuteScalarAsync<int?>(LastVersion, new { variant.HebRefId, variant.Level }, _transaction) ?? 0;
+        var live = await _connection.QueryFirstOrDefaultAsync<LiveVerse>(LiveRow, new { variant.HebRefId, variant.Level }, _transaction);
+        var parent = variant.ParentLevel is { } parentLevel
+            ? await _connection.QueryFirstOrDefaultAsync<ParentVerse>(ParentRow, new { variant.HebRefId, Level = parentLevel }, _transaction)
+            : null;
 
-        var id = await _connection.ExecuteScalarAsync<int>(
-            InsertVerse,
-            new { variant.HebRefId, variant.Level, Version = last + 1, variant.VerseText, variant.BaseHash, variant.Note, variant.BasedOnRevisionVerseId, variant.Reviewed },
-            _transaction);
+        var verse = new
+        {
+            variant.HebRefId,
+            variant.Level,
+            Version = live is null ? 0 : live.Version + 1,
+            variant.VerseText,
+            variant.BaseHash,
+            variant.Note,
+            BasedOnRevisionId = parent?.RevisionId,
+            BasedOnVersion = parent?.Version,
+            variant.Reviewed,
+        };
+
+        int id;
+
+        if (live is null)
+        {
+            var next = await _connection.ExecuteScalarAsync<int>(NextVersion, new { variant.HebRefId, variant.Level }, _transaction);
+            id = await _connection.ExecuteScalarAsync<int>(InsertVerse, new { verse.HebRefId, verse.Level, Version = next, verse.VerseText, verse.BaseHash, verse.Note, verse.BasedOnRevisionId, verse.BasedOnVersion, verse.Reviewed }, _transaction);
+        }
+        else
+        {
+            id = live.Id;
+            await _connection.ExecuteAsync(UpdateVerse, new { Id = id, verse.Version, verse.VerseText, verse.BaseHash, verse.Note, verse.BasedOnRevisionId, verse.BasedOnVersion, verse.Reviewed }, _transaction);
+            await _connection.ExecuteAsync(DeleteWords, new { Id = id }, _transaction);
+        }
 
         var words = variant.Words.OrderBy(w => w.Position).ToList();
         var inserted = (await _connection.QueryAsync<InsertedWord>(
@@ -277,6 +341,8 @@ public sealed class RevisionWriteSession : IDisposable
                 _transaction,
                 CommandTimeoutSeconds);
         }
+
+        await RevisionAuditWriter.WriteAsync(_connection, _transaction, id, RevisionAuditAction.Text, null);
 
         return id;
     }
@@ -326,6 +392,18 @@ public sealed class RevisionWriteSession : IDisposable
 
         _transaction.Dispose();
         _connection.Dispose();
+    }
+
+    private sealed class LiveVerse
+    {
+        public int Id { get; init; }
+        public int Version { get; init; }
+    }
+
+    private sealed class ParentVerse
+    {
+        public int RevisionId { get; init; }
+        public int Version { get; init; }
     }
 
     private sealed class InsertedWord

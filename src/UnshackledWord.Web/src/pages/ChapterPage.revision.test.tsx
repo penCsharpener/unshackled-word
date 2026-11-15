@@ -64,7 +64,6 @@ function stubFetch() {
           revisionVerseId: 9,
           level: 300,
           version: 1,
-          isActive: true,
           bibleBookId: 43,
           chapter: 3,
           verse: 2,

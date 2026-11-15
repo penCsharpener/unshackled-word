@@ -1,13 +1,22 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { CrossReferenceList } from "@/components/CrossReferenceList";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { VerseSidePanel } from "@/components/VerseSidePanel";
-import type { BibleStructureBook, ChapterOriginalVerse, CrossReference } from "@/lib/bible/types";
+import type {
+  BibleStructureBook,
+  ChapterOriginalVerse,
+  CrossReference,
+  GetChapterOriginalsResponse,
+} from "@/lib/bible/types";
 
 export interface VerseSideProps {
   mode: "tsk" | "original";
   verse: number;
+  /** chapter and reader level, for the hover text of the TSK links */
+  bookId: number;
+  chapter: number;
+  level: number;
   /** e.g. "Johannes 3,1" */
   reference: string;
   books?: BibleStructureBook[];
@@ -18,6 +27,7 @@ export interface VerseSideProps {
   /** `original`: words and language of the verse (absent = none) */
   original?: ChapterOriginalVerse;
   language: "greek" | "hebrew";
+  lexicon?: GetChapterOriginalsResponse["lexicon"];
   /** original word ids to highlight (linked to the hovered German word or original word) */
   linkedIds: ReadonlySet<number>;
   onHoverOriginal: (verse: number, id: number | undefined) => void;
@@ -27,6 +37,9 @@ export interface VerseSideProps {
 export const VerseSide = memo(function VerseSide({
   mode,
   verse,
+  bookId,
+  chapter,
+  level,
   reference,
   books,
   references,
@@ -34,10 +47,15 @@ export const VerseSide = memo(function VerseSide({
   onExpandedChange,
   original,
   language,
+  lexicon,
   linkedIds,
   onHoverOriginal,
 }: VerseSideProps) {
   const { t } = useTranslation();
+  const preview = useMemo(
+    () => ({ bookId, chapter, verse, level }),
+    [bookId, chapter, verse, level],
+  );
 
   if (mode === "tsk") {
     if (!references || references.length === 0) return null;
@@ -48,7 +66,12 @@ export const VerseSide = memo(function VerseSide({
         expanded={expanded}
         onExpandedChange={(next) => onExpandedChange(verse, next)}
       >
-        <CrossReferenceList variant="inline" references={references} books={books} />
+        <CrossReferenceList
+          variant="inline"
+          references={references}
+          books={books}
+          preview={preview}
+        />
       </VerseSidePanel>
     );
   }
@@ -59,6 +82,7 @@ export const VerseSide = memo(function VerseSide({
         <OriginalVerse
           variant="margin"
           data={{ language, originalWords: original.words }}
+          lexicon={lexicon}
           reference={reference}
           linkedIds={linkedIds}
           onHoverWord={(id) => onHoverOriginal(verse, id)}

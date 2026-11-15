@@ -81,6 +81,6 @@ public class ChapterWordsQueryTests
 
         sql.ShouldContain("BETWEEN least(@Level, 200) AND greatest(@Level, 200)");
         sql.ShouldContain("ORDER BY abs(rev.\"Level\" - 200) DESC");
-        sql.ShouldContain("rv.\"IsActive\"");
+        sql.ShouldNotContain("IsActive");
     }
 }

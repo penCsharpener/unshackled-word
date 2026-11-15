@@ -9,14 +9,14 @@ public sealed class RevisionVerseDbo
     public int RevisionId { get; set; }
     public int Version { get; set; }
     public string VerseText { get; set; } = default!;
-    public int? BasedOnRevisionVerseId { get; set; }
+    public int? BasedOnRevisionId { get; set; }
+    public int? BasedOnVersion { get; set; }
     public string BaseTextHash { get; set; } = default!;
     public string? Note { get; set; }
-    public bool IsActive { get; set; }
     public int? CreatedByUserId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public int? EndedByUserId { get; set; }
-    public DateTime? EndedAt { get; set; }
+    public int? UpdatedByUserId { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public int? MappingReviewedByUserId { get; set; }
     public DateTime? MappingReviewedAt { get; set; }
 }

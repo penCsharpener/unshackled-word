@@ -1,11 +1,14 @@
 using FastEndpoints;
 using FluentValidation;
+using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetVerseMapping;
 using UnshackledWord.Domain.WebApi.Elberfelder.SaveVerseMapping;
+using UnshackledWord.Tooling.WebApi.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.SaveVerseMapping;
 
+[RequiresLogin]
 public class Endpoint : Endpoint<SaveVerseMappingRequest, GetVerseMappingResponse>
 {
     private readonly IVerseMappingService _service;
@@ -19,8 +22,8 @@ public class Endpoint : Endpoint<SaveVerseMappingRequest, GetVerseMappingRespons
     {
         Put("verseMapping/bookId/{BibleBookId:int}/chapterId/{ChapterId:int}/verseId/{VerseId:int}");
         Group<RouteGroupConfig>();
-        // No auth system yet: the write gate is the MappingEditing:Enabled setting (see docs/roadmaps/0003-mapping-editor.md).
-        AllowAnonymous();
+        // Writes need a maintainer/admin session; MappingEditing:Enabled stays as an extra server-wide switch (roadmaps 0003, 0015).
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Description(b => b.Produces<GetVerseMappingResponse>(200).ProducesProblem(400).ProducesProblem(403).ProducesProblem(404));
     }
 

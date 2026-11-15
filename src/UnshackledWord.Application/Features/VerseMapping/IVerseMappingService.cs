@@ -4,8 +4,11 @@ namespace UnshackledWord.Application.Features.VerseMapping;
 
 public interface IVerseMappingService
 {
-    /// <summary>Returns null when the verse has no Elberfelder words.</summary>
-    Task<GetVerseMappingResponse?> GetAsync(int bibleBookId, int chapter, int verse, CancellationToken token = default);
+    /// <summary>
+    /// Returns null when the verse has no Elberfelder words. <c>EditingEnabled</c> of the response is true only while the server-wide
+    /// setting is on and <paramref name="callerCanWrite"/> (the caller has a write role) is true.
+    /// </summary>
+    Task<GetVerseMappingResponse?> GetAsync(int bibleBookId, int chapter, int verse, bool callerCanWrite, CancellationToken token = default);
 
     /// <summary>Replaces the whole mapping of the verse. Rejected without touching the database while editing is disabled.</summary>
     Task<SaveVerseMappingResult> SaveAsync(int bibleBookId, int chapter, int verse, IReadOnlyList<VerseMappingLink> links, CancellationToken token = default);

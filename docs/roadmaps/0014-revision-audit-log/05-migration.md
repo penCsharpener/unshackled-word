@@ -24,8 +24,15 @@ Runs together with the code switch (0014.3).
 5. Recreate the word/mapping FKs with `ON DELETE CASCADE`. Update table comments.
 6. `VACUUM` is not possible inside the migration transaction; note in the release text to run `VACUUM (ANALYZE)` once.
 
-Check queries at the end of the script (fail the migration if violated): audit rows ≥ old verse rows; every live verse
-has an audit `text` row with its `Version`.
+Check queries (fail the migration if violated): audit `text` rows ≥ old verse rows; every live verse has an audit `text`
+row with its `Version`. As built they run **first**, before any change, so a failed check leaves the database untouched
+even if the runner does not wrap the script in a transaction (DbUp's default does not); a second, final check verifies
+one row per (verse, revision), the audit row per live verse and that no word row lost its verse.
+
+As built also: `CreatedBy/At` of the live row become the first creation of the verse (earliest version), `UpdatedBy/At`
+the old live row's `CreatedBy/At`; `RevisionVerses_BasedOn_FK` is recreated on `Revisions` with a check that
+`BasedOnRevisionId`/`BasedOnVersion` are both null or both set. The DbUp runner needs a connection string without
+`Search Path` (its journal check fails on `unshackled-word`).
 
 Docker self-hosters: their own history is preserved in the audit table; the repo seed is unaffected (it only ever held
 live rows).

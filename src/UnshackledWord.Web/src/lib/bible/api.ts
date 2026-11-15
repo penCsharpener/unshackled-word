@@ -6,6 +6,7 @@ import type {
   GetChapterTextResponse,
   GetStrongsOccurrencesResponse,
   GetStrongsSummaryResponse,
+  GetVerseCrossReferenceTextsResponse,
   GetVerseMappingResponse,
   GetWordDetailResponse,
   GetWordStatsResponse,
@@ -40,6 +41,17 @@ export const bibleApi = {
   chapterWords: (bookId: number, chapter: number, level = BASE_LEVEL, signal?: AbortSignal) =>
     api.get<GetWordsOfChapterResponse>(
       `/elberfelder/chapterWords/bookId/${bookId}/chapterId/${chapter}${levelQuery(level)}`,
+      signal,
+    ),
+  verseCrossReferenceTexts: (
+    bookId: number,
+    chapter: number,
+    verse: number,
+    level = BASE_LEVEL,
+    signal?: AbortSignal,
+  ) =>
+    api.get<GetVerseCrossReferenceTextsResponse>(
+      `/elberfelder/crossReferenceTexts/bookId/${bookId}/chapterId/${chapter}/verseId/${verse}${levelQuery(level)}`,
       signal,
     ),
   chapterCrossReferences: (bookId: number, chapter: number, signal?: AbortSignal) =>

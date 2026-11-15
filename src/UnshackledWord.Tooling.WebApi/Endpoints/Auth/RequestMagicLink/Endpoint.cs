@@ -2,9 +2,11 @@ using FastEndpoints;
 using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Domain.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Auth.RequestMagicLink;
 
+[RateLimitGroup(RateLimitGroups.Auth)]
 public sealed class Endpoint : Endpoint<EmailRequest>
 {
     // Shorter than a password reset: a magic link proves email ownership and signs the holder straight in.

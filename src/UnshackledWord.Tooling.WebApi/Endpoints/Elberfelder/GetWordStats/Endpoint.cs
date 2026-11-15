@@ -1,9 +1,11 @@
 using FastEndpoints;
 using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetWordStats;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetWordStats;
 
+[RateLimitGroup(RateLimitGroups.Search)]
 public class Endpoint : Endpoint<GetWordStatsRequest, GetWordStatsResponse>
 {
     private readonly IWordStatsService _service;

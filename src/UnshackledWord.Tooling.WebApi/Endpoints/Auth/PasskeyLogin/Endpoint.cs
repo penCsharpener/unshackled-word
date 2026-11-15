@@ -5,6 +5,7 @@ using Fido2NetLib;
 using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Domain.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Auth.PasskeyLogin;
 
@@ -15,6 +16,7 @@ public sealed class PasskeyLoginRequest
 }
 
 /// <summary>Finishes the ceremony GetPasskeyLoginOptions started and signs the caller in.</summary>
+[RateLimitGroup(RateLimitGroups.Auth)]
 public sealed class Endpoint : Endpoint<PasskeyLoginRequest, AuthUserResponse>
 {
     private readonly IAuthRepository _repository;

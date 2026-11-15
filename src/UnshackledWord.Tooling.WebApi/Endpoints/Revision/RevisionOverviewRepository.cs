@@ -67,7 +67,7 @@ public static class RevisionOverviewSql
                                               , rev."Level"            AS "Level"
                                               , rv."Version"           AS "Version"
                                               , rv."BaseTextHash"      AS "BaseTextHash"
-                                              , rv."CreatedAt"         AS "CreatedAt"
+                                              , rv."UpdatedAt"         AS "CreatedAt"
                                               , rv."MappingReviewedAt" AS "MappingReviewedAt"
                                               , (SELECT count(*)
                                                  FROM "unshackled-word"."RevisionWords" rw
@@ -97,7 +97,6 @@ public static class RevisionOverviewSql
                                                 END AS "UnlinkedOriginalWords"
                                          FROM "unshackled-word"."RevisionVerses" rv
                                              JOIN "unshackled-word"."Revisions" rev ON rev."Id" = rv."RevisionId"
-                                         WHERE rv."IsActive"
                                          ORDER BY rev."Level"
                                                 , rv."HebRefId"
                                          """;

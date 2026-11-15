@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.Coverage;
 
@@ -19,6 +20,7 @@ public sealed class Endpoint : Endpoint<CoverageRequest, CoverageResponse>
     {
         Get("coverage");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "Per chapter: content words and how many of them are unaligned (metric german | source).");
     }
 

@@ -1,3 +1,4 @@
+using UnshackledWord.Domain.WebApi.Elberfelder.GetWordDetail;
 namespace UnshackledWord.Domain.WebApi.Elberfelder.GetVerseMapping;
 
 public sealed class GetVerseMappingResponse
@@ -9,7 +10,7 @@ public sealed class GetVerseMappingResponse
     /// <summary>"greek" (New Testament) or "hebrew" (Old Testament).</summary>
     public string Language { get; set; } = string.Empty;
 
-    /// <summary>False while the write gate (MappingEditing:Enabled) is closed; PUT then answers 403.</summary>
+    /// <summary>True only while the write gate (MappingEditing:Enabled) is open and the caller has a write role (admin/maintainer); otherwise PUT answers 403.</summary>
     public bool EditingEnabled { get; set; }
 
     /// <summary>Elberfelder words of the verse in reading order.</summary>
@@ -41,6 +42,9 @@ public sealed class VerseMappingOriginalWord
     public string? Strongs { get; set; }
     public string? Gloss { get; set; }
     public string? MorphologyCode { get; set; }
+
+    /// <summary>Decoded <see cref="MorphologyCode"/>; only filled by the chapter originals read (hover info), null (omitted) otherwise.</summary>
+    public MorphologyResponse? Morphology { get; set; }
 }
 
 /// <summary>

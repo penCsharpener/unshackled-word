@@ -1,5 +1,6 @@
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { ApiError } from "@/lib/api";
+import { retryUnlessRateLimited } from "@/lib/queryClient";
 import { BASE_LEVEL, bibleApi } from "./api";
 import { isLookupQuery } from "./strongsStats";
 
@@ -57,6 +58,7 @@ export function useVerseSearch(
     enabled: ready && isVerseSearchQuery(trimmed),
     placeholderData: keepPreviousData,
     staleTime: 5 * 60_000,
-    retry: (count, error) => !(error instanceof ApiError && error.status === 400) && count < 1,
+    retry: (count, error) =>
+      !(error instanceof ApiError && error.status === 400) && retryUnlessRateLimited(count, error),
   });
 }

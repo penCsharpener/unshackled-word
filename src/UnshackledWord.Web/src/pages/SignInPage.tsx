@@ -5,7 +5,7 @@ import { AuthCard } from "@/components/AuthCard";
 import { Button } from "@/components/Button";
 import { FormError } from "@/components/FormError";
 import { TextField } from "@/components/TextField";
-import { ApiError } from "@/lib/api";
+import { ApiError, isRateLimited, rateLimitMessage } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { passkeysApi } from "@/lib/auth/api";
 import { authLinkClasses } from "@/lib/auth/styles";
@@ -36,9 +36,11 @@ export function SignInPage() {
     } catch (err) {
       // Deliberately generic: the API never says which part was wrong.
       setError(
-        err instanceof ApiError && err.status === 401
-          ? t("auth.invalidCredentials")
-          : t("auth.loginFailed"),
+        isRateLimited(err)
+          ? rateLimitMessage(err)
+          : err instanceof ApiError && err.status === 401
+            ? t("auth.invalidCredentials")
+            : t("auth.loginFailed"),
       );
     } finally {
       setSubmitting(false);
@@ -56,9 +58,11 @@ export function SignInPage() {
       navigate("/");
     } catch (err) {
       setPasskeyError(
-        err instanceof WebAuthnCancelledError
-          ? t("auth.passkeys.cancelled")
-          : t("auth.passkeyFailed"),
+        isRateLimited(err)
+          ? rateLimitMessage(err)
+          : err instanceof WebAuthnCancelledError
+            ? t("auth.passkeys.cancelled")
+            : t("auth.passkeyFailed"),
       );
     } finally {
       setPasskeyBusy(false);

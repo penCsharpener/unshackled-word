@@ -34,6 +34,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<SttsSeedRunner>();
         services.AddScoped<RevisionLevelSeedRunner>();
         services.AddRepoSeedServices();
+        services.AddScoped<UnshackledWord.Application.Features.Revision.IRevisionRepository, UnshackledWord.Infrastructure.Repositories.RevisionRepository>(); // the realigner of the rebase verb needs it
         services.AddScoped<SrRunner>();
         services.AddScoped<TskRunner>();
         services.AddScoped<GbtRunner>();

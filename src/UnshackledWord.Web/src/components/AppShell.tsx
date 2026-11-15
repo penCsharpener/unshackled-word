@@ -8,6 +8,7 @@ import { useSearchHotkey } from "@/lib/search/useSearchHotkey";
 import { Button } from "./Button";
 import { HeaderWordInfo } from "./HeaderWordInfo";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { RateLimitNotice } from "./RateLimitNotice";
 import { SearchOverlay } from "./SearchOverlay";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
@@ -111,6 +112,7 @@ function AppShellContent() {
             </div>
           </div>
         </header>
+        <RateLimitNotice />
         <main
           className={`mx-auto flex w-full max-w-page-wide flex-1 flex-col px-4 md:px-8 ${
             fill ? "py-4 md:min-h-0 md:pb-2" : "py-8"

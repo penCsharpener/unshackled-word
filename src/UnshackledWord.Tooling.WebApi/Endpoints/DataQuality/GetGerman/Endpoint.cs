@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.GetGerman;
 
@@ -21,6 +22,7 @@ public sealed class Endpoint : Endpoint<GermanDetailRequest, GermanDetailRespons
     {
         Get("german");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "One German lemma (optional PoS): the original words behind it (incl. added / none) with flags, and its surface forms.");
     }
 

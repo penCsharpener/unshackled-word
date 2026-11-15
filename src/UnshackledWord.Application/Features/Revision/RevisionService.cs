@@ -34,50 +34,51 @@ public sealed class RevisionService : IRevisionService
             return Conflict();
         }
 
-        int? parentId = null;
+        RevisionActiveRow? parent = null;
         if (request.BasedOnLevel != RevisionSql.BaseOnlyLevel)
         {
-            parentId = (await _repository.GetActiveAsync(hebRefId, request.BasedOnLevel, token))?.Id;
-            if (parentId is null)
+            parent = await _repository.GetActiveAsync(hebRefId, request.BasedOnLevel, token);
+            if (parent is null)
             {
-                return new SaveRevisionResult { Outcome = SaveRevisionOutcome.Invalid, Error = "basedOnLevel has no active variant for this verse." };
+                return new SaveRevisionResult { Outcome = SaveRevisionOutcome.Invalid, Error = "basedOnLevel has no variant for this verse." };
             }
         }
 
+        // The carry source (Elb1871 or the parent variant) is read here, before the repository rewrites any row: a re-save at the same level
+        // carries from the very words and mapping the save then deletes and replaces.
         var tokens = RevisionTokenizer.Tokenize(request.Text);
         var baseWords = await _repository.GetBaseWordsAsync(hebRefId, token);
-        var version = await _repository.GetLastVersionAsync(hebRefId, request.Level, token) + 1;
-        var carry = parentId is { } parent
-            ? await _carry.CarryFromVariantAsync(parent, tokens, token)
+        var carry = parent is not null
+            ? await _carry.CarryFromVariantAsync(parent.Id, tokens, token)
             : await _carry.CarryFromBaseAsync(bibleBookId, chapter, verse, baseWords, tokens, token);
 
-        var id = await _repository.InsertVersionAsync(new NewRevisionVersion
+        var saved = await _repository.SaveVersionAsync(new NewRevisionVersion
         {
             HebRefId = hebRefId,
             Level = request.Level,
-            Version = version,
+            ExpectedVersion = request.ExpectedVersion,
             VerseText = string.Join(' ', tokens.Select(t => t.WordInContext)),
             BaseTextHash = ChapterFingerprint.Compute(baseWords.Select(w => AnchorToken.ForWord(hebRefId, w.PositionInVerse, w.PlainWord))),
             Note = string.IsNullOrWhiteSpace(request.Note) ? null : request.Note.Trim(),
             CreatedByUserId = userId,
-            BasedOnRevisionVerseId = parentId,
-            EndActiveRevisionVerseId = active?.Id,
+            BasedOnRevisionId = parent?.RevisionId,
+            BasedOnVersion = parent?.Version,
             Tokens = tokens,
             Words = carry.Words,
             CarriedRows = carry.Rows,
             Lang = RevisionSql.Lang(bibleBookId),
-        }, userId, token);
+        }, token);
 
-        return id is null
+        return saved is null
             ? Conflict()
             : new SaveRevisionResult
             {
                 Outcome = SaveRevisionOutcome.Saved,
                 Saved = new SaveRevisionVerseResponse
                 {
-                    RevisionVerseId = id.Value,
+                    RevisionVerseId = saved.RevisionVerseId,
                     Level = request.Level,
-                    Version = version,
+                    Version = saved.Version,
                     Carry = new RevisionCarryReportEntry
                     {
                         Same = carry.Report.SameCount,
@@ -126,25 +127,46 @@ public sealed class RevisionService : IRevisionService
             return null;
         }
 
-        var rows = await _repository.GetHistoryAsync(hebRefId, level, token);
-        return new RevisionHistoryResponse
+        var rows = (await _repository.GetHistoryAsync(hebRefId, level, token)).OrderByDescending(r => r.AuditId).ToList();
+        var entries = new List<RevisionHistoryEntry>(rows.Count);
+        DateTime? nextEnd = null; // At of the next (newer) text or withdraw entry
+        var newestTextSeen = false;
+        var withdrawn = false;
+
+        foreach (var r in rows)
         {
-            Level = level,
-            Versions = rows
-                .OrderByDescending(r => r.Version)
-                .Select(r => new RevisionHistoryEntry
-                {
-                    RevisionVerseId = r.RevisionVerseId,
-                    Version = r.Version,
-                    Text = r.VerseText,
-                    Note = r.Note,
-                    IsActive = r.IsActive,
-                    CreatedAt = r.CreatedAt,
-                    CreatedBy = r.CreatedBy,
-                    EndedAt = r.EndedAt,
-                })
-                .ToList(),
-        };
+            var isText = r.Action == RevisionHistoryAction.Text;
+            var isActive = isText && !newestTextSeen && !withdrawn;
+            if (r.Action == RevisionHistoryAction.Withdraw && !newestTextSeen)
+            {
+                withdrawn = true;
+            }
+
+            entries.Add(new RevisionHistoryEntry
+            {
+                AuditId = r.AuditId,
+                Version = r.Version,
+                Action = r.Action,
+                Text = r.VerseText,
+                Note = r.Note,
+                IsActive = isActive,
+                At = r.At,
+                By = r.By,
+                EndedAt = isText ? nextEnd : null,
+            });
+
+            if (isText)
+            {
+                newestTextSeen = true;
+            }
+
+            if (isText || r.Action == RevisionHistoryAction.Withdraw)
+            {
+                nextEnd = r.At;
+            }
+        }
+
+        return new RevisionHistoryResponse { Level = level, Versions = entries };
     }
 
     public async Task<WithdrawRevisionOutcome> WithdrawAsync(int revisionVerseId, int userId, CancellationToken token = default)
@@ -155,7 +177,7 @@ public sealed class RevisionService : IRevisionService
             return WithdrawRevisionOutcome.NotFound;
         }
 
-        return header.IsActive && await _repository.EndVariantAsync(revisionVerseId, userId, token)
+        return await _repository.EndVariantAsync(revisionVerseId, userId, token)
             ? WithdrawRevisionOutcome.Withdrawn
             : WithdrawRevisionOutcome.Conflict;
     }
@@ -163,6 +185,6 @@ public sealed class RevisionService : IRevisionService
     private static SaveRevisionResult Conflict() => new()
     {
         Outcome = SaveRevisionOutcome.Conflict,
-        Error = "The variant changed in the meantime (expectedVersion is not the active version). Reload and try again.",
+        Error = "The variant changed in the meantime (expectedVersion is not the live version). Reload and try again.",
     };
 }

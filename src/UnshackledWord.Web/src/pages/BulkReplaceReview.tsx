@@ -366,7 +366,7 @@ function ReviewVerse({
           ) : null}
           {mapping.data ? (
             <MappingEditor
-              data={toMappingData(mapping.data, mapping.data.isActive)}
+              data={toMappingData(mapping.data, true)}
               reference={reference}
               review={reviewMarkers(mapping.data, carry)}
               saving={saveMapping.isPending}

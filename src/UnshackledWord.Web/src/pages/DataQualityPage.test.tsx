@@ -60,14 +60,25 @@ describe("DataQualityPage", () => {
     expect(await screen.findByText("Anmeldung erforderlich")).toBeInTheDocument();
   });
 
-  it("shows tiles with severity and hides the refresh button without write role", async () => {
-    stubApi({ ...handlers, "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }) });
+  it("shows tiles with severity", async () => {
+    stubApi({ ...handlers, "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }) });
     renderPage();
     expect(
       await screen.findByRole("button", { name: /U1 Deutsch ohne Grundtext/ }),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /L1 Ohne Lemma.*Unauffällig/ })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Neu berechnen" })).toBeNull();
+  });
+
+  it("shows a no-permission state and fires no quality request for plain users", async () => {
+    const fetchMock = stubApi({
+      ...handlers,
+      "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }),
+    });
+    renderPage();
+    expect(await screen.findByText(/keine Berechtigung/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /U1/ })).toBeNull();
+    const urls = fetchMock.mock.calls.map(([url]) => String(url));
+    expect(urls.some((url) => url.includes("/dataQuality/"))).toBe(false);
   });
 
   it("offers the refresh button to maintainers and marks the selected check from the URL", async () => {
@@ -88,7 +99,7 @@ describe("DataQualityPage", () => {
   });
 
   it("shows no seed line when the overview has no seedImports", async () => {
-    stubApi({ ...handlers, "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }) });
+    stubApi({ ...handlers, "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }) });
     renderPage();
     await screen.findByRole("button", { name: /U1 Deutsch ohne Grundtext/ });
     expect(screen.queryByText(/^Seed /)).toBeNull();
@@ -106,7 +117,7 @@ describe("DataQualityPage", () => {
     });
     stubApi({
       ...handlers,
-      "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }),
+      "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
       "GET /dataQuality/overview": () => json({ ...overview, seedImports: [seed(12)] }),
     });
     const first = renderPage();
@@ -117,7 +128,7 @@ describe("DataQualityPage", () => {
 
     stubApi({
       ...handlers,
-      "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }),
+      "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
       "GET /dataQuality/overview": () => json({ ...overview, seedImports: [seed(0)] }),
     });
     renderPage();
@@ -127,7 +138,7 @@ describe("DataQualityPage", () => {
   it("summarises a mapping seed update with the kept verses and the report path", async () => {
     stubApi({
       ...handlers,
-      "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }),
+      "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
       "GET /dataQuality/overview": () =>
         json({
           ...overview,
@@ -167,7 +178,7 @@ describe("DataQualityPage", () => {
     const render = (seedImports: object[]) => {
       stubApi({
         ...handlers,
-        "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }),
+        "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
         "GET /dataQuality/overview": () => json({ ...overview, seedImports }),
       });
       return renderPage();
@@ -202,7 +213,7 @@ describe("DataQualityPage", () => {
   it("shows the STTS tiles and an L7 finding with its tag and part of speech", async () => {
     stubApi({
       ...handlers,
-      "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }),
+      "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
       "GET /dataQuality/overview": () =>
         json({
           ...overview,

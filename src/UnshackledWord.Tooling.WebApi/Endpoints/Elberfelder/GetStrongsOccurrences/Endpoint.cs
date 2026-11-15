@@ -3,9 +3,11 @@ using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetStrongsOccurrences;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetStrongsOccurrences;
 
+[RateLimitGroup(RateLimitGroups.Search)]
 public class Endpoint : Endpoint<GetStrongsOccurrencesRequest, GetStrongsOccurrencesResponse>
 {
     private readonly IStrongsOccurrenceService _service;

@@ -14,11 +14,14 @@ Decisions behind this: [02-decisions.md](02-decisions.md).
 "BasedOnVersion"          int4 NULL    -- version of the parent when this text was written
 "BaseTextHash"            varchar(12)
 "Note"                    varchar(500) NULL
-"CreatedByUserId"/"CreatedAt"          -- first creation
-"UpdatedByUserId"/"UpdatedAt"          -- last text save (new)
+"CreatedByUserId"/"CreatedAt"          -- first creation (migration 0024: earliest version of the verse); reads that show "author/date of this
+                                      -- text" (verse read, revision overview) use UpdatedBy/At, the contract names stay `createdBy`/`createdAt`
+"UpdatedByUserId"/"UpdatedAt"          -- last text save (new; UpdatedAt NOT NULL DEFAULT now())
 "MappingReviewedByUserId"/"MappingReviewedAt"
 "SearchVector"            generated
 CONSTRAINT "RevisionVerses_Verse_UQ" UNIQUE ("HebRefId", "RevisionId")
+CONSTRAINT "RevisionVerses_BasedOn_FK" FOREIGN KEY ("BasedOnRevisionId") REFERENCES "Revisions" ("Id")
+CONSTRAINT "RevisionVerses_BasedOn_CK" CHECK (("BasedOnRevisionId" IS NULL) = ("BasedOnVersion" IS NULL))
 ```
 
 Dropped: `IsActive`, `EndedAt`, `EndedByUserId`, `RevisionVerses_Lifecycle_CK`, `RevisionVerses_Version_UQ`,
@@ -63,7 +66,8 @@ The latest audit row of a live verse always equals the live row; a test asserts 
 
 ## History contract
 
-`GET …/history?level=` reads only the audit table. Entries change shape slightly: `auditId` instead of
-`revisionVerseId`, `action`, `at`, `by`; `isActive` becomes "is the newest text entry and the verse is not withdrawn";
-`endedAt` is the `at` of the next text/withdraw entry. `VersionHistory` shows mapping entries as a small "Zuordnung
-gespeichert" line under their version.
+`GET …/history?level=` reads only the audit table, newest entry first (by `auditId`). Entry fields: `auditId`, `version`,
+`action` (`text` | `mapping` | `withdraw`), `text`, `note`, `isActive`, `at`, `by` (display name, absent for seed),
+`endedAt`. `isActive` is true only for the newest text entry of a verse that is not withdrawn; `endedAt` (text entries)
+is the `at` of the next text/withdraw entry. A `mapping` entry carries the `version` of its text entry; `VersionHistory`
+shows it as a small "Zuordnung gespeichert" line under that version and a `withdraw` entry as its own line.

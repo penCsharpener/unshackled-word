@@ -2,9 +2,11 @@ using FastEndpoints;
 using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Domain.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Auth.Register;
 
+[RateLimitGroup(RateLimitGroups.Auth)]
 public sealed class Endpoint : Endpoint<RegisterRequest, AuthUserResponse>
 {
     private static readonly TimeSpan VerificationTokenLifetime = TimeSpan.FromHours(24);

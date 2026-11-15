@@ -3,6 +3,7 @@ using FluentValidation;
 using UnshackledWord.Domain.Models.DataQuality;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.GetOriginal;
 
@@ -22,6 +23,7 @@ public sealed class Endpoint : Endpoint<OriginalDetailRequest, OriginalDetailRes
     {
         Get("original/{strongs}");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "One original word (base Strong's number, e.g. G2424 / H0430): counts and its German renderings with flags.");
     }
 

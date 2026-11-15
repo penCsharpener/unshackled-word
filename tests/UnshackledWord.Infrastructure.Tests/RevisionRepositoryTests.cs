@@ -9,25 +9,25 @@ public class RevisionRepositoryTests
     private static RevisionRepository Repository(FakeDbReader reader) => new(reader, Substitute.For<UnshackledWord.Application.Abstractions.IDbConnectionFactory>());
 
     [Fact]
-    public async Task GetActiveAsync_FiltersOnVerseLevelAndActiveRows()
+    public async Task GetActiveAsync_FiltersOnVerseAndLevel_WithoutALifecycleFilter()
     {
-        var reader = new FakeDbReader().Returns(new RevisionActiveRow { Id = 4, Version = 2 });
+        var reader = new FakeDbReader().Returns(new RevisionActiveRow { Id = 4, Version = 2, RevisionId = 7 });
 
         var active = await Repository(reader).GetActiveAsync(43003016, 200);
 
         active!.Version.ShouldBe(2);
-        reader.LastSql.ShouldContain("rv.\"IsActive\"");
+        active.RevisionId.ShouldBe(7);
+        reader.LastSql.ShouldNotContain("IsActive");
         reader.LastParam("HebRefId").ShouldBe(43003016);
         reader.LastParam("Level").ShouldBe(200);
     }
 
     [Fact]
-    public async Task GetLastVersionAsync_CountsEndedVersionsToo_AndStartsAtZero()
+    public void NextVersion_ContinuesFromTheHighestAuditedVersion()
     {
-        var reader = new FakeDbReader();
-
-        (await Repository(reader).GetLastVersionAsync(43003016, 200)).ShouldBe(0);
-        reader.LastSql.ShouldContain("max(rv.\"Version\")");
+        RevisionRepositorySql.NextVersion.ShouldContain("max(a.\"Version\")");
+        RevisionRepositorySql.NextVersion.ShouldContain("\"RevisionVerseAudit\"");
+        RevisionRepositorySql.NextVersion.ShouldNotContain("\"RevisionVerses\"");
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class RevisionRepositoryTests
 
         (await Repository(reader).GetActiveVariantsAsync(43003016)).Count.ShouldBe(1);
         reader.LastSql.ShouldContain("LEFT JOIN \"unshackled-word\".\"Users\"");
-        reader.LastSql.ShouldContain("rv.\"IsActive\"");
+        reader.LastSql.ShouldNotContain("IsActive");
     }
 
     [Fact]
@@ -56,15 +56,26 @@ public class RevisionRepositoryTests
         RevisionRepositorySql.InsertWord.ShouldContain("@Change");
         RevisionRepositorySql.InsertWord.ShouldContain("RETURNING \"Id\"");
         RevisionRepositorySql.InsertMapping.ShouldContain("\"Origin\"");
-        RevisionRepositorySql.EndActive.ShouldContain("\"EndedByUserId\"");
+        RevisionRepositorySql.UpdateVerse.ShouldContain("\"UpdatedByUserId\"");
     }
 
     [Fact]
-    public async Task GetHeaderAsync_ReadsEndedVersionsToo()
+    public void UpdateSql_RewritesTheLiveRowInPlace_AndResetsTheMappingReview()
     {
-        var reader = new FakeDbReader().Returns(new RevisionVerseHeaderRow { Id = 3, HebRefId = 43003016, IsActive = false });
+        RevisionRepositorySql.UpdateVerse.ShouldContain("UPDATE \"unshackled-word\".\"RevisionVerses\"");
+        RevisionRepositorySql.UpdateVerse.ShouldContain("\"MappingReviewedAt\"       = NULL");
+        RevisionRepositorySql.UpdateVerse.ShouldContain("\"BasedOnVersion\"");
+        RevisionRepositorySql.DeleteWords.ShouldContain("\"RevisionVerseId\" = @Id");
+        RevisionRepositorySql.DeleteVerse.ShouldContain("DELETE");
+        RevisionRepositorySql.LockVerse.ShouldContain("FOR UPDATE");
+    }
 
-        (await Repository(reader).GetHeaderAsync(3))!.IsActive.ShouldBeFalse();
+    [Fact]
+    public async Task GetHeaderAsync_ReadsTheRowById()
+    {
+        var reader = new FakeDbReader().Returns(new RevisionVerseHeaderRow { Id = 3, HebRefId = 43003016 });
+
+        (await Repository(reader).GetHeaderAsync(3))!.HebRefId.ShouldBe(43003016);
         reader.LastParam("Id").ShouldBe(3);
     }
 
@@ -79,32 +90,34 @@ public class RevisionRepositoryTests
     }
 
     [Fact]
-    public void ReplaceMappingSql_LocksTheActiveRow_AndStampsTheReview()
+    public void ReplaceMappingSql_LocksTheRow_AndStampsTheReview()
     {
         RevisionRepositorySql.LockActive.ShouldContain("FOR UPDATE");
-        RevisionRepositorySql.LockActive.ShouldContain("rv.\"IsActive\"");
+        RevisionRepositorySql.LockActive.ShouldNotContain("IsActive");
         RevisionRepositorySql.MarkReviewed.ShouldContain("\"MappingReviewedAt\"");
         RevisionRepositorySql.DeleteMapping.ShouldContain("rw.\"RevisionVerseId\" = @Id");
     }
 
     [Fact]
-    public async Task GetHistoryAsync_ReadsEndedVersionsToo_NewestFirst()
+    public async Task GetHistoryAsync_ReadsOnlyTheAuditTable_NewestFirst()
     {
-        var reader = new FakeDbReader().Returns(new RevisionHistoryRow { RevisionVerseId = 4, Version = 2, VerseText = "x" });
+        var reader = new FakeDbReader().Returns(new RevisionHistoryRow { AuditId = 4, Version = 2, Action = "text", VerseText = "x" });
 
         var rows = await Repository(reader).GetHistoryAsync(43003016, 200);
 
         rows.Count.ShouldBe(1);
-        reader.LastSql.ShouldNotContain("AND rv.\"IsActive\"");
-        reader.LastSql.ShouldContain("ORDER BY rv.\"Version\" DESC");
+        reader.LastSql.ShouldContain("\"RevisionVerseAudit\"");
+        reader.LastSql.ShouldNotContain("\"RevisionVerses\"");
+        reader.LastSql.ShouldContain("ORDER BY a.\"Id\" DESC");
         reader.LastSql.ShouldContain("LEFT JOIN \"unshackled-word\".\"Users\"");
         reader.LastParam("HebRefId").ShouldBe(43003016);
         reader.LastParam("Level").ShouldBe(200);
     }
 
     [Fact]
-    public void InsertVerse_StoresTheVariantItWasBasedOn()
+    public void InsertVerse_StoresTheRevisionAndVersionItWasBasedOn()
     {
-        RevisionRepositorySql.InsertVerse.ShouldContain("@BasedOnRevisionVerseId");
+        RevisionRepositorySql.InsertVerse.ShouldContain("@BasedOnRevisionId");
+        RevisionRepositorySql.InsertVerse.ShouldContain("@BasedOnVersion");
     }
 }

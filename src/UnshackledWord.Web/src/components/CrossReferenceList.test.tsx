@@ -1,7 +1,8 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { BibleStructureBook } from "@/lib/bible/types";
 import "@/i18n";
 import { CrossReferenceList } from "./CrossReferenceList";
@@ -47,5 +48,48 @@ describe("CrossReferenceList inline", () => {
     expect(links[2]).toHaveFocus();
     await user.keyboard("{Home}");
     expect(links[0]).toHaveFocus();
+  });
+});
+
+describe("CrossReferenceList preview", () => {
+  it("loads all texts of the verse once and shows the hovered target", async () => {
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        references: [
+          {
+            bibleBookId: 1,
+            chapter: 1,
+            verse: 10,
+            verses: [{ verse: 10, text: "Und Gott nannte" }],
+          },
+          { bibleBookId: 1, chapter: 2, verse: 4, verses: [{ verse: 4, text: "Dies ist die" }] },
+        ],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <CrossReferenceList
+            variant="inline"
+            references={[
+              { bibleBookId: 1, chapter: 1, verse: 10 },
+              { bibleBookId: 1, chapter: 2, verse: 4 },
+            ]}
+            books={books}
+            preview={{ bookId: 43, chapter: 3, verse: 1, level: 200 }}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const [first, second] = screen.getAllByRole("link") as [HTMLElement, HTMLElement];
+    await user.hover(first);
+    expect(await screen.findByText("Und Gott nannte")).toBeInTheDocument();
+    await user.unhover(first);
+    await user.hover(second);
+    expect(await screen.findByText("Dies ist die")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    vi.unstubAllGlobals();
   });
 });

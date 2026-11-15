@@ -29,13 +29,15 @@ export function DataQualityPage() {
   const { status, user } = useAuth();
   const authed = status === "authenticated";
   const canRefresh = hasWriteRole(user);
+  // The data quality endpoints answer 403 to everyone but Admin/Maintainer: do not even fire them.
+  const allowed = authed && canRefresh;
   const { state, update, openFilter, goToCrumb } = useQualityUrl();
   const client = useQueryClient();
   const structure = useBibleStructure();
   const books = structure.data ?? [];
   const facets = { testament: state.testament, bookId: state.bookId };
 
-  const overview = useQualityOverview(facets, authed);
+  const overview = useQualityOverview(facets, allowed);
   const refresh = useRefreshQuality();
   const refreshedAt = overview.data?.refreshedAt ?? null;
 
@@ -62,6 +64,17 @@ export function DataQualityPage() {
             {t("auth.signIn")}
           </Link>
         </EmptyState>
+      </div>
+    );
+  }
+
+  if (!canRefresh) {
+    return (
+      <div className="flex flex-col gap-4">
+        {title}
+        <p role="alert" className="text-fg-muted">
+          {t("quality.noPermission")}
+        </p>
       </div>
     );
   }

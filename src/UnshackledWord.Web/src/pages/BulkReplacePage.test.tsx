@@ -76,7 +76,6 @@ function stub(roles: string[] = ["maintainer"]) {
         revisionVerseId: 9,
         level: 200,
         version: 1,
-        isActive: true,
         bibleBookId: 1,
         chapter: 2,
         verse: 22,

@@ -1,9 +1,11 @@
 using FastEndpoints;
 using UnshackledWord.Application.Features.VerseSearch;
 using UnshackledWord.Domain.WebApi.Elberfelder.SearchVerses;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.SearchVerses;
 
+[RateLimitGroup(RateLimitGroups.Search)]
 public class Endpoint : Endpoint<SearchVersesRequest, SearchVersesResponse>
 {
     private readonly IVerseSearchService _service;

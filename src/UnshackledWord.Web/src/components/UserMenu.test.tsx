@@ -92,4 +92,9 @@ describe("UserMenu maintenance link", () => {
     await open(["user"]);
     expect(screen.queryByRole("menuitem", { name: "Maintenance" })).toBeNull();
   });
+
+  it("shows Data quality only for maintainers and admins", async () => {
+    await open(["user"]);
+    expect(screen.queryByRole("menuitem", { name: "Data quality" })).toBeNull();
+  });
 });

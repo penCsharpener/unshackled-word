@@ -65,7 +65,7 @@ second look):
 | Which variant a level shows | Start at Elb1871 (100) and walk towards the slider value; the last variant passed wins. Slider 600 with variants at 200 and 400 shows 400; slider 150 shows Elb1871; slider 50 with a variant at 20 shows Elb1871, slider 10 shows the variant at 20 |
 | Default level | One preset is flagged `IsDefault`; the reader starts there. API calls without `level` get Elb1871 (100), so the MCP server, Bruno and old frontends see no change |
 | Word identity | Revision words refer to their base word by `(HebRefId, PositionInVerse)`, never by `Elb1871Words."Id"` (ids are not portable, 0010). The mapping refers to the original word by `StepWordId` like the legacy tables; the seed uses `SrcRef`/`SrcPos`/`SrcHash` |
-| Mapping history | Text versions are kept. Mapping saves replace the mapping rows of the active version (as the legacy editor does) and stamp who/when; no per-save mapping history until 0005 |
+| Mapping history | Text versions are kept. Mapping saves replace the mapping rows of the active version (as the legacy editor does) and stamp who/when; no per-save mapping history until 0005. **Superseded by roadmap 0014 (2026-11-15):** the tables hold only the current variant, text and mapping saves go to `RevisionVerseAudit` |
 | Verse boundaries | A variant belongs to exactly one Elb1871 verse (`HebRefId`). Splitting, merging or renumbering verses is not possible |
 
 ## How to use this roadmap
@@ -120,6 +120,9 @@ before real revision work begins, otherwise that work exists only in one databas
 ## Design
 
 ### Model
+
+> Historic model. Roadmap 0014 replaced `IsActive`/versions-as-rows: one live row per (verse, revision), history in
+> `RevisionVerseAudit`, parent as `BasedOnRevisionId` + `BasedOnVersion`; see `docs/roadmaps/0014-revision-audit-log/`.
 
 ```
 RevisionLevels (Level PK: 100 = Elb1871 base, 200 = revision (default), later 600 …)
@@ -432,7 +435,8 @@ unchanged, and it disappears when 0005 replaces links by groups.
   ("stats stay on the original for now"); the popover says "Elb1871: …" for changed words so the numbers are not read
   as the revision's. Signal to solve it: more than a few hundred variants, or the first question why a count is off.
 - **No mapping history inside a version.** A wrong mapping save cannot be undone except by re-mapping; only text
-  versions are kept. Accepted because the legacy editor behaves the same and 0005 brings changesets.
+  versions are kept. Accepted because the legacy editor behaves the same and 0005 brings changesets. (Resolved by
+  roadmap 0014: mapping saves are audited with a snapshot.)
 - **Level presets are hard to take back.** Once variants exist at a level, changing its number would move them on the
   slider; the API refuses it. Pick the first presets with gaps (200, 400, 600 …) so levels can be inserted later.
 - **The legacy mapping save is still anonymous.** `PUT elberfelder/verseMapping` is `AllowAnonymous` behind

@@ -55,7 +55,6 @@ public sealed class RevisionMappingService : IRevisionMappingService
             RevisionVerseId = header.Id,
             Level = header.Level,
             Version = header.Version,
-            IsActive = header.IsActive,
             BibleBookId = bookId,
             Chapter = chapter,
             Verse = verse,
@@ -75,11 +74,6 @@ public sealed class RevisionMappingService : IRevisionMappingService
         if (header is null)
         {
             return new SaveRevisionMappingResult { Outcome = SaveRevisionMappingOutcome.NotFound };
-        }
-
-        if (!header.IsActive)
-        {
-            return Conflict();
         }
 
         var (bookId, chapter, verse) = RevisionSql.Split(header.HebRefId);
@@ -137,6 +131,6 @@ public sealed class RevisionMappingService : IRevisionMappingService
     private static SaveRevisionMappingResult Conflict() => new()
     {
         Outcome = SaveRevisionMappingOutcome.Conflict,
-        Errors = ["The variant is no longer the active version. Reload and try again."],
+        Errors = ["The variant was withdrawn or its text was saved again in the meantime. Reload and try again."],
     };
 }

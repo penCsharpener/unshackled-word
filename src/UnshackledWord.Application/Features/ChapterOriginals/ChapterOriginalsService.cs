@@ -1,4 +1,7 @@
 using UnshackledWord.Application.Repositories;
+using UnshackledWord.Domain.Models.Grammar;
+using UnshackledWord.Domain.Models.Study;
+using UnshackledWord.Domain.WebApi.Elberfelder.GetWordDetail;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetChapterOriginals;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetVerseMapping;
 
@@ -9,10 +12,12 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
     private const int LastHebrewBookId = 39;
 
     private readonly IVerseMappingRepository _repository;
+    private readonly IStrongsLexiconRepository _lexicon;
 
-    public ChapterOriginalsService(IVerseMappingRepository repository)
+    public ChapterOriginalsService(IVerseMappingRepository repository, IStrongsLexiconRepository lexicon)
     {
         _repository = repository;
+        _lexicon = lexicon;
     }
 
     public async Task<GetChapterOriginalsResponse> GetAsync(int bibleBookId, int chapter, CancellationToken token = default)
@@ -44,17 +49,84 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
                     Lemma = w.Lemma,
                     Strongs = w.Strongs,
                     MorphologyCode = w.MorphologyCode,
+                    Morphology = Decode(hebrew, w.MorphologyCode),
                 }).ToList(),
                 Links = linksByVerse.GetValueOrDefault(g.Key) ?? [],
             })
             .ToList();
 
+        var lexicon = await BuildLexiconAsync(words.Select(w => w.Strongs), token);
+
         return new GetChapterOriginalsResponse
         {
+            Lexicon = lexicon.Count == 0 ? null : lexicon,
             BibleBookId = bibleBookId,
             Chapter = chapter,
             Language = hebrew ? "hebrew" : "greek",
             Verses = verses,
+        };
+    }
+
+    private async Task<Dictionary<string, ChapterLexiconResponse>> BuildLexiconAsync(IEnumerable<string?> strongsOfWords, CancellationToken token)
+    {
+        var result = new Dictionary<string, ChapterLexiconResponse>();
+        foreach (var raw in strongsOfWords.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct())
+        {
+            var text = raw!.Trim();
+            var open = text.IndexOf('{');
+            var close = text.IndexOf('}');
+            var cleaned = open >= 0 && close > open ? text[(open + 1)..close].Trim() : text;
+            var parsed = StrongsNumber.Parse(cleaned);
+            if (parsed.Value is not { } number)
+            {
+                continue;
+            }
+
+            var entries = await _lexicon.GetEntriesAsync(number, token);
+            var entry = entries.FirstOrDefault(e => number.Extra is not null && string.Equals(e.Extra, number.Extra, StringComparison.OrdinalIgnoreCase))
+                        ?? entries.FirstOrDefault(e => string.IsNullOrEmpty(e.Extra))
+                        ?? entries.FirstOrDefault();
+            if (entry is null)
+            {
+                continue;
+            }
+
+            var gloss = string.IsNullOrWhiteSpace(entry.Gloss) ? null : entry.Gloss.Trim();
+            var (definition, _) = LexiconTextCleaner.Clean(entry.Lexicon, 300);
+            if (gloss is null && definition.Length == 0)
+            {
+                continue;
+            }
+
+            result[raw!] = new ChapterLexiconResponse { Gloss = gloss, Definition = definition.Length == 0 ? null : definition };
+        }
+
+        return result;
+    }
+
+    private static MorphologyResponse? Decode(bool hebrew, string? code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return null;
+        }
+
+        var keys = hebrew ? HebrewMorphologyDecoder.Decode(code).Root : GreekMorphologyDecoder.Decode(code);
+        return new MorphologyResponse
+        {
+            Code = code.Trim(),
+            PartOfSpeech = keys.PartOfSpeech,
+            Tense = keys.Tense,
+            Voice = keys.Voice,
+            Mood = keys.Mood,
+            Person = keys.Person,
+            Case = keys.Case,
+            Number = keys.Number,
+            Gender = keys.Gender,
+            Degree = keys.Degree,
+            Stem = keys.Stem,
+            HebrewForm = keys.HebrewForm,
+            State = keys.State,
         };
     }
 }

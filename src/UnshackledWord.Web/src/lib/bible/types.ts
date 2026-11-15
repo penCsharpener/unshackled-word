@@ -261,6 +261,11 @@ export interface CrossReference {
   keyword?: string;
 }
 
+/** `GET elberfelder/crossReferenceTexts/...`: the texts of all TSK targets of one verse, in TSK order. */
+export interface GetVerseCrossReferenceTextsResponse {
+  references: (CrossReference & { verses: { verse: number; text: string }[] })[];
+}
+
 /** `GET elberfelder/chapterCrossReferences/...`: verses without TSK references are omitted. */
 export interface GetChapterCrossReferencesResponse {
   bibleBookId: number;
@@ -279,6 +284,8 @@ export interface GetChapterOriginalsResponse {
   chapter: number;
   language: "greek" | "hebrew";
   verses: ChapterOriginalVerse[];
+  /** English gloss and shortened lexicon text per Strong's number of the chapter */
+  lexicon?: Record<string, { gloss?: string; definition?: string }>;
 }
 
 export interface RevisionWordInfo {
@@ -426,6 +433,8 @@ export interface VerseMappingOriginalWord {
   strongs?: string;
   gloss?: string; // English
   morphologyCode?: string;
+  /** decoded `morphologyCode`; only in the chapter originals response */
+  morphology?: Morphology;
 }
 /**
  * One mapping row of a verse. A normal link has `stepWordId`; an added word has `isAddedWord`

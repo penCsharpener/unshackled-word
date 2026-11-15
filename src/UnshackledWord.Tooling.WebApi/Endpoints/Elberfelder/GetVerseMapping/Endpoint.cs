@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetVerseMapping;
+using UnshackledWord.Tooling.WebApi.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetVerseMapping;
 
@@ -18,13 +19,14 @@ public class Endpoint : Endpoint<GetVerseMappingRequest, GetVerseMappingResponse
     {
         Get("verseMapping/bookId/{BibleBookId:int}/chapterId/{ChapterId:int}/verseId/{VerseId:int}");
         Group<RouteGroupConfig>();
+        // Public read; authentication still fills User from the cookie, which decides editingEnabled.
         AllowAnonymous();
         Description(b => b.Produces<GetVerseMappingResponse>(200).ProducesProblem(400).ProducesProblem(404));
     }
 
     public override async Task HandleAsync(GetVerseMappingRequest req, CancellationToken ct)
     {
-        var mapping = await _service.GetAsync(req.BibleBookId, req.ChapterId, req.VerseId, ct);
+        var mapping = await _service.GetAsync(req.BibleBookId, req.ChapterId, req.VerseId, User.HasWriteRole(), ct);
         if (mapping is null)
         {
             await Send.NotFoundAsync(ct);

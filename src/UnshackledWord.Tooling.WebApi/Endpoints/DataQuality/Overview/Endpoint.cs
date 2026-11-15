@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.Overview;
 
@@ -19,6 +20,7 @@ public sealed class Endpoint : Endpoint<OverviewRequest, OverviewResponse>
     {
         Get("overview");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "Data quality tiles: count / error count / previous count per check, snapshot timestamp and refresh state.");
     }
 

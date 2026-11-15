@@ -23,7 +23,6 @@ public static class RevisionSql
                                                                  FROM "unshackled-word"."RevisionVerses" rv
                                                                      JOIN "unshackled-word"."Revisions" rev ON rev."Id" = rv."RevisionId"
                                                                  WHERE rv."HebRefId" = v."HebRefId"
-                                                                     AND rv."IsActive"
                                                                      AND rev."Level" BETWEEN least(@Level, 200) AND greatest(@Level, 200)
                                                                  ORDER BY abs(rev."Level" - 200) DESC
                                                                  LIMIT 1) r ON TRUE

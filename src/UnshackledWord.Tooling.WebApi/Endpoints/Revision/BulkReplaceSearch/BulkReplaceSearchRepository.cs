@@ -65,7 +65,7 @@ public sealed class BulkReplaceSearchRepository : IBulkReplaceSearchRepository
         """;
 
     /// <summary>
-    /// Source text per verse: the active variant of the source revision, else Elb1871. First the (at most @MaxVerses) verses with a hit,
+    /// Source text per verse: the live variant of the source revision, else Elb1871. First the (at most @MaxVerses) verses with a hit,
     /// found with the word / lemma predicates pushed down to the tables (so the lower("PlainWord") indexes work), then every token of those verses.
     /// </summary>
     public const string HitVerseTokens = """
@@ -73,8 +73,7 @@ public sealed class BulkReplaceSearchRepository : IBulkReplaceSearchRepository
                                      , rv."HebRefId"
                                 FROM "unshackled-word"."RevisionVerses" rv
                                     JOIN "unshackled-word"."Revisions" r ON r."Id" = rv."RevisionId"
-                                WHERE rv."IsActive"
-                                    AND r."Code" = @SourceCode)
+                                WHERE r."Code" = @SourceCode)
            , "HitVerses" AS (SELECT h."HebRefId"
                              FROM (SELECT w."HebRefId"
                                    FROM "unshackled-word"."Elb1871Words" w
@@ -163,8 +162,7 @@ public sealed class BulkReplaceSearchRepository : IBulkReplaceSearchRepository
              , rv."VerseText" AS "VerseText"
         FROM "unshackled-word"."RevisionVerses" rv
             JOIN "unshackled-word"."Revisions" r ON r."Id" = rv."RevisionId"
-        WHERE rv."IsActive"
-            AND r."Code" = @TargetCode
+        WHERE r."Code" = @TargetCode
             AND rv."HebRefId" = ANY (@HebRefIds)
         """;
 

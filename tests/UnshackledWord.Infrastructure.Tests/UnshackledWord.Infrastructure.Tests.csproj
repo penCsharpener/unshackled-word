@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj" />
     <ProjectReference Include="..\UnshackledWord.TestTooling\UnshackledWord.TestTooling.csproj" />
   </ItemGroup>
 

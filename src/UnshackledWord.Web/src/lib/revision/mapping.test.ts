@@ -6,7 +6,6 @@ const mapping: RevisionVerseMappingResponse = {
   revisionVerseId: 1,
   level: 200,
   version: 1,
-  isActive: true,
   bibleBookId: 43,
   chapter: 3,
   verse: 16,

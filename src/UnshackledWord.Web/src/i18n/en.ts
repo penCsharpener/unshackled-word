@@ -2,6 +2,16 @@ import type { Translation } from "./de";
 
 export const en: Translation = {
   app: { name: "Unshackled Word" },
+  rateLimit: {
+    general: "Too many requests. Please try again {{wait}} – signed-in users are not limited.",
+    search: "Too many searches. Please try again {{wait}} – signed-in users are not limited.",
+    auth: "Too many attempts. Please try again {{wait}}.",
+    inSeconds: "in {{seconds}} s",
+    soon: "shortly",
+    ready: "The limit has been lifted.",
+    signIn: "Sign in",
+    reload: "Reload",
+  },
   nav: { about: "About" },
   theme: { label: "Appearance", light: "Light", dark: "Dark", system: "System" },
   language: { label: "Language", de: "Deutsch", en: "English" },
@@ -414,11 +424,13 @@ export const en: Translation = {
       },
       error: {
         validation: "The mapping is invalid and was not saved.",
-        forbidden: "Editing is not enabled.",
+        forbidden: "No permission to edit.",
         failed: "The mapping could not be saved.",
       },
     },
     sidePanel: {
+      previewLoading: "Loading verse …",
+      previewError: "Could not load the verse.",
       rail: "Side panel",
       modeGroup: "Side panel content",
       headingTsk: "Cross references (TSK)",
@@ -1111,6 +1123,7 @@ export const en: Translation = {
     refreshNow: "Compute now",
     refreshing: "Recomputing …",
     refreshFailed: "The computation could not be started.",
+    noPermission: "You do not have permission to view data quality.",
     loginRequired: {
       title: "Sign-in required",
       text: "Data quality is only visible to signed-in users.",
@@ -1411,6 +1424,8 @@ export const en: Translation = {
     empty: "No versions yet.",
     version: "v{{version}}",
     restore: "Restore",
+    mappingSaved: "Mapping saved",
+    withdrawn: "Revision of this level removed",
     remove: "Remove revision of this level",
     confirmTitle: "Remove the revision of this level?",
     confirmBody: "This level will show the Elberfelder 1871 wording again.",

@@ -1,9 +1,11 @@
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import type { GetVerseMappingResponse } from "@/lib/bible/types";
 import { normalizeStrongs } from "@/lib/bible/wordDetail";
 import { useSetHeaderInfo } from "@/lib/headerInfo";
 import { Button } from "./Button";
+import { WordInfoCard } from "./HeaderWordInfo";
 
 export interface OriginalVerseProps {
   /**
@@ -12,6 +14,8 @@ export interface OriginalVerseProps {
    */
   variant?: "panel" | "margin";
   data: Pick<GetVerseMappingResponse, "language" | "originalWords">;
+  /** `margin`: English gloss and lexicon text per Strong's number for the hover card (chapter originals `lexicon`). */
+  lexicon?: Record<string, { gloss?: string; definition?: string }>;
   /** e.g. "Johannes 3,1" */
   reference: string;
   /** Original words to highlight (linked to the hovered German word). */
@@ -26,10 +30,15 @@ export interface OriginalVerseProps {
   onToggleMorphology?: () => void;
 }
 
+const TIP_WIDTH = 256; // keep in sync with `w-64`
+const TIP_GAP = 8;
+const TIP_HIDE_DELAY = 500; // ms, long enough to move from the word onto the card
+
 /** Plain original-language text of one verse for casual readers; Strong's and morphology can be added per word. */
 export function OriginalVerse({
   variant = "panel",
   data,
+  lexicon,
   reference,
   linkedIds,
   onHoverWord,
@@ -45,42 +54,127 @@ export function OriginalVerse({
   const isRtl = data.language === "hebrew";
   const lang = isRtl ? "he" : "grc";
   const words = [...data.originalWords].sort((a, b) => a.position - b.position);
+  // margin variant: lemma, Strong's and morphology of the hovered word as a card above it (data is already loaded with the chapter)
+  // `top`/`bottom`: viewport edges of the hovered word; the card sits above it, or below when it does not fit above
+  const [tip, setTip] = useState<{ id: number; x: number; top: number; bottom: number } | null>(
+    null,
+  );
+  const tipWord = tip ? words.find((w) => w.id === tip.id) : undefined;
+  // the card stays while the pointer (or focus) moves from the word onto it, so its Strong's links can be clicked
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // Ctrl held = pin: the card stays until Ctrl is released and the pointer is off word and card
+  const ctrlHeld = useRef(false);
+  const cancelHide = () => clearTimeout(hideTimer.current);
+  const scheduleHide = () => {
+    cancelHide();
+    hideTimer.current = setTimeout(() => {
+      if (ctrlHeld.current) {
+        scheduleHide();
+        return;
+      }
+      setTip(null);
+    }, TIP_HIDE_DELAY);
+  };
+  // biome-ignore lint/correctness/useExhaustiveDependencies: listeners and cleanup only
+  useEffect(() => {
+    const track = (event: KeyboardEvent) => {
+      ctrlHeld.current = event.ctrlKey;
+    };
+    window.addEventListener("keydown", track);
+    window.addEventListener("keyup", track);
+    return () => {
+      window.removeEventListener("keydown", track);
+      window.removeEventListener("keyup", track);
+      cancelHide();
+    };
+  }, []);
 
   if (variant === "margin") {
     return (
-      <p dir={isRtl ? "rtl" : "ltr"} lang={lang} className="font-original text-lg leading-snug">
-        {words.map((word) => {
-          const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
-          const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
-          const hover = {
-            onMouseEnter: () => onHoverWord?.(word.id),
-            onMouseLeave: () => onHoverWord?.(undefined),
-            onFocus: () => onHoverWord?.(word.id),
-            onBlur: () => onHoverWord?.(undefined),
-          };
-          return (
-            <span key={word.id}>
-              {strongs ? (
-                <Link
-                  to={`/bible/strongs/${strongs}`}
-                  aria-label={t("bible.sidePanel.strongsLink", {
-                    original: word.original,
-                    strongs,
-                  })}
-                  className={`rounded-sm hover:underline ${highlight}`}
-                  {...hover}
-                >
-                  {word.original}
-                </Link>
-              ) : (
-                <span className={`rounded-sm ${highlight}`} {...hover}>
-                  {word.original}
-                </span>
-              )}{" "}
-            </span>
-          );
-        })}
-      </p>
+      <>
+        <p dir={isRtl ? "rtl" : "ltr"} lang={lang} className="font-original text-lg leading-snug">
+          {words.map((word) => {
+            const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
+            const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
+            const enter = (element: HTMLElement) => {
+              cancelHide();
+              onHoverWord?.(word.id);
+              const rect = element.getBoundingClientRect();
+              setTip({
+                id: word.id,
+                x: Math.max(TIP_GAP, Math.min(rect.left, window.innerWidth - TIP_WIDTH - TIP_GAP)),
+                top: rect.top,
+                bottom: rect.bottom,
+              });
+            };
+            const leave = () => {
+              onHoverWord?.(undefined);
+              // delayed, not immediate: the pointer needs time to cross onto the card (or Ctrl pins it)
+              scheduleHide();
+            };
+            const hover = {
+              onMouseEnter: (event: { currentTarget: HTMLElement }) => enter(event.currentTarget),
+              onMouseLeave: leave,
+              onFocus: (event: { currentTarget: HTMLElement }) => enter(event.currentTarget),
+              onBlur: leave,
+            };
+            return (
+              <span key={word.id}>
+                {strongs ? (
+                  <Link
+                    to={`/bible/strongs/${strongs}`}
+                    aria-label={t("bible.sidePanel.strongsLink", {
+                      original: word.original,
+                      strongs,
+                    })}
+                    className={`rounded-sm hover:underline ${highlight}`}
+                    {...hover}
+                  >
+                    {word.original}
+                  </Link>
+                ) : (
+                  <span className={`rounded-sm ${highlight}`} {...hover}>
+                    {word.original}
+                  </span>
+                )}{" "}
+              </span>
+            );
+          })}
+        </p>
+        {tip && tipWord && (
+          // biome-ignore lint/a11y/noStaticElementInteractions: keeps the card open while the pointer is on it; the links inside are the interactive parts
+          <div
+            onMouseEnter={cancelHide}
+            onMouseLeave={scheduleHide}
+            onFocus={cancelHide}
+            onBlur={scheduleHide}
+            data-testid="original-word-info"
+            ref={(element) => {
+              if (!element) return;
+              // measured pixel position: the only value that cannot be a design token
+              element.style.setProperty("left", `${tip.x}px`);
+              // above the word; below it when the card would run out of the top of the viewport
+              const below = element.offsetHeight > tip.top;
+              element.toggleAttribute("data-below", below);
+              element.style.setProperty("top", `${below ? tip.bottom : tip.top}px`);
+            }}
+            className="fixed z-50 w-64 -translate-y-full pb-2 font-sans text-base data-below:translate-y-0 data-below:pt-2 data-below:pb-0"
+          >
+            <WordInfoCard
+              info={{
+                original: tipWord.original,
+                lemma: tipWord.lemma,
+                strongs: tipWord.strongs,
+                morphology: tipWord.morphology,
+                morphologyCode: tipWord.morphologyCode,
+                language: data.language,
+                gloss: tipWord.strongs ? lexicon?.[tipWord.strongs]?.gloss : undefined,
+                definition: tipWord.strongs ? lexicon?.[tipWord.strongs]?.definition : undefined,
+              }}
+            />
+          </div>
+        )}
+      </>
     );
   }
 

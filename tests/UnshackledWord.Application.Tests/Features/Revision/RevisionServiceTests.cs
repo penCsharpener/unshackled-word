@@ -12,15 +12,17 @@ public class RevisionServiceTests
 
     private RevisionService Service() => new(_repository, _carry);
 
-    private IRevisionRepository ExistingVerse(int level = 200, RevisionActiveRow? active = null, int lastVersion = 0)
+    // Stands in for the repository's version rule: live version + 1 (expected version), or 1 for a verse without a live row.
+    private static SavedRevisionVersion Saved(NewRevisionVersion v) => new(77, (v.ExpectedVersion ?? 0) + 1);
+
+    private IRevisionRepository ExistingVerse(int level = 200, RevisionActiveRow? active = null)
     {
         _repository.GetBaseVerseTextAsync(JohHebRefId, Arg.Any<CancellationToken>()).Returns("Denn also hat Gott die Welt geliebt");
         _repository.GetBaseWordsAsync(JohHebRefId, Arg.Any<CancellationToken>())
             .Returns([new RevisionBaseWordRow { PositionInVerse = 1, PlainWord = "Denn" }, new RevisionBaseWordRow { PositionInVerse = 2, PlainWord = "also" }]);
         _repository.IsWritableLevelAsync(level, Arg.Any<CancellationToken>()).Returns(true);
         _repository.GetActiveAsync(JohHebRefId, level, Arg.Any<CancellationToken>()).Returns(active);
-        _repository.GetLastVersionAsync(JohHebRefId, level, Arg.Any<CancellationToken>()).Returns(lastVersion);
-        _repository.InsertVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(77);
+        _repository.SaveVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<CancellationToken>()).Returns(ci => Saved(ci.Arg<NewRevisionVersion>()));
         _carry.CarryFromBaseAsync(43, 3, 16, Arg.Any<IReadOnlyList<RevisionBaseWordRow>>(), Arg.Any<IReadOnlyList<RevisionToken>>(), Arg.Any<CancellationToken>())
             .Returns(new RevisionCarryResult(
                 [new RevisionCarryWord(1, 1, RevisionCarry.Same), new RevisionCarryWord(2, null, RevisionCarry.New), new RevisionCarryWord(3, null, RevisionCarry.New)],
@@ -43,8 +45,8 @@ public class RevisionServiceTests
         result.Saved!.RevisionVerseId.ShouldBe(77);
         result.Saved.Level.ShouldBe(200);
         result.Saved.Version.ShouldBe(1);
-        await _repository.Received(1).InsertVersionAsync(
-            Arg.Is<NewRevisionVersion>(v => v.Version == 1 && v.HebRefId == JohHebRefId && v.EndActiveRevisionVerseId == null && v.CreatedByUserId == 5), 5, Arg.Any<CancellationToken>());
+        await _repository.Received(1).SaveVersionAsync(
+            Arg.Is<NewRevisionVersion>(v => v.ExpectedVersion == null && v.HebRefId == JohHebRefId && v.CreatedByUserId == 5), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -58,8 +60,8 @@ public class RevisionServiceTests
         result.Saved.Carry.Changed.ShouldBe(0);
         result.Saved.Carry.New.ShouldBe(2);
         result.Saved.Carry.LostOriginalWordIds.ShouldBe([502]);
-        await _repository.Received(1).InsertVersionAsync(
-            Arg.Is<NewRevisionVersion>(v => v.Lang == "G" && v.Words.Count == 3 && v.CarriedRows.Count == 1 && v.CarriedRows[0].StepWordId == 501), 5, Arg.Any<CancellationToken>());
+        await _repository.Received(1).SaveVersionAsync(
+            Arg.Is<NewRevisionVersion>(v => v.Lang == "G" && v.Words.Count == 3 && v.CarriedRows.Count == 1 && v.CarriedRows[0].StepWordId == 501), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -68,34 +70,36 @@ public class RevisionServiceTests
         _repository.GetBaseVerseTextAsync(1001001, Arg.Any<CancellationToken>()).Returns("Im Anfang");
         _repository.GetBaseWordsAsync(1001001, Arg.Any<CancellationToken>()).Returns([new RevisionBaseWordRow { PositionInVerse = 1, PlainWord = "Im" }]);
         _repository.IsWritableLevelAsync(200, Arg.Any<CancellationToken>()).Returns(true);
-        _repository.InsertVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(9);
+        _repository.SaveVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<CancellationToken>()).Returns(new SavedRevisionVersion(9, 1));
         _carry.CarryFromBaseAsync(1, 1, 1, Arg.Any<IReadOnlyList<RevisionBaseWordRow>>(), Arg.Any<IReadOnlyList<RevisionToken>>(), Arg.Any<CancellationToken>())
             .Returns(new RevisionCarryResult([], [], new RevisionCarryReport(0, 0, 0, [])));
 
         await Service().SaveTextAsync(1, 1, 1, Request(), userId: 5);
 
-        await _repository.Received(1).InsertVersionAsync(Arg.Is<NewRevisionVersion>(v => v.Lang == "H"), 5, Arg.Any<CancellationToken>());
+        await _repository.Received(1).SaveVersionAsync(Arg.Is<NewRevisionVersion>(v => v.Lang == "H"), Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task SaveTextAsync_IncrementsPastEndedVersionsAndEndsTheActiveOne_WhenExpectedVersionMatches()
+    public async Task SaveTextAsync_PassesTheExpectedVersionToTheRepository_WhichUpdatesTheLiveRowInPlace()
     {
-        ExistingVerse(active: new RevisionActiveRow { Id = 40, Version = 3 }, lastVersion: 3);
+        ExistingVerse(active: new RevisionActiveRow { Id = 40, Version = 3, RevisionId = 2 });
 
         var result = await Service().SaveTextAsync(43, 3, 16, Request(expected: 3), userId: 5);
 
         result.Saved!.Version.ShouldBe(4);
-        await _repository.Received(1).InsertVersionAsync(Arg.Is<NewRevisionVersion>(v => v.Version == 4 && v.EndActiveRevisionVerseId == 40), 5, Arg.Any<CancellationToken>());
+        await _repository.Received(1).SaveVersionAsync(Arg.Is<NewRevisionVersion>(v => v.ExpectedVersion == 3), Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task SaveTextAsync_ContinuesAfterWithdrawal_WhenOnlyEndedVersionsExist()
+    public async Task SaveTextAsync_ReturnsTheVersionTheRepositoryAssigned_AfterAWithdrawal()
     {
-        ExistingVerse(active: null, lastVersion: 2);
+        ExistingVerse(active: null);
+        _repository.SaveVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<CancellationToken>()).Returns(new SavedRevisionVersion(78, 3));
 
         var result = await Service().SaveTextAsync(43, 3, 16, Request(), userId: 5);
 
-        result.Saved!.Version.ShouldBe(3);
+        result.Saved!.RevisionVerseId.ShouldBe(78);
+        result.Saved.Version.ShouldBe(3);
     }
 
     [Theory]
@@ -103,12 +107,12 @@ public class RevisionServiceTests
     [InlineData(null, 3)]
     public async Task SaveTextAsync_ReturnsConflict_WhenExpectedVersionIsNotTheActiveVersion(int? expected, int active)
     {
-        ExistingVerse(active: new RevisionActiveRow { Id = 40, Version = active }, lastVersion: active);
+        ExistingVerse(active: new RevisionActiveRow { Id = 40, Version = active });
 
         var result = await Service().SaveTextAsync(43, 3, 16, Request(expected: expected), userId: 5);
 
         result.Outcome.ShouldBe(SaveRevisionOutcome.Conflict);
-        await _repository.DidNotReceive().InsertVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+        await _repository.DidNotReceive().SaveVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -122,10 +126,11 @@ public class RevisionServiceTests
     }
 
     [Fact]
-    public async Task SaveTextAsync_ReturnsConflict_WhenAConcurrentSaveWonTheInsert()
+    public async Task SaveTextAsync_ReturnsConflict_WhenTheRepositoryRejectsTheSave()
     {
+        // The repository re-checks the expected version under the row lock (stale after the pre-check) and on a concurrent first insert.
         ExistingVerse();
-        _repository.InsertVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns((int?)null);
+        _repository.SaveVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<CancellationToken>()).Returns((SavedRevisionVersion?)null);
 
         var result = await Service().SaveTextAsync(43, 3, 16, Request(), userId: 5);
 
@@ -158,7 +163,7 @@ public class RevisionServiceTests
     {
         ExistingVerse();
         NewRevisionVersion? stored = null;
-        _repository.InsertVersionAsync(Arg.Do<NewRevisionVersion>(v => stored = v), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(77);
+        _repository.SaveVersionAsync(Arg.Do<NewRevisionVersion>(v => stored = v), Arg.Any<CancellationToken>()).Returns(new SavedRevisionVersion(77, 1));
 
         await Service().SaveTextAsync(43, 3, 16, new SaveRevisionVerseRequest { Level = 200, Text = "  Denn   so,\nhat ", Note = " x " }, userId: 5);
 
@@ -197,18 +202,17 @@ public class RevisionServiceTests
     public async Task SaveTextAsync_CarriesFromTheBasedOnVariant_WhenBasedOnLevelIsNotTheBase()
     {
         ExistingVerse();
-        _repository.GetActiveAsync(JohHebRefId, 200, Arg.Any<CancellationToken>()).Returns(new RevisionActiveRow { Id = 40, Version = 2 });
+        _repository.GetActiveAsync(JohHebRefId, 200, Arg.Any<CancellationToken>()).Returns(new RevisionActiveRow { Id = 40, Version = 2, RevisionId = 7 });
         _repository.IsWritableLevelAsync(600, Arg.Any<CancellationToken>()).Returns(true);
         _repository.GetActiveAsync(JohHebRefId, 600, Arg.Any<CancellationToken>()).Returns((RevisionActiveRow?)null);
-        _repository.GetLastVersionAsync(JohHebRefId, 600, Arg.Any<CancellationToken>()).Returns(0);
         _carry.CarryFromVariantAsync(40, Arg.Any<IReadOnlyList<RevisionToken>>(), Arg.Any<CancellationToken>())
             .Returns(new RevisionCarryResult([new RevisionCarryWord(1, 1, RevisionCarry.Same)], [new RevisionCarryRow(1, 777, false, null, null)], new RevisionCarryReport(1, 0, 0, [])));
 
         var result = await Service().SaveTextAsync(43, 3, 16, new SaveRevisionVerseRequest { Level = 600, Text = "Denn", BasedOnLevel = 200 }, userId: 5);
 
         result.Outcome.ShouldBe(SaveRevisionOutcome.Saved);
-        await _repository.Received(1).InsertVersionAsync(
-            Arg.Is<NewRevisionVersion>(v => v.BasedOnRevisionVerseId == 40 && v.Level == 600 && v.CarriedRows[0].StepWordId == 777), 5, Arg.Any<CancellationToken>());
+        await _repository.Received(1).SaveVersionAsync(
+            Arg.Is<NewRevisionVersion>(v => v.BasedOnRevisionId == 7 && v.BasedOnVersion == 2 && v.Level == 600 && v.CarriedRows[0].StepWordId == 777), Arg.Any<CancellationToken>());
         await _carry.DidNotReceive().CarryFromBaseAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<IReadOnlyList<RevisionBaseWordRow>>(), Arg.Any<IReadOnlyList<RevisionToken>>(), Arg.Any<CancellationToken>());
     }
 
@@ -219,7 +223,7 @@ public class RevisionServiceTests
 
         await Service().SaveTextAsync(43, 3, 16, Request(), userId: 5);
 
-        await _repository.Received(1).InsertVersionAsync(Arg.Is<NewRevisionVersion>(v => v.BasedOnRevisionVerseId == null), 5, Arg.Any<CancellationToken>());
+        await _repository.Received(1).SaveVersionAsync(Arg.Is<NewRevisionVersion>(v => v.BasedOnRevisionId == null && v.BasedOnVersion == null), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -231,25 +235,67 @@ public class RevisionServiceTests
         var result = await Service().SaveTextAsync(43, 3, 16, new SaveRevisionVerseRequest { Level = 200, Text = "Denn", BasedOnLevel = 400 }, userId: 5);
 
         result.Outcome.ShouldBe(SaveRevisionOutcome.Invalid);
-        await _repository.DidNotReceive().InsertVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+        await _repository.DidNotReceive().SaveVersionAsync(Arg.Any<NewRevisionVersion>(), Arg.Any<CancellationToken>());
     }
 
+    private static RevisionHistoryRow Audit(long id, int version, string action, string text = "x", string? by = null, int day = 1, string? note = null) =>
+        new() { AuditId = id, Version = version, Action = action, VerseText = text, By = by, Note = note, At = new DateTime(2026, 1, day, 0, 0, 0, DateTimeKind.Utc) };
+
     [Fact]
-    public async Task GetHistoryAsync_ReturnsAllVersionsNewestFirst()
+    public async Task GetHistoryAsync_ReturnsAuditEntriesNewestFirst_WithActiveAndEndedAt()
     {
         ExistingVerse();
         _repository.GetHistoryAsync(JohHebRefId, 200, Arg.Any<CancellationToken>()).Returns(
         [
-            new RevisionHistoryRow { RevisionVerseId = 1, Version = 1, VerseText = "a", EndedAt = new DateTime(2026, 1, 2), CreatedBy = "M" },
-            new RevisionHistoryRow { RevisionVerseId = 3, Version = 3, VerseText = "c", IsActive = true },
-            new RevisionHistoryRow { RevisionVerseId = 2, Version = 2, VerseText = "b", Note = "n", EndedAt = new DateTime(2026, 1, 3) },
+            Audit(4, 3, "text", "c", day: 4),
+            Audit(3, 2, "mapping", "b", "A", day: 3),
+            Audit(2, 2, "text", "b", note: "n", day: 2),
+            Audit(1, 1, "text", "a", "M", day: 1),
         ]);
 
         var history = await Service().GetHistoryAsync(43, 3, 16, 200);
 
-        history!.Versions.Select(v => (v.Version, v.Text, v.IsActive)).ShouldBe([(3, "c", true), (2, "b", false), (1, "a", false)]);
-        history.Versions[2].CreatedBy.ShouldBe("M");
-        history.Versions[1].Note.ShouldBe("n");
+        history!.Versions.Select(v => (v.AuditId, v.Action, v.Version, v.IsActive)).ShouldBe(
+            [(4L, "text", 3, true), (3L, "mapping", 2, false), (2L, "text", 2, false), (1L, "text", 1, false)]);
+        history.Versions[0].EndedAt.ShouldBeNull();
+        history.Versions[1].EndedAt.ShouldBeNull();
+        history.Versions[2].EndedAt.ShouldBe(new DateTime(2026, 1, 4, 0, 0, 0, DateTimeKind.Utc));
+        history.Versions[3].EndedAt.ShouldBe(new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc));
+        history.Versions[3].By.ShouldBe("M");
+        history.Versions[2].Note.ShouldBe("n");
+    }
+
+    [Fact]
+    public async Task GetHistoryAsync_WithdrawEntry_EndsTheVerse_AndNothingIsActive()
+    {
+        ExistingVerse();
+        _repository.GetHistoryAsync(JohHebRefId, 200, Arg.Any<CancellationToken>()).Returns(
+        [
+            Audit(3, 2, "withdraw", "b", "A", day: 3),
+            Audit(2, 2, "text", "b", day: 2),
+            Audit(1, 1, "text", "a", day: 1),
+        ]);
+
+        var history = await Service().GetHistoryAsync(43, 3, 16, 200);
+
+        history!.Versions.Select(v => (v.Action, v.IsActive)).ShouldBe([("withdraw", false), ("text", false), ("text", false)]);
+        history.Versions[1].EndedAt.ShouldBe(new DateTime(2026, 1, 3, 0, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public async Task GetHistoryAsync_ARecreatedVerseAfterAWithdraw_IsActiveAgain()
+    {
+        ExistingVerse();
+        _repository.GetHistoryAsync(JohHebRefId, 200, Arg.Any<CancellationToken>()).Returns(
+        [
+            Audit(3, 3, "text", "c", day: 3),
+            Audit(2, 2, "withdraw", "b", day: 2),
+            Audit(1, 2, "text", "b", day: 1),
+        ]);
+
+        var history = await Service().GetHistoryAsync(43, 3, 16, 200);
+
+        history!.Versions.Select(v => (v.Action, v.IsActive)).ShouldBe([("text", true), ("withdraw", false), ("text", false)]);
     }
 
     [Fact]
@@ -261,27 +307,18 @@ public class RevisionServiceTests
     }
 
     [Fact]
-    public async Task WithdrawAsync_EndsTheActiveVariant()
+    public async Task WithdrawAsync_WithdrawsTheVariant()
     {
-        _repository.GetHeaderAsync(40, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = 40, IsActive = true });
+        _repository.GetHeaderAsync(40, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = 40 });
         _repository.EndVariantAsync(40, 5, Arg.Any<CancellationToken>()).Returns(true);
 
         (await Service().WithdrawAsync(40, 5)).ShouldBe(WithdrawRevisionOutcome.Withdrawn);
     }
 
     [Fact]
-    public async Task WithdrawAsync_ReturnsConflict_WhenTheVersionIsAlreadyEnded()
+    public async Task WithdrawAsync_ReturnsConflict_WhenAConcurrentWithdrawDeletedTheRowFirst()
     {
-        _repository.GetHeaderAsync(40, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = 40, IsActive = false });
-
-        (await Service().WithdrawAsync(40, 5)).ShouldBe(WithdrawRevisionOutcome.Conflict);
-        await _repository.DidNotReceive().EndVariantAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
-    }
-
-    [Fact]
-    public async Task WithdrawAsync_ReturnsConflict_WhenAConcurrentSaveEndedItFirst()
-    {
-        _repository.GetHeaderAsync(40, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = 40, IsActive = true });
+        _repository.GetHeaderAsync(40, Arg.Any<CancellationToken>()).Returns(new RevisionVerseHeaderRow { Id = 40 });
         _repository.EndVariantAsync(40, 5, Arg.Any<CancellationToken>()).Returns(false);
 
         (await Service().WithdrawAsync(40, 5)).ShouldBe(WithdrawRevisionOutcome.Conflict);

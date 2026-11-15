@@ -9,6 +9,8 @@ export const bibleKeys = {
     ["bible", "chapterText", bookId, chapter, level] as const,
   chapterWords: (bookId: number, chapter: number, level = BASE_LEVEL) =>
     ["bible", "chapterWords", bookId, chapter, level] as const,
+  verseCrossReferenceTexts: (bookId: number, chapter: number, verse: number, level = BASE_LEVEL) =>
+    ["bible", "crossReferenceTexts", bookId, chapter, verse, level] as const,
   /** Prefix of every level of one chapter. */
   chapterWordsOf: (bookId: number, chapter: number) =>
     ["bible", "chapterWords", bookId, chapter] as const,
@@ -61,3 +63,17 @@ export function useChapterWords(ref: ChapterRef | null, level = BASE_LEVEL) {
     enabled: ref !== null,
   });
 }
+
+/** Texts of all TSK targets of one verse: one request, cached for the page, so every link of the verse shows its text on hover. */
+export const verseCrossReferenceTextsQuery = (
+  bookId: number,
+  chapter: number,
+  verse: number,
+  level = BASE_LEVEL,
+) =>
+  queryOptions({
+    queryKey: bibleKeys.verseCrossReferenceTexts(bookId, chapter, verse, level),
+    queryFn: ({ signal }) =>
+      bibleApi.verseCrossReferenceTexts(bookId, chapter, verse, level, signal),
+    staleTime: Number.POSITIVE_INFINITY,
+  });

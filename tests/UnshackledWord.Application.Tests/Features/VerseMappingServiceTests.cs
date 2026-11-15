@@ -34,7 +34,7 @@ public class VerseMappingServiceTests
         var service = CreateService(false);
         _repository.GetGermanWordsAsync(1, 1, 1, Arg.Any<CancellationToken>()).Returns([]);
 
-        (await service.GetAsync(1, 1, 1)).ShouldBeNull();
+        (await service.GetAsync(1, 1, 1, callerCanWrite: true)).ShouldBeNull();
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class VerseMappingServiceTests
             new VerseMappingRow { ElbWordId = 3, IsAddedWord = true, ParentElbWordId = 500 }, // parent from another verse
         ]);
 
-        var response = (await service.GetAsync(1, 1, 1))!;
+        var response = (await service.GetAsync(1, 1, 1, callerCanWrite: true))!;
 
         response.Language.ShouldBe("hebrew");
         response.EditingEnabled.ShouldBeFalse();
@@ -63,6 +63,20 @@ public class VerseMappingServiceTests
             (2, (int?)11, false, (int?)null),
             (3, (int?)null, true, (int?)2),
         ]);
+    }
+
+    [Theory]
+    [InlineData(true, true, true)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, false)]
+    [InlineData(false, false, false)]
+    public async Task Get_ReportsEditingOnlyWhenSettingIsOnAndCallerHasWriteRole(bool settingOn, bool callerCanWrite, bool expected)
+    {
+        var service = CreateService(settingOn);
+
+        var response = (await service.GetAsync(1, 1, 1, callerCanWrite))!;
+
+        response.EditingEnabled.ShouldBe(expected);
     }
 
     [Fact]

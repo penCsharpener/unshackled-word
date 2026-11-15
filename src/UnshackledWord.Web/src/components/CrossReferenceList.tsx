@@ -1,7 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { type KeyboardEvent, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { bookAbbreviation, bookName, chapterPath } from "@/lib/bible/books";
+import { verseCrossReferenceTextsQuery } from "@/lib/bible/queries";
 import type { BibleStructureBook, CrossReference } from "@/lib/bible/types";
 
 export interface CrossReferenceListProps {
@@ -15,12 +17,69 @@ export interface CrossReferenceListProps {
   variant: "details" | "inline";
   /** `details` only: the verse has more references than listed */
   truncated?: boolean;
+  /**
+   * `inline` only: the verse the references belong to. With it a hover or focus on a link shows the text of the
+   * target; the texts of all references of the verse come in one request and are cached for the page.
+   */
+  preview?: { bookId: number; chapter: number; verse: number; level: number };
 }
+
+const CARD_WIDTH = 320; // keep in sync with `w-80`
+const CARD_GAP = 8;
 
 const OPEN_MAX = 5;
 const KEYS = ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"];
 
 const keyOf = (r: CrossReference) => `${r.bibleBookId}-${r.chapter}-${r.verse}-${r.endVerse ?? 0}`;
+
+interface Hover {
+  key: string;
+  x: number;
+  y: number;
+  above: boolean;
+}
+
+/** Mounted only while a link is hovered, so lists without a preview need no query client. */
+function PreviewCard({
+  hover,
+  preview,
+}: {
+  hover: Hover;
+  preview: NonNullable<CrossReferenceListProps["preview"]>;
+}) {
+  const { t } = useTranslation();
+  // first hover of any link of the verse fetches all of its texts, later hovers hit the cache
+  const texts = useQuery(
+    verseCrossReferenceTextsQuery(preview.bookId, preview.chapter, preview.verse, preview.level),
+  );
+  const entry = texts.data?.references.find((r) => keyOf(r) === hover.key);
+  const range = (entry?.verses.length ?? 0) > 1;
+  return (
+    <div
+      role="tooltip"
+      data-testid="cross-reference-preview"
+      ref={(element) => {
+        // measured pixel position: the only value that cannot be a design token
+        element?.style.setProperty("left", `${hover.x}px`);
+        element?.style.setProperty("top", `${hover.y}px`);
+      }}
+      className={`pointer-events-none fixed z-50 ${hover.above ? "-translate-y-full" : ""} w-80 rounded-lg border border-border bg-surface p-3 font-serif text-sm text-fg shadow-lg`}
+    >
+      {entry ? (
+        entry.verses.map((v) => (
+          <p key={v.verse}>
+            {range && <sup className="me-1 font-sans text-xs text-fg-muted">{v.verse}</sup>}
+            {v.text}
+          </p>
+        ))
+      ) : texts.isError ? (
+        <p className="text-fg-muted">{t("bible.sidePanel.previewError")}</p>
+      ) : (
+        <p className="text-fg-muted">{t("bible.sidePanel.previewLoading")}</p>
+      )}
+    </div>
+  );
+}
 
 /** TSK targets as links to the verse. Labels use the abbreviated book name, the screen reader label the full one. */
 export function CrossReferenceList({
@@ -28,10 +87,24 @@ export function CrossReferenceList({
   books,
   variant,
   truncated,
+  preview,
 }: CrossReferenceListProps) {
   const { t, i18n } = useTranslation();
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
+  const [hover, setHover] = useState<Hover | null>(null);
+  const show = (r: CrossReference, element: HTMLElement) => {
+    if (!preview) return;
+    const rect = element.getBoundingClientRect();
+    const above = rect.bottom + 160 > window.innerHeight && rect.top > window.innerHeight / 2;
+    setHover({
+      key: keyOf(r),
+      x: Math.max(CARD_GAP, Math.min(rect.left, window.innerWidth - CARD_WIDTH - CARD_GAP)),
+      y: above ? rect.top - CARD_GAP : rect.bottom + CARD_GAP,
+      above,
+    });
+  };
+  const hide = () => setHover(null);
 
   const label = (r: CrossReference, full: boolean) => {
     const book = books?.find((b) => b.id === r.bibleBookId);
@@ -77,7 +150,14 @@ export function CrossReferenceList({
               to={to(r)}
               aria-label={label(r, true)}
               tabIndex={index === active ? 0 : -1}
-              onFocus={() => setActive(index)}
+              onFocus={(event) => {
+                setActive(index);
+                show(r, event.currentTarget);
+              }}
+              onBlur={hide}
+              onMouseEnter={(event) => show(r, event.currentTarget)}
+              onMouseLeave={hide}
+              onKeyDown={(event) => event.key === "Escape" && hide()}
               className="text-accent underline"
             >
               {label(r, false)}
@@ -89,6 +169,7 @@ export function CrossReferenceList({
             )}
           </li>
         ))}
+        {hover && preview && <PreviewCard hover={hover} preview={preview} />}
       </ul>
     );
   }

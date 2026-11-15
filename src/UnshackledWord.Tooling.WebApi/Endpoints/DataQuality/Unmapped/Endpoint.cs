@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.Unmapped;
 
@@ -19,6 +20,7 @@ public sealed class Endpoint : Endpoint<UnmappedRequest, UnmappedResponse>
     {
         Get("unmapped/{side}");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "Words without counterpart (german | greek | hebrew): split by class, by book and the most frequent lemmas / Strong's numbers.");
     }
 

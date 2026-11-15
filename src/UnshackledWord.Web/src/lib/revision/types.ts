@@ -56,13 +56,14 @@ export interface SaveRevisionResponse {
 
 export type RevisionWordChange = "same" | "changed" | "new";
 
-/** `GET api/revision/verseMapping/{id}`: `id` / `elbWordId` of words and links are RevisionWords ids. */
+/**
+ * `GET api/revision/verseMapping/{id}`: `id` / `elbWordId` of words and links are RevisionWords ids. The verse id is stable across text
+ * saves, the word ids are not: every text save rewrites the words, so a mapping loaded before a text save must be reloaded.
+ */
 export interface RevisionVerseMappingResponse {
   revisionVerseId: number;
   level: number;
   version: number;
-  /** false: a newer version replaced this one, it can no longer be edited */
-  isActive: boolean;
   bibleBookId: number;
   chapter: number;
   verse: number;
@@ -80,15 +81,19 @@ export interface RevisionVerseRef {
   verse: number;
 }
 
-/** One stored version of a verse at one level (`GET api/revision/verse/…/history?level=`), newest first. */
+/** One audit entry of a verse at one level (`GET api/revision/verse/…/history?level=`), newest first. */
 export interface RevisionHistoryVersion {
-  revisionVerseId: number;
+  auditId: number;
   version: number;
+  /** `text` = a text save, `mapping` = a mapping save of the same `version`, `withdraw` = the revision of this level was removed. */
+  action: "text" | "mapping" | "withdraw";
   text: string;
   note?: string;
+  /** Newest text entry of a verse that is not withdrawn. */
   isActive: boolean;
-  createdAt: string;
-  createdBy?: string;
+  at: string;
+  by?: string;
+  /** `at` of the next text or withdraw entry. */
   endedAt?: string;
 }
 

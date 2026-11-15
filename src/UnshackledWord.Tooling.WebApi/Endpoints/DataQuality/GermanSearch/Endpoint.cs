@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.GermanSearch;
 
@@ -19,6 +20,7 @@ public sealed class Endpoint : Endpoint<GermanSearchRequest, GermanSearchRespons
     {
         Get("german/search");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "German lemma candidates by lemma prefix, then by surface-form prefix, with word counts (optional part of speech).");
     }
 

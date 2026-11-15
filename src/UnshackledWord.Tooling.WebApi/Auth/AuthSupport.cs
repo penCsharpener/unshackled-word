@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using UnshackledWord.Application.Features.Auth;
+
 namespace UnshackledWord.Tooling.WebApi.Auth;
 
 /// <summary>Claim types beyond the standard ones, embedded in the session cookie at login.</summary>
@@ -54,4 +57,10 @@ public sealed class BCryptPasswordHasher : IPasswordHasher
     public string Hash(string password) => BCrypt.Net.BCrypt.EnhancedHashPassword(password);
 
     public bool Verify(string password, string hash) => BCrypt.Net.BCrypt.EnhancedVerify(password, hash);
+}
+
+public static class ClaimsPrincipalExtensions
+{
+    /// <summary>True for Admin and Maintainer: the roles that may write (mirror of <c>hasWriteRole</c> in the frontend).</summary>
+    public static bool HasWriteRole(this ClaimsPrincipal user) => user.IsInRole(AppRoles.Admin) || user.IsInRole(AppRoles.Maintainer);
 }

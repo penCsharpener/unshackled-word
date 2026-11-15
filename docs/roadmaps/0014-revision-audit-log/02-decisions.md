@@ -16,7 +16,7 @@ Costs: text saves become UPDATE + rewrite of words and mapping instead of pure I
 text save; the migration is one-way. A cheaper alternative (keep the model, add `IsActive` to words/mapping or partition
 by it) fixes indexes but not the duplication; rejected because the project prefers simple tables over partitioning.
 
-## Proposed decisions (wait for the maintainer)
+## Decisions (confirmed by the maintainer 2026-11-15)
 
 | Topic | Proposal |
 |---|---|

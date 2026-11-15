@@ -1,9 +1,11 @@
 using FastEndpoints;
 using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Domain.WebApi.Elberfelder.SearchOriginals;
+using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.Search.Originals;
 
+[RateLimitGroup(RateLimitGroups.Search)]
 public class Endpoint : Endpoint<SearchOriginalsRequest, SearchOriginalsResponse>
 {
     private readonly ISearchOriginalsService _service;

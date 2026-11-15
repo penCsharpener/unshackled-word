@@ -159,8 +159,7 @@ export function ChapterPage() {
   const mappingData = useMemo(
     () =>
       revisedId !== undefined
-        ? revisionMapping.data &&
-          toMappingData(revisionMapping.data, canRevise && revisionMapping.data.isActive)
+        ? revisionMapping.data && toMappingData(revisionMapping.data, canRevise)
         : baseMapping.data,
     [revisedId, revisionMapping.data, baseMapping.data, canRevise],
   );
@@ -236,26 +235,9 @@ export function ChapterPage() {
     }
     return { verse, german, original };
   }, [sideActive, showOriginal, hoveredVerse, hoveredWordRaw, originalsByVerse]);
-  const sideHoverWord =
-    sideActive && originalsByVerse.get(sideActive.verse)?.words.find((w) => w.id === sideActive.id);
-  const sideHoverInfo = useMemo(
-    () =>
-      sideHoverWord && originals.data
-        ? {
-            original: sideHoverWord.original,
-            lemma: sideHoverWord.lemma,
-            strongs: sideHoverWord.strongs,
-            morphologyCode: sideHoverWord.morphologyCode,
-            language: originals.data.language,
-          }
-        : undefined,
-    [sideHoverWord, originals.data],
-  );
-  // What the right margin shows on hover: the German word's reading, or the hovered original word of the side panel.
-  const infoData = hoveredInfo ?? sideHoverInfo;
-  const infoVerse = hoveredInfo
-    ? hoveredVerse
-    : verses.data?.find((v) => v.verse === sideActive?.verse);
+  // What the right margin shows on hover: the German word's reading (the source-language words show their own tooltip).
+  const infoData = hoveredInfo;
+  const infoVerse = hoveredVerse;
 
   // A mode switch changes row heights: keep the verse at the top of the viewport where it was.
   const scrollAnchor = useRef<{ row: Element; top: number }>(undefined);
@@ -757,6 +739,12 @@ export function ChapterPage() {
                             references={referencesByVerse.get(v.verse)}
                             loading={crossReferences.isPending}
                             books={books}
+                            preview={{
+                              bookId: ref.bookId,
+                              chapter: ref.chapter,
+                              verse: v.verse,
+                              level: reader.level,
+                            }}
                           />
                         )}
                         {mappingData && verseView === "align" && (
@@ -796,6 +784,9 @@ export function ChapterPage() {
                     <VerseSide
                       mode={sideMode}
                       verse={v.verse}
+                      bookId={ref.bookId}
+                      chapter={ref.chapter}
+                      level={reader.level}
                       reference={`${reference(ref)},${v.verse}`}
                       books={books}
                       references={referencesByVerse.get(v.verse)}
@@ -803,6 +794,7 @@ export function ChapterPage() {
                       onExpandedChange={onExpandedChange}
                       original={originalsByVerse.get(v.verse)}
                       language={originals.data?.language ?? "greek"}
+                      lexicon={originals.data?.lexicon}
                       linkedIds={sideLinks.verse === v.verse ? sideLinks.original : NO_IDS}
                       onHoverOriginal={onHoverOriginal}
                     />
@@ -851,17 +843,24 @@ function EyeCrossReferences({
   references,
   loading,
   books,
+  preview,
 }: {
   references?: CrossReference[];
   loading: boolean;
   books?: BibleStructureBook[];
+  preview: { bookId: number; chapter: number; verse: number; level: number };
 }) {
   const { t } = useTranslation();
   if (loading || !references || references.length === 0) return null;
   return (
     <section aria-label={t("bible.sidePanel.eyeSection")} className="map-panel mt-2 font-sans">
       <h3 className="mb-2 text-sm font-medium text-fg-muted">{t("bible.sidePanel.eyeSection")}</h3>
-      <CrossReferenceList variant="inline" references={references} books={books} />
+      <CrossReferenceList
+        variant="inline"
+        references={references}
+        books={books}
+        preview={preview}
+      />
     </section>
   );
 }

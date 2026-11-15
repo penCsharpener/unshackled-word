@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.GetCheck;
 
@@ -21,6 +22,7 @@ public sealed class Endpoint : Endpoint<CheckRequest, CheckResponse>
     {
         Get("checks/{code}");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "Findings of one check (U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5). Aggregated checks return groups; pass group to expand one into findings.");
     }
 

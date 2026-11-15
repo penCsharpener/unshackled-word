@@ -115,13 +115,13 @@ public class RevisionOverviewTests
     }
 
     [Fact]
-    public async Task ActiveVariantsSql_ReadsActiveRowsAndJoinsMappingWithLang()
+    public async Task ActiveVariantsSql_ReadsTheLiveRowsAndJoinsMappingWithLang()
     {
         var reader = new FakeDbReader();
 
         await new RevisionOverviewRepository(reader).GetActiveVariantsAsync();
 
-        reader.LastSql.ShouldContain("WHERE rv.\"IsActive\"");
+        reader.LastSql.ShouldNotContain("IsActive");
         reader.LastSql.ShouldContain("rm.\"Lang\" = 'H'");
         reader.LastSql.ShouldContain("rm.\"Lang\" = 'G'");
     }

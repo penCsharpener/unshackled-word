@@ -7,7 +7,7 @@ namespace UnshackledWord.Application.Features.VerseMapping;
 
 public sealed class VerseMappingService : IVerseMappingService
 {
-    /// <summary>Configuration key of the write gate; replaced by real authorization once there is an auth system.</summary>
+    /// <summary>Configuration key of the write gate; one extra server-wide switch on top of the Admin/Maintainer role check of the save endpoint.</summary>
     public const string EditingEnabledKey = "MappingEditing:Enabled";
 
     private const int LastHebrewBookId = 39;
@@ -21,10 +21,10 @@ public sealed class VerseMappingService : IVerseMappingService
         _configuration = configuration;
     }
 
-    public async Task<GetVerseMappingResponse?> GetAsync(int bibleBookId, int chapter, int verse, CancellationToken token = default)
+    public async Task<GetVerseMappingResponse?> GetAsync(int bibleBookId, int chapter, int verse, bool callerCanWrite, CancellationToken token = default)
     {
         var germanWords = await _repository.GetGermanWordsAsync(bibleBookId, chapter, verse, token);
-        return germanWords.Count == 0 ? null : await BuildAsync(bibleBookId, chapter, verse, germanWords, token);
+        return germanWords.Count == 0 ? null : await BuildAsync(bibleBookId, chapter, verse, germanWords, callerCanWrite, token);
     }
 
     public async Task<SaveVerseMappingResult> SaveAsync(int bibleBookId, int chapter, int verse, IReadOnlyList<VerseMappingLink> links, CancellationToken token = default)
@@ -78,11 +78,12 @@ public sealed class VerseMappingService : IVerseMappingService
         return new SaveVerseMappingResult
         {
             Outcome = SaveVerseMappingOutcome.Saved,
-            Mapping = await BuildAsync(bibleBookId, chapter, verse, germanWords, token),
+            // The endpoint only lets write roles in, so the saved verse is editable for this caller.
+            Mapping = await BuildAsync(bibleBookId, chapter, verse, germanWords, callerCanWrite: true, token),
         };
     }
 
-    private async Task<GetVerseMappingResponse> BuildAsync(int bibleBookId, int chapter, int verse, IReadOnlyList<VerseGermanWordRow> germanWords, CancellationToken token)
+    private async Task<GetVerseMappingResponse> BuildAsync(int bibleBookId, int chapter, int verse, IReadOnlyList<VerseGermanWordRow> germanWords, bool callerCanWrite, CancellationToken token)
     {
         var hebrew = IsHebrew(bibleBookId);
         var originalWords = await _repository.GetOriginalWordsAsync(hebrew, bibleBookId, chapter, verse, token);
@@ -94,7 +95,7 @@ public sealed class VerseMappingService : IVerseMappingService
             Chapter = chapter,
             Verse = verse,
             Language = hebrew ? "hebrew" : "greek",
-            EditingEnabled = IsEditingEnabled(),
+            EditingEnabled = callerCanWrite && IsEditingEnabled(),
             GermanWords = germanWords
                 .Select(w => new VerseMappingGermanWord { Id = w.Id, PositionInVerse = w.PositionInVerse, Text = w.Text })
                 .ToList(),

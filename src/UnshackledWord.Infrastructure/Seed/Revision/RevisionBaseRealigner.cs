@@ -6,9 +6,9 @@ namespace UnshackledWord.Infrastructure.Seed.Revision;
 
 /// <summary>
 /// After <c>rebase</c> rebuilt <c>Elb1871Words</c> (roadmap 0011.13): recomputes <c>BasePositionInVerse</c> and <c>Change</c> of every
-/// ACTIVE variant against the new base words, with the same carry-over the editor uses. Text, mapping, versions and history stay as
-/// they are; <c>BaseTextHash</c> is deliberately not touched, so a variant whose base verse changed shows up in the "Basistext
-/// geändert" list of the revision overview. Variants of verses that no longer exist are left alone and counted.
+/// variant against the new base words, with the same carry-over the editor uses. Text, mapping, versions and the audit history stay as
+/// they are (no audit row: base position and change are derived from Elb1871, not authored); <c>BaseTextHash</c> is deliberately not touched,
+/// so a variant whose base verse changed shows up in the "Basistext geändert" list of the revision overview. Variants of verses that no longer exist are left alone and counted.
 /// </summary>
 public sealed class RevisionBaseRealigner
 {
@@ -16,7 +16,6 @@ public sealed class RevisionBaseRealigner
         SELECT rv."Id"       AS "Id"
              , rv."HebRefId" AS "HebRefId"
         FROM "unshackled-word"."RevisionVerses" rv
-        WHERE rv."IsActive"
         ORDER BY rv."HebRefId"
                , rv."RevisionId"
         """;

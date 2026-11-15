@@ -2,6 +2,7 @@ using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Domain.WebApi.DataQuality;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Application.Features.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality.OriginalSearch;
 
@@ -19,6 +20,7 @@ public sealed class Endpoint : Endpoint<OriginalSearchRequest, OriginalSearchRes
     {
         Get("original/search");
         Group<RouteGroupConfig>();
+        Roles(AppRoles.Admin, AppRoles.Maintainer);
         Summary(s => s.Summary = "Find original words by Strong's number, Greek/Hebrew script, transliteration, Hebrew consonants or English gloss (diacritics ignored).");
     }
 

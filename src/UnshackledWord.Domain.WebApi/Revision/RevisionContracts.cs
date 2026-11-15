@@ -103,8 +103,6 @@ public sealed class RevisionVerseMappingResponse
     public int Level { get; set; }
     public int Version { get; set; }
 
-    /// <summary>False when a newer version replaced this one or the variant was withdrawn.</summary>
-    public bool IsActive { get; set; }
     public int BibleBookId { get; set; }
     public int Chapter { get; set; }
     public int Verse { get; set; }
@@ -152,26 +150,30 @@ public sealed class RevisionHistoryRequest : RevisionVerseRouteRequest
     public int Level { get; set; }
 }
 
-/// <summary>All versions of one level of a verse, newest first.</summary>
+/// <summary>All audit entries (text saves, mapping saves, withdrawals) of one level of a verse, newest first.</summary>
 public sealed class RevisionHistoryResponse
 {
     public int Level { get; set; }
     public List<RevisionHistoryEntry> Versions { get; set; } = [];
 }
 
+/// <summary>One entry of <c>RevisionVerseAudit</c>. <see cref="Action"/> is <c>text</c>, <c>mapping</c> (same <see cref="Version"/> as its text entry) or <c>withdraw</c>.</summary>
 public sealed class RevisionHistoryEntry
 {
-    public int RevisionVerseId { get; set; }
+    public long AuditId { get; set; }
     public int Version { get; set; }
+    public string Action { get; set; } = string.Empty;
     public string Text { get; set; } = string.Empty;
     public string? Note { get; set; }
+
+    /// <summary>True only for the newest text entry of a verse that is not withdrawn.</summary>
     public bool IsActive { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime At { get; set; }
 
     /// <summary>Display name of the author; absent for variants imported from the repo seed.</summary>
-    public string? CreatedBy { get; set; }
+    public string? By { get; set; }
 
-    /// <summary>When a newer version replaced this one or the variant was withdrawn; absent for the active version.</summary>
+    /// <summary>The <see cref="At"/> of the next text or withdraw entry; absent for the newest text entry and for mapping/withdraw entries.</summary>
     public DateTime? EndedAt { get; set; }
 }
 

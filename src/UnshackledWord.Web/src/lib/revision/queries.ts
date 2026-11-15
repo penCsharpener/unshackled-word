@@ -17,6 +17,8 @@ export const revisionKeys = {
     ["revision", "history", ref.bookId, ref.chapter, ref.verse, level] as const,
   levelDetails: ["revision", "levelDetails"] as const,
   mapping: (revisionVerseId: number) => ["revision", "mapping", revisionVerseId] as const,
+  /** Every cached mapping; the words of a verse get new ids on each text save. */
+  mappings: ["revision", "mapping"] as const,
 };
 
 export function useRevisionLevels(enabled = true) {
@@ -52,6 +54,8 @@ export function useSaveRevision(ref: RevisionVerseRef) {
     onSuccess: () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: revisionKeys.verse(ref) }),
+        // a text save keeps the verse id but rewrites its words (new ids, carried mapping): an open mapping is stale
+        queryClient.invalidateQueries({ queryKey: revisionKeys.mappings }),
         queryClient.invalidateQueries({ queryKey: ["revision", "history"] }),
         // the reader shows the new wording at once
         ...bibleKeys.chapters.map((queryKey) =>
@@ -80,19 +84,22 @@ export function useRevisionHistory(
   );
 }
 
-/** Ends the active variant of the verse at its level; the reader falls back to the next variant towards Elb1871. */
+/** Withdraws the variant of the verse at its level (the row is deleted); the reader falls back to the next variant towards Elb1871. */
 export function useWithdrawRevision(ref: RevisionVerseRef) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (revisionVerseId: number) => revisionApi.withdraw(revisionVerseId),
-    onSuccess: () =>
-      Promise.all([
+    onSuccess: () => {
+      // the verse row and its words are gone: its mapping must not be served from the cache
+      queryClient.removeQueries({ queryKey: revisionKeys.mappings });
+      return Promise.all([
         queryClient.invalidateQueries({ queryKey: revisionKeys.verse(ref) }),
         queryClient.invalidateQueries({ queryKey: ["revision", "history"] }),
         ...bibleKeys.chapters.map((queryKey) =>
           queryClient.invalidateQueries({ queryKey: [...queryKey, ref.bookId, ref.chapter] }),
         ),
-      ]),
+      ]);
+    },
   });
 }
 
@@ -129,7 +136,7 @@ export function useSaveRevisionLevel() {
   });
 }
 
-/** Mapping of one variant version; fresh on every opening because a save elsewhere replaces it. */
+/** Mapping of one variant; fresh on every opening because a text save elsewhere rewrites its words (the verse id stays). */
 export function useRevisionMapping(revisionVerseId: number | null) {
   const id = revisionVerseId ?? 0;
   return useQuery(

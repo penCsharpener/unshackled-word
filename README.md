@@ -36,7 +36,7 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
 ## Principles
 
 * Licence: the app and all data created with it are CC0. STEP Bible data is downloaded on the fly and never redistributed or changed.
-* Elberfelder 1871 is the base text. Other versions (a modernized literal revision first, later more dynamic or simpler ones up to a children's Bible) are verse variants on top of it, one per literalness level (1–1000, Elb1871 = 100), so a reader can slide from literal to simple. Every text save is a new version.
+* Elberfelder 1871 is the base text. Other versions (a modernized literal revision first, later more dynamic or simpler ones up to a children's Bible) are verse variants on top of it, one per literalness level (1–1000, Elb1871 = 100), so a reader can slide from literal to simple. Only the current text of each variant is stored; every save is kept in an audit log.
 * Everyone can suggest changes, the maintainer merges them. AI-made mappings are attributed to their own user and confirmed by humans.
 * Read-only study tools are public, writing requires login.
 * Self-hostable via `docker compose`. The seed runs on first start; only the mapping seed is updated afterwards.
@@ -49,6 +49,9 @@ Add these lines if you leave everything else as default:
 ```dotenv
 POSTGRES_CONNECTIONSTRING="Host=unshackledword.tooling.database;Port=5432;Database=postgres;Username=postgres;Password=test;"
 ENVIRONMENT=Development
+# optional, see "Rate limiting" below
+RATE_LIMITING_ENABLED=false
+REVERSE_PROXY_NETWORK=
 ```
 
 Then run `docker compose up -d` in the solution root.
@@ -221,9 +224,39 @@ Measured on the maintainer's data (2026-11-13): 721,054 of 721,552 morphology ro
 Now that the database is setup and seeded you can run the `UnshackledWord.Tooling.WebApi` project.
 Again this will need the same secrets setup as the previous projects to connect to the database.
 
-Writing mappings (`PUT /api/elberfelder/verseMapping/...`, used by the mapping editor) is switched off by default because
-there is no login yet. Enable it only on a trusted instance with the environment variable
+Writing mappings (`PUT /api/elberfelder/verseMapping/...`, used by the mapping editor) needs a login with the role
+`Admin` or `Maintainer` and is additionally switched off server-wide by default. Enable it with the environment variable
 `UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=true` (setting `MappingEditing:Enabled`); see `docs/roadmaps/0003-mapping-editor.md`.
+Every write endpoint requires a login; the only anonymous `POST`s are the login/registration endpoints under `api/auth`.
+
+### Rate limiting
+
+Optional per-IP limit for anonymous callers; logged-in users are never limited. Off by default
+(`RateLimiting:Enabled`; in Docker `RATE_LIMITING_ENABLED=true` in `.env`). Two tiers, sliding window, numbers in
+`appsettings.json` or env vars (`UNSHACKLEDWORD_RATELIMITING__GENERAL__PERMITLIMIT`, `...__STRICT__PERMITLIMIT`,
+`...__WINDOWSECONDS`, `...__SEGMENTSPERWINDOW`):
+
+- **General** (default 300 requests / 60 s): every anonymous request.
+- **Strict** (default 20 / 60 s, separate counters for `search` and `auth`): smart search, Strong's occurrences, word
+  statistics, and the login/registration/magic-link/password-reset endpoints.
+
+A rejected request gets `429` with `Retry-After` and `{ "code": "rateLimited", "tier": "...", "retryAfterSeconds": n }`;
+the web app shows a notice with the wait time and a login link. `Retry-After` is one window segment (10 s by default), a
+hint rather than a guarantee.
+
+Behind a reverse proxy the API must know the proxy, otherwise every visitor shares the proxy's IP and one bucket (the API
+logs a warning at startup in Production). Set `REVERSE_PROXY_NETWORK` in `.env` to the proxy's Docker network, e.g.
+`172.16.0.0/12` (setting `ReverseProxy:KnownNetworks` / `KnownProxies`). Keep the API port reachable only from the proxy,
+or callers can fake `X-Forwarded-For`.
+
+Quick check (limit 5 for the test):
+
+```sh
+UNSHACKLEDWORD_RATELIMITING__ENABLED=true UNSHACKLEDWORD_RATELIMITING__GENERAL__PERMITLIMIT=5 dotnet run --project src/UnshackledWord.Tooling.WebApi
+for i in $(seq 1 7); do curl -s -o /dev/null -w "%{http_code} " http://localhost:5142/api/meta-bible/structure; done   # 200 x5, then 429
+```
+
+See `docs/roadmaps/0015-public-rate-limit/` for the design.
 
 ### Data quality and word statistics
 
@@ -232,7 +265,7 @@ The Strong's page, the word statistics and the data-quality page read from a *sn
 `StatsGermanForms` (`0013`, rebuilt by `0014`). They pre-aggregate the German words (lemma + part of speech) against
 the Strong's numbers of the mapping, so a page does not have to group 700k+ words per request.
 
-- A snapshot is only refreshed by the "Neu berechnen" buttons (data-quality page and Strong's page, `POST api/dataQuality/refresh`, roles
+- A snapshot is only refreshed by the "Neu berechnen" buttons (data-quality page, roles `Admin`/`Maintainer` like all of its endpoints, and Strong's page, `POST api/dataQuality/refresh`, roles
   `Admin`/`Maintainer`). Nothing else starts a refresh, not startup, not the seed, not the migrations. A full refresh takes
   about 40 s on the full data; the pages show "wird berechnet …" and the new "Statistik: Stand …" time afterwards.
 - The views are created empty. While `StatsRefreshedAt` is not set (fresh install, never refreshed) the Strong's page and
