@@ -1,0 +1,12 @@
+# 0014 · Tasks
+
+| # | Task | Depends on | Done when |
+|---|---|---|---|
+| 0014.0 | Maintainer confirms the proposed decisions in [02-decisions.md](02-decisions.md) | – | Table marked decided with date |
+| 0014.1 | Migration `0023` (table + backfill, [05-migration.md](05-migration.md)); `RevisionAuditWriter` in Infrastructure with the compact snapshot builder; dual-write: text save, mapping save, withdraw and seed import write an audit row next to the old behaviour | 0014.0 | Repository tests: after each write path the newest audit row equals the live state; migration on a copy of the dev DB gives audit rows = verse rows + reviews + withdrawals |
+| 0014.2 | History endpoint reads `RevisionVerseAudit` (new contract in [03-data-model.md](03-data-model.md)) | 0014.1 | `GetHistory` tests on audit rows incl. mapping and withdraw entries; old rows still shown via backfill |
+| 0014.2f | `VersionHistory`: new fields, mapping entries as sub-line, i18n de/en | 0014.2 | Vitest for mapping/withdraw entries; restore still loads the text; `bun run check` green |
+| 0014.3 | Switch to live-only: migration `0024`, text save as update + rewrite ([04-write-paths.md](04-write-paths.md)), withdraw as delete, seed import/export, realigner, all `IsActive` filters removed (list in [02-decisions.md](02-decisions.md)), `BasedOnRevisionId`/`BasedOnVersion` in contracts and seed export | 0014.2 | `dotnet test` green; on a dev-DB copy: `RevisionVerses` count = distinct (verse, revision); save → 1 verse row, words replaced, `Version + 1`; withdraw + re-save continues the version; seed export byte-identical before/after |
+| 0014.3f | Frontend follows the changed ids: `expectedVersion` flow, bulk-replace queue entries and mapping editor no longer treat `revisionVerseId` as version-specific; remove `isActive` read-only branches that cannot happen anymore | 0014.3 | Vitest green; manual: edit, map, withdraw, re-create a verse in the chapter page and bulk replace without a 409 or stale editor |
+| 0014.4 | Docs: table comments, 0011 "Mapping history" decision and data-model text point to 0014, CLAUDE.md "Every text save is a new version" → "… recorded in `RevisionVerseAudit`" | 0014.3 | No doc mentions `IsActive` on revision tables |
+| 0014.5 | Real run: measure row counts and the Strong's lookup (`RevisionMapping_Step_idx`) before/after on a DB with a bulk-replace pass; write `08-first-run.md` | 0014.3f | Numbers in `08-first-run.md`, status in `index.md` updated |
