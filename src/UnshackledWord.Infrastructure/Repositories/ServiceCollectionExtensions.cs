@@ -1,4 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using UnshackledWord.Application.Features.ChapterOriginals;
+using UnshackledWord.Application.Features.CrossReferences;
+using UnshackledWord.Application.Features.Revision;
 using UnshackledWord.Application.Features.Backup;
 using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Features.StrongsStats;
@@ -25,9 +28,17 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISrWordRepository, SrWordRepository>();
         services.AddScoped<IWordDetailRepository, WordDetailRepository>();
         services.AddScoped<IVerseMappingRepository, VerseMappingRepository>();
+        services.AddScoped<IRevisionRepository, RevisionRepository>();
+        services.AddScoped<IRevisionService, RevisionService>();
+        services.AddScoped<IRevisionCarryService, RevisionCarryService>();
+        services.AddScoped<IRevisionMappingService, RevisionMappingService>();
+        services.AddScoped<IRevisionWordDetailRepository, RevisionWordDetailRepository>();
+        services.AddScoped<IRevisionWordDetailService, RevisionWordDetailService>();
         services.AddScoped<IHebrewMorphemeRepository, HebrewMorphemeRepository>();
         services.AddScoped<IWordDetailService, WordDetailService>();
         services.AddScoped<IVerseMappingService, VerseMappingService>();
+        services.AddScoped<IChapterCrossReferenceService, ChapterCrossReferenceService>();
+        services.AddScoped<IChapterOriginalsService, ChapterOriginalsService>();
         services.AddScoped<IStrongsOccurrenceService, StrongsOccurrenceService>();
         services.AddScoped<IStrongsStatsRepository, StrongsStatsRepository>();
         services.AddScoped<IStrongsSummaryService, StrongsSummaryService>();

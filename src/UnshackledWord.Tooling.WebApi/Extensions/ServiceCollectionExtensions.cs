@@ -1,4 +1,5 @@
-﻿using UnshackledWord.Infrastructure.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using UnshackledWord.Infrastructure.Extensions;
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Infrastructure.Seed;
 using UnshackledWord.Persistence.Postgres.Extensions;
@@ -13,10 +14,12 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
+        // The seed importers (shared with the SeedDb CLI) read the same section through the domain settings class.
+        services.Configure<UnshackledWord.Domain.Models.Settings.AppSettings>(configuration.GetSection(nameof(AppSettings)));
         services.AddPostgresPersistence();
         services.AddInfrastructureServices();
         services.AddRepositories();
-        services.AddSeedExportServices();
+        services.AddSeedImportServices();
         services.AddApiServices();
 
         return services;
@@ -29,6 +32,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Endpoints.Lemmas.ILemmaBulkRepository, Endpoints.Lemmas.LemmaBulkRepository>();
         services.AddScoped<Endpoints.Lemmas.Stts.ISttsTagRepository, Endpoints.Lemmas.Stts.SttsTagRepository>();
         services.AddScoped<Endpoints.Lemmas.Stts.LemmaSttsGuard>();
+        services.AddScoped<Endpoints.Revision.IRevisionLevelRepository, Endpoints.Revision.RevisionLevelRepository>();
+        services.AddScoped<Endpoints.Revision.RevisionLevelService>();
+        services.AddScoped<Endpoints.Revision.IRevisionOverviewRepository, Endpoints.Revision.RevisionOverviewRepository>();
+        services.AddScoped<Endpoints.Revision.RevisionOverviewService>();
+        services.AddScoped<Endpoints.Revision.BulkReplaceSearch.IBulkReplaceSearchRepository, Endpoints.Revision.BulkReplaceSearch.BulkReplaceSearchRepository>();
+        services.AddScoped<Endpoints.Revision.BulkReplaceSearch.BulkReplaceSearchService>();
         services.AddHostedService<Endpoints.Lemmas.Stts.SttsDriftCheck>();
         services.AddSingleton<Endpoints.DataQuality.StrongsLexiconIndex>();
         services.AddSingleton<Endpoints.DataQuality.DqRefreshCoordinator>();
@@ -39,6 +48,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Endpoints.DataQuality.DqOverviewService>();
         services.AddSingleton<Endpoints.Maintainer.ExportSeed.SeedExportCoordinator>();
         services.AddScoped<Endpoints.Maintainer.ExportSeed.SeedZipBuilder>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddSingleton<Endpoints.Maintainer.SeedAdmin.SeedJobRunner>();
+        services.AddScoped<Endpoints.Maintainer.SeedAdmin.SeedOperationService>();
         return services;
     }
 }

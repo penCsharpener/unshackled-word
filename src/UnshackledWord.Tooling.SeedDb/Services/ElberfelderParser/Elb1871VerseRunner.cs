@@ -1,3 +1,4 @@
+using UnshackledWord.Infrastructure.Seed.BaseText;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;

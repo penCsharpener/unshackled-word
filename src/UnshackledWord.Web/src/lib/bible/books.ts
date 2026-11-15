@@ -14,6 +14,10 @@ export function bookName(book: BibleStructureBook, language: string): string {
   return language.startsWith("en") ? book.nameEn : book.nameDe;
 }
 
+export function bookAbbreviation(book: BibleStructureBook, language: string): string {
+  return language.startsWith("en") ? book.abbreviationEn : book.abbreviationDe;
+}
+
 export function chapterCount(book: BibleStructureBook): number {
   return book.versesPerChapter.length;
 }

@@ -26,7 +26,7 @@ interface Stub {
   originals: (params: URLSearchParams) => Response;
 }
 
-function stubFetch(overrides: Partial<Stub> = {}) {
+function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
   const handlers: Stub = {
     verses: () => json(fixtureVerseSearch),
     originals: () => json(fixtureOriginals),
@@ -36,6 +36,7 @@ function stubFetch(overrides: Partial<Stub> = {}) {
     const parsed = new URL(url, "http://localhost");
     const path = parsed.pathname.replace(/^\/api/, "");
     if (path === "/meta-bible/structure") return json(fixtureStructure);
+    if (path === "/revision/levels") return json(levels);
     if (path === "/elberfelder/search/verses") return handlers.verses(parsed.searchParams);
     if (path === "/elberfelder/search/originals") return handlers.originals(parsed.searchParams);
     return new Response("", { status: 404 });
@@ -199,6 +200,43 @@ describe("SearchOverlay", () => {
     expect(mark.tagName).toBe("MARK");
     expect(screen.getByTestId("widened")).toHaveTextContent("ging → auch Formen von gehen");
     expect(screen.getByRole("status")).toHaveTextContent("3 Verse gefunden");
+  });
+
+  it("searches at the reader level and marks revised hits with the left border", async () => {
+    localStorage.setItem("uw.readerLevel", "300");
+    const revised = {
+      bibleBookId: 43,
+      chapter: 3,
+      verse: 16,
+      tokens: [{ text: "einzigen", matched: true }],
+      revised: true,
+      level: 300,
+    };
+    const fetchMock = stubFetch(
+      {
+        verses: () =>
+          json({ ...fixtureVerseSearch, total: 2, hits: [revised, fixtureVerseSearch.hits[0]] }),
+      },
+      [
+        { level: 200, code: "elb1871", name: "Elberfelder 1871", isBase: true, isDefault: false },
+        { level: 300, code: "modern", name: "Modern", isBase: false, isDefault: true },
+      ],
+    );
+    const user = userEvent.setup();
+    try {
+      setup();
+      await user.keyboard("f");
+      await user.type(searchField(), "einzigen ");
+
+      const list = await screen.findByRole("listbox", { name: "Treffer" });
+      const options = within(list).getAllByRole("option");
+      expect(String(verseCalls(fetchMock)[0]?.[0])).toContain("level=300");
+      expect(options[0]).toHaveClass("border-l-4");
+      expect(options[0]).toHaveAttribute("title", "revidiert: Modern");
+      expect(options[1]).not.toHaveClass("border-l-4");
+    } finally {
+      localStorage.removeItem("uw.readerLevel");
+    }
   });
 
   it("navigates to the verse and closes on a hit click", async () => {

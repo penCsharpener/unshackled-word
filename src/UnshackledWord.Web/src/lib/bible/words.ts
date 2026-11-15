@@ -2,6 +2,7 @@ import type {
   ChapterWord,
   GetWordDetailResponse,
   HighlightKind,
+  RevisedVerse,
   VerseWords,
   WordToken,
 } from "./types";
@@ -12,22 +13,35 @@ const NON_LETTERS = /[^\p{L}\p{M}]/gu;
 const normalizeForm = (word: ChapterWord): string =>
   (word.original ?? "").replace(NON_LETTERS, "").normalize("NFC").toLowerCase();
 
+/** React key / lookup key of a word: `r<revisionWordId>` for revision words, else `b<id>` (revision words may have id 0). */
+export const wordKey = (word: Pick<WordToken, "id" | "revisionWordId">): string =>
+  word.revisionWordId !== undefined ? `r${word.revisionWordId}` : `b${word.id}`;
+
 /**
  * Groups API rows into verses of words. The API returns one row per original-language reading, so
  * rows with the same word id are merged into one token with several senses. A sense's key is the
  * Strong's number, falling back to the lemma (the Old Testament has no lemma, the New Testament both).
  */
-export function groupWordsByVerse(words: ChapterWord[]): VerseWords[] {
-  const tokens = new Map<number, { verse: number; position: number; token: WordToken }>();
+export function groupWordsByVerse(
+  words: ChapterWord[],
+  revisedVerses: RevisedVerse[] = [],
+): VerseWords[] {
+  const tokens = new Map<string, { verse: number; position: number; token: WordToken }>();
   for (const row of words) {
-    let entry = tokens.get(row.id);
+    const rowKey = wordKey(row);
+    let entry = tokens.get(rowKey);
     if (!entry) {
       entry = {
         verse: row.verse,
         position: row.positionInVerse,
-        token: { id: row.id, text: row.wordInContext, senses: [] },
+        token: {
+          id: row.id,
+          text: row.wordInContext,
+          senses: [],
+          ...(row.revisionWordId !== undefined && { revisionWordId: row.revisionWordId }),
+        },
       };
-      tokens.set(row.id, entry);
+      tokens.set(rowKey, entry);
     }
     const key = row.strongs ?? row.lemma;
     if (!key) continue;
@@ -43,11 +57,13 @@ export function groupWordsByVerse(words: ChapterWord[]): VerseWords[] {
     list.push({ position, token });
     verses.set(verse, list);
   }
+  const revisedByVerse = new Map(revisedVerses.map((r) => [r.verse, r]));
   return [...verses.entries()]
     .sort(([a], [b]) => a - b)
     .map(([verse, list]) => ({
       verse,
       words: list.sort((a, b) => a.position - b.position).map((e) => e.token),
+      ...(revisedByVerse.has(verse) && { revised: revisedByVerse.get(verse) }),
     }));
 }
 
@@ -58,8 +74,8 @@ export function groupWordsByVerse(words: ChapterWord[]): VerseWords[] {
 export function buildHighlights(
   hovered: WordToken | undefined,
   verses: VerseWords[],
-): Map<number, HighlightKind> {
-  const result = new Map<number, HighlightKind>();
+): Map<string, HighlightKind> {
+  const result = new Map<string, HighlightKind>();
   if (!hovered || hovered.senses.length === 0) return result;
 
   for (const { words } of verses) {
@@ -72,8 +88,8 @@ export function buildHighlights(
           else kind ??= "related";
         }
       }
-      if (word.id === hovered.id) kind = "same";
-      if (kind) result.set(word.id, kind);
+      if (wordKey(word) === wordKey(hovered)) kind = "same";
+      if (kind) result.set(wordKey(word), kind);
     }
   }
   return result;

@@ -1,0 +1,19 @@
+meta {
+  name: SeedStatus
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}maintainer/seed/status
+  body: none
+  auth: inherit
+}
+
+docs {
+  Needs admin or maintainer. The running or last seed job (log and result), assetsProblem when the repo seed folder is not reachable, and the latest SeedImports rows. Poll this while a job runs.
+}
+
+settings {
+  encodeUrl: true
+}

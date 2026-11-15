@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<SearchVersesRequest, SearchVersesResponse>
 
     public override async Task HandleAsync(SearchVersesRequest req, CancellationToken ct)
     {
-        var result = await _service.SearchAsync(req.Q, req.Page, req.PageSize, req.BookId is 0 ? null : req.BookId, ct);
+        var result = await _service.SearchAsync(req.Q, req.Page, req.PageSize, req.BookId is 0 ? null : req.BookId, req.Level, ct);
         if (result is null)
         {
             await Send.ErrorsAsync(400, ct);

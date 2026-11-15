@@ -18,7 +18,7 @@ export interface CheckSummary {
 
 /** One `SeedImports` row (roadmap 0010): an import, or a mapping seed update when `versesUpdated` is set. */
 export interface SeedImport {
-  kind: "morphology" | "mappings";
+  kind: "morphology" | "mappings" | "revision";
   seedVersion: string;
   exportedAt?: string | null;
   importedAt: string;

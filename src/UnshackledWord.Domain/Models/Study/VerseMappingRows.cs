@@ -26,4 +26,7 @@ public sealed class VerseMappingRow
     public int? StepWordId { get; set; }
     public bool IsAddedWord { get; set; }
     public int? ParentElbWordId { get; set; }
+
+    /// <summary>Compound part marker of the German word (read only; the editor does not save it). Carried into revisions.</summary>
+    public string? GermanWordPart { get; set; }
 }

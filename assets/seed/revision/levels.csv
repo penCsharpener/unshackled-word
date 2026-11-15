@@ -1,0 +1,4 @@
+Level,Code,NameDe,NameEn,DescriptionDe,DescriptionEn,IsDefault
+100,elb2027-extra,Elberfelder 2027 Extra,Elberfelder 2027 Extra,"Sehr wörtlich, schwer lesbar; nimmt schlechtes Deutsch in Kauf, um mehr vom Grundtext abzubilden.","Very literal and hard to read; accepts poor German to reflect more of the original languages.",false
+200,elb1871,Elberfelder 1871,Elberfelder 1871,"Unrevidierter Basistext.","The unrevised base text.",false
+200,elb2027,Elberfelder 2027,Elberfelder 2027,"Modernisierte Elberfelder bei gleicher Genauigkeit; wird gegenüber 1871 bevorzugt.","Modernised Elberfelder at the same level of detail; preferred over 1871.",true

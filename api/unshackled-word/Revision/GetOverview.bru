@@ -1,0 +1,23 @@
+meta {
+  name: GetOverview
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{url}}revision/overview?list=unreviewed&page=1&pageSize=50
+  body: none
+  auth: inherit
+}
+
+params:query {
+  list: unreviewed
+  page: 1
+  pageSize: 50
+  ~level: 200
+}
+
+docs {
+  Needs a login cookie with role admin, maintainer or reviewer (reviewers only read). 401 anonymous; 403 role user.
+  list = unreviewed | incomplete | stale; omit it for tiles and counts only.
+}

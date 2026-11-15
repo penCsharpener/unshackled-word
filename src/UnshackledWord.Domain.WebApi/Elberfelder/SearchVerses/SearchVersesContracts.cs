@@ -19,6 +19,11 @@ public sealed class SearchVersesRequest
 
     /// <summary>Optional Elberfelder book (1-66) the hits are restricted to; empty (or 0) means all books. The per-book counts ignore it.</summary>
     public int? BookId { get; set; }
+
+    /// <summary>Reader level 0-1000 (roadmap 0011): a verse also matches by the revision variant that level shows; 200 = default, 0 = Elb1871 only.</summary>
+    public int Level { get; set; } = 200;
+
+    public const int BaseLevel = 0;
 }
 
 public sealed class SearchVersesResponse
@@ -72,6 +77,12 @@ public sealed class SearchVersesHit
 
     /// <summary>The whole verse in word order; <c>matched</c> marks the words that satisfy the query.</summary>
     public List<SearchVersesHitToken> Tokens { get; set; } = [];
+
+    /// <summary>True when the tokens are the revised wording (the revision variant matched); omitted for Elb1871 text.</summary>
+    public bool? Revised { get; set; }
+
+    /// <summary>Level of the revision variant shown; omitted for Elb1871 text.</summary>
+    public int? Level { get; set; }
 }
 
 public sealed class SearchVersesHitToken

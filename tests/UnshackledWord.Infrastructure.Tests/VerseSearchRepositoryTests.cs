@@ -23,7 +23,7 @@ public class VerseSearchRepositoryTests
     {
         var reader = new FakeDbReader().Returns(new VerseSearchBookCountRow { BookId = 43, Count = 17 });
 
-        await new VerseSearchRepository(reader).GetBookCountsAsync("(('gott'))");
+        await new VerseSearchRepository(reader).GetBookCountsAsync("(('gott'))", 0);
 
         reader.LastSql.ShouldContain("GROUP BY v.\"HebRefId\" / 1000000");
         reader.LastSql.ShouldContain("CAST(@Query AS tsquery)");
@@ -37,7 +37,7 @@ public class VerseSearchRepositoryTests
     {
         var reader = new FakeDbReader().Returns(new VerseSearchHitRow { HebRefId = 43003016 });
 
-        await new VerseSearchRepository(reader).GetHitsAsync("(('ging' | 'gehen':B))", "(('ging'))", 43_000_000, 43_999_999, 20, 10);
+        await new VerseSearchRepository(reader).GetHitsAsync("(('ging' | 'gehen':B))", "(('ging'))", 0, 43_000_000, 43_999_999, 20, 10);
 
         reader.LastSql.ShouldContain("ORDER BY (v.\"SearchVector\" @@ CAST(@Literal AS tsquery)) DESC");
         reader.LastSql.ShouldContain("ts_rank_cd(v.\"SearchVector\", CAST(@Query AS tsquery)) DESC");
@@ -56,10 +56,63 @@ public class VerseSearchRepositoryTests
     {
         var reader = new FakeDbReader().Returns(new VerseSearchHitRow { HebRefId = 1001001 });
 
-        await new VerseSearchRepository(reader).GetHitsAsync("(('gott'))", null, 0, int.MaxValue, 0, 20);
+        await new VerseSearchRepository(reader).GetHitsAsync("(('gott'))", null, 0, 0, int.MaxValue, 0, 20);
 
         reader.LastSql.ShouldNotContain("@Literal");
         reader.LastSql.ShouldContain("ORDER BY ts_rank_cd(v.\"SearchVector\", CAST(@Query AS tsquery)) DESC");
+    }
+
+    [Fact]
+    public async Task GetHitsAsync_AtBaseLevel_NeverTouchesTheRevisionTables()
+    {
+        var reader = new FakeDbReader().Returns(new VerseSearchHitRow { HebRefId = 1001001 });
+
+        await new VerseSearchRepository(reader).GetHitsAsync("(('gott'))", null, 0, 0, int.MaxValue, 0, 20);
+
+        reader.LastSql.ShouldNotContain("Revision");
+    }
+
+    [Fact]
+    public async Task GetHitsAsync_AtOtherLevel_MatchesBaseOrEffectiveVariant_OnePerVerse_PreferringTheVariant()
+    {
+        var reader = new FakeDbReader().Returns(new VerseSearchHitRow { HebRefId = 43003016, RevisionVerseId = 7, Level = 200 });
+
+        var rows = await new VerseSearchRepository(reader).GetHitsAsync("(('einzig'))", "(('einzig'))", 200, 43_000_000, 43_999_999, 0, 20);
+
+        rows.Single().RevisionVerseId.ShouldBe(7);
+        reader.LastSql.ShouldContain("LATERAL");
+        reader.LastSql.ShouldContain("v.\"SearchVector\" @@ CAST(@Query AS tsquery) OR rv.\"SearchVector\" @@ CAST(@Query AS tsquery)");
+        reader.LastSql.ShouldContain("CASE WHEN rv.\"SearchVector\" @@ CAST(@Query AS tsquery) THEN rv.\"Id\" END \"RevisionVerseId\"");
+        reader.LastSql.ShouldContain("ORDER BY (c.\"Vector\" @@ CAST(@Literal AS tsquery)) DESC");
+        reader.LastSql.ShouldContain("LIMIT @Limit OFFSET @Offset");
+        reader.LastParam("Level").ShouldBe(200);
+        reader.LastParam("FromRefId").ShouldBe(43_000_000);
+        reader.LastParam("ToRefId").ShouldBe(43_999_999);
+    }
+
+    [Fact]
+    public async Task GetBookCountsAsync_AtOtherLevel_CountsVersesMatchingBaseOrVariant_OverAllBooks()
+    {
+        var reader = new FakeDbReader().Returns(new VerseSearchBookCountRow { BookId = 43, Count = 1 });
+
+        await new VerseSearchRepository(reader).GetBookCountsAsync("(('einzig'))", 200);
+
+        reader.LastSql.ShouldContain("LATERAL");
+        reader.LastSql.ShouldContain("OR rv.\"SearchVector\" @@");
+        reader.LastParam("Level").ShouldBe(200);
+        reader.LastParam("ToRefId").ShouldBe(int.MaxValue);
+    }
+
+    [Fact]
+    public async Task GetRevisionWordsAsync_ReadsTheVariantWords_WithoutLemma()
+    {
+        var reader = new FakeDbReader().Returns(new VerseSearchWordRow { HebRefId = 43003016, WordInContext = "einzigen" });
+
+        await new VerseSearchRepository(reader).GetRevisionWordsAsync([7]);
+
+        reader.LastSql.ShouldContain("FROM \"unshackled-word\".\"RevisionWords\" w");
+        reader.LastSql.ShouldContain("NULL::text \"Lemma\"");
+        ((int[])reader.LastParam("RevisionVerseIds")!).ShouldBe([7]);
     }
 
     [Fact]

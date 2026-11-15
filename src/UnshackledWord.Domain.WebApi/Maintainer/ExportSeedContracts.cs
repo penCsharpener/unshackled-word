@@ -6,7 +6,8 @@ public sealed class ExportSeedRequest
     public const string All = "all";
     public const string Morphology = "morphology";
     public const string Mappings = "mappings";
+    public const string Revision = "revision";
 
-    /// <summary><c>all</c> (default), <c>morphology</c> or <c>mappings</c>.</summary>
+    /// <summary><c>all</c> (default), <c>morphology</c>, <c>mappings</c> or <c>revision</c>.</summary>
     public string Kind { get; set; } = All;
 }

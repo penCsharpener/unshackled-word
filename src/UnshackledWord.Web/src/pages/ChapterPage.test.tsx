@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider, useLocation } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import type { BibleStructureBook, GetVerseMappingResponse } from "@/lib/bible/types";
 import { fixtureBooks, fixtureChapterWords } from "@/test/fixtures/bibleStructure";
 import { ChapterPage } from "./ChapterPage";
@@ -23,11 +24,27 @@ function Probe() {
   return <output data-testid="loc">{useLocation().pathname}</output>;
 }
 
-function stubFetch(chapterStatus = 200) {
+function stubFetch(chapterStatus = 200, roles?: string[]) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
     if (url.includes("/meta-bible/structure")) {
       return new Response(JSON.stringify({ books }), { status: 200 });
+    }
+    if (url.includes("/auth/me")) {
+      return roles
+        ? new Response(JSON.stringify({ userId: 1, email: "a@b.c", displayName: "Ada", roles }))
+        : new Response("", { status: 401 });
+    }
+    if (url.includes("/revision/levels")) {
+      return new Response(
+        JSON.stringify([
+          { level: 100, code: "elb1871", name: "Elb 1871", isBase: true, isDefault: false },
+          { level: 200, code: "revision", name: "Revision", isBase: false, isDefault: true },
+        ]),
+      );
+    }
+    if (url.includes("/revision/verse/")) {
+      return new Response(JSON.stringify({ baseText: "Basis", variants: [] }));
     }
     return new Response(JSON.stringify(fixtureChapterWords), { status: chapterStatus });
   });
@@ -56,7 +73,9 @@ function renderAt(path: string) {
   );
   return render(
     <QueryClientProvider client={client}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </QueryClientProvider>,
   );
 }
@@ -341,6 +360,12 @@ describe("mapping editor", () => {
       if (url.includes("/meta-bible/structure")) {
         return new Response(JSON.stringify({ books }), { status: 200 });
       }
+      if (url.includes("/chapterCrossReferences/")) {
+        const verses = [{ verse: 1, references: [{ bibleBookId: 43, chapter: 1, verse: 3 }] }];
+        return new Response(JSON.stringify({ bibleBookId: 43, chapter: 3, verses }), {
+          status: 200,
+        });
+      }
       if (url.includes("/verseMapping/")) {
         const body = { ...verseMapping, editingEnabled: options.editingEnabled ?? true };
         if (init?.method === "PUT") {
@@ -403,6 +428,18 @@ describe("mapping editor", () => {
     fireEvent.click(trigger(1));
     await waitFor(() =>
       expect(screen.queryByRole("region", { name: "Zuordnung Johannes 3,1" })).toBeNull(),
+    );
+  });
+
+  it("lists the verse's TSK references under the original text of the eye panel", async () => {
+    stubMapping();
+    renderAt("/bible/43/3");
+    await screen.findByText("Dieser");
+    fireEvent.click(trigger(1));
+    const tsk = await screen.findByRole("region", { name: "Querverweise (TSK)" });
+    expect(within(tsk).getByRole("link", { name: "Johannes 1,3" })).toHaveAttribute(
+      "href",
+      "/bible/43/1#v3",
     );
   });
 
@@ -501,5 +538,22 @@ describe("mapping editor", () => {
       await within(dialog).findByRole("button", { name: "Zuordnung bearbeiten" }),
     );
     await screen.findByRole("region", { name: "Zuordnung Johannes 3,1" });
+  });
+});
+
+describe("revision pen", () => {
+  it("is hidden for signed-out visitors", async () => {
+    stubFetch();
+    renderAt("/bible/43/3");
+    await screen.findAllByRole("button", { name: /Grundtext/i });
+    expect(screen.queryByRole("button", { name: /revidieren/i })).toBeNull();
+  });
+
+  it("opens the revision editor for a maintainer", async () => {
+    stubFetch(200, ["Maintainer"]);
+    renderAt("/bible/43/3");
+    const pens = await screen.findAllByRole("button", { name: /revidieren/i });
+    await userEvent.click(pens[0] as HTMLElement);
+    expect(await screen.findByRole("textbox", { name: "Text" })).toHaveValue("Basis");
   });
 });

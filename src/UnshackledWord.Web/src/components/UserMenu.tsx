@@ -94,6 +94,16 @@ export function UserMenu() {
               {t("maintainer.nav")}
             </Link>
           )}
+          {hasWriteRole(user) && (
+            <Link
+              role="menuitem"
+              to="/edit/revision/replace"
+              className="rounded-md px-2 py-1 hover:bg-surface-muted"
+              onClick={() => setOpen(false)}
+            >
+              {t("bulkReplace.nav")}
+            </Link>
+          )}
           {user.roles?.includes("admin") && (
             <Link
               role="menuitem"

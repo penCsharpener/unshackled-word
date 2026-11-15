@@ -20,7 +20,7 @@ export function BiblePage() {
           </Button>
         </div>
       ) : (
-        <BibleChapterPicker books={structure.data} defaultTestament="ot" />
+        <BibleChapterPicker books={structure.data} defaultTestament="ot" panel="inline" />
       )}
     </>
   );

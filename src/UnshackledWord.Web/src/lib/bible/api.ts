@@ -1,6 +1,8 @@
 import { api } from "@/lib/api";
 import type {
   GetBibleStructureResponse,
+  GetChapterCrossReferencesResponse,
+  GetChapterOriginalsResponse,
   GetChapterTextResponse,
   GetStrongsOccurrencesResponse,
   GetStrongsSummaryResponse,
@@ -17,20 +19,37 @@ import type {
   WordStatsTestament,
 } from "./types";
 
+/** The unrevised Elb1871 level; sent without a `level` parameter. */
+/** Default reader level (position of Elb1871 / Elberfelder 2027); omitted from the query. */
+export const BASE_LEVEL = 200;
+/** Pseudo level: only the unrevised Elb1871 text, no variant. */
+export const ELB1871_ONLY_LEVEL = 0;
+const levelQuery = (level: number) => (level === BASE_LEVEL ? "" : `?level=${level}`);
+
 const verseMappingPath = (bookId: number, chapter: number, verse: number) =>
   `/elberfelder/verseMapping/bookId/${bookId}/chapterId/${chapter}/verseId/${verse}`;
 
 export const bibleApi = {
   structure: (signal?: AbortSignal) =>
     api.get<GetBibleStructureResponse>("/meta-bible/structure", signal),
-  chapterText: (bookId: number, chapter: number, signal?: AbortSignal) =>
+  chapterText: (bookId: number, chapter: number, level = BASE_LEVEL, signal?: AbortSignal) =>
     api.get<GetChapterTextResponse>(
-      `/elberfelder/chapterText/bookId/${bookId}/chapterId/${chapter}`,
+      `/elberfelder/chapterText/bookId/${bookId}/chapterId/${chapter}${levelQuery(level)}`,
       signal,
     ),
-  chapterWords: (bookId: number, chapter: number, signal?: AbortSignal) =>
+  chapterWords: (bookId: number, chapter: number, level = BASE_LEVEL, signal?: AbortSignal) =>
     api.get<GetWordsOfChapterResponse>(
-      `/elberfelder/chapterWords/bookId/${bookId}/chapterId/${chapter}`,
+      `/elberfelder/chapterWords/bookId/${bookId}/chapterId/${chapter}${levelQuery(level)}`,
+      signal,
+    ),
+  chapterCrossReferences: (bookId: number, chapter: number, signal?: AbortSignal) =>
+    api.get<GetChapterCrossReferencesResponse>(
+      `/elberfelder/chapterCrossReferences/bookId/${bookId}/chapterId/${chapter}`,
+      signal,
+    ),
+  chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
+    api.get<GetChapterOriginalsResponse>(
+      `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,
       signal,
     ),
   wordDetail: (wordId: number, signal?: AbortSignal) =>
@@ -78,6 +97,7 @@ export const bibleApi = {
       pageSize: String(options.pageSize ?? 20),
     });
     if (options.bookId) query.set("bookId", String(options.bookId));
+    if (options.level && options.level !== BASE_LEVEL) query.set("level", String(options.level));
     return api.get<SearchVersesResponse>(`/elberfelder/search/verses?${query}`, signal);
   },
 };

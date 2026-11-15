@@ -149,6 +149,20 @@ describe("fetchWordDetail", () => {
     expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/elberfelder/wordDetail/wordId/2");
   });
 
+  it("calls the revision endpoint for a word of a revised verse, also without a base word", async () => {
+    const fetchMock = vi.fn(
+      async (_input: RequestInfo | URL) =>
+        new Response(JSON.stringify({ wordId: 502, wordInContext: "kam", readings: [] })),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    await fetchWordDetail(
+      { id: 0, revisionWordId: 502, text: "kam", senses: [] },
+      undefined,
+      "api",
+    );
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/revision/wordDetail/wordId/502");
+  });
+
   it("maps a 404 to the not-linked state", async () => {
     vi.stubGlobal(
       "fetch",

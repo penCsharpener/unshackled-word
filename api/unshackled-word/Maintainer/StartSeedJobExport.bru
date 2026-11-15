@@ -1,0 +1,26 @@
+meta {
+  name: StartSeedJobExport
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}maintainer/seed/jobs
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "operation": "export",
+    "kind": "revision"
+  }
+}
+
+docs {
+  Writes the seed of the kind (all|morphology|mappings|revision) to assets/seed (and assets/Elb1871Mappings) and reports created/changed/removed files. 202 with the job; 409 while another seed job or the zip export runs; 422 when the assets folder is not reachable. Poll SeedStatus.
+}
+
+settings {
+  encodeUrl: true
+}

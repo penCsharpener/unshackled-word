@@ -204,6 +204,17 @@ public class VerseSearchQueryTests
         validator.Validate(new SearchVersesRequest { Q = "\"ich bin\" -Engel", PageSize = 50, BookId = 43 }).IsValid.ShouldBeTrue();
     }
 
+    [Theory]
+    [InlineData(1, true)]
+    [InlineData(100, true)]
+    [InlineData(1000, true)]
+    [InlineData(0, true)]
+    [InlineData(1001, false)]
+    public void Validator_AcceptsLevels0To1000(int level, bool valid)
+    {
+        new SearchVersesRequestValidator().Validate(new SearchVersesRequest { Q = "Gott", Level = level }).IsValid.ShouldBe(valid);
+    }
+
     [Fact]
     public void Validator_TreatsAnEmptyBookIdBoundAsZeroAsNoFilter()
     {

@@ -1,0 +1,38 @@
+meta {
+  name: SaveVerse
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}revision/verse/bookId/:bookId/chapterId/:chapter/verseId/:verse
+  body: json
+  auth: inherit
+}
+
+params:path {
+  verse: 16
+  chapter: 3
+  bookId: 43
+}
+
+body:json {
+  {
+    "level": 200,
+    "text": "Denn so hat Gott die Welt geliebt, dass er seinen einzigen Sohn gab.",
+    "expectedVersion": null,
+    "note": "einzigen statt eingeborenen",
+    "basedOnLevel": 100
+  }
+}
+
+docs {
+  Needs a login cookie (log in through /api/auth/login first) with role admin or maintainer.
+  200 {revisionVerseId, level, version, carry:{same, changed, new, lostOriginalWordIds}}; 401 anonymous; 403 other roles; 400 level 100 / unknown level / text rules;
+  404 unknown verse; 409 when expectedVersion is not the active version (omit it only when the level has no variant yet).
+  basedOnLevel (default 100): the mapping is carried from the active variant at that level instead of Elb1871; 400 when that level has no variant for the verse.
+}
+
+settings {
+  encodeUrl: true
+}

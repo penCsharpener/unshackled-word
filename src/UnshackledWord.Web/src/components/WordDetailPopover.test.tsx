@@ -398,21 +398,21 @@ describe("WordDetailPopover", () => {
         ]),
       });
       expect(screen.getByText("Querverweise zu diesem Vers (2)")).toBeInTheDocument();
-      expect(screen.getByRole("link", { name: "1. Mose 1,1" })).toHaveAttribute(
+      expect(screen.getByRole("link", { name: "1Mo 1,1" })).toHaveAttribute(
         "href",
         "/bible/1/1#v1",
       );
-      expect(screen.getByRole("link", { name: "Sprüche 8,22\u201324" })).toHaveAttribute(
+      expect(screen.getByRole("link", { name: "Spr 8,22\u201324" })).toHaveAttribute(
         "href",
         "/bible/20/8#v22",
       );
       expect(screen.getByTestId("cross-references")).toHaveAttribute("open");
     });
 
-    it("uses English book names and falls back to the book id without structure", async () => {
+    it("uses English book abbreviations and falls back to the book id without structure", async () => {
       await i18n.changeLanguage("en");
       setup({ books, detail: withRefs([{ bibleBookId: 1, chapter: 1, verse: 1 }]) });
-      expect(screen.getByRole("link", { name: "Genesis 1,1" })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "Gen 1,1" })).toBeInTheDocument();
     });
 
     it("shows the book id while the structure is not loaded", () => {

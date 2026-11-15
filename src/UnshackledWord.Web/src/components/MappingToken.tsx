@@ -14,6 +14,8 @@ export interface MappingTokenProps {
   unmapped?: boolean;
   /** title of the over-assignment hint; the badge shows a `!` when set */
   warning?: string;
+  /** short note under the word asking for a second look (revision carry-over: changed or new word, original without link) */
+  review?: string;
   /** in the group that is hovered or selected */
   active?: boolean;
   selected?: boolean;
@@ -48,6 +50,7 @@ export function MappingToken({
   added,
   unmapped,
   warning,
+  review,
   active,
   selected,
   dropTarget,
@@ -77,6 +80,7 @@ export function MappingToken({
       data-status={status}
       data-added={added ? "" : undefined}
       data-unmapped={unmapped ? "" : undefined}
+      data-review={review ? "" : undefined}
       data-active={active ? "" : undefined}
       data-selected={selected ? "" : undefined}
       data-drop={dropTarget ? "" : undefined}
@@ -104,6 +108,11 @@ export function MappingToken({
       <span className="map-tok-text" lang={lang}>
         {text}
       </span>
+      {review && (
+        <span className="map-tok-sub map-tok-review" aria-hidden="true">
+          {review}
+        </span>
+      )}
       {lemma && (
         <span className="map-tok-sub map-tok-lemma" lang={lang} aria-hidden="true">
           {lemma}

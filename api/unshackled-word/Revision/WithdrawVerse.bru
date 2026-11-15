@@ -1,0 +1,23 @@
+meta {
+  name: WithdrawVerse
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{url}}revision/verse/:revisionVerseId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  revisionVerseId: 1
+}
+
+docs {
+  Needs a login cookie with role admin or maintainer. 204: the active variant is ended without successor (rows are kept, the level falls back for that verse); 404 unknown id; 409 version no longer active.
+}
+
+settings {
+  encodeUrl: true
+}

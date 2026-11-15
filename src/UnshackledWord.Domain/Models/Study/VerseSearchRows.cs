@@ -16,6 +16,11 @@ public sealed class VerseSearchBookCountRow
 public sealed class VerseSearchHitRow
 {
     public int HebRefId { get; set; }
+
+    /// <summary>Set when the revision variant is the text to show (it matched the query).</summary>
+    public int? RevisionVerseId { get; set; }
+
+    public int? Level { get; set; }
 }
 
 /// <summary>One word of a hit verse: its text, the stem lexemes of the plain word and its morphology lemma (lower-cased, null without morphology).</summary>

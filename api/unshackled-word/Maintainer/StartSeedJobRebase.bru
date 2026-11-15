@@ -1,0 +1,27 @@
+meta {
+  name: StartSeedJobRebase
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{url}}maintainer/seed/jobs
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "operation": "rebase",
+    "kind": "all",
+    "confirmBackup": true
+  }
+}
+
+docs {
+  Exports the seed, empties words/verses/morphology/mappings, rebuilds them from the base text and imports morphology and mappings again; the revision keeps its rows and gets its base links recomputed. confirmBackup must be true (400 otherwise). Make a database backup first.
+}
+
+settings {
+  encodeUrl: true
+}

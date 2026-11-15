@@ -18,6 +18,7 @@ using UnshackledWord.Tooling.SeedDb.Services.RepoSeed;
 using UnshackledWord.Tooling.SeedDb.Services.SBL.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible;
+using UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
 using UnshackledWord.Tooling.SeedDb.Services.SttsSeed;
 using UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
@@ -31,6 +32,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddSingleton(configuration);
         services.AddScoped<SeedingService>();
         services.AddScoped<SttsSeedRunner>();
+        services.AddScoped<RevisionLevelSeedRunner>();
         services.AddRepoSeedServices();
         services.AddScoped<SrRunner>();
         services.AddScoped<TskRunner>();

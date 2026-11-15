@@ -11,6 +11,7 @@ import { SECTION_IDS, scrollToId } from "@/lib/quality/scroll";
 import type { QualityFacets, UnmappedSide, UnmappedTop } from "@/lib/quality/types";
 import type { QualityPatch, TrailEntry } from "@/lib/quality/url";
 import { QueryState } from "./QueryState";
+import { SectionHelp } from "./SectionHelp";
 
 const SIDES: UnmappedSide[] = ["german", "greek", "hebrew"];
 
@@ -134,6 +135,10 @@ export function UnmappedSection(props: Props) {
           {t("quality.unmapped.withFunction")}
         </Button>
       </div>
+      <SectionHelp>
+        <p>{t("quality.help.unmapped.text")}</p>
+        <p>{t("quality.help.unmapped.top")}</p>
+      </SectionHelp>
       <div className="grid gap-4 @6xl:grid-cols-3">
         {SIDES.map((side) => (
           <UnmappedCard key={side} side={side} {...props} />

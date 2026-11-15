@@ -1,0 +1,26 @@
+meta {
+  name: StartSeedJobImport
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}maintainer/seed/jobs
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "operation": "import",
+    "kind": "revision"
+  }
+}
+
+docs {
+  Imports the seed from assets/seed into EMPTY tables only (fresh install); otherwise the step is reported as skipped (tables-not-empty).
+}
+
+settings {
+  encodeUrl: true
+}

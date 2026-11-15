@@ -1,6 +1,7 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { bibleApi } from "./api";
 import { bibleKeys } from "./queries";
+import { sidePanelKeys } from "./sidePanel";
 import type { GetWordsOfChapterResponse, VerseMappingLink } from "./types";
 import { wordDetailKeys } from "./wordDetail";
 
@@ -38,11 +39,15 @@ export function useSaveVerseMapping() {
       bibleApi.saveVerseMapping(ref.bookId, ref.chapter, ref.verse, links),
     onSuccess: async (response, { ref }) => {
       queryClient.setQueryData(verseMappingKey(ref), response);
-      const chapterKey = bibleKeys.chapterWords(ref.bookId, ref.chapter);
-      const cached = queryClient.getQueryData<GetWordsOfChapterResponse>(chapterKey);
-      const chapterWordIds = new Set(cached?.words.map((w) => w.id));
+      const chapterKey = bibleKeys.chapterWordsOf(ref.bookId, ref.chapter);
+      const chapterWordIds = new Set(
+        queryClient
+          .getQueriesData<GetWordsOfChapterResponse>({ queryKey: chapterKey })
+          .flatMap(([, cached]) => cached?.words.map((w) => w.id) ?? []),
+      );
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: chapterKey }),
+        queryClient.invalidateQueries({ queryKey: sidePanelKeys.originalsAll }),
         queryClient.invalidateQueries({
           queryKey: wordDetailKeys.all,
           // chapter not cached: refresh every cached detail rather than miss one

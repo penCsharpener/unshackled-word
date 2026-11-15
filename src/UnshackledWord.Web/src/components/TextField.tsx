@@ -1,4 +1,10 @@
-import { type InputHTMLAttributes, type ReactNode, type Ref, useId } from "react";
+import {
+  type InputHTMLAttributes,
+  type ReactNode,
+  type Ref,
+  type TextareaHTMLAttributes,
+  useId,
+} from "react";
 import { SEARCH_ICON_PATHS } from "@/lib/search/icon";
 
 export interface TextFieldProps
@@ -14,6 +20,10 @@ export interface TextFieldProps
   inputRef?: Ref<HTMLInputElement>;
   /** Leading icon inside the field; `type="search"` gets a magnifier by default. */
   icon?: ReactNode;
+  /** Renders a `<textarea>` (no leading icon) instead of a single-line input. */
+  multiline?: boolean;
+  /** Visible lines of a `multiline` field. */
+  rows?: number;
 }
 
 const sizes = {
@@ -52,10 +62,31 @@ export function TextField({
   invalid = false,
   inputRef,
   icon,
+  multiline = false,
+  rows = 4,
   className = "",
   ...props
 }: TextFieldProps) {
   const id = useId();
+  if (multiline) {
+    return (
+      <div className="flex flex-col gap-1 text-sm">
+        <label htmlFor={id} className={labelHidden ? "sr-only" : undefined}>
+          {label}
+        </label>
+        <textarea
+          id={id}
+          rows={rows}
+          value={value}
+          required={required}
+          aria-invalid={invalid || undefined}
+          onChange={(event) => onChange(event.target.value)}
+          className={`rounded-md border bg-surface text-fg ${invalid ? "border-accent" : "border-border"} ${sizes[size]} ${className}`}
+          {...(props as TextareaHTMLAttributes<HTMLTextAreaElement>)}
+        />
+      </div>
+    );
+  }
   const leading = icon ?? (type === "search" ? <SearchIcon /> : null);
   const input = (
     <input

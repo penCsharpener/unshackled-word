@@ -22,7 +22,7 @@ public sealed class VerseSearchService : IVerseSearchService
         _stats = stats;
     }
 
-    public async Task<SearchVersesResponse?> SearchAsync(string query, int page, int pageSize, int? bookId, CancellationToken token = default)
+    public async Task<SearchVersesResponse?> SearchAsync(string query, int page, int pageSize, int? bookId, int level, CancellationToken token = default)
     {
         var parsed = VerseSearchQueryParser.Parse(query);
         if (!parsed.HasPositive)
@@ -42,8 +42,8 @@ public sealed class VerseSearchService : IVerseSearchService
         var offset = (page - 1) * pageSize;
         var (first, last) = bookId is { } b ? (b * 1_000_000, b * 1_000_000 + 999_999) : (0, int.MaxValue);
         var literal = built.LiteralTsQuery == built.TsQuery ? null : built.LiteralTsQuery;
-        var bookCountsTask = _verses.GetBookCountsAsync(built.TsQuery, token);
-        var rowsTask = _verses.GetHitsAsync(built.TsQuery, literal, first, last, offset, pageSize, token);
+        var bookCountsTask = _verses.GetBookCountsAsync(built.TsQuery, level, token);
+        var rowsTask = _verses.GetHitsAsync(built.TsQuery, literal, level, first, last, offset, pageSize, token);
         await Task.WhenAll(bookCountsTask, rowsTask);
 
         var bookCounts = bookCountsTask.Result;
@@ -53,8 +53,13 @@ public sealed class VerseSearchService : IVerseSearchService
         var rows = rowsTask.Result;
         if (rows.Count > 0)
         {
-            var words = (await _verses.GetWordsAsync(rows.Select(r => r.HebRefId).ToList(), token)).ToLookup(w => w.HebRefId);
-            hits = rows.Select(r => ToHit(r.HebRefId, words[r.HebRefId], built)).ToList();
+            var baseIds = rows.Where(r => r.RevisionVerseId is null).Select(r => r.HebRefId).ToList();
+            var revisedIds = rows.Where(r => r.RevisionVerseId is not null).Select(r => r.RevisionVerseId!.Value).ToList();
+            var baseWords = baseIds.Count == 0 ? Enumerable.Empty<VerseSearchWordRow>() : await _verses.GetWordsAsync(baseIds, token);
+            var revisedWords = revisedIds.Count == 0 ? Enumerable.Empty<VerseSearchWordRow>() : await _verses.GetRevisionWordsAsync(revisedIds, token);
+            var baseLookup = baseWords.ToLookup(w => w.HebRefId);
+            var revisedLookup = revisedWords.ToLookup(w => w.HebRefId);
+            hits = rows.Select(r => ToHit(r, r.RevisionVerseId is null ? baseLookup[r.HebRefId] : revisedLookup[r.HebRefId], built)).ToList();
         }
 
         return new SearchVersesResponse
@@ -105,10 +110,13 @@ public sealed class VerseSearchService : IVerseSearchService
         return result;
     }
 
-    private static SearchVersesHit ToHit(int hebRefId, IEnumerable<VerseSearchWordRow> words, BuiltVerseQuery query)
+    private static SearchVersesHit ToHit(VerseSearchHitRow row, IEnumerable<VerseSearchWordRow> words, BuiltVerseQuery query)
     {
+        var hebRefId = row.HebRefId;
         return new SearchVersesHit
         {
+            Revised = row.RevisionVerseId is null ? null : true,
+            Level = row.RevisionVerseId is null ? null : row.Level,
             BibleBookId = hebRefId / 1_000_000,
             Chapter = hebRefId / 1_000 % 1_000,
             Verse = hebRefId % 1_000,

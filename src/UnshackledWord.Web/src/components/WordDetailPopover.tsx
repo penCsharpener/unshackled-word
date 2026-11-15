@@ -1,12 +1,10 @@
 import { useEffect, useId, useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { bookName, chapterPath } from "@/lib/bible/books";
 import { formatMorphology } from "@/lib/bible/morphology";
 import type {
   BibleStructureBook,
   CoMappedWord,
-  CrossReference,
   GetWordDetailResponse,
   MappingProvenance,
   MappingStatus,
@@ -17,6 +15,7 @@ import type {
 } from "@/lib/bible/types";
 import { mappingStatus, normalizeStrongs } from "@/lib/bible/wordDetail";
 import { Button } from "./Button";
+import { CrossReferenceList } from "./CrossReferenceList";
 
 export type WordDetailCloseReason = "escape" | "button" | "outside";
 
@@ -35,6 +34,13 @@ export interface WordDetailPopoverProps {
   onClose: (reason: WordDetailCloseReason) => void;
   /** opens the mapping editor; until the tagging UI exists the action is shown disabled */
   onEditMapping?: () => void;
+  /**
+   * `popover` (default): native popover next to the word, bottom sheet on small screens.
+   * `margin`: a card in the page margin (from 1024px). Pinned: interactive with a close button;
+   * not pinned: a display-only preview while hovering.
+   */
+  variant?: "popover" | "margin";
+  pinned?: boolean;
 }
 
 const LANG_TAG: Record<OriginalLanguage, string> = { greek: "grc", hebrew: "he", aramaic: "arc" };
@@ -44,6 +50,7 @@ const STATUS_CLASSES: Record<MappingStatus, string> = {
   aiSuggested: "border-border text-fg-muted",
   confirmed: "border-accent text-accent",
   manual: "border-accent text-accent",
+  carried: "border-border text-fg-muted",
 };
 
 /** The German words that are translated together, in verse order; the open word is emphasised. */
@@ -65,53 +72,6 @@ function Phrase({ detail, coMapped }: { detail: GetWordDetailResponse; coMapped:
         ))}
       </span>
     </p>
-  );
-}
-
-const CROSS_REFERENCES_OPEN_MAX = 5;
-
-/** TSK targets of the word's verse; verse level, so the heading says "this verse". Long lists start collapsed. */
-function CrossReferences({
-  references,
-  truncated,
-  books,
-}: {
-  references: CrossReference[];
-  truncated?: boolean;
-  books?: BibleStructureBook[];
-}) {
-  const { t, i18n } = useTranslation();
-  const label = (r: CrossReference) => {
-    const book = books?.find((b) => b.id === r.bibleBookId);
-    const name = book ? bookName(book, i18n.language) : r.bibleBookId;
-    const verses = r.endVerse ? `${r.verse}\u2013${r.endVerse}` : r.verse;
-    return `${name} ${r.chapter},${verses}`;
-  };
-  return (
-    <details
-      open={references.length <= CROSS_REFERENCES_OPEN_MAX}
-      className="mt-4 text-sm"
-      data-testid="cross-references"
-    >
-      <summary className="cursor-pointer text-fg-muted">
-        {t("bible.wordDetail.crossReferences", { count: references.length })}
-      </summary>
-      <ul className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
-        {references.map((r) => (
-          <li key={`${r.bibleBookId}-${r.chapter}-${r.verse}-${r.endVerse ?? 0}`}>
-            <Link
-              to={`${chapterPath({ bookId: r.bibleBookId, chapter: r.chapter })}#v${r.verse}`}
-              className="text-accent underline"
-            >
-              {label(r)}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      {truncated && (
-        <p className="mt-1 text-xs text-fg-muted">{t("bible.wordDetail.crossReferencesMore")}</p>
-      )}
-    </details>
   );
 }
 
@@ -306,6 +266,8 @@ export function WordDetailPopover({
   onRetry,
   onClose,
   onEditMapping,
+  variant = "popover",
+  pinned = true,
 }: WordDetailPopoverProps) {
   const { t } = useTranslation();
   const headingId = useId();
@@ -313,14 +275,16 @@ export function WordDetailPopover({
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  const isPopover = variant === "popover";
   useLayoutEffect(() => {
     const el = rootRef.current;
-    if (!el) return;
+    if (!el || !isPopover) return;
     if (typeof el.showPopover === "function") el.showPopover();
     el.focus();
-  }, []);
+  }, [isPopover]);
 
   useEffect(() => {
+    if (!pinned) return;
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       event.preventDefault();
@@ -340,7 +304,7 @@ export function WordDetailPopover({
       document.removeEventListener("keydown", onKeyDown, true);
       document.removeEventListener("pointerdown", onPointerDown);
     };
-  }, []);
+  }, [pinned]);
 
   const readings = status === "success" ? (detail?.readings ?? []) : [];
   const success = status === "success" && detail !== undefined;
@@ -351,13 +315,16 @@ export function WordDetailPopover({
 
   return (
     <div
-      id={id}
+      id={pinned ? id : undefined}
       ref={rootRef}
-      popover="manual"
-      role="dialog"
-      aria-labelledby={headingId}
+      {...(isPopover && { popover: "manual" })}
+      {...(pinned && { role: "dialog", "aria-labelledby": headingId })}
       tabIndex={-1}
-      className="word-popover border border-border bg-surface p-4 text-fg shadow-lg"
+      className={
+        isPopover
+          ? "word-popover border border-border bg-surface p-4 text-fg shadow-lg"
+          : `margin-card rounded-lg border border-border bg-surface p-4 text-fg shadow-lg ${pinned ? "" : "pointer-events-none"}`
+      }
     >
       <div className="flex items-start justify-between gap-2">
         <h2 id={headingId} lang="de" className="font-scripture text-xl">
@@ -375,14 +342,16 @@ export function WordDetailPopover({
               {t("bible.wordDetail.sample")}
             </span>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-label={t("bible.wordDetail.close")}
-            onClick={() => onClose("button")}
-          >
-            ×
-          </Button>
+          {pinned && (
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label={t("bible.wordDetail.close")}
+              onClick={() => onClose("button")}
+            >
+              ×
+            </Button>
+          )}
         </div>
       </div>
 
@@ -398,6 +367,14 @@ export function WordDetailPopover({
             {t("bible.retry")}
           </Button>
         </div>
+      )}
+      {success && detail.revision && (
+        <p role="note" className="mt-2 text-sm text-fg-muted">
+          {t("bible.wordDetail.revision.note")}
+          {detail.revision.change === "changed" && detail.revision.baseWord && (
+            <> · {t("bible.wordDetail.revision.replaced", { word: detail.revision.baseWord })}</>
+          )}
+        </p>
       )}
       {success && coMapped.length > 0 && <Phrase detail={detail} coMapped={coMapped} />}
       {status === "success" && readings.length === 0 && (
@@ -436,13 +413,16 @@ export function WordDetailPopover({
         </div>
       )}
       {success && detail.crossReferences && detail.crossReferences.length > 0 && (
-        <CrossReferences
+        <CrossReferenceList
+          variant="details"
           references={detail.crossReferences}
           truncated={detail.crossReferencesTruncated}
           books={books}
         />
       )}
-      {success && <MappingFooter mapping={detail.mapping} onEditMapping={onEditMapping} />}
+      {success && pinned && (
+        <MappingFooter mapping={detail.mapping} onEditMapping={onEditMapping} />
+      )}
     </div>
   );
 }

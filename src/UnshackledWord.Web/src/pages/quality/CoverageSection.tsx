@@ -10,6 +10,7 @@ import { SECTION_IDS, scrollToId } from "@/lib/quality/scroll";
 import type { CoverageMetric, TestamentFacet } from "@/lib/quality/types";
 import type { QualityPatch } from "@/lib/quality/url";
 import { QueryState } from "./QueryState";
+import { SectionHelp } from "./SectionHelp";
 
 const METRICS: CoverageMetric[] = ["german", "source"];
 
@@ -59,6 +60,9 @@ export function CoverageSection({
           ))}
         </fieldset>
       </div>
+      <SectionHelp>
+        <p>{t("quality.help.coverage.text")}</p>
+      </SectionHelp>
       <QueryState query={query}>
         {(data) => {
           const rows: HeatRow[] = [];

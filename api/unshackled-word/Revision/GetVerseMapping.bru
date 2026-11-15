@@ -1,0 +1,26 @@
+meta {
+  name: GetVerseMapping
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}revision/verseMapping/:revisionVerseId
+  body: none
+  auth: none
+}
+
+params:path {
+  revisionVerseId: 1
+}
+
+docs {
+  Mapping of one variant version in the shape of elberfelder/verseMapping. germanWords[].id and links[].elbWordId /
+  parentElbWordId are RevisionWords ids. New: revisionVerseId, level, version, isActive, mappingReviewedAt,
+  germanWords[].change (same|changed|new), links[].origin (carried|manual|seed). 404 unknown id.
+  Use the revisionVerseId from GetVerse (variants[].revisionVerseId) or the SaveVerse response.
+}
+
+settings {
+  encodeUrl: true
+}

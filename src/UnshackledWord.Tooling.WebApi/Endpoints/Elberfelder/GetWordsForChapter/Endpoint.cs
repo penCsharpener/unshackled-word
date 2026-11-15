@@ -1,6 +1,6 @@
-﻿using FastEndpoints;
+using FastEndpoints;
+using FluentValidation;
 using UnshackledWord.Application.Abstractions;
-using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.WebApi.BibleTagger.Reading;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetWordsForChapter;
@@ -22,70 +22,22 @@ public class Endpoint : Ep.Req<GetWordsOfChapterRequest>.Res<GetWordsOfChapterRe
 
     public override async Task<GetWordsOfChapterResponse> ExecuteAsync(GetWordsOfChapterRequest req, CancellationToken ct)
     {
-        var verses = await _reader.ReadAsListAsync<Elb1871WordDbo>(SqlFactory(req.BibleBookId, req.ChapterId));
+        var (words, revisedVerses) = await ChapterWordsQuery.ReadAsync(_reader, req.BibleBookId, req.ChapterId, req.Level);
 
         return new GetWordsOfChapterResponse
         {
             BibleBookId = req.BibleBookId,
             Chapter = req.ChapterId,
-            Words = verses.Select(x =>
-            {
-                return new WordResponse
-                {
-                    Id = x.Id,
-                    Lemma = x.Lemma,
-                    PlainWord = x.PlainWord,
-                    PositionInVerse = x.PositionInVerse,
-                    Strongs = x.Strongs,
-                    Verse = x.Verse,
-                    WordInContext = x.WordInContext,
-                    Original = x.Original,
-                    GrammaticalKey = x.GrammaticalKey
-                };
-            }).ToList()
+            Words = words,
+            RevisedVerses = revisedVerses
         };
     }
+}
 
-    private string SqlFactory(int bookId, int chapter)
+public class GetWordsOfChapterValidator : Validator<GetWordsOfChapterRequest>
+{
+    public GetWordsOfChapterValidator()
     {
-        if (bookId >= 1 && bookId <= 39)
-        {
-            return $"""
-                    SELECT ew."Id"
-                         , ew."Verse"
-                         , ew."PositionInVerse"
-                         , ew."WordInContext"
-                         , ew."PlainWord"
-                         , shw."RootDisambiguatedStrongsInstance" "Strongs"
-                         , shw."Hebrew" "Original"
-                         , shw."Grammar" "GrammaticalKey"
-                    FROM "unshackled-word"."Elb1871Words" ew
-                        LEFT JOIN "unshackled-word"."Elb1871HebrewMapping" ehm ON ew."Id" = ehm."ElbWordId"
-                        LEFT JOIN "unshackled-word"."StepHebrewWords" shw ON ehm."StepWordId" = shw."Id"
-                    WHERE 1=1
-                        AND ew."BibleBookId" = {bookId}
-                        AND ew."Chapter" = {chapter}
-                    ORDER BY ew."BibleBookId", ew."Chapter", ew."Verse", ew."PositionInVerse"
-                    """;
-        }
-
-        return $"""
-                SELECT ew."Id"
-                     , ew."Verse"
-                     , ew."PositionInVerse"
-                     , ew."WordInContext"
-                     , ew."PlainWord"
-                     , sgw."DisambiguatedStrongs" "Strongs"
-                     , sgw."Lemma"
-                     , sgw."Greek" "Original"
-                     , sgw."Morphology" "GrammaticalKey"
-                FROM "unshackled-word"."Elb1871Words" ew
-                    LEFT JOIN "unshackled-word"."Elb1871GreekMapping" egm ON ew."Id" = egm."ElbWordId"
-                    LEFT JOIN "unshackled-word"."StepGreekWords" sgw ON egm."StepWordId" = sgw."Id"
-                WHERE 1=1
-                    AND ew."BibleBookId" = {bookId}
-                    AND ew."Chapter" = {chapter}
-                ORDER BY ew."BibleBookId", ew."Chapter", ew."Verse", ew."PositionInVerse"
-                """;
+        RuleFor(x => x.Level).InclusiveBetween(0, 1000);
     }
 }

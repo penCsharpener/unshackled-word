@@ -1,7 +1,6 @@
 using UnshackledWord.Infrastructure.Seed;
 using System.Text;
 using UnshackledWord.Application.Features.Seed.Morphology;
-using UnshackledWord.Tooling.SeedDb.Services.RepoSeed;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Services.RepoSeed;
 

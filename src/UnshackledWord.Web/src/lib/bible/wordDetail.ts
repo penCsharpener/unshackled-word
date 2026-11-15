@@ -1,5 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { ApiError } from "@/lib/api";
+import { revisionApi } from "@/lib/revision/api";
 import { bibleApi } from "./api";
 import type { GetWordDetailResponse, MappingProvenance, MappingStatus, WordToken } from "./types";
 import { mockWordDetail } from "./wordDetail.mock";
@@ -12,6 +13,7 @@ export const wordDetailSource: WordDetailSource =
 export const wordDetailKeys = {
   all: ["bible", "wordDetail"] as const,
   detail: (wordId: number) => ["bible", "wordDetail", wordId] as const,
+  revisionDetail: (revisionWordId: number) => ["bible", "wordDetail", "r", revisionWordId] as const,
 };
 
 const STRONGS = /^([GH])0*(\d{1,5})([A-Z]{0,3})$/i;
@@ -27,7 +29,8 @@ export function normalizeStrongs(value: string): string | undefined {
 
 /** Badge state of a mapping: a human-written mapping is `manual`, an AI one `confirmed` once a human confirmed it. */
 export function mappingStatus(mapping: MappingProvenance): MappingStatus {
-  if (mapping.source === "human") return "manual";
+  if (mapping.source === "human" || mapping.source === "manual") return "manual";
+  if (mapping.source === "carried") return "carried";
   return mapping.confirmedAt ? "confirmed" : "aiSuggested";
 }
 
@@ -39,10 +42,16 @@ export function fetchWordDetail(
   verseWords: WordToken[] = [],
 ): Promise<GetWordDetailResponse> {
   if (source !== "api") return mockWordDetail(word, undefined, verseWords);
-  return bibleApi.wordDetail(word.id, signal).catch((error: unknown) => {
+  // words of a revised verse have their own detail (readings from the revision's mapping)
+  const request =
+    word.revisionWordId !== undefined
+      ? revisionApi.wordDetail(word.revisionWordId, signal)
+      : bibleApi.wordDetail(word.id, signal);
+  const wordId = word.revisionWordId ?? word.id;
+  return request.catch((error: unknown) => {
     // 404: the word vanished (e.g. after a re-seed); show the "not linked" state instead of an error.
     if (error instanceof ApiError && error.status === 404) {
-      return { wordId: word.id, wordInContext: word.text, positionInVerse: 0, readings: [] };
+      return { wordId, wordInContext: word.text, positionInVerse: 0, readings: [] };
     }
     throw error;
   });
@@ -50,7 +59,10 @@ export function fetchWordDetail(
 
 export const wordDetailQuery = (word: WordToken, verseWords: WordToken[] = []) =>
   queryOptions({
-    queryKey: wordDetailKeys.detail(word.id),
+    queryKey:
+      word.revisionWordId !== undefined
+        ? wordDetailKeys.revisionDetail(word.revisionWordId)
+        : wordDetailKeys.detail(word.id),
     queryFn: ({ signal }) => fetchWordDetail(word, signal, wordDetailSource, verseWords),
     staleTime: Number.POSITIVE_INFINITY,
   });

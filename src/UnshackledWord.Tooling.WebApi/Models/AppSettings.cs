@@ -6,6 +6,6 @@ public class AppSettings
 {
     public string BackupLocationPath { get; set; } = default!;
 
-    /// <summary>Only <c>SolutionAssetsPath</c> and <c>Elberfelder1871TextFile</c> are used here (read-only, for the seed export download).</summary>
+    /// <summary>Seed paths (<c>SolutionAssetsPath</c>, <c>SolutionTempPath</c>, <c>Elberfelder1871TextFile</c>) for the maintainer seed page and download; the importers read the same section as the domain settings.</summary>
     public DatabaseSeedSettings? DatabaseSeeding { get; set; }
 }

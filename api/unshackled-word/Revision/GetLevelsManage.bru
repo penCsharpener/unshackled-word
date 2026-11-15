@@ -1,0 +1,19 @@
+meta {
+  name: GetLevelsManage
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{url}}revision/levels/manage
+  body: none
+  auth: inherit
+}
+
+docs {
+  Needs a login cookie with role admin or maintainer. Presets with both names and variantCount.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -42,7 +42,7 @@ public class ElbExportLineItem
 
         foreach (var word in words)
         {
-            var cleanedWord = word.RemovePunctuation();
+            var cleanedWord = Elb1871PlainWord.From(word);
 
             yield return new Elb1871Word(new BibleReference(), orderCounter, word, cleanedWord);
             orderCounter++;

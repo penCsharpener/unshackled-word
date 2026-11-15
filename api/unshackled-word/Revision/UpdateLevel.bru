@@ -1,0 +1,33 @@
+meta {
+  name: UpdateLevel
+  type: http
+  seq: 13
+}
+
+put {
+  url: {{url}}revision/levels/:level
+  body: json
+  auth: inherit
+}
+
+params:path {
+  level: 600
+}
+
+body:json {
+  {
+    "level": 600,
+    "code": "einfach",
+    "nameDe": "Einfach",
+    "nameEn": "Simple",
+    "isDefault": false
+  }
+}
+
+docs {
+  Needs admin or maintainer. Body level is the new value: 400 when variants use the old one; level 100 not editable; isDefault true moves the default, unsetting the only default is 400; 404 unknown level.
+}
+
+settings {
+  encodeUrl: true
+}

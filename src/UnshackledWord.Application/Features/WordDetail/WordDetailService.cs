@@ -1,4 +1,5 @@
 using System.Globalization;
+using UnshackledWord.Application.Features.CrossReferences;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Grammar;
@@ -41,6 +42,14 @@ public sealed class WordDetailService : IWordDetailService
             : await _words.GetGreekReadingsAsync(wordId, token);
 
         IReadOnlyList<CoMappedWordRow> coRows = rows.Count == 0 ? [] : await _words.GetCoMappedWordsAsync(wordId, isHebrew, token);
+
+        // The schema has no user/model/confirmation columns yet, so every legacy mapping is reported as an AI mapping.
+        return await BuildAsync(word, rows, coRows, "ai", token);
+    }
+
+    public async Task<GetWordDetailResponse> BuildAsync(ElbWordRow word, IReadOnlyList<ReadingRowBase> rows, IReadOnlyList<CoMappedWordRow> coRows, string mappingSource, CancellationToken token = default)
+    {
+        var isHebrew = word.BibleBookId <= LastHebrewBookId;
 
         var readingRows = rows
             .Where(r => r.StepWordId is not null && !string.IsNullOrEmpty(r.Original))
@@ -110,10 +119,9 @@ public sealed class WordDetailService : IWordDetailService
 
         if (rows.Count > 0)
         {
-            // The schema has no user/model/confirmation columns yet, so every mapping is reported as an AI mapping.
             response.Mapping = new MappingProvenanceResponse
             {
-                Source = "ai",
+                Source = mappingSource,
                 CreatedAt = FormatTimestamp(rows.Max(r => r.MappingCreatedAt)),
             };
         }
@@ -149,7 +157,7 @@ public sealed class WordDetailService : IWordDetailService
         {
             // One extra row tells whether the list was cut; TSK is verse level, so every word of a verse gets the same list.
             var tsk = await _tsk.GetOutgoingAsync(word.HebRefId, word.HebRefId, MaxCrossReferences + 1, token);
-            var crossReferences = tsk.Take(MaxCrossReferences).Select(BuildCrossReference).ToList();
+            var crossReferences = tsk.Take(MaxCrossReferences).Select(CrossReferenceMapper.Build).ToList();
             if (crossReferences.Count > 0)
             {
                 response.CrossReferences = crossReferences;
@@ -161,27 +169,6 @@ public sealed class WordDetailService : IWordDetailService
         }
 
         return response;
-    }
-
-    /// <summary>A few TSK ranges run backwards (Heb 9:21-15) and some collapse to one verse; both are normalised, ranges across chapters are cut to their first verse.</summary>
-    private static CrossReferenceResponse BuildCrossReference(TskCrossReference row)
-    {
-        var start = BibleReference.FromRefId(row.TargetStartHebRefId);
-        var reference = new CrossReferenceResponse { BibleBookId = start.BookId, Chapter = start.Chapter, Verse = start.Verse };
-        if (row.TargetEndHebRefId is not { } endRefId || endRefId == row.TargetStartHebRefId)
-        {
-            return reference;
-        }
-
-        var end = BibleReference.FromRefId(endRefId);
-        if (end.BookId != start.BookId || end.Chapter != start.Chapter)
-        {
-            return reference;
-        }
-
-        reference.Verse = Math.Min(start.Verse, end.Verse);
-        reference.EndVerse = Math.Max(start.Verse, end.Verse);
-        return reference;
     }
 
     private static OriginalReadingResponse BuildReading(

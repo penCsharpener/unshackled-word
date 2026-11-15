@@ -1,0 +1,33 @@
+meta {
+  name: SaveVerseMapping
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{url}}revision/verseMapping/:revisionVerseId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  revisionVerseId: 1
+}
+
+body:json {
+  {
+    "links": [
+      { "elbWordId": 1, "stepWordId": 10, "isAddedWord": false }
+    ]
+  }
+}
+
+docs {
+  Needs a login cookie with role admin or maintainer. Replaces the complete mapping of the ACTIVE variant (ids are RevisionWords /
+  STEP word ids), marks mappingReviewedAt. Rows equal to a carried row keep origin carried, others become manual.
+  200 RevisionVerseMappingResponse; 400 foreign ids / added-word rules; 401; 403; 404; 409 variant no longer active.
+}
+
+settings {
+  encodeUrl: true
+}

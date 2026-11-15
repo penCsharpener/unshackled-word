@@ -1,0 +1,25 @@
+meta {
+  name: GetWordDetail
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}revision/wordDetail/wordId/:revisionWordId
+  body: none
+  auth: none
+}
+
+params:path {
+  revisionWordId: 1
+}
+
+docs {
+  Same shape as elberfelder/wordDetail/wordId, for a word of a revision variant (ids from germanWords[].id of
+  revision/verseMapping or revisionWordId of elberfelder/chapterWords). Extra field revision {level, change, baseWord};
+  mapping.source is carried|manual|seed. Renderings and occurrence counts are Elb1871 statistics. 404 unknown id.
+}
+
+settings {
+  encodeUrl: true
+}

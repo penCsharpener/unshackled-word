@@ -1,11 +1,12 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { AppShell } from "@/components/AppShell";
+import { AboutPage } from "@/pages/AboutPage";
 import { AdminInvitationsPage } from "@/pages/AdminInvitationsPage";
 import { BiblePage } from "@/pages/BiblePage";
+import { BulkReplacePage } from "@/pages/BulkReplacePage";
 import { ChapterPage } from "@/pages/ChapterPage";
 import { DataQualityPage } from "@/pages/DataQualityPage";
 import { ForgotPasswordPage, MagicLinkRequestPage } from "@/pages/EmailRequestPage";
-import { HomePage } from "@/pages/HomePage";
 import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
 import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
 import { MaintainerPage } from "@/pages/MaintainerPage";
@@ -21,7 +22,8 @@ export const router = createBrowserRouter([
   {
     element: <AppShell />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <Navigate to="/bible" replace /> },
+      { path: "about", element: <AboutPage /> },
       { path: "bible", element: <BiblePage /> },
       { path: "bible/strongs/:strongs", element: <StrongsPage /> },
       { path: "bible/:bookId/:chapter", element: <ChapterPage /> },
@@ -41,6 +43,7 @@ export const router = createBrowserRouter([
       },
       { path: "edit/quality", element: <DataQualityPage /> },
       { path: "edit/maintainer", element: <MaintainerPage /> },
+      { path: "edit/revision/replace", element: <BulkReplacePage /> },
       { path: "admin/invitations", element: <AdminInvitationsPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

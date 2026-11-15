@@ -98,19 +98,7 @@ public sealed class VerseMappingService : IVerseMappingService
             GermanWords = germanWords
                 .Select(w => new VerseMappingGermanWord { Id = w.Id, PositionInVerse = w.PositionInVerse, Text = w.Text })
                 .ToList(),
-            OriginalWords = originalWords
-                .Select(w => new VerseMappingOriginalWord
-                {
-                    Id = w.Id,
-                    Position = w.Position,
-                    Original = w.Original,
-                    Transliteration = NullIfEmpty(w.Transliteration),
-                    Lemma = NullIfEmpty(w.Lemma),
-                    Strongs = NullIfEmpty(w.Strongs),
-                    Gloss = NullIfEmpty(w.Gloss),
-                    MorphologyCode = NullIfEmpty(w.MorphologyCode),
-                })
-                .ToList(),
+            OriginalWords = originalWords.Select(w => w.ToResponse()).ToList(),
             Links = BuildLinks(rows, germanWords, originalWords),
         };
     }
@@ -175,10 +163,5 @@ public sealed class VerseMappingService : IVerseMappingService
     private static bool IsHebrew(int bibleBookId)
     {
         return bibleBookId <= LastHebrewBookId;
-    }
-
-    private static string? NullIfEmpty(string? value)
-    {
-        return string.IsNullOrWhiteSpace(value) ? null : value;
     }
 }

@@ -97,6 +97,8 @@ Ordering: 0010.1 is the hard start and unblocks 0008 together with 0010.4 (0010.
 (0010.5–0010.7f) is independent of the seed strand and can run in parallel after 0010.1. The mapping strand
 (0010.8–0010.10f) follows 0010.4. 0010.11 is optional before the first parser fix and must exist before it.
 
+> Status 2026-11-14: the CLI steps (export, import/update, rebase) also run from the maintainer page ("Seed-Rundlauf", `POST api/maintainer/seed/jobs`): the importers, the rebase and the export-with-diff / round-trip check moved from `Tooling.SeedDb` into `Infrastructure/Seed` and both hosts call the same services; the web API runs one job at a time in the background and reports counts and lists as `SeedStepReport`s next to the CSV reports. The CLI verbs are thin wrappers.
+
 ## Design
 
 ### Keys: what identifies a row across installations
@@ -107,7 +109,7 @@ Ordering: 0010.1 is the hard start and unblocks 0008 together with 0010.4 (0010.
 | Word part (compound) | + `Part` (part text, `Schaf`/`hirten`) | 4,204 real parts in the Hebrew mapping (0005) |
 | STEP word | `SrcRef` (`LxxRefId`), `SrcPos`, `SrcHash` | STEP ids are `SERIAL` and move on re-import; the STEP text must not be redistributed, a short hash of it is enough to verify and align and cannot be turned back into the text |
 | Verse-level states | `Ref` + content hash | For the update rule (0010.10) |
-| Revision edits (later) | `Level`, `Ref`, `FromPos`, `ToPos` + the base `Form`s they replace | Mirrors 0005's `GermanEdits` (positions From..To at a level); the forms let the aligner move an edit with its words |
+| Revision variants | `Ref`, `Level` (the variant's own text is in the seed); mapping `Ref,Level,Pos,Form` + `SrcRef/SrcPos/SrcHash` | Format of roadmap 0011.11 (`assets/seed/revision`); replaces the span-based design of 0005 `GermanEdits` |
 
 No key contains a DB id. The fresh DB numbers its rows itself; importers resolve keys to ids at import time.
 

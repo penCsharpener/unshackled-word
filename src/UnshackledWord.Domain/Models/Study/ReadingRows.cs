@@ -6,6 +6,9 @@ public abstract class ReadingRowBase
     public bool? IsAddedWord { get; init; }
     public string? GermanWordPart { get; init; }
     public DateTime MappingCreatedAt { get; init; }
+
+    /// <summary>carried, manual or seed; only set for revision mappings.</summary>
+    public string? MappingOrigin { get; init; }
     public int? StepWordId { get; init; }
     public int? PositionInVerse { get; init; }
     public string? Original { get; init; }

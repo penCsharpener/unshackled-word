@@ -1,0 +1,25 @@
+meta {
+  name: GetVerse
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}revision/verse/bookId/:bookId/chapterId/:chapter/verseId/:verse
+  body: none
+  auth: none
+}
+
+params:path {
+  verse: 16
+  chapter: 3
+  bookId: 43
+}
+
+docs {
+  Anonymous. 200 {baseText, variants[]}; 404 when the verse does not exist.
+}
+
+settings {
+  encodeUrl: true
+}

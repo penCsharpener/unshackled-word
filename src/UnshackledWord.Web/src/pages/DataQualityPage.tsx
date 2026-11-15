@@ -125,11 +125,16 @@ export function DataQualityPage() {
                       imported: formatStamp(seed.importedAt, i18n.language),
                       count: seed.orphaned,
                     })
-                  : t("quality.seed.update", {
-                      updated: seed.versesUpdated,
-                      kept: seed.versesKeptLocal ?? 0,
-                      report: seed.reportPath,
-                    })}
+                  : t(
+                      seed.kind === "revision"
+                        ? "quality.seed.updateRevision"
+                        : "quality.seed.update",
+                      {
+                        updated: seed.versesUpdated,
+                        kept: seed.versesKeptLocal ?? 0,
+                        report: seed.reportPath,
+                      },
+                    )}
               </li>
             ))}
           </ul>

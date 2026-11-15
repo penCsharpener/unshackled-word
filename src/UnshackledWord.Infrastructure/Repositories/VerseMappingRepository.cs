@@ -36,6 +36,20 @@ public sealed class VerseMappingRepository : IVerseMappingRepository
         return rows.ToList();
     }
 
+    public async Task<IReadOnlyList<ChapterOriginalWordRow>> GetChapterOriginalWordsAsync(bool hebrew, int bibleBookId, int chapter, CancellationToken token = default)
+    {
+        var sql = hebrew ? VerseMappingSql.HebrewWordsOfChapter : VerseMappingSql.GreekWordsOfChapter;
+        var rows = await _dbReader.ReadAsListAsync<ChapterOriginalWordRow>(sql, new { BibleBookId = bibleBookId, Chapter = chapter });
+        return rows.ToList();
+    }
+
+    public async Task<IReadOnlyList<ChapterMappingRow>> GetChapterMappingRowsAsync(bool hebrew, int bibleBookId, int chapter, CancellationToken token = default)
+    {
+        var sql = hebrew ? VerseMappingSql.HebrewMappingRowsOfChapter : VerseMappingSql.GreekMappingRowsOfChapter;
+        var rows = await _dbReader.ReadAsListAsync<ChapterMappingRow>(sql, new { BibleBookId = bibleBookId, Chapter = chapter });
+        return rows.ToList();
+    }
+
     public async Task ReplaceMappingAsync(bool hebrew, int bibleBookId, int chapter, int verse, IReadOnlyList<VerseMappingRow> rows, CancellationToken token = default)
     {
         using var connection = await _factory.CreateDbConnectionAsync(token);
@@ -134,6 +148,7 @@ public static class VerseMappingSql
                                                 , egm."StepWordId"
                                                 , COALESCE(egm."IsAddedWord", FALSE) "IsAddedWord"
                                                 , egm."ParentGermanWordId" "ParentElbWordId"
+                                                , egm."GermanWordPart"
                                            FROM "unshackled-word"."Elb1871GreekMapping" egm
                                                JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
                                            WHERE 1=1
@@ -149,6 +164,7 @@ public static class VerseMappingSql
                                                  , ehm."StepWordId"
                                                  , COALESCE(ehm."IsAddedWord", FALSE) "IsAddedWord"
                                                  , ehm."ParentGermanWordId" "ParentElbWordId"
+                                                 , ehm."GermanWordPart"
                                             FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                                 JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
                                             WHERE 1=1
@@ -158,6 +174,86 @@ public static class VerseMappingSql
                                             ORDER BY ew."PositionInVerse"
                                                    , ehm."Id"
                                             """;
+
+    public const string GreekWordsOfChapter = """
+                                              SELECT sgw."Id"
+                                                   , sgw."LxxRefId" "HebRefId"
+                                                   , sgw."PositionInVerse" "Position"
+                                                   , sgw."Greek" "Original"
+                                                   , sgw."Lemma"
+                                                   , sgw."DisambiguatedStrongs" "Strongs"
+                                                   , sgw."Morphology" "MorphologyCode"
+                                              FROM "unshackled-word"."StepGreekWords" sgw
+                                              WHERE 1=1
+                                                  AND sgw."LxxRefId" IN (SELECT DISTINCT ew."HebRefId"
+                                                                         FROM "unshackled-word"."Elb1871Words" ew
+                                                                         WHERE 1=1
+                                                                             AND ew."BibleBookId" = @BibleBookId
+                                                                             AND ew."Chapter" = @Chapter)
+                                              ORDER BY sgw."LxxRefId"
+                                                     , sgw."PositionInVerse"
+                                                     , sgw."Id"
+                                              """;
+
+    public const string HebrewWordsOfChapter = """
+                                               SELECT shw."Id"
+                                                    , shw."LxxRefId" "HebRefId"
+                                                    , shw."PositionInVerse" "Position"
+                                                    , shw."Hebrew" "Original"
+                                                    , lex."OriginalWord" "Lemma"
+                                                    , shw."RootDisambiguatedStrongsInstance" "Strongs"
+                                                    , shw."Grammar" "MorphologyCode"
+                                               FROM "unshackled-word"."StepHebrewWords" shw
+                                                   LEFT JOIN LATERAL (SELECT ssl."OriginalWord"
+                                                                      FROM "unshackled-word"."StepStrongsLexicon" ssl
+                                                                      WHERE 1=1
+                                                                          AND ssl."LanguageId" IN (0, 1)
+                                                                          AND ssl."Number" = (regexp_match(shw."RootDisambiguatedStrongsInstance", '^H0*(\d+)'))[1]::int
+                                                                      ORDER BY (ssl."Extra" IS NOT DISTINCT FROM (regexp_match(shw."RootDisambiguatedStrongsInstance", '^H\d+([A-Za-z])'))[1]) DESC
+                                                                             , ssl."Extra"
+                                                                      LIMIT 1) lex ON TRUE
+                                               WHERE 1=1
+                                                   AND shw."LxxRefId" IN (SELECT DISTINCT ew."HebRefId"
+                                                                          FROM "unshackled-word"."Elb1871Words" ew
+                                                                          WHERE 1=1
+                                                                              AND ew."BibleBookId" = @BibleBookId
+                                                                              AND ew."Chapter" = @Chapter)
+                                               ORDER BY shw."LxxRefId"
+                                                      , shw."PositionInVerse"
+                                                      , shw."Id"
+                                               """;
+
+    public const string GreekMappingRowsOfChapter = """
+                                                    SELECT egm."ElbWordId"
+                                                         , egm."StepWordId"
+                                                         , ew."Verse" "GermanVerse"
+                                                    FROM "unshackled-word"."Elb1871GreekMapping" egm
+                                                        JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
+                                                    WHERE 1=1
+                                                        AND ew."BibleBookId" = @BibleBookId
+                                                        AND ew."Chapter" = @Chapter
+                                                        AND egm."StepWordId" IS NOT NULL
+                                                        AND COALESCE(egm."IsAddedWord", FALSE) = FALSE
+                                                    ORDER BY ew."Verse"
+                                                           , ew."PositionInVerse"
+                                                           , egm."Id"
+                                                    """;
+
+    public const string HebrewMappingRowsOfChapter = """
+                                                     SELECT ehm."ElbWordId"
+                                                          , ehm."StepWordId"
+                                                          , ew."Verse" "GermanVerse"
+                                                     FROM "unshackled-word"."Elb1871HebrewMapping" ehm
+                                                         JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
+                                                     WHERE 1=1
+                                                         AND ew."BibleBookId" = @BibleBookId
+                                                         AND ew."Chapter" = @Chapter
+                                                         AND ehm."StepWordId" IS NOT NULL
+                                                         AND COALESCE(ehm."IsAddedWord", FALSE) = FALSE
+                                                     ORDER BY ew."Verse"
+                                                            , ew."PositionInVerse"
+                                                            , ehm."Id"
+                                                     """;
 
     public const string DeleteGreek = """
                                       DELETE

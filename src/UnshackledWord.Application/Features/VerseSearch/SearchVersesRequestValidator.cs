@@ -24,6 +24,7 @@ public sealed class SearchVersesRequestValidator : AbstractValidator<SearchVerse
             .When(x => !string.IsNullOrWhiteSpace(x.Q) && x.Q.Trim().Length <= SearchVersesRequest.MaxQueryLength);
         RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
         RuleFor(x => x.PageSize).InclusiveBetween(SearchVersesRequest.MinPageSize, SearchVersesRequest.MaxPageSize);
+        RuleFor(x => x.Level).InclusiveBetween(0, 1000);
         // An empty ?bookId= is bound as 0 by the request binder and means "no book filter".
         RuleFor(x => x.BookId).Must(id => id is null or 0 or (>= 1 and <= 66)).WithMessage("'Book Id' must be between 1 and 66.");
     }

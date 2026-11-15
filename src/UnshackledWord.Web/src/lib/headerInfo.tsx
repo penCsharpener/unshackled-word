@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext, useMemo, useState } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 import type { Morphology } from "./bible/types";
 
 /** The original word shown in the middle of the sticky top menu while a word is hovered. */
@@ -10,6 +10,8 @@ export interface HeaderWordInfo {
   /** raw morphology code, used when no decoded morphology is available */
   morphologyCode?: string;
   language?: "greek" | "hebrew" | "aramaic";
+  /** shown in the page margin from 1024px (the reader), so the header leaves it out there */
+  inMargin?: boolean;
 }
 
 const InfoContext = createContext<HeaderWordInfo | null>(null);
@@ -17,9 +19,8 @@ const SetInfoContext = createContext<(info: HeaderWordInfo | null) => void>(() =
 
 export function HeaderInfoProvider({ children }: { children: ReactNode }) {
   const [info, setInfo] = useState<HeaderWordInfo | null>(null);
-  const setter = useMemo(() => setInfo, []);
   return (
-    <SetInfoContext.Provider value={setter}>
+    <SetInfoContext.Provider value={setInfo}>
       <InfoContext.Provider value={info}>{children}</InfoContext.Provider>
     </SetInfoContext.Provider>
   );

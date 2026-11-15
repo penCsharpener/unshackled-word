@@ -1,3 +1,4 @@
+using UnshackledWord.Infrastructure.Seed.BaseText;
 using UnshackledWord.Infrastructure.Seed;
 using System.Text;
 using UnshackledWord.Application.Abstractions;

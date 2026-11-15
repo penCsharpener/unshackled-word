@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stapel-Ersetzung Click-Dummy (0013)</title>
+<!--
+  Click dummy for roadmap 0013 (03-form-design.md v2). Self-contained, mock data only, nothing is saved.
+  Try: Suchen (Weib) -> untick rows, change Strong's facets -> Prüfen -> edit the verse text (step 2) -> Zuordnung (step 3) -> Bestätigen.
+  Other searchable words: Oheim, Muhme. The dashed bar on top is the dummy's control bar, not part of the design.
+-->
+<style>
+  :root {
+    --bg: oklch(0.99 0.004 85); --surface: oklch(1 0 0); --muted: oklch(0.96 0.006 85);
+    --fg: oklch(0.22 0.01 60); --fg-muted: oklch(0.48 0.01 60); --border: oklch(0.88 0.008 80);
+    --accent: oklch(0.42 0.1 30); --accent-fg: oklch(0.99 0.004 85); --focus: oklch(0.6 0.15 250);
+    --mark: oklch(0.9 0.14 95); --ok: #1a8a4f; --warn: #b87500; --err: #d03b3b;
+  }
+  :root[data-theme="dark"] {
+    --bg: oklch(0.19 0.008 60); --surface: oklch(0.23 0.01 60); --muted: oklch(0.27 0.01 60);
+    --fg: oklch(0.94 0.005 85); --fg-muted: oklch(0.72 0.01 80); --border: oklch(0.36 0.01 60);
+    --accent: oklch(0.75 0.1 40); --accent-fg: oklch(0.2 0.01 60); --mark: oklch(0.45 0.1 95);
+    --ok: #4cc58a; --warn: #f0b429; --err: #ff7a7a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, sans-serif; }
+  #ctl { position: sticky; top: 0; z-index: 50; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 6px 12px; background: #111216; color: #e8e8ec; border-bottom: 2px dashed #ff4fd8; font: 13px ui-monospace, monospace; }
+  #ctl b { color: #ff4fd8; }
+  #ctl button { font: inherit; background: #2b2d35; color: #e8e8ec; border: 1px solid #44464f; border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+  header.app { display: flex; align-items: center; gap: 16px; padding: 0 16px; height: 48px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  header.app nav a { color: var(--fg-muted); margin-right: 14px; text-decoration: none; }
+  header.app nav a.on { color: var(--fg); font-weight: 600; }
+  main { max-width: 72rem; margin: 0 auto; padding: 16px 16px 120px; }
+  h1 { font-size: 1.6rem; margin: 8px 0 16px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .row + .row { margin-top: 12px; }
+  label.f { display: flex; flex-direction: column; gap: 3px; font-size: .8rem; color: var(--fg-muted); }
+  input[type=text], input[type=search], select {
+    font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; min-width: 11rem; }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  input.invalid { border-color: var(--err); }
+  .hint { color: var(--fg-muted); font-size: .8rem; max-width: 22rem; }
+  button.btn { font: inherit; border: 1px solid var(--border); background: var(--muted); color: var(--fg); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  button.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  button.btn.sm { padding: 3px 9px; font-size: .85rem; }
+  button.btn:disabled { opacity: .5; cursor: not-allowed; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip { display: inline-flex; gap: 5px; align-items: center; border: 1px solid var(--border); background: var(--muted); border-radius: 999px; padding: 1px 9px; font-size: .82rem; cursor: pointer; user-select: none; }
+  .chip.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .chip .n { opacity: .75; }
+  .tag { font-size: .75rem; padding: 0 6px; border-radius: 4px; background: var(--muted); border: 1px solid var(--border); color: var(--fg-muted); }
+  .empty { text-align: center; color: var(--fg-muted); padding: 40px 0; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0 8px; }
+  .toolbar .count { margin-right: auto; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  th { text-align: left; font-size: .78rem; color: var(--fg-muted); background: var(--muted); padding: 6px 8px; }
+  td { padding: 7px 8px; border-top: 1px solid var(--border); vertical-align: top; }
+  td.ck { width: 2rem; }
+  tr.off td { opacity: .5; }
+  mark { background: var(--mark); color: inherit; padding: 0 2px; border-radius: 3px; }
+  a { color: var(--accent); }
+  .orig { font-size: .82rem; }
+  .orig .heb { font-size: 1.05rem; margin-left: 4px; }
+  td input.ov { min-width: 7rem; width: 100%; padding: 3px 6px; }
+  .own { color: var(--accent); font-size: .75rem; }
+  .status { white-space: nowrap; font-size: .85rem; }
+  .st-ok { color: var(--ok); } .st-skip { color: var(--warn); } .st-conf { color: var(--err); } .st-same { color: var(--fg-muted); }
+  .tiles { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .tile { border: 1px solid var(--border); background: var(--surface); border-radius: 10px; padding: 8px 16px; cursor: pointer; }
+  .tile b { font-size: 1.5rem; display: block; }
+  .tile.ok b { color: var(--ok); } .tile.warn b { color: var(--warn); } .tile.err b { color: var(--err); }
+  .savebar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; gap: 12px; align-items: center; justify-content: center;
+    padding: 10px 16px; background: var(--surface); border-top: 1px solid var(--border); box-shadow: 0 -4px 16px #0003; }
+  .modal { position: fixed; inset: 0; background: #0008; display: none; place-items: center; z-index: 60; }
+  .modal.open { display: grid; }
+  .modal .box { background: var(--surface); border-radius: 10px; padding: 18px; max-width: 28rem; }
+  .err { color: var(--err); font-size: .85rem; }
+  .sr { position: absolute; left: -9999px; }
+  @media (max-width: 48rem) {
+    table, thead, tbody, tr, td { display: block; }
+    thead { display: none; }
+    tr { border: 1px solid var(--border); border-radius: 10px; margin: 8px 0; padding: 4px 8px; background: var(--surface); }
+    td { border: 0; padding: 3px 0; }
+    td.ck { width: auto; }
+    table { border: 0; background: transparent; }
+  }
+  .steps { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 12px; flex-wrap: wrap; }
+  .steps li { padding: 3px 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--fg-muted); font-size: .85rem; }
+  .steps li.cur { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .steps li.done { color: var(--ok); }
+  textarea { width: 100%; min-height: 6rem; font: inherit; font-size: 1.1rem; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px; }
+  .diff ins { background: var(--mark); text-decoration: none; padding: 0 2px; border-radius: 3px; }
+  .diff del { color: var(--fg-muted); }
+  .rvhead { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+  .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .map td { border-top: 1px solid var(--border); }
+  .check { color: var(--warn); font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="ctl"><b>CLICK-DUMMY 0013</b> mock data, nothing is saved ·
+  <button id="theme">Hell/Dunkel</button>
+  <button id="reset">Zurücksetzen</button>
+  <span>Wörter: Weib · Oheim · Muhme</span></div>
+
+<header class="app"><strong>Unshackled Word</strong>
+  <nav><a>Bibel</a><a>Lemmata</a><a class="on">Revision</a><a>Wartung</a></nav></header>
+
+<main>
+  <h1>Stapel-Ersetzung</h1>
+
+  <section class="panel" aria-label="Suche">
+    <div class="row">
+      <label class="f">Quelle
+        <select id="src"><option>Elberfelder 2027</option><option>Elberfelder 2027 Extra</option><option>Elberfelder 1871</option></select></label>
+      <label class="f">Ziel
+        <select id="tgt"><option>Elberfelder 2027</option><option>Elberfelder 2027 Extra</option></select></label>
+      <p class="hint">Quelle = eigene Fassung des Verses, sonst Elb1871. Ersetzt wird im aktuellen Text der Zielfassung.</p>
+    </div>
+    <div class="row">
+      <label class="f">Wort
+        <input type="search" id="word" value="Weib" placeholder="z. B. Weib"></label>
+      <label class="f" style="flex-direction:row;align-items:center;gap:6px;margin-bottom:6px">
+        <input type="checkbox" id="forms"> auch Formen desselben Lemmas</label>
+      <label class="f">Vorschlag
+        <input type="text" id="repl" value="Frau"></label>
+      <button class="btn primary" id="search">Suchen</button>
+    </div>
+    <div class="row"><span id="wordErr" class="err"></span></div>
+    <div class="row" id="facetRow" hidden>
+      <span style="font-size:.85rem;color:var(--fg-muted)">Strong's:</span>
+      <div class="chips" id="facets"></div>
+      <button class="btn sm" id="facetAll">alle</button>
+    </div>
+  </section>
+
+  <div id="body"><p class="empty">Wort eingeben und suchen.</p></div>
+  <section id="review" hidden>
+    <ol class="steps"><li id="s1">1 Treffer</li><li id="s2">2 Text prüfen</li><li id="s3">3 Zuordnung prüfen</li></ol>
+    <div class="panel" id="rvBody"></div>
+  </section>
+  <div class="tiles" id="tiles" hidden></div>
+</main>
+
+<div class="savebar" id="savebar" hidden>
+  <span id="sbText"></span>
+  <button class="btn" id="discard">Verwerfen</button>
+  <button class="btn primary" id="apply">Anwenden</button>
+</div>
+
+<div class="modal" id="modal"><div class="box" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <h3 id="mt" style="margin-top:0">Anwenden?</h3><p id="mp"></p>
+  <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mc">Abbrechen</button><button class="btn primary" id="mo">Ja, speichern</button></div>
+</div></div>
+<div class="sr" aria-live="polite" id="live"></div>
+
+<script>
+/* ---------- mock data ---------- */
+const D = {
+  weib: { lemma: 'Weib', rows: [
+    ['1Mo 2,22', 'und Jehova Gott baute die Rippe, die er von dem Menschen genommen hatte, zu einem', 'Weibe', 'und brachte sie zu dem Menschen', ['H802'], 'Weibe', 0, 'v2'],
+    ['1Mo 2,23', 'Diese ist nun Bein von meinem Gebein … diese soll', 'Männin', 'heißen', ['H802'], 'Weib', 0],
+    ['1Mo 3,6', 'und sie nahm von seiner Frucht und aß und gab auch ihrem Mann, der bei ihr war,', 'Weib', 'sah, dass der Baum gut zur Speise war', ['H802'], 'Weib', 0],
+    ['1Mo 12,11', 'sprach er zu Sarai, seinem', 'Weibe', ': Siehe doch, ich weiß, dass du ein schönes', ['H802'], 'Weibe', 0],
+    ['Ri 4,4', 'Debora aber, eine Prophetin, das', 'Weib', 'Lappidoths, richtete Israel in jener Zeit', ['H802'], 'Weib', 0],
+    ['Hi 14,1', 'Der Mensch, vom', 'Weibe', 'geboren, ist kurz an Tagen', ['H802'], 'Weibe', 0],
+    ['Spr 5,18', 'und erfreue dich an dem', 'Weibe', 'deiner Jugend', ['H802'], 'Weibe', 0],
+    ['Mt 5,28', 'wer ein', 'Weib', 'ansieht, ihrer zu begehren, hat schon Ehebruch mit ihr begangen', ['G1135'], 'Weib', 0],
+    ['Lk 1,42', 'Gesegnet bist du unter den', 'Weibern', 'und gesegnet ist die Frucht deines Leibes', ['G1135'], 'Weibern', 0],
+    ['Joh 4,9', 'Da spricht die samaritische', 'Weib', 'zu ihm: Wie bittest du, der du ein Jude bist, von mir', ['G1135'], 'Weib', 0],
+    ['1Kor 7,2', 'ein jeder habe sein eigenes', 'Weib', ', und eine jede habe ihren eigenen Mann', ['G1135'], 'Weib', 0],
+    ['Jes 4,1', 'Und sieben', 'Weiber', 'werden an jenem Tage einen Mann ergreifen', ['H802'], 'Weiber', 0],
+    ['Ri 11,1', 'Jephtha war der Sohn eines', 'Weibes', ', einer Hure', ['H802', 'H2181'], 'Weibes', 0],
+    ['Offb 12,1', 'ein', 'Weib', ', mit der Sonne bekleidet', ['G1135'], 'Weib', 0],
+    ['Ri 13,2', 'und sein', 'Weib', 'war unfruchtbar', [], 'Weib', 0],
+  ]},
+  oheim: { lemma: 'Oheim', rows: [
+    ['1Mo 14,14', 'als Abram hörte, dass sein', 'Bruder', 'gefangen weggeführt war', ['H251'], 'Bruder', 0],
+    ['3Mo 10,4', 'Söhne Ussiels, des', 'Oheims', 'Aarons', ['H1730'], 'Oheims', 0],
+    ['Ri 14,3', 'seine Eltern', 'Oheim', '… sprachen', ['H1730'], 'Oheim', 0],
+    ['Est 2,7', 'und er hatte Hadassa, die Tochter seines', 'Oheims', ', erzogen', ['H1730'], 'Oheims', 0],
+  ]},
+  muhme: { lemma: 'Muhme', rows: [
+    ['3Mo 18,13', 'Die Schwester deiner Mutter', 'sollst', 'du nicht aufdecken', ['H269'], 'sollst', 0],
+    ['3Mo 20,19', 'die Blöße der Schwester deiner', 'Muhme', 'sollst du nicht aufdecken', ['H269'], 'Muhme', 0],
+  ]},
+};
+const NAMES = { H802: 'אִשָּׁה', G1135: 'γυνή', H2181: 'זָנָה', H1730: 'דּוֹד', H251: 'אָח', H269: 'אֲחוֹת' };
+
+/* ---------- state ---------- */
+const $ = id => document.getElementById(id);
+let rows = [], facetSel = new Set(), state = 'idle';
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const globalRepl = () => $('repl').value.trim();
+const effRepl = r => (r.ov.trim() || globalRepl());
+const visible = () => rows.filter(r => r.strongs.length === 0 ? facetSel.has('none') : r.strongs.some(s => facetSel.has(s)));
+
+function search() {
+  const w = $('word').value.trim();
+  const ok = /^[\p{L}\-']{2,40}$/u.test(w);
+  $('word').classList.toggle('invalid', !ok);
+  $('wordErr').textContent = ok ? '' : 'Ein Wort mit 2–40 Buchstaben, ohne Leerzeichen.';
+  if (!ok) return;
+  const key = w.toLowerCase().replace(/[ei]?(s|n)?$/, '');
+  const hit = Object.keys(D).find(k => w.toLowerCase().startsWith(k.slice(0, 4)));
+  state = 'results';
+  rows = hit ? D[hit].rows
+    .filter(r => $('forms').checked || r[2].toLowerCase() === w.toLowerCase() || (hit === 'weib' && r[2].toLowerCase() === w.toLowerCase()))
+    .map((r, i) => ({ id: i, ref: r[0], pre: r[1], form: r[2], post: r[3], strongs: r[4], ov: '', on: true, status: '', hasV: r[7] })) : [];
+  if (!$('forms').checked && hit === 'weib' && w.toLowerCase() === 'weib') rows = rows;
+  facetSel = new Set(['none', ...rows.flatMap(r => r.strongs)]);
+  $('tiles').hidden = true;
+  render();
+  $('live').textContent = rows.length + ' Treffer';
+}
+
+function facetCounts() {
+  const c = {};
+  rows.forEach(r => (r.strongs.length ? r.strongs : ['none']).forEach(s => c[s] = (c[s] || 0) + 1));
+  return Object.entries(c).sort((a, b) => b[1] - a[1]);
+}
+
+function render() {
+  const body = $('body');
+  if (state === 'idle') { body.innerHTML = '<p class="empty">Wort eingeben und suchen.</p>'; $('facetRow').hidden = true; $('savebar').hidden = true; return; }
+  if (!rows.length) { body.innerHTML = '<p class="empty">Keine Treffer.</p>'; $('facetRow').hidden = true; $('savebar').hidden = true; return; }
+  $('facetRow').hidden = false;
+  $('facets').innerHTML = facetCounts().map(([s, n]) =>
+    `<span class="chip ${facetSel.has(s) ? 'on' : ''}" data-f="${s}" role="checkbox" aria-checked="${facetSel.has(s)}" tabindex="0">${s === 'none' ? 'ohne Zuordnung' : s} <span class="n">·${n}</span></span>`).join('');
+  const vis = visible();
+  const checked = vis.filter(r => r.on).length;
+  const done = false;
+  body.innerHTML = `
+  <div class="toolbar">
+    <span class="count">${vis.length} Treffer · ${checked} ausgewählt</span>
+    <button class="btn sm" data-a="all">Alle</button><button class="btn sm" data-a="none">Keine</button><button class="btn sm" data-a="inv">Umkehren</button>
+    <button class="btn sm" data-a="quick">Nur Zeilen ohne Artikel davor</button>
+  </div>
+  <table><thead><tr><th></th><th>Stelle</th><th>Vers</th><th>Original</th><th>Hinweise</th></tr></thead><tbody>
+  ${vis.map(r => `<tr class="${r.on ? '' : 'off'}">
+    <td class="ck"><input type="checkbox" data-id="${r.id}" ${r.on ? 'checked' : ''} ${done ? 'disabled' : ''} aria-label="${esc(r.ref)}"></td>
+    <td><a href="#" onclick="return false">${esc(r.ref)} ↗</a></td>
+    <td>… ${esc(r.pre)} <mark>${esc(r.form)}</mark> ${esc(r.post)} …</td>
+    <td class="orig">${r.strongs.length ? r.strongs.map(s => `<span class="tag">${s}</span><span class="heb">${NAMES[s] || ''}</span>`).join(' ') : '<span class="tag">ohne Zuordnung</span>'}</td>
+    <td class="status">${artic(r) ? '<div class="hint">⚠ Artikel davor: „' + esc(r.pre.split(' ').slice(-1)[0]) + '“</div>' : '<span class="tag">schnell</span>'}${r.hasV ? '<br><span class="tag">Ziel hat ' + r.hasV + '</span>' : ''}${r.done ? '<br><span class="st-ok">✓ geprüft</span>' : ''}</td>
+  </tr>`).join('')}
+  </tbody></table>`;
+  const verses = new Set(vis.filter(r => r.on).map(r => r.ref)).size;
+  $('savebar').hidden = state !== 'results';
+  $('apply').textContent = 'Prüfen (' + verses + ' Verse)';
+  $('apply').disabled = !verses;
+  $('discard').textContent = 'Auswahl zurücksetzen'; $('apply').hidden = false;
+  $('sbText').textContent = verses + ' Verse kommen in die Prüfliste für „' + $('tgt').value + '“';
+}
+
+const artic = r => /^(ein|eine|einem|einer|einen|dem|der|den|das|die|sein|seine|ihr|ihre|jenes)$/i.test(r.pre.split(' ').slice(-1)[0] || '');
+const cap = (rep, form) => form[0] === form[0].toUpperCase() ? rep[0].toUpperCase() + rep.slice(1) : rep;
+let queue = [], qi = 0;
+
+function startReview() {
+  const seen = new Set();
+  queue = visible().filter(r => r.on && !seen.has(r.ref) && seen.add(r.ref));
+  qi = 0; $('body').hidden = true; $('facetRow').hidden = true; $('savebar').hidden = true; $('review').hidden = false;
+  step2();
+}
+function stepper(n) { ['s1', 's2', 's3'].forEach((id, i) => $(id).className = i + 1 < n ? 'done' : i + 1 === n ? 'cur' : ''); }
+function suggestion(r) { return `${r.pre} ${cap(globalRepl() || r.form, r.form)} ${r.post}`.trim(); }
+function head(r) { return `<div class="rvhead"><strong>${esc(r.ref)} ↗ <span class="tag">${qi + 1} / ${queue.length}</span> <span class="tag">${$('tgt').value}</span></strong>
+  <span class="hint">Strong's: ${r.strongs.join(', ') || 'ohne Zuordnung'}</span></div>`; }
+function step2() {
+  if (qi >= queue.length) return finish();
+  const r = queue[qi]; stepper(2);
+  $('rvBody').innerHTML = head(r) + `
+    <p class="hint">Vorschlag des Werkzeugs ist eingesetzt. Artikel und Umfeld bitte selbst anpassen.</p>
+    ${artic(r) ? `<p class="hint">⚠ Artikel prüfen: „${esc(r.pre.split(' ').slice(-1)[0])}“ steht vor dem Treffer.</p>` : ''}
+    <label class="f">Verstext (Zielfassung)<textarea id="vtext">${esc(suggestion(r))}</textarea></label>
+    <p class="diff" id="diff"></p>
+    <label class="f">Notiz<input type="text" id="note" value="Stapel: ${esc(r.form)} ⇒ ${esc(globalRepl())}" style="width:100%"></label>
+    <div class="acts"><button class="btn" id="back">Zurück zur Liste</button><button class="btn" id="skip">Überspringen</button>
+      <button class="btn primary" id="next">Weiter zur Zuordnung</button></div>`;
+  const orig = `${r.pre} ${r.form} ${r.post}`.trim();
+  const upd = () => { const t = $('vtext').value; $('diff').innerHTML = diff(orig, t); $('next').disabled = t.trim() === orig; };
+  $('vtext').oninput = upd; upd(); $('vtext').focus();
+  $('back').onclick = backToList; $('skip').onclick = () => { qi++; step2(); };
+  $('next').onclick = () => step3($('vtext').value.trim(), orig);
+}
+function diff(a, b) {
+  const A = a.split(/\s+/), B = b.split(/\s+/);
+  return B.map(w => A.includes(w) ? esc(w) : '<ins>' + esc(w) + '</ins>').join(' ') + (A.filter(w => !B.includes(w)).length ? ' <del>(' + A.filter(w => !B.includes(w)).map(esc).join(' ') + ')</del>' : '');
+}
+function step3(text, orig) {
+  const r = queue[qi]; stepper(3);
+  const O = orig.split(/\s+/), words = text.split(/\s+/);
+  $('rvBody').innerHTML = head(r) + `<p class="hint">Gespeichert als neue Version von „${$('tgt').value}“. Zuordnung prüfen (Mapping-Editor, hier nur angedeutet).</p>
+    <table class="map"><thead><tr><th>Deutsches Wort</th><th>Original</th><th>Zuordnung</th></tr></thead><tbody>
+    ${words.map((w, i) => { const ch = !O.includes(w), hit = ch && i > 0; return `<tr><td>${ch ? '<mark>' + esc(w) + '</mark>' : esc(w)}</td><td class="orig">${ch && r.strongs[0] && w.replace(/\W/g, '') === (globalRepl().split(' ').pop()) ? `<span class="tag">${r.strongs[0]}</span><span class="heb">${NAMES[r.strongs[0]] || ''}</span>` : ''}</td>
+      <td>${ch ? '<span class="check">prüfen</span> <button class="btn sm" type="button">Verknüpfung ändern</button>' : '<span class="st-ok">✓ übernommen</span>'}</td></tr>`; }).join('')}
+    </tbody></table>
+    <div class="acts"><button class="btn" id="later">Später prüfen</button><button class="btn primary" id="ok">Bestätigen</button></div>`;
+  $('later').onclick = () => { qi++; step2(); };
+  $('ok').onclick = () => { r.done = true; qi++; step2(); };
+}
+function backToList() { $('review').hidden = true; $('body').hidden = false; state = 'results'; render(); }
+function finish() {
+  stepper(4);
+  const n = queue.filter(r => r.done).length;
+  $('rvBody').innerHTML = `<p><strong>Fertig.</strong> ${n} von ${queue.length} Versen geprüft, ${queue.length - n} offen oder übersprungen.</p>
+    <div class="acts"><button class="btn primary" id="back">Zur Liste</button></div>`;
+  $('back').onclick = backToList;
+}
+
+/* ---------- events ---------- */
+$('search').onclick = search;
+$('word').addEventListener('keydown', e => e.key === 'Enter' && search());
+
+$('body').addEventListener('change', e => {
+  const id = e.target.dataset.id; if (id === undefined) return;
+  rows[id].on = e.target.checked; render();
+});
+$('body').addEventListener('click', e => {
+  const a = e.target.dataset.a; if (!a) return;
+  const vis = visible();
+  vis.forEach(r => r.on = a === 'all' ? true : a === 'none' ? false : a === 'inv' ? !r.on : r.on);
+  if (a === 'quick') vis.forEach(r => r.on = !artic(r));
+  render();
+});
+$('facets').addEventListener('click', e => {
+  const f = e.target.closest('[data-f]')?.dataset.f; if (!f) return;
+  facetSel.has(f) ? facetSel.delete(f) : facetSel.add(f); render();
+});
+$('facetAll').onclick = () => { facetSel = new Set(['none', ...rows.flatMap(r => r.strongs)]); render(); };
+$('apply').onclick = startReview;
+$('discard').onclick = () => { rows.forEach(r => { r.on = true; }); render(); };
+$('theme').onclick = () => { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark'; };
+$('reset').onclick = () => { state = 'idle'; rows = []; $('review').hidden = true; $('body').hidden = false; $('tiles').hidden = true; $('word').value = 'Weib'; $('repl').value = 'Frau'; render(); };
+render();
+</script>
+</body>
+</html>

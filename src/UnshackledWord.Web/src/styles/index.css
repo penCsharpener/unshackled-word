@@ -47,6 +47,175 @@
   }
 }
 
+/* From 1200px the testament picker lives in the header, which is then one slim row. */
+@media (min-width: 75rem) {
+  :root {
+    --app-header-h: calc(var(--spacing) * 12);
+  }
+}
+
+/*
+  Reader margins (roadmap 0012). The text column keeps a right margin from lg (1024px) for the word info cards and
+  is centred again from fhd (1920px); the cards always stay in the right margin, the left one holds the verse side panel.
+*/
+:root {
+  --margin-card-w: 18rem;
+}
+
+.reader-col {
+  position: relative;
+  margin-inline: auto;
+  max-width: 65ch;
+}
+
+@media (min-width: 64rem) {
+  .reader-col {
+    margin-inline: 0;
+    max-width: min(65ch, calc(100% - var(--margin-card-w) - var(--spacing) * 8));
+  }
+}
+
+@media (min-width: 120rem) {
+  .reader-col {
+    margin-inline: auto;
+    max-width: 65ch;
+  }
+}
+
+/* A stack of cards in the margin; `top` is set from the verse the word is in (MarginStack). */
+.margin-stack {
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  width: var(--margin-card-w);
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+  left: calc(100% + var(--spacing) * 8);
+}
+
+/* The word detail card is at least the stack width and grows with its content away from the text. */
+.margin-card {
+  width: max-content;
+  min-width: 100%;
+  max-width: max(100%, min(calc(var(--margin-card-w) * 1.75), var(--margin-room, 100%)));
+}
+
+.margin-stack > .margin-card {
+  align-self: flex-start;
+}
+
+/*
+ * Verse side panel (TSK / Grundtext) in the left margin, from 120rem where the column has margins on both sides.
+ * The verse row becomes a one-cell grid: `.verse-main` (text, eye and pen panels) and `.verse-side` share the cell, so
+ * the panel lines up with its verse. TSK is out of flow (clipped to the verse height, "+N" opens an overlay); Grundtext
+ * stays in flow, so the row is as tall as the taller of the German text and the original and nothing is cut off.
+ */
+:root {
+  --side-panel-w: 32rem;
+  --side-panel-pad: 0.5rem;
+}
+
+@media (min-width: 160rem) {
+  :root {
+    --side-panel-w: 40rem;
+  }
+}
+
+@media (min-width: 120rem) {
+  .verse-row {
+    display: grid;
+    grid-template-areas: "verse";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .verse-main {
+    grid-area: verse;
+    min-width: 0;
+  }
+
+  .verse-side {
+    grid-area: verse;
+    width: var(--side-panel-w);
+    align-self: start;
+    padding-top: var(--side-panel-pad);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    color: var(--color-fg);
+  }
+
+  .verse-side[data-mode="original"] {
+    margin-inline-start: calc(-1 * (var(--side-panel-w) + var(--spacing) * 8));
+  }
+
+  .verse-side[data-mode="tsk"] {
+    position: absolute;
+    inset-block: 0;
+    right: calc(100% + var(--spacing) * 8);
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    overflow: clip;
+  }
+
+  .verse-side-clip {
+    position: relative;
+    overflow: clip;
+  }
+
+  .verse-side-more {
+    align-self: flex-end;
+    flex: none;
+  }
+
+  /* "+N" opened: the whole list as an overlay over the following verses' panels; the text column does not move. */
+  .verse-side[data-expanded] {
+    inset-block-end: auto;
+    align-self: start;
+    z-index: 20;
+    max-height: min(60dvh, 40rem);
+    overflow-y: auto;
+    padding: var(--spacing) calc(var(--spacing) * 2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .verse-side[data-expanded] .verse-side-clip {
+    overflow: visible;
+  }
+}
+
+/* Header of the left margin: the mode control, sticky below the app header while the chapter scrolls. */
+.side-rail {
+  position: absolute;
+  inset-block: 0;
+  right: calc(100% + var(--spacing) * 8);
+  width: var(--side-panel-w);
+  pointer-events: none;
+}
+
+.side-rail-head {
+  position: sticky;
+  top: calc(var(--app-header-h) + var(--spacing) * 4);
+  z-index: 15;
+  pointer-events: auto;
+}
+
+/* From 1200px the header carries the testament picker; it overlays the page full width when a testament is open. */
+.picker-panel {
+  position: fixed;
+  inset-inline: 0;
+  top: var(--picker-panel-top, var(--app-header-h));
+  z-index: 35;
+  max-height: calc(100dvh - var(--picker-panel-top, var(--app-header-h)));
+  overflow-y: auto;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
 :root[data-theme="dark"] {
   color-scheme: dark;
   --uw-bg: oklch(0.18 0.008 60);
@@ -126,6 +295,8 @@
   --container-popover: 24rem;
   --container-page: 72rem;
   --container-page-wide: 120rem;
+  --breakpoint-laptop: 75rem;
+  --breakpoint-fhd: 120rem;
 }
 
 @layer base {
@@ -376,7 +547,6 @@
     z-index: 20;
     max-height: calc(100dvh - var(--app-header-h));
     overflow-y: auto;
-    border-bottom: 1px solid var(--color-border);
     background: var(--color-surface);
   }
 
@@ -489,6 +659,11 @@
 
   .map-tok-lemma {
     font-family: var(--font-original);
+  }
+
+  .map-tok-review {
+    color: var(--color-accent);
+    font-weight: 600;
   }
 
   .map-tok-details {

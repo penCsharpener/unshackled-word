@@ -13,6 +13,8 @@ export interface VerseHitListProps {
   activeIndex: number;
   /** A plain click or Enter on a hit; the caller navigates (modified clicks keep the browser's behaviour). */
   onSelect: (hit: VerseSearchHit) => void;
+  /** Tooltip / accessible name of the marker on revised hits, for a level (like the reader's revised verses). */
+  revisedLabel?: (level: number) => string;
   onLoadMore: () => void;
   hasMore: boolean;
   /** The next page is being fetched. */
@@ -34,6 +36,7 @@ export function VerseHitList({
   language,
   activeIndex,
   onSelect,
+  revisedLabel,
   onLoadMore,
   hasMore,
   loading = false,
@@ -61,7 +64,10 @@ export function VerseHitList({
               role="option"
               tabIndex={-1}
               aria-selected={active}
-              className={`rounded-md border ${active ? "border-accent bg-surface-muted" : "border-border"}`}
+              className={`rounded-md border ${active ? "border-accent bg-surface-muted" : "border-border"} ${hit.revised ? "border-l-4 border-l-accent" : ""}`}
+              {...(hit.revised &&
+                hit.level !== undefined &&
+                revisedLabel && { title: revisedLabel(hit.level) })}
             >
               <Link
                 to={hitPath(hit)}

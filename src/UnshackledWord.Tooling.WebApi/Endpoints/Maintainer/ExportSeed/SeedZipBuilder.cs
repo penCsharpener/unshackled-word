@@ -36,7 +36,7 @@ public sealed class SeedZipBuilder
     /// <summary>Why the kind cannot be exported here (assets folder not mounted), or null when it can.</summary>
     public string? CheckAvailable(SeedExportKind kind)
     {
-        if (kind == SeedExportKind.Mappings || BaseTextExists())
+        if (kind is SeedExportKind.Mappings or SeedExportKind.Revision || BaseTextExists())
         {
             return null;
         }

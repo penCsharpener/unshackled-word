@@ -30,6 +30,13 @@ public sealed class DatabaseSeedSettings
     /// after the first import. The morphology seed is never updated after the first import.
     /// </summary>
     public bool UpdateMappingSeed { get; set; } = true;
+
+    /// <summary>
+    /// Later starts replace every revision variant that was not changed since the last seed import with the repo's newer revision seed
+    /// (roadmap 0011.12); variants changed locally are kept and listed in the report. Set to false to never touch the revision after
+    /// the first import.
+    /// </summary>
+    public bool UpdateRevisionSeed { get; set; } = true;
 }
 
 public sealed class Elberfelder1871

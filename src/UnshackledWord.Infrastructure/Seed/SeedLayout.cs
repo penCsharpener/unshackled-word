@@ -16,6 +16,12 @@ public sealed class SeedLayout
     public const string MappingsFolder = "Elb1871Mappings";
     public const int MappingsFormat = 2;
 
+    /// <summary>Revision seed (roadmap 0011.11), below the seed root: <c>revision/levels.csv</c>, <c>revision/verses/NN-Book.csv</c>, <c>revision/mapping/NN-Book.csv</c>.</summary>
+    public const string RevisionFolder = "revision";
+    public const string RevisionLevelsFile = "levels.csv";
+    public const string RevisionVersesFolder = "verses";
+    public const string RevisionMappingFolder = "mapping";
+
     public static readonly UTF8Encoding Utf8NoBom = new(false);
 
     private readonly IFileService _fileService;
@@ -54,6 +60,9 @@ public sealed class SeedLayout
     public static string BookFileName(int bookId) => $"{bookId:D2}-{BibleBook.AllBooks[bookId].Name}.csv";
 
     public string ResolveMapping(string fileName) => _fileService.Combine(MappingsRoot, fileName);
+
+    /// <summary>Seed-relative path of a revision file, e.g. <c>revision/verses/01-Genesis.csv</c>; <paramref name="subFolder"/> null = directly in <c>revision</c>.</summary>
+    public static string RevisionPath(string? subFolder, string fileName) => subFolder is null ? $"{RevisionFolder}/{fileName}" : $"{RevisionFolder}/{subFolder}/{fileName}";
 
     public string Resolve(string relativePath) => _fileService.Combine(SeedRoot, relativePath.Replace('/', Path.DirectorySeparatorChar));
 }

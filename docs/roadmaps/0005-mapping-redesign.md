@@ -61,7 +61,7 @@ maintainer confirms or changes them before 0005.1 starts.
 | AI provenance | `AiRuns` (model, prompt version + hash, parameters, verse range, status). AI changesets reference their run; `Confidence` per link. One AI user per model family (`ai-gemini`), model in the run. | answers 0002 open question 11 |
 | "Let AI redo this range" | WebApi inserts a `queued` AiRun; AiWorker polls. The new changeset supersedes open AI changesets of the range and, on merge, replaces **only active, unconfirmed, machine-authored** links; human or confirmed links are kept and conflicting AI proposals dropped. AI changesets auto-merge (same visibility as today's AI data); setting `Mapping:AiAutoMerge` (default `true`) can switch that to review. | this roadmap |
 | Users | Minimal `Users` table now (ids < 1000 reserved: 1 system, 2 ai-legacy, 3 ai-gemini, 4 rules), `ExternalSubject` for the auth system merged later. Write gate `MappingEditing:Enabled` stays until auth exists (0003). | 0003, CLAUDE.md |
-| Revision layer | Designed now, built later: `GermanVersions` (slider presets, level 0 = Elb1871, 1000 = modernised literal), `GermanEdits` (replace base positions From..To at a level), `GermanEditWords` (`InheritsFromWordId` keeps links). Links carry `Level`; at slider level L the highest `Level ≤ L` whose German tokens are visible wins. | CLAUDE.md |
+| Revision layer | **Superseded by roadmap 0011** (verse variants per level, tables `RevisionLevels`/`RevisionVerses`/`RevisionWords`/`RevisionMapping`; level scale 1–1000, Elb1871 = 100). Original design, not built: `GermanVersions` (slider presets, level 0 = Elb1871, 1000 = modernised literal), `GermanEdits` (replace base positions From..To at a level), `GermanEditWords` (`InheritsFromWordId` keeps links). Links carry `Level`; at slider level L the highest `Level ≤ L` whose German tokens are visible wins. | CLAUDE.md |
 | Legacy data | Migrated as active, unconfirmed AI suggestions under user `ai-legacy`, one AiRun + merged changeset per (language, day). Legacy tables are never changed or dropped by this roadmap. | brief |
 | Compatibility | Views `Elb1871GreekMappingCompat` / `Elb1871HebrewMappingCompat` with the legacy columns. One setting `Mapping:Model` = `legacy` / `v2` switches readers **and** writers together (no dual write). | this roadmap |
 | Migration numbers | `0009_MappingV2Schema.sql`, `0010_MappingV2Migrate.sql`. `0007` (0002 S29 `MappingProvenance`) is **retired**: its columns are covered by `AiRuns`/`Changesets`/`MappingConfirmations`; mark S29/S30 in 0002 as superseded by 0005. `0008` stays with roadmap 0004 and is independent. | 0002 S29, 0004 |
@@ -534,6 +534,8 @@ CREATE TABLE IF NOT EXISTS "unshackled-word"."SourceWords"
 <a id="appendix-a-5"></a>
 #### A.5 3. GERMAN SIDE: table `GermanVersions` (+ seed rows)
 
+> Superseded by roadmap 0011 (not built; the `Level` columns of the link tables follow 0011's scale 1–1000 with Elb1871 = 100 if they are ever added).
+
 ```sql
 -- =====================================================================================================================
 -- 3. GERMAN SIDE: versions (slider presets) and text edits on top of the immutable base
@@ -661,6 +663,8 @@ CREATE INDEX IF NOT EXISTS "Changesets_AiRun_IDX" ON "unshackled-word"."Changese
 <a id="appendix-a-8"></a>
 #### A.8 5. GERMAN EDITS: table `GermanEdits` (+ 2 indexes)
 
+> Superseded by roadmap 0011 (not built; the `Level` columns of the link tables follow 0011's scale 1–1000 with Elb1871 = 100 if they are ever added).
+
 ```sql
 -- =====================================================================================================================
 -- 5. GERMAN EDITS (revision layer; designed now so links can reference edit tokens, implemented in a later roadmap)
@@ -716,6 +720,8 @@ CREATE INDEX IF NOT EXISTS "GermanEdits_Changeset_IDX" ON "unshackled-word"."Ger
 
 <a id="appendix-a-9"></a>
 #### A.9 table `GermanEditWords`
+
+> Superseded by roadmap 0011 (not built; the `Level` columns of the link tables follow 0011's scale 1–1000 with Elb1871 = 100 if they are ever added).
 
 ```sql
 -- New tokens of an edit. "InheritsFromWordId": this token is a rewording of that base token (spelling, synonym) and

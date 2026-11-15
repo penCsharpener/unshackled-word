@@ -55,10 +55,10 @@ describe("buildHighlights", () => {
 
   it("marks equal forms as same and other forms as related", () => {
     const map = buildHighlights(find(2), verses);
-    expect(map.get(2)).toBe("same");
-    expect(map.get(10)).toBe("same");
-    expect(map.get(11)).toBe("related");
-    expect(map.has(4)).toBe(false);
+    expect(map.get("b2")).toBe("same");
+    expect(map.get("b10")).toBe("same");
+    expect(map.get("b11")).toBe("related");
+    expect(map.has("b4")).toBe(false);
   });
 
   it("returns nothing for words without senses or no hover", () => {

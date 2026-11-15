@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using UnshackledWord.Infrastructure.Seed.BaseText;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Infrastructure.Seed.Morphology;
+using UnshackledWord.Infrastructure.Seed.Revision;
 
 namespace UnshackledWord.Infrastructure.Seed;
 
@@ -14,7 +16,36 @@ public static class ServiceCollectionExtensions
         services.AddScoped<MorphologyExporter>();
         services.AddScoped<MappingExportRepository>();
         services.AddScoped<MappingExporter>();
+        services.AddScoped<RevisionExportRepository>();
+        services.AddScoped<RevisionExporter>();
         services.AddScoped<SeedExportRunner>();
+        services.AddScoped<SeedFileExportService>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// The seed importers, the rebase and the exporters: everything the SeedDb CLI and the maintainer page run. The caller registers
+    /// <c>IDbReader</c>, <c>IDbWriter</c>, <c>IDbConnectionFactory</c>, <c>IFileService</c> and <c>AppSettings</c>.
+    /// </summary>
+    public static IServiceCollection AddSeedImportServices(this IServiceCollection services)
+    {
+        services.AddSeedExportServices();
+        services.AddScoped<ElbWordTokenReader>();
+        services.AddScoped<Elberfelder1871Strategy>();
+        services.AddScoped<Elberfelder1871VerseStrategy>();
+        services.AddScoped<MorphologySeedRepository>();
+        services.AddScoped<MorphologySeedImporter>();
+        services.AddScoped<MappingSeedRepository>();
+        services.AddScoped<MappingSeedSourceReader>();
+        services.AddScoped<MappingSeedImporter>();
+        services.AddScoped<RevisionSeedRepository>();
+        services.AddScoped<RevisionSeedSourceReader>();
+        services.AddScoped<RevisionSeedImporter>();
+        services.AddScoped<RevisionBaseRealigner>();
+        services.AddScoped<RebaseRepository>();
+        services.AddScoped<SeedRebaseService>();
+        services.AddScoped<SeedImportsRepository>();
 
         return services;
     }

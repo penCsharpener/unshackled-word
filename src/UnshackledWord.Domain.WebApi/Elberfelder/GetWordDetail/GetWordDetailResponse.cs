@@ -10,6 +10,9 @@ public sealed class GetWordDetailResponse
     /// <summary>true or null (never false), so the property is omitted for normal words.</summary>
     public bool? IsAddedWord { get; set; }
     public List<OriginalReadingResponse> Readings { get; set; } = [];
+
+    /// <summary>Only for words of a revision variant (<c>GET api/revision/wordDetail</c>): what this word is relative to Elb1871.</summary>
+    public RevisionWordInfoResponse? Revision { get; set; }
     public MappingProvenanceResponse? Mapping { get; set; }
     public List<CoMappedWordResponse>? CoMappedWords { get; set; }
     public List<string>? Hints { get; set; }
@@ -27,6 +30,8 @@ public sealed class CrossReferenceResponse
     public int Verse { get; set; }
     /// <summary>Last verse of a range in the same chapter; omitted for a single verse.</summary>
     public int? EndVerse { get; set; }
+    /// <summary>English KJV keyword of the TSK entry; only set by the chapter endpoint, not shown in the UI yet.</summary>
+    public string? Keyword { get; set; }
 }
 
 public sealed class OriginalReadingResponse
@@ -124,4 +129,16 @@ public sealed class CoMappedWordResponse
     public int PositionInVerse { get; set; }
     /// <summary>sameOriginal, addedWord or parent.</summary>
     public string Relation { get; set; } = default!;
+}
+
+/// <summary>Where a revision word comes from. Renderings and occurrence counts of its readings are Elb1871 statistics.</summary>
+public sealed class RevisionWordInfoResponse
+{
+    public int Level { get; set; }
+
+    /// <summary>same, changed or new.</summary>
+    public string Change { get; set; } = default!;
+
+    /// <summary>The Elb1871 word this one replaces (changed words only).</summary>
+    public string? BaseWord { get; set; }
 }

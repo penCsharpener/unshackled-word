@@ -1,0 +1,29 @@
+meta {
+  name: CreateLevel
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{url}}revision/levels
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "level": 600,
+    "code": "einfach",
+    "nameDe": "Einfach",
+    "nameEn": "Simple",
+    "isDefault": false
+  }
+}
+
+docs {
+  Needs admin or maintainer. 409 level/code exist; 400 a second default (move it with PUT on the new default) or level 100.
+}
+
+settings {
+  encodeUrl: true
+}

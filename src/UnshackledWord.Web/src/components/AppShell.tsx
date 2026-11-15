@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, ScrollRestoration, useLocation, useMatches } from "react-router";
-import { useAuth } from "@/lib/auth/AuthContext";
 import { HeaderInfoProvider } from "@/lib/headerInfo";
+import { PickerSlotProvider, useSetPickerSlot } from "@/lib/pickerSlot";
 import { SEARCH_ICON_PATHS } from "@/lib/search/icon";
 import { useSearchHotkey } from "@/lib/search/useSearchHotkey";
 import { Button } from "./Button";
@@ -13,8 +13,16 @@ import { ThemeToggle } from "./ThemeToggle";
 import { UserMenu } from "./UserMenu";
 
 export function AppShell() {
+  return (
+    <PickerSlotProvider>
+      <AppShellContent />
+    </PickerSlotProvider>
+  );
+}
+
+function AppShellContent() {
   const { t } = useTranslation();
-  const { status } = useAuth();
+  const setPickerSlot = useSetPickerSlot();
   // A route opts into the app-like layout (page does not scroll, its content fills the height) with
   // `handle: { layout: "fill" }`; below md the page scrolls normally.
   const fill = useMatches().some(
@@ -39,8 +47,8 @@ export function AppShell() {
       <div className={`flex min-h-dvh flex-col ${fill ? "md:h-dvh" : ""}`}>
         <header className="app-header sticky top-0 z-30 bg-surface">
           <div className="mx-auto flex h-full max-w-page-wide flex-wrap items-center justify-between gap-x-4 px-4 md:px-8">
-            <nav className="flex h-14 items-center gap-6 md:h-full">
-              <NavLink to="/" className="font-scripture text-lg font-semibold text-accent">
+            <nav className="flex h-14 items-center gap-6 md:h-full laptop:flex-1">
+              <NavLink to="/bible" className="font-scripture text-lg font-semibold text-accent">
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 24 24"
@@ -57,27 +65,19 @@ export function AppShell() {
                 <span className="sr-only md:not-sr-only">{t("app.name")}</span>
               </NavLink>
               <NavLink
-                to="/bible"
+                to="/about"
                 className={({ isActive }) => (isActive ? "text-fg" : "text-fg-muted hover:text-fg")}
               >
-                {t("nav.bible")}
+                {t("nav.about")}
               </NavLink>
-              {status === "authenticated" && (
-                <NavLink
-                  to="/edit/lemmas"
-                  className={({ isActive }) =>
-                    `hidden md:inline ${isActive ? "text-fg" : "text-fg-muted hover:text-fg"}`
-                  }
-                >
-                  {t("nav.editLemmas")}
-                </NavLink>
-              )}
             </nav>
             {/* Own line below the menu on mobile, centre of the menu from md. */}
-            <div className="order-last flex h-12 w-full min-w-0 items-center md:order-none md:h-full md:w-auto md:flex-1">
+            <div className="order-last flex h-12 w-full min-w-0 items-center md:order-none md:h-full md:w-auto md:flex-1 laptop:flex-none">
               <HeaderWordInfo />
             </div>
-            <div className="flex h-14 items-center gap-4 md:h-full">
+            {/* From 1200px the chapter picker (HeaderPickerBar) is rendered here: one slim menu row. */}
+            <div ref={setPickerSlot} className="hidden h-full items-center laptop:flex" />
+            <div className="flex h-14 items-center gap-4 md:h-full laptop:flex-1 laptop:justify-end">
               {searchAvailable && (
                 <Button
                   ref={searchButton}

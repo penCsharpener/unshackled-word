@@ -10,6 +10,7 @@ public sealed partial class SeedingService
     private Type[] _runnerTypes =
     [
         typeof(SttsSeed.SttsSeedRunner),
+        typeof(RevisionSeed.RevisionLevelSeedRunner),
         typeof(ElberfelderParser.ElberfelderTextRunner),
         typeof(ElberfelderParser.Elb1871VerseRunner),
         typeof(RepoSeed.Morphology.MorphologySeedRunner),
@@ -23,6 +24,7 @@ public sealed partial class SeedingService
         typeof(StepBible.StepDataRelationshipImporter),
         typeof(StepBible.StrongsToText.StepStrongsImport),
         typeof(AiMappingImport.AiMappingImportRunner),
+        typeof(RevisionSeed.RevisionSeedRunner),
     ];
 
     public SeedingService(IServiceScopeFactory scopeFactory, ILogger<SeedingService> logger)

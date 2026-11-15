@@ -46,10 +46,14 @@ export interface MappingEditorProps {
   reference: string;
   saving?: boolean;
   saveError?: MappingSaveError | null;
+  /** Word ids that carry a "prüfen" marker (revision carry-over); omitted for the Elb1871 mapping. */
+  review?: { german: ReadonlySet<number>; original: ReadonlySet<number> };
   /** Called with the complete new mapping of the verse; not called when nothing changed. */
   onSave: (links: VerseMappingLink[]) => void;
   /** Cancel, Escape, and Save without edits. */
   onCancel: () => void;
+  /** Reports the number of unsaved link changes whenever it changes (0 = nothing pending). */
+  onChangeCount?: (count: number) => void;
 }
 
 type DropTarget = NodeKey | "clear";
@@ -65,8 +69,10 @@ export function MappingEditor({
   reference,
   saving = false,
   saveError = null,
+  review,
   onSave,
   onCancel,
+  onChangeCount,
 }: MappingEditorProps) {
   const { t } = useTranslation();
   const coarse = useCoarsePointer();
@@ -106,6 +112,9 @@ export function MappingEditor({
   );
   const diff = useMemo(() => diffStates(base, work), [base, work]);
   const changes = changeCount(diff);
+  useEffect(() => {
+    onChangeCount?.(changes);
+  }, [changes, onChangeCount]);
 
   const germanName = (id: number) => germanText.get(id) ?? "";
   const originalName = (id: number) => originalById.get(id)?.original ?? "";
@@ -325,6 +334,10 @@ export function MappingEditor({
       ? t("bible.mapping.label.originalLinked", { word, partners: list.join(", ") })
       : t("bible.mapping.label.originalUnmapped", { word });
   }
+
+  const reviewText = t("bible.mapping.review");
+  const reviewLabel = (label: string, flagged: boolean) =>
+    flagged ? `${label}, ${reviewText}` : label;
 
   const isRtl = data.language === "hebrew";
   const originalLang = isRtl ? "he" : "grc";
@@ -563,7 +576,8 @@ export function MappingEditor({
                   dropTarget={dropOver === node}
                   dragging={dragging === node}
                   draggable={draggable}
-                  label={describe(node)}
+                  review={review?.german.has(word.id) ? reviewText : undefined}
+                  label={reviewLabel(describe(node), review?.german.has(word.id) === true)}
                   {...tokenHandlers}
                 />
               );
@@ -597,7 +611,8 @@ export function MappingEditor({
                   dropTarget={dropOver === node}
                   dragging={dragging === node}
                   draggable={draggable}
-                  label={describe(node)}
+                  review={review?.original.has(word.id) ? reviewText : undefined}
+                  label={reviewLabel(describe(node), review?.original.has(word.id) === true)}
                   showDetails={showDetails}
                   details={
                     <>

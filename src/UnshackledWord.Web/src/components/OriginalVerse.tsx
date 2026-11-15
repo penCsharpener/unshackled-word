@@ -1,33 +1,41 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import type { GetVerseMappingResponse } from "@/lib/bible/types";
+import { normalizeStrongs } from "@/lib/bible/wordDetail";
 import { useSetHeaderInfo } from "@/lib/headerInfo";
 import { Button } from "./Button";
 
 export interface OriginalVerseProps {
-  data: GetVerseMappingResponse;
+  /**
+   * `panel` (default): the eye panel under a verse with lemma / Strong's / morphology toggles.
+   * `margin`: the same words in the side panel next to the verse, no frame and toggles, every word links to its Strong's page.
+   */
+  variant?: "panel" | "margin";
+  data: Pick<GetVerseMappingResponse, "language" | "originalWords">;
   /** e.g. "Johannes 3,1" */
   reference: string;
   /** Original words to highlight (linked to the hovered German word). */
   linkedIds?: ReadonlySet<number>;
   /** Called with the hovered original word id, or undefined when the pointer leaves. */
   onHoverWord?: (id: number | undefined) => void;
-  showLemma: boolean;
-  showStrongs: boolean;
-  showMorphology: boolean;
-  onToggleLemma: () => void;
-  onToggleStrongs: () => void;
-  onToggleMorphology: () => void;
+  showLemma?: boolean;
+  showStrongs?: boolean;
+  showMorphology?: boolean;
+  onToggleLemma?: () => void;
+  onToggleStrongs?: () => void;
+  onToggleMorphology?: () => void;
 }
 
 /** Plain original-language text of one verse for casual readers; Strong's and morphology can be added per word. */
 export function OriginalVerse({
+  variant = "panel",
   data,
   reference,
   linkedIds,
   onHoverWord,
-  showLemma,
-  showStrongs,
-  showMorphology,
+  showLemma = false,
+  showStrongs = false,
+  showMorphology = false,
   onToggleLemma,
   onToggleStrongs,
   onToggleMorphology,
@@ -37,6 +45,44 @@ export function OriginalVerse({
   const isRtl = data.language === "hebrew";
   const lang = isRtl ? "he" : "grc";
   const words = [...data.originalWords].sort((a, b) => a.position - b.position);
+
+  if (variant === "margin") {
+    return (
+      <p dir={isRtl ? "rtl" : "ltr"} lang={lang} className="font-original text-lg leading-snug">
+        {words.map((word) => {
+          const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
+          const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
+          const hover = {
+            onMouseEnter: () => onHoverWord?.(word.id),
+            onMouseLeave: () => onHoverWord?.(undefined),
+            onFocus: () => onHoverWord?.(word.id),
+            onBlur: () => onHoverWord?.(undefined),
+          };
+          return (
+            <span key={word.id}>
+              {strongs ? (
+                <Link
+                  to={`/bible/strongs/${strongs}`}
+                  aria-label={t("bible.sidePanel.strongsLink", {
+                    original: word.original,
+                    strongs,
+                  })}
+                  className={`rounded-sm hover:underline ${highlight}`}
+                  {...hover}
+                >
+                  {word.original}
+                </Link>
+              ) : (
+                <span className={`rounded-sm ${highlight}`} {...hover}>
+                  {word.original}
+                </span>
+              )}{" "}
+            </span>
+          );
+        })}
+      </p>
+    );
+  }
 
   return (
     <section

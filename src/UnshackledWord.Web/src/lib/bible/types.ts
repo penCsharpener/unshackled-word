@@ -18,10 +18,17 @@ export interface ChapterVerse {
   verse: number;
   text: string;
 }
+/** A verse shown in its revised wording at the requested level. */
+export interface RevisedVerse {
+  verse: number;
+  level: number;
+  revisionVerseId: number;
+}
 export interface GetChapterTextResponse {
   bibleBookId: number;
   chapter: number;
   verses: ChapterVerse[];
+  revisedVerses?: RevisedVerse[];
 }
 
 /** One row of `chapterWords`. Nulls are omitted by the API, hence optional. */
@@ -37,11 +44,14 @@ export interface ChapterWord {
   strongs?: string;
   verseCode?: string;
   grammaticalKey?: string;
+  /** Words of revised verses only. `id` is then the base word id, or 0 for a word without base word. */
+  revisionWordId?: number;
 }
 export interface GetWordsOfChapterResponse {
   bibleBookId: number;
   chapter: number;
   words: ChapterWord[];
+  revisedVerses?: RevisedVerse[];
 }
 
 export interface ChapterRef {
@@ -62,13 +72,17 @@ export interface WordSense {
 }
 /** An Elberfelder word with all its original-language readings (the API returns one row per reading). */
 export interface WordToken {
+  /** Base word id; 0 for a revision word without base word (so never unique, use `wordKey`). */
   id: number;
   text: string;
   senses: WordSense[];
+  revisionWordId?: number;
 }
 export interface VerseWords {
   verse: number;
   words: WordToken[];
+  /** Set when the verse is shown in its revised wording. */
+  revised?: RevisedVerse;
 }
 /** `same`: shares a key and the same original form; `related`: shares a key with a different form. */
 export type HighlightKind = "same" | "related";
@@ -210,7 +224,8 @@ export interface OriginalReading {
 }
 
 /** Who wrote the current version of the word's mapping rows. */
-export type MappingSource = "ai" | "human";
+/** `carried`, `manual` and `seed` come from revision variants (roadmap 0011). */
+export type MappingSource = "ai" | "human" | "carried" | "manual" | "seed";
 /** Provenance of the word's mapping (Elb1871GreekMapping / Elb1871HebrewMapping); omitted when unmapped. */
 export interface MappingProvenance {
   source: MappingSource;
@@ -219,7 +234,7 @@ export interface MappingProvenance {
   confirmedAt?: string; // ISO 8601, a human confirmed the AI mapping
 }
 /** Derived for the badge: AI unconfirmed, AI confirmed by a human, or written by a human. */
-export type MappingStatus = "aiSuggested" | "confirmed" | "manual";
+export type MappingStatus = "aiSuggested" | "confirmed" | "manual" | "carried";
 
 /**
  * `sameOriginal`: shares at least one original word ("Und die Erde" → וְהָאָרֶץ);
@@ -242,8 +257,36 @@ export interface CrossReference {
   chapter: number;
   verse: number;
   endVerse?: number;
+  /** English KJV keyword of the TSK entry; only in the chapter response, not shown. */
+  keyword?: string;
 }
 
+/** `GET elberfelder/chapterCrossReferences/...`: verses without TSK references are omitted. */
+export interface GetChapterCrossReferencesResponse {
+  bibleBookId: number;
+  chapter: number;
+  verses: { verse: number; references: CrossReference[] }[];
+}
+
+/** `GET elberfelder/chapterOriginals/...`: original words of a whole chapter with the Elb1871 links (read only). */
+export interface ChapterOriginalVerse {
+  verse: number;
+  words: VerseMappingOriginalWord[];
+  links: { germanId: number; originalId: number }[];
+}
+export interface GetChapterOriginalsResponse {
+  bibleBookId: number;
+  chapter: number;
+  language: "greek" | "hebrew";
+  verses: ChapterOriginalVerse[];
+}
+
+export interface RevisionWordInfo {
+  level: number;
+  change: "same" | "changed" | "new";
+  /** the Elb1871 word a `changed` word replaces */
+  baseWord?: string;
+}
 export interface GetWordDetailResponse {
   wordId: number;
   wordInContext: string;
@@ -252,6 +295,8 @@ export interface GetWordDetailResponse {
   isAddedWord?: boolean; // omitted when false
   readings: OriginalReading[]; // [] = not linked (or added word)
   mapping?: MappingProvenance;
+  /** Only for words of a revised verse: what the word is relative to Elb1871. */
+  revision?: RevisionWordInfo;
   coMappedWords?: CoMappedWord[]; // same verse, sorted by positionInVerse
   hints?: MappingHintKey[];
   /** TSK cross references of the word's verse (verse level, same list for every word of the verse), TSK order, max 20. */
@@ -448,6 +493,9 @@ export interface VerseSearchHit {
   chapter: number;
   verse: number;
   tokens: VerseSearchToken[];
+  /** True when the tokens are the revised wording at `level` (omitted for the Elb1871 text). */
+  revised?: boolean;
+  level?: number;
 }
 export interface VerseSearchQueryToken {
   text: string;
@@ -474,4 +522,6 @@ export interface SearchVersesOptions {
   pageSize?: number;
   /** Restricts the hits to one book (the counts per book stay unfiltered). */
   bookId?: number | null;
+  /** Reader level (default 100 = Elb1871 only): verses also match by the revision that level shows. */
+  level?: number;
 }

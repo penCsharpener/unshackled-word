@@ -1,0 +1,19 @@
+meta {
+  name: GetLevels
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}revision/levels
+  body: none
+  auth: none
+}
+
+headers {
+  Accept-Language: de
+}
+
+settings {
+  encodeUrl: true
+}

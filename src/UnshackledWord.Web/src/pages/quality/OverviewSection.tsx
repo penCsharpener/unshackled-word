@@ -10,6 +10,7 @@ import {
 } from "@/lib/quality/checks";
 import { SECTION_IDS, scrollToId } from "@/lib/quality/scroll";
 import type { OverviewResponse } from "@/lib/quality/types";
+import { CheckHelp, SectionHelp } from "./SectionHelp";
 
 const GROUPS: CheckGroupKey[] = ["mapping", "lemma"];
 
@@ -31,6 +32,30 @@ export function OverviewSection({
       <h2 id="quality-overview" className="text-lg font-semibold">
         {t("quality.sections.overview")}
       </h2>
+      <SectionHelp>
+        <p>{t("quality.help.overview.intro")}</p>
+        {GROUPS.map((group) => {
+          const items = checks.filter((check) => checkGroup(check.code) === group);
+          if (items.length === 0) return null;
+          return (
+            <div key={group} className="grid gap-2">
+              <p className="font-medium text-fg">{t(`quality.help.overview.${group}`)}</p>
+              <dl className="grid gap-3">
+                {items.map((check) => (
+                  <div key={check.code} className="grid gap-1">
+                    <dt className="font-medium text-fg">
+                      {check.code} · {title(check.code)}
+                    </dt>
+                    <dd className="grid gap-1">
+                      <CheckHelp code={check.code} />
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          );
+        })}
+      </SectionHelp>
       {GROUPS.map((group) => {
         const items = checks.filter((check) => checkGroup(check.code) === group);
         if (items.length === 0) return null;

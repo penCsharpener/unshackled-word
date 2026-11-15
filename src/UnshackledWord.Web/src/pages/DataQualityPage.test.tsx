@@ -153,6 +153,52 @@ describe("DataQualityPage", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows the revision seed import with and without orphans and its update summary", async () => {
+    const revision = (extra: object) => ({
+      kind: "revision",
+      seedVersion: "0a1b2c3d4e5f6789",
+      exportedAt: "2026-11-15T09:00:00Z",
+      importedAt: "2026-11-15T10:00:00Z",
+      rows: 880,
+      orphaned: 0,
+      reportPath: "temp/seed-report/revision-0a1b2c3d4e5f.csv",
+      ...extra,
+    });
+    const render = (seedImports: object[]) => {
+      stubApi({
+        ...handlers,
+        "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }),
+        "GET /dataQuality/overview": () => json({ ...overview, seedImports }),
+      });
+      return renderPage();
+    };
+
+    const first = render([revision({ orphaned: 3 })]);
+    expect(
+      await screen.findByText(/Seed Revision: Stand .*, 3 Zeilen nicht zuordenbar/),
+    ).toBeInTheDocument();
+    first.unmount();
+
+    const second = render([revision({})]);
+    expect(
+      await screen.findByText(/Seed Revision: .*, 0 Zeilen nicht zuordenbar/),
+    ).toBeInTheDocument();
+    second.unmount();
+
+    render([
+      revision({
+        versesUpdated: 4,
+        versesKeptLocal: 1,
+        reportPath: "temp/seed-report/revision-update-0a1b2c3d4e5f.csv",
+      }),
+    ]);
+    expect(
+      await screen.findByText(
+        "Revisions-Seed aktualisiert: 4 Verse, 1 lokal geändert behalten (Bericht: temp/seed-report/revision-update-0a1b2c3d4e5f.csv)",
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("shows the STTS tiles and an L7 finding with its tag and part of speech", async () => {
     stubApi({
       ...handlers,

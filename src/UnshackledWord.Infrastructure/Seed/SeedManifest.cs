@@ -21,6 +21,9 @@ public sealed class SeedManifest
     /// <summary>The mapping CSVs in <c>assets/Elb1871Mappings</c> (format 2, roadmap 0010.8); absent while the folder still holds format 1.</summary>
     public SeedKind? Mappings { get; set; }
 
+    /// <summary>The revision seed in <c>assets/seed/revision</c> (levels, verses, mapping; roadmap 0011.11); absent until a revision export ran.</summary>
+    public SeedKind? Revision { get; set; }
+
     public static readonly JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true,

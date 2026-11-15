@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useState } from "react";
+import { type KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { bookName, buildPickerGroups, chapterPath } from "@/lib/bible/books";
@@ -17,6 +17,8 @@ export interface BibleChapterPickerProps {
   defaultTestament?: Testament;
   /** link target of a chapter; defaults to the reader (`chapterPath`) */
   chapterHref?: (ref: ChapterRef) => string;
+  /** `overlay` (default): the open panel covers the page full width under the menu; `inline`: part of the page flow */
+  panel?: "overlay" | "inline";
 }
 
 function tabId(testament: Testament): string {
@@ -42,11 +44,37 @@ export function BibleChapterPicker({
   currentChapter,
   defaultTestament,
   chapterHref = chapterPath,
+  panel = "overlay",
 }: BibleChapterPickerProps) {
   const { t, i18n } = useTranslation();
   const [openTestament, setOpenTestament] = useState<Testament | null>(defaultTestament ?? null);
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [expandTouched, setExpandTouched] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const overlay = panel === "overlay";
+
+  // The overlay starts right under the bar the picker sits in (header or sticky row).
+  useLayoutEffect(() => {
+    if (!overlay || !openTestament) return;
+    const bar = navRef.current?.closest(".sticky-picker, .app-header");
+    if (bar) {
+      panelRef.current?.style.setProperty(
+        "--picker-panel-top",
+        `${bar.getBoundingClientRect().bottom}px`,
+      );
+    }
+  }, [overlay, openTestament]);
+
+  useEffect(() => {
+    if (!overlay || !openTestament) return;
+    function onPointerDown(event: PointerEvent) {
+      if (event.target instanceof Node && navRef.current?.contains(event.target)) return;
+      setOpenTestament(null);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [overlay, openTestament]);
 
   const groups: PickerGroup[] =
     books && openTestament
@@ -73,7 +101,7 @@ export function BibleChapterPicker({
   }
 
   return (
-    <nav aria-label={t("bible.picker.label")} onKeyDown={handleKeyDown}>
+    <nav ref={navRef} aria-label={t("bible.picker.label")} onKeyDown={handleKeyDown}>
       <div className="flex">
         {testaments.map((testament) => (
           <Button
@@ -95,61 +123,64 @@ export function BibleChapterPicker({
         <p className="mt-2 text-sm text-fg-muted">{t("bible.picker.empty")}</p>
       )}
       {openTestament && (
-        <section
-          id={PANEL_ID}
-          aria-label={t(`bible.testament.${openTestament}`)}
-          className="mt-2 grid grid-cols-1 gap-2 bg-surface p-2 sm:flex sm:flex-wrap"
-        >
-          {groups.map((group) => {
-            const expanded = activeExpandedKey === group.key;
-            const columns = bookColumns(group.chapters.length);
-            const bookTitle = group.title;
-            const book = books?.find((candidate) => candidate.id === group.bookId);
-            const name = book ? bookName(book, i18n.language) : bookTitle;
-            return (
-              <div key={group.key} className={`sm:grow ${BOOK_BASIS[columns]}`}>
-                <h3 className="bg-surface-muted text-sm font-semibold">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full justify-start text-left sm:hidden"
-                    aria-expanded={expanded}
-                    aria-label={t("bible.picker.showChapters", { book: bookTitle })}
-                    onClick={() => {
-                      setExpandTouched(true);
-                      setExpandedKey(expanded ? null : group.key);
-                    }}
-                  >
-                    {bookTitle}
-                  </Button>
-                  <span className="hidden whitespace-nowrap px-3 py-1 sm:block">{bookTitle}</span>
-                </h3>
-                <div className={expanded ? "flex flex-wrap" : "hidden flex-wrap sm:flex"}>
-                  {group.chapters.map((chapter) => {
-                    const isCurrent = group.bookId === currentBookId && chapter === currentChapter;
-                    return (
-                      <Link
-                        key={chapter}
-                        to={chapterHref({ bookId: group.bookId, chapter })}
-                        aria-label={t("bible.picker.chapterLink", {
-                          book: name,
-                          chapter,
-                        })}
-                        aria-current={isCurrent ? "page" : undefined}
-                        onClick={() => setOpenTestament(null)}
-                        className={`flex h-10 grow basis-10 ${columns === 1 ? "sm:basis-full" : ""} items-center justify-center text-sm hover:bg-accent hover:text-accent-fg ${
-                          isCurrent ? "bg-accent text-accent-fg" : "text-fg"
-                        }`}
-                      >
-                        {chapter}
-                      </Link>
-                    );
-                  })}
+        <div ref={panelRef} className={overlay ? "picker-panel" : undefined}>
+          <section
+            id={PANEL_ID}
+            aria-label={t(`bible.testament.${openTestament}`)}
+            className={`grid grid-cols-1 gap-2 bg-surface p-2 sm:flex sm:flex-wrap ${overlay ? "px-4 md:px-8" : "mt-2"}`}
+          >
+            {groups.map((group) => {
+              const expanded = activeExpandedKey === group.key;
+              const columns = bookColumns(group.chapters.length);
+              const bookTitle = group.title;
+              const book = books?.find((candidate) => candidate.id === group.bookId);
+              const name = book ? bookName(book, i18n.language) : bookTitle;
+              return (
+                <div key={group.key} className={`sm:grow ${BOOK_BASIS[columns]}`}>
+                  <h3 className="bg-surface-muted text-sm font-semibold">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start text-left sm:hidden"
+                      aria-expanded={expanded}
+                      aria-label={t("bible.picker.showChapters", { book: bookTitle })}
+                      onClick={() => {
+                        setExpandTouched(true);
+                        setExpandedKey(expanded ? null : group.key);
+                      }}
+                    >
+                      {bookTitle}
+                    </Button>
+                    <span className="hidden whitespace-nowrap px-3 py-1 sm:block">{bookTitle}</span>
+                  </h3>
+                  <div className={expanded ? "flex flex-wrap" : "hidden flex-wrap sm:flex"}>
+                    {group.chapters.map((chapter) => {
+                      const isCurrent =
+                        group.bookId === currentBookId && chapter === currentChapter;
+                      return (
+                        <Link
+                          key={chapter}
+                          to={chapterHref({ bookId: group.bookId, chapter })}
+                          aria-label={t("bible.picker.chapterLink", {
+                            book: name,
+                            chapter,
+                          })}
+                          aria-current={isCurrent ? "page" : undefined}
+                          onClick={() => setOpenTestament(null)}
+                          className={`flex h-10 grow basis-10 ${columns === 1 ? "sm:basis-full" : ""} items-center justify-center text-sm hover:bg-accent hover:text-accent-fg ${
+                            isCurrent ? "bg-accent text-accent-fg" : "text-fg"
+                          }`}
+                        >
+                          {chapter}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </section>
+              );
+            })}
+          </section>
+        </div>
       )}
     </nav>
   );

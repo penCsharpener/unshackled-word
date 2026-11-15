@@ -153,19 +153,5 @@ public static class StringExtensions
         return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
     }
 
-    public static string RemovePunctuation(this string word)
-    {
-        var characters = ",;:.!?\"'{}[]()’¶".ToCharArray();
-
-        var result = word.Trim();
-
-        foreach (var character in characters)
-        {
-            result = result.Replace(character.ToString(), string.Empty);
-        }
-
-        result = result.Trim('-');
-
-        return result;
-    }
+    public static string RemovePunctuation(this string word) => Elb1871PlainWord.From(word);
 }

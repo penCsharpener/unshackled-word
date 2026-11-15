@@ -34,6 +34,7 @@ import {
   visibleCrumbs,
 } from "@/lib/quality/url";
 import { QueryState } from "./QueryState";
+import { SectionHelp } from "./SectionHelp";
 import { useJumps } from "./useJumps";
 
 const DEBOUNCE_MS = 250;
@@ -441,6 +442,9 @@ export function Explorer({ state, facets, books, update, openFilter, goToCrumb }
       <h2 id="quality-explorer-h" className="text-lg font-semibold">
         {t("quality.explorer.title")}
       </h2>
+      <SectionHelp>
+        <p>{t("quality.help.explorer.text")}</p>
+      </SectionHelp>
       <fieldset className="flex gap-1">
         <legend className="sr-only">{t("quality.explorer.side")}</legend>
         {(["o", "d"] as const).map((value) => (

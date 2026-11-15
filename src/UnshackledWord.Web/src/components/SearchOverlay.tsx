@@ -15,7 +15,13 @@ import type {
   OriginalsLookupLemma,
   OriginalsLookupOriginal,
 } from "@/lib/bible/types";
-import { isVerseSearchQuery, originalsQueryOf, useVerseSearch } from "@/lib/bible/verseSearch";
+import {
+  isVerseSearchQuery,
+  originalsQueryOf,
+  useVerseSearch,
+  VERSE_SEARCH_PAGE_SIZE,
+} from "@/lib/bible/verseSearch";
+import { useReaderLevel } from "@/lib/revision/readerLevel";
 import { useSubmittedQuery } from "@/lib/search/useSubmittedQuery";
 import { useCoarsePointer } from "@/lib/useCoarsePointer";
 import { BookBarChart } from "./BookBarChart";
@@ -195,7 +201,18 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
   const structure = useQuery({ ...structureQuery(), enabled: open });
   const books = structure.data ?? [];
-  const search = useVerseSearch(open ? query : "", bookId);
+  const reader = useReaderLevel();
+  const search = useVerseSearch(
+    open ? query : "",
+    bookId,
+    VERSE_SEARCH_PAGE_SIZE,
+    reader.level,
+    reader.ready,
+  );
+  const revisedLabel = (level: number) =>
+    t("bible.revision.revisedMark", {
+      level: reader.levels.find((l) => l.level === level)?.name ?? level,
+    });
   const language = i18n.language;
 
   const pages = search.data?.pages ?? [];
@@ -317,6 +334,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                 books={books}
                 language={language}
                 activeIndex={activeIndex}
+                revisedLabel={revisedLabel}
                 onSelect={(hit) => openHit(hits.indexOf(hit))}
                 onLoadMore={() => search.fetchNextPage()}
                 hasMore={search.hasNextPage}

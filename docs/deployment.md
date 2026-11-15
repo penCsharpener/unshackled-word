@@ -1,0 +1,338 @@
+# Deploying Unshackled Word in production
+
+This guide covers a single-host, self-hosted deployment with `docker compose` behind a TLS-terminating reverse proxy. The expected scale is small (one VPS or home server is enough).
+
+> **Status of this guide.** The backend (migration, seed, API, MCP server) already has production-capable Dockerfiles and compose services. The repo has **no production frontend image yet**: `src/UnshackledWord.Web/Dockerfile` is a development image that runs the Vite dev server. [Section 5](#5-frontend-production-build) therefore describes a static build served by the reverse proxy; the Dockerfile/Caddyfile/compose snippets in this guide are proposals that are **not part of the repo and not yet verified in a real deployment**. Everything else is derived from `compose.yml`, the Dockerfiles and the API's configuration code.
+
+## 1. Architecture
+
+```
+Browser ──HTTPS──▶ Reverse proxy (Caddy/nginx/Traefik)   one public origin, e.g. https://word.example.org
+                     ├─ /          static SPA (src/UnshackledWord.Web, `bun run build` → dist/)
+                     └─ /api/*  ──▶ unshackledword.tooling.webapi:8080   (ASP.NET Core, FastEndpoints)
+                                        └──▶ postgres:18  (private network only)
+                                        └──▶ SMTP provider (invites, password reset, magic links)
+
+unshackledword.tooling.db-migration   one-shot, applies numbered SQL scripts, then exits
+unshackledword.tooling.seed-db        one-shot, downloads sources and imports data, then exits
+unshackledword.tooling.mcpserver      optional, MCP over HTTP at /mcp (no authentication, see §9)
+```
+
+Serve the SPA and the API from **one origin**. The frontend calls the relative `/api`, the session cookie is `SameSite=Lax`, and the passkey (WebAuthn) relying-party id and origin are derived from `App:FrontendBaseUrl`. A second origin for the API only adds CORS and cookie problems.
+
+## 2. Requirements
+
+| Item | Notes |
+|---|---|
+| Host | Linux, Docker Engine 24+ with the compose plugin. 2 vCPU / 4 GB RAM is comfortable; the first seed is the heavy part. |
+| Disk | The Postgres volume plus the `temp` download cache. Plan for several GB; check `du -sh temp` after your first seed. |
+| Domain + TLS | A real hostname with a valid certificate. Passkeys only work on HTTPS (or `localhost`) and are bound to the hostname: changing the domain later invalidates every registered passkey. |
+| Outbound internet | The seed downloads STEP Bible data and other sources (cached in `temp/`). |
+| SMTP account | Needed for invites, password reset and magic links. The bundled Mailpit only catches mail locally, it never delivers. |
+| Git | You deploy from a checkout of this repository (images are built locally, none are published). |
+
+## 3. Prepare the host
+
+```bash
+git clone <repo-url> unshackled-word && cd unshackled-word
+mkdir -p temp
+# The API container runs as UID 1654 (the aspnet image's $APP_UID), the seed container as 1000.
+# The maintainer page ("Wartung") writes assets/seed and temp/seed-report, so both folders must be writable.
+sudo chown -R 1000:1000 assets temp && sudo chmod -R g+w assets temp
+```
+
+If you would rather not juggle UIDs, add `user: "1000:1000"` to the `webapi` service (the seed service already does this).
+
+## 4. Configuration
+
+### 4.1 Compose files: do not run the dev override in production
+
+`compose.override.yml` is git-ignored and **loaded automatically** by `docker compose`. On a developer machine it switches the API to `network_mode: host`, `ASPNETCORE_ENVIRONMENT=Development` (open CORS, OpenAPI), enables mapping editing and disables secure cookies. Never have that file on a production host, or always pass the files explicitly (explicit `-f` disables the auto-load):
+
+```bash
+docker compose -f compose.yml -f compose.prod.yml up -d --build
+```
+
+### 4.2 `.env`
+
+`.env` is git-ignored. Create it next to `compose.yml` with restrictive permissions (`chmod 600 .env`). Never commit it.
+
+```dotenv
+# --- Database ---------------------------------------------------------------
+POSTGRES_DB=unshackledword
+POSTGRES_USER=unshackledword
+POSTGRES_PASSWORD=<long random password>
+# Must match the three values above; host is the compose service name.
+POSTGRES_CONNECTIONSTRING="Host=unshackledword.tooling.database;Port=5432;Database=unshackledword;Username=unshackledword;Password=<same password>;"
+
+# --- App --------------------------------------------------------------------
+ENVIRONMENT=Production
+FRONTEND_BASE_URL=https://word.example.org     # public origin, no trailing path. Drives email links, CORS and the passkey origin.
+REQUIRE_SECURE_COOKIES=true
+REGISTRATION_MODE=Restricted                   # Open | Restricted (see §7)
+MAPPING_EDITING_ENABLED=false                  # keep false unless this instance is the one that edits mappings
+
+# --- Email (real SMTP provider) ---------------------------------------------
+EMAIL_SMTP_HOST=smtp.example.org
+EMAIL_SMTP_PORT=587
+EMAIL_SECURITY=StartTls                        # None | StartTls | SslOnConnect | Auto
+EMAIL_USERNAME=<smtp user>
+EMAIL_PASSWORD=<smtp password>
+EMAIL_FROM_ADDRESS=noreply@example.org
+
+MCP_LOG_LEVEL=Information
+```
+
+Notes:
+
+* The compose file maps these to `UNSHACKLEDWORD_*` environment variables (double underscore = nesting, e.g. `UNSHACKLEDWORD_EMAIL__SMTPHOST`). Any setting in `appsettings.json` can be overridden the same way.
+* `ENVIRONMENT` becomes `UNSHACKLEDWORD_ENVIRONMENT`, which is an ordinary config key. What switches ASP.NET Core's hosting environment is `ASPNETCORE_ENVIRONMENT`; when it is unset the app runs as **Production**, which is what you want (HTTPS redirection and the strict single-origin CORS policy from `App:FrontendBaseUrl` only apply in Production). Make sure it is not set to `Development`.
+* The default `POSTGRES_PASSWORD=test` in `compose.yml` is for local use only. The README's quick-start `.env` (`Password=test`, `ENVIRONMENT=Development`) must not be used in production.
+* Registration `AllowedEmailDomains` / `AllowedEmails` are lists; set them with indexed variables, e.g. `UNSHACKLEDWORD_REGISTRATION__ALLOWEDEMAILDOMAINS__0=example.org`.
+
+### 4.3 `compose.prod.yml` (proposal)
+
+Layered on `compose.yml`. It closes the ports that must never be public, removes the dev-only services and adds restart policies, the proxy and the frontend build.
+
+```yaml
+services:
+  unshackledword.tooling.database:
+    container_name: unshackledword-db
+    restart: unless-stopped
+    ports: !reset []                 # no host port; only the compose network reaches Postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  unshackledword.tooling.db-migration:
+    restart: "no"
+    depends_on:
+      unshackledword.tooling.database:
+        condition: service_healthy
+
+  unshackledword.tooling.seed-db:
+    restart: "no"
+
+  unshackledword.tooling.webapi:
+    restart: unless-stopped
+    ports: !reset []                 # the proxy reaches it as unshackledword.tooling.webapi:8080
+    depends_on:
+      unshackledword.tooling.database:
+        condition: service_healthy
+      unshackledword.tooling.db-migration:
+        condition: service_completed_successfully
+      unshackledword.tooling.seed-db:
+        condition: service_completed_successfully
+      mailpit: !reset null
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true   # trust X-Forwarded-Proto/-For from the proxy
+    volumes:
+      - dataprotection:/home/app/.aspnet           # see §6: keeps sessions valid across restarts
+
+  mailpit:
+    profiles: ["dev"]                # never started in production
+    ports: !reset []
+
+  unshackledword.tooling.mcpserver:
+    profiles: ["mcp"]                # opt in with `--profile mcp`, see §9
+    ports: !reset []
+
+  unshackledword.web:
+    profiles: ["dev"]                # the Vite dev image is not for production
+
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - unshackledword.tooling.webapi
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./src/UnshackledWord.Web/dist:/srv/web:ro   # output of §5
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  dataprotection:
+  caddy_data:
+  caddy_config:
+```
+
+`deploy/Caddyfile` (Caddy obtains and renews the certificate automatically):
+
+```caddyfile
+word.example.org {
+    encode zstd gzip
+
+    handle /api/* {
+        reverse_proxy unshackledword.tooling.webapi:8080
+    }
+
+    handle {
+        root * /srv/web
+        try_files {path} /index.html      # SPA fallback for client-side routes
+        file_server
+    }
+}
+```
+
+For nginx or Traefik the same two rules apply: `/api/*` to the API, everything else to the static files with an `index.html` fallback, and forward `Host`, `X-Forwarded-For` and `X-Forwarded-Proto`.
+
+## 5. Frontend production build
+
+The frontend is a static SPA. Build it inside Docker (project rule: no host `node_modules`). The API URL is not baked in: the app uses the relative `/api`, which the proxy routes.
+
+```bash
+docker run --rm -v "$PWD/src/UnshackledWord.Web:/app" -w /app oven/bun:1.4 \
+  sh -c "bun install --frozen-lockfile && bun run build"
+# result: src/UnshackledWord.Web/dist/
+```
+
+`bun run build` runs `tsc --noEmit` first, so a type error fails the build. Before releasing, run the full gate once: `docker compose run --rm --no-deps unshackledword.web bun run check`.
+
+Build-time variables: `VITE_API_URL` defaults to `/api` (leave it unset for the single-origin setup) and `VITE_WORD_DETAIL_SOURCE` uses the real API unless it is set to `mock`, so no extra variables are needed. They are baked into the bundle at build time; changing them means rebuilding.
+
+A dedicated multi-stage image (bun build stage → `caddy`/`nginx` runtime stage with `dist/`) is the cleaner long-term solution; it would replace the bind mount of `dist/` and remove the build step from the host.
+
+## 6. First deployment
+
+```bash
+# 1. build the frontend (§5), then:
+docker compose -f compose.yml -f compose.prod.yml build
+
+# 2. start the database and wait until healthy
+docker compose -f compose.yml -f compose.prod.yml up -d unshackledword.tooling.database
+
+# 3. schema (idempotent; prints "No new scripts" when up to date)
+docker compose -f compose.yml -f compose.prod.yml run --rm unshackledword.tooling.db-migration
+
+# 4. seed (first start only; long-running, needs internet)
+docker compose -f compose.yml -f compose.prod.yml run --rm unshackledword.tooling.seed-db
+
+# 5. the rest
+docker compose -f compose.yml -f compose.prod.yml up -d
+```
+
+What the one-shot services do:
+
+* **db-migration** applies the numbered raw-SQL scripts in `src/UnshackledWord.Tooling.Postgres.Migration/scripts/` and records them. Migrations only create schema; all seed data is CSV and is imported afterwards.
+* **seed-db** downloads the open-licence sources into `temp/` (cached, later runs are faster) and imports them, then imports the repo seed (`assets/seed`, `assets/Elb1871Mappings`: German morphology/lemmas, word mappings, STTS tags, revision). The seed is meant for the **initial start**; afterwards only the mapping seed is updated, via the maintainer page (§8). Do not re-run the full seed against a database with live edits. Watch it with `docker compose logs -f unshackledword.tooling.seed-db`. STEP Bible data is downloaded on the fly and never redistributed; if an upstream URL fails, the run fails or leaves orphans, so check the log and the data-quality page afterwards.
+* Because `seed-db` and `db-migration` are plain services, a bare `docker compose up -d` runs them again on every start. The migration is a no-op when nothing is new. For the seed, prefer the explicit steps above (or the `completed_successfully` conditions in `compose.prod.yml`) and do not use `restart:` on these two.
+
+### Session keys
+
+The API uses ASP.NET cookie authentication, whose cookies are encrypted with Data Protection keys. The code does not configure key persistence, so in a container the keys live in `/home/app/.aspnet/DataProtection-Keys` and are lost with the container: **every deploy would log everyone out**. The `dataprotection` volume in `compose.prod.yml` fixes this without a code change. If the volume is created root-owned, make it writable for UID 1654 once:
+
+```bash
+docker compose -f compose.yml -f compose.prod.yml run --rm --user root --entrypoint sh unshackledword.tooling.webapi \
+  -c "mkdir -p /home/app/.aspnet && chown -R 1654:1654 /home/app/.aspnet"
+```
+
+### Verify
+
+```bash
+docker compose -f compose.yml -f compose.prod.yml ps
+curl -sI https://word.example.org/                              # 200, SPA
+curl -s  https://word.example.org/api/auth/me -o /dev/null -w "%{http_code}\n"   # 401 when anonymous: API reachable, auth active
+docker compose -f compose.yml -f compose.prod.yml logs --tail=100 unshackledword.tooling.webapi
+```
+
+(Use any public read endpoint from `api/unshackled-word/` (Bruno collection) if `/api/auth/me` differs in your build.)
+
+## 7. Accounts, first admin, registration mode
+
+* Reading is public; writing requires login. Endpoints are anonymous unless marked `[RequiresLogin]`.
+* **The first account that registers automatically becomes admin** (and user). So right after the first deployment, register your own account before anyone else can, while `REGISTRATION_MODE=Open` is acceptable, or temporarily keep the site unreachable until you have registered.
+* Afterwards set `REGISTRATION_MODE=Restricted`: an address may then only register if it matches `Registration:AllowedEmailDomains` / `AllowedEmails` or carries an invite code. Invites are sent by email, so SMTP must work. Restart the API after changing the mode.
+* Sign-in methods are password, magic link/email token and passkeys (Fido2). Passkeys require `FRONTEND_BASE_URL` to be the exact public HTTPS origin.
+* Sessions: cookie `unshackled_session`, HttpOnly, `SameSite=Lax`, `Secure` when `REQUIRE_SECURE_COOKIES=true`, 14 days sliding, invalidated by a password reset.
+* Test email delivery by requesting a password reset for your own account. If nothing arrives, check the API log for MailKit errors (`EMAIL_SECURITY` must match the port: 587 → `StartTls`, 465 → `SslOnConnect`).
+
+## 8. Operating
+
+### Updates
+
+```bash
+git pull
+docker compose -f compose.yml -f compose.prod.yml build
+# rebuild the frontend if src/UnshackledWord.Web changed (§5)
+docker compose -f compose.yml -f compose.prod.yml run --rm unshackledword.tooling.db-migration
+docker compose -f compose.yml -f compose.prod.yml up -d unshackledword.tooling.webapi proxy
+```
+
+Schema changes ship as new numbered scripts; never edit an applied script. Take a backup before every update that adds migrations.
+
+### Mapping and revision seed updates
+
+The official repo ships a rolling seed for mappings and the Elb1871 revision. After `git pull`, open the maintainer page (menu "Wartung" / "Maintenance", section "Seed-Rundlauf", admin/maintainer only):
+
+* **Import** fills only empty tables.
+* **Update** merges newer seed data and keeps locally changed variants/verses (it lists them).
+* **Export** writes your own data to `assets/seed`; **round-trip check** verifies the export byte for byte.
+* **Rebase** (after parser or base-text fixes) empties reader tables while it runs: do it when nobody is reading, and only after a database backup.
+
+These are background jobs inside the API process; their state is lost if the API restarts. Self-hosters who keep their own data simply never import the repo seed over it.
+
+### Backups
+
+Back up Postgres, plus the seed folders if you export from this instance.
+
+```bash
+# nightly logical backup (cron on the host)
+docker compose -f compose.yml -f compose.prod.yml exec -T unshackledword.tooling.database \
+  pg_dump -U "$POSTGRES_USER" -Fc "$POSTGRES_DB" > /backups/unshackledword-$(date +%F).dump
+
+# restore into an empty database
+docker compose -f compose.yml -f compose.prod.yml exec -T unshackledword.tooling.database \
+  pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists < /backups/unshackledword-YYYY-MM-DD.dump
+```
+
+Also keep: `.env` (in a password manager, not in git), the `dataprotection` volume (optional, only preserves sessions) and `assets/seed` (it is in git once you commit exports). `temp/` is a download cache and can be rebuilt. Test a restore at least once. Do not back up by copying the live Postgres data directory.
+
+### Logs and health
+
+* Serilog writes to the console (use `docker compose logs`) and to `./bin/unshackled-word.tooling.web-api-<date>.log` inside the container (ephemeral). Set levels with `UNSHACKLEDWORD_SERILOG__MINIMUMLEVEL__DEFAULT=Warning` (and `...__OVERRIDE__MICROSOFT`) if the logs are too chatty. Add `logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }` per service to cap Docker log growth.
+* There is no dedicated health endpoint; use the anonymous read endpoint check from §6 for uptime monitoring.
+* Postgres 18 stores data under `/var/lib/postgresql` (the volume mount in `compose.yml`). When upgrading to a new Postgres major version, dump and restore; do not just change the image tag.
+
+## 9. Security checklist
+
+- [ ] Strong, unique `POSTGRES_PASSWORD`; Postgres has **no published host port** (the default `compose.yml` publishes `5432` on all interfaces, which `compose.prod.yml` resets).
+- [ ] Only ports 80/443 of the proxy are reachable from outside (firewall: allow 22, 80, 443; deny the rest).
+- [ ] `compose.override.yml` is absent; `ASPNETCORE_ENVIRONMENT` is not `Development`; Swagger/OpenAPI is therefore off.
+- [ ] `REQUIRE_SECURE_COOKIES=true`, `FRONTEND_BASE_URL` is the exact `https://` origin.
+- [ ] `REGISTRATION_MODE=Restricted` after the first admin exists.
+- [ ] `MAPPING_EDITING_ENABLED=false` on read-mostly instances.
+- [ ] Mailpit is not running (its web UI would expose all outgoing email, including login links).
+- [ ] **MCP server:** it speaks stateless HTTP at `/mcp` and has **no authentication** (access policy is still undecided, see `CLAUDE.md`). Do not expose it publicly: leave it off (profile `mcp`), or bind it to localhost / a VPN and, if the proxy exposes it, protect that route with basic auth or an IP allowlist.
+- [ ] `.env` is `chmod 600`, not in git; SMTP credentials are a dedicated sending account.
+- [ ] Host OS and Docker images are updated regularly (`docker compose pull` for `postgres`/`caddy`, rebuild for the .NET images to pick up base-image patches).
+- [ ] Backups run, are stored off the host, and a restore has been tested.
+
+## 10. Troubleshooting
+
+| Symptom | Likely cause |
+|---|---|
+| Everyone logged out after each deploy | Data Protection keys not persisted: add the `dataprotection` volume (§6). |
+| Login works but the next request is anonymous | `REQUIRE_SECURE_COOKIES=true` while the browser reaches the app over plain HTTP, or the proxy is not sending `X-Forwarded-Proto`. Use HTTPS end to end. |
+| Passkey registration fails with an origin/RP error | `FRONTEND_BASE_URL` differs from the URL in the address bar (scheme, host, port). Restart the API after changing it. |
+| Browser CORS errors on `/api` | The SPA is served from a different origin than `FRONTEND_BASE_URL`, or the proxy does not route `/api` on the same origin. |
+| Emails (invites, reset) never arrive | Still pointing at `mailpit`; wrong `EMAIL_SECURITY` for the port; provider blocks `FROM` address. Check the API log. |
+| Maintainer page says assets are not reachable / export fails | `assets` or `temp` not writable for the container user (§3), or not mounted. |
+| `db-migration` cannot connect | Wrong `POSTGRES_CONNECTIONSTRING` host (must be the service name `unshackledword.tooling.database`) or the database is not healthy yet. |
+| Data-quality page returns 500 after an update | A migration is pending: run the `db-migration` service. |
+| Seed shows orphans or fails on download | An upstream source is unreachable or changed; read the seed log and the `SeedImports` rows on the data-quality page. Re-run only after reading the README "Seed" section. |
+| Deep link such as `/read/...` returns 404 | The proxy lacks the SPA fallback to `index.html`. |
+
+## 11. Open items (not solved in the repo yet)
+
+* A production frontend image (multi-stage build, static server) and a committed `compose.prod.yml` / `deploy/Caddyfile`.
+* Data Protection key persistence configured in code instead of via a volume.
+* A health endpoint for orchestrators and uptime checks.
+* An access policy (authentication) for the MCP server.
+* Published container images, so a deployment does not need to build from source.

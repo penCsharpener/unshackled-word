@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header-Menü Click-Dummy (0012)</title>
+<!--
+  Click dummy for roadmap 0012 (header menu with chapter picker, reading column, margin panels).
+  Self-contained: the app is rendered into an iframe (srcdoc) so real media queries apply at the chosen width.
+  The dark bar at the top is the dummy's control bar and NOT part of the design.
+-->
+<style>
+  /* ---------- Dummy chrome (not part of the design; raw colours are intentional here) ---------- */
+  html, body { margin: 0; height: 100%; }
+  body.outer {
+    background: repeating-conic-gradient(#2a2b30 0% 25%, #24252a 0% 50%) 0 0 / 24px 24px;
+    font: 13px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: #e8e8ec;
+    overflow: hidden;
+  }
+  #ctl {
+    position: fixed; top: 6px; left: 6px; right: 6px; z-index: 10;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;
+    padding: 6px 10px;
+    background: #111216ee; border: 2px dashed #ff4fd8; border-radius: 10px;
+    box-shadow: 0 4px 16px #0008;
+  }
+  #ctl.collapsed { left: auto; }
+  #ctl.collapsed .grp { display: none; }
+  .tag { color: #ff4fd8; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
+  .grp { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .grp > span { color: #a0a0aa; margin-right: 2px; }
+  #ctl button {
+    font: inherit; color: #e8e8ec; background: #2b2d35; border: 1px solid #44464f;
+    border-radius: 6px; padding: 3px 8px; cursor: pointer;
+  }
+  #ctl button:hover { background: #3a3d48; }
+  #ctl button[aria-pressed="true"] { background: #ff4fd8; border-color: #ff4fd8; color: #111; font-weight: 700; }
+  #ctl label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+  #readout { color: #9fe; white-space: nowrap; }
+  #stage { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: flex-start; }
+  #frame-box { position: relative; overflow: hidden; box-shadow: 0 0 0 1px #ff4fd855, 0 8px 40px #000a; }
+  #app { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: #fff; }
+</style>
+</head>
+<body class="outer">
+
+<div id="ctl" role="toolbar" aria-label="Dummy-Steuerung">
+  <span class="tag">CLICK-DUMMY-STEUERUNG · nicht Teil des Designs</span>
+  <div class="grp" id="widths"><span>Breite</span></div>
+  <div class="grp"><span>Thema</span>
+    <button type="button" data-theme="light">Hell</button>
+    <button type="button" data-theme="dark">Dunkel</button>
+  </div>
+  <div class="grp"><span>Sprache</span>
+    <button type="button" data-lang="de">DE</button>
+    <button type="button" data-lang="en">EN</button>
+  </div>
+  <div class="grp"><label><input type="checkbox" id="auth" checked> angemeldet</label></div>
+  <span class="grp" id="readout"></span>
+  <button type="button" id="collapse" title="Steuerung ein-/ausklappen">–</button>
+</div>
+
+<div id="stage"><div id="frame-box"><iframe id="app" title="Unshackled Word, Click-Dummy"></iframe></div></div>
+
+<!-- ======================================================================================
+     The app document (rendered via iframe srcdoc). Uses only the design tokens from
+     src/UnshackledWord.Web/src/styles/index.css. Breakpoints: sm 40rem, md 48rem, lg 64rem,
+     one-row header 75rem (1200px), fhd 120rem.
+     ====================================================================================== -->
+<template id="app-src">
+<style>
+  :root {
+    --app-header-h: 6.5rem;      /* mobile: menu row 3.5rem + word-info row 3rem */
+    --picker-row-h: 2.5rem;      /* sticky picker row below the header; 0 from FHD */
+    --col: 46rem;                /* reading column */
+    --margin-w: 18rem;           /* margin panel width */
+    color-scheme: light;
+    --uw-bg: oklch(0.99 0.004 85);
+    --uw-surface: oklch(1 0 0);
+    --uw-surface-muted: oklch(0.96 0.006 85);
+    --uw-fg: oklch(0.22 0.01 60);
+    --uw-fg-muted: oklch(0.48 0.01 60);
+    --uw-border: oklch(0.88 0.008 80);
+    --uw-accent: oklch(0.42 0.1 30);
+    --uw-accent-fg: oklch(0.99 0.004 85);
+    --uw-focus: oklch(0.6 0.15 250);
+    --uw-mark-same: oklch(0.88 0.08 240);
+    --uw-shadow: 0 10px 24px -8px oklch(0.2 0.01 60 / 0.25);
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --font-original: "SBL BibLit", "Noto Serif Hebrew", "Noto Serif", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --uw-bg: oklch(0.18 0.008 60);
+    --uw-surface: oklch(0.22 0.01 60);
+    --uw-surface-muted: oklch(0.27 0.012 60);
+    --uw-fg: oklch(0.94 0.005 85);
+    --uw-fg-muted: oklch(0.7 0.01 70);
+    --uw-border: oklch(0.34 0.012 60);
+    --uw-accent: oklch(0.78 0.1 50);
+    --uw-accent-fg: oklch(0.2 0.01 60);
+    --uw-focus: oklch(0.72 0.14 250);
+    --uw-mark-same: oklch(0.42 0.09 240);
+    --uw-shadow: 0 10px 24px -8px oklch(0 0 0 / 0.6);
+  }
+  @media (min-width: 48rem) { :root { --app-header-h: 4rem; } }
+  @media (min-width: 75rem) { :root { --col: 52rem; } }
+  /* From 1200px the header is one 3rem row with the picker in it. */
+  @media (min-width: 75rem) { :root { --app-header-h: 3rem; --picker-row-h: 0rem; } }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--uw-bg); color: var(--uw-fg); font-family: var(--font-sans); line-height: 1.5; }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--uw-focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Button (variants as in Button.tsx) */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 0; border-radius: .375rem;
+         background: transparent; font-weight: 500; cursor: pointer; transition: background-color .15s, color .15s; }
+  .btn-ghost { color: var(--uw-fg); }
+  .btn-ghost:hover { background: var(--uw-surface-muted); }
+  .btn-secondary { border: 1px solid var(--uw-border); background: var(--uw-surface); }
+  .btn-secondary:hover { background: var(--uw-surface-muted); }
+  .btn-sm { padding: .25rem .5rem; font-size: .875rem; }
+  .btn-md { padding: .5rem 1rem; }
+  .icon { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---------- Header: one grid, centre cell can never overlap nav or tools ---------- */
+  .app-header { position: sticky; top: 0; z-index: 30; height: var(--app-header-h); background: var(--uw-surface); }
+  .hdr-inner { max-width: 120rem; height: 100%; margin: 0 auto; padding: 0 1rem;
+               display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: 3.5rem 3rem;
+               grid-template-areas: "nav . tools" "center center center"; column-gap: 1rem; align-items: center; }
+  .hdr-nav { grid-area: nav; display: flex; align-items: center; gap: 1.5rem; white-space: nowrap; }
+  .hdr-center { grid-area: center; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .hdr-tools { grid-area: tools; display: flex; align-items: center; gap: .5rem; white-space: nowrap; }
+  .logo { display: inline-flex; align-items: center; font-family: var(--font-scripture); font-size: 1.125rem; font-weight: 600;
+          color: var(--uw-accent); text-decoration: none; }
+  .logo .icon { width: 1.5rem; height: 1.5rem; }
+  .logo .name { display: none; }
+  .nav-link { color: var(--uw-fg-muted); text-decoration: none; }
+  .nav-link:hover, .nav-link[aria-current] { color: var(--uw-fg); }
+  .nav-edit { display: none; }
+  .hdr-info { width: 100%; min-width: 0; display: flex; justify-content: center; }
+  .picker-slot { display: none; height: 100%; }
+  .lang { display: inline-flex; font-size: .875rem; font-weight: 500; }
+  .lang .btn { padding: .25rem .375rem; color: var(--uw-fg-muted); }
+  .lang .btn[aria-pressed="true"] { color: var(--uw-fg); }
+  .user { position: relative; }
+  .user-menu { position: absolute; right: 0; top: calc(100% + .5rem); min-width: 13rem; z-index: 40; padding: .5rem;
+               background: var(--uw-surface); border: 1px solid var(--uw-border); box-shadow: var(--uw-shadow); }
+  .user-menu p { margin: 0 0 .5rem; padding: 0 .5rem; font-size: .875rem; color: var(--uw-fg-muted); }
+  .user-menu .btn { width: 100%; justify-content: flex-start; }
+  .avatar { width: 2rem; height: 2rem; border-radius: 999px; background: var(--uw-accent); color: var(--uw-accent-fg);
+            display: inline-flex; align-items: center; justify-content: center; font-size: .875rem; font-weight: 600; }
+
+  @media (min-width: 48rem) {
+    .hdr-inner { padding: 0 2rem; grid-template-rows: 100%; grid-template-areas: "nav center tools"; }
+    .hdr-tools { gap: 1rem; }
+    .logo .icon { display: none; }
+    .logo .name { display: inline; }
+    .nav-edit.on { display: inline; }
+  }
+  @media (min-width: 75rem) {
+    .hdr-inner { grid-template-columns: 1fr auto 1fr; }
+    .hdr-tools { justify-self: end; }
+    .hdr-info { display: none; }
+    .picker-slot { display: flex; }
+  }
+
+  /* Word info (WordInfoBody) */
+  .info { display: flex; flex-direction: column; min-width: 0; max-width: 100%; line-height: 1.25; }
+  .info p { margin: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .info .orig { font-family: var(--font-original); font-size: 1.25rem; }
+  .info .lem { margin-inline-start: .5rem; font-size: .875rem; color: var(--uw-fg-muted); }
+  .info .lem span { font-family: var(--font-original); }
+  .info .str { margin-inline-start: .5rem; font-size: .75rem; color: var(--uw-fg-muted); }
+  .info .morph { font-size: .75rem; color: var(--uw-fg-muted); }
+  .hdr-info .info { align-items: center; text-align: center; }
+  .hint { font-size: .875rem; color: var(--uw-fg-muted); }
+  @media (min-width: 48rem) { .hint { display: none; } }
+  /* From 1024px the HI lives in the margin, not in the header. */
+  @media (min-width: 64rem) { .hdr-info { visibility: hidden; } }
+  /* 1200-1919: one-row header is tight (DE, logged in), so gaps and slider shrink; nothing is hidden. */
+  @media (min-width: 75rem) and (max-width: 119.98rem) {
+    .hdr-inner .hdr-nav { gap: 1rem; }
+    .hdr-inner .picker-slot .tab { padding: 0 1rem; }
+    .hdr-inner .picker-slot .slider { width: 6rem; }
+  }
+
+  /* ---------- Picker (one component; mounted in the header slot from 1200px, in the sticky row below) ---------- */
+  .picker-row { position: sticky; top: var(--app-header-h); z-index: 29; height: var(--picker-row-h);
+                background: var(--uw-surface); padding: 0 1rem; }
+  @media (min-width: 48rem) { .picker-row { padding: 0 2rem; } }
+  @media (min-width: 75rem) { .picker-row { display: none; } }
+  .picker { display: flex; align-items: center; gap: .75rem; height: 100%; width: 100%; }
+  .tabs { display: flex; gap: .25rem; flex: 1; min-width: 0; height: 100%; }
+  .tab { flex: 1; min-width: 0; height: 100%; border-radius: 0; padding: 0 .5rem; background: var(--uw-surface-muted);
+         font-size: .875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tab:hover { background: var(--uw-border); }
+  .tab[aria-expanded="true"] { background: var(--uw-accent); color: var(--uw-accent-fg); }
+  @media (min-width: 40rem) { .tab { font-size: 1rem; } }
+  .picker-slot .picker { width: auto; }
+  .picker-slot .tabs { flex: none; }
+  .picker-slot .tab { flex: none; padding: 0 1.5rem; }
+  .slider { width: 6rem; height: 1.5rem; flex-shrink: 1; min-width: 0; cursor: pointer; accent-color: var(--uw-accent); }
+  @media (min-width: 40rem) { .slider { width: 8rem; } }
+
+  /* Full-width overlay panel, anchored under the header (and the picker row below FHD) */
+  .panel { position: fixed; left: 0; right: 0; top: calc(var(--app-header-h) + var(--picker-row-h)); z-index: 28;
+           max-height: calc(100dvh - var(--app-header-h) - var(--picker-row-h)); overflow-y: auto;
+           background: var(--uw-surface); box-shadow: var(--uw-shadow); padding: .5rem 1rem 1rem; }
+  .panel[hidden] { display: none; }
+  @media (min-width: 48rem) { .panel { padding: .5rem 2rem 1.5rem; } }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .5rem; }
+  .panel-head h2 { margin: 0; font-size: .875rem; font-weight: 600; color: var(--uw-fg-muted); }
+  .books { display: grid; grid-template-columns: 1fr; gap: .5rem; }
+  .book h3 { margin: 0; background: var(--uw-surface-muted); font-size: .875rem; font-weight: 600; }
+  .book .bname { display: none; white-space: nowrap; padding: .25rem .75rem; }
+  .book .btoggle { width: 100%; justify-content: flex-start; text-align: left; border-radius: 0; font-weight: 600; }
+  .chs { display: none; flex-wrap: wrap; }
+  .book.open .chs { display: flex; }
+  .ch { display: flex; height: 2.5rem; flex: 1 1 2.5rem; align-items: center; justify-content: center;
+        font-size: .875rem; color: var(--uw-fg); text-decoration: none; }
+  .ch:hover, .ch[aria-current] { background: var(--uw-accent); color: var(--uw-accent-fg); }
+  @media (min-width: 40rem) {
+    .books { display: flex; flex-wrap: wrap; }
+    .book { flex-grow: 1; }
+    .book[data-cols="1"] { flex-basis: 7rem; }
+    .book[data-cols="2"] { flex-basis: 5rem; }
+    .book[data-cols="3"] { flex-basis: 7.5rem; }
+    .book[data-cols="4"] { flex-basis: 10rem; }
+    .book[data-cols="5"] { flex-basis: 12.5rem; }
+    .book[data-cols="6"] { flex-basis: 15rem; }
+    .book[data-cols="1"] .ch { flex-basis: 100%; }
+    .book .bname { display: block; }
+    .book .btoggle { display: none; }
+    .chs { display: flex; }
+  }
+
+  /* ---------- Reader: normal flow < 1024, text left + right margin 1024-1919, centred + both margins >= 1920 ---------- */
+  main { max-width: 120rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  @media (min-width: 48rem) { main { padding: 1.5rem 2rem 4rem; } }
+  .chapter-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: var(--col); margin: 0 auto; }
+  .chapter-nav h1 { margin: 0; font-family: var(--font-scripture); font-size: 1.875rem; font-weight: 600; text-align: center; }
+  .arrow { font-size: 2.25rem; line-height: 1; padding: .25rem 1rem .5rem; }
+  @media (min-width: 48rem) { .chapter-nav h1 { font-size: 2.25rem; } }
+  article { max-width: var(--col); margin: 1.5rem auto 0; font-family: var(--font-scripture); font-size: 1.125rem; line-height: 1.625; }
+  @media (min-width: 48rem) { article { font-size: 1.25rem; } }
+  @media (min-width: 75rem) { article { font-size: 1.5rem; } }  /* step up at 1200px, nothing at 1536px */
+  .verse { margin: .5rem 0 0; }
+  .verse sup { margin-right: .25rem; font-family: var(--font-sans); font-size: .75rem; color: var(--uw-fg-muted); }
+  .w { border: 0; background: none; padding: 0 .125rem; margin: 0 -.125rem; border-radius: .125rem; cursor: pointer; font: inherit; line-height: inherit; }
+  .w:hover, .w.hovered { background: var(--uw-surface-muted); }
+  .w.pinned { background: var(--uw-mark-same); }
+  .margin { display: none; position: relative; }
+  /* Stack = HI slot + WD; top is set by JS to the hovered/pinned verse, clamped to the text's bottom. */
+  .margin-box { position: absolute; left: 0; width: var(--margin-w); display: flex; flex-direction: column; gap: .5rem; }
+  .margin-box:empty { display: none; }
+  .hi-slot { display: flex; align-items: flex-end; pointer-events: none; }
+  .hi-slot:empty { display: none; }
+  /* With a pinned WD the HI slot keeps (at least) one HI's height, so the WD does not jump when the HI comes and goes. */
+  .margin-box.has-pin .hi-slot { display: flex; min-height: 2.5rem; }
+  .wd-hover { pointer-events: none; }
+  @media (min-width: 64rem) {
+    .reader { display: grid; grid-template-columns: minmax(0, var(--col)) minmax(var(--margin-w), 1fr); column-gap: 2rem; }
+    .chapter-nav { grid-column: 1; grid-row: 1; max-width: none; margin: 0; }
+    article { grid-column: 1; grid-row: 2; max-width: none; margin: 1.5rem 0 0; }
+    .margin-r { display: block; grid-column: 2; grid-row: 2; margin-top: 1.5rem; }
+  }
+  @media (min-width: 120rem) {
+    .reader { grid-template-columns: minmax(var(--margin-w), 1fr) minmax(0, var(--col)) minmax(var(--margin-w), 1fr); }
+    .chapter-nav, article { grid-column: 2; }
+    .margin-l { display: block; grid-column: 1; grid-row: 2; margin-top: 1.5rem; }
+    .margin-l .margin-box { left: auto; right: 0; }
+    .margin-r { grid-column: 3; }
+  }
+  /* HI in the margin: next to the column, non-interactive, never pinned */
+  .hi-slot .info { width: 100%; }
+  .hi-slot .info p { white-space: normal; }
+  .margin-l .hi-slot .info { align-items: flex-end; text-align: end; }
+  .margin-r .hi-slot .info { align-items: flex-start; text-align: start; }
+
+  /* Pinned panel = word menu (margin card from 1024px, popover / bottom sheet below) */
+  .card { border: 1px solid var(--uw-border); background: var(--uw-surface); color: var(--uw-fg); padding: 1rem; box-shadow: var(--uw-shadow); }
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; }
+  .card-head h2 { margin: 0; font-family: var(--font-scripture); font-size: 1.25rem; font-weight: 400; }
+  .card-head .meta { display: flex; align-items: center; gap: .5rem; }
+  .badge { border-radius: .125rem; background: var(--uw-surface-muted); padding: 0 .25rem; font-size: .75rem; color: var(--uw-fg-muted); }
+  .badge.pin { background: var(--uw-mark-same); color: var(--uw-fg); }
+  .card .o { margin: .25rem 0 0; font-family: var(--font-original); font-size: 1.5rem; }
+  .card .tr { margin: 0; font-style: italic; color: var(--uw-fg-muted); }
+  .card dl { margin: .5rem 0 0; display: grid; grid-template-columns: auto 1fr; gap: .25rem .75rem; font-size: .875rem; }
+  .card dt { color: var(--uw-fg-muted); }
+  .card dd { margin: 0; }
+  .card code { font-size: .75rem; color: var(--uw-fg-muted); }
+  .card .none { margin: .5rem 0 0; color: var(--uw-fg-muted); font-size: .875rem; }
+  .link-btn { border: 0; background: none; padding: 0; color: var(--uw-accent); text-decoration: underline; cursor: pointer; }
+  .popover { position: absolute; z-index: 26; width: min(24rem, calc(100vw - 2rem)); }
+  .popover.sheet { position: fixed; left: 0; right: 0; bottom: 0; top: auto !important; width: 100%; max-height: 70dvh; overflow-y: auto; }
+  .popover[hidden] { display: none; }
+
+  .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); z-index: 50; padding: .5rem 1rem; border-radius: .375rem;
+           background: var(--uw-fg); color: var(--uw-bg); font-size: .875rem; box-shadow: var(--uw-shadow); max-width: calc(100vw - 2rem); }
+  .toast[hidden] { display: none; }
+</style>
+
+<header class="app-header">
+  <div class="hdr-inner">
+    <nav class="hdr-nav" aria-label="Hauptmenü">
+      <a href="#" class="logo" data-dummy="home">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>
+        <span class="name" data-i18n="appName">Unshackled Word</span>
+      </a>
+      <a href="#" class="nav-link" aria-current="page" data-i18n="bible" data-dummy="bible">Bibel</a>
+      <a href="#" class="nav-link nav-edit on" data-i18n="editLemmas" data-dummy="edit">Lemmata bearbeiten</a>
+    </nav>
+    <div class="hdr-center">
+      <div class="hdr-info" id="hdr-info"></div>
+      <div class="picker-slot" id="picker-slot"></div>
+    </div>
+    <div class="hdr-tools">
+      <button type="button" class="btn btn-ghost btn-sm" id="search" data-i18n-label="search">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <div class="lang" role="group" aria-label="Sprache">
+        <button type="button" class="btn" data-setlang="de">DE</button>
+        <button type="button" class="btn" data-setlang="en">EN</button>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" id="theme" data-i18n-label="theme">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" id="theme-icon"></svg>
+      </button>
+      <div class="user" id="user"></div>
+    </div>
+  </div>
+</header>
+<div class="picker-row" id="picker-row">
+  <div class="picker" id="picker">
+    <div class="tabs" role="group">
+      <button type="button" class="btn tab" id="tab-ot" data-t="ot" aria-expanded="false" aria-controls="panel" data-i18n="ot">Altes Testament</button>
+      <button type="button" class="btn tab" id="tab-nt" data-t="nt" aria-expanded="false" aria-controls="panel" data-i18n="nt">Neues Testament</button>
+    </div>
+    <input type="range" class="slider" id="slider" min="0" max="5" step="1" value="1">
+  </div>
+</div>
+<section class="panel" id="panel" hidden></section>
+
+<main>
+  <div class="reader">
+    <header class="chapter-nav">
+      <button type="button" class="btn btn-ghost arrow" id="prev"><span aria-hidden="true">‹</span></button>
+      <h1 id="title">1. Mose 1</h1>
+      <button type="button" class="btn btn-ghost arrow" id="next"><span aria-hidden="true">›</span></button>
+    </header>
+    <aside class="margin margin-l"><div class="margin-box" id="margin-l"></div></aside>
+    <article lang="de" id="text"></article>
+    <aside class="margin margin-r"><div class="margin-box" id="margin-r"></div></aside>
+  </div>
+</main>
+<div class="popover card" id="popover" role="dialog" hidden></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const T = {
+    de: {
+      appName: "Unshackled Word", bible: "Bibel", editLemmas: "Lemmata bearbeiten",
+      ot: "Altes Testament", nt: "Neues Testament", levelSlider: "Lesefassung",
+      search: "Suche öffnen", theme: "Farbschema wechseln", login: "Anmelden", logout: "Abmelden",
+      signedIn: "Angemeldet als maintainer", profile: "Profil", close: "Schließen", allOcc: "Alle Stellen",
+      lemma: "Lemma", strongs: "Strong's", morph: "Morphologie", occ: "Vorkommen", sample: "Beispieldaten",
+      pinned: "angeheftet", noMapping: "Dieses Wort ist noch keinem Grundtextwort zugeordnet.", unmapped: "nicht zugeordnet",
+      hint: "Wort berühren für Grundtext", prev: "Vorheriges Kapitel", next: "Nächstes Kapitel",
+      books: (n) => `${n} Bücher`, psalmsSection: (b, n, f, to) => `${b}, Buch ${n} (${f}–${to})`, inOT: (n) => `${n.toLocaleString("de")} im AT`,
+      toastAll: (w) => `„Alle Stellen“ für ${w}: würde die Strong's-Seite mit allen Vorkommen öffnen.`,
+      toastDummy: "Nicht Teil des Click-Dummys.", toastLevel: (n) => `Lesefassung: ${n}`,
+      toastNav: (r) => `Navigiert zu ${r} (Text bleibt Beispieltext 1. Mose 1).`,
+      levels: ["Holzig wörtlich", "Elberfelder 1871", "Modern wörtlich", "Kommunikativ", "Leichte Sprache", "Kinder"],
+    },
+    en: {
+      appName: "Unshackled Word", bible: "Bible", editLemmas: "Edit lemmas",
+      ot: "Old Testament", nt: "New Testament", levelSlider: "Reading version",
+      search: "Open search", theme: "Toggle colour scheme", login: "Sign in", logout: "Sign out",
+      signedIn: "Signed in as maintainer", profile: "Profile", close: "Close", allOcc: "All occurrences",
+      lemma: "Lemma", strongs: "Strong's", morph: "Morphology", occ: "Occurrences", sample: "Sample data",
+      pinned: "pinned", noMapping: "This word is not mapped to an original-language word yet.", unmapped: "not mapped",
+      hint: "Tap a word for the original", prev: "Previous chapter", next: "Next chapter",
+      books: (n) => `${n} books`, psalmsSection: (b, n, f, to) => `${b}, book ${n} (${f}–${to})`, inOT: (n) => `${n.toLocaleString("en")} in the OT`,
+      toastAll: (w) => `"All occurrences" for ${w}: would open the Strong's page with every occurrence.`,
+      toastDummy: "Not part of the click dummy.", toastLevel: (n) => `Reading version: ${n}`,
+      toastNav: (r) => `Navigated to ${r} (text stays the Genesis 1 sample).`,
+      levels: ["Wooden literal", "Elberfelder 1871", "Modern literal", "Dynamic", "Easy language", "Children"],
+    },
+  };
+  let lang = "de";
+  const t = (k) => T[lang][k];
+
+  // [German, English, chapters]
+  const BOOKS = {
+    ot: [["1. Mose","Genesis",50],["2. Mose","Exodus",40],["3. Mose","Leviticus",27],["4. Mose","Numbers",36],["5. Mose","Deuteronomy",34],
+      ["Josua","Joshua",24],["Richter","Judges",21],["Ruth","Ruth",4],["1. Samuel","1 Samuel",31],["2. Samuel","2 Samuel",24],
+      ["1. Könige","1 Kings",22],["2. Könige","2 Kings",25],["1. Chronika","1 Chronicles",29],["2. Chronika","2 Chronicles",36],
+      ["Esra","Ezra",10],["Nehemia","Nehemiah",13],["Esther","Esther",10],["Hiob","Job",42],["Psalmen","Psalms",150],
+      ["Sprüche","Proverbs",31],["Prediger","Ecclesiastes",12],["Hohelied","Song of Songs",8],["Jesaja","Isaiah",66],
+      ["Jeremia","Jeremiah",52],["Klagelieder","Lamentations",5],["Hesekiel","Ezekiel",48],["Daniel","Daniel",12],
+      ["Hosea","Hosea",14],["Joel","Joel",3],["Amos","Amos",9],["Obadja","Obadiah",1],["Jona","Jonah",4],["Micha","Micah",7],
+      ["Nahum","Nahum",3],["Habakuk","Habakkuk",3],["Zephanja","Zephaniah",3],["Haggai","Haggai",2],["Sacharja","Zechariah",14],
+      ["Maleachi","Malachi",4]],
+    nt: [["Matthäus","Matthew",28],["Markus","Mark",16],["Lukas","Luke",24],["Johannes","John",21],["Apostelgeschichte","Acts",28],
+      ["Römer","Romans",16],["1. Korinther","1 Corinthians",16],["2. Korinther","2 Corinthians",13],["Galater","Galatians",6],
+      ["Epheser","Ephesians",6],["Philipper","Philippians",4],["Kolosser","Colossians",4],["1. Thessalonicher","1 Thessalonians",5],
+      ["2. Thessalonicher","2 Thessalonians",3],["1. Timotheus","1 Timothy",6],["2. Timotheus","2 Timothy",4],["Titus","Titus",3],
+      ["Philemon","Philemon",1],["Hebräer","Hebrews",13],["Jakobus","James",5],["1. Petrus","1 Peter",5],["2. Petrus","2 Peter",3],
+      ["1. Johannes","1 John",5],["2. Johannes","2 John",1],["3. Johannes","3 John",1],["Judas","Jude",1],["Offenbarung","Revelation",22]],
+  };
+  const SEQ = [...BOOKS.ot.map((b, i) => ["ot", i]), ...BOOKS.nt.map((b, i) => ["nt", i])];
+  const bookName = (tst, i) => BOOKS[tst][i][lang === "de" ? 0 : 1];
+  let cur = { t: "ot", b: 0, c: 1 };
+  const ref = (r) => `${bookName(r.t, r.b)} ${r.c}`;
+  function step(dir) {
+    const n = BOOKS[cur.t][cur.b][2];
+    if (dir > 0 && cur.c < n) return { ...cur, c: cur.c + 1 };
+    if (dir < 0 && cur.c > 1) return { ...cur, c: cur.c - 1 };
+    const k = SEQ.findIndex(([tt, i]) => tt === cur.t && i === cur.b) + dir;
+    if (k < 0 || k >= SEQ.length) return null;
+    const [tt, i] = SEQ[k];
+    return { t: tt, b: i, c: dir > 0 ? 1 : BOOKS[tt][i][2] };
+  }
+
+  // Elberfelder 1871, 1. Mose 1,1-13 (public domain); original-language data below is fake/sample.
+  const VERSES = [
+    "Im Anfang schuf Gott die Himmel und die Erde.",
+    "Und die Erde war wüst und leer, und Finsternis war über der Tiefe; und der Geist Gottes schwebte über den Wassern.",
+    "Und Gott sprach: Es werde Licht! und es ward Licht.",
+    "Und Gott sah das Licht, daß es gut war; und Gott schied das Licht von der Finsternis.",
+    "Und Gott nannte das Licht Tag, und die Finsternis nannte er Nacht. Und es ward Abend und es ward Morgen: erster Tag.",
+    "Und Gott sprach: Es werde eine Ausdehnung inmitten der Wasser, und sie scheide die Wasser von den Wassern!",
+    "Und Gott machte die Ausdehnung und schied die Wasser, welche unterhalb der Ausdehnung, von den Wassern, die oberhalb der Ausdehnung sind. Und es ward also.",
+    "Und Gott nannte die Ausdehnung Himmel. Und es ward Abend und es ward Morgen: zweiter Tag.",
+    "Und Gott sprach: Es sammeln sich die Wasser unterhalb des Himmels an einen Ort, und es werde sichtbar das Trockene! Und es ward also.",
+    "Und Gott nannte das Trockene Erde, und die Sammlung der Wasser nannte er Meere. Und Gott sah, daß es gut war.",
+    "Und Gott sprach: Die Erde lasse Gras hervorsprossen, Kraut, das Samen hervorbringe, Fruchtbäume, die Frucht tragen nach ihrer Art, in welcher ihr Same sei auf der Erde! Und es ward also.",
+    "Und die Erde brachte Gras hervor, Kraut, das Samen hervorbringt nach seiner Art, und Bäume, die Frucht tragen, in welcher ihr Same ist nach ihrer Art. Und Gott sah, daß es gut war.",
+    "Und es ward Abend und es ward Morgen: dritter Tag.",
+  ];
+  const M = (o, tr, lemma, s, m, mc, n) => ({ o, tr, lemma, s, m, mc, n });
+  const NOUN_MP = "Substantiv · maskulin · Plural · absolut";
+  const LEX = {
+    anfang: M("בְּרֵאשִׁית", "bereschit", "רֵאשִׁית", "H7225", "Präposition + Substantiv · feminin · Singular · absolut", "HR/Ncfsa", 51),
+    schuf: M("בָּרָא", "bara", "בָּרָא", "H1254", "Verb · Qal · Perfekt · 3. Person maskulin Singular", "HVqp3ms", 54),
+    gott: M("אֱלֹהִים", "elohim", "אֱלֹהִים", "H430", NOUN_MP, "HNcmpa", 2600),
+    gottes: M("אֱלֹהִים", "elohim", "אֱלֹהִים", "H430", "Substantiv · maskulin · Plural · Status constructus", "HNcmpc", 2600),
+    himmel: M("הַשָּׁמַיִם", "haschamajim", "שָׁמַיִם", "H8064", "Artikel + Substantiv · maskulin · Plural · absolut", "HTd/Ncmpa", 421),
+    himmels: M("הַשָּׁמַיִם", "haschamajim", "שָׁמַיִם", "H8064", "Artikel + Substantiv · maskulin · Plural · absolut", "HTd/Ncmpa", 421),
+    erde: M("הָאָרֶץ", "ha'arez", "אֶרֶץ", "H776", "Artikel + Substantiv · beide · Singular · absolut", "HTd/Ncbsa", 2505),
+    wüst: M("תֹהוּ", "tohu", "תֹּהוּ", "H8414", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 20),
+    leer: M("וָבֹהוּ", "wavohu", "בֹּהוּ", "H922", "Konjunktion + Substantiv · maskulin · Singular · absolut", "HC/Ncmsa", 3),
+    finsternis: M("חֹשֶׁךְ", "choschech", "חֹשֶׁךְ", "H2822", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 80),
+    tiefe: M("תְהוֹם", "tehom", "תְּהוֹם", "H8415", "Substantiv · beide · Singular · absolut", "HNcbsa", 36),
+    geist: M("וְרוּחַ", "weruach", "רוּחַ", "H7307", "Konjunktion + Substantiv · beide · Singular · Status constructus", "HC/Ncbsc", 378),
+    schwebte: M("מְרַחֶפֶת", "merachefet", "רָחַף", "H7363", "Verb · Piel · Partizip · feminin Singular · absolut", "HVprfsa", 3),
+    wasser: M("הַמָּיִם", "hamajim", "מַיִם", "H4325", "Artikel + Substantiv · maskulin · Plural · absolut", "HTd/Ncmpa", 582),
+    wassern: M("הַמָּיִם", "hamajim", "מַיִם", "H4325", "Artikel + Substantiv · maskulin · Plural · absolut", "HTd/Ncmpa", 582),
+    sprach: M("וַיֹּאמֶר", "wajomer", "אָמַר", "H559", "Konjunktion + Verb · Qal · Wayyiqtol · 3. Person maskulin Singular", "HC/Vqw3ms", 5316),
+    licht: M("אוֹר", "or", "אוֹר", "H216", "Substantiv · beide · Singular · absolut", "HNcbsa", 120),
+    sah: M("וַיַּרְא", "wajar", "רָאָה", "H7200", "Konjunktion + Verb · Qal · Wayyiqtol · 3. Person maskulin Singular", "HC/Vqw3ms", 1306),
+    gut: M("טוֹב", "tov", "טוֹב", "H2896", "Adjektiv · maskulin · Singular · absolut", "HAamsa", 530),
+    schied: M("וַיַּבְדֵּל", "wajavdel", "בָּדַל", "H914", "Konjunktion + Verb · Hifil · Wayyiqtol · 3. Person maskulin Singular", "HC/Vhw3ms", 42),
+    nannte: M("וַיִּקְרָא", "wajikra", "קָרָא", "H7121", "Konjunktion + Verb · Qal · Wayyiqtol · 3. Person maskulin Singular", "HC/Vqw3ms", 739),
+    tag: M("יוֹם", "jom", "יוֹם", "H3117", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 2301),
+    nacht: M("לָיְלָה", "lajla", "לַיְלָה", "H3915", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 234),
+    abend: M("עֶרֶב", "erev", "עֶרֶב", "H6153", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 134),
+    morgen: M("בֹקֶר", "voker", "בֹּקֶר", "H1242", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 213),
+    ward: M("וַיְהִי", "wajehi", "הָיָה", "H1961", "Konjunktion + Verb · Qal · Wayyiqtol · 3. Person maskulin Singular", "HC/Vqw3ms", 3576),
+    werde: M("יְהִי", "jehi", "הָיָה", "H1961", "Verb · Qal · Jussiv · 3. Person maskulin Singular", "HVqj3ms", 3576),
+    ausdehnung: M("רָקִיעַ", "rakia", "רָקִיעַ", "H7549", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 17),
+    machte: M("וַיַּעַשׂ", "waja'as", "עָשָׂה", "H6213", "Konjunktion + Verb · Qal · Wayyiqtol · 3. Person maskulin Singular", "HC/Vqw3ms", 2633),
+    trockene: M("הַיַּבָּשָׁה", "hajabascha", "יַבָּשָׁה", "H3004", "Artikel + Substantiv · feminin · Singular · absolut", "HTd/Ncfsa", 14),
+    meere: M("יַמִּים", "jamim", "יָם", "H3220", NOUN_MP, "HNcmpa", 396),
+    gras: M("דֶּשֶׁא", "desche", "דֶּשֶׁא", "H1877", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 14),
+    kraut: M("עֵשֶׂב", "esev", "עֵשֶׂב", "H6212", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 33),
+    samen: M("זֶרַע", "sera", "זֶרַע", "H2233", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 229),
+    same: M("זַרְעוֹ", "sar'o", "זֶרַע", "H2233", "Substantiv · maskulin · Singular · Suffix 3ms", "HNcmsc/Sp3ms", 229),
+    frucht: M("פְּרִי", "peri", "פְּרִי", "H6529", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 119),
+    art: M("לְמִינוֹ", "lemino", "מִין", "H4327", "Präposition + Substantiv · maskulin · Singular · Suffix", "HR/Ncmsc/Sp3ms", 31),
+    ort: M("מָקוֹם", "makom", "מָקוֹם", "H4725", "Substantiv · maskulin · Singular · absolut", "HNcmsa", 401),
+    erster: M("אֶחָד", "echad", "אֶחָד", "H259", "Zahlwort · maskulin · Singular · absolut", "HAcmsa", 976),
+    zweiter: M("שֵׁנִי", "scheni", "שֵׁנִי", "H8145", "Zahlwort · maskulin · Singular · absolut", "HAomsa", 156),
+    dritter: M("שְׁלִישִׁי", "schlischi", "שְׁלִישִׁי", "H7992", "Zahlwort · maskulin · Singular · absolut", "HAomsa", 108),
+  };
+
+  // ---------- Words ----------
+  const words = [];
+  const text = $("#text");
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  text.innerHTML = VERSES.map((v, vi) => {
+    const html = v.replace(/[A-Za-zÄÖÜäöüß]+/g, (w) => {
+      const id = words.length;
+      words.push({ id, text: w, entry: LEX[w.toLowerCase()] ?? null });
+      return `<button type="button" class="w" data-id="${id}">${w}</button>`;
+    });
+    return `<p class="verse" id="v${vi + 1}"><sup>${vi + 1}</sup>${html}</p>`;
+  }).join("");
+  const wordEl = (id) => text.querySelector(`.w[data-id="${id}"]`);
+
+  function infoHTML(w) {
+    if (!w.entry) return `<div class="info"><p><span class="morph">„${esc(w.text)}“ · ${t("unmapped")}</span></p></div>`;
+    const e = w.entry;
+    const lemma = e.lemma !== e.o ? `<span class="lem">${t("lemma")} <span lang="he">${e.lemma}</span></span>` : "";
+    return `<div class="info"><p><span class="orig" lang="he">${e.o}</span>${lemma}<span class="str">${e.s}</span></p><p class="morph">${e.m}</p></div>`;
+  }
+  function cardHTML(w, isPinned = true) {
+    const pinBits = isPinned ? `<span class="badge pin">${t("pinned")}</span>` : "";
+    const closeBtn = isPinned ? `<button type="button" class="btn btn-ghost btn-sm" data-act="close" aria-label="${t("close")}">×</button>` : "";
+    const head = `<div class="card-head"><h2>${esc(w.text)}</h2><div class="meta">${pinBits}
+      <span class="badge">${t("sample")}</span>${closeBtn}</div></div>`;
+    if (!w.entry) return `${head}<p class="none">${t("noMapping")}</p>`;
+    const e = w.entry;
+    return `${head}<p class="o" lang="he" dir="rtl">${e.o}</p><p class="tr">${e.tr}</p>
+      <dl><dt>${t("strongs")}</dt><dd>${e.s} · <button type="button" class="link-btn" data-act="all">${t("allOcc")}</button></dd>
+      <dt>${t("lemma")}</dt><dd lang="he" dir="rtl">${e.lemma}</dd>
+      <dt>${t("occ")}</dt><dd>${t("inOT")(e.n)}</dd>
+      <dt>${t("morph")}</dt><dd>${e.m} <code>${e.mc}</code></dd></dl>`;
+  }
+
+  // ---------- Breakpoints (real media queries inside the iframe) ----------
+  const mqMd = matchMedia("(min-width: 48rem)");
+  const mqLg = matchMedia("(min-width: 64rem)");
+  const mqFhd = matchMedia("(min-width: 120rem)");
+  const mqOneRow = matchMedia("(min-width: 75rem)"); // header + picker in one row
+  const mode = () => (mqFhd.matches ? "fhd" : mqLg.matches ? "lg" : "sm");
+
+  // ---------- Hover / pin state ----------
+  let hover = null, hoverSide = "right", pinned = null, pinSide = "right";
+  const hdrInfo = $("#hdr-info"), mL = $("#margin-l"), mR = $("#margin-r"), pop = $("#popover");
+  // 1024-1919: always the right margin; from 1920: the side of the page centre the pointer is on.
+  const sideFor = (x) => (mode() === "fhd" && x < document.documentElement.clientWidth / 2 ? "left" : "right");
+  const verseOf = (id) => wordEl(id).closest(".verse");
+
+  function render() {
+    text.querySelectorAll(".w.pinned, .w.hovered").forEach((el) => el.classList.remove("pinned", "hovered"));
+    if (pinned !== null) wordEl(pinned).classList.add("pinned");
+    if (hover !== null && hover !== pinned) wordEl(hover).classList.add("hovered");
+    const m = mode();
+    mL.innerHTML = ""; mR.innerHTML = ""; pop.hidden = true; pop.innerHTML = "";
+    if (m === "sm") {
+      // Below 1024: HI in the header (own row on mobile), pinned WD as popover / bottom sheet; pin wins.
+      const shown = pinned ?? hover;
+      hdrInfo.innerHTML = shown !== null ? infoHTML(words[shown]) : `<span class="hint">${t("hint")}</span>`;
+      if (pinned !== null) {
+        pop.innerHTML = cardHTML(words[pinned]);
+        pop.setAttribute("aria-label", words[pinned].text);
+        pop.hidden = false;
+        placePopover();
+      }
+      return;
+    }
+    // From 1024: margin stack per side = HI slot (follows every hover, never pinned) + WD below it.
+    hdrInfo.innerHTML = "";
+    for (const side of ["left", "right"]) {
+      const box = side === "left" ? mL : mR;
+      const pinHere = pinned !== null && pinSide === side;
+      const hoverHere = hover !== null && hoverSide === side;
+      if (!pinHere && !hoverHere) continue;
+      let html = `<div class="hi-slot" aria-hidden="true">${hoverHere ? infoHTML(words[hover]) : ""}</div>`;
+      if (pinHere) html += `<div class="card" role="dialog" aria-label="${esc(words[pinned].text)}">${cardHTML(words[pinned], true)}</div>`;
+      else if (pinned === null) html += `<div class="card wd-hover" aria-hidden="true">${cardHTML(words[hover], false)}</div>`;
+      box.innerHTML = html;
+      box.classList.toggle("has-pin", pinHere);
+      placeInMargin(box, verseOf(pinHere ? pinned : hover));
+    }
+  }
+  // Align the stack with the verse's top; push it up so it never hangs below the end of the text.
+  function placeInMargin(box, verse) {
+    const aside = box.parentElement;
+    const top = verse.getBoundingClientRect().top - aside.getBoundingClientRect().top;
+    const max = aside.clientHeight - box.offsetHeight;
+    box.style.top = `${Math.max(0, Math.min(top, max))}px`;
+  }
+  function placePopover() {
+    if (pinned === null || pop.hidden) return;
+    if (!mqMd.matches) { pop.classList.add("sheet"); pop.style.top = ""; pop.style.left = ""; return; }
+    pop.classList.remove("sheet");
+    const r = wordEl(pinned).getBoundingClientRect();
+    const w = pop.offsetWidth;
+    const left = Math.max(16, Math.min(r.left, document.documentElement.clientWidth - w - 16));
+    pop.style.top = `${r.bottom + scrollY + 6}px`;
+    pop.style.left = `${left + scrollX}px`;
+  }
+  function pin(id, x) { pinned = id; pinSide = sideFor(x); render(); }
+  function unpin(focusWord) {
+    const id = pinned; pinned = null; render();
+    if (focusWord && id !== null) wordEl(id).focus({ preventScroll: true });
+  }
+  // Below 1024 the pinned popover wins over hover; from 1024 hover keeps updating the HI.
+  const hoverBlocked = () => pinned !== null && mode() === "sm";
+
+  text.addEventListener("mouseover", (e) => {
+    const w = e.target.closest(".w"); if (!w || hoverBlocked()) return;
+    const id = +w.dataset.id; if (hover === id) return;
+    hover = id; hoverSide = sideFor(e.clientX); render();
+  });
+  text.addEventListener("mouseout", (e) => {
+    const w = e.target.closest(".w"); if (!w || hoverBlocked()) return;
+    if (e.relatedTarget && w.contains(e.relatedTarget)) return;
+    hover = null; render();
+  });
+  text.addEventListener("focusin", (e) => {
+    const w = e.target.closest(".w"); if (!w || hoverBlocked()) return;
+    const r = w.getBoundingClientRect(); hover = +w.dataset.id; hoverSide = sideFor(r.left + r.width / 2); render();
+  });
+  text.addEventListener("focusout", () => { if (!hoverBlocked() && hover !== null) { hover = null; render(); } });
+  text.addEventListener("click", (e) => {
+    const w = e.target.closest(".w"); if (!w) return;
+    const id = +w.dataset.id;
+    if (pinned === id) { unpin(false); return; }
+    const r = w.getBoundingClientRect();
+    pin(id, e.detail === 0 ? r.left + r.width / 2 : e.clientX); // detail 0 = keyboard (Enter/Space)
+  });
+  document.addEventListener("click", (e) => {
+    const act = e.target.closest("[data-act]");
+    if (act?.dataset.act === "all") { toast(t("toastAll")(words[pinned].text)); return; }
+    if (act?.dataset.act === "close") { unpin(true); return; }
+    if (pinned !== null && !e.target.closest(".card, .w")) unpin(false);
+  });
+
+  // ---------- Picker ----------
+  const picker = $("#picker"), slot = $("#picker-slot"), row = $("#picker-row"), panel = $("#panel");
+  let open = null;
+  function mountPicker() { (mqOneRow.matches ? slot : row).appendChild(picker); }
+  function setOpen(tst, focusTab) {
+    const prev = open; open = tst;
+    for (const b of picker.querySelectorAll(".tab")) b.setAttribute("aria-expanded", String(b.dataset.t === open));
+    panel.hidden = !open;
+    if (open) renderPanel();
+    if (!open && focusTab && prev) $(`#tab-${prev}`).focus();
+  }
+  function renderPanel() {
+    const list = BOOKS[open];
+    panel.setAttribute("aria-label", t(open));
+    panel.innerHTML = `<div class="panel-head"><h2>${t(open)} · ${t("books")(list.length)}</h2>
+      <button type="button" class="btn btn-ghost btn-sm" data-pclose aria-label="${t("close")}">×</button></div>
+      <div class="books">${pickerGroups(open).map(({ i, from, to, title }) => {
+        const cols = Math.min(6, Math.max(1, Math.ceil((to - from + 1) / 10)));
+        const isCurGroup = cur.t === open && cur.b === i && cur.c >= from && cur.c <= to;
+        const chs = Array.from({ length: to - from + 1 }, (_, k) => from + k).map((c) =>
+          `<a href="#" class="ch" data-b="${i}" data-c="${c}" ${isCurGroup && c === cur.c ? 'aria-current="page"' : ""} aria-label="${bookName(open, i)} ${c}">${c}</a>`).join("");
+        return `<div class="book${isCurGroup ? " open" : ""}" data-cols="${cols}"><h3>
+          <button type="button" class="btn btn-ghost btn-sm btoggle" aria-expanded="${isCurGroup}">${title}</button>
+          <span class="bname">${title}</span></h3><div class="chs">${chs}</div></div>`;
+      }).join("")}</div>`;
+  }
+  // Psalms are split into their five books (PSALM_SECTIONS in lib/bible/books.ts), like the real picker.
+  const PSALM_SECTIONS = [[1, 41], [42, 72], [73, 89], [90, 106], [107, 150]];
+  const PSALMS_INDEX = 18;
+  function pickerGroups(tst) {
+    return BOOKS[tst].flatMap((b, i) => {
+      const name = bookName(tst, i);
+      if (tst === "ot" && i === PSALMS_INDEX) {
+        return PSALM_SECTIONS.map(([from, to], k) => ({ i, from, to, title: t("psalmsSection")(name, k + 1, from, to) }));
+      }
+      return [{ i, from: 1, to: b[2], title: name }];
+    });
+  }
+  picker.addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab"); if (!tab) return;
+    setOpen(open === tab.dataset.t ? null : tab.dataset.t, false);
+  });
+  panel.addEventListener("click", (e) => {
+    if (e.target.closest("[data-pclose]")) { setOpen(null, true); return; }
+    const tg = e.target.closest(".btoggle");
+    if (tg) { const bk = tg.closest(".book"); bk.classList.toggle("open"); tg.setAttribute("aria-expanded", bk.classList.contains("open")); return; }
+    const ch = e.target.closest(".ch"); if (!ch) return;
+    e.preventDefault();
+    goTo({ t: open, b: +ch.dataset.b, c: +ch.dataset.c });
+    setOpen(null, false);
+  });
+  // Outside click closes the panel and is swallowed (it does not also pin a word).
+  document.addEventListener("click", (e) => {
+    if (!open) return;
+    if (e.target.closest(".panel, .tab")) return;
+    setOpen(null, false); e.stopPropagation(); e.preventDefault();
+  }, true);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (open) { setOpen(null, true); return; }
+    if ($("#user-menu")) { closeUserMenu(); return; }
+    if (pinned !== null) unpin(true);
+  });
+
+  // ---------- Chapter navigation ----------
+  function goTo(r) {
+    cur = r; pinned = null; hover = null;
+    renderChapterNav(); render();
+    scrollTo({ top: 0 });
+    toast(t("toastNav")(ref(r)));
+  }
+  function renderChapterNav() {
+    $("#title").textContent = ref(cur);
+    document.title = `${ref(cur)} – Unshackled Word`;
+    const p = step(-1), n = step(1);
+    $("#prev").disabled = !p; $("#next").disabled = !n;
+    $("#prev").setAttribute("aria-label", p ? `${t("prev")}: ${ref(p)}` : t("prev"));
+    $("#next").setAttribute("aria-label", n ? `${t("next")}: ${ref(n)}` : t("next"));
+  }
+  $("#prev").addEventListener("click", () => { const p = step(-1); if (p) goTo(p); });
+  $("#next").addEventListener("click", () => { const n = step(1); if (n) goTo(n); });
+
+  // ---------- Slider ----------
+  const slider = $("#slider");
+  function syncSlider() {
+    const name = t("levels")[+slider.value];
+    slider.setAttribute("aria-label", t("levelSlider")); slider.setAttribute("aria-valuetext", name); slider.title = name;
+  }
+  slider.addEventListener("input", () => { syncSlider(); toast(t("toastLevel")(t("levels")[+slider.value])); });
+
+  // ---------- Header tools ----------
+  let loggedIn = true;
+  const user = $("#user");
+  function renderUser() {
+    $(".nav-edit").classList.toggle("on", loggedIn);
+    user.innerHTML = loggedIn
+      ? `<button type="button" class="btn btn-ghost btn-sm" id="user-btn" aria-haspopup="menu" aria-expanded="false" aria-label="${t("signedIn")}"><span class="avatar" aria-hidden="true">M</span></button>`
+      : `<button type="button" class="btn btn-secondary btn-sm" id="login-btn">${t("login")}</button>`;
+  }
+  function closeUserMenu() { $("#user-menu")?.remove(); $("#user-btn")?.setAttribute("aria-expanded", "false"); }
+  user.addEventListener("click", (e) => {
+    if (e.target.closest("#login-btn")) { setAuth(true, true); return; }
+    if (e.target.closest("[data-logout]")) { closeUserMenu(); setAuth(false, true); return; }
+    if (e.target.closest("[data-profile]")) { closeUserMenu(); toast(t("toastDummy")); return; }
+    if (e.target.closest("#user-btn")) {
+      if ($("#user-menu")) { closeUserMenu(); return; }
+      user.insertAdjacentHTML("beforeend", `<div class="user-menu" id="user-menu" role="menu"><p>${t("signedIn")}</p>
+        <button type="button" class="btn btn-ghost btn-sm" role="menuitem" data-profile>${t("profile")}</button>
+        <button type="button" class="btn btn-ghost btn-sm" role="menuitem" data-logout>${t("logout")}</button></div>`);
+      $("#user-btn").setAttribute("aria-expanded", "true");
+    }
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest("#user")) closeUserMenu(); });
+  $("#search").addEventListener("click", () => toast(t("toastDummy")));
+  document.querySelectorAll("[data-dummy]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); toast(t("toastDummy")); }));
+
+  const SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  const MOON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>';
+  function setTheme(v, notify) {
+    document.documentElement.dataset.theme = v;
+    $("#theme-icon").innerHTML = v === "dark" ? SUN : MOON;
+    if (notify) parent.postMessage({ type: "theme", value: v }, "*");
+  }
+  $("#theme").addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true));
+  function setAuth(v, notify) { loggedIn = v; renderUser(); if (notify) parent.postMessage({ type: "auth", value: v }, "*"); }
+  function setLang(v, notify) {
+    lang = v; document.documentElement.lang = v;
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-label]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nLabel)); el.title = t(el.dataset.i18nLabel); });
+    document.querySelectorAll("[data-setlang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.setlang === v)));
+    renderUser(); renderChapterNav(); syncSlider(); render();
+    if (open) renderPanel();
+    if (notify) parent.postMessage({ type: "lang", value: v }, "*");
+  }
+  document.querySelectorAll("[data-setlang]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.setlang, true)));
+
+  let toastTimer;
+  function toast(msg) {
+    const el = $("#toast"); el.textContent = msg; el.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 3000);
+  }
+
+  window.addEventListener("message", (e) => {
+    const d = e.data || {};
+    if (d.type === "theme") setTheme(d.value, false);
+    if (d.type === "auth") setAuth(d.value, false);
+    if (d.type === "lang") setLang(d.value, false);
+    if (d.type === "layout") { mountPicker(); render(); } // width preset changed (resize events can lag in a hidden tab)
+  });
+  for (const mq of [mqMd, mqLg, mqOneRow, mqFhd]) mq.addEventListener("change", () => { mountPicker(); render(); });
+  addEventListener("resize", () => { mountPicker(); if (mode() === "sm") placePopover(); else render(); });
+
+  mountPicker(); setTheme("light", false); setLang("de", false);
+  parent.postMessage({ type: "ready" }, "*");
+})();
+</script>
+</template>
+
+<script>
+  // ---------- Dummy control logic ----------
+  const WIDTHS = [390, 768, 1024, 1199, 1200, 1366, 1920, 2560, 3840];
+  const ctl = document.getElementById("ctl"), stage = document.getElementById("stage");
+  const box = document.getElementById("frame-box"), frame = document.getElementById("app");
+  const readout = document.getElementById("readout");
+  let width = 1920, theme = "light", lang = "de";
+
+  const wg = document.getElementById("widths");
+  for (const w of [...WIDTHS, "fit"]) {
+    const b = document.createElement("button");
+    b.type = "button"; b.dataset.w = w; b.textContent = w === "fit" ? "Fenster" : w;
+    b.addEventListener("click", () => { width = w; layout(); });
+    wg.appendChild(b);
+  }
+  function modeLabel(w) {
+    if (w < 768) return "mobil: Info-Zeile im Header, Picker-Zeile, Popover als Sheet";
+    if (w < 1024) return "Tablet: Info im Header, Picker-Zeile, Popover";
+    if (w < 1200) return "Laptop: Picker-Zeile unter dem Header, Text links, HI + WD im rechten Rand auf Vershöhe";
+    if (w < 1920) return "Laptop: eine Kopfzeile mit Picker, Text links, HI + WD im rechten Rand auf Vershöhe";
+    return "FHD+: eine Kopfzeile, Text mittig, HI + WD im Rand auf der Zeigerseite";
+  }
+  function layout() {
+    const top = ctl.offsetHeight + 12;
+    stage.style.top = `${top}px`;
+    const availW = stage.clientWidth - 24, availH = stage.clientHeight - 12;
+    const w = width === "fit" ? Math.max(320, Math.floor(availW)) : width;
+    const s = Math.min(1, availW / w);
+    frame.style.width = `${w}px`;
+    frame.style.height = `${Math.floor(availH / s)}px`;
+    frame.style.transform = `scale(${s})`;
+    box.style.width = `${Math.floor(w * s)}px`;
+    box.style.height = `${Math.floor(availH)}px`;
+    for (const b of wg.querySelectorAll("button")) b.setAttribute("aria-pressed", String(String(width) === b.dataset.w));
+    send({ type: "layout" });
+    readout.textContent = `${w} px · ${Math.round(s * 100)} % · ${modeLabel(w)}`;
+  }
+  function send(msg) { frame.contentWindow?.postMessage(msg, "*"); }
+  function pressed(attr, v) { for (const b of ctl.querySelectorAll(`[data-${attr}]`)) b.setAttribute("aria-pressed", String(b.dataset[attr] === v)); }
+  ctl.querySelectorAll("[data-theme]").forEach((b) => b.addEventListener("click", () => { theme = b.dataset.theme; pressed("theme", theme); send({ type: "theme", value: theme }); }));
+  ctl.querySelectorAll("[data-lang]").forEach((b) => b.addEventListener("click", () => { lang = b.dataset.lang; pressed("lang", lang); send({ type: "lang", value: lang }); }));
+  document.getElementById("auth").addEventListener("change", (e) => send({ type: "auth", value: e.target.checked }));
+  document.getElementById("collapse").addEventListener("click", (e) => {
+    const c = ctl.classList.toggle("collapsed"); e.target.textContent = c ? "+" : "–"; layout();
+  });
+  addEventListener("message", (e) => {
+    const d = e.data || {};
+    if (d.type === "theme") { theme = d.value; pressed("theme", theme); }
+    if (d.type === "lang") { lang = d.value; pressed("lang", lang); }
+    if (d.type === "auth") document.getElementById("auth").checked = d.value;
+    if (d.type === "ready") { send({ type: "theme", value: theme }); send({ type: "lang", value: lang }); }
+  });
+  addEventListener("resize", layout);
+
+  const src = document.getElementById("app-src").innerHTML;
+  frame.srcdoc = `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>1. Mose 1 – Unshackled Word</title></head><body>${src}</body></html>`;
+  pressed("theme", theme); pressed("lang", lang);
+  layout();
+</script>
+</body>
+</html>

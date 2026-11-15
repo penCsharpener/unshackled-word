@@ -53,14 +53,18 @@ services:
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
     ports:
       - "7654:8080"
+    # The maintainer seed page (menu "Wartung") writes assets/seed and temp/seed-report: both folders must be writable for the container user
+    # (default UID 1654; or add `user: "1000:1000"` like the seed container). Not verified in a compose run yet.
     volumes:
-      - ./assets:/src/assets:ro
+      - ./assets:/src/assets
+      - ./temp:/src/temp
     environment:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=${MAPPING_EDITING_ENABLED:-false}
-      # Seed export download (maintainer menu): the assets folder is only read (base text hash, existing manifest); nothing is written there.
+      # Seed round trip (maintainer menu): export writes assets/seed, import/update/rebase read it and write temp/seed-report. The zip download only reads.
       - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONASSETSPATH=/src/assets
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONTEMPPATH=/src/temp
       # Accounts: links in emails and the passkey origin derive from the frontend URL.
       - UNSHACKLEDWORD_APP__FRONTENDBASEURL=${FRONTEND_BASE_URL:-http://localhost:5173}
       - UNSHACKLEDWORD_APP__REQUIRESECURECOOKIES=${REQUIRE_SECURE_COOKIES:-true}

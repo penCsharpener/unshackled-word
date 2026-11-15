@@ -36,7 +36,7 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
 ## Principles
 
 * Licence: the app and all data created with it are CC0. STEP Bible data is downloaded on the fly and never redistributed or changed.
-* Elberfelder 1871 is the base text. Other versions (a modernized literal revision first, later more dynamic or simpler ones up to a children's Bible) are mapping layers on top of it, graded 1–10000, so a reader can slide from literal to simple. All changes are diff-based and versioned.
+* Elberfelder 1871 is the base text. Other versions (a modernized literal revision first, later more dynamic or simpler ones up to a children's Bible) are verse variants on top of it, one per literalness level (1–1000, Elb1871 = 100), so a reader can slide from literal to simple. Every text save is a new version.
 * Everyone can suggest changes, the maintainer merges them. AI-made mappings are attributed to their own user and confirmed by humans.
 * Read-only study tools are public, writing requires login.
 * Self-hostable via `docker compose`. The seed runs on first start; only the mapping seed is updated afterwards.
@@ -53,6 +53,8 @@ ENVIRONMENT=Development
 
 Then run `docker compose up -d` in the solution root.
 If this doesn't work for you please create an issue with the details.
+
+For a production deployment (reverse proxy, TLS, secrets, SMTP, backups) see [docs/deployment.md](docs/deployment.md).
 
 ## Development Setup
 
@@ -134,6 +136,9 @@ into this repo as CSV and imported again on fresh installs. A new `docker compos
 | `assets/seed/anchors/NN-Book.csv` | per chapter: word count and fingerprint of the token list |
 | `assets/seed/manifest.json` | format version, hash of the base text, row count and SHA-256 per file, `exportedAt` |
 | `assets/Elb1871Mappings/NN-Book.csv` | German word to Greek/Hebrew word mappings, **format 2** |
+| `assets/seed/revision/levels.csv` | the literalness presets (`Level,Code,NameDe,NameEn,DescriptionDe,DescriptionEn,IsDefault`) |
+| `assets/seed/revision/verses/NN-Book.csv` | the active revision variants: `Ref,Level,BasedOnLevel,BaseHash,Text,Note,Reviewed` (the text itself is the data) |
+| `assets/seed/revision/mapping/NN-Book.csv` | their mapping: format 2 plus `Level` and `Origin` (`Ref,Level,Pos,Form,Part,SrcRef,SrcPos,SrcHash,Added,ParentPos,ParentForm,Origin`) |
 
 Migrations create schema only. All seed data is CSV and is imported after all migrations have run.
 
@@ -153,7 +158,7 @@ still reads format 1 for self-hosters who keep an old export; the files in the r
 **Maintainer routine** (run against your own database, from the repo root; configure the connection like the SeedDb project above):
 
 ```sh
-dotnet run --project src/UnshackledWord.Tooling.SeedDb -- export-seed                       # morphology + mappings (--only morphology|mappings, --out DIR)
+dotnet run --project src/UnshackledWord.Tooling.SeedDb -- export-seed                       # morphology + mappings + revision (--only morphology|mappings|revision, --out DIR)
 dotnet run --project src/UnshackledWord.Tooling.SeedDb -- anchor-check                      # read-only: how many words of the DB match a fresh parse of assets/
 dotnet run --project src/UnshackledWord.Tooling.SeedDb -- rebase --confirm-backup           # after a parser or base-text fix, see below
 git diff --stat assets/seed assets/Elb1871Mappings && git add assets && git commit
@@ -161,8 +166,17 @@ git diff --stat assets/seed assets/Elb1871Mappings && git add assets && git comm
 
 An export is deterministic: without database changes a second export is byte-identical except the `exportedAt` line of the manifest, and one edited lemma is a
 one-line diff. `rebase` is for the moment you fix `ElberfelderParser` or `assets/elberfelder1871-theword-export.txt`: it exports, rebuilds the German words
-from the fixed assets, imports morphology and mappings through the anchored importers again and writes reports. It needs a database backup first
-(`--confirm-backup`) and refuses to run while Mapping v2 holds rows. Exports are never written by the API.
+from the fixed assets, imports morphology and mappings through the anchored importers again (the revision keeps its rows) and writes reports. It needs a database backup first
+(`--confirm-backup`) and refuses to run while Mapping v2 holds rows.
+
+**The same steps in the web UI** (menu "Wartung" / "Maintenance", section "Seed-Rundlauf", Admin/Maintainer): export to `assets/seed`, import (only into empty tables),
+update (keeps locally changed variants/verses and lists them), rebase (confirmation dialog: "I have made a database backup") and a round-trip check that exports twice into
+scratch folders and compares the files with each other and with `assets/seed` byte by byte. They are the same services the CLI calls (`SeedFileExportService`,
+`MappingSeedImporter`, `RevisionSeedImporter`, `SeedRebaseService` in `UnshackledWord.Infrastructure/Seed`). Each step is a background job (one at a time, log lines and
+the result - orphan counts, replaced/kept/new/removed lists, the `SeedImports` rows - are polled from `GET api/maintainer/seed/status`; `POST api/maintainer/seed/jobs` starts one,
+see `api/unshackled-word/Maintainer`). The job state lives in the API process only. The compose file therefore mounts `assets` and `temp` writable into the API container
+(they must be writable for the container user); without a reachable assets folder the page says so and only the zip download works. A rebase empties tables the readers use for
+its duration, so run it when nobody reads.
 
 **What `docker compose up` does**
 
@@ -175,6 +189,17 @@ from the fixed assets, imports morphology and mappings through the anchored impo
 Mapping update: after each import the database remembers a content hash per verse (`SeedVerseState`). A newer seed replaces a verse only when its rows still
 hash to the remembered value; a verse that was changed locally (mapping editor, or a self-hoster's own data) is kept and listed in the report. Set
 `AppSettings:DatabaseSeeding:UpdateMappingSeed` to `false` (compose: `UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__UPDATEMAPPINGSEED=false`) to turn updates off.
+
+**Revision seed.** The revision (roadmap 0011) is a second rolling seed. First start: into an empty `RevisionVerses` each variant is re-created the way the editor
+creates it (the text is tokenised and the base links come from the carry-over); only its mapping lines are taken from the seed (German side by `Pos` + `Form`
+inside the variant's own text, original side by `SrcRef`/`SrcPos`/`SrcHash` with the same rules as the mapping seed, orphans reported). Imported variants have
+no author (`CreatedByUserId` NULL) and keep their `Origin`/`Reviewed` state. Later starts with a newer revision seed: per `(verse, level)` a variant is
+replaced (as a new version) only when it still hashes to the value remembered after the last import (`SeedVerseState`, kind `revision-<level>`); local changes
+are kept and listed, new variants are added, variants gone from the seed are ended. Switch off with `AppSettings:DatabaseSeeding:UpdateRevisionSeed=false`.
+`rebase` exports the revision as well and, after rebuilding the German words, recomputes the base links of the active variants; variants whose Elb1871 verse
+changed stay active and show up under "Basistext geändert" in the revision overview. Reports: `revision-<version>.csv`, `revision-update-<version>.csv` and
+`revision-update-<version>-variants.csv`. The `Reviewed` column in `verses/` is one column beyond the roadmap's list; without it a round trip would drop the
+"mapping confirmed" state.
 
 **Reports** go to `temp/seed-report/` (not committed): `morphology-<version>.csv` and `mappings-<version>.csv` (everything that is not an exact match: class, old key,
 new key, form), `mappings-update-<version>.csv` and `mappings-update-<version>-verses.csv` (per verse: updated or kept local), `anchor-check.csv`. The

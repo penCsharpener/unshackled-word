@@ -11,6 +11,7 @@ import { useCheckFindings } from "@/lib/quality/queries";
 import { SECTION_IDS } from "@/lib/quality/scroll";
 import type { CheckGroup, CheckMatrix, QualityFacets } from "@/lib/quality/types";
 import type { QualityPatch, QualityUrlState, TrailEntry } from "@/lib/quality/url";
+import { CheckHelp, SectionHelp } from "./SectionHelp";
 import { useJumps } from "./useJumps";
 
 const COUNT_SCALE = [1, 10, 100, 1000, 10000] as const;
@@ -109,6 +110,10 @@ export function Findings({
         {t("quality.sections.findings")}
         {code ? `: ${code} ${t(`quality.checks.${code}.title`, { defaultValue: "" })}` : ""}
       </h2>
+      <SectionHelp>
+        <p>{t("quality.help.findings.text")}</p>
+        {code ? <CheckHelp code={code} /> : null}
+      </SectionHelp>
       {!code ? (
         <p className="text-sm text-fg-muted">{t("quality.findings.selectCheck")}</p>
       ) : (

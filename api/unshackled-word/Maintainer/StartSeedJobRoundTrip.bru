@@ -1,0 +1,26 @@
+meta {
+  name: StartSeedJobRoundTrip
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}maintainer/seed/jobs
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "operation": "roundTrip",
+    "kind": "revision"
+  }
+}
+
+docs {
+  Exports twice into scratch folders and compares the files with each other (deterministic?) and with assets/seed (matchesDisk). Writes nothing below assets.
+}
+
+settings {
+  encodeUrl: true
+}

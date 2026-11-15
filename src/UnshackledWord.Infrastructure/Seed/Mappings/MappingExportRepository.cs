@@ -119,7 +119,7 @@ public sealed class MappingExportRepository
     /// A part that contains Greek or Hebrew letters is original-language text that slipped into the German part column (295 rows on the
     /// maintainer's database). STEP text must not be redistributed, so such a part is exported empty.
     /// </summary>
-    private static string CleanPart(string? part)
+    internal static string CleanPart(string? part)
     {
         return string.IsNullOrEmpty(part) || ContainsOriginalLanguageLetters(part) ? string.Empty : part;
     }

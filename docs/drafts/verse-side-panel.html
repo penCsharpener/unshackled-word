@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vers-Randspalte Mockup</title>
+<style>
+/* ------------------------------------------------------------------
+   Design tokens, copied from src/UnshackledWord.Web/src/styles/index.css.
+   NEW tokens of this draft are marked "NEW".
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+  --spacing: 0.25rem;
+  --radius-sm: 0.25rem; --radius-md: 0.375rem; --radius-lg: 0.5rem;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-original: "SBL BibLit", "Noto Serif Hebrew", "Noto Serif", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  --margin-card-w: 18rem;
+  --side-panel-w: 32rem;      /* NEW: from 120rem; 40rem from 160rem (see .frame[data-w="2560"]) */
+  --side-panel-pad: 0.5rem;   /* NEW: first panel line level with the verse's first line */
+  --app-header-h: 3rem;
+
+  --uw-bg: oklch(0.99 0.004 85);
+  --uw-surface: oklch(1 0 0);
+  --uw-surface-muted: oklch(0.96 0.006 85);
+  --uw-fg: oklch(0.22 0.01 60);
+  --uw-fg-muted: oklch(0.48 0.01 60);
+  --uw-border: oklch(0.88 0.008 80);
+  --uw-accent: oklch(0.42 0.1 30);
+  --uw-accent-fg: oklch(0.99 0.004 85);
+  --uw-focus: oklch(0.6 0.15 250);
+  --uw-mark-same: oklch(0.88 0.08 240);
+  --uw-mark-linked: oklch(0.9 0.14 95);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --uw-bg: oklch(0.18 0.008 60); --uw-surface: oklch(0.22 0.01 60); --uw-surface-muted: oklch(0.27 0.012 60);
+  --uw-fg: oklch(0.94 0.005 85); --uw-fg-muted: oklch(0.7 0.01 70); --uw-border: oklch(0.34 0.012 60);
+  --uw-accent: oklch(0.78 0.1 50); --uw-accent-fg: oklch(0.2 0.01 60); --uw-focus: oklch(0.72 0.14 250);
+  --uw-mark-same: oklch(0.42 0.09 240); --uw-mark-linked: oklch(0.45 0.1 95);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --uw-bg: oklch(0.18 0.008 60); --uw-surface: oklch(0.22 0.01 60); --uw-surface-muted: oklch(0.27 0.012 60);
+    --uw-fg: oklch(0.94 0.005 85); --uw-fg-muted: oklch(0.7 0.01 70); --uw-border: oklch(0.34 0.012 60);
+    --uw-accent: oklch(0.78 0.1 50); --uw-accent-fg: oklch(0.2 0.01 60); --uw-focus: oklch(0.72 0.14 250);
+    --uw-mark-same: oklch(0.42 0.09 240); --uw-mark-linked: oklch(0.45 0.1 95);
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--uw-bg); color: var(--uw-fg); font-family: var(--font-sans); }
+:focus-visible { outline: 2px solid var(--uw-focus); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* mockup toolbar (not part of the design) */
+.toolbar { position: sticky; top: 0; z-index: 50; display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 4);
+  align-items: center; padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4); background: var(--uw-surface-muted);
+  border-bottom: 1px solid var(--uw-border); font-size: var(--text-sm); }
+.toolbar label { display: inline-flex; gap: calc(var(--spacing) * 1); align-items: center; }
+.toolbar .note { color: var(--uw-fg-muted); }
+.toolbar output { font-family: ui-monospace, monospace; color: var(--uw-fg-muted); }
+
+/* Button (secondary / ghost, sm) */
+.btn { font: inherit; font-size: var(--text-sm); border-radius: var(--radius-md); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2); border: 1px solid transparent; background: transparent; color: var(--uw-fg); }
+.btn-secondary { border-color: var(--uw-border); background: var(--uw-surface); }
+.btn-secondary[aria-pressed="true"] { background: var(--uw-accent); color: var(--uw-accent-fg); border-color: var(--uw-accent); }
+.btn-ghost { color: var(--uw-fg-muted); }
+.btn-ghost:hover { background: var(--uw-surface-muted); }
+.btn svg { width: 1.25rem; height: 1.25rem; }
+.seg { display: inline-flex; }
+.seg .btn { border-radius: 0; }
+.seg .btn:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+.seg .btn:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+.seg .btn + .btn { margin-left: -1px; }
+
+/* simulated viewport */
+.stage { overflow: hidden; }
+.frame { border-inline: 1px dashed var(--uw-border); transform-origin: top left; overflow: hidden; background: var(--uw-bg); }
+.app-header { height: var(--app-header-h); display: flex; align-items: center; justify-content: space-between;
+  padding: 0 calc(var(--spacing) * 8); border-bottom: 1px solid var(--uw-border); background: var(--uw-surface); font-size: var(--text-sm); }
+main { max-width: 120rem; margin: 0 auto; padding: 0 calc(var(--spacing) * 8) calc(var(--spacing) * 16); }
+.frame[data-w="2560"] main { outline: 1px dashed var(--uw-border); } /* shows main's 120rem cap */
+.frame[data-w="2560"] { --side-panel-w: 40rem; }                    /* NEW: from 160rem */
+
+/* reader column (index.css) */
+.reader-col { position: relative; margin-inline: auto; max-width: 65ch; margin-top: calc(var(--spacing) * 6); }
+.frame[data-w="1280"] .reader-col { margin-inline: 0; max-width: min(65ch, calc(100% - var(--margin-card-w) - var(--spacing) * 8)); }
+.chapter-head { display: flex; justify-content: space-between; align-items: center; }
+.chapter-head h1 { font-family: var(--font-scripture); font-size: var(--text-3xl); margin: 0; }
+article { margin-top: calc(var(--spacing) * 6); font-family: var(--font-scripture); font-size: var(--text-2xl); line-height: 1.625; }
+.verse-row { position: relative; margin-top: calc(var(--spacing) * 2); }
+.verse-row p { margin: 0; }
+.verse-row sup { font-size: var(--text-xs); color: var(--uw-fg-muted); margin-right: calc(var(--spacing) * 1); font-family: var(--font-sans); }
+.w { border-radius: var(--radius-sm); cursor: pointer; }
+.w:hover, .w.linked { background: var(--uw-mark-linked); }
+.map-panel { margin: calc(var(--spacing) * 3) 0 calc(var(--spacing) * 6); padding: calc(var(--spacing) * 3); border: 1px solid var(--uw-border);
+  border-radius: var(--radius-lg); background: var(--uw-surface-muted); font-family: var(--font-sans); font-size: var(--text-sm); }
+.map-panel .orig { font-family: var(--font-original); font-size: var(--text-2xl); }
+.map-panel h3 { margin: calc(var(--spacing) * 3) 0 calc(var(--spacing) * 1); font-size: var(--text-sm); }
+
+/* NEW: from 120rem the verse row is a one-cell grid: German block and side panel share the cell */
+.wide .verse-row { display: grid; grid-template-areas: "verse"; }
+.wide .verse-main { grid-area: verse; min-width: 0; align-self: start; }
+
+/* NEW: sticky rail header in the left margin */
+.side-rail { position: absolute; top: 0; bottom: 0; right: calc(100% + var(--spacing) * 8); width: var(--side-panel-w); pointer-events: none; }
+.side-rail-head { pointer-events: auto; position: sticky; top: calc(var(--app-header-h) + var(--spacing) * 4);
+  display: flex; align-items: center; justify-content: space-between; gap: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2); border-bottom: 1px solid var(--uw-border); background: var(--uw-bg); z-index: 5; }
+.side-rail[data-mode="off"] .side-rail-head { border-bottom-color: transparent; justify-content: flex-end; }
+.side-rail-head h2 { margin: 0; font-size: var(--text-sm); font-weight: 600; }
+.side-rail-head .status { font-size: var(--text-xs); color: var(--uw-fg-muted); }
+
+/* NEW: per-verse panel (VerseSidePanel) */
+.verse-side { grid-area: verse; align-self: start; width: var(--side-panel-w);
+  margin-inline-start: calc(-1 * (var(--side-panel-w) + var(--spacing) * 8));
+  padding-top: var(--side-panel-pad); font-family: var(--font-sans); font-size: var(--text-sm); line-height: 1.25rem; }
+/* TSK: out of flow, as tall as the row, clipped with "+N" */
+.verse-side[data-mode="tsk"] { position: absolute; inset-block: 0; align-self: stretch; margin-inline-start: 0; right: calc(100% + var(--spacing) * 8); overflow: clip; }
+/* Grundtext: in flow -> row height = max(German, original); never clipped */
+.verse-side[data-mode="original"] { position: relative; }
+.verse-side ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; column-gap: calc(var(--spacing) * 1); }
+.verse-side li + li::before { content: "·"; color: var(--uw-fg-muted); margin-right: calc(var(--spacing) * 1); }
+.verse-side a { color: var(--uw-accent); text-decoration: underline; text-underline-offset: 2px; }
+.verse-side .more { position: absolute; right: 0; bottom: 0; padding-left: calc(var(--spacing) * 6);
+  background: linear-gradient(to right, transparent, var(--uw-bg) 35%); }
+.verse-side[data-expanded="true"] { inset-block-end: auto; max-height: 60dvh; overflow-y: auto; z-index: 20;
+  background: var(--uw-surface); border: 1px solid var(--uw-border); border-radius: var(--radius-lg);
+  padding: var(--side-panel-pad) calc(var(--spacing) * 3) calc(var(--spacing) * 3); box-shadow: 0 8px 24px oklch(0 0 0 / 0.15); }
+.verse-side[data-expanded="true"] .more { position: static; background: none; padding: 0; margin-top: calc(var(--spacing) * 2); }
+.verse-side .orig { font-family: var(--font-original); font-size: var(--orig-size, var(--text-lg)); line-height: 1.6; }
+.verse-side .orig a { color: inherit; text-decoration: none; border-radius: var(--radius-sm); }
+.verse-side .orig a:hover, .verse-side .orig a.linked { background: var(--uw-mark-linked); }
+.verse-side .orig a:hover { text-decoration: underline; }
+.verse-side .orig[dir="rtl"] { text-align: right; }
+.skeleton { height: 0.75rem; width: 70%; margin-top: 0.25rem; border-radius: var(--radius-sm); background: var(--uw-surface-muted); }
+.grown { outline: 1px dashed var(--uw-accent); outline-offset: 2px; } /* mockup only: marks rows that grew */
+
+/* right stack (MarginStack + WordInfoCard), unchanged behaviour */
+.margin-stack { position: absolute; left: calc(100% + var(--spacing) * 8); width: var(--margin-card-w); z-index: 10; }
+.margin-card { border: 1px solid var(--uw-border); border-radius: var(--radius-lg); background: var(--uw-surface);
+  padding: calc(var(--spacing) * 3); font-size: var(--text-sm); box-shadow: 0 4px 12px oklch(0 0 0 / 0.08); }
+.margin-card .o { font-family: var(--font-original); font-size: var(--text-xl); }
+.margin-card .m { color: var(--uw-fg-muted); }
+@media (prefers-reduced-motion: no-preference) { .verse-side ul, .verse-side .orig { animation: fade 150ms ease-out; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="toolbar" role="region" aria-label="Mockup-Steuerung">
+  <strong>Vers-Randspalte</strong>
+  <label>Theme <select id="theme"><option value="">System</option><option value="light">Hell</option><option value="dark">Dunkel</option></select></label>
+  <label>Breite <select id="width"><option>1920</option><option>2560</option><option>1280</option></select></label>
+  <label>Zustand <select id="state"><option value="ok">geladen</option><option value="loading">lädt</option><option value="error">Fehler</option></select></label>
+  <label><input type="checkbox" id="eye"> Augen-Panel unter Vers 2 offen</label>
+  <label>Grundtext-Schrift <select id="osize"><option value="">text-lg (Entwurf)</option><option value="var(--text-2xl)">text-2xl (zeigt Zeilenwachstum)</option></select></label>
+  <span class="note">G: TSK → Grundtext → aus · Wort hovern = Kreuz-Hervorhebung · „+N“ klappt auf · gestrichelt = gewachsene Zeile</span>
+  <output id="last" aria-live="polite"></output>
+</div>
+
+<div class="stage" id="stage">
+  <div class="frame" id="frame" data-w="1920">
+    <div class="app-header"><span>Unshackled Word</span><span>AT | NT · Johannes 3 · Stufe</span><span>🔍 ☾ DE</span></div>
+    <main>
+      <div class="reader-col" id="col">
+        <aside class="side-rail" id="rail" aria-label="Randspalte">
+          <div class="side-rail-head">
+            <div>
+              <h2 id="railHeading">Querverweise (TSK)</h2>
+              <div class="status" id="railStatus" role="status"></div>
+            </div>
+            <div class="seg" role="group" aria-label="Inhalt der Randspalte">
+              <button class="btn btn-secondary" data-mode="tsk" aria-label="Querverweise (TSK) zeigen (G)" title="Querverweise (TSK) zeigen (G)">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+              </button>
+              <button class="btn btn-secondary" data-mode="original" aria-label="Grundtext zeigen (G)" title="Grundtext zeigen (G)">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19 7.5 5 12 19M4.6 14h5.8"/><path d="M21 10c-1 4-2.6 9-5 9-1.7 0-2.5-1.6-2.5-3.5S14.4 11 16 11c2.4 0 3.2 5 5 8"/></svg>
+              </button>
+              <button class="btn btn-secondary" data-mode="off" aria-label="Randspalte ausblenden (G)" title="Randspalte ausblenden (G)">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>
+              </button>
+            </div>
+          </div>
+        </aside>
+        <header class="chapter-head"><span class="btn btn-ghost">‹</span><h1>Johannes 3</h1><span class="btn btn-ghost">›</span></header>
+        <article lang="de" id="article"></article>
+        <div class="margin-stack" id="stack" hidden><div class="margin-card" id="card"></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+<p class="sr-only" aria-live="polite" id="announce"></p>
+
+<script>
+const verses = [
+  { v: 1, de: "Es war aber ein Mensch aus den Pharisäern, sein Name Nikodemus, ein Oberster der Juden.",
+    gr: "Ἦν δὲ ἄνθρωπος ἐκ τῶν Φαρισαίων, Νικόδημος ὄνομα αὐτῷ, ἄρχων τῶν Ἰουδαίων·",
+    tsk: "Joh 3,10;Joh 7,47–49" },
+  { v: 2, de: "Dieser kam zu ihm bei der Nacht und sprach zu ihm: Rabbi, wir wissen, daß du ein Lehrer bist, von Gott gekommen, denn niemand kann diese Zeichen tun, die du tust, es sei denn Gott mit ihm.",
+    gr: "οὗτος ἦλθεν πρὸς τὸν Ἰησοῦν νυκτὸς καὶ εἶπεν αὐτῷ, Ῥαββί, οἴδαμεν ὅτι ἀπὸ θεοῦ ἐλήλυθας διδάσκαλος· οὐδεὶς γὰρ ταῦτα τὰ σημεῖα δύναται ποιεῖν ἃ σὺ ποιεῖς, ἐὰν μὴ ᾖ ὁ θεὸς μετ’ αὐτοῦ.",
+    tsk: "Joh 7,50–51;Joh 12,42–43;Joh 19,38–39;Ri 6,27;Jes 51,7;Phil 1,14;Joh 3,26;Joh 1,38;Joh 20,16;Mt 22,16;Mk 12,14;Joh 5,36;Joh 7,31;Joh 9,16;Joh 9,30–33;Joh 11,47–48;Joh 12,37;Joh 15,24;Apg 2,22;Apg 4,16–17;Apg 10,38" },
+  { v: 3, de: "Jesus antwortete und sprach zu ihm: Wahrlich, wahrlich, ich sage dir: Es sei denn, daß jemand von neuem geboren werde, so kann er das Reich Gottes nicht sehen.",
+    gr: "ἀπεκρίθη ὁ Ἰησοῦς καὶ εἶπεν αὐτῷ, Ἀμὴν ἀμὴν λέγω σοι, ἐὰν μή τις γεννηθῇ ἄνωθεν, οὐ δύναται ἰδεῖν τὴν βασιλείαν τοῦ θεοῦ.",
+    tsk: "Joh 1,51;Mt 5,18;2Kor 1,19–20;Offb 3,14;Joh 3,5–6;Joh 1,13;Gal 6,15;Eph 2,1;Tit 3,5;Jak 1,18;1Petr 1,3;1Petr 1,23–25;1Joh 2,29;1Joh 3,9;1Joh 5,1;1Joh 5,18;Jak 1,17;Jak 3,17;Joh 1,5;Joh 12,40;5Mo 29,4;Jer 5,21;Mt 13,11–16;Mt 16,17;2Kor 4,4" },
+  { v: 4, de: "Nikodemus spricht zu ihm: Wie kann ein Mensch geboren werden, wenn er alt ist? Kann er etwa zum zweiten Male in den Leib seiner Mutter eingehen und geboren werden?",
+    gr: "λέγει πρὸς αὐτὸν ὁ Νικόδημος, Πῶς δύναται ἄνθρωπος γεννηθῆναι γέρων ὤν; μὴ δύναται εἰς τὴν κοιλίαν τῆς μητρὸς αὐτοῦ δεύτερον εἰσελθεῖν καὶ γεννηθῆναι;",
+    tsk: "Joh 3,3;Joh 4,11–12;Joh 6,53;Joh 6,60;1Kor 1,18;1Kor 2,14" },
+  { v: 5, de: "Jesus antwortete: Wahrlich, wahrlich, ich sage dir: Es sei denn, daß jemand aus Wasser und Geist geboren werde, so kann er nicht in das Reich Gottes eingehen.",
+    gr: "ἀπεκρίθη Ἰησοῦς, Ἀμὴν ἀμὴν λέγω σοι, ἐὰν μή τις γεννηθῇ ἐξ ὕδατος καὶ πνεύματος, οὐ δύναται εἰσελθεῖν εἰς τὴν βασιλείαν τοῦ θεοῦ.",
+    tsk: "Joh 3,3;Jes 44,3–4;Hes 36,25–27;Mt 3,11;Mk 16,16;Apg 2,38;Eph 5,26;Tit 3,4–7;1Petr 1,2;1Petr 3,21;1Joh 5,6–8;Joh 1,13;Röm 8,2;1Kor 2,12;1Kor 6,11;1Joh 2,29;1Joh 5,1;Mt 5,20;Mt 18,3;Mt 28,19;Lk 13,3;Lk 13,5;Lk 13,24;Apg 3,19;Röm 14,17;2Kor 5,17–18;Gal 6,15;Eph 2,4–10;2Thes 2,13–14" },
+  { v: 6, de: "Was aus dem Fleische geboren ist, ist Fleisch, und was aus dem Geiste geboren ist, ist Geist.",
+    gr: "τὸ γεγεννημένον ἐκ τῆς σαρκὸς σάρξ ἐστιν, καὶ τὸ γεγεννημένον ἐκ τοῦ πνεύματος πνεῦμά ἐστιν.",
+    tsk: "1Mo 5,3;1Mo 6,5;1Mo 6,12;Hi 14,4;Hi 15,14–16;Hi 25,4;Ps 51,10;Röm 7,5;Röm 7,18;Röm 7,25;Röm 8,1;Röm 8,4;Röm 8,5–9;Röm 8,13;1Kor 15,47–49;2Kor 5,17;Gal 5,16–21;Gal 5,24;Eph 2,3;Kol 2,11;Hes 11,19;Hes 11,20;Hes 36,26;Hes 36,27;Röm 8,9;1Kor 6,17;Gal 5,17;1Joh 3,9" },
+];
+// German / Greek word -> Strong's (stand-in for the mapping links)
+const keys = {
+  Mensch: "G444", ἄνθρωπος: "G444", Pharisäern: "G5330", Φαρισαίων: "G5330", Nikodemus: "G3530", Νικόδημος: "G3530",
+  Juden: "G2453", Ἰουδαίων: "G2453", Nacht: "G3571", νυκτὸς: "G3571", Rabbi: "G4461", Ῥαββί: "G4461",
+  Gott: "G2316", Gottes: "G2316", θεοῦ: "G2316", θεὸς: "G2316", geboren: "G1080", γεννηθῇ: "G1080", γεννηθῆναι: "G1080",
+  Reich: "G932", βασιλείαν: "G932", Wasser: "G5204", ὕδατος: "G5204", Geist: "G4151", πνεύματος: "G4151",
+  Wahrlich: "G281", wahrlich: "G281", Ἀμὴν: "G281", ἀμὴν: "G281", Mutter: "G3384", μητρὸς: "G3384",
+  Jesus: "G2424", Ἰησοῦς: "G2424", Ἰησοῦν: "G2424", Zeichen: "G4592", σημεῖα: "G4592", Lehrer: "G1320", διδάσκαλος: "G1320",
+  Name: "G3686", ὄνομα: "G3686", Oberster: "G758", ἄρχων: "G758", kam: "G2064", ἦλθεν: "G2064", sprach: "G2036", εἶπεν: "G2036",
+  Fleische: "G4561", Fleisch: "G4561", σαρκὸς: "G4561", σάρξ: "G4561", Geiste: "G4151", πνεῦμά: "G4151", γεγεννημένον: "G1080",
+  wissen: "G1492", οἴδαμεν: "G1492", sehen: "G1492", ἰδεῖν: "G1492", alt: "G1088", γέρων: "G1088", Leib: "G2836", κοιλίαν: "G2836",
+};
+const lemmas = { G444: "ἄνθρωπος", G5330: "Φαρισαῖος", G3530: "Νικόδημος", G2453: "Ἰουδαῖος", G3571: "νύξ", G4461: "ῥαββί",
+  G2316: "θεός", G1080: "γεννάω", G932: "βασιλεία", G5204: "ὕδωρ", G4151: "πνεῦμα", G281: "ἀμήν", G3384: "μήτηρ",
+  G2424: "Ἰησοῦς", G4592: "σημεῖον", G1320: "διδάσκαλος", G3686: "ὄνομα", G758: "ἄρχων", G2064: "ἔρχομαι", G2036: "ἔπω",
+  G1492: "οἶδα", G4561: "σάρξ", G1088: "γέρων", G2836: "κοιλία" };
+const clean = (w) => w.replace(/[.,;:?!·’]/g, "");
+const MODES = ["tsk", "original", "off"];
+const LABEL = { tsk: "Querverweise (TSK)", original: "Grundtext", off: "" };
+const ANNOUNCE = { tsk: "Querverweise werden angezeigt", original: "Grundtext wird angezeigt", off: "Randspalte ausgeblendet" };
+
+const $ = (id) => document.getElementById(id);
+let mode = "tsk", expanded = null;
+try { mode = MODES.includes(localStorage.getItem("uw.sidePanel")) ? localStorage.getItem("uw.sidePanel") : "tsk"; } catch {}
+
+function render() {
+  const state = $("state").value, wide = $("width").value !== "1280";
+  $("frame").classList.toggle("wide", wide);
+  $("frame").style.setProperty("--orig-size", $("osize").value || "var(--text-lg)");
+  $("rail").hidden = !wide;
+  $("rail").dataset.mode = mode;
+  $("railHeading").textContent = mode === "off" ? "Randspalte" : LABEL[mode];
+  $("railHeading").className = mode === "off" ? "sr-only" : "";
+  document.querySelectorAll(".seg .btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+  const what = mode === "tsk" ? "Querverweise" : "Grundtext";
+  $("railStatus").innerHTML = mode === "off" ? "" : state === "loading" ? `${what} ${mode === "tsk" ? "werden" : "wird"} geladen …`
+    : state === "error" ? `${what} konnte${mode === "tsk" ? "n" : ""} nicht geladen werden. <button class="btn btn-ghost">Erneut versuchen</button>` : "";
+  const art = $("article");
+  art.innerHTML = "";
+  for (const verse of verses) {
+    const row = document.createElement("div");
+    row.className = "verse-row"; row.id = `v${verse.v}`;
+    const main = document.createElement("div");
+    main.className = "verse-main";
+    const words = verse.de.split(" ").map((w) => `<span class="w" data-k="${keys[clean(w)] ?? ""}" data-v="${verse.v}">${w}</span>`).join(" ");
+    main.innerHTML = `<p><sup>${verse.v}</sup>${words}</p>`;
+    if (verse.v === 2 && $("eye").checked) {
+      main.insertAdjacentHTML("beforeend", `<section class="map-panel" aria-label="Grundtext von Johannes 3,2"><div class="orig" lang="grc">${verse.gr}</div>`
+        + `<p>[Lemma] [Strong's] [Morphologie] – bestehendes Augen-Panel, macht die Zeile höher</p>`
+        + (wide ? "" : `<h3>Querverweise (TSK)</h3><p>${verse.tsk.split(";").join(" · ")}</p><p><em>S6: volle TSK-Liste unter 1920px</em></p>`) + `</section>`);
+    }
+    row.appendChild(main);
+    if (wide && mode !== "off") row.appendChild(sidePanel(verse, state));
+    art.appendChild(row);
+  }
+  measure();
+  fit();
+}
+
+function sidePanel(verse, state) {
+  const el = document.createElement("div");
+  el.className = "verse-side"; el.setAttribute("role", "group");
+  el.dataset.v = verse.v; el.dataset.mode = mode;
+  el.setAttribute("aria-label", mode === "tsk" ? `Querverweise zu Vers ${verse.v}` : `Grundtext von Vers ${verse.v}`);
+  if (expanded === verse.v) el.dataset.expanded = "true";
+  if (state === "loading") { el.innerHTML = `<div class="skeleton"></div>`; return el; }
+  if (state === "error") return el;
+  if (mode === "tsk") {
+    el.innerHTML = `<ul>${verse.tsk.split(";").map((r) => `<li><a href="#" tabindex="-1">${r}</a></li>`).join("")}</ul>`
+      + `<span class="more"><button class="btn btn-ghost" aria-expanded="${expanded === verse.v}"></button></span>`;
+  } else {
+    const ws = verse.gr.split(" ").map((w) => {
+      const k = keys[clean(w)];
+      return k ? `<a href="/bible/strongs/${k}" tabindex="-1" data-k="${k}" data-v="${verse.v}" title="${k} · Strong's-Seite" aria-label="${clean(w)}, ${k}: Strong's-Seite öffnen">${w}</a>` : w;
+    });
+    el.innerHTML = `<div class="orig" lang="grc" dir="ltr">${ws.join(" ")}</div>`;
+  }
+  const first = el.querySelector("a"); if (first) first.tabIndex = 0; // roving tabindex: one Tab stop per panel
+  return el;
+}
+
+function measure() {
+  document.querySelectorAll(".verse-side").forEach((el) => {
+    const row = el.parentElement, main = row.querySelector(".verse-main");
+    if (el.dataset.mode === "original") row.classList.toggle("grown", el.offsetHeight > main.offsetHeight + 1);
+    const more = el.querySelector(".more button"); if (!more) return;
+    if (el.dataset.expanded === "true") { more.textContent = "Weniger"; more.setAttribute("aria-label", "Weniger anzeigen"); return; }
+    const limit = el.getBoundingClientRect().bottom;
+    const hidden = [...el.querySelectorAll("li")].filter((li) => li.getBoundingClientRect().bottom > limit + 1).length;
+    more.parentElement.hidden = hidden === 0;
+    more.textContent = `+${hidden}`;
+    more.setAttribute("aria-label", `${hidden} weitere Querverweise anzeigen`);
+  });
+}
+
+function setMode(next) {
+  // keep the verse at the top of the viewport in place across the reflow
+  const rows = [...document.querySelectorAll(".verse-row")];
+  const anchor = rows.find((r) => r.getBoundingClientRect().bottom > 0);
+  const before = anchor?.getBoundingClientRect().top;
+  mode = next; expanded = null;
+  try { localStorage.setItem("uw.sidePanel", mode); } catch {}
+  render();
+  if (anchor) { const now = $(anchor.id).getBoundingClientRect().top; window.scrollBy(0, now - before); }
+  $("announce").textContent = ANNOUNCE[mode];
+}
+
+function highlight(k, v, on) {
+  document.querySelectorAll(`[data-v="${v}"][data-k="${k}"]`).forEach((n) => n.classList.toggle("linked", on));
+  const stack = $("stack");
+  if (!on || !k) { stack.hidden = true; return; }
+  const scale = $("frame").getBoundingClientRect().width / $("frame").offsetWidth;
+  stack.style.top = `${($(`v${v}`).getBoundingClientRect().top - $("col").getBoundingClientRect().top) / scale}px`;
+  $("card").innerHTML = `<div class="o" lang="grc">${lemmas[k] ?? ""}</div><div class="m">Lemma ${lemmas[k] ?? ""} · ${k}</div><div class="m">WordInfoCard (rechter Rand, unverändert)</div>`;
+  stack.hidden = false;
+}
+
+$("article").addEventListener("mouseover", (e) => { const t = e.target.closest("[data-k]"); if (t?.dataset.k) highlight(t.dataset.k, t.dataset.v, true); });
+$("article").addEventListener("mouseout", (e) => { const t = e.target.closest("[data-k]"); if (t?.dataset.k) highlight(t.dataset.k, t.dataset.v, false); });
+$("article").addEventListener("click", (e) => {
+  const a = e.target.closest("a");
+  if (a) { e.preventDefault(); $("last").textContent = a.getAttribute("href") === "#" ? `→ /bible/…#v (${a.textContent})` : `→ ${a.getAttribute("href")}`; }
+  const btn = e.target.closest(".more button"); if (!btn) return;
+  const v = Number(btn.closest(".verse-side").dataset.v);
+  expanded = expanded === v ? null : v; render();
+});
+$("article").addEventListener("keydown", (e) => {
+  const panel = e.target.closest(".verse-side"); if (!panel) return;
+  const items = [...panel.querySelectorAll("a")]; const i = items.indexOf(e.target);
+  if (e.key === "Escape" && expanded) { expanded = null; render(); return; }
+  if (i < 0 || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+  e.preventDefault();
+  const j = e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : Math.min(items.length - 1, Math.max(0, i + (e.key === "ArrowRight" ? 1 : -1)));
+  items[i].tabIndex = -1; items[j].tabIndex = 0; items[j].focus();
+});
+$("article").addEventListener("focusin", (e) => {
+  const panel = e.target.closest(".verse-side");
+  if (panel && panel.dataset.mode === "tsk" && panel.querySelector(".more:not([hidden])") && panel.dataset.expanded !== "true") {
+    expanded = Number(panel.dataset.v); render();
+    document.querySelector(`.verse-side[data-v="${expanded}"] a`)?.focus();
+  }
+});
+document.addEventListener("click", (e) => { if (expanded && !e.target.closest(".verse-side")) { expanded = null; render(); } });
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "g" || e.key === "G") && !e.target.closest("input, select, textarea") && $("width").value !== "1280")
+    setMode(MODES[(MODES.indexOf(mode) + 1) % MODES.length]);
+});
+document.querySelectorAll(".seg .btn").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+$("theme").addEventListener("change", (e) => { if (e.target.value) document.documentElement.dataset.theme = e.target.value; else delete document.documentElement.dataset.theme; });
+for (const id of ["state", "eye", "osize"]) $(id).addEventListener("change", render);
+$("width").addEventListener("change", () => { $("frame").dataset.w = $("width").value; render(); });
+
+function fit() {
+  const w = Number($("width").value), frame = $("frame");
+  frame.style.width = `${w}px`;
+  const scale = Math.min(1, document.documentElement.clientWidth / w);
+  frame.style.transform = `scale(${scale})`;
+  $("stage").style.height = `${frame.offsetHeight * scale}px`;
+}
+window.addEventListener("resize", () => { fit(); measure(); });
+render();
+</script>
+</body>
+</html>
