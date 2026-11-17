@@ -28,7 +28,7 @@ public class SblTextDownloader : IFileDownloader
 
         foreach (var file in Constants.SblDownloadFileNames.Keys)
         {
-            var filePath = _fileService.Combine(sblSettings.TextFilePath, $"{file}.txt");
+            var filePath = _fileService.Combine(_options.DatabaseSeeding.SolutionTempPath, sblSettings.TextFilePath, $"{file}.txt");
 
             if (_fileService.FileExists(filePath))
             {
@@ -56,7 +56,8 @@ public class SblTextDownloader : IFileDownloader
 
     public void EnsurePath()
     {
-        _fileService.CreateDirectoryIfNotExists(new DirectoryInfo(_options.DatabaseSeeding.SblSettings.TextFilePath).Parent.FullName);
-        _fileService.CreateDirectoryIfNotExists(_options.DatabaseSeeding.SblSettings.TextFilePath);
+        var textPath = _fileService.Combine(_options.DatabaseSeeding.SolutionTempPath, _options.DatabaseSeeding.SblSettings.TextFilePath);
+        _fileService.CreateDirectoryIfNotExists(new DirectoryInfo(textPath).Parent.FullName);
+        _fileService.CreateDirectoryIfNotExists(textPath);
     }
 }

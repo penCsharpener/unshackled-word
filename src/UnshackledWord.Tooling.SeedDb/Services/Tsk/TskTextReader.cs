@@ -39,7 +39,7 @@ public class TskTextReader
             return [];
         }
 
-        using var textReader = new StreamReader(_appSettings.DatabaseSeeding.TskFilePath);
+        using var textReader = new StreamReader(tskPath);
         using var csvReader = new CsvHelper.CsvReader(textReader, settings);
         var list = new List<TskReference>();
 
