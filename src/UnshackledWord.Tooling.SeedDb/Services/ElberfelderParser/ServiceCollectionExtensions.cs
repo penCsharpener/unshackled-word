@@ -7,6 +7,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<BibleVerseCoutingMappingStrategy>();
         services.AddScoped<Elb1871VerseRunner>();
         services.AddScoped<ElberfelderTextRunner>();
+        services.AddScoped<HyphenTypoDetectionService>();
+        services.AddScoped<HyphenFixRunner>();
+        services.AddScoped<HyphenFixVerseRunner>();
         return services;
     }
 }
