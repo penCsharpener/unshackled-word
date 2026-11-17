@@ -1,3 +1,4 @@
+using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetVerseMapping;
@@ -44,6 +45,9 @@ public sealed class RevisionMappingService : IRevisionMappingService
                 IsAddedWord = r.IsAddedWord,
                 ParentElbWordId = r.IsAddedWord && r.ParentRevisionWordId is { } parent && order.ContainsKey(parent) ? parent : null,
                 Origin = r.Origin,
+                Role = r.Role == MappingRoles.Unit && !r.IsAddedWord ? MappingRoles.Unit : MappingRoles.Head,
+                StrongsNumber = hebrew && !r.IsAddedWord && !string.IsNullOrWhiteSpace(r.StrongsNumber) ? r.StrongsNumber : null,
+                AllowMultiHead = r.MultiHead && !r.IsAddedWord ? true : null,
             })
             .Where(l => !l.IsAddedWord || l.ParentElbWordId is not null)
             .OrderBy(l => order[l.ElbWordId])
@@ -63,7 +67,7 @@ public sealed class RevisionMappingService : IRevisionMappingService
             GermanWords = words
                 .Select(w => new RevisionMappingGermanWord { Id = w.Id, PositionInVerse = w.PositionInVerse, Text = w.WordInContext, Change = w.Change })
                 .ToList(),
-            OriginalWords = originalWords.Select(w => w.ToResponse()).ToList(),
+            OriginalWords = originalWords.Select(w => w.ToResponse(withMorphemes: hebrew)).ToList(),
             Links = links,
         };
     }
@@ -77,15 +81,27 @@ public sealed class RevisionMappingService : IRevisionMappingService
         }
 
         var (bookId, chapter, verse) = RevisionSql.Split(header.HebRefId);
+        var hebrew = RevisionSql.IsHebrew(bookId);
         var words = await _repository.GetWordsAsync(revisionVerseId, token);
-        var originalWords = await _verseMapping.GetOriginalWordsAsync(RevisionSql.IsHebrew(bookId), bookId, chapter, verse, token);
+        var originalWords = await _verseMapping.GetOriginalWordsAsync(hebrew, bookId, chapter, verse, token);
+        var stored = await _repository.GetMappingAsync(revisionVerseId, token);
 
-        var validation = await new SaveVerseMappingValidator().ValidateAsync(new VerseMappingSaveInput
+        // Revision words have no STTS tag, so the APPRART exception of the unit rule does not apply here.
+        var germanWords = words.Select(w => new VerseGermanWordRow { Id = w.Id, PositionInVerse = w.PositionInVerse, Text = w.WordInContext }).ToList();
+        var roleAware = MappingRoles.IsRoleAware(links);
+        if (!roleAware)
         {
-            Links = links,
-            GermanWordIds = words.Select(w => w.Id).ToHashSet(),
-            OriginalWordIds = originalWords.Select(w => w.Id).ToHashSet(),
-        }, token);
+            links = VerseMappingService.KeepStoredRoles(
+                links,
+                stored.Select(r => (r.RevisionWordId, r.StepWordId, r.IsAddedWord, r.Role, r.StrongsNumber, r.MultiHead, r.GermanWordPart, r.PartLemma)),
+                germanWords,
+                originalWords,
+                hebrew);
+        }
+
+        // Compound parts are not edited in revisions (kept from the stored row below), so the input has no word texts.
+        var input = VerseMappingService.BuildInput(links, germanWords, originalWords, hebrew, enforceSingleHead: roleAware, partsSupported: false);
+        var validation = await new SaveVerseMappingValidator().ValidateAsync(input, token);
 
         if (!validation.IsValid)
         {
@@ -96,9 +112,10 @@ public sealed class RevisionMappingService : IRevisionMappingService
             };
         }
 
-        var existing = (await _repository.GetMappingAsync(revisionVerseId, token))
+        var existing = stored
             .GroupBy(r => (r.RevisionWordId, r.StepWordId))
             .ToDictionary(g => g.Key, g => g.First());
+        var multiHead = VerseMappingService.AcceptedMultiHeads(links, input);
 
         var rows = links
             .Select(l =>
@@ -106,7 +123,11 @@ public sealed class RevisionMappingService : IRevisionMappingService
                 var step = l.IsAddedWord ? null : l.StepWordId;
                 var parent = l.IsAddedWord ? l.ParentElbWordId : null;
                 existing.TryGetValue((l.ElbWordId, step), out var old);
-                var unchanged = old is not null && old.IsAddedWord == l.IsAddedWord && old.ParentRevisionWordId == parent;
+                var real = !l.IsAddedWord && step is not null;
+                var role = real && MappingRoles.IsUnit(l) ? MappingRoles.Unit : MappingRoles.Head;
+                var strongs = hebrew && real && !string.IsNullOrWhiteSpace(l.StrongsNumber) ? input.MorphemeKey(l).Morpheme : null;
+                var unchanged = old is not null && old.IsAddedWord == l.IsAddedWord && old.ParentRevisionWordId == parent
+                                && old.Role == role && old.StrongsNumber == strongs;
 
                 return new RevisionMappingRow
                 {
@@ -116,6 +137,10 @@ public sealed class RevisionMappingService : IRevisionMappingService
                     ParentRevisionWordId = parent,
                     GermanWordPart = old?.GermanWordPart,
                     Origin = unchanged ? old!.Origin : RevisionOrigin.Manual,
+                    Role = role,
+                    StrongsNumber = strongs,
+                    PartLemma = old?.GermanWordPart is null ? null : old.PartLemma,
+                    MultiHead = real && role == MappingRoles.Head && multiHead.Contains(input.MorphemeKey(l)),
                 };
             })
             .ToList();

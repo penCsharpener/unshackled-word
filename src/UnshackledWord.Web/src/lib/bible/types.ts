@@ -357,6 +357,8 @@ export interface StrongsRendering {
   /** Part of speech (snapshot mode only). */
   pos?: string;
   count: number;
+  /** Instances linked but without an own German lemma (contractions); `word` and `key` are empty. */
+  noOwnLemma?: boolean;
 }
 /** One lexicon variant, only present when the number was requested without a letter (G3004 = G3004G + G3004H). */
 export interface StrongsVariant {
@@ -384,6 +386,8 @@ export interface GetStrongsSummaryResponse {
   statsRefreshedAt?: string | null;
   /** True while a refresh runs on the server. */
   statsRefreshing: boolean;
+  /** When the link-role backfill ran; absent = counts still include auxiliaries and prefixes. */
+  linkRolesAppliedAt?: string | null;
 }
 
 export type WordStatsTestament = "all" | "ot" | "nt";
@@ -435,7 +439,20 @@ export interface VerseMappingOriginalWord {
   morphologyCode?: string;
   /** decoded `morphologyCode`; only in the chapter originals response */
   morphology?: Morphology;
+  /** Hebrew only (verse mapping): the morphemes of the word in order (וַיֹּאמֶר = H9001 + H0559), punctuation left out. */
+  morphemes?: VerseMappingMorpheme[];
 }
+/** One morpheme of a Hebrew word (roadmap 0018); a link picks one with `strongsNumber`. */
+export interface VerseMappingMorpheme {
+  /** Strong's tag without braces (`H9001`, `H0430G`) */
+  strongs: string;
+  /** the braced main morpheme; a link without `strongsNumber` renders this one */
+  isMain: boolean;
+  original?: string;
+  gloss?: string;
+}
+/** `head` carries the meaning of the source morpheme (counted); `unit` belongs to the head's German form (`habe` in `habe getauft`). */
+export type MappingRole = "head" | "unit";
 /**
  * One mapping row of a verse. A normal link has `stepWordId`; an added word has `isAddedWord`
  * and `parentElbWordId` (the German word it belongs to) instead.
@@ -445,6 +462,21 @@ export interface VerseMappingLink {
   stepWordId?: number;
   isAddedWord: boolean;
   parentElbWordId?: number;
+  /** Compound word (`Gerstenernte` = `Gersten` + `ernte`): 1-based order of the part, set together with `germanWordPart`. */
+  partOrder?: number;
+  /** The part of the German word this link belongs to (`ernte`); every link of a word with parts has one. */
+  germanWordPart?: string;
+  /**
+   * Roadmap 0018. Always set in responses; in a save, null means head. Sending any of `role`, `strongsNumber`, `partLemma`,
+   * `allowMultiHead` makes the save role-aware (all invariants checked); see `stateToLinks`.
+   */
+  role?: MappingRole;
+  /** Hebrew only: the morpheme of the original word this link renders; null = the main morpheme. */
+  strongsNumber?: string;
+  /** Lemma of the compound part (`Gerste` of `Gersten`); only with `germanWordPart`. */
+  partLemma?: string;
+  /** Several heads accepted on this link's morpheme (idioms); returned true on each of its heads. */
+  allowMultiHead?: boolean;
 }
 export interface GetVerseMappingResponse {
   bibleBookId: number;
@@ -459,6 +491,8 @@ export interface GetVerseMappingResponse {
 }
 export interface PutVerseMappingRequest {
   links: VerseMappingLink[];
+  /** Confirms that stored compound parts of the verse may be removed by this save. */
+  clearParts?: boolean;
 }
 
 /** Smart-search lookup (`search/originals`), see roadmap 0008.5. */

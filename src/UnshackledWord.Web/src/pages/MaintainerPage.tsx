@@ -9,6 +9,9 @@ import { ApiError, describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasRevisionOverviewRole, hasWriteRole } from "@/lib/auth/roles";
 import { exportSeed, type SeedKind, saveBlob } from "@/lib/maintainer/api";
+import { AgentRunsSection } from "./agent/AgentRunsSection";
+import { ApiTokensSection } from "./agent/ApiTokensSection";
+import { LinkRolesSection } from "./LinkRolesSection";
 import { RevisionLevelsSection } from "./RevisionLevelsSection";
 import { RevisionOverviewSection } from "./RevisionOverviewSection";
 import { SeedRoundTripSection } from "./SeedRoundTripSection";
@@ -78,8 +81,11 @@ export function MaintainerPage() {
             </div>
           ) : null}
           {hasWriteRole(user) ? <SeedRoundTripSection /> : null}
+          {hasWriteRole(user) ? <LinkRolesSection /> : null}
           <RevisionOverviewSection />
           {hasWriteRole(user) ? <RevisionLevelsSection /> : null}
+          {hasWriteRole(user) ? <AgentRunsSection /> : null}
+          {hasWriteRole(user) ? <ApiTokensSection /> : null}
         </>
       ) : (
         <p role="alert" className="text-fg-muted">

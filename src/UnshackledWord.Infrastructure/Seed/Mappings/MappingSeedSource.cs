@@ -62,6 +62,11 @@ public sealed class MappingSeedSourceReader
             return null;
         }
 
+        if (formats.Count > 1 && formats.All(MappingSeedFormat.IsAnchored))
+        {
+            formats = [formats.Max()]; // format 2 and 3 files side by side read the same way
+        }
+
         if (formats.Count > 1)
         {
             _logger.LogError("The mapping files in {Folder} are of mixed formats; neither is imported", layout.MappingsRoot);

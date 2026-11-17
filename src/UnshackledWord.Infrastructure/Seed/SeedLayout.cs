@@ -14,7 +14,7 @@ public sealed class SeedLayout
     public const string AnchorsFolder = "anchors";
     public const string ReportFolder = "seed-report";
     public const string MappingsFolder = "Elb1871Mappings";
-    public const int MappingsFormat = 2;
+    public const int MappingsFormat = 3;
 
     /// <summary>Revision seed (roadmap 0011.11), below the seed root: <c>revision/levels.csv</c>, <c>revision/verses/NN-Book.csv</c>, <c>revision/mapping/NN-Book.csv</c>.</summary>
     public const string RevisionFolder = "revision";

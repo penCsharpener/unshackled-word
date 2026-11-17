@@ -75,7 +75,7 @@ public class RevisionSeedImporterTests
         var (mappingBytes, _) = SeedCsv.Serialize<RevisionMappingSeedLine, RevisionMappingSeedLineMap>(mapping);
 
         System.Text.Encoding.UTF8.GetString(verseBytes).Split('\n')[0].ShouldBe("Ref,Level,BasedOnLevel,BaseHash,Text,Note,Reviewed");
-        System.Text.Encoding.UTF8.GetString(mappingBytes).Split('\n')[0].ShouldBe("Ref,Level,Pos,Form,Part,SrcRef,SrcPos,SrcHash,Added,ParentPos,ParentForm,Origin");
+        System.Text.Encoding.UTF8.GetString(mappingBytes).Split('\n')[0].ShouldBe("Ref,Level,Pos,Form,Part,SrcRef,SrcPos,SrcHash,Added,ParentPos,ParentForm,Origin,Role,Strongs,PartLemma,MultiHead");
 
         var readVerses = SeedCsv.Read<RevisionVerseSeedLine, RevisionVerseSeedLineMap>(verseBytes);
         readVerses.Count.ShouldBe(2);

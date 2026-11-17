@@ -33,7 +33,7 @@ public sealed class RevisionVerseSeedLineMap : ClassMap<RevisionVerseSeedLine>
     }
 }
 
-/// <summary><c>revision/mapping/NN-Book.csv</c>: <c>Ref,Level,Pos,Form,Part,SrcRef,SrcPos,SrcHash,Added,ParentPos,ParentForm,Origin</c>.</summary>
+/// <summary><c>revision/mapping/NN-Book.csv</c>: <c>Ref,Level,Pos,Form,Part,SrcRef,SrcPos,SrcHash,Added,ParentPos,ParentForm,Origin,Role,Strongs,PartLemma,MultiHead</c>; the last four (roadmap 0018) are empty for the defaults and missing in older files, which are detected by their header lacking <c>Role</c>.</summary>
 public sealed class RevisionMappingSeedLineMap : ClassMap<RevisionMappingSeedLine>
 {
     public RevisionMappingSeedLineMap()
@@ -50,5 +50,9 @@ public sealed class RevisionMappingSeedLineMap : ClassMap<RevisionMappingSeedLin
         Map(x => x.ParentPos).Index(9).Name("ParentPos");
         Map(x => x.ParentForm).Index(10).Name("ParentForm");
         Map(x => x.Origin).Index(11).Name("Origin");
+        Map(x => x.Role).Index(12).Name("Role").TypeConverter<RoleConverter>().Optional();
+        Map(x => x.Strongs).Index(13).Name("Strongs").Optional();
+        Map(x => x.PartLemma).Index(14).Name("PartLemma").Optional();
+        Map(x => x.MultiHead).Index(15).Name("MultiHead").TypeConverter<TrueOnlyFlagConverter>().Optional();
     }
 }

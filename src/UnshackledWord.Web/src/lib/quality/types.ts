@@ -35,6 +35,8 @@ export interface OverviewResponse {
   refreshedAt?: string | null;
   /** Last successful refresh of the mapping stats snapshot; absent until the first one. */
   statsRefreshedAt?: string | null;
+  /** When the link-role backfill ran; absent until then. */
+  linkRolesAppliedAt?: string | null;
   refreshing: boolean;
   lastEditAt?: string;
   /** Absent or empty on installs that never imported a repo seed. */

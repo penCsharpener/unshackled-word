@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
+import { AgentRunDialog } from "@/components/AgentRunDialog";
 import { BibleChapterPicker } from "@/components/BibleChapterPicker";
 import { Button, buttonClasses } from "@/components/Button";
 import { CrossReferenceList } from "@/components/CrossReferenceList";
@@ -22,7 +23,7 @@ import { MarginStack } from "@/components/MarginStack";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { RevisionEditor } from "@/components/RevisionEditor";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
-import { ApiError } from "@/lib/api";
+import { ApiError, describeApiErrors } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
@@ -94,6 +95,8 @@ export function ChapterPage() {
   const [verseView, setVerseView] = useState<"original" | "align">("original");
   /** Verse whose revision panel is open; independent of the original-text / mapping view (eye icon). */
   const [reviseVerse, setReviseVerse] = useState<number>();
+  /** Range the "KI neu zuordnen" dialog was opened with (a verse from the mapping editor, the chapter from its header). */
+  const [aiRange, setAiRange] = useState<{ fromVerse: number; toVerse?: number }>();
   const [showLemma, setShowLemma] = useState(false);
   const [showStrongs, setShowStrongs] = useState(false);
   const [showMorphology, setShowMorphology] = useState(false);
@@ -562,6 +565,27 @@ export function ChapterPage() {
           </h1>
           {renderLink(next, "next", false)}
         </header>
+        {canRevise && (
+          <div className="mt-2 flex justify-center">
+            <Button variant="ghost" size="sm" onClick={() => setAiRange({ fromVerse: 1 })}>
+              {t("agent.chapter.aiRedo")}
+            </Button>
+          </div>
+        )}
+        {aiRange && (
+          <AgentRunDialog
+            open
+            onClose={() => setAiRange(undefined)}
+            bookName={bookName(book, language)}
+            initial={{
+              book: ref.bookId,
+              fromChapter: ref.chapter,
+              fromVerse: aiRange.fromVerse,
+              toChapter: ref.chapter,
+              toVerse: aiRange.toVerse,
+            }}
+          />
+        )}
         {wide && (
           <SidePanelRail
             mode={sideMode}
@@ -754,15 +778,22 @@ export function ChapterPage() {
                             reference={`${reference(ref)},${v.verse}`}
                             saving={saveMapping.isPending}
                             saveError={saveError()}
+                            saveErrorDetails={describeApiErrors(saveMapping.error)}
+                            partsEditable={revisedId === undefined}
+                            onAiRedo={
+                              canRevise && revisedId === undefined
+                                ? () => setAiRange({ fromVerse: v.verse, toVerse: v.verse })
+                                : undefined
+                            }
                             onCancel={closeEditor}
-                            onSave={(links) =>
+                            onSave={(links, { clearParts }) =>
                               revisedId !== undefined
                                 ? saveRevisionMapping.mutate(
                                     { id: revisedId, links },
                                     { onSuccess: closeEditor },
                                   )
                                 : saveBaseMapping.mutate(
-                                    { ref: { ...ref, verse: v.verse }, links },
+                                    { ref: { ...ref, verse: v.verse }, links, clearParts },
                                     { onSuccess: closeEditor },
                                   )
                             }

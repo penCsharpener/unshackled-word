@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Features.Lemmas;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.WebApi.Lemmas;
 using UnshackledWord.Tooling.WebApi.Endpoints.Lemmas;

@@ -281,6 +281,18 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
         return await _dbReader.ExecuteScalarAsync<DateTime?>(sql);
     }
 
+    public async Task<DateTime?> GetLinkRolesAppliedAtAsync(CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT s."LinkRolesAppliedAt"
+                           FROM "unshackled-word"."DqRefreshState" s
+                           WHERE 1=1
+                               AND s."Id" = 1
+                           """;
+
+        return await _dbReader.ExecuteScalarAsync<DateTime?>(sql);
+    }
+
     public async Task<IReadOnlyList<SnapshotStrongsRow>> GetSnapshotStrongsAsync(IReadOnlyList<string> keys, bool hebrew, CancellationToken token = default)
     {
         const string sql = """
@@ -305,6 +317,7 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                 , r."GermanKey" "Key"
                                 , r."Pos"
                                 , SUM(r."SourceCount")::int "Count"
+                                , bool_and(r."NoOwnLemma") "NoOwnLemma"
                            FROM "unshackled-word"."StatsStrongsRenderings" r
                            WHERE 1=1
                                AND r."Lang" = @Lang::char(1)

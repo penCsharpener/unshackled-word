@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { AppShell } from "@/components/AppShell";
 import { AboutPage } from "@/pages/AboutPage";
 import { AdminInvitationsPage } from "@/pages/AdminInvitationsPage";
+import { AgentProposalsPage } from "@/pages/agent/AgentProposalsPage";
 import { BiblePage } from "@/pages/BiblePage";
 import { BulkReplacePage } from "@/pages/BulkReplacePage";
 import { ChapterPage } from "@/pages/ChapterPage";
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
       },
       { path: "edit/quality", element: <DataQualityPage /> },
       { path: "edit/maintainer", element: <MaintainerPage /> },
+      { path: "edit/proposals/:runId?/:proposalId?", element: <AgentProposalsPage /> },
       { path: "edit/revision/replace", element: <BulkReplacePage /> },
       { path: "admin/invitations", element: <AdminInvitationsPage /> },
       { path: "*", element: <NotFoundPage /> },

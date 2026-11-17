@@ -99,6 +99,16 @@ export function UserMenu() {
           {hasWriteRole(user) && (
             <Link
               role="menuitem"
+              to="/edit/proposals"
+              className="rounded-md px-2 py-1 hover:bg-surface-muted"
+              onClick={() => setOpen(false)}
+            >
+              {t("agent.proposals.nav")}
+            </Link>
+          )}
+          {hasWriteRole(user) && (
+            <Link
+              role="menuitem"
               to="/edit/revision/replace"
               className="rounded-md px-2 py-1 hover:bg-surface-muted"
               onClick={() => setOpen(false)}

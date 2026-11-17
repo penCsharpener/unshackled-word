@@ -91,6 +91,18 @@ public sealed class RevisionMappingRow
     public int? ParentRevisionWordId { get; set; }
     public string? GermanWordPart { get; set; }
     public string Origin { get; set; } = string.Empty;
+
+    /// <summary>head or unit (roadmap 0018).</summary>
+    public string Role { get; set; } = "head";
+
+    /// <summary>Hebrew morpheme (Lang H only); null = main morpheme.</summary>
+    public string? StrongsNumber { get; set; }
+
+    /// <summary>Lemma of the compound part; only with <see cref="GermanWordPart"/>.</summary>
+    public string? PartLemma { get; set; }
+
+    /// <summary>The maintainer accepted several heads on this source morpheme.</summary>
+    public bool MultiHead { get; set; }
 }
 
 /// <summary>One <c>RevisionVerseAudit</c> row of a (verse, level): a text save, a mapping save or a withdraw. <see cref="By"/> is the display name, NULL for seed imports.</summary>

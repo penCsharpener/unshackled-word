@@ -465,6 +465,8 @@ public sealed class RevisionSeedImporter
         return new RevisionBookPlan { Variants = ordered, Orphans = orphans };
     }
 
+    private static string RoleOf(RevisionMappingSeedLine line) => string.IsNullOrWhiteSpace(line.Role) ? "head" : line.Role;
+
     private static RevisionMappingWrite ToRow(PlacedRevisionMapping placed, Dictionary<AnchorToken, int> stepIds)
     {
         var origin = Origins.Contains(placed.Line.Origin) ? placed.Line.Origin : RevisionOrigin.Seed;
@@ -475,7 +477,11 @@ public sealed class RevisionSeedImporter
             placed.Line.Added,
             placed.ParentPos,
             string.IsNullOrEmpty(placed.Line.Part) ? null : placed.Line.Part,
-            origin);
+            origin,
+            RoleOf(placed.Line),
+            string.IsNullOrEmpty(placed.Line.Strongs) ? null : placed.Line.Strongs,
+            string.IsNullOrEmpty(placed.Line.Part) || string.IsNullOrEmpty(placed.Line.PartLemma) ? null : placed.Line.PartLemma,
+            placed.Line.MultiHead);
     }
 
     /// <summary>The hash of the variant as the database will export it after the import (positions, forms and STEP hashes of this installation).</summary>
@@ -497,7 +503,11 @@ public sealed class RevisionSeedImporter
             Added = p.Line.Added,
             ParentPos = p.ParentPos,
             ParentForm = p.ParentPos is { } parent ? Form(parent) : string.Empty,
-            Origin = Origins.Contains(p.Line.Origin) ? p.Line.Origin : RevisionOrigin.Seed
+            Origin = Origins.Contains(p.Line.Origin) ? p.Line.Origin : RevisionOrigin.Seed,
+            Role = RoleOf(p.Line),
+            Strongs = MappingBooks.IsGreek(line.Ref) ? string.Empty : p.Line.Strongs ?? string.Empty, // the database keeps the morpheme on Hebrew rows only
+            PartLemma = string.IsNullOrEmpty(p.Line.Part) ? string.Empty : p.Line.PartLemma ?? string.Empty,
+            MultiHead = p.Line.MultiHead
         });
 
         return RevisionVariantHash.Compute(verse, lines);

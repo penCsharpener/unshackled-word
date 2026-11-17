@@ -8,7 +8,11 @@ namespace UnshackledWord.Application.Features.Seed.Mappings;
 /// The mapping edges of one German verse in the form the content hash sees them: no database id, no text of the words, only positions
 /// (0 where a value is absent), so the hash of a database verse and the hash of the seed's rows for the same verse are comparable.
 /// </summary>
-public readonly record struct VerseEdge(int Pos, string Part, int SrcRef, int SrcPos, bool Added, int ParentRef, int ParentPos);
+/// <remarks>
+/// The roadmap 0018 fields are appended to the line only when they differ from the default (<c>|R:unit</c>, <c>|S:H9001</c>,
+/// <c>|L:Gerste</c>, <c>|M</c>), so the hash of every verse without roles stays what it was and stored <c>SeedVerseState</c> rows remain valid.
+/// </remarks>
+public readonly record struct VerseEdge(int Pos, string Part, int SrcRef, int SrcPos, bool Added, int ParentRef, int ParentPos, string Role = "head", string Strongs = "", string PartLemma = "", bool MultiHead = false);
 
 /// <summary>
 /// Content hash of a verse's mapping edges (roadmap 0010.10). The same formula is computed in SQL (<c>SeedVerseState</c>): lines
@@ -29,6 +33,23 @@ public static class MappingVerseHash
     {
         var added = e.Added ? "true" : "false";
 
-        return string.Create(CultureInfo.InvariantCulture, $"{e.Pos}|{e.Part}|{e.SrcRef}|{e.SrcPos}|{added}|{e.ParentRef}|{e.ParentPos}");
+        var line = string.Create(CultureInfo.InvariantCulture, $"{e.Pos}|{e.Part}|{e.SrcRef}|{e.SrcPos}|{added}|{e.ParentRef}|{e.ParentPos}");
+
+        if (e.Role is not (null or "" or "head"))
+        {
+            line += "|R:" + e.Role;
+        }
+
+        if (!string.IsNullOrEmpty(e.Strongs))
+        {
+            line += "|S:" + e.Strongs;
+        }
+
+        if (!string.IsNullOrEmpty(e.PartLemma))
+        {
+            line += "|L:" + e.PartLemma;
+        }
+
+        return e.MultiHead ? line + "|M" : line;
     }
 }

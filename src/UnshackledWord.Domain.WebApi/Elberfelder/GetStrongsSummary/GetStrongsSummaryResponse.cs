@@ -41,6 +41,9 @@ public sealed class GetStrongsSummaryResponse
 
     /// <summary>True while a stats/facts refresh runs on the server (poll until <see cref="StatsRefreshedAt"/> changes).</summary>
     public bool StatsRefreshing { get; set; }
+
+    /// <summary>Snapshot only: when the link-roles backfill was applied; absent = roles incomplete (UI: "Rollen unvollständig"), renderings may still contain auxiliaries and prefixes.</summary>
+    public DateTime? LinkRolesAppliedAt { get; set; }
 }
 
 public sealed class StrongsBookCountResponse
@@ -62,6 +65,12 @@ public sealed class StrongsRenderingResponse
     public string? Pos { get; set; }
 
     public int Count { get; set; }
+
+    /// <summary>
+    /// Snapshot only: source morpheme instances rendered only through unit links ("rendered, no own lemma", e.g. the article in "zum");
+    /// <see cref="Word"/> and <see cref="Key"/> are empty then. Keys of several heads are the head lemmas space-joined ("zur antwort geben").
+    /// </summary>
+    public bool NoOwnLemma { get; set; }
 }
 
 public sealed class StrongsVariantResponse

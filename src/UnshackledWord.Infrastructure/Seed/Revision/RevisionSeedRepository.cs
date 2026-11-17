@@ -49,7 +49,7 @@ public sealed class RevisionVariantWrite
 
 public sealed record RevisionWordWrite(int Position, string WordInContext, string? PlainWord, int? BasePosition, string Change);
 
-public sealed record RevisionMappingWrite(int Position, int? StepWordId, bool Added, int? ParentPosition, string? Part, string Origin);
+public sealed record RevisionMappingWrite(int Position, int? StepWordId, bool Added, int? ParentPosition, string? Part, string Origin, string Role = "head", string? Strongs = null, string? PartLemma = null, bool MultiHead = false);
 
 /// <summary>Database access of the revision seed import and update (tables <c>RevisionVerses</c>, <c>RevisionWords</c>, <c>RevisionMapping</c>).</summary>
 public sealed class RevisionSeedRepository
@@ -218,9 +218,9 @@ public sealed class RevisionWriteSession : IDisposable
 
     private const string InsertMapping = """
         INSERT INTO "unshackled-word"."RevisionMapping"
-            ("RevisionWordId", "Lang", "StepWordId", "IsAddedWord", "ParentRevisionWordId", "GermanWordPart", "Origin", "CreatedByUserId")
-        SELECT t.word, @Lang, t.step, t.added, t.parent, t.part, t.origin, NULL
-        FROM unnest(@WordIds, @StepIds, @Added, @ParentIds, @Parts, @Origins) AS t(word, step, added, parent, part, origin)
+            ("RevisionWordId", "Lang", "StepWordId", "IsAddedWord", "ParentRevisionWordId", "GermanWordPart", "Origin", "CreatedByUserId", "Role", "StrongsNumber", "PartLemma", "MultiHead")
+        SELECT t.word, @Lang, t.step, t.added, t.parent, t.part, t.origin, NULL, t.role, CASE WHEN @Lang = 'H' THEN t.strongs END, t.partlemma, t.multihead
+        FROM unnest(@WordIds, @StepIds, @Added, @ParentIds, @Parts, @Origins, @Roles, @Strongs, @PartLemmas, @MultiHeads) AS t(word, step, added, parent, part, origin, role, strongs, partlemma, multihead)
         """;
 
     private const string UpsertState = """
@@ -336,7 +336,11 @@ public sealed class RevisionWriteSession : IDisposable
                     Added = variant.Mapping.Select(m => m.Added).ToArray(),
                     ParentIds = variant.Mapping.Select(m => m.ParentPosition is { } p ? inserted[p] : (int?)null).ToArray(),
                     Parts = variant.Mapping.Select(m => m.Part).ToArray(),
-                    Origins = variant.Mapping.Select(m => m.Origin).ToArray()
+                    Origins = variant.Mapping.Select(m => m.Origin).ToArray(),
+                    Roles = variant.Mapping.Select(m => m.Role).ToArray(),
+                    Strongs = variant.Mapping.Select(m => m.Strongs).ToArray(),
+                    PartLemmas = variant.Mapping.Select(m => m.PartLemma).ToArray(),
+                    MultiHeads = variant.Mapping.Select(m => m.MultiHead).ToArray()
                 },
                 _transaction,
                 CommandTimeoutSeconds);

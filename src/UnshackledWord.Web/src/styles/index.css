@@ -570,6 +570,113 @@
     stroke-dasharray: 4 3;
   }
 
+  /* Roadmap 0018: a unit link (belongs to the head's German form) is drawn as a muted dotted line. */
+  .map-lines path[data-role="unit"] {
+    stroke: var(--color-fg-muted);
+    stroke-dasharray: 2 3;
+  }
+
+  /* Compare mode (proposal review): new links solid in the ok tone, links that go away dashed in the error tone. */
+  .map-lines path[data-kind="added"] {
+    stroke: var(--color-sev-ok);
+    stroke-width: 3px;
+  }
+
+  .map-lines path[data-kind="removed"] {
+    stroke: var(--color-sev-error);
+    stroke-dasharray: 6 4;
+  }
+
+  .map-lines path[data-kind="unchanged"] {
+    stroke: var(--color-fg-muted);
+  }
+
+  .map-key {
+    display: inline-block;
+    width: calc(var(--spacing) * 6);
+    border-top: 3px solid var(--color-fg-muted);
+  }
+
+  .map-key[data-kind="added"] {
+    border-top-color: var(--color-sev-ok);
+  }
+
+  .map-key[data-kind="removed"] {
+    border-top-style: dashed;
+    border-top-color: var(--color-sev-error);
+  }
+
+  /* Unit links (Formteil) of any kind: dotted and muted, like .map-lines path[data-role="unit"]. */
+  .map-key[data-kind="unit"] {
+    border-top-style: dotted;
+  }
+
+  .map-key[data-kind="addedWord"] {
+    border-top-style: dashed;
+  }
+
+  /* Switch (components/Switch.tsx): track and knob sized from spacing, knob slides by translate. */
+  .switch {
+    --switch-w: calc(var(--spacing) * 7);
+    --switch-h: calc(var(--spacing) * 4);
+    --switch-inset: calc(var(--spacing) * 0.5);
+    --switch-knob: calc(var(--switch-h) - var(--switch-inset) * 2);
+  }
+
+  .switch-track {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    width: var(--switch-w);
+    height: var(--switch-h);
+    border-radius: calc(infinity * 1px);
+    background: var(--color-surface-muted);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    transition:
+      background-color var(--default-transition-duration) var(--default-transition-timing-function),
+      box-shadow var(--default-transition-duration) var(--default-transition-timing-function);
+  }
+
+  .switch-knob {
+    position: absolute;
+    top: var(--switch-inset);
+    left: var(--switch-inset);
+    width: var(--switch-knob);
+    height: var(--switch-knob);
+    border-radius: calc(infinity * 1px);
+    background: var(--color-fg-muted);
+    box-shadow: var(--shadow-sm);
+    transition:
+      translate var(--default-transition-duration) var(--default-transition-timing-function),
+      background-color var(--default-transition-duration) var(--default-transition-timing-function);
+  }
+
+  .switch[aria-checked="true"] .switch-track {
+    background: var(--color-accent);
+    box-shadow: inset 0 0 0 1px var(--color-accent);
+  }
+
+  .switch[aria-checked="true"] .switch-knob {
+    translate: calc(var(--switch-w) - var(--switch-knob) - var(--switch-inset) * 2) 0;
+    background: var(--color-accent-fg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .switch:hover:not(:disabled) .switch-track {
+    box-shadow: inset 0 0 0 1px var(--color-fg-muted);
+  }
+
+  .switch[aria-checked="true"]:hover:not(:disabled) .switch-track {
+    box-shadow: inset 0 0 0 1px var(--color-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .switch-track,
+    .switch-knob {
+      transition: none;
+    }
+  }
+
   .map-row-label {
     margin-bottom: calc(var(--spacing) * 1);
     font-size: var(--text-xs);
@@ -582,6 +689,23 @@
     gap: calc(var(--spacing) * 1);
     font-family: var(--font-scripture);
     font-size: var(--text-lg);
+  }
+
+  .map-row[data-reversed] {
+    flex-direction: row-reverse;
+  }
+
+  .map-row-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing) * 2);
+    margin-bottom: calc(var(--spacing) * 1);
+  }
+
+  .map-row-head .map-row-label {
+    margin-bottom: 0;
   }
 
   .map-row-original {
@@ -633,8 +757,69 @@
     opacity: 0.5;
   }
 
+  /* Parts of a split compound word: tiles side by side, rounded only at the outer ends. */
+  .map-word {
+    display: inline-flex;
+  }
+
+  .map-tok[data-part] {
+    border-color: var(--color-border);
+  }
+
+  .map-tok[data-part="first"] {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .map-tok[data-part="middle"] {
+    border-radius: 0;
+  }
+
+  .map-tok[data-part="last"] {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
   .map-tok-text {
     white-space: nowrap;
+  }
+
+  /* ProgressBar: native <progress> drawn with tokens; the tone picks the fill. */
+  .uw-progress {
+    --uw-progress-fill: var(--color-sev-info);
+    width: 100%;
+    height: calc(var(--spacing) * 2);
+    appearance: none;
+    border: 0;
+    border-radius: calc(infinity * 1px);
+    background: var(--color-surface-muted);
+    overflow: hidden;
+  }
+
+  .uw-progress[data-tone="ok"] {
+    --uw-progress-fill: var(--color-sev-ok);
+  }
+
+  .uw-progress[data-tone="warning"] {
+    --uw-progress-fill: var(--color-sev-warning);
+  }
+
+  .uw-progress[data-tone="error"] {
+    --uw-progress-fill: var(--color-sev-error);
+  }
+
+  .uw-progress::-webkit-progress-bar {
+    background: var(--color-surface-muted);
+  }
+
+  .uw-progress::-webkit-progress-value {
+    background: var(--uw-progress-fill);
+    border-radius: calc(infinity * 1px);
+  }
+
+  .uw-progress::-moz-progress-bar {
+    background: var(--uw-progress-fill);
+    border-radius: calc(infinity * 1px);
   }
 
   .map-tok[data-added] .map-tok-text {
@@ -643,6 +828,12 @@
 
   .map-tok[data-unmapped] .map-tok-text {
     color: var(--color-fg-muted);
+  }
+
+  .map-tok[data-unit] .map-tok-text {
+    color: var(--color-fg-muted);
+    text-decoration: underline dotted;
+    text-underline-offset: calc(var(--spacing) * 1);
   }
 
   .map-row-original .map-tok[data-unmapped] {
@@ -655,6 +846,16 @@
     line-height: var(--leading-tight);
     color: var(--color-fg-muted);
     white-space: nowrap;
+  }
+
+  /* Hebrew and Greek inside running UI text: original-text font, 30% larger so the diacritics stay readable. */
+  .original-text {
+    font-family: var(--font-original);
+    font-size: 1.3em;
+  }
+
+  .original-text[data-hover] {
+    background: var(--color-mark-same);
   }
 
   .map-tok-lemma {
@@ -680,7 +881,7 @@
     min-width: calc(var(--spacing) * 5);
     padding: 0 calc(var(--spacing) * 1);
     border: 1px solid var(--color-fg);
-    border-radius: 9999px;
+    border-radius: calc(infinity * 1px);
     background: var(--color-surface);
     color: var(--color-fg);
     font-family: var(--font-sans);
@@ -734,7 +935,7 @@
     gap: calc(var(--spacing) * 1);
     padding-inline-start: calc(var(--spacing) * 2.5);
     border: 1px solid var(--color-border);
-    border-radius: 9999px;
+    border-radius: calc(infinity * 1px);
     background: var(--color-surface);
   }
 

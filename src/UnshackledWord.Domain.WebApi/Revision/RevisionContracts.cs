@@ -136,6 +136,15 @@ public sealed class RevisionMappingLink
 
     /// <summary>carried, manual or seed.</summary>
     public string Origin { get; set; } = string.Empty;
+
+    /// <summary>head or unit; same meaning as <c>VerseMappingLink.Role</c> (roadmap 0018). Always set.</summary>
+    public string Role { get; set; } = "head";
+
+    /// <summary>Hebrew only: the morpheme the link renders; null = the main morpheme.</summary>
+    public string? StrongsNumber { get; set; }
+
+    /// <summary>True on the heads of a morpheme whose several heads were accepted; null otherwise.</summary>
+    public bool? AllowMultiHead { get; set; }
 }
 
 /// <summary>Body of <c>PUT api/revision/verseMapping/{revisionVerseId}</c>: the complete new mapping of the variant.</summary>

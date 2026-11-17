@@ -9,6 +9,7 @@ using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Seed.Anchoring;
 using UnshackledWord.Application.Features.Seed.Mappings;
 using UnshackledWord.Application.Features.Seed.Morphology;
+using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Domain.Models.Settings;
 
 namespace UnshackledWord.Infrastructure.Seed.Mappings;
@@ -112,7 +113,7 @@ public sealed class MappingSeedImporter
     {
         var source = await LoadSourceAsync(layout, token);
 
-        if (source is null || source.Format != MappingSeedFormat.Anchored)
+        if (source is null || !MappingSeedFormat.IsAnchored(source.Format))
         {
             return SeedStepReport.Skip(Kind, "import", source is null ? SeedSkipReason.NoSeed : SeedSkipReason.UnsupportedFormat);
         }
@@ -138,7 +139,7 @@ public sealed class MappingSeedImporter
 
         var source = await _sourceReader.LoadAsync(layout, token);
 
-        if (source is null || source.Format != MappingSeedFormat.Anchored)
+        if (source is null || !MappingSeedFormat.IsAnchored(source.Format))
         {
             _logger.LogInformation("Mapping seed update skipped: no mapping seed in format {Format} in {Folder}", MappingSeedFormat.Anchored, layout.MappingsRoot);
 
@@ -282,7 +283,7 @@ public sealed class MappingSeedImporter
 
     public static string ComputeHash(IEnumerable<MappingRowPlan> rows)
     {
-        return MappingVerseHash.Compute(rows.Select(r => new VerseEdge(r.PositionInVerse, r.Part ?? string.Empty, r.SrcRef, r.SrcPos, r.Added, r.ParentRef, r.ParentPos)));
+        return MappingVerseHash.Compute(rows.Select(r => new VerseEdge(r.PositionInVerse, r.Part ?? string.Empty, r.SrcRef, r.SrcPos, r.Added, r.ParentRef, r.ParentPos, r.Role, r.Strongs ?? string.Empty, r.PartLemma ?? string.Empty, r.MultiHead)));
     }
 
     /// <summary>Checks again inside the write transaction that the verses about to be replaced still equal the last import.</summary>
@@ -338,12 +339,43 @@ public sealed class MappingSeedImporter
         var source = SourceWordResolver.Create(sourceKeys, stepTokens);
 
         var placement = MappingPlacer.Place(lines, german, source);
-        var rows = placement.Placed.Select(p => ToRow(p, wordIds, stepIds)).ToList();
+        var rows = ApplyParts(placement.Placed.Select(p => ToRow(p, wordIds, stepIds, greek)).ToList(), words);
 
         return new BookPlan { BookId = bookId, Greek = greek, Rows = rows, Placement = placement, ChaptersAligned = german.ChaptersAligned.Count };
     }
 
-    private static MappingRowPlan ToRow(PlacedMapping placed, Dictionary<(int, int), int> wordIds, Dictionary<AnchorToken, int> stepIds)
+    /// <summary>
+    /// Keeps only real compound parts (older seeds carry the whole word, <c>1</c>, <c>null</c> ... in the part column, see migration 0027) and
+    /// derives the part order, which the seed does not carry, from the position of the part inside the word. The seed format stays as it is.
+    /// </summary>
+    public static List<MappingRowPlan> ApplyParts(List<MappingRowPlan> rows, List<ElbWordRow> words)
+    {
+        var forms = words.ToDictionary(w => w.Id, w => w.Form ?? string.Empty);
+        var cleaned = rows.Select(r => CleanPartRow(r, forms[r.ElbWordId])).ToList();
+
+        foreach (var word in Enumerable.Range(0, cleaned.Count).Where(i => cleaned[i].Part is not null).GroupBy(i => cleaned[i].ElbWordId))
+        {
+            var indexes = word.ToList();
+            var orders = GermanWordParts.DeriveOrders(forms[word.Key], indexes.Select(i => cleaned[i].Part!).ToList());
+
+            for (var n = 0; n < indexes.Count; n++)
+            {
+                cleaned[indexes[n]] = cleaned[indexes[n]] with { PartOrder = orders[n] };
+            }
+        }
+
+        return cleaned;
+    }
+
+    /// <summary>The cleaned part; a part lemma only stays with a part (check constraint), and a row never keeps a lemma of a dropped part.</summary>
+    private static MappingRowPlan CleanPartRow(MappingRowPlan row, string form)
+    {
+        var part = GermanWordParts.CleanPart(form, row.Part);
+
+        return row with { Part = part, PartLemma = part is null ? null : row.PartLemma };
+    }
+
+    private static MappingRowPlan ToRow(PlacedMapping placed, Dictionary<(int, int), int> wordIds, Dictionary<AnchorToken, int> stepIds, bool greek)
     {
         var german = placed.German!.Value;
         var line = placed.Line;
@@ -359,7 +391,11 @@ public sealed class MappingSeedImporter
             line.Added,
             placed.Parent is { } parent ? wordIds[(parent.Ref, parent.Pos)] : null,
             placed.Parent?.Ref ?? 0,
-            placed.Parent?.Pos ?? 0);
+            placed.Parent?.Pos ?? 0,
+            Role: string.IsNullOrWhiteSpace(line.Role) ? "head" : line.Role,
+            Strongs: greek || string.IsNullOrEmpty(line.Strongs) ? null : line.Strongs, // Greek derives the morpheme from the STEP word
+            PartLemma: string.IsNullOrEmpty(line.PartLemma) ? null : line.PartLemma,
+            MultiHead: line.MultiHead);
     }
 
     /// <summary>The old side of the German alignment: every German word of the exporting installation, from the morphology seed (empty when it is missing).</summary>

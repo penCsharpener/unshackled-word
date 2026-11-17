@@ -1,3 +1,5 @@
+using UnshackledWord.Application.Repositories;
+using UnshackledWord.Application.Features.Lemmas;
 using UnshackledWord.Domain.WebApi.Lemmas;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.Stts;

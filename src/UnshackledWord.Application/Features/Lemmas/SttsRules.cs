@@ -1,7 +1,7 @@
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.WebApi.Lemmas;
 
-namespace UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.Stts;
+namespace UnshackledWord.Application.Features.Lemmas;
 
 /// <summary>The STTS tags of the table with the "is this pair allowed" question the editor and the validators ask.</summary>
 public sealed class SttsCatalog

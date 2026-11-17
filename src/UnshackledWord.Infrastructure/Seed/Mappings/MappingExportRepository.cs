@@ -1,6 +1,7 @@
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Seed.Anchoring;
 using UnshackledWord.Application.Features.Seed.Mappings;
+using UnshackledWord.Application.Features.VerseMapping;
 
 namespace UnshackledWord.Infrastructure.Seed.Mappings;
 
@@ -27,6 +28,10 @@ public sealed class MappingExportRepository
             ,p."HebRefId"        as "ParentRef"
             ,p."PositionInVerse" as "ParentPos"
             ,p."PlainWord"       as "ParentForm"
+            ,m."Role"            as "Role"
+            ,null::varchar       as "Strongs"
+            ,m."PartLemma"       as "PartLemma"
+            ,m."MultiHead"       as "MultiHead"
         from "unshackled-word"."Elb1871GreekMapping" m
         join "unshackled-word"."Elb1871Words" w on w."Id" = m."ElbWordId"
         left join "unshackled-word"."StepGreekWords" s on s."Id" = m."StepWordId"
@@ -48,6 +53,10 @@ public sealed class MappingExportRepository
             ,p."HebRefId"        as "ParentRef"
             ,p."PositionInVerse" as "ParentPos"
             ,p."PlainWord"       as "ParentForm"
+            ,m."Role"            as "Role"
+            ,m."StrongsNumber"   as "Strongs"
+            ,m."PartLemma"       as "PartLemma"
+            ,m."MultiHead"       as "MultiHead"
         from "unshackled-word"."Elb1871HebrewMapping" m
         join "unshackled-word"."Elb1871Words" w on w."Id" = m."ElbWordId"
         left join "unshackled-word"."StepHebrewWords" s on s."Id" = m."StepWordId"
@@ -99,19 +108,25 @@ public sealed class MappingExportRepository
 
     private static MappingSeedLine ToLine(ExportRow row)
     {
+        var part = CleanPart(row.Part, row.Form);
+
         return new MappingSeedLine
         {
             Ref = row.Ref,
             Pos = row.Pos,
             Form = row.Form ?? string.Empty,
-            Part = CleanPart(row.Part),
+            Part = part,
             SrcRef = row.SrcRef,
             SrcPos = row.SrcPos,
             SrcHash = row.SrcRef.HasValue ? SourceKey.Hash(row.SrcText) : string.Empty,
             Added = row.Added ?? false,
             ParentPos = row.ParentPos,
             ParentForm = row.ParentPos.HasValue ? row.ParentForm ?? string.Empty : string.Empty,
-            ParentRef = row.ParentRef.HasValue && row.ParentRef != row.Ref ? row.ParentRef : null
+            ParentRef = row.ParentRef.HasValue && row.ParentRef != row.Ref ? row.ParentRef : null,
+            Role = string.IsNullOrEmpty(row.Role) ? "head" : row.Role,
+            Strongs = row.Strongs ?? string.Empty,
+            PartLemma = part.Length > 0 ? row.PartLemma ?? string.Empty : string.Empty, // a part lemma only belongs to a part that is exported
+            MultiHead = row.MultiHead ?? false
         };
     }
 
@@ -122,6 +137,17 @@ public sealed class MappingExportRepository
     internal static string CleanPart(string? part)
     {
         return string.IsNullOrEmpty(part) || ContainsOriginalLanguageLetters(part) ? string.Empty : part;
+    }
+
+    /// <summary>
+    /// <see cref="CleanPart(string?)"/> plus: only a real compound part of the German word is exported (not the whole word, <c>1</c>, <c>null</c>
+    /// ... see migration 0027). The format is unchanged, so older seed files stay importable (the importer applies the same rule).
+    /// </summary>
+    public static string CleanPart(string? part, string? form)
+    {
+        var cleaned = CleanPart(part);
+
+        return GermanWordParts.IsRealPart(form, cleaned) ? cleaned : string.Empty;
     }
 
     public static bool ContainsOriginalLanguageLetters(string text)
@@ -142,6 +168,10 @@ public sealed class MappingExportRepository
         public int? ParentRef { get; init; }
         public int? ParentPos { get; init; }
         public string? ParentForm { get; init; }
+        public string? Role { get; init; }
+        public string? Strongs { get; init; }
+        public string? PartLemma { get; init; }
+        public bool? MultiHead { get; init; }
     }
 }
 

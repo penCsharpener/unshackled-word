@@ -26,7 +26,7 @@ public static class RevisionVariantHash
 
     private static string Line(RevisionMappingSeedLine l)
     {
-        return string.Join(
+        var line = string.Join(
             Separator,
             l.Pos.ToString(CultureInfo.InvariantCulture),
             l.Form,
@@ -38,5 +38,13 @@ public static class RevisionVariantHash
             l.ParentPos?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
             l.ParentForm,
             l.Origin);
+
+        // Roadmap 0018 fields only when not default, so the hash of a variant without roles is unchanged.
+        if (l.Role is not (null or "" or "head") || !string.IsNullOrEmpty(l.Strongs) || !string.IsNullOrEmpty(l.PartLemma) || l.MultiHead)
+        {
+            line += string.Join(Separator, string.Empty, l.Role, l.Strongs, l.PartLemma, l.MultiHead ? "1" : "0");
+        }
+
+        return line;
     }
 }

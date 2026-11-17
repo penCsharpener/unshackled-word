@@ -93,8 +93,9 @@ public sealed class StrongsSummaryService : IStrongsSummaryService
             MappedCount = mapped,
             UnmappedCount = occurrenceCount - mapped,
             ByBook = books.Select(b => new StrongsBookCountResponse { BibleBookId = b.B, Count = b.C, VerseCount = b.V }).ToList(),
-            Renderings = renderings.Select(r => new StrongsRenderingResponse { Word = r.Word, Key = r.Key, Pos = r.Pos, Count = r.Count }).ToList(),
+            Renderings = renderings.Select(r => new StrongsRenderingResponse { Word = r.Word, Key = r.Key, Pos = r.Pos, Count = r.Count, NoOwnLemma = r.NoOwnLemma }).ToList(),
             StatsRefreshedAt = statsRefreshedAt,
+            LinkRolesAppliedAt = await _stats.GetLinkRolesAppliedAtAsync(token),
             StatsRefreshing = _refreshStatus.IsRunning
         };
 

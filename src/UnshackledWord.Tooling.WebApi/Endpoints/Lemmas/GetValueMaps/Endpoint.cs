@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Repositories;
 using FastEndpoints;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.WebApi.Lemmas;

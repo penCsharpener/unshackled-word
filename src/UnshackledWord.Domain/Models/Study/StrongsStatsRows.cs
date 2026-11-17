@@ -70,6 +70,9 @@ public sealed class SnapshotRenderingRow
     public string Key { get; set; } = string.Empty;
     public string? Pos { get; set; }
     public int Count { get; set; }
+
+    /// <summary>Instances rendered only through unit links (contraction article, migration 0032); Key and Word are empty.</summary>
+    public bool NoOwnLemma { get; set; }
 }
 
 /// <summary>A German lemma + PoS in the snapshot. LemmaOccurrences sums all PoS rows of the same lemma key (frequency rule).</summary>

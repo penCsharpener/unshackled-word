@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Application.Features.Auth;
@@ -29,7 +30,8 @@ public class Endpoint : Endpoint<SaveVerseMappingRequest, GetVerseMappingRespons
 
     public override async Task HandleAsync(SaveVerseMappingRequest req, CancellationToken ct)
     {
-        var result = await _service.SaveAsync(req.BibleBookId, req.ChapterId, req.VerseId, req.Links, ct);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var result = await _service.SaveAsync(req.BibleBookId, req.ChapterId, req.VerseId, req.Links, userId, req.ClearParts, ct);
 
         switch (result.Outcome)
         {

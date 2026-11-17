@@ -4,7 +4,7 @@ import { Button } from "@/components/Button";
 import { FormError } from "@/components/FormError";
 import { MappingEditor, type MappingSaveError } from "@/components/MappingEditor";
 import { TextField } from "@/components/TextField";
-import { ApiError, describeApiError } from "@/lib/api";
+import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
 import {
   applySuggestion,
   type QueueEntry,
@@ -371,6 +371,7 @@ function ReviewVerse({
               review={reviewMarkers(mapping.data, carry)}
               saving={saveMapping.isPending}
               saveError={mappingSaveError()}
+              saveErrorDetails={describeApiErrors(saveMapping.error)}
               onCancel={() => undefined}
               onChangeCount={setPendingEdits}
               onSave={finishMapping}

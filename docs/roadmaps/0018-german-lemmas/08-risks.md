@@ -1,0 +1,9 @@
+# 0018 · Risks
+
+- **The backfill rewrites ~400k links in one job.** A wrong rule (e.g. morpheme by tag) silently shifts counts for thousands of verses. Dry run with samples per rule first, apply as one change set, undo tested byte-for-byte (0018.4); never run it while an agent run or seed import is active.
+- **Mapping tables have no author column.** Unlike `RevisionMapping` and lemma edits, `Elb1871*Mapping` does not record who changed a role. The change set is the only audit; direct maintainer edits in the editor are not traceable until a mapping audit exists.
+- **Half-done state between 0018.1 and 0018.6.** After the migration everything is `head`, so stats look as wrong as today; after a partial backfill they mix old and new semantics. Stats show "Rollen unvollständig" until the backfill was applied once (flag in `DqRefreshState`).
+- **Superseding the 0016 separable-verb decision.** Merged 0016 proposals already wrote `ausgehen` on particle tokens. 0018.4 must reset `PTKVZ` lemmas to the particle, and v1 prompts must not run after v2 exists, or the two conventions mix again.
+- **Hebrew morpheme guessing.** STEP gives morphemes per word, not per German word; `und` vs. `aber` for waw, or `zu` vs. `für` for lamed, are not always decidable by tag. Undecided cases stay on the main morpheme and are listed by `R1`/`R4`; the model gets them, the counts stay slightly off until then.
+- **Bulk merge on a small reference set.** 50 verses can hide systematic errors in rare constructions (poetry, genealogies, Hebrew infinitive absolute). Soft flags block bulk merge for homographs and human-edited words, and the per-book `R1`–`R6` counts are compared before and after each merge.
+- **Seed format change.** Self-hosters on an older seed import must keep working; defaults for missing fields and a round-trip test (0018.7) are the guard. The rolling official seed gets the new fields only after the backfill was applied on the maintainer DB.

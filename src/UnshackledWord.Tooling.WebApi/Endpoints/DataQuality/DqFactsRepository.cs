@@ -11,6 +11,7 @@ public sealed class DqState
     public DateTime? RefreshedAt { get; init; }
     public DateTime? PreviousRefreshedAt { get; init; }
     public DateTime? StatsRefreshedAt { get; init; }
+    public DateTime? LinkRolesAppliedAt { get; init; }
     public string? Counts { get; init; }
     public string? PreviousCounts { get; init; }
     public bool IsPopulated { get; init; }
@@ -61,6 +62,7 @@ public sealed class DqFactsRepository : IDqFactsRepository
         SELECT s."RefreshedAt"            AS "RefreshedAt"
              , s."PreviousRefreshedAt"    AS "PreviousRefreshedAt"
              , s."StatsRefreshedAt"       AS "StatsRefreshedAt"
+             , s."LinkRolesAppliedAt"     AS "LinkRolesAppliedAt"
              , s."Counts"::text           AS "Counts"
              , s."PreviousCounts"::text   AS "PreviousCounts"
              , COALESCE((SELECT v.ispopulated FROM pg_matviews v WHERE v.schemaname = 'unshackled-word' AND v.matviewname = 'DqWordFacts'), false) AS "IsPopulated"

@@ -1,3 +1,5 @@
+using UnshackledWord.Application.Repositories;
+using UnshackledWord.Application.Features.Lemmas;
 using System.Text.Json;
 using Dapper;
 using UnshackledWord.Application.Abstractions;
@@ -14,8 +16,9 @@ public interface ILemmaRepository
     /// <summary>
     /// Applies all changes in one transaction (upserting the morphology row, writing an audit row each).
     /// Returns the ids that do not exist; when that list is non-empty nothing was written.
+    /// <paramref name="reviewedByUserId"/> is set by a merged agent proposal (roadmap 0016.7): <paramref name="userId"/> is then the AI user (author).
     /// </summary>
-    Task<IReadOnlyList<int>> ApplyAsync(IReadOnlyList<LemmaWordChange> changes, int userId, CancellationToken ct);
+    Task<IReadOnlyList<int>> ApplyAsync(IReadOnlyList<LemmaWordChange> changes, int userId, CancellationToken ct, int? reviewedByUserId = null);
 
     Task<IReadOnlyList<LemmaWordRow>> GetVerseAsync(int bookId, int chapter, int verse, CancellationToken ct);
 
@@ -125,8 +128,8 @@ public sealed class LemmaRepository : ILemmaRepository
         """;
 
     private const string InsertAudit = """
-        INSERT INTO "unshackled-word"."Elb1871MorphologyEdits" ("ElbWordId", "HebRefId", "PositionInVerse", "UserId", "BeforeValues", "AfterValues")
-        VALUES (@wordId, @hebRefId, @position, @userId, @before::jsonb, @after::jsonb)
+        INSERT INTO "unshackled-word"."Elb1871MorphologyEdits" ("ElbWordId", "HebRefId", "PositionInVerse", "UserId", "ReviewedByUserId", "BeforeValues", "AfterValues")
+        VALUES (@wordId, @hebRefId, @position, @userId, @reviewedByUserId, @before::jsonb, @after::jsonb)
         """;
 
     public async Task<IReadOnlyList<LemmaWordRow>> GetChapterAsync(int bookId, int chapter, CancellationToken ct)
@@ -157,7 +160,7 @@ public sealed class LemmaRepository : ILemmaRepository
         return list;
     }
 
-    public async Task<IReadOnlyList<int>> ApplyAsync(IReadOnlyList<LemmaWordChange> changes, int userId, CancellationToken ct)
+    public async Task<IReadOnlyList<int>> ApplyAsync(IReadOnlyList<LemmaWordChange> changes, int userId, CancellationToken ct, int? reviewedByUserId = null)
     {
         using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
         using var transaction = connection.BeginTransaction();
@@ -204,6 +207,7 @@ public sealed class LemmaRepository : ILemmaRepository
                 hebRefId = word.HebRefId,
                 position = word.PositionInVerse,
                 userId,
+                reviewedByUserId,
                 before = before is null ? null : JsonSerializer.Serialize(before),
                 after = JsonSerializer.Serialize(new LemmaEditFields
                 {

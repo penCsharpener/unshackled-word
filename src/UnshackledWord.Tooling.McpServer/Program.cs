@@ -2,6 +2,7 @@ using Serilog;
 using UnshackledWord.Infrastructure.Extensions;
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Persistence.Postgres.Extensions;
+using UnshackledWord.Tooling.McpServer.Auth;
 
 namespace UnshackledWord.Tooling.McpServer;
 
@@ -17,6 +18,8 @@ public partial class Program
         builder.Services.AddPostgresPersistence();
         builder.Services.AddInfrastructureServices();
         builder.Services.AddRepositories();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IMcpCaller, McpCaller>();
         builder.Services.AddMcpServer()
             .WithHttpTransport(options => options.Stateless = true)
             .WithToolsFromAssembly();

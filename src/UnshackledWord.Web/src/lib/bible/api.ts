@@ -68,8 +68,17 @@ export const bibleApi = {
     api.get<GetWordDetailResponse>(`/elberfelder/wordDetail/wordId/${wordId}`, signal),
   verseMapping: (bookId: number, chapter: number, verse: number, signal?: AbortSignal) =>
     api.get<GetVerseMappingResponse>(verseMappingPath(bookId, chapter, verse), signal),
-  saveVerseMapping: (bookId: number, chapter: number, verse: number, links: VerseMappingLink[]) =>
-    api.put<GetVerseMappingResponse>(verseMappingPath(bookId, chapter, verse), { links }),
+  saveVerseMapping: (
+    bookId: number,
+    chapter: number,
+    verse: number,
+    links: VerseMappingLink[],
+    clearParts?: boolean,
+  ) =>
+    api.put<GetVerseMappingResponse>(verseMappingPath(bookId, chapter, verse), {
+      links,
+      ...(clearParts ? { clearParts: true } : {}),
+    }),
   strongsOccurrences: (
     strongs: string,
     page: number,

@@ -62,6 +62,9 @@ services:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=${MAPPING_EDITING_ENABLED:-false}
+      # AI agent runs (roadmap 0016): the key of the "ollama" profile (Ollama Cloud) from .env; empty = profile unusable. The prompt files are read from
+      # assets/agent-prompts (mounted above). More profiles: UNSHACKLEDWORD_AGENTMAPPING__PROFILES__<name>__KIND, __MODEL, __APIKEY, ...
+      - UNSHACKLEDWORD_AgentMapping__Profiles__ollama__ApiKey=${UNSHACKLEDWORD_AgentMapping__Profiles__ollama__ApiKey:-}
       # Seed round trip (maintainer menu): export writes assets/seed, import/update/rebase read it and write temp/seed-report. The zip download only reads.
       - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONASSETSPATH=/src/assets
       - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONTEMPPATH=/src/temp
@@ -102,6 +105,11 @@ services:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_SERILOG__MINIMUMLEVEL__DEFAULT=${MCP_LOG_LEVEL:-Information}
+      # get_agent_instructions reads assets/agent-prompts (same text as the agent worker); submit_mapping_proposal needs a maintainer-issued token.
+      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONASSETSPATH=/src/assets
+      - UNSHACKLEDWORD_AGENTMAPPING__MCPMAXPROPOSALSPERTOKENPERDAY=${MCP_MAX_PROPOSALS_PER_TOKEN_PER_DAY:-300}
+    volumes:
+      - ./assets:/src/assets:ro
 
   unshackledword.web:
     build:

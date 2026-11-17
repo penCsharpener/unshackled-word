@@ -1,0 +1,12 @@
+# 0016 · Risks
+
+- **Bulk merge spreads errors fast.** "Alle ohne Markierung übernehmen" trusts the soft rules. A systematic model error (e.g. every `und` on `καί` of the next clause) passes all checks. Keep bulk merge per run, show the count, and start with small runs until 0016.9 gives real precision numbers.
+- **Package expires or text changes mid-run.** A revision or text fix between package build and submit makes local ids point at deleted words. The word-id hash catches it; the run must mark those verses `stale` and rebuild, not drop them silently.
+- **Half-done runs.** A crash between packages leaves a run `running` with some proposals stored. Runs must be resumable (skip verses with an open proposal of this run) and cancellable; no live data is touched, so the cost is only tokens.
+- **Prefix cache misses cost money silently.** One changed byte in the prefix (a date, reordered examples) disables caching. Store cached-token counts per package and warn in the run view when a run's cache rate is near zero.
+- **Provider docs drift.** Structured-output and caching parameters change; the table in [07-providers-and-caching.md](07-providers-and-caching.md) is a plan, not a spec. 0016.5 verifies them; each adapter needs one live smoke test.
+- **Local models break the schema.** Long packages lead to truncated JSON. The worker shrinks packages on failure; a model that fails at 1 verse per package is unusable and the profile should say so.
+- **MCP write access opens a new attack surface.** A leaked token lets anyone fill the proposal queue. Proposals never go live without review, tokens are scoped to `propose`, rate-limited and revocable, and the queue has a per-user cap.
+- **Compound splits stay half-supported.** Today the editor's save writes `NULL` into `GermanWordPart`, so every human save in a verse destroys its parts. Until 0016.10 lands, proposals with parts must not merge; after it, a save from an old browser tab (old client without parts) must not wipe them, so the API rejects a save that drops existing parts without saying so.
+- **Part cleanup is destructive.** Clearing ~47,000 junk `GermanWordPart` values cannot be undone without a backup. Run it as a numbered migration after a seed export, log the count, and check the ~545 kept rows by sample first.
+- **Seed and proposals diverge.** Proposals are not seeded. A fresh install loses open proposals by design; merged data must be exported to the mapping seed before a reset.

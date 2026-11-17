@@ -36,7 +36,12 @@ public sealed record MappingRowPlan(
     bool Added,
     int? ParentGermanWordId,
     int ParentRef,
-    int ParentPos);
+    int ParentPos,
+    int? PartOrder = null,
+    string Role = "head",
+    string? Strongs = null,
+    string? PartLemma = null,
+    bool MultiHead = false);
 
 /// <summary>What <c>SeedImports</c> records about one mapping import or update.</summary>
 public sealed record MappingImportRecord(
@@ -135,16 +140,20 @@ public sealed class MappingSeedRepository
         where s."Kind" = @kind
         """;
 
-    /// <summary>The verse hash formula of <c>MappingVerseHash</c> in SQL; all verses when <c>@refs</c> is null, otherwise only those.</summary>
+    /// <summary>The verse hash formula of <c>MappingVerseHash</c> in SQL (roles, morpheme, part lemma and multi-head only when not default); all verses when <c>@refs</c> is null, otherwise only those.</summary>
     private const string SelectVerseHashes = """
         with edges as (
-            select "ElbWordId", "StepWordId", "GermanWordPart", "IsAddedWord", "ParentGermanWordId", true  as "IsGreek" from "unshackled-word"."Elb1871GreekMapping"
+            select "ElbWordId", "StepWordId", "GermanWordPart", "IsAddedWord", "ParentGermanWordId", "Role", null::varchar as "StrongsNumber", "PartLemma", "MultiHead", true  as "IsGreek" from "unshackled-word"."Elb1871GreekMapping"
             union all
-            select "ElbWordId", "StepWordId", "GermanWordPart", "IsAddedWord", "ParentGermanWordId", false as "IsGreek" from "unshackled-word"."Elb1871HebrewMapping"
+            select "ElbWordId", "StepWordId", "GermanWordPart", "IsAddedWord", "ParentGermanWordId", "Role", "StrongsNumber", "PartLemma", "MultiHead", false as "IsGreek" from "unshackled-word"."Elb1871HebrewMapping"
         ), lines as (
             select
                  w."HebRefId" as "HebRefId"
-                ,concat_ws('|', w."PositionInVerse", coalesce(e."GermanWordPart", ''), coalesce(sg."LxxRefId", sh."LxxRefId", 0), coalesce(sg."PositionInVerse", sh."PositionInVerse", 0), coalesce(e."IsAddedWord", false)::text, coalesce(p."HebRefId", 0), coalesce(p."PositionInVerse", 0)) as "Line"
+                ,concat_ws('|', w."PositionInVerse", coalesce(e."GermanWordPart", ''), coalesce(sg."LxxRefId", sh."LxxRefId", 0), coalesce(sg."PositionInVerse", sh."PositionInVerse", 0), coalesce(e."IsAddedWord", false)::text, coalesce(p."HebRefId", 0), coalesce(p."PositionInVerse", 0))
+                    || case when e."Role" <> 'head' then '|R:' || e."Role" else '' end
+                    || case when coalesce(e."StrongsNumber", '') <> '' then '|S:' || e."StrongsNumber" else '' end
+                    || case when coalesce(e."PartLemma", '') <> '' then '|L:' || e."PartLemma" else '' end
+                    || case when e."MultiHead" then '|M' else '' end as "Line"
             from edges e
             join "unshackled-word"."Elb1871Words" w on w."Id" = e."ElbWordId"
             left join "unshackled-word"."StepGreekWords" sg on e."IsGreek" and sg."Id" = e."StepWordId"
@@ -244,17 +253,17 @@ public sealed class MappingWriteSession : IDisposable
 
     private const string InsertGreekRows = """
         insert into "unshackled-word"."Elb1871GreekMapping"
-            ("ElbWordId", "StepWordId", "HebRefId", "PositionInVerse", "IsAddedWord", "ParentGermanWordId", "GermanWordPart")
+            ("ElbWordId", "StepWordId", "HebRefId", "PositionInVerse", "IsAddedWord", "ParentGermanWordId", "GermanWordPart", "PartOrder", "Role", "PartLemma", "MultiHead")
         select *
-        from unnest(@ElbWordId, @StepWordId, @HebRefId, @PositionInVerse, @IsAddedWord, @ParentGermanWordId, @GermanWordPart)
+        from unnest(@ElbWordId, @StepWordId, @HebRefId, @PositionInVerse, @IsAddedWord, @ParentGermanWordId, @GermanWordPart, @PartOrder, @Role, @PartLemma, @MultiHead)
         on conflict ("ElbWordId", "StepWordId") do nothing
         """;
 
     private const string InsertHebrewRows = """
         insert into "unshackled-word"."Elb1871HebrewMapping"
-            ("ElbWordId", "StepWordId", "HebRefId", "PositionInVerse", "IsAddedWord", "ParentGermanWordId", "GermanWordPart")
+            ("ElbWordId", "StepWordId", "HebRefId", "PositionInVerse", "IsAddedWord", "ParentGermanWordId", "GermanWordPart", "PartOrder", "Role", "PartLemma", "MultiHead", "StrongsNumber")
         select *
-        from unnest(@ElbWordId, @StepWordId, @HebRefId, @PositionInVerse, @IsAddedWord, @ParentGermanWordId, @GermanWordPart)
+        from unnest(@ElbWordId, @StepWordId, @HebRefId, @PositionInVerse, @IsAddedWord, @ParentGermanWordId, @GermanWordPart, @PartOrder, @Role, @PartLemma, @MultiHead, @StrongsNumber)
         on conflict ("ElbWordId", "StepWordId") do nothing
         """;
 
@@ -320,7 +329,12 @@ public sealed class MappingWriteSession : IDisposable
                 PositionInVerse = batch.Select(r => r.PositionInVerse).ToArray(),
                 IsAddedWord = batch.Select(r => r.Added).ToArray(),
                 ParentGermanWordId = batch.Select(r => r.ParentGermanWordId).ToArray(),
-                GermanWordPart = batch.Select(r => r.Part).ToArray()
+                GermanWordPart = batch.Select(r => r.Part).ToArray(),
+                PartOrder = batch.Select(r => r.PartOrder).ToArray(),
+                Role = batch.Select(r => r.Role).ToArray(),
+                PartLemma = batch.Select(r => r.PartLemma).ToArray(),
+                MultiHead = batch.Select(r => r.MultiHead).ToArray(),
+                StrongsNumber = batch.Select(r => r.Strongs).ToArray()
             };
 
             await _connection.ExecuteAsync(greek ? InsertGreekRows : InsertHebrewRows, parameters, _transaction, CommandTimeoutSeconds);

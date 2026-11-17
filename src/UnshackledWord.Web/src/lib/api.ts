@@ -98,3 +98,22 @@ export function describeApiError(error: unknown, fallback: string): string {
     return fallback;
   }
 }
+
+/**
+ * Every message of a FastEndpoints validation body (one entry per problem, e.g. the hard-rule messages of a rejected save),
+ * the rate-limit sentence for a 429, else the body's `message`; empty when there is nothing readable (use your own fallback).
+ */
+export function describeApiErrors(error: unknown): string[] {
+  if (isRateLimited(error)) return [rateLimitMessage(error)];
+  if (!(error instanceof ApiError) || !error.body) return [];
+  try {
+    const body = JSON.parse(error.body) as { errors?: Record<string, unknown>; message?: unknown };
+    const messages = Object.values(body.errors ?? {})
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .filter((value): value is string => typeof value === "string" && value.length > 0);
+    if (messages.length > 0) return messages;
+    return typeof body.message === "string" && body.message ? [body.message] : [];
+  } catch {
+    return [];
+  }
+}

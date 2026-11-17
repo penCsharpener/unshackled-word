@@ -10,8 +10,12 @@ public interface IVerseMappingService
     /// </summary>
     Task<GetVerseMappingResponse?> GetAsync(int bibleBookId, int chapter, int verse, bool callerCanWrite, CancellationToken token = default);
 
-    /// <summary>Replaces the whole mapping of the verse. Rejected without touching the database while editing is disabled.</summary>
-    Task<SaveVerseMappingResult> SaveAsync(int bibleBookId, int chapter, int verse, IReadOnlyList<VerseMappingLink> links, CancellationToken token = default);
+    /// <summary>
+    /// Replaces the whole mapping of the verse; every written row records <paramref name="userId"/> as its author. Rejected without touching the
+    /// database while editing is disabled, when a link breaks a rule, or when it would remove compound parts the verse has today
+    /// (a German word with parts that comes back without them) while <paramref name="clearParts"/> is false.
+    /// </summary>
+    Task<SaveVerseMappingResult> SaveAsync(int bibleBookId, int chapter, int verse, IReadOnlyList<VerseMappingLink> links, int userId, bool clearParts = false, CancellationToken token = default);
 }
 
 public enum SaveVerseMappingOutcome

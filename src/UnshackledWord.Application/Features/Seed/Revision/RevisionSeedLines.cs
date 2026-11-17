@@ -60,6 +60,18 @@ public sealed class RevisionMappingSeedLine
     /// <summary>carried, manual or seed (see <c>RevisionMapping."Origin"</c>); kept as it was exported.</summary>
     public string Origin { get; set; } = string.Empty;
 
+    /// <summary><c>head</c> or <c>unit</c> (roadmap 0018); written empty for <c>head</c>, an old file without the column reads as <c>head</c>.</summary>
+    public string Role { get; set; } = "head";
+
+    /// <summary>Hebrew morpheme (<c>H9001</c>) of a Lang H row; empty = main morpheme or Greek.</summary>
+    public string Strongs { get; set; } = string.Empty;
+
+    /// <summary>Lemma of the compound <see cref="Part"/>; empty when there is none.</summary>
+    public string PartLemma { get; set; } = string.Empty;
+
+    /// <summary>The maintainer accepted several heads on this source morpheme; written empty for false.</summary>
+    public bool MultiHead { get; set; }
+
     public bool HasSource => SrcRef.HasValue && SrcPos.HasValue;
     public bool HasParent => ParentPos.HasValue;
     public SourceKey? Source => HasSource ? new SourceKey(SrcRef!.Value, SrcPos!.Value, SrcHash) : null;

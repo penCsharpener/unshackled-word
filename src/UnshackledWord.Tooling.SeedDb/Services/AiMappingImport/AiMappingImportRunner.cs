@@ -37,7 +37,7 @@ public sealed class AiMappingImportRunner : IRunner
         var layout = _seedImporter.CreateLayout();
         var seed = await _seedImporter.LoadSourceAsync(layout, token);
 
-        if (seed is { Format: MappingSeedFormat.Anchored })
+        if (seed is not null && MappingSeedFormat.IsAnchored(seed.Format))
         {
             await _seedImporter.ImportAsync(layout, seed, token);
             return;

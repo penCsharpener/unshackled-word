@@ -70,6 +70,13 @@ internal static class FindingFactory
                 return (UnmappedRules.Error, r.Stts is null ? "STTS fehlt" : $"STTS „{r.Stts}“ ist unbekannt");
             case "L7":
                 return (UnmappedRules.Warning, $"STTS „{r.Stts}“ passt nicht zur Wortart {r.LivePos ?? r.Pos}");
+            case "R1":
+            case "R2":
+            case "R3":
+            case "R4":
+            case "R5":
+            case "R6":
+                return DqRoleChecks.Judge(check, r);
             case "L5":
                 var issues = MorphologyIssues.Evaluate(new MorphologyValues(r.Pos, r.VerbForm, r.Degree, r.Tense, r.Person, r.Number, r.Mood, r.Case, r.Gender));
                 return (UnmappedRules.Warning, issues.Count == 0 ? "Merkmale auffällig" : string.Join("; ", issues.Select(i => $"{i.Field}: {IssueText(i.Kind)}")));

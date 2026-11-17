@@ -9,7 +9,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality;
 public static class DqChecks
 {
     /// <summary>Must-tier checks served by checks/{code} and listed in the overview, in tile order.</summary>
-    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5", "L6", "L7"];
+    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5", "L6", "L7", .. DqRoleChecks.Codes];
 
     public static bool IsKnown(string code) => Codes.Contains(code);
 }
@@ -255,9 +255,23 @@ public sealed class DqCheckRepository : IDqCheckRepository
             case "L6":
             case "L7":
                 return BuildStts(r, f, p);
+            case "R1":
+            case "R2":
+            case "R3":
+            case "R4":
+            case "R5":
+            case "R6":
+                return BuildRole(r.Code, f, filters, p);
             default:
                 throw new ArgumentOutOfRangeException(nameof(r), r.Code, "Unknown check");
         }
+    }
+
+    private static Spec BuildRole(string code, string f, string filters, DynamicParameters p)
+    {
+        var (ctes, where, join) = DqRoleChecks.Build(code, f);
+        if (code == "R6") p.Add("legacy", DqRoleChecks.LegacySpellings);
+        return new Spec { Ctes = ctes, ItemsWhere = $"{where}{f}{filters}", Join = join };
     }
 
     private static Spec BuildM1(string f, string filters, bool hasGroup, string? lang, DynamicParameters p)
@@ -765,6 +779,18 @@ public sealed class DqCheckRepository : IDqCheckRepository
                 var spec = BuildSpec(new CheckRequest { Code = code }, facets, p);
                 var count = await connection.ExecuteScalarAsync<int>(new CommandDefinition(DqSql.CountFindings(spec.Ctes, spec.ItemsWhere, spec.Join), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct));
                 return new CheckCount(count, code == "L6" ? count : 0, null);
+            }
+            case "R1":
+            case "R2":
+            case "R3":
+            case "R4":
+            case "R5":
+            case "R6":
+            {
+                var p = new DynamicParameters();
+                var spec = BuildSpec(new CheckRequest { Code = code }, facets, p);
+                var count = await connection.ExecuteScalarAsync<int>(new CommandDefinition(DqSql.CountFindings(spec.Ctes, spec.ItemsWhere, spec.Join), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct));
+                return new CheckCount(count, DqRoleChecks.IsError(code) ? count : 0, null);
             }
             case "L5":
             {

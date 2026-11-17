@@ -18,6 +18,9 @@ public sealed class OverviewResponse
 
     /// <summary>Last successful refresh of the mapping stats views (Strong's page, word stats, smart search); absent until the first one.</summary>
     public DateTime? StatsRefreshedAt { get; set; }
+
+    /// <summary>When the link-roles backfill (roadmap 0018.4) was applied; absent = roles incomplete, checks R1–R6 and renderings are provisional.</summary>
+    public DateTime? LinkRolesAppliedAt { get; set; }
     public bool Refreshing { get; set; }
     public DateTime? LastEditAt { get; set; }
 

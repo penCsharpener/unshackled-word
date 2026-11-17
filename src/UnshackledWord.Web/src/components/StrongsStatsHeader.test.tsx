@@ -66,6 +66,35 @@ beforeEach(async () => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("StrongsStatsHeader", () => {
+  it("shows the roles notice until the backfill ran and lists the renderings with the contraction row", async () => {
+    stubFetch({
+      summary: () =>
+        json({
+          ...fixtureSummary,
+          renderings: [
+            ...fixtureSummary.renderings,
+            { word: "", key: "", count: 4, noOwnLemma: true },
+          ],
+        }),
+    });
+    renderHeader();
+    expect(await screen.findByTestId("roles-incomplete")).toHaveTextContent(
+      "Rollen unvollständig – Zählungen enthalten noch Hilfsverben und Präfixe",
+    );
+    expect(screen.getByTestId("strongs-renderings")).toHaveTextContent(
+      "Liebe (90) · Lieben (20) · ohne eigenes Lemma (4)",
+    );
+  });
+
+  it("hides the roles notice once linkRolesAppliedAt is set", async () => {
+    stubFetch({
+      summary: () => json({ ...fixtureSummary, linkRolesAppliedAt: "2026-11-16T10:00:00Z" }),
+    });
+    renderHeader();
+    await screen.findByTestId("strongs-renderings");
+    expect(screen.queryByTestId("roles-incomplete")).not.toBeInTheDocument();
+  });
+
   it("shows heading, glosses, stat line and the formed-from placeholder", async () => {
     const fetchMock = stubFetch();
     renderHeader();

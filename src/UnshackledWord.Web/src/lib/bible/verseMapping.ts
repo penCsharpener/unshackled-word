@@ -1,8 +1,14 @@
-import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  type QueryClient,
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { bibleApi } from "./api";
 import { bibleKeys } from "./queries";
 import { sidePanelKeys } from "./sidePanel";
-import type { GetWordsOfChapterResponse, VerseMappingLink } from "./types";
+import type { GetVerseMappingResponse, GetWordsOfChapterResponse, VerseMappingLink } from "./types";
 import { wordDetailKeys } from "./wordDetail";
 
 export interface VerseRef {
@@ -31,30 +37,47 @@ export function useVerseMapping(ref: VerseRef | null) {
   });
 }
 
-/** PUT of the whole verse mapping; refreshes the chapter words (hover highlight) and the word details (popup). */
+/**
+ * Refreshes what shows a verse's mapping after it changed (own save or a merged agent proposal): the chapter words
+ * (hover highlight), the side panel originals and the cached word details (popup). Optionally stores the fresh mapping.
+ */
+export async function refreshAfterMappingChange(
+  queryClient: QueryClient,
+  ref: VerseRef,
+  fresh?: GetVerseMappingResponse,
+) {
+  if (fresh) queryClient.setQueryData(verseMappingKey(ref), fresh);
+  const chapterKey = bibleKeys.chapterWordsOf(ref.bookId, ref.chapter);
+  const chapterWordIds = new Set(
+    queryClient
+      .getQueriesData<GetWordsOfChapterResponse>({ queryKey: chapterKey })
+      .flatMap(([, cached]) => cached?.words.map((w) => w.id) ?? []),
+  );
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: chapterKey }),
+    queryClient.invalidateQueries({ queryKey: sidePanelKeys.originalsAll }),
+    queryClient.invalidateQueries({
+      queryKey: wordDetailKeys.all,
+      // chapter not cached: refresh every cached detail rather than miss one
+      predicate: (query) =>
+        chapterWordIds.size === 0 || chapterWordIds.has(query.queryKey[2] as number),
+    }),
+  ]);
+}
+
+/** PUT of the whole verse mapping; `clearParts` confirms that compound parts the verse has today may be removed. */
 export function useSaveVerseMapping() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ ref, links }: { ref: VerseRef; links: VerseMappingLink[] }) =>
-      bibleApi.saveVerseMapping(ref.bookId, ref.chapter, ref.verse, links),
-    onSuccess: async (response, { ref }) => {
-      queryClient.setQueryData(verseMappingKey(ref), response);
-      const chapterKey = bibleKeys.chapterWordsOf(ref.bookId, ref.chapter);
-      const chapterWordIds = new Set(
-        queryClient
-          .getQueriesData<GetWordsOfChapterResponse>({ queryKey: chapterKey })
-          .flatMap(([, cached]) => cached?.words.map((w) => w.id) ?? []),
-      );
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: chapterKey }),
-        queryClient.invalidateQueries({ queryKey: sidePanelKeys.originalsAll }),
-        queryClient.invalidateQueries({
-          queryKey: wordDetailKeys.all,
-          // chapter not cached: refresh every cached detail rather than miss one
-          predicate: (query) =>
-            chapterWordIds.size === 0 || chapterWordIds.has(query.queryKey[2] as number),
-        }),
-      ]);
-    },
+    mutationFn: ({
+      ref,
+      links,
+      clearParts,
+    }: {
+      ref: VerseRef;
+      links: VerseMappingLink[];
+      clearParts?: boolean;
+    }) => bibleApi.saveVerseMapping(ref.bookId, ref.chapter, ref.verse, links, clearParts),
+    onSuccess: (response, { ref }) => refreshAfterMappingChange(queryClient, ref, response),
   });
 }

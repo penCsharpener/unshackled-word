@@ -88,6 +88,21 @@ describe("UserMenu maintenance link", () => {
     expect(items.indexOf("Maintenance")).toBe(items.indexOf("Data quality") + 1);
   });
 
+  it("shows AI proposals next to Maintenance for maintainers only", async () => {
+    await open(["user", "maintainer"]);
+    const items = screen.getAllByRole("menuitem").map((item) => item.textContent);
+    expect(screen.getByRole("menuitem", { name: "AI proposals" })).toHaveAttribute(
+      "href",
+      "/edit/proposals",
+    );
+    expect(items.indexOf("AI proposals")).toBe(items.indexOf("Maintenance") + 1);
+  });
+
+  it("hides AI proposals for plain users", async () => {
+    await open(["user"]);
+    expect(screen.queryByRole("menuitem", { name: "AI proposals" })).toBeNull();
+  });
+
   it("hides Maintenance for plain users", async () => {
     await open(["user"]);
     expect(screen.queryByRole("menuitem", { name: "Maintenance" })).toBeNull();

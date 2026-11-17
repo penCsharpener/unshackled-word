@@ -1,4 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using UnshackledWord.Application.Features.AgentMapping;
+using UnshackledWord.Application.Features.ApiTokens;
 using UnshackledWord.Application.Features.ChapterOriginals;
 using UnshackledWord.Application.Features.CrossReferences;
 using UnshackledWord.Application.Features.Revision;
@@ -37,6 +40,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IHebrewMorphemeRepository, HebrewMorphemeRepository>();
         services.AddScoped<IWordDetailService, WordDetailService>();
         services.AddScoped<IVerseMappingService, VerseMappingService>();
+        services.AddScoped<UnshackledWord.Application.Features.LinkRoles.Backfill.ILinkRoleBackfillRepository, LinkRoleBackfillRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.LinkRoles.Backfill.LinkRoleBackfillService>();
         services.AddScoped<IChapterCrossReferenceService, ChapterCrossReferenceService>();
         services.AddScoped<IChapterOriginalsService, ChapterOriginalsService>();
         services.AddScoped<IStrongsOccurrenceService, StrongsOccurrenceService>();
@@ -46,6 +51,25 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISearchOriginalsService, SearchOriginalsService>();
         services.AddScoped<IVerseSearchRepository, VerseSearchRepository>();
         services.AddScoped<IVerseSearchService, VerseSearchService>();
+        services.AddScoped<ISttsTagRepository, SttsTagRepository>();
+        services.AddScoped<IAgentDataRepository, AgentDataRepository>();
+        services.AddScoped<IAgentStoreRepository, AgentStoreRepository>();
+        services.AddScoped<IAgentPackageBuilder, AgentPackageBuilder>();
+        services.AddScoped<AgentProposalStore>();
+        services.AddScoped<IAgentProposalService, AgentProposalService>();
+        services.AddScoped<IAgentReviewRepository, AgentReviewRepository>();
+        services.AddScoped<IApiTokenRepository, ApiTokenRepository>();
+        services.AddScoped<IApiTokenService, ApiTokenService>();
+        services.AddScoped<IAgentRunRepository, AgentRunRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentScoreRepository, AgentScoreRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentScoreService, UnshackledWord.Application.Features.AgentMapping.Scoring.AgentScoreService>();
+        services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentReferenceFreezer, UnshackledWord.Application.Features.AgentMapping.Scoring.AgentReferenceFreezer>();
+        services.AddSingleton<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentReferenceStore>(sp => UnshackledWord.Application.Features.AgentMapping.Scoring.AgentReferenceStore.FromConfiguration(sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()));
+        services.AddScoped<IAgentRunService, AgentRunService>();
+        services.AddScoped<AgentRunExecutor>();
+        services.AddSingleton<IAgentModelClientFactory, UnshackledWord.Infrastructure.AgentModels.AgentModelClientFactory>();
+        services.AddSingleton<IAgentPromptProvider>(sp => AgentPromptProvider.FromConfiguration(sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()));
+        services.TryAddSingleton(TimeProvider.System);
         return services;
     }
 }

@@ -72,6 +72,7 @@ public sealed class DqOverviewService
         {
             RefreshedAt = state.RefreshedAt,
             StatsRefreshedAt = state.StatsRefreshedAt,
+            LinkRolesAppliedAt = state.LinkRolesAppliedAt,
             Refreshing = _coordinator.IsRunning,
             LastEditAt = await _facts.GetLastEditAtAsync(ct),
             SeedImports = [.. await _facts.GetSeedImportsAsync(ct)],

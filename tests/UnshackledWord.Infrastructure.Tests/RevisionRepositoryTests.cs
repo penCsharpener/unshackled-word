@@ -56,6 +56,12 @@ public class RevisionRepositoryTests
         RevisionRepositorySql.InsertWord.ShouldContain("@Change");
         RevisionRepositorySql.InsertWord.ShouldContain("RETURNING \"Id\"");
         RevisionRepositorySql.InsertMapping.ShouldContain("\"Origin\"");
+        RevisionRepositorySql.InsertMapping.ShouldContain("@Role");
+        RevisionRepositorySql.InsertMapping.ShouldContain("@StrongsNumber");
+        RevisionRepositorySql.InsertMapping.ShouldContain("@PartLemma");
+        RevisionRepositorySql.InsertMapping.ShouldContain("@MultiHead");
+        RevisionRepositorySql.Mapping.ShouldContain("rm.\"Role\"");
+        RevisionRepositorySql.Mapping.ShouldContain("rm.\"StrongsNumber\"");
         RevisionRepositorySql.UpdateVerse.ShouldContain("\"UpdatedByUserId\"");
     }
 

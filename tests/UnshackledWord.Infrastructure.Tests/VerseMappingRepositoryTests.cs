@@ -52,6 +52,8 @@ public class VerseMappingRepositoryTests
 
         reader.LastSql.ShouldContain(table);
         reader.LastSql.ShouldContain("\"ParentGermanWordId\" \"ParentElbWordId\"");
+        reader.LastSql.ShouldContain("\"GermanWordPart\"");
+        reader.LastSql.ShouldContain("\"PartOrder\"");
         reader.LastParam("Verse").ShouldBe(1);
     }
 
@@ -72,9 +74,34 @@ public class VerseMappingRepositoryTests
             insert.ShouldContain("@IsAddedWord");
             insert.ShouldContain("@ParentElbWordId");
             insert.ShouldContain("@StepWordId");
+            insert.ShouldContain("@GermanWordPart");
+            insert.ShouldContain("@PartOrder");
+            insert.ShouldContain("@CreatedByUserId");
+            insert.ShouldContain("@Role");
+            insert.ShouldContain("@PartLemma");
+            insert.ShouldContain("@MultiHead");
+            insert.ShouldNotContain("NULL");
         }
 
-        VerseMappingSql.InsertGreek.ShouldContain("\"StrongsNumber\"");
-        VerseMappingSql.InsertHebrew.ShouldNotContain("StrongsNumber");
+        // Greek takes the STEP word's Strong's; Hebrew stores the morpheme the service resolved (roadmap 0018).
+        VerseMappingSql.InsertGreek.ShouldContain("sgw.\"DisambiguatedStrongs\"");
+        VerseMappingSql.InsertGreek.ShouldNotContain("@StrongsNumber");
+        VerseMappingSql.InsertHebrew.ShouldContain("@StrongsNumber");
+    }
+
+    [Fact]
+    public void ReadSql_CarriesRolesMorphemesAndStts()
+    {
+        foreach (var read in new[] { VerseMappingSql.GreekMappingRows, VerseMappingSql.HebrewMappingRows })
+        {
+            read.ShouldContain("\"Role\"");
+            read.ShouldContain("\"PartLemma\"");
+            read.ShouldContain("\"MultiHead\"");
+        }
+
+        VerseMappingSql.HebrewMappingRows.ShouldContain("ehm.\"StrongsNumber\"");
+        VerseMappingSql.HebrewWords.ShouldContain("\"ExpandedStrongTags\"");
+        VerseMappingSql.HebrewWords.ShouldContain("\"MorphemeTags\"");
+        VerseMappingSql.GermanWords.ShouldContain("em.\"Stts\"");
     }
 }

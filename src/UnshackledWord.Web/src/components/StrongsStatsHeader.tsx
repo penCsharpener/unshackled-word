@@ -27,6 +27,7 @@ import { Button } from "./Button";
 import { DonutChart, type DonutSlice } from "./DonutChart";
 import { EmptyState } from "./EmptyState";
 import { FormError } from "./FormError";
+import { StrongsRenderings } from "./StrongsRenderings";
 
 const DONUT_TESTAMENTS: readonly Testament[] = ["ot", "nt"];
 
@@ -283,17 +284,15 @@ export function StrongsStatsHeader({
     );
   }
 
-  const gloss = germanGloss(summary.renderings).join(", ");
+  // The contraction row ("no own lemma") is not a German word: no gloss, no donut slice, no filter.
+  const renderings = summary.renderings.filter((r) => !r.noOwnLemma);
+  const gloss = germanGloss(renderings).join(", ");
   const testaments = statsTestaments(summary.language, summary.byBook);
   const totalBooks = books?.filter((book) => testaments.includes(book.testament)).length;
   const chartKey = testaments.length === 2 ? "all" : (testaments[0] ?? "nt");
-  const selectedRow = summary.renderings.find((r) => r.key === rendering);
-  const selectedRendering = selectedRow?.word ?? rendering ?? summary.renderings[0]?.word;
-  const selectedPos = selectedRow
-    ? selectedRow.pos
-    : rendering
-      ? undefined
-      : summary.renderings[0]?.pos;
+  const selectedRow = renderings.find((r) => r.key === rendering);
+  const selectedRendering = selectedRow?.word ?? rendering ?? renderings[0]?.word;
+  const selectedPos = selectedRow ? selectedRow.pos : rendering ? undefined : renderings[0]?.pos;
   const canRefresh = hasWriteRole(user) && !statsRefresh.forbidden;
   const stamp = summary.statsRefreshedAt
     ? t("bible.strongs.statsStand", { date: formatStamp(summary.statsRefreshedAt, i18n.language) })
@@ -324,6 +323,15 @@ export function StrongsStatsHeader({
             </>
           ) : null}
         </p>
+        {summary.linkRolesAppliedAt ? null : (
+          <p
+            role="status"
+            className="mt-2 rounded-md border border-sev-warning bg-surface p-3 text-sm"
+            data-testid="roles-incomplete"
+          >
+            {t("bible.strongs.rolesIncomplete")}
+          </p>
+        )}
       </header>
 
       <section aria-labelledby={composedId}>
@@ -393,13 +401,13 @@ export function StrongsStatsHeader({
                       ? t("bible.stats.donut.unmapped", { count: summary.unmappedCount })
                       : undefined
                   }
-                  slices={summary.renderings.map((r) => renderingSlice(r, posLabel))}
+                  slices={renderings.map((r) => renderingSlice(r, posLabel))}
                   centerLabel={t("bible.stats.donut.centerTranslations")}
                   activeKey={
                     rendering === undefined
                       ? null
                       : renderingSliceKey(
-                          summary.renderings.find((r) => r.key === rendering) ?? {
+                          renderings.find((r) => r.key === rendering) ?? {
                             key: rendering,
                             word: rendering,
                             count: 0,
@@ -411,6 +419,7 @@ export function StrongsStatsHeader({
                   }
                   filterLabel={t("bible.stats.donut.filterTranslation")}
                 />
+                <StrongsRenderings renderings={summary.renderings} />
                 {selectedRendering
                   ? DONUT_TESTAMENTS.map((testament) => (
                       <WordStatsDonut

@@ -84,7 +84,9 @@ public static class VerseMappingSql
                                       SELECT ew."Id"
                                            , ew."PositionInVerse"
                                            , ew."WordInContext" "Text"
+                                           , em."Stts"
                                       FROM "unshackled-word"."Elb1871Words" ew
+                                          LEFT JOIN "unshackled-word"."Elb1871Morphology" em ON em."HebRefId" = ew."HebRefId" AND em."PositionInVerse" = ew."PositionInVerse"
                                       WHERE 1=1
                                           AND ew."BibleBookId" = @BibleBookId
                                           AND ew."Chapter" = @Chapter
@@ -123,6 +125,7 @@ public static class VerseMappingSql
                                            , shw."RootDisambiguatedStrongsInstance" "Strongs"
                                            , shw."Gloss"
                                            , shw."Grammar" "MorphologyCode"
+                                           , COALESCE(NULLIF(shw."ExpandedStrongTags", ''), shw."DisambiguatedStrongs") "MorphemeTags"
                                       FROM "unshackled-word"."StepHebrewWords" shw
                                           LEFT JOIN LATERAL (SELECT ssl."OriginalWord"
                                                              FROM "unshackled-word"."StepStrongsLexicon" ssl
@@ -149,6 +152,10 @@ public static class VerseMappingSql
                                                 , COALESCE(egm."IsAddedWord", FALSE) "IsAddedWord"
                                                 , egm."ParentGermanWordId" "ParentElbWordId"
                                                 , egm."GermanWordPart"
+                                                , egm."PartOrder"
+                                                , egm."Role"
+                                                , egm."PartLemma"
+                                                , egm."MultiHead"
                                            FROM "unshackled-word"."Elb1871GreekMapping" egm
                                                JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
                                            WHERE 1=1
@@ -165,6 +172,11 @@ public static class VerseMappingSql
                                                  , COALESCE(ehm."IsAddedWord", FALSE) "IsAddedWord"
                                                  , ehm."ParentGermanWordId" "ParentElbWordId"
                                                  , ehm."GermanWordPart"
+                                                 , ehm."PartOrder"
+                                                 , ehm."Role"
+                                                 , ehm."StrongsNumber"
+                                                 , ehm."PartLemma"
+                                                 , ehm."MultiHead"
                                             FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                                 JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
                                             WHERE 1=1
@@ -279,11 +291,12 @@ public static class VerseMappingSql
                                                                        AND ew."Verse" = @Verse)
                                        """;
 
-    // Mirrors the seed import: GermanWordPart stays NULL for whole words, HebRefId and PositionInVerse come from the German word,
-    // StrongsNumber (Greek only) is the disambiguated Strong's number of the linked STEP word.
+    // Mirrors the seed import: GermanWordPart and PartOrder stay NULL for whole words (a compound part writes both), HebRefId and PositionInVerse
+    // come from the German word, Greek StrongsNumber is the disambiguated Strong's number of the linked STEP word, Hebrew StrongsNumber is the
+    // morpheme the service resolved (NULL = main morpheme), Role/PartLemma/MultiHead come from the link (roadmap 0018), CreatedByUserId is the saving user.
     public const string InsertGreek = """
                                       INSERT INTO "unshackled-word"."Elb1871GreekMapping"
-                                          ("ElbWordId", "StepWordId", "HebRefId", "StrongsNumber", "IsAddedWord", "ParentGermanWordId", "PositionInVerse", "GermanWordPart", "CreatedAt")
+                                          ("ElbWordId", "StepWordId", "HebRefId", "StrongsNumber", "IsAddedWord", "ParentGermanWordId", "PositionInVerse", "GermanWordPart", "PartOrder", "Role", "PartLemma", "MultiHead", "CreatedByUserId", "CreatedAt")
                                       SELECT ew."Id"
                                            , sgw."Id"
                                            , ew."HebRefId"
@@ -291,7 +304,12 @@ public static class VerseMappingSql
                                            , @IsAddedWord
                                            , @ParentElbWordId
                                            , ew."PositionInVerse"
-                                           , NULL
+                                           , @GermanWordPart
+                                           , @PartOrder
+                                           , @Role
+                                           , @PartLemma
+                                           , @MultiHead
+                                           , @CreatedByUserId
                                            , now()
                                       FROM "unshackled-word"."Elb1871Words" ew
                                           LEFT JOIN "unshackled-word"."StepGreekWords" sgw ON sgw."Id" = @StepWordId
@@ -301,14 +319,20 @@ public static class VerseMappingSql
 
     public const string InsertHebrew = """
                                        INSERT INTO "unshackled-word"."Elb1871HebrewMapping"
-                                           ("ElbWordId", "StepWordId", "HebRefId", "IsAddedWord", "ParentGermanWordId", "PositionInVerse", "GermanWordPart", "CreatedAt")
+                                           ("ElbWordId", "StepWordId", "HebRefId", "StrongsNumber", "IsAddedWord", "ParentGermanWordId", "PositionInVerse", "GermanWordPart", "PartOrder", "Role", "PartLemma", "MultiHead", "CreatedByUserId", "CreatedAt")
                                        SELECT ew."Id"
                                             , shw."Id"
                                             , ew."HebRefId"
+                                            , @StrongsNumber
                                             , @IsAddedWord
                                             , @ParentElbWordId
                                             , ew."PositionInVerse"
-                                            , NULL
+                                            , @GermanWordPart
+                                            , @PartOrder
+                                            , @Role
+                                            , @PartLemma
+                                            , @MultiHead
+                                            , @CreatedByUserId
                                             , now()
                                        FROM "unshackled-word"."Elb1871Words" ew
                                            LEFT JOIN "unshackled-word"."StepHebrewWords" shw ON shw."Id" = @StepWordId

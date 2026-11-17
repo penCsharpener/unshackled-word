@@ -64,4 +64,24 @@ describe("MaintainerPage", () => {
     renderPage();
     expect(await screen.findByRole("alert")).toHaveTextContent("do not have access");
   });
+
+  it("shows the AI runs and access token sections to maintainers only", async () => {
+    stubApi({
+      "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
+      "GET /maintainer/agent-runs?limit=50": () => json({ runs: [] }),
+      "GET /maintainer/api-tokens": () => json({ tokens: [] }),
+      "GET /maintainer/api-tokens/users": () => json({ users: [] }),
+    });
+    renderPage();
+    expect(await screen.findByRole("heading", { name: "AI runs" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "AI access tokens" })).toBeInTheDocument();
+  });
+
+  it("hides them from reviewers", async () => {
+    stubApi({ "GET /auth/me": () => json({ ...me, roles: ["reviewer"] }) });
+    renderPage();
+    await screen.findByRole("heading", { level: 1 });
+    expect(screen.queryByRole("heading", { name: "AI runs" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "AI access tokens" })).toBeNull();
+  });
 });

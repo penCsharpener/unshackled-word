@@ -171,6 +171,28 @@ public class StrongsStatsRepositoryTests
     }
 
     [Fact]
+    public async Task GetSnapshotRenderingsAsync_CarriesTheNoOwnLemmaFlag()
+    {
+        var reader = new FakeDbReader().Returns(new SnapshotRenderingRow { Word = "", Key = "", Count = 4, NoOwnLemma = true });
+
+        (await new StrongsStatsRepository(reader).GetSnapshotRenderingsAsync(Keys, false)).Single().NoOwnLemma.ShouldBeTrue();
+
+        reader.LastSql.ShouldContain("bool_and(r.\"NoOwnLemma\") \"NoOwnLemma\"");
+    }
+
+    [Fact]
+    public async Task GetLinkRolesAppliedAtAsync_ReadsTheRefreshState()
+    {
+        var at = new DateTime(2026, 11, 17, 0, 0, 0, DateTimeKind.Utc);
+        var reader = new FakeDbReader().Returns<DateTime?>(at);
+
+        (await new StrongsStatsRepository(reader).GetLinkRolesAppliedAtAsync()).ShouldBe(at);
+
+        reader.LastSql.ShouldContain("\"LinkRolesAppliedAt\"");
+        reader.LastSql.ShouldContain("\"DqRefreshState\"");
+    }
+
+    [Fact]
     public async Task ResolveSnapshotLemmasAsync_UsesTheFormTable_AndTheLemmaOnlyAsFallback()
     {
         var reader = new FakeDbReader().Returns(new SnapshotLemmaRow { Key = "gehen", Pos = "VERB" });

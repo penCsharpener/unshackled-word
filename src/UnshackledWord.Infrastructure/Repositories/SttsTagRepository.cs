@@ -1,14 +1,9 @@
 using Dapper;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Grammar;
 
-namespace UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.Stts;
-
-/// <summary>Reads the "SttsTags" table (source of truth for the STTS tags).</summary>
-public interface ISttsTagRepository
-{
-    Task<IReadOnlyList<SttsTag>> GetAllAsync(CancellationToken ct);
-}
+namespace UnshackledWord.Infrastructure.Repositories;
 
 public sealed class SttsTagRepository : ISttsTagRepository
 {

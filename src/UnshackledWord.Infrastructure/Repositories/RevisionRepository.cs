@@ -80,6 +80,11 @@ public sealed class RevisionRepository : IRevisionRepository
                     r.GermanWordPart,
                     Origin = RevisionOrigin.Carried,
                     CreatedByUserId = version.CreatedByUserId,
+                    // The carry-over does not transport roles yet (roadmap 0018): carried rows start as head on the main morpheme.
+                    Role = "head",
+                    StrongsNumber = (string?)null,
+                    PartLemma = (string?)null,
+                    MultiHead = false,
                 })
                 .ToList();
 
@@ -203,6 +208,10 @@ public sealed class RevisionRepository : IRevisionRepository
                     r.GermanWordPart,
                     r.Origin,
                     CreatedByUserId = (int?)userId,
+                    r.Role,
+                    StrongsNumber = lang == "H" ? r.StrongsNumber : null,
+                    PartLemma = r.GermanWordPart is null ? null : r.PartLemma,
+                    r.MultiHead,
                 }),
                 transaction);
         }
@@ -314,8 +323,8 @@ public static class RevisionRepositorySql
 
     public const string InsertMapping = """
                                         INSERT INTO "unshackled-word"."RevisionMapping"
-                                            ("RevisionWordId", "Lang", "StepWordId", "IsAddedWord", "ParentRevisionWordId", "GermanWordPart", "Origin", "CreatedByUserId")
-                                        VALUES (@RevisionWordId, @Lang, @StepWordId, @IsAddedWord, @ParentRevisionWordId, @GermanWordPart, @Origin, @CreatedByUserId)
+                                            ("RevisionWordId", "Lang", "StepWordId", "IsAddedWord", "ParentRevisionWordId", "GermanWordPart", "Origin", "CreatedByUserId", "Role", "StrongsNumber", "PartLemma", "MultiHead")
+                                        VALUES (@RevisionWordId, @Lang, @StepWordId, @IsAddedWord, @ParentRevisionWordId, @GermanWordPart, @Origin, @CreatedByUserId, @Role, @StrongsNumber, @PartLemma, @MultiHead)
                                         """;
 
     public const string Header = """
@@ -348,6 +357,10 @@ public static class RevisionRepositorySql
                                        , rm."ParentRevisionWordId"
                                        , rm."GermanWordPart"
                                        , rm."Origin"
+                                       , rm."Role"
+                                       , rm."StrongsNumber"
+                                       , rm."PartLemma"
+                                       , rm."MultiHead"
                                   FROM "unshackled-word"."RevisionMapping" rm
                                       JOIN "unshackled-word"."RevisionWords" rw ON rw."Id" = rm."RevisionWordId"
                                   WHERE rw."RevisionVerseId" = @Id

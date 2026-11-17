@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ApiError, describeApiError } from "@/lib/api";
+import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
 import { ELB1871_ONLY_LEVEL } from "@/lib/bible/api";
 import { reviewMarkers, toMappingData } from "@/lib/revision/mapping";
 import {
@@ -212,6 +212,7 @@ export function RevisionEditor({ verseRef, reference, onClose }: RevisionEditorP
               review={reviewMarkers(mapping.data, saved.carry)}
               saving={saveMapping.isPending}
               saveError={mappingSaveError()}
+              saveErrorDetails={describeApiErrors(saveMapping.error)}
               onCancel={() => setMappingOpen(false)}
               onSave={(links) =>
                 saveMapping.mutate(

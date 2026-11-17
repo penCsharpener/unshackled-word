@@ -11,7 +11,11 @@ export interface MappingTokenProps {
   status: WordStatus;
   /** German word added by the translator (italic) */
   added?: boolean;
+  /** This tile is one part of a split compound word (`Gersten|ernte`); the parts of a word are drawn joined */
+  part?: { order: number; count: number };
   unmapped?: boolean;
+  /** Every link of this German tile is a `unit` (roadmap 0018: belongs to the head's form, not counted); drawn muted */
+  unit?: boolean;
   /** title of the over-assignment hint; the badge shows a `!` when set */
   warning?: string;
   /** short note under the word asking for a second look (revision carry-over: changed or new word, original without link) */
@@ -48,7 +52,9 @@ export function MappingToken({
   badge,
   status,
   added,
+  part,
   unmapped,
+  unit,
   warning,
   review,
   active,
@@ -79,7 +85,17 @@ export function MappingToken({
       data-side={side}
       data-status={status}
       data-added={added ? "" : undefined}
+      data-part={
+        part
+          ? part.order === 1
+            ? "first"
+            : part.order === part.count
+              ? "last"
+              : "middle"
+          : undefined
+      }
       data-unmapped={unmapped ? "" : undefined}
+      data-unit={unit ? "" : undefined}
       data-review={review ? "" : undefined}
       data-active={active ? "" : undefined}
       data-selected={selected ? "" : undefined}

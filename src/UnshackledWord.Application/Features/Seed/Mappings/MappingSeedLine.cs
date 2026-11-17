@@ -39,6 +39,18 @@ public sealed class MappingSeedLine
     /// <summary>Verse of the parent word when it is not the verse of the word itself (232 rows on the maintainer's database); null otherwise.</summary>
     public int? ParentRef { get; set; }
 
+    /// <summary><c>head</c> or <c>unit</c> (roadmap 0018); written empty for the default <c>head</c>, an old file without the column reads as <c>head</c>.</summary>
+    public string Role { get; set; } = "head";
+
+    /// <summary>Hebrew morpheme the German word renders (<c>H9001</c>); empty = main morpheme or Greek. Not written when empty.</summary>
+    public string Strongs { get; set; } = string.Empty;
+
+    /// <summary>Lemma of the compound <see cref="Part"/>; empty when there is none.</summary>
+    public string PartLemma { get; set; } = string.Empty;
+
+    /// <summary>The maintainer accepted several heads on this source morpheme; written empty for false.</summary>
+    public bool MultiHead { get; set; }
+
     public bool HasSource => SrcRef.HasValue && SrcPos.HasValue;
 
     public bool HasParent => ParentPos.HasValue;

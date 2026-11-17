@@ -64,6 +64,10 @@ public sealed class RevisionExportRepository
              , pw."PositionInVerse"                           AS "ParentPos"
              , pw."PlainWord"                                 AS "ParentForm"
              , m."Origin"                                     AS "Origin"
+             , m."Role"                                       AS "Role"
+             , m."StrongsNumber"                              AS "Strongs"
+             , m."PartLemma"                                  AS "PartLemma"
+             , m."MultiHead"                                  AS "MultiHead"
         FROM "unshackled-word"."RevisionVerses" rv
             JOIN "unshackled-word"."Revisions" rev ON rev."Id" = rv."RevisionId"
             JOIN "unshackled-word"."RevisionWords" rw ON rw."RevisionVerseId" = rv."Id"
@@ -105,6 +109,7 @@ public sealed class RevisionExportRepository
             .ThenBy(l => l.SrcPos ?? -1)
             .ThenBy(l => l.SrcHash, StringComparer.Ordinal)
             .ThenBy(l => l.Part, StringComparer.Ordinal)
+            .ThenBy(l => l.Strongs, StringComparer.Ordinal)
             .ToList();
 
         return new RevisionBookData
@@ -116,20 +121,26 @@ public sealed class RevisionExportRepository
 
     private static RevisionMappingSeedLine ToLine(MappingRow row)
     {
+        var part = MappingExportRepository.CleanPart(row.Part);
+
         return new RevisionMappingSeedLine
         {
             Ref = row.Ref,
             Level = row.Level,
             Pos = row.Pos,
             Form = row.Form ?? string.Empty,
-            Part = MappingExportRepository.CleanPart(row.Part),
+            Part = part,
             SrcRef = row.SrcRef,
             SrcPos = row.SrcPos,
             SrcHash = row.SrcRef.HasValue ? SourceKey.Hash(row.SrcText) : string.Empty,
             Added = row.Added,
             ParentPos = row.ParentPos,
             ParentForm = row.ParentPos.HasValue ? row.ParentForm ?? string.Empty : string.Empty,
-            Origin = row.Origin
+            Origin = row.Origin,
+            Role = string.IsNullOrEmpty(row.Role) ? "head" : row.Role,
+            Strongs = row.Strongs ?? string.Empty,
+            PartLemma = part.Length > 0 ? row.PartLemma ?? string.Empty : string.Empty,
+            MultiHead = row.MultiHead
         };
     }
 
@@ -147,5 +158,9 @@ public sealed class RevisionExportRepository
         public int? ParentPos { get; init; }
         public string? ParentForm { get; init; }
         public string Origin { get; init; } = string.Empty;
+        public string? Role { get; init; }
+        public string? Strongs { get; init; }
+        public string? PartLemma { get; init; }
+        public bool MultiHead { get; init; }
     }
 }

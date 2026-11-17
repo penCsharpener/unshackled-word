@@ -18,7 +18,7 @@ internal static class DqSql
 {
     public const string Facts = "\"unshackled-word\".\"DqWordFacts\"";
 
-    /// <summary>The mapping stats views (migration 0013) in refresh order; all read DqWordFacts only, so any order works after the facts refresh.</summary>
+    /// <summary>The mapping stats views (migrations 0013, 0032) in refresh order; all read DqWordFacts only, so any order works after the facts refresh.</summary>
     public static readonly IReadOnlyList<string> StatsViews = ["StatsStrongsRenderings", "StatsStrongs", "StatsGermanLemma", "StatsGermanForms"];
 
     /// <summary>One REFRESH statement per stats view, in <see cref="StatsViews"/> order: plain for views not yet populated (CONCURRENTLY needs data), CONCURRENTLY otherwise so readers keep the old snapshot.</summary>
@@ -73,6 +73,9 @@ internal static class DqSql
         , f."InNa"           AS "InNa"
         , f."InTr"           AS "InTr"
         , f."HebType"        AS "HebType"
+        , f."Role"           AS "Role"
+        , f."MorphemeStrongs" AS "MorphemeStrongs"
+        , f."RenderLemma"    AS "RenderLemma"
         """;
 
     public const string FindingOrder = "\"BibleBookId\", \"Chapter\", \"Verse\", \"PositionInVerse\", \"StepWordId\"";
@@ -140,6 +143,12 @@ public sealed class FactRow
     public bool? InNa { get; set; }
     public bool? InTr { get; set; }
     public string? HebType { get; set; }
+
+    /// <summary>Link role (head/unit), source morpheme and lemma used for the rendering (part lemma or lemma); aligned rows only (0018).</summary>
+    public string? Role { get; set; }
+
+    public string? MorphemeStrongs { get; set; }
+    public string? RenderLemma { get; set; }
     public string? Context { get; set; }
 
     /// <summary>L6/L7 only: the live STTS tag and part of speech of Elb1871Morphology.</summary>

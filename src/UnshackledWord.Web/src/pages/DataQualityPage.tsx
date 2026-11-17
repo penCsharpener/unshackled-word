@@ -118,6 +118,12 @@ export function DataQualityPage() {
               ? t("quality.statsStand", { date: formatStamp(statsRefreshedAt, i18n.language) })
               : t("quality.statsNone")}{" "}
             ·{" "}
+            {data.linkRolesAppliedAt
+              ? t("quality.rolesStand", {
+                  date: formatStamp(data.linkRolesAppliedAt, i18n.language),
+                })
+              : t("quality.rolesNone")}{" "}
+            ·{" "}
             {t("quality.totals", {
               germanWords: formatNumber(data.totals.germanWords, i18n.language),
               sourceWords: formatNumber(data.totals.sourceWords, i18n.language),
