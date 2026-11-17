@@ -50,7 +50,8 @@ public sealed class MailKitEmailSender : IEmailSender
                 await client.AuthenticateAsync(_options.Username, _options.Password, ct);
             }
 
-            await client.SendAsync(mimeMessage, ct);
+            var sendRequest = new SmtpSendRequest(mimeMessage);
+            await client.SendAsync(sendRequest, ct);
             await client.DisconnectAsync(true, ct);
         }
         catch (Exception ex)
