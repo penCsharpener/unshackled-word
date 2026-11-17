@@ -6,7 +6,7 @@ namespace UnshackledWord.Domain.Extensions;
 /// </summary>
 public static class Elb1871PlainWord
 {
-    private const string Punctuation = ",;:.!?\"'{}[]()’¶";
+    private const string Punctuation = ",;:.!?\"'{}[]()’¶…";
 
     public static string From(string wordInContext)
     {
