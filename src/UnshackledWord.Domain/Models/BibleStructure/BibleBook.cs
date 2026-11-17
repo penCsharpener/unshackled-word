@@ -87,7 +87,7 @@ public partial record struct BibleBook : IComparer<BibleBook>, IComparable<Bible
         { 19, new BibleBook(19, "Psalms", ["Ps", "Psa", "Psalms"]) },
         { 20, new BibleBook(20, "Proverbs", ["Prov", "Pro", "Pr", "Prv"]) },
         { 21, new BibleBook(21, "Ecclesiastes", ["Eccl", "Ecc", "Qoheleth", "ec"]) },
-        { 22, new BibleBook(22, "Song of Solomon", ["Song", "SoS", "Sng", "Canticles", "Song of Songs", "so"]) },
+        { 22, new BibleBook(22, "Song of Songs", ["Song", "SoS", "Sng", "Canticles", "Song of Songs", "so"]) },
         { 23, new BibleBook(23, "Isaiah", ["Isa", "Is"]) },
         { 24, new BibleBook(24, "Jeremiah", ["Jer", "Je", "Jr"]) },
         { 25, new BibleBook(25, "Lamentations", ["Lam", "La"]) },
