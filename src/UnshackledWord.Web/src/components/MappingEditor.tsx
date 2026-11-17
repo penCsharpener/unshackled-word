@@ -1006,133 +1006,137 @@ export function MappingEditor({
       className="map-panel"
       onKeyDown={onKeyDown}
     >
-      <div ref={editRef} className="map-edit">
-        <svg className="map-lines" aria-hidden="true">
-          {lines.map((line) => (
-            <path
-              key={line.id}
-              d={line.d}
-              data-dashed={line.dashed ? "" : undefined}
-              data-role={line.unit ? "unit" : undefined}
-              data-kind={line.kind}
-            />
-          ))}
-        </svg>
-        <div className="map-sec">
-          <div className="map-row-head">
-            <p className="map-row-label">
-              {germanReversed ? t("bible.mapping.germanRowReversed") : t("bible.mapping.germanRow")}
-            </p>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-pressed={germanReversed}
-              title={t("bible.mapping.reverseGermanHint")}
-              onClick={toggleGermanReversed}
-            >
-              {t("bible.mapping.reverseGerman")}
-            </Button>
+      <div className="map-edit">
+        <div ref={editRef} className="map-edit-inner">
+          <svg className="map-lines" aria-hidden="true">
+            {lines.map((line) => (
+              <path
+                key={line.id}
+                d={line.d}
+                data-dashed={line.dashed ? "" : undefined}
+                data-role={line.unit ? "unit" : undefined}
+                data-kind={line.kind}
+              />
+            ))}
+          </svg>
+          <div className="map-sec">
+            <div className="map-row-head">
+              <p className="map-row-label">
+                {germanReversed
+                  ? t("bible.mapping.germanRowReversed")
+                  : t("bible.mapping.germanRow")}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-pressed={germanReversed}
+                title={t("bible.mapping.reverseGermanHint")}
+                onClick={toggleGermanReversed}
+              >
+                {t("bible.mapping.reverseGerman")}
+              </Button>
+            </div>
+            <div className="map-row" lang="de" data-reversed={germanReversed ? "" : undefined}>
+              {germanWords.map((word) => {
+                const nodes = germanNodes(work, word.id);
+                const split = work.splits.has(word.id);
+                const tokens = nodes.map((node) => {
+                  const part = split ? parseNode(node).part : undefined;
+                  const number = groups.number(node);
+                  const isAdded = work.added.has(word.id);
+                  const count = partners(work, "g", word.id, part).length;
+                  return (
+                    <MappingToken
+                      key={node}
+                      node={node}
+                      side="g"
+                      text={germanLabel(word.id, part)}
+                      part={part === undefined ? undefined : { order: part, count: nodes.length }}
+                      badge={isAdded ? `+${number ?? "?"}` : number ? String(number) : "?"}
+                      status={wordStatus(base, work, "g", word.id, part)}
+                      added={isAdded}
+                      unmapped={number === undefined}
+                      unit={
+                        count > 0 &&
+                        edgesOf(work, "g", word.id, part).every((e) => roleOf(work, e) === "unit")
+                      }
+                      warning={count >= OVER_ASSIGNED_FROM ? t("bible.mapping.warning") : undefined}
+                      active={inActiveGroup(node) || listedGerman(word.id, part)}
+                      selected={selected === node}
+                      dropTarget={dropOver === node}
+                      dragging={dragging === node}
+                      draggable={draggable}
+                      review={review?.german.has(word.id) ? reviewText : undefined}
+                      label={reviewLabel(describe(node), review?.german.has(word.id) === true)}
+                      {...tokenHandlers}
+                    />
+                  );
+                });
+                return split ? (
+                  <span key={word.id} className="map-word">
+                    {tokens}
+                  </span>
+                ) : (
+                  tokens
+                );
+              })}
+            </div>
           </div>
-          <div className="map-row" lang="de" data-reversed={germanReversed ? "" : undefined}>
-            {germanWords.map((word) => {
-              const nodes = germanNodes(work, word.id);
-              const split = work.splits.has(word.id);
-              const tokens = nodes.map((node) => {
-                const part = split ? parseNode(node).part : undefined;
+          <div className="map-sec">
+            <p className="map-row-label">
+              {t("bible.mapping.originalRow", {
+                language: t(`bible.mapping.language.${data.language}`),
+                direction: t(`bible.mapping.direction.${isRtl ? "rtl" : "ltr"}`),
+              })}
+            </p>
+            <div className="map-row map-row-original" dir={isRtl ? "rtl" : "ltr"}>
+              {originalWords.map((word) => {
+                const node = nodeKey("o", word.id);
                 const number = groups.number(node);
-                const isAdded = work.added.has(word.id);
-                const count = partners(work, "g", word.id, part).length;
                 return (
                   <MappingToken
-                    key={node}
+                    key={word.id}
                     node={node}
-                    side="g"
-                    text={germanLabel(word.id, part)}
-                    part={part === undefined ? undefined : { order: part, count: nodes.length }}
-                    badge={isAdded ? `+${number ?? "?"}` : number ? String(number) : "?"}
-                    status={wordStatus(base, work, "g", word.id, part)}
-                    added={isAdded}
+                    side="o"
+                    text={word.original}
+                    lang={originalLang}
+                    lemma={word.lemma}
+                    badge={number ? String(number) : "–"}
+                    status={wordStatus(base, work, "o", word.id)}
                     unmapped={number === undefined}
-                    unit={
-                      count > 0 &&
-                      edgesOf(work, "g", word.id, part).every((e) => roleOf(work, e) === "unit")
-                    }
-                    warning={count >= OVER_ASSIGNED_FROM ? t("bible.mapping.warning") : undefined}
-                    active={inActiveGroup(node) || listedGerman(word.id, part)}
+                    active={inActiveGroup(node) || listHover === word.id}
                     selected={selected === node}
                     dropTarget={dropOver === node}
                     dragging={dragging === node}
                     draggable={draggable}
-                    review={review?.german.has(word.id) ? reviewText : undefined}
-                    label={reviewLabel(describe(node), review?.german.has(word.id) === true)}
+                    review={review?.original.has(word.id) ? reviewText : undefined}
+                    label={reviewLabel(describe(node), review?.original.has(word.id) === true)}
+                    showDetails={showDetails}
+                    details={
+                      <>
+                        {word.strongs && <code>{word.strongs}</code>}
+                        {word.morphologyCode && <code>{word.morphologyCode}</code>}
+                        {word.gloss && <span>{word.gloss}</span>}
+                      </>
+                    }
                     {...tokenHandlers}
                   />
                 );
-              });
-              return split ? (
-                <span key={word.id} className="map-word">
-                  {tokens}
-                </span>
-              ) : (
-                tokens
-              );
-            })}
-          </div>
-        </div>
-        <div className="map-sec">
-          <p className="map-row-label">
-            {t("bible.mapping.originalRow", {
-              language: t(`bible.mapping.language.${data.language}`),
-              direction: t(`bible.mapping.direction.${isRtl ? "rtl" : "ltr"}`),
-            })}
-          </p>
-          <div className="map-row map-row-original" dir={isRtl ? "rtl" : "ltr"}>
-            {originalWords.map((word) => {
-              const node = nodeKey("o", word.id);
-              const number = groups.number(node);
-              return (
-                <MappingToken
-                  key={word.id}
-                  node={node}
-                  side="o"
-                  text={word.original}
-                  lang={originalLang}
-                  lemma={word.lemma}
-                  badge={number ? String(number) : "–"}
-                  status={wordStatus(base, work, "o", word.id)}
-                  unmapped={number === undefined}
-                  active={inActiveGroup(node) || listHover === word.id}
-                  selected={selected === node}
-                  dropTarget={dropOver === node}
-                  dragging={dragging === node}
-                  draggable={draggable}
-                  review={review?.original.has(word.id) ? reviewText : undefined}
-                  label={reviewLabel(describe(node), review?.original.has(word.id) === true)}
-                  showDetails={showDetails}
-                  details={
-                    <>
-                      {word.strongs && <code>{word.strongs}</code>}
-                      {word.morphologyCode && <code>{word.morphologyCode}</code>}
-                      {word.gloss && <span>{word.gloss}</span>}
-                    </>
-                  }
-                  {...tokenHandlers}
-                />
-              );
-            })}
-          </div>
-          {draggable && (
-            // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only drop target; the keyboard path is the "clear" action in the selection chips
-            <div
-              className="map-dropzone"
-              data-drop={dropOver === "clear" ? "" : undefined}
-              onDragOver={(event) => dragOver("clear", event)}
-              onDragLeave={() => setDropOver((current) => (current === "clear" ? null : current))}
-              onDrop={(event) => drop("clear", event)}
-            >
-              {t("bible.mapping.dropzone")}
+              })}
             </div>
-          )}
+            {draggable && (
+              // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only drop target; the keyboard path is the "clear" action in the selection chips
+              <div
+                className="map-dropzone"
+                data-drop={dropOver === "clear" ? "" : undefined}
+                onDragOver={(event) => dragOver("clear", event)}
+                onDragLeave={() => setDropOver((current) => (current === "clear" ? null : current))}
+                onDrop={(event) => drop("clear", event)}
+              >
+                {t("bible.mapping.dropzone")}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1141,7 +1145,8 @@ export function MappingEditor({
           <p className="mb-2 text-fg-muted">{t("bible.mapping.readOnly")}</p>
         )}
         <div className="min-h-6">
-          {activeInfo()}
+          {/* Reserves the height of the word info (large original text) so the hint below does not jump on hover. */}
+          <div className="min-h-8">{activeInfo()}</div>
           <p className="text-fg-muted">{lead()}</p>
         </div>
         {chips()}

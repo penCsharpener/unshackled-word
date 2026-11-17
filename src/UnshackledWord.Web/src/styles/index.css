@@ -525,7 +525,7 @@
   }
 
   .map-panel > * + *,
-  .map-edit > * + * {
+  .map-edit-inner > * + * {
     border-top: 1px solid var(--color-border);
   }
 
@@ -533,8 +533,15 @@
     padding: calc(var(--spacing) * 3);
   }
 
+  /* Long verses scroll sideways instead of wrapping; the inner box is as wide as the longer row (at least the panel). */
   .map-edit {
+    overflow-x: auto;
+  }
+
+  .map-edit-inner {
     position: relative;
+    width: max-content;
+    min-width: 100%;
   }
 
   .app-header {
@@ -683,9 +690,11 @@
     color: var(--color-fg-muted);
   }
 
+  /* One line per row; the shorter row spreads its words so both rows are equally wide and the lines stay steep. */
   .map-row {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-content: space-between;
     gap: calc(var(--spacing) * 1);
     font-family: var(--font-scripture);
     font-size: var(--text-lg);
