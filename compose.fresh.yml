@@ -1,0 +1,42 @@
+# Fresh test stack on alternate host ports, next to the default stack.
+# Usage (from this folder):
+#   FRONTEND_BASE_URL=http://localhost:5183 docker compose -p uw-fresh -f compose.yml -f compose.fresh.yml up -d --build
+# Web: http://localhost:5183   API: http://localhost:7664   MCP: http://localhost:7665   DB (host tools): localhost:5433
+services:
+  unshackledword.tooling.database:
+    container_name: postgres-fresh-db
+    ports: !override
+      - "5433:5432"
+    # Bind mount instead of the named volume; ./temp/* is git-ignored.
+    volumes: !override
+      - ./temp/postgres-fresh:/var/lib/postgresql
+
+  unshackledword.tooling.db-migration:
+    volumes: !override
+      - ./assets:/src/assets
+      - ./temp/seed-data:/src/temp
+
+  unshackledword.tooling.webapi:
+    ports: !override
+      - "7664:8080"
+    # Same repo folders as the default stack, set explicitly here.
+    volumes: !override
+      - ./assets:/src/assets
+      - ./temp/webapi-data:/src/temp
+
+  unshackledword.tooling.mcpserver:
+    ports: !override
+      - "7665:8080"
+
+  unshackledword.web:
+    ports: !override
+      - "5183:5173"
+    environment:
+      - VITE_WORD_DETAIL_SOURCE=api
+      # Inside the compose network the Vite proxy reaches the API by service name, not via the host port.
+      - API_PROXY_TARGET=http://unshackledword.tooling.webapi:8080
+
+  mailpit:
+    ports: !override
+      - "127.0.0.1:1035:1025"
+      - "127.0.0.1:8035:8025"
