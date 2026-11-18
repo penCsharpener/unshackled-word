@@ -9,3 +9,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** App version from package.json, kept in sync with Directory.Build.props. */
+declare const __APP_VERSION__: string;

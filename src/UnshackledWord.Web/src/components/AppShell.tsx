@@ -49,7 +49,11 @@ function AppShellContent() {
         <header className="app-header sticky top-0 z-30 bg-surface">
           <div className="mx-auto flex h-full max-w-page-wide flex-wrap items-center justify-between gap-x-4 px-4 md:px-8">
             <nav className="flex h-14 items-center gap-6 md:h-full laptop:flex-1">
-              <NavLink to="/bible" className="font-scripture text-lg font-semibold text-accent">
+              <NavLink
+                to="/bible"
+                title={`v${__APP_VERSION__}`}
+                className="font-scripture text-lg font-semibold text-accent"
+              >
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 24 24"
