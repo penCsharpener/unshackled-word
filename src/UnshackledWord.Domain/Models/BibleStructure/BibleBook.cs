@@ -72,7 +72,7 @@ public partial record struct BibleBook : IComparer<BibleBook>, IComparable<Bible
         { 4, new BibleBook(4, "Numbers", ["Num", "Nu", "Nm"]) },
         { 5, new BibleBook(5, "Deuteronomy", ["Deut", "Dt", "Deu", "de"]) },
         { 6, new BibleBook(6, "Joshua", ["Josh", "Jos", "Jsh"]) },
-        { 7, new BibleBook(7, "Judges", ["Judg", "Jdg", "Jgs", "jud"]) },
+        { 7, new BibleBook(7, "Judges", ["Judg", "Jdg", "Jgs"]) },
         { 8, new BibleBook(8, "Ruth", ["Ruth", "Rut", "Ru", "Rt"]) },
         { 9, new BibleBook(9, "1 Samuel", ["1 Sam", "1Sa", "1st Sam"]) },
         { 10, new BibleBook(10, "2 Samuel", ["2 Sam", "2Sa", "2nd Sam"]) },
