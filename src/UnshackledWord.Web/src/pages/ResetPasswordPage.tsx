@@ -11,7 +11,9 @@ import { authLinkClasses } from "@/lib/auth/styles";
 
 export function ResetPasswordPage() {
   const { t } = useTranslation();
-  const token = useSearchParams()[0].get("token");
+  const params = useSearchParams()[0];
+  const token = params.get("token");
+  const welcome = params.get("welcome") === "1";
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -41,7 +43,7 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <AuthCard title={t("auth.resetPassword.title")}>
+    <AuthCard title={t(welcome ? "auth.resetPassword.welcomeTitle" : "auth.resetPassword.title")}>
       {!token ? (
         <FormError message={t("auth.resetPassword.invalidLink")} />
       ) : done ? (

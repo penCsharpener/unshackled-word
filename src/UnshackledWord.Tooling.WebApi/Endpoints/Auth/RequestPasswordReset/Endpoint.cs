@@ -38,9 +38,10 @@ public sealed class Endpoint : Endpoint<EmailRequest>
     {
         var user = await _repository.FindByEmailAsync(EmailNormalizer.Normalize(req.Email), ct);
 
-        if (user is not null)
+        // A deactivated account gets the same 202 as an unknown address and no mail.
+        if (user is not null && !user.IsDeactivated)
         {
-            var token = await _repository.IssueTokenAsync(user.Id, AuthTokenPurpose.PasswordReset, ResetTokenLifetime, ct);
+            var token = await _repository.IssueTokenAsync(user.Id, AuthTokenPurpose.PasswordReset, ResetTokenLifetime, supersedeOpen: true, ct);
             await _emailSender.SendAsync(
                 _emailBuilder.BuildPasswordReset(user.Email, user.DisplayName, token, AuthEmailBuilder.ResolveLocale(HttpContext)), ct);
         }

@@ -1,33 +1,15 @@
-import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { Button, buttonClasses } from "./Button";
+import { HeaderMenu, type HeaderMenuItem } from "./HeaderMenu";
 
 /** Header slot: "Sign in" while logged out, else an avatar button with a menu (passkeys, sign out). */
 export function UserMenu() {
   const { t } = useTranslation();
   const { status, user, logout } = useAuth();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onPointer = (event: PointerEvent) => {
-      if (!root.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("pointerdown", onPointer);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onPointer);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
 
   if (status === "loading") return null;
 
@@ -40,107 +22,42 @@ export function UserMenu() {
   }
 
   const initial = (user.displayName || user.email).trim().charAt(0).toUpperCase();
+  const items: HeaderMenuItem[] = [
+    { key: "passkeys", to: "/account/passkeys", label: t("auth.passkeys.title") },
+    { key: "lemmas", to: "/edit/lemmas", label: t("lemmas.menu") },
+  ];
+  if (hasWriteRole(user)) {
+    items.push(
+      { key: "quality", to: "/edit/quality", label: t("quality.nav") },
+      { key: "maintainer", to: "/edit/maintainer", label: t("maintainer.nav") },
+      { key: "proposals", to: "/edit/proposals", label: t("agent.proposals.nav") },
+      { key: "replace", to: "/edit/revision/replace", label: t("bulkReplace.nav") },
+    );
+  }
 
   return (
-    <div ref={root} className="relative">
-      <Button
-        variant="primary"
-        size="sm"
-        className="size-8 rounded-full"
-        aria-label={t("auth.userMenu", { name: user.displayName || user.email })}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
-      >
-        {initial}
-      </Button>
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 top-full z-40 mt-2 flex min-w-48 flex-col gap-1 rounded-md border border-border bg-surface p-2 text-sm"
+    <HeaderMenu
+      trigger={initial}
+      label={t("auth.userMenu", { name: user.displayName || user.email })}
+      heading={user.email}
+      items={items}
+      triggerVariant="primary"
+      triggerClassName="size-8 rounded-full"
+      footer={(close) => (
+        <Button
+          role="menuitem"
+          variant="ghost"
+          size="sm"
+          className="justify-start"
+          onClick={async () => {
+            close();
+            await logout();
+            navigate("/");
+          }}
         >
-          <p className="truncate px-2 py-1 text-fg-muted">{user.email}</p>
-          <Link
-            role="menuitem"
-            to="/account/passkeys"
-            className="rounded-md px-2 py-1 hover:bg-surface-muted"
-            onClick={() => setOpen(false)}
-          >
-            {t("auth.passkeys.title")}
-          </Link>
-          <Link
-            role="menuitem"
-            to="/edit/lemmas"
-            className="rounded-md px-2 py-1 hover:bg-surface-muted"
-            onClick={() => setOpen(false)}
-          >
-            {t("lemmas.menu")}
-          </Link>
-          {hasWriteRole(user) && (
-            <Link
-              role="menuitem"
-              to="/edit/quality"
-              className="rounded-md px-2 py-1 hover:bg-surface-muted"
-              onClick={() => setOpen(false)}
-            >
-              {t("quality.nav")}
-            </Link>
-          )}
-          {hasWriteRole(user) && (
-            <Link
-              role="menuitem"
-              to="/edit/maintainer"
-              className="rounded-md px-2 py-1 hover:bg-surface-muted"
-              onClick={() => setOpen(false)}
-            >
-              {t("maintainer.nav")}
-            </Link>
-          )}
-          {hasWriteRole(user) && (
-            <Link
-              role="menuitem"
-              to="/edit/proposals"
-              className="rounded-md px-2 py-1 hover:bg-surface-muted"
-              onClick={() => setOpen(false)}
-            >
-              {t("agent.proposals.nav")}
-            </Link>
-          )}
-          {hasWriteRole(user) && (
-            <Link
-              role="menuitem"
-              to="/edit/revision/replace"
-              className="rounded-md px-2 py-1 hover:bg-surface-muted"
-              onClick={() => setOpen(false)}
-            >
-              {t("bulkReplace.nav")}
-            </Link>
-          )}
-          {user.roles?.includes("admin") && (
-            <Link
-              role="menuitem"
-              to="/admin/invitations"
-              className="rounded-md px-2 py-1 hover:bg-surface-muted"
-              onClick={() => setOpen(false)}
-            >
-              {t("admin.invitations.menu")}
-            </Link>
-          )}
-          <Button
-            role="menuitem"
-            variant="ghost"
-            size="sm"
-            className="justify-start"
-            onClick={async () => {
-              setOpen(false);
-              await logout();
-              navigate("/");
-            }}
-          >
-            {t("auth.signOut")}
-          </Button>
-        </div>
+          {t("auth.signOut")}
+        </Button>
       )}
-    </div>
+    />
   );
 }

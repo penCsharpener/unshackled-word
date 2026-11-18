@@ -45,6 +45,17 @@ describe("SignInPage", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Email or password is incorrect.");
   });
 
+  it("shows the deactivated message for a 403", async () => {
+    stubApi({
+      "GET /auth/me": () => new Response("", { status: 401 }),
+      "POST /auth/login": () =>
+        new Response(JSON.stringify({ code: "account_deactivated" }), { status: 403 }),
+    });
+    renderWithAuth(<SignInPage />);
+    await fillAndSubmit();
+    expect(await screen.findByRole("alert")).toHaveTextContent("account is deactivated");
+  });
+
   it("hides the passkey button without WebAuthn and links to the other flows", () => {
     stubApi({ "GET /auth/me": () => new Response("", { status: 401 }) });
     renderWithAuth(<SignInPage />);

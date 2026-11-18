@@ -2,6 +2,7 @@ using Dapper;
 using Npgsql;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Auth;
+using UnshackledWord.Application.Features.UserAdmin;
 using UnshackledWord.Domain.WebApi.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Auth;
@@ -11,13 +12,14 @@ public interface IInviteAdminRepository
 {
     Task<IReadOnlyList<InviteCodeSummary>> ListAsync(CancellationToken ct);
 
+    /// <summary>Inserts the code and its <c>invite_created</c> log row in one transaction.</summary>
     Task<(int Id, string Code)> CreateAsync(int maxSeats, DateTimeOffset expiresAt, int createdBy, string? note, string? boundEmailNormalized, CancellationToken ct);
 
-    /// <summary>Reissues: revokes live codes bound to the address, then inserts a new single-seat one.</summary>
+    /// <summary>Reissues: revokes live codes bound to the address, then inserts a new single-seat one; logs <c>invite_revoked</c> per revoked code and <c>invite_created</c>.</summary>
     Task<(int Id, string Code)> CreateInvitationAsync(string emailNormalized, DateTimeOffset expiresAt, int createdBy, string? note, CancellationToken ct);
 
-    /// <summary>False means the id does not exist. Idempotent.</summary>
-    Task<bool> RevokeAsync(int id, CancellationToken ct);
+    /// <summary>False means the id does not exist. Idempotent; only a code that was still live gets an <c>invite_revoked</c> log row.</summary>
+    Task<bool> RevokeAsync(int id, int actorId, CancellationToken ct);
 }
 
 public sealed class InviteAdminRepository : IInviteAdminRepository
@@ -26,10 +28,12 @@ public sealed class InviteAdminRepository : IInviteAdminRepository
     private const int MaxGenerationAttempts = 5;
 
     private readonly IDbConnectionFactory _connectionFactory;
+    private readonly IAdminLogRepository _adminLog;
 
-    public InviteAdminRepository(IDbConnectionFactory connectionFactory)
+    public InviteAdminRepository(IDbConnectionFactory connectionFactory, IAdminLogRepository adminLog)
     {
         _connectionFactory = connectionFactory;
+        _adminLog = adminLog;
     }
 
     private const string SelectInviteCodes = """
@@ -65,12 +69,9 @@ public sealed class InviteAdminRepository : IInviteAdminRepository
         RETURNING "Id"
         """;
 
-    public async Task<(int Id, string Code)> CreateAsync(
-        int maxSeats, DateTimeOffset expiresAt, int createdBy, string? note, string? boundEmailNormalized, CancellationToken ct)
-    {
-        using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
-        return await InsertWithRetryAsync(connection, null, maxSeats, expiresAt, createdBy, note, boundEmailNormalized, ct);
-    }
+    public Task<(int Id, string Code)> CreateAsync(
+        int maxSeats, DateTimeOffset expiresAt, int createdBy, string? note, string? boundEmailNormalized, CancellationToken ct) =>
+        InsertLoggedAsync(false, boundEmailNormalized, maxSeats, expiresAt, createdBy, note, ct);
 
     // "Live" = not revoked and not expired. Redeemed/expired ones are left alone to keep the audit trail intact.
     private const string RevokeLiveInvitations = """
@@ -79,49 +80,67 @@ public sealed class InviteAdminRepository : IInviteAdminRepository
         WHERE "BoundEmailNormalized" = @emailNormalized
           AND "RevokedAt" IS NULL
           AND "ExpiresAt" > now()
+        RETURNING "Id"
         """;
 
-    public async Task<(int Id, string Code)> CreateInvitationAsync(
-        string emailNormalized, DateTimeOffset expiresAt, int createdBy, string? note, CancellationToken ct)
-    {
-        using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
-        using var transaction = connection.BeginTransaction();
+    public Task<(int Id, string Code)> CreateInvitationAsync(
+        string emailNormalized, DateTimeOffset expiresAt, int createdBy, string? note, CancellationToken ct) =>
+        InsertLoggedAsync(true, emailNormalized, 1, expiresAt, createdBy, note, ct);
 
-        await connection.ExecuteAsync(new CommandDefinition(RevokeLiveInvitations, new { emailNormalized }, transaction, cancellationToken: ct));
-        var result = await InsertWithRetryAsync(connection, transaction, 1, expiresAt, createdBy, note, emailNormalized, ct);
-
-        transaction.Commit();
-        return result;
-    }
-
-    private static async Task<(int Id, string Code)> InsertWithRetryAsync(
-        System.Data.IDbConnection connection,
-        System.Data.IDbTransaction? transaction,
+    // One transaction per attempt: a unique violation aborts it, so a generated-code collision restarts the whole unit (revoke, insert, log rows).
+    private async Task<(int Id, string Code)> InsertLoggedAsync(
+        bool reissue,
+        string? boundEmailNormalized,
         int maxSeats,
         DateTimeOffset expiresAt,
         int createdBy,
         string? note,
-        string? boundEmailNormalized,
         CancellationToken ct)
     {
         for (var attempt = 1; attempt <= MaxGenerationAttempts; attempt++)
         {
             var code = InviteCodeGenerator.Generate();
 
-            // A unique violation inside a transaction aborts it, so retry only outside one.
+            using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
+            using var transaction = connection.BeginTransaction();
+
             try
             {
+                var revoked = reissue
+                    ? (await connection.QueryAsync<int>(new CommandDefinition(
+                        RevokeLiveInvitations, new { emailNormalized = boundEmailNormalized }, transaction, cancellationToken: ct))).ToList()
+                    : [];
+
                 var id = await connection.ExecuteScalarAsync<int>(new CommandDefinition(
                     InsertInviteCode,
                     new { code, boundEmailNormalized, maxSeats, expiresAt, createdBy, note },
                     transaction,
                     cancellationToken: ct));
+
+                foreach (var revokedId in revoked)
+                {
+                    await _adminLog.AppendAsync(
+                        new AdminLogEntry(createdBy, AdminLogActions.InviteRevoked, null, revokedId, System.Text.Json.JsonSerializer.Serialize(new { email = boundEmailNormalized })),
+                        transaction,
+                        ct);
+                }
+
+                await _adminLog.AppendAsync(
+                    new AdminLogEntry(
+                        createdBy,
+                        AdminLogActions.InviteCreated,
+                        null,
+                        id,
+                        System.Text.Json.JsonSerializer.Serialize(new { maxSeats, expiresAt, boundEmail = boundEmailNormalized })),
+                    transaction,
+                    ct);
+
+                transaction.Commit();
                 return (id, code);
             }
-            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation
-                && transaction is null
-                && attempt < MaxGenerationAttempts)
+            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation && attempt < MaxGenerationAttempts)
             {
+                transaction.Rollback();
             }
         }
 
@@ -129,16 +148,39 @@ public sealed class InviteAdminRepository : IInviteAdminRepository
     }
 
     // Sets RevokedAt instead of deleting: redemptions are the audit trail for existing accounts.
+    private const string LockInviteCodeForRevoke = """
+        SELECT "RevokedAt" IS NULL
+        FROM "unshackled-word"."InviteCodes"
+        WHERE "Id" = @id
+        FOR UPDATE
+        """;
+
     private const string RevokeInviteCode = """
         UPDATE "unshackled-word"."InviteCodes"
-        SET "RevokedAt" = COALESCE("RevokedAt", now())
+        SET "RevokedAt" = now()
         WHERE "Id" = @id
         """;
 
-    public async Task<bool> RevokeAsync(int id, CancellationToken ct)
+    public async Task<bool> RevokeAsync(int id, int actorId, CancellationToken ct)
     {
         using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
-        var rows = await connection.ExecuteAsync(new CommandDefinition(RevokeInviteCode, new { id }, cancellationToken: ct));
-        return rows > 0;
+        using var transaction = connection.BeginTransaction();
+
+        var wasLive = await connection.ExecuteScalarAsync<bool?>(new CommandDefinition(LockInviteCodeForRevoke, new { id }, transaction, cancellationToken: ct));
+
+        if (wasLive is null)
+        {
+            transaction.Rollback();
+            return false;
+        }
+
+        if (wasLive.Value)
+        {
+            await connection.ExecuteAsync(new CommandDefinition(RevokeInviteCode, new { id }, transaction, cancellationToken: ct));
+            await _adminLog.AppendAsync(new AdminLogEntry(actorId, AdminLogActions.InviteRevoked, null, id, "{}"), transaction, ct);
+        }
+
+        transaction.Commit();
+        return true;
     }
 }

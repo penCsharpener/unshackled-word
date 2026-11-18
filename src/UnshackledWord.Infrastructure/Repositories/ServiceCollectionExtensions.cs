@@ -68,6 +68,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAgentProposalService, AgentProposalService>();
         services.AddScoped<IAgentReviewRepository, AgentReviewRepository>();
         services.AddScoped<IApiTokenRepository, ApiTokenRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.UserAdmin.IAdminLogRepository, AdminLogRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.UserAdmin.IUserAdminRepository, UserAdminRepository>();
         services.AddScoped<IApiTokenService, ApiTokenService>();
         services.AddScoped<IAgentRunRepository, AgentRunRepository>();
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentScoreRepository, AgentScoreRepository>();

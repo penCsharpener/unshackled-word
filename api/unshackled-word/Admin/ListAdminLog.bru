@@ -1,0 +1,19 @@
+meta {
+  name: ListAdminLog
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}admin/log?userId=2&action=role_granted&page=1&pageSize=50
+  body: none
+  auth: inherit
+}
+
+docs {
+  Admin only. Newest first; filters userId (affected user) and action are optional. Items: id, createdAt, actorUserId, actorDisplayName, action, targetUserId, targetDisplayName, inviteCodeId, details (free-form JSON). Response: items, total, page, pageSize. 400 for an unknown action.
+}
+
+settings {
+  encodeUrl: true
+}

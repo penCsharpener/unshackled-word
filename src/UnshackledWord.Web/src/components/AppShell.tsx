@@ -5,6 +5,7 @@ import { HeaderInfoProvider } from "@/lib/headerInfo";
 import { PickerSlotProvider, useSetPickerSlot } from "@/lib/pickerSlot";
 import { SEARCH_ICON_PATHS } from "@/lib/search/icon";
 import { useSearchHotkey } from "@/lib/search/useSearchHotkey";
+import { AdminMenu } from "./AdminMenu";
 import { Button } from "./Button";
 import { HeaderWordInfo } from "./HeaderWordInfo";
 import { LanguageSwitch } from "./LanguageSwitch";
@@ -112,6 +113,7 @@ function AppShellContent() {
               )}
               <LanguageSwitch />
               <ThemeToggle />
+              <AdminMenu />
               <UserMenu />
             </div>
           </div>

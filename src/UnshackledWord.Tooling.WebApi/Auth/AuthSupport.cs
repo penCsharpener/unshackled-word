@@ -12,6 +12,18 @@ public static class AppClaimTypes
     public const string SecurityStamp = "security_stamp";
 }
 
+/// <summary>The sign-in answer for a deactivated account: 403 problem details with the top-level <c>code</c> <c>account_deactivated</c> (the frontend shows "Konto deaktiviert").</summary>
+public static class AuthProblems
+{
+    public const string AccountDeactivated = "account_deactivated";
+
+    public static IResult DeactivatedAccount() =>
+        Results.Problem(
+            statusCode: StatusCodes.Status403Forbidden,
+            title: AccountDeactivated,
+            extensions: new Dictionary<string, object?> { ["code"] = AccountDeactivated });
+}
+
 /// <summary>Marks an endpoint that requires a signed-in user. Every other endpoint is anonymous by default (see Program.cs).</summary>
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class RequiresLoginAttribute : Attribute;

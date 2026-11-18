@@ -258,6 +258,25 @@ for i in $(seq 1 7); do curl -s -o /dev/null -w "%{http_code} " http://localhost
 
 See `docs/roadmaps/0015-public-rate-limit/` for the design.
 
+### User administration
+
+Admins manage users, roles, deactivation and invitations from the admin-only gear menu in the header. Every change is recorded in the append-only admin log (same menu). See `docs/roadmaps/0020-admin-user-management/` for the design.
+
+### Troubleshooting
+
+**No admin left (everybody was demoted or deactivated).** The user administration refuses to remove the last active admin, but a database edit can still leave none. Re-grant `admin` in SQL (replace the email) and reactivate the account if it was deactivated, then sign in again:
+
+```sql
+UPDATE "unshackled-word"."Users"
+SET "DeactivatedAt" = NULL, "DeactivatedByUserId" = NULL, "DeactivationReason" = NULL
+WHERE "EmailNormalized" = lower('you@example.org');
+
+INSERT INTO "unshackled-word"."UserRoles" ("UserId", "Role")
+SELECT "Id", r FROM "unshackled-word"."Users", unnest(ARRAY['user', 'admin']) AS r
+WHERE "EmailNormalized" = lower('you@example.org')
+ON CONFLICT DO NOTHING;
+```
+
 ### Data quality and word statistics
 
 The Strong's page, the word statistics and the data-quality page read from a *snapshot*: the materialized views

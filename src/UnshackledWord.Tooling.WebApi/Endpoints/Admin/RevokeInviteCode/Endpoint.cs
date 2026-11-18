@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FastEndpoints;
 using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Domain.WebApi.Auth;
@@ -26,7 +27,9 @@ public sealed class Endpoint : Endpoint<RevokeInviteCodeRequest>
 
     public override async Task HandleAsync(RevokeInviteCodeRequest req, CancellationToken ct)
     {
-        if (await _repository.RevokeAsync(req.Id, ct))
+        var actorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        if (await _repository.RevokeAsync(req.Id, actorId, ct))
         {
             await Send.NoContentAsync(ct);
         }

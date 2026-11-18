@@ -15,6 +15,9 @@ import {
   WebAuthnCancelledError,
 } from "@/lib/auth/webauthn";
 
+/** The server's 403 `account_deactivated` answer (roadmap 0020, 06-logic.md section 4). */
+const isDeactivated = (err: unknown) => err instanceof ApiError && err.status === 403;
+
 export function SignInPage() {
   const { t } = useTranslation();
   const { login, refresh } = useAuth();
@@ -40,7 +43,9 @@ export function SignInPage() {
           ? rateLimitMessage(err)
           : err instanceof ApiError && err.status === 401
             ? t("auth.invalidCredentials")
-            : t("auth.loginFailed"),
+            : isDeactivated(err)
+              ? t("auth.accountDeactivated")
+              : t("auth.loginFailed"),
       );
     } finally {
       setSubmitting(false);
@@ -62,7 +67,9 @@ export function SignInPage() {
           ? rateLimitMessage(err)
           : err instanceof WebAuthnCancelledError
             ? t("auth.passkeys.cancelled")
-            : t("auth.passkeyFailed"),
+            : isDeactivated(err)
+              ? t("auth.accountDeactivated")
+              : t("auth.passkeyFailed"),
       );
     } finally {
       setPasskeyBusy(false);

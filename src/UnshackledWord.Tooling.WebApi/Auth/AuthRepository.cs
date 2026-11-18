@@ -17,6 +17,9 @@ public sealed class AuthUser
     public DateTime? EmailVerifiedAt { get; init; }
     public string SecurityStamp { get; init; } = string.Empty;
     public string[] Roles { get; init; } = [];
+
+    /// <summary>The account is deactivated (roadmap 0020): no sign-in path may start a session for it.</summary>
+    public bool IsDeactivated { get; init; }
 }
 
 public sealed class PasskeyLoginUser
@@ -30,6 +33,7 @@ public sealed class PasskeyLoginUser
     public string SecurityStamp { get; init; } = string.Empty;
     public DateTime? EmailVerifiedAt { get; init; }
     public string[] Roles { get; init; } = [];
+    public bool IsDeactivated { get; init; }
 }
 
 public sealed class PasskeyRow
@@ -49,7 +53,11 @@ public interface IAuthRepository : IAdmissionRepository
     /// <summary>Null when the email is taken or the invite code lost a seat race.</summary>
     Task<int?> CreateUserAsync(string email, string emailNormalized, string passwordHash, string displayName, string? inviteCodeNormalized, CancellationToken ct);
 
-    Task<string> IssueTokenAsync(int userId, string purpose, TimeSpan lifetime, CancellationToken ct);
+    /// <param name="supersedeOpen">Consumes the user's still-open tokens of this purpose first, so only the newest emailed link works.</param>
+    Task<string> IssueTokenAsync(int userId, string purpose, TimeSpan lifetime, bool supersedeOpen, CancellationToken ct);
+
+    /// <summary>Stamps <c>Users.LastSignInAt</c> after a successful sign-in.</summary>
+    Task MarkSignedInAsync(int userId, CancellationToken ct);
 
     Task<int?> ConsumeEmailVerificationAsync(string tokenHash, CancellationToken ct);
 
@@ -58,7 +66,14 @@ public interface IAuthRepository : IAdmissionRepository
     /// <summary>Consumes the magic link, marks the email verified and returns the user to sign in; null if invalid.</summary>
     Task<AuthUser?> ConsumeMagicLinkAsync(string tokenHash, CancellationToken ct);
 
+    /// <summary>Null when the user no longer exists or is deactivated, so existing cookies stop validating.</summary>
     Task<string?> GetSecurityStampAsync(int userId, CancellationToken ct);
+
+    /// <summary>
+    /// The single deactivation lookup for callers that only have an id (admin reset mail). Unknown ids count as not deactivated; the sign-in
+    /// paths read the same condition through <see cref="AuthUser.IsDeactivated"/> and <see cref="PasskeyLoginUser.IsDeactivated"/>.
+    /// </summary>
+    Task<bool> IsDeactivatedAsync(int userId, CancellationToken ct);
 
     Task<IReadOnlyList<byte[]>> GetCredentialIdsByEmailAsync(string emailNormalized, CancellationToken ct);
 
@@ -86,13 +101,17 @@ public sealed class AuthRepository : IAuthRepository
         _connectionFactory = connectionFactory;
     }
 
-    private const string SelectUserColumns = """
+    // The one definition of "deactivated" for every sign-in path (roadmap 0020, 06-logic.md section 4); reuse it, do not re-read the column.
+    private const string DeactivatedCondition = """u."DeactivatedAt" IS NOT NULL""";
+
+    private const string SelectUserColumns = $$"""
         SELECT u."Id",
                u."Email",
                u."DisplayName",
                u."PasswordHash",
                u."EmailVerifiedAt",
                u."SecurityStamp",
+               {{DeactivatedCondition}} AS "IsDeactivated",
                COALESCE(array_agg(DISTINCT ur."Role") FILTER (WHERE ur."Role" IS NOT NULL), '{}') AS "Roles"
         FROM "unshackled-word"."Users" u
                  LEFT JOIN "unshackled-word"."UserRoles" ur ON ur."UserId" = u."Id"
@@ -264,28 +283,61 @@ public sealed class AuthRepository : IAuthRepository
         VALUES (@userId, @purpose, @tokenHash, @expiresAt)
         """;
 
-    private const string ConsumeToken = """
+    private const string SupersedeOpenTokens = """
         UPDATE "unshackled-word"."AuthTokens"
         SET "ConsumedAt" = now()
-        WHERE "TokenHash" = @tokenHash
+        WHERE "UserId" = @userId
           AND "Purpose" = @purpose
           AND "ConsumedAt" IS NULL
-          AND "ExpiresAt" > now()
-        RETURNING "UserId"
+        """;
+
+    private const string MarkSignedIn = """
+        UPDATE "unshackled-word"."Users"
+        SET "LastSignInAt" = now()
+        WHERE "Id" = @userId
+        """;
+
+    // A deactivated owner makes the token as dead as an unknown one (deactivation also consumes open tokens; this is the second fence).
+    private const string ConsumeToken = $"""
+        UPDATE "unshackled-word"."AuthTokens" t
+        SET "ConsumedAt" = now()
+        FROM "unshackled-word"."Users" u
+        WHERE u."Id" = t."UserId"
+          AND NOT ({DeactivatedCondition})
+          AND t."TokenHash" = @tokenHash
+          AND t."Purpose" = @purpose
+          AND t."ConsumedAt" IS NULL
+          AND t."ExpiresAt" > now()
+        RETURNING t."UserId"
         """;
 
     /// <summary>Generates a random token, stores only its hash and returns the raw value for the emailed link.</summary>
-    public async Task<string> IssueTokenAsync(int userId, string purpose, TimeSpan lifetime, CancellationToken ct)
+    public async Task<string> IssueTokenAsync(int userId, string purpose, TimeSpan lifetime, bool supersedeOpen, CancellationToken ct)
     {
         var rawToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
         var tokenHash = AuthTokenHasher.Hash(rawToken);
         var expiresAt = DateTimeOffset.UtcNow.Add(lifetime);
 
         using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
+        using var transaction = connection.BeginTransaction();
+
+        if (supersedeOpen)
+        {
+            await connection.ExecuteAsync(new CommandDefinition(
+                SupersedeOpenTokens, new { userId, purpose }, transaction, cancellationToken: ct));
+        }
+
         await connection.ExecuteAsync(new CommandDefinition(
-            InsertToken, new { userId, purpose, tokenHash, expiresAt }, cancellationToken: ct));
+            InsertToken, new { userId, purpose, tokenHash, expiresAt }, transaction, cancellationToken: ct));
+        transaction.Commit();
 
         return rawToken;
+    }
+
+    public async Task MarkSignedInAsync(int userId, CancellationToken ct)
+    {
+        using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
+        await connection.ExecuteAsync(new CommandDefinition(MarkSignedIn, new { userId }, cancellationToken: ct));
     }
 
     private const string MarkEmailVerified = """
@@ -366,9 +418,25 @@ public sealed class AuthRepository : IAuthRepository
 
     // ---- session ----
 
-    private const string SelectStamp = """SELECT "SecurityStamp" FROM "unshackled-word"."Users" WHERE "Id" = @userId""";
+    private const string SelectStamp = $"""
+        SELECT u."SecurityStamp"
+        FROM "unshackled-word"."Users" u
+        WHERE u."Id" = @userId
+          AND NOT ({DeactivatedCondition})
+        """;
 
-    /// <summary>Null when the user no longer exists.</summary>
+    private const string SelectIsDeactivated = $"""
+        SELECT COALESCE((SELECT {DeactivatedCondition} FROM "unshackled-word"."Users" u WHERE u."Id" = @userId), false)
+        """;
+
+    public async Task<bool> IsDeactivatedAsync(int userId, CancellationToken ct)
+    {
+        using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
+        return await connection.ExecuteScalarAsync<bool>(
+            new CommandDefinition(SelectIsDeactivated, new { userId }, cancellationToken: ct));
+    }
+
+    /// <summary>Null when the user no longer exists or is deactivated.</summary>
     public async Task<string?> GetSecurityStampAsync(int userId, CancellationToken ct)
     {
         using var connection = await _connectionFactory.CreateDbConnectionAsync(ct);
@@ -403,7 +471,7 @@ public sealed class AuthRepository : IAuthRepository
             new CommandDefinition(SelectCredentialIdsForUser, new { userId }, cancellationToken: ct))).ToList();
     }
 
-    private const string SelectByCredentialId = """
+    private const string SelectByCredentialId = $$"""
         SELECT pc."Id"        AS "PasskeyId",
                pc."PublicKey",
                pc."SignCount" AS "StoredSignCount",
@@ -412,6 +480,7 @@ public sealed class AuthRepository : IAuthRepository
                u."DisplayName",
                u."SecurityStamp",
                u."EmailVerifiedAt",
+               {{DeactivatedCondition}} AS "IsDeactivated",
                COALESCE(array_agg(DISTINCT ur."Role") FILTER (WHERE ur."Role" IS NOT NULL), '{}') AS "Roles"
         FROM "unshackled-word"."PasskeyCredentials" pc
                  JOIN "unshackled-word"."Users" u ON u."Id" = pc."UserId"

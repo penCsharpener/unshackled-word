@@ -1,0 +1,25 @@
+meta {
+  name: SetUserRoles
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{url}}admin/users/2/roles
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "roles": ["maintainer"]
+  }
+}
+
+docs {
+  Admin only. Replaces the assignable roles (admin, maintainer, reviewer; user is implicit). A change ends the user's sessions and writes one admin-log row per granted/revoked role. 409 with code ai_user, own_admin_role or last_admin changes nothing.
+}
+
+settings {
+  encodeUrl: true
+}

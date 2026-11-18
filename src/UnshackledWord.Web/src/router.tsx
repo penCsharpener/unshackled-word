@@ -2,6 +2,10 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { AppShell } from "@/components/AppShell";
 import { AboutPage } from "@/pages/AboutPage";
 import { AdminInvitationsPage } from "@/pages/AdminInvitationsPage";
+import { AdminLogPage } from "@/pages/AdminLogPage";
+import { AdminUserCreatePage } from "@/pages/AdminUserCreatePage";
+import { AdminUserDetailPage } from "@/pages/AdminUserDetailPage";
+import { AdminUsersPage } from "@/pages/AdminUsersPage";
 import { AgentProposalsPage } from "@/pages/agent/AgentProposalsPage";
 import { BiblePage } from "@/pages/BiblePage";
 import { BulkReplacePage } from "@/pages/BulkReplacePage";
@@ -46,7 +50,11 @@ export const router = createBrowserRouter([
       { path: "edit/maintainer", element: <MaintainerPage /> },
       { path: "edit/proposals/:runId?/:proposalId?", element: <AgentProposalsPage /> },
       { path: "edit/revision/replace", element: <BulkReplacePage /> },
+      { path: "admin/users", element: <AdminUsersPage /> },
+      { path: "admin/users/new", element: <AdminUserCreatePage /> },
+      { path: "admin/users/:id", element: <AdminUserDetailPage /> },
       { path: "admin/invitations", element: <AdminInvitationsPage /> },
+      { path: "admin/log", element: <AdminLogPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

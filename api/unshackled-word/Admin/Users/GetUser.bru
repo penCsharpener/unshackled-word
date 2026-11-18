@@ -1,0 +1,19 @@
+meta {
+  name: GetUser
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}admin/users/1
+  body: none
+  auth: inherit
+}
+
+docs {
+  Admin only. One account with sign-in methods, deactivation info and the guard hints isSelf / isLastActiveAdmin. 404 for an unknown id.
+}
+
+settings {
+  encodeUrl: true
+}

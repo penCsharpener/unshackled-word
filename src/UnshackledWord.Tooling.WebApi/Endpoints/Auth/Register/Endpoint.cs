@@ -80,7 +80,7 @@ public sealed class Endpoint : Endpoint<RegisterRequest, AuthUserResponse>
             return;
         }
 
-        var token = await _repository.IssueTokenAsync(userId.Value, AuthTokenPurpose.EmailVerification, VerificationTokenLifetime, ct);
+        var token = await _repository.IssueTokenAsync(userId.Value, AuthTokenPurpose.EmailVerification, VerificationTokenLifetime, supersedeOpen: false, ct);
         await _emailSender.SendAsync(
             _emailBuilder.BuildVerification(email, displayName, token, AuthEmailBuilder.ResolveLocale(HttpContext)), ct);
 

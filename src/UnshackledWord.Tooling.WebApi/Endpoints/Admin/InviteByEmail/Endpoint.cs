@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using FastEndpoints;
 using UnshackledWord.Application.Features.Auth;
+using UnshackledWord.Application.Features.UserAdmin;
 using UnshackledWord.Domain.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Auth;
 
@@ -14,9 +15,11 @@ public sealed class Endpoint : Endpoint<InviteByEmailRequest, InviteByEmailRespo
     private readonly IInviteAdminRepository _repository;
     private readonly InvitationEmailBuilder _emailBuilder;
     private readonly IEmailSender _emailSender;
+    private readonly IAdminLogRepository _adminLog;
 
-    public Endpoint(IInviteAdminRepository repository, InvitationEmailBuilder emailBuilder, IEmailSender emailSender)
+    public Endpoint(IInviteAdminRepository repository, InvitationEmailBuilder emailBuilder, IEmailSender emailSender, IAdminLogRepository adminLog)
     {
+        _adminLog = adminLog;
         _repository = repository;
         _emailBuilder = emailBuilder;
         _emailSender = emailSender;
@@ -39,6 +42,12 @@ public sealed class Endpoint : Endpoint<InviteByEmailRequest, InviteByEmailRespo
             EmailNormalizer.Normalize(email), DateTimeOffset.UtcNow.Add(InvitationLifetime), createdBy, req.Note, ct);
 
         await _emailSender.SendAsync(_emailBuilder.Build(email, code, AuthEmailBuilder.ResolveLocale(HttpContext)), ct);
+
+        // Only after the mail went out, so the log never claims an invitation that was not sent.
+        await _adminLog.AppendAsync(
+            new AdminLogEntry(createdBy, AdminLogActions.InviteEmailed, null, id, System.Text.Json.JsonSerializer.Serialize(new { email })),
+            null,
+            ct);
 
         await Send.OkAsync(new InviteByEmailResponse { Id = id, Email = email }, ct);
     }

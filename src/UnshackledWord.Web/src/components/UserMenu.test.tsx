@@ -53,22 +53,10 @@ describe("UserMenu", () => {
 });
 
 describe("UserMenu admin link", () => {
-  async function open(roles: string[]) {
-    stubApi({ "GET /auth/me": () => json({ ...me, roles }) });
+  it("no longer lists Invitations, even for admins", async () => {
+    stubApi({ "GET /auth/me": () => json({ ...me, roles: ["user", "admin"] }) });
     renderWithAuth(<UserMenu />);
     await userEvent.click(await screen.findByRole("button", { name: /Ada/ }));
-  }
-
-  it("shows Invitations for admins", async () => {
-    await open(["user", "admin"]);
-    expect(screen.getByRole("menuitem", { name: "Invitations" })).toHaveAttribute(
-      "href",
-      "/admin/invitations",
-    );
-  });
-
-  it("hides Invitations for other users", async () => {
-    await open(["user"]);
     expect(screen.queryByRole("menuitem", { name: "Invitations" })).toBeNull();
   });
 });

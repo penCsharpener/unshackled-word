@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin-Menü Click-Dummy (0020)</title>
+<!--
+  Click dummy for roadmap 0020 (03-admin-menu-and-pages.md). Self-contained, mock data only, nothing is saved; reload resets.
+  Try: gear menu -> Benutzer -> search "mül" -> open Jonas -> tick Maintainer, save -> deactivate with reason -> Admin-Protokoll.
+  Also: open your own account (Matthias, the last admin) to see the disabled controls; "Benutzer anlegen" with anna@example.org;
+  switch the dummy role to "maintainer" in the control bar: the gear disappears. The dashed bar on top is the dummy's control bar.
+-->
+<style>
+  :root {
+    --bg: oklch(0.99 0.004 85); --surface: oklch(1 0 0); --muted: oklch(0.96 0.006 85);
+    --fg: oklch(0.22 0.01 60); --fg-muted: oklch(0.48 0.01 60); --border: oklch(0.88 0.008 80);
+    --accent: oklch(0.42 0.1 30); --accent-fg: oklch(0.99 0.004 85); --focus: oklch(0.6 0.15 250);
+    --ok: #1a8a4f; --warn: #b87500; --err: #d03b3b;
+  }
+  :root[data-theme="dark"] {
+    --bg: oklch(0.19 0.008 60); --surface: oklch(0.23 0.01 60); --muted: oklch(0.27 0.01 60);
+    --fg: oklch(0.94 0.005 85); --fg-muted: oklch(0.72 0.01 80); --border: oklch(0.36 0.01 60);
+    --accent: oklch(0.75 0.1 40); --accent-fg: oklch(0.2 0.01 60);
+    --ok: #4cc58a; --warn: #f0b429; --err: #ff7a7a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, sans-serif; }
+  #ctl { position: sticky; top: 0; z-index: 60; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 6px 12px; background: #111216; color: #e8e8ec; border-bottom: 2px dashed #ff4fd8; font: 13px ui-monospace, monospace; }
+  #ctl b { color: #ff4fd8; }
+  #ctl button { font: inherit; background: #2b2d35; color: #e8e8ec; border: 1px solid #44464f; border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+  header.app { position: relative; display: flex; align-items: center; gap: 16px; padding: 0 16px; height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  header.app .title { font-weight: 700; color: var(--fg); text-decoration: none; }
+  header.app nav { display: flex; gap: 14px; }
+  header.app nav a { color: var(--fg-muted); text-decoration: none; }
+  header.app .right { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+  .iconbtn { width: 36px; height: 36px; display: inline-grid; place-items: center; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--fg); cursor: pointer; }
+  .iconbtn:hover, .iconbtn[aria-expanded="true"] { background: var(--muted); border-color: var(--border); }
+  .avatar { width: 30px; height: 30px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; font-weight: 700; font-size: .85rem; }
+  .menu { position: absolute; top: 48px; min-width: 15rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / .15); padding: 6px; display: flex; flex-direction: column; z-index: 40; }
+  .menu .hd { font-size: .75rem; color: var(--fg-muted); padding: 4px 8px; text-transform: uppercase; letter-spacing: .04em; }
+  .menu a { color: var(--fg); text-decoration: none; padding: 5px 8px; border-radius: 6px; display: flex; gap: 8px; align-items: center; }
+  .menu a:hover { background: var(--muted); }
+  .menu a.on { background: var(--muted); font-weight: 600; }
+  .menu hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; width: 100%; }
+  main { max-width: 72rem; margin: 0 auto; padding: 16px 16px 120px; }
+  h1 { font-size: 1.6rem; margin: 8px 0 16px; }
+  h2 { font-size: 1.1rem; margin: 0 0 10px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .panel + .panel { margin-top: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .row + .row { margin-top: 12px; }
+  label.f { display: flex; flex-direction: column; gap: 3px; font-size: .8rem; color: var(--fg-muted); }
+  input[type=text], input[type=email], input[type=search], select, textarea {
+    font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; min-width: 14rem; }
+  textarea { width: 100%; min-height: 4rem; }
+  input:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  input.invalid { border-color: var(--err); }
+  .ferr { color: var(--err); font-size: .8rem; }
+  .hint { color: var(--fg-muted); font-size: .8rem; }
+  .btn { font: inherit; border: 1px solid var(--border); background: var(--muted); color: var(--fg); border-radius: 6px; padding: 6px 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .btn.danger { color: var(--err); border-color: var(--err); background: transparent; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin-bottom: 10px; }
+  .toolbar .grow { margin-left: auto; }
+  .tablewrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); }
+  th { text-align: left; font-size: .78rem; color: var(--fg-muted); background: var(--muted); padding: 6px 8px; white-space: nowrap; }
+  td { padding: 7px 8px; border-top: 1px solid var(--border); vertical-align: top; }
+  tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: var(--muted); }
+  .badge { font-size: .74rem; padding: 0 7px; border-radius: 999px; border: 1px solid var(--border); background: var(--muted); color: var(--fg-muted); margin-right: 3px; white-space: nowrap; }
+  .badge.admin { color: var(--accent); border-color: var(--accent); }
+  .st-active { color: var(--ok); } .st-deactivated { color: var(--err); } .st-ai { color: var(--fg-muted); }
+  .muted { color: var(--fg-muted); }
+  .pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px; font-size: .85rem; }
+  .checks { display: flex; flex-direction: column; gap: 6px; }
+  .checks label { display: flex; gap: 8px; align-items: baseline; }
+  .notice { border-left: 3px solid var(--warn); background: var(--muted); padding: 8px 10px; border-radius: 6px; font-size: .88rem; }
+  .banner { border: 1px solid var(--err); color: var(--err); padding: 8px 10px; border-radius: 8px; margin-bottom: 10px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } header.app nav { display: none; } .hide-sm { display: none; } }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 8px; z-index: 70; }
+  dialog { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--fg); max-width: 28rem; width: calc(100% - 32px); }
+  dialog::backdrop { background: rgb(0 0 0 / .4); }
+  .crumbs { font-size: .85rem; margin-bottom: 4px; } .crumbs a { color: var(--accent); }
+  a { color: var(--accent); }
+  code { font-size: .85em; }
+</style>
+</head>
+<body>
+<div id="ctl">
+  <b>DUMMY</b>
+  signed in as: <button id="ctlRole">admin (Matthias)</button>
+  <button id="ctlTheme">Theme umschalten</button>
+  <span>routes: #/admin/users · #/admin/users/new · #/admin/log · #/admin/invitations</span>
+</div>
+
+<header class="app">
+  <a class="title" href="#/bible">Unshackled Word</a>
+  <nav><a href="#/bible">Bibel</a><a href="#/about">Über</a></nav>
+  <div class="right">
+    <button class="iconbtn" id="themeBtn" aria-label="Design wechseln" title="Design wechseln">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+    </button>
+    <button class="iconbtn" id="gearBtn" aria-label="Administration" title="Administration" aria-haspopup="menu" aria-expanded="false">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <button class="iconbtn" id="userBtn" aria-label="Benutzermenü" aria-haspopup="menu" aria-expanded="false"><span class="avatar">M</span></button>
+  </div>
+  <div class="menu" id="gearMenu" role="menu" hidden style="right:56px">
+    <div class="hd">Administration</div>
+    <a role="menuitem" href="#/admin/users" data-r="/admin/users">Benutzer</a>
+    <a role="menuitem" href="#/admin/users/new" data-r="/admin/users/new">Benutzer anlegen</a>
+    <a role="menuitem" href="#/admin/invitations" data-r="/admin/invitations">Einladungen</a>
+    <hr>
+    <a role="menuitem" href="#/admin/log" data-r="/admin/log">Admin-Protokoll</a>
+  </div>
+  <div class="menu" id="userMenu" role="menu" hidden style="right:12px">
+    <div class="hd" id="userMenuName">Matthias</div>
+    <a role="menuitem" href="#/x">Passkeys</a>
+    <a role="menuitem" href="#/x">Lemmata bearbeiten</a>
+    <a role="menuitem" href="#/x">Datenqualität</a>
+    <a role="menuitem" href="#/x">Wartung</a>
+    <a role="menuitem" href="#/x">Vorschläge</a>
+    <a role="menuitem" href="#/x">Stapel-Ersetzung</a>
+    <hr><a role="menuitem" href="#/x">Abmelden</a>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<dialog id="deactDlg">
+  <form method="dialog">
+    <h2>Konto deaktivieren?</h2>
+    <p id="deactText"></p>
+    <label class="f">Grund (optional, nur für Admins sichtbar)<textarea id="deactReason" maxlength="500"></textarea></label>
+    <p class="hint">Alle Sitzungen enden sofort. Zuordnungen und Revisionen bleiben dieser Person zugeordnet.</p>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn" value="cancel">Abbrechen</button>
+      <button class="btn danger" value="ok" id="deactOk">Deaktivieren</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const ROLES = ["admin", "maintainer", "reviewer"];
+const ROLE_DE = { admin: "Admin", maintainer: "Maintainer", reviewer: "Reviewer", user: "User", ai: "AI" };
+const ACTION_DE = {
+  user_created: "Benutzer angelegt", user_updated: "Daten geändert", role_granted: "Rolle vergeben", role_revoked: "Rolle entzogen",
+  user_deactivated: "Deaktiviert", user_reactivated: "Reaktiviert", password_reset_sent: "Reset-Mail gesendet", welcome_sent: "Willkommensmail gesendet",
+  invite_created: "Einladungscode erstellt", invite_revoked: "Einladungscode widerrufen", invite_emailed: "Einladung per Mail",
+};
+const ME = 1;
+let signedInRole = "admin";
+let nextId = 9;
+const users = [
+  { id: 1, name: "Matthias", email: "matthias@example.org", roles: ["user", "admin"], created: "2025-03-02", last: "2026-11-18 21:40", pw: true, pk: 2 },
+  { id: 2, name: "Jonas Müller", email: "jonas.mueller@example.org", roles: ["user", "reviewer"], created: "2026-02-11", last: "2026-11-17 08:12", pw: true, pk: 0 },
+  { id: 3, name: "Ruth Krämer", email: "ruth@example.org", roles: ["user", "maintainer"], created: "2026-04-20", last: "2026-11-10 19:03", pw: false, pk: 1 },
+  { id: 4, name: "Paul Schmidt", email: "paul.s@example.org", roles: ["user"], created: "2026-06-01", last: "2026-08-30 11:00", pw: true, pk: 0,
+    deact: { at: "2026-09-02 10:15", by: "Matthias", reason: "Spam-Vorschläge" } },
+  { id: 5, name: "Hanna Müllner", email: "hanna@example.net", roles: ["user"], created: "2026-10-05", last: null, pw: false, pk: 0 },
+  { id: 6, name: "AI · Anthropic", email: "ai-anthropic@local", roles: ["ai"], created: "2026-09-12", last: null, pw: false, pk: 0, ai: true },
+  { id: 7, name: "AI · Gemini", email: "ai-gemini@local", roles: ["ai"], created: "2026-09-12", last: null, pw: false, pk: 0, ai: true },
+  { id: 8, name: "Lea Vogt", email: "lea.vogt@example.org", roles: ["user", "reviewer"], created: "2026-07-22", last: "2026-11-01 15:30", pw: true, pk: 1 },
+];
+const log = [
+  { at: "2026-11-02 09:00", actor: 1, action: "invite_created", target: null, d: "5 Plätze, bis 2026-12-01" },
+  { at: "2026-09-02 10:15", actor: 1, action: "user_deactivated", target: 4, d: "Grund: Spam-Vorschläge" },
+  { at: "2026-07-22 18:01", actor: 1, action: "role_granted", target: 8, d: "Reviewer" },
+  { at: "2026-04-20 12:00", actor: 1, action: "role_granted", target: 3, d: "Maintainer" },
+];
+
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const now = () => new Date().toISOString().slice(0, 16).replace("T", " ");
+const byId = (id) => users.find((u) => u.id === id);
+const status = (u) => (u.ai ? "ai" : u.deact ? "deactivated" : "active");
+const STATUS_DE = { active: "aktiv", deactivated: "deaktiviert", ai: "AI-Benutzer" };
+const activeAdmins = () => users.filter((u) => u.roles.includes("admin") && !u.deact).length;
+const addLog = (action, target, d) => log.unshift({ at: now(), actor: ME, action, target, d });
+function toast(t) { const el = document.createElement("div"); el.className = "toast"; el.textContent = t; document.body.append(el); setTimeout(() => el.remove(), 2600); }
+const badges = (roles) => roles.filter((r) => r !== "user").map((r) => `<span class="badge ${r}">${ROLE_DE[r]}</span>`).join("") || `<span class="badge">User</span>`;
+
+// ---- header menus ----
+function closeMenus() { for (const [b, m] of [["gearBtn", "gearMenu"], ["userBtn", "userMenu"]]) { $("#" + m).hidden = true; $("#" + b).setAttribute("aria-expanded", "false"); } }
+function toggle(btn, menu) {
+  const open = $("#" + menu).hidden; closeMenus();
+  if (open) { $("#" + menu).hidden = false; $("#" + btn).setAttribute("aria-expanded", "true"); $("#" + menu + " a").focus(); }
+}
+$("#gearBtn").onclick = (e) => { e.stopPropagation(); toggle("gearBtn", "gearMenu"); };
+$("#userBtn").onclick = (e) => { e.stopPropagation(); toggle("userBtn", "userMenu"); };
+document.addEventListener("click", closeMenus);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenus(); });
+const flipTheme = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "dark" ? "light" : "dark"; };
+$("#themeBtn").onclick = flipTheme; $("#ctlTheme").onclick = flipTheme;
+$("#ctlRole").onclick = () => {
+  signedInRole = signedInRole === "admin" ? "maintainer" : "admin";
+  $("#ctlRole").textContent = signedInRole === "admin" ? "admin (Matthias)" : "maintainer (Ruth)";
+  $("#userBtn .avatar").textContent = signedInRole === "admin" ? "M" : "R";
+  $("#userMenuName").textContent = signedInRole === "admin" ? "Matthias" : "Ruth Krämer";
+  render();
+};
+
+// ---- views ----
+const listState = { q: "", role: "", status: "", page: 1 };
+function viewList() {
+  const q = listState.q.trim().toLowerCase();
+  const rows = users
+    .filter((u) => !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+    .filter((u) => !listState.role || u.roles.includes(listState.role))
+    .filter((u) => !listState.status || status(u) === listState.status)
+    .sort((a, b) => a.name.localeCompare(b.name, "de"));
+  return `<h1>Benutzer</h1>
+  <div class="toolbar">
+    <label class="f">Suche (Name oder E-Mail)<input type="search" id="q" value="${esc(listState.q)}" placeholder="z. B. mül"></label>
+    <label class="f">Rolle<select id="fr"><option value="">alle</option>${["admin", "maintainer", "reviewer", "user", "ai"].map((r) => `<option value="${r}" ${listState.role === r ? "selected" : ""}>${ROLE_DE[r]}</option>`).join("")}</select></label>
+    <label class="f">Status<select id="fs"><option value="">alle</option>${Object.keys(STATUS_DE).map((s) => `<option value="${s}" ${listState.status === s ? "selected" : ""}>${STATUS_DE[s]}</option>`).join("")}</select></label>
+    <a class="btn primary grow" href="#/admin/users/new">Benutzer anlegen</a>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Name</th><th>E-Mail</th><th>Rollen</th><th>Status</th><th class="hide-sm">Angelegt</th><th class="hide-sm">Letzte Anmeldung</th></tr></thead>
+    <tbody>${rows.map((u) => `<tr class="click" data-id="${u.id}" tabindex="0">
+      <td>${esc(u.name)}${u.id === ME ? ' <span class="muted">(du)</span>' : ""}</td><td>${esc(u.email)}</td><td>${badges(u.roles)}</td>
+      <td class="st-${status(u)}">${STATUS_DE[status(u)]}</td><td class="hide-sm">${u.created}</td><td class="hide-sm">${u.last ?? '<span class="muted">nie</span>'}</td></tr>`).join("")
+      || `<tr><td colspan="6" class="muted" style="text-align:center;padding:30px">Keine Benutzer gefunden.</td></tr>`}</tbody>
+  </table></div>
+  <div class="pager"><span>${rows.length} von ${users.length}</span><button class="btn" disabled>‹</button><span>Seite 1 / 1</span><button class="btn" disabled>›</button></div>`;
+}
+function bindList() {
+  $("#q").oninput = (e) => { listState.q = e.target.value; rerenderKeepFocus("#q"); };
+  $("#fr").onchange = (e) => { listState.role = e.target.value; render(); };
+  $("#fs").onchange = (e) => { listState.status = e.target.value; render(); };
+  document.querySelectorAll("tr.click").forEach((tr) => {
+    const go = () => (nav("#/admin/users/" + tr.dataset.id));
+    tr.onclick = go; tr.onkeydown = (e) => { if (e.key === "Enter") go(); };
+  });
+}
+function rerenderKeepFocus(sel) { const pos = $(sel).selectionStart; render(); const el = $(sel); el.focus(); el.setSelectionRange(pos, pos); }
+
+function viewDetail(u) {
+  if (!u) return `<h1>Nicht gefunden</h1><p><a href="#/admin/users">Zur Liste</a></p>`;
+  const self = u.id === ME, lastAdmin = u.roles.includes("admin") && !u.deact && activeAdmins() <= 1, ro = !!u.ai;
+  const entries = log.filter((l) => l.target === u.id).slice(0, 20);
+  return `<div class="crumbs"><a href="#/admin/users">Benutzer</a> ›</div>
+  <h1>${esc(u.name)} <span class="st-${status(u)}" style="font-size:1rem">${STATUS_DE[status(u)]}</span></h1>
+  ${u.deact ? `<div class="banner">Deaktiviert am ${u.deact.at} von ${esc(u.deact.by)}${u.deact.reason ? ` – „${esc(u.deact.reason)}“` : ""}</div>` : ""}
+  ${ro ? `<div class="notice">AI-Benutzer (Roadmap 0016) werden hier nur angezeigt. Sie melden sich nie an; Tokens verwaltet die Wartungsseite.</div><br>` : `<div class="notice">Änderungen an Rollen, E-Mail oder Status melden diese Person überall ab.</div><br>`}
+  <div class="grid2">
+    <section class="panel"><h2>Details</h2>
+      <div class="row"><label class="f">Anzeigename<input type="text" id="dName" value="${esc(u.name)}" ${ro ? "disabled" : ""}></label></div>
+      <div class="row"><label class="f">E-Mail<input type="email" id="dEmail" value="${esc(u.email)}" ${ro ? "disabled" : ""}><span class="ferr" id="dEmailErr"></span></label></div>
+      <p class="hint">Angelegt ${u.created} · letzte Anmeldung ${u.last ?? "nie"} · ${u.pw ? "Passwort gesetzt" : "kein Passwort"} · ${u.pk} Passkey(s)</p>
+      ${ro ? "" : `<div class="row"><button class="btn primary" id="dSave">Speichern</button>
+        <button class="btn" id="dReset" ${u.deact ? "disabled" : ""}>${u.pw ? "Passwort-Reset-Mail senden" : "Willkommensmail erneut senden"}</button></div>`}
+    </section>
+    <section class="panel"><h2>Rollen</h2>
+      <div class="checks">
+        <label><input type="checkbox" checked disabled> User <span class="hint">– jedes Konto</span></label>
+        ${ROLES.map((r) => {
+          const lock = ro || (r === "admin" && u.roles.includes("admin") && (self || lastAdmin));
+          const why = r !== "admin" || !u.roles.includes("admin") ? "" : self ? "eigene Admin-Rolle kann nicht entfernt werden" : lastAdmin ? "letzter aktiver Admin" : "";
+          return `<label><input type="checkbox" class="rk" value="${r}" ${u.roles.includes(r) ? "checked" : ""} ${lock ? "disabled" : ""}> ${ROLE_DE[r]}${why ? ` <span class="hint">– ${why}</span>` : ""}</label>`;
+        }).join("")}
+      </div>
+      ${ro ? "" : `<div class="row"><button class="btn primary" id="rSave">Rollen speichern</button></div>`}
+    </section>
+  </div>
+  ${ro ? "" : `<section class="panel"><h2>Status</h2>
+    ${u.deact ? `<button class="btn primary" id="sReact">Reaktivieren</button>`
+      : self ? `<p class="hint">Das eigene Konto kann nicht deaktiviert werden.</p>`
+      : `<button class="btn danger" id="sDeact" ${lastAdmin ? "disabled" : ""}>Deaktivieren</button>${lastAdmin ? ' <span class="hint">letzter aktiver Admin</span>' : ""}`}
+  </section>`}
+  <section class="panel"><h2>Protokoll</h2>
+    ${entries.length ? `<div class="tablewrap"><table><thead><tr><th>Zeit</th><th>Aktion</th><th>Durch</th><th>Details</th></tr></thead><tbody>
+      ${entries.map((l) => `<tr><td>${l.at}</td><td>${ACTION_DE[l.action]}</td><td>${esc(byId(l.actor).name)}</td><td>${esc(l.d)}</td></tr>`).join("")}</tbody></table></div>
+      <p><a href="#/admin/log?user=${u.id}">Alle anzeigen</a></p>` : `<p class="muted">Noch keine Admin-Aktionen.</p>`}
+  </section>`;
+}
+function bindDetail(u) {
+  if (!u || u.ai) return;
+  $("#dSave").onclick = () => {
+    const name = $("#dName").value.trim(), email = $("#dEmail").value.trim();
+    const other = users.find((x) => x.id !== u.id && x.email.toLowerCase() === email.toLowerCase());
+    if (other) { $("#dEmail").classList.add("invalid"); $("#dEmailErr").innerHTML = `Gehört schon zu <a href="#/admin/users/${other.id}">${esc(other.name)}</a>.`; return; }
+    const parts = [];
+    if (name !== u.name) { parts.push(`Name: ${u.name} → ${name}`); u.name = name; }
+    if (email !== u.email) { parts.push(`E-Mail: ${u.email} → ${email}`); u.email = email; toast("Hinweis an alte und neue Adresse gesendet"); }
+    if (!parts.length) return toast("Keine Änderung");
+    addLog("user_updated", u.id, parts.join("; ")); toast("Gespeichert"); render();
+  };
+  $("#dReset").onclick = () => { addLog(u.pw ? "password_reset_sent" : "welcome_sent", u.id, u.pw ? "gültig 1 h" : "gültig 72 h"); toast(u.pw ? "Reset-Mail gesendet" : "Willkommensmail gesendet"); render(); };
+  $("#rSave").onclick = () => {
+    const want = [...document.querySelectorAll(".rk")].filter((c) => c.checked).map((c) => c.value);
+    const cur = u.roles.filter((r) => ROLES.includes(r));
+    const grant = want.filter((r) => !cur.includes(r)), revoke = cur.filter((r) => !want.includes(r));
+    if (!grant.length && !revoke.length) return toast("Keine Änderung");
+    grant.forEach((r) => addLog("role_granted", u.id, ROLE_DE[r])); revoke.forEach((r) => addLog("role_revoked", u.id, ROLE_DE[r]));
+    u.roles = ["user", ...want]; toast(`Rollen gespeichert – ${u.name} wurde abgemeldet`); render();
+  };
+  const d = $("#sDeact");
+  if (d) d.onclick = () => {
+    $("#deactText").textContent = `${u.name} (${u.email}) kann sich danach nicht mehr anmelden.`; $("#deactReason").value = "";
+    $("#deactDlg").onclose = () => {
+      if ($("#deactDlg").returnValue !== "ok") return;
+      const reason = $("#deactReason").value.trim();
+      u.deact = { at: now(), by: "Matthias", reason }; addLog("user_deactivated", u.id, reason ? "Grund: " + reason : "");
+      toast("Konto deaktiviert"); render();
+    };
+    $("#deactDlg").showModal();
+  };
+  const r = $("#sReact");
+  if (r) r.onclick = () => { addLog("user_reactivated", u.id, `war deaktiviert seit ${u.deact.at}`); delete u.deact; toast("Konto reaktiviert"); render(); };
+}
+
+function viewNew() {
+  return `<div class="crumbs"><a href="#/admin/users">Benutzer</a> ›</div><h1>Benutzer anlegen</h1>
+  <section class="panel" style="max-width:34rem">
+    <div class="row"><label class="f">E-Mail<input type="email" id="nEmail" placeholder="anna@example.org"><span class="ferr" id="nEmailErr"></span></label></div>
+    <div class="row"><label class="f">Anzeigename<input type="text" id="nName" placeholder="Anna"><span class="ferr" id="nNameErr"></span></label></div>
+    <div class="row"><div class="checks"><span class="hint">Rollen (User ist immer gesetzt)</span>
+      ${ROLES.map((r) => `<label><input type="checkbox" class="nk" value="${r}"> ${ROLE_DE[r]}</label>`).join("")}</div></div>
+    <p class="hint">Das Konto gilt sofort als bestätigt. Die Person bekommt eine Willkommensmail mit einem Link zum Festlegen des Passworts (72 h gültig).</p>
+    <div class="row"><button class="btn primary" id="nSave">Anlegen und Mail senden</button><a class="btn" href="#/admin/users">Abbrechen</a></div>
+  </section>`;
+}
+function bindNew() {
+  $("#nSave").onclick = () => {
+    const email = $("#nEmail").value.trim(), name = $("#nName").value.trim();
+    $("#nEmailErr").textContent = ""; $("#nNameErr").textContent = "";
+    let bad = false;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("#nEmailErr").textContent = "Keine gültige E-Mail-Adresse."; bad = true; }
+    if (!name) { $("#nNameErr").textContent = "Pflichtfeld."; bad = true; }
+    const other = users.find((x) => x.email.toLowerCase() === email.toLowerCase());
+    if (other) { $("#nEmailErr").innerHTML = `Gehört schon zu <a href="#/admin/users/${other.id}">${esc(other.name)}</a>.`; bad = true; }
+    if (bad) return;
+    const roles = [...document.querySelectorAll(".nk")].filter((c) => c.checked).map((c) => c.value);
+    const u = { id: nextId++, name, email, roles: ["user", ...roles], created: now().slice(0, 10), last: null, pw: false, pk: 0 };
+    users.push(u);
+    addLog("user_created", u.id, `Rollen: ${roles.map((r) => ROLE_DE[r]).join(", ") || "User"}`); addLog("welcome_sent", u.id, "gültig 72 h");
+    toast("Willkommensmail gesendet"); nav("#/admin/users/" + u.id);
+  };
+}
+
+function viewLog(params) {
+  const uid = Number(params.get("user")) || 0, act = params.get("action") || "";
+  const rows = log.filter((l) => (!uid || l.target === uid) && (!act || l.action === act));
+  return `<h1>Admin-Protokoll</h1>
+  <div class="toolbar">
+    <label class="f">Betroffener Benutzer<select id="lu"><option value="">alle</option>${users.filter((u) => !u.ai).map((u) => `<option value="${u.id}" ${uid === u.id ? "selected" : ""}>${esc(u.name)}</option>`).join("")}</select></label>
+    <label class="f">Aktion<select id="la"><option value="">alle</option>${Object.entries(ACTION_DE).map(([k, v]) => `<option value="${k}" ${act === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+  </div>
+  <div class="tablewrap"><table><thead><tr><th>Zeit</th><th>Durch</th><th>Aktion</th><th>Betroffen</th><th>Details</th></tr></thead><tbody>
+    ${rows.map((l) => `<tr><td>${l.at}</td><td>${esc(byId(l.actor).name)}</td><td>${ACTION_DE[l.action]}</td>
+      <td>${l.target ? `<a href="#/admin/users/${l.target}">${esc(byId(l.target).name)}</a>` : '<span class="muted">–</span>'}</td><td>${esc(l.d)}</td></tr>`).join("")
+      || `<tr><td colspan="5" class="muted" style="text-align:center;padding:30px">Keine Einträge.</td></tr>`}
+  </tbody></table></div>
+  <p class="hint">Nur lesbar. Einträge können weder geändert noch gelöscht werden.</p>`;
+}
+function bindLog() {
+  const go = () => { const p = new URLSearchParams(); if ($("#lu").value) p.set("user", $("#lu").value); if ($("#la").value) p.set("action", $("#la").value); nav("#/admin/log" + (p.size ? "?" + p : "")); };
+  $("#lu").onchange = go; $("#la").onchange = go;
+}
+
+const viewInvites = () => `<h1>Einladungen</h1><section class="panel"><p class="muted">Bestehende Seite <code>AdminInvitationsPage</code> unverändert; nur der Einstieg wandert ins Zahnrad-Menü.
+  Erstellen, Widerrufen und Versenden schreiben ab 0020.8 ins Admin-Protokoll.</p></section>`;
+const viewForbidden = () => `<h1>Administration</h1><section class="panel"><p>Diese Seite ist nur für Administratoren.</p></section>`;
+
+function render() {
+  const [path, query] = route.slice(1).split("?");
+  const isAdmin = signedInRole === "admin";
+  $("#gearBtn").hidden = !isAdmin; if (!isAdmin) closeMenus();
+  document.querySelectorAll("#gearMenu a").forEach((a) => a.classList.toggle("on", a.dataset.r === path));
+  const main = $("#main");
+  if (!path.startsWith("/admin")) { main.innerHTML = `<h1>${path}</h1><p class="muted">Nicht Teil des Dummys. Öffne das Zahnrad-Menü.</p>`; return; }
+  if (!isAdmin) { main.innerHTML = viewForbidden(); return; }
+  if (path === "/admin/users") { main.innerHTML = viewList(); bindList(); }
+  else if (path === "/admin/users/new") { main.innerHTML = viewNew(); bindNew(); }
+  else if (path.startsWith("/admin/users/")) { const u = byId(Number(path.split("/")[3])); main.innerHTML = viewDetail(u); bindDetail(u); }
+  else if (path === "/admin/log") { main.innerHTML = viewLog(new URLSearchParams(query)); bindLog(); }
+  else if (path === "/admin/invitations") main.innerHTML = viewInvites();
+  else main.innerHTML = `<h1>Nicht gefunden</h1>`;
+}
+// Internal routing (hash links are intercepted, so the dummy also works when opened as a data: URL or in a sandboxed preview).
+let route = location.hash.startsWith("#/") ? location.hash : "#/admin/users";
+function nav(h) { route = h; try { history.replaceState(null, "", h); } catch {} closeMenus(); render(); window.scrollTo(0, 0); }
+document.addEventListener("click", (e) => { const a = e.target.closest('a[href^="#/"]'); if (a) { e.preventDefault(); nav(a.getAttribute("href")); } });
+render();
+</script>
+</body>
+</html>

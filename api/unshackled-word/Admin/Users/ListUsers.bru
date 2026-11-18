@@ -1,0 +1,27 @@
+meta {
+  name: ListUsers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}admin/users?search=&role=&status=&page=1&pageSize=50
+  body: none
+  auth: inherit
+}
+
+params:query {
+  search: 
+  role: 
+  status: 
+  page: 1
+  pageSize: 50
+}
+
+docs {
+  Admin only. All accounts with roles and status (active, deactivated, ai), search matches display name and email, role is admin/maintainer/reviewer/user/ai, status is active/deactivated/ai. Ordered by display name.
+}
+
+settings {
+  encodeUrl: true
+}

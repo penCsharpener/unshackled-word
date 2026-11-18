@@ -1,0 +1,25 @@
+meta {
+  name: DeactivateUser
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{url}}admin/users/2/deactivate
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "reason": "Projekt verlassen"
+  }
+}
+
+docs {
+  Admin only. Deactivates the account: ends its sessions, consumes open emailed links, blocks password, magic-link, passkey, reset and verification sign-in (password login answers 403 code account_deactivated after a correct password). Reason is optional (max 500). 409 with code ai_user, self, last_admin or already_deactivated changes nothing.
+}
+
+settings {
+  encodeUrl: true
+}

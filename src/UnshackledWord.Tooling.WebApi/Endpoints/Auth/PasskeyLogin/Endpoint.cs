@@ -45,7 +45,7 @@ public sealed class Endpoint : Endpoint<PasskeyLoginRequest, AuthUserResponse>
         Group<RouteGroupConfig>();
         AllowAnonymous();
         Throttle(hitLimit: 20, durationSeconds: 60, headerName: null);
-        Description(b => b.Produces<AuthUserResponse>(200).Produces(401).Produces(404));
+        Description(b => b.Produces<AuthUserResponse>(200).Produces(401).ProducesProblem(403).Produces(404));
         Summary(s =>
         {
             s.Summary = "Finishes a passkey sign-in ceremony and signs in.";
@@ -94,6 +94,13 @@ public sealed class Endpoint : Endpoint<PasskeyLoginRequest, AuthUserResponse>
         }
 
         _ceremonies.RemoveLogin(req.FlowId);
+
+        // After the signature check, so deactivated accounts cannot be probed with a bare credential id.
+        if (user.IsDeactivated)
+        {
+            await Send.ResultAsync(AuthProblems.DeactivatedAccount());
+            return;
+        }
 
         await _sessionSignIn.SignInAsync(HttpContext, user.UserId, user.Email, user.DisplayName, user.SecurityStamp, user.Roles);
         await Send.OkAsync(new AuthUserResponse { UserId = user.UserId, Email = user.Email, DisplayName = user.DisplayName }, ct);

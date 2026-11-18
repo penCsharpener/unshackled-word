@@ -1,0 +1,27 @@
+meta {
+  name: CreateUser
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}admin/users
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "anna@example.org",
+    "displayName": "Anna",
+    "roles": ["reviewer"]
+  }
+}
+
+docs {
+  Admin only. Creates a verified account without password (roles user + the given assignable ones), logs user_created and mails a 72 h welcome link to /reset-password?token=...&welcome=1 (logs welcome_sent). Answers 201 with the UserDetail. 409 email_taken carries the numeric existingUserId at the top level of the problem body.
+}
+
+settings {
+  encodeUrl: true
+}

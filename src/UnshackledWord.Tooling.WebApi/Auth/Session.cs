@@ -27,6 +27,9 @@ public sealed class SessionSignIn
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         await httpContext.SignInAsync(new ClaimsPrincipal(identity));
+
+        // Every sign-in path ends here, so this is the one place that stamps LastSignInAt (the class is a singleton, the repository is scoped).
+        await httpContext.RequestServices.GetRequiredService<IAuthRepository>().MarkSignedInAsync(userId, httpContext.RequestAborted);
     }
 }
 

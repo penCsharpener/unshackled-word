@@ -19,6 +19,12 @@ describe("ResetPasswordPage", () => {
     expect(fetchMock.mock.calls.some(([url]) => url === "/api/auth/reset-password")).toBe(false);
   });
 
+  it("titles welcome links with Set your password", () => {
+    stubApi({ "GET /auth/me": () => new Response("", { status: 401 }) });
+    renderWithAuth(<ResetPasswordPage />, "/reset-password?token=x&welcome=1");
+    expect(screen.getByRole("heading", { name: "Set your password" })).toBeInTheDocument();
+  });
+
   it("explains a missing token", () => {
     stubApi({ "GET /auth/me": () => new Response("", { status: 401 }) });
     renderWithAuth(<ResetPasswordPage />, "/reset-password");

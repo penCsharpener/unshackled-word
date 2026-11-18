@@ -27,8 +27,8 @@ public sealed class Endpoint : Endpoint<LoginRequest, AuthUserResponse>
         AllowAnonymous();
         // Brute-force brake on the one endpoint that checks a password.
         Throttle(hitLimit: 10, durationSeconds: 60, headerName: null);
-        Description(b => b.Produces<AuthUserResponse>(200).Produces(401));
-        Summary(s => s.Description = "Returns 401 for wrong email, wrong password, no password set yet, or an unverified email: always the same generic response.");
+        Description(b => b.Produces<AuthUserResponse>(200).Produces(401).ProducesProblem(403));
+        Summary(s => s.Description = "Returns 401 for wrong email, wrong password, no password set yet, or an unverified email: always the same generic response. 403 with code account_deactivated for a deactivated account, but only after a correct password.");
     }
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
@@ -41,6 +41,13 @@ public sealed class Endpoint : Endpoint<LoginRequest, AuthUserResponse>
             || !_passwordHasher.Verify(req.Password, user.PasswordHash))
         {
             await Send.UnauthorizedAsync(ct);
+            return;
+        }
+
+        // Only after a correct password, so deactivated accounts cannot be enumerated without it.
+        if (user.IsDeactivated)
+        {
+            await Send.ResultAsync(AuthProblems.DeactivatedAccount());
             return;
         }
 

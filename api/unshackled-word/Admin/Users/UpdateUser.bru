@@ -1,0 +1,26 @@
+meta {
+  name: UpdateUser
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{url}}admin/users/2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "displayName": "Anna Beispiel",
+    "email": "anna.beispiel@example.org"
+  }
+}
+
+docs {
+  Admin only. Changes display name and email. An email change marks it verified, ends the user's sessions and open emailed links, mails a notice to the old and the new address and logs user_updated with old and new values. 409 email_taken (with existingUserId) or ai_user changes nothing.
+}
+
+settings {
+  encodeUrl: true
+}

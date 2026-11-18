@@ -1,0 +1,19 @@
+meta {
+  name: ReactivateUser
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{url}}admin/users/2/reactivate
+  body: none
+  auth: inherit
+}
+
+docs {
+  Admin only. Lifts a deactivation; password and passkeys stay. 409 not_deactivated when the account is active.
+}
+
+settings {
+  encodeUrl: true
+}
