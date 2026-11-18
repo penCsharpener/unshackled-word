@@ -36,6 +36,7 @@ public sealed class AnchorCheckVerb : ISeedVerb
         var layout = new SeedLayout(_fileService, _settings);
         var lines = await _fileService.ReadAllLinesAsync(layout.BaseTextPath, SeedLayout.Utf8NoBom, token);
         var parsed = Elb1871WordParser.Parse(lines)
+            .Where(w => !AnchorToken.IsBareDash(w.WordInContext))
             .Select(w => AnchorToken.ForWord(w.HebRefId, w.PositionInVerse, w.PlainWord))
             .OrderBy(t => t.Ref).ThenBy(t => t.Pos)
             .ToList();

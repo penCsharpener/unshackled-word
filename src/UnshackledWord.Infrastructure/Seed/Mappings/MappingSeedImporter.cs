@@ -328,7 +328,7 @@ public sealed class MappingSeedImporter
         var lines = SeedCsv.Read<MappingSeedLine, MappingSeedLineMap>(bytes);
 
         var words = await _repository.ReadBookWordsAsync(bookId);
-        var newTokens = words.Select(w => AnchorToken.ForWord(w.Ref, w.Pos, w.Form)).ToList();
+        var newTokens = words.Where(w => !AnchorToken.IsBareDash(w.Text)).Select(w => AnchorToken.ForWord(w.Ref, w.Pos, w.Form)).ToList();
         var wordIds = words.ToDictionary(w => (w.Ref, w.Pos), w => w.Id);
         var german = GermanWordResolver.Create(await ReadManifestTokensAsync(layout, morphology, bookId, token), newTokens);
 

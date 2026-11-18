@@ -8,7 +8,7 @@ public class SeedLayoutAndVerbTests
 {
     [Theory]
     [InlineData(1, "01-Genesis.csv")]
-    [InlineData(22, "22-Song of Solomon.csv")]
+    [InlineData(22, "22-Song of Songs.csv")]
     [InlineData(46, "46-1 Corinthians.csv")]
     [InlineData(66, "66-Revelation.csv")]
     public void BookFileName_ShouldMatchTheMappingFileNames_WhenGivenABookId(int bookId, string expected)

@@ -116,7 +116,7 @@
         "sha256": "61348c3fb68f4bf28827be659a911181498f1b30ef4bf7391115f2e1daef9d38"
       },
       {
-        "path": "morphology/22-Song of Solomon.csv",
+        "path": "morphology/22-Song of Songs.csv",
         "rows": 2390,
         "sha256": "eaaf88c481eb7cae9309cb700b0bf54aaff923a2b6465b0e7ac07adff7ace924"
       },
@@ -448,7 +448,7 @@
         "sha256": "011f205157350c3cd514f63116fcc1d60d90b4f21af50a984d9c76b600bd1990"
       },
       {
-        "path": "anchors/22-Song of Solomon.csv",
+        "path": "anchors/22-Song of Songs.csv",
         "rows": 8,
         "sha256": "2f00aa3c56bc3f8ea8a3ffd628fc9517984aa12b9d0c5b9f63a66d5543eaeec9"
       },
@@ -677,7 +677,7 @@
   "mappings": {
     "format": 2,
     "folder": "Elb1871Mappings",
-    "seedVersion": "da83b4eedb6686b8aee8127cca98033c24f4240aed2c1d06bc250844b1f46354",
+    "seedVersion": "c2b1e4b8cd5609ba38176ddc67476cc0419d5b27b85db55da82724069d808a47",
     "rows": 726487,
     "files": [
       {
@@ -786,7 +786,7 @@
         "sha256": "c4d3aaddc973be5bab247c06e7293890b7525d6f5a81f48e7bac007d612236ca"
       },
       {
-        "path": "22-Song of Solomon.csv",
+        "path": "22-Song of Songs.csv",
         "rows": 2391,
         "sha256": "466cbe7fb411fe3d75b4c83d99a9845559ed08b24d0ca990245ffa6766b8fa7b"
       },

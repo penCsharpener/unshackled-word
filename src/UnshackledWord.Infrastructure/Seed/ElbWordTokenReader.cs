@@ -18,6 +18,7 @@ public sealed class ElbWordTokenReader
              w."HebRefId"        as "Ref"
             ,w."PositionInVerse" as "Pos"
             ,w."PlainWord"       as "Form"
+            ,w."WordInContext"   as "Text"
         from "unshackled-word"."Elb1871Words" w
         where w."BibleBookId" = @bookId
         order by w."HebRefId", w."PositionInVerse"
@@ -34,7 +35,7 @@ public sealed class ElbWordTokenReader
     {
         var rows = await _dbReader.ReadAsListAsync<WordRow>(SelectBookWords, new { bookId });
 
-        return rows.Select(r => AnchorToken.ForWord(r.Ref, r.Pos, r.Form)).ToList();
+        return rows.Where(r => !AnchorToken.IsBareDash(r.Text)).Select(r => AnchorToken.ForWord(r.Ref, r.Pos, r.Form)).ToList();
     }
 
     public async Task<List<int>> ReadBookIdsAsync()
@@ -47,5 +48,6 @@ public sealed class ElbWordTokenReader
         public int Ref { get; init; }
         public int Pos { get; init; }
         public string? Form { get; init; }
+        public string? Text { get; init; }
     }
 }

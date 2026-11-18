@@ -19,5 +19,11 @@ public readonly record struct AnchorToken(int Ref, int Pos, string Text)
         return new AnchorToken(reference, position, TokenKey.Normalize(word));
     }
 
+    /// <summary>
+    /// A bare dash between two words (<c>Sohn - seine</c>, produced by the hyphen repair of the base text). It is a word of
+    /// <c>Elb1871Words</c> so positions stay complete, but it has no Greek or Hebrew original and gets no anchor token.
+    /// </summary>
+    public static bool IsBareDash(string? wordInContext) => wordInContext?.Trim() == "-";
+
     public override string ToString() => $"{Ref}:{Pos} {Text}";
 }

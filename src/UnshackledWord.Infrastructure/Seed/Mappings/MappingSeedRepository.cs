@@ -13,6 +13,7 @@ public sealed class ElbWordRow
     public int Ref { get; init; }
     public int Pos { get; init; }
     public string? Form { get; init; }
+    public string? Text { get; init; }
 }
 
 /// <summary>A STEP word of this installation with its database id and its text (hashed with <see cref="SourceKey.Hash"/>, never stored).</summary>
@@ -95,6 +96,7 @@ public sealed class MappingSeedRepository
             ,w."HebRefId"        as "Ref"
             ,w."PositionInVerse" as "Pos"
             ,w."PlainWord"       as "Form"
+            ,w."WordInContext"   as "Text"
         from "unshackled-word"."Elb1871Words" w
         where w."BibleBookId" = @bookId
         order by w."HebRefId", w."PositionInVerse"
