@@ -1,3 +1,5 @@
+using UnshackledWord.Application.Features.ScriptureReferences;
+using UnshackledWord.Application.Features.VerseCounting;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.Models.Study;
@@ -13,9 +15,11 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
 
     private readonly IVerseMappingRepository _repository;
     private readonly IStrongsLexiconRepository _lexicon;
+    private readonly IVerseCountingMapProvider _countingMap;
 
-    public ChapterOriginalsService(IVerseMappingRepository repository, IStrongsLexiconRepository lexicon)
+    public ChapterOriginalsService(IVerseMappingRepository repository, IStrongsLexiconRepository lexicon, IVerseCountingMapProvider countingMap)
     {
+        _countingMap = countingMap;
         _repository = repository;
         _lexicon = lexicon;
     }
@@ -70,6 +74,7 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
     private async Task<Dictionary<string, ChapterLexiconResponse>> BuildLexiconAsync(IEnumerable<string?> strongsOfWords, CancellationToken token)
     {
         var result = new Dictionary<string, ChapterLexiconResponse>();
+        var map = await _countingMap.GetAsync(token);
         foreach (var raw in strongsOfWords.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct())
         {
             var text = raw!.Trim();
@@ -93,12 +98,13 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
 
             var gloss = string.IsNullOrWhiteSpace(entry.Gloss) ? null : entry.Gloss.Trim();
             var (definition, _) = LexiconTextCleaner.Clean(entry.Lexicon, 300);
+            var (segments, _) = LexiconTextSegmenter.Segment(entry.Lexicon, 300, map);
             if (gloss is null && definition.Length == 0)
             {
                 continue;
             }
 
-            result[raw!] = new ChapterLexiconResponse { Gloss = gloss, Definition = definition.Length == 0 ? null : definition };
+            result[raw!] = new ChapterLexiconResponse { Gloss = gloss, Definition = definition.Length == 0 ? null : definition, DefinitionSegments = LexiconSegmentMapper.ToResponse(segments) };
         }
 
         return result;

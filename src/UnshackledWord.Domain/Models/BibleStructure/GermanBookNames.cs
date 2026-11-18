@@ -79,6 +79,8 @@ public static class GermanBookNames
 
     public static string GetAbbreviation(int bookId) => Books[bookId].Abbreviations[0];
 
+    public static IReadOnlyList<string> GetAbbreviations(int bookId) => Books[bookId].Abbreviations;
+
     /// <summary>
     /// Finds a book by German abbreviation or name (case-insensitive, ignores spaces, dots and umlaut spelling).
     /// </summary>

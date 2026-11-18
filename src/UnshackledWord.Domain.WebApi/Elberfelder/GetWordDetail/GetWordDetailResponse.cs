@@ -109,6 +109,8 @@ public sealed class LexiconSummaryResponse
     public string? Transliteration { get; set; }
     public string? Gloss { get; set; }
     public string? Definition { get; set; }
+    /// <summary>The definition split into plain text and scripture reference segments (roadmap 0019); same text as <see cref="Definition"/>.</summary>
+    public List<LexiconSegmentResponse>? DefinitionSegments { get; set; }
     public bool? DefinitionTruncated { get; set; }
 }
 

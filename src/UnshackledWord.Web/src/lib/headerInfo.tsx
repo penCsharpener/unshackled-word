@@ -1,5 +1,5 @@
 import { createContext, type ReactNode, useContext, useState } from "react";
-import type { Morphology } from "./bible/types";
+import type { DefinitionSegment, Morphology } from "./bible/types";
 
 /** The original word shown in the middle of the sticky top menu while a word is hovered. */
 export interface HeaderWordInfo {
@@ -13,6 +13,7 @@ export interface HeaderWordInfo {
   /** English Strong's gloss and (shortened) lexicon text, shown by the stacked hover card only */
   gloss?: string;
   definition?: string;
+  definitionSegments?: DefinitionSegment[];
   /** shown in the page margin from 1024px (the reader), so the header leaves it out there */
   inMargin?: boolean;
 }

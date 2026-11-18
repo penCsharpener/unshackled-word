@@ -1,5 +1,7 @@
 using UnshackledWord.Application.Features.ChapterOriginals;
 using UnshackledWord.Application.Features.CrossReferences;
+using UnshackledWord.Application.Features.VerseCounting;
+using UnshackledWord.Domain.Models.BibleStructure.References;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Study;
 
@@ -48,7 +50,7 @@ public class ChapterSidePanelServicesTests
             new ChapterMappingRow { ElbWordId = 200, StepWordId = 20, GermanVerse = 2 },
         ]);
 
-        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>()).GetAsync(43, 3);
+        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>(), new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>([]))).GetAsync(43, 3);
 
         response.Language.ShouldBe("greek");
         response.Verses.Select(v => v.Verse).ShouldBe([1, 2]);
@@ -64,7 +66,7 @@ public class ChapterSidePanelServicesTests
         repository.GetChapterOriginalWordsAsync(true, 19, 23, Arg.Any<CancellationToken>()).Returns([]);
         repository.GetChapterMappingRowsAsync(true, 19, 23, Arg.Any<CancellationToken>()).Returns([]);
 
-        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>()).GetAsync(19, 23);
+        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>(), new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>([]))).GetAsync(19, 23);
 
         response.Language.ShouldBe("hebrew");
         response.Verses.ShouldBeEmpty();

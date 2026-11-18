@@ -1,7 +1,10 @@
 using System.Globalization;
 using UnshackledWord.Application.Features.CrossReferences;
+using UnshackledWord.Application.Features.ScriptureReferences;
+using UnshackledWord.Application.Features.VerseCounting;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.BibleStructure.References;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetWordDetail;
@@ -19,9 +22,11 @@ public sealed class WordDetailService : IWordDetailService
     private readonly IHebrewMorphemeRepository _morphemes;
     private readonly IStrongsLexiconRepository _lexicon;
     private readonly ITskRepository _tsk;
+    private readonly IVerseCountingMapProvider _countingMap;
 
-    public WordDetailService(IWordDetailRepository words, IHebrewMorphemeRepository morphemes, IStrongsLexiconRepository lexicon, ITskRepository tsk)
+    public WordDetailService(IWordDetailRepository words, IHebrewMorphemeRepository morphemes, IStrongsLexiconRepository lexicon, ITskRepository tsk, IVerseCountingMapProvider countingMap)
     {
+        _countingMap = countingMap;
         _words = words;
         _morphemes = morphemes;
         _lexicon = lexicon;
@@ -50,6 +55,7 @@ public sealed class WordDetailService : IWordDetailService
     public async Task<GetWordDetailResponse> BuildAsync(ElbWordRow word, IReadOnlyList<ReadingRowBase> rows, IReadOnlyList<CoMappedWordRow> coRows, string mappingSource, CancellationToken token = default)
     {
         var isHebrew = word.BibleBookId <= LastHebrewBookId;
+        var map = await _countingMap.GetAsync(token);
 
         var readingRows = rows
             .Where(r => r.StepWordId is not null && !string.IsNullOrEmpty(r.Original))
@@ -92,7 +98,7 @@ public sealed class WordDetailService : IWordDetailService
                 entityCache[strongs] = entity;
             }
 
-            var reading = BuildReading(word, row, strongs, entry, morphemesByWord, coRows);
+            var reading = BuildReading(word, row, strongs, entry, morphemesByWord, coRows, map);
             reading.Entity = entity;
             if (stats.Count > 0)
             {
@@ -177,7 +183,8 @@ public sealed class WordDetailService : IWordDetailService
         string strongs,
         LexiconEntry? entry,
         Dictionary<int, List<HebrewMorpheme>> morphemesByWord,
-        IReadOnlyList<CoMappedWordRow> coRows)
+        IReadOnlyList<CoMappedWordRow> coRows,
+        IVerseCountingMap map)
     {
         var stepWordId = row.StepWordId!.Value;
         var reading = new OriginalReadingResponse
@@ -189,7 +196,7 @@ public sealed class WordDetailService : IWordDetailService
             Transliteration = NullIfEmpty(row.Transliteration),
             Strongs = strongs,
             ContextGloss = NullIfEmpty(row.ContextGloss),
-            Lexicon = BuildLexicon(strongs, entry),
+            Lexicon = BuildLexicon(strongs, entry, map),
         };
 
         var shared = coRows
@@ -323,7 +330,7 @@ public sealed class WordDetailService : IWordDetailService
         };
     }
 
-    private static LexiconSummaryResponse? BuildLexicon(string strongs, LexiconEntry? entry)
+    private static LexiconSummaryResponse? BuildLexicon(string strongs, LexiconEntry? entry, IVerseCountingMap map)
     {
         if (entry is null)
         {
@@ -331,6 +338,7 @@ public sealed class WordDetailService : IWordDetailService
         }
 
         var (text, truncated) = LexiconTextCleaner.Clean(entry.Lexicon);
+        var (segments, _) = LexiconTextSegmenter.Segment(entry.Lexicon, 600, map);
         return new LexiconSummaryResponse
         {
             Strongs = strongs,
@@ -338,6 +346,7 @@ public sealed class WordDetailService : IWordDetailService
             Transliteration = NullIfEmpty(entry.Transliteration),
             Gloss = NullIfEmpty(entry.Gloss),
             Definition = NullIfEmpty(text),
+            DefinitionSegments = LexiconSegmentMapper.ToResponse(segments),
             DefinitionTruncated = truncated ? true : null,
         };
     }

@@ -1,0 +1,19 @@
+meta {
+  name: ParseReference
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}references/parse?q=Offb 2,1-5.7.9-10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  q: Offb 2,1-5.7.9-10
+}
+
+settings {
+  encodeUrl: true
+}

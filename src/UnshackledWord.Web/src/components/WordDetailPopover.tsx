@@ -16,6 +16,7 @@ import type {
 import { mappingStatus, normalizeStrongs } from "@/lib/bible/wordDetail";
 import { Button } from "./Button";
 import { CrossReferenceList } from "./CrossReferenceList";
+import { ScriptureText } from "./ScriptureText";
 
 export type WordDetailCloseReason = "escape" | "button" | "outside";
 
@@ -245,7 +246,10 @@ function ReadingSection({
         <details className="mt-2 text-sm">
           <summary className="cursor-pointer text-fg-muted">{label("definition")}</summary>
           <p lang="en" className="mt-1">
-            {reading.lexicon.definition}
+            <ScriptureText
+              text={reading.lexicon.definition}
+              segments={reading.lexicon.definitionSegments}
+            />
             {reading.lexicon.definitionTruncated && (
               <span className="text-fg-muted"> {t("bible.wordDetail.truncated")}</span>
             )}

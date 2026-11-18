@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import type { GetVerseMappingResponse } from "@/lib/bible/types";
+import type { ChapterLexiconEntry, GetVerseMappingResponse } from "@/lib/bible/types";
 import { normalizeStrongs } from "@/lib/bible/wordDetail";
 import { useSetHeaderInfo } from "@/lib/headerInfo";
 import { Button } from "./Button";
@@ -15,7 +15,7 @@ export interface OriginalVerseProps {
   variant?: "panel" | "margin";
   data: Pick<GetVerseMappingResponse, "language" | "originalWords">;
   /** `margin`: English gloss and lexicon text per Strong's number for the hover card (chapter originals `lexicon`). */
-  lexicon?: Record<string, { gloss?: string; definition?: string }>;
+  lexicon?: Record<string, ChapterLexiconEntry>;
   /** e.g. "Johannes 3,1" */
   reference: string;
   /** Original words to highlight (linked to the hovered German word). */
@@ -180,6 +180,9 @@ export function OriginalVerse({
                 language: data.language,
                 gloss: tipWord.strongs ? lexicon?.[tipWord.strongs]?.gloss : undefined,
                 definition: tipWord.strongs ? lexicon?.[tipWord.strongs]?.definition : undefined,
+                definitionSegments: tipWord.strongs
+                  ? lexicon?.[tipWord.strongs]?.definitionSegments
+                  : undefined,
               }}
             />
           </div>

@@ -1600,6 +1600,23 @@ export const de = {
       summary_one: "{{count, number}} Vers in {{books}} von {{total}} Büchern",
       summary_other: "{{count, number}} Verse in {{books}} von {{total}} Büchern",
     },
+    reference: {
+      label: "Bibelstellen",
+      booksLabel: "Bücher",
+      didYouMean: "Meinten Sie:",
+      moreVerses_one: "… {{count}} weiterer Vers",
+      moreVerses_other: "… {{count}} weitere Verse",
+      toBook: "Zu {{book}} 1",
+      errors: {
+        generic: "Das sieht nach einer Bibelstelle aus, ist aber nicht lesbar.",
+        chapterOutOfRange: "Kapitel {{value}} gibt es nicht (höchstens {{max}}).",
+        verseOutOfRange: "Vers {{value}} gibt es nicht (höchstens {{max}}).",
+        ambiguousBook: "Das Buch ist nicht eindeutig.",
+        missingChapter: "Es fehlt die Kapitelzahl.",
+        endBeforeStart: "Das Ende liegt vor dem Anfang.",
+        unexpectedToken: "Unerwartetes Zeichen. Verse stehen nach dem Komma, z. B. Joh 3,16.18.",
+      },
+    },
     originals: {
       heading: "Grundtext zu den Suchwörtern",
       prompt:

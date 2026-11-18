@@ -27,6 +27,7 @@ public sealed class ChapterLexiconResponse
 {
     public string? Gloss { get; set; }
     public string? Definition { get; set; }
+    public List<GetWordDetail.LexiconSegmentResponse>? DefinitionSegments { get; set; }
 }
 
 public sealed class VerseOriginalsResponse

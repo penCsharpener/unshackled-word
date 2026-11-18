@@ -184,6 +184,20 @@ export interface LexiconSummary {
   gloss?: string; // English
   definition?: string; // English, markup stripped, max ~600 chars
   definitionTruncated?: boolean;
+  /** `definition` cut into plain and reference pieces (roadmap 0019); concatenated texts equal `definition`. */
+  definitionSegments?: DefinitionSegment[];
+}
+
+/** A piece of lexicon text; `ref` marks a recognised scripture reference (Hebrew counting, whole chapter = verse 0 to 999). */
+export interface DefinitionSegment {
+  text: string;
+  ref?: { bookId: number; path: string; spans: ParsedSpan[] };
+}
+
+export interface ChapterLexiconEntry {
+  gloss?: string;
+  definition?: string;
+  definitionSegments?: DefinitionSegment[];
 }
 
 /** One original-language word behind the German word. */
@@ -285,7 +299,7 @@ export interface GetChapterOriginalsResponse {
   language: "greek" | "hebrew";
   verses: ChapterOriginalVerse[];
   /** English gloss and shortened lexicon text per Strong's number of the chapter */
-  lexicon?: Record<string, { gloss?: string; definition?: string }>;
+  lexicon?: Record<string, ChapterLexiconEntry>;
 }
 
 export interface RevisionWordInfo {
@@ -567,4 +581,52 @@ export interface SearchVersesOptions {
   bookId?: number | null;
   /** Reader level (default 100 = Elb1871 only): verses also match by the revision that level shows. */
   level?: number;
+}
+
+/** `GET api/references/parse` (roadmap 0019): what the search field input means as scripture references. */
+interface ParsedReferenceGroup {
+  display: string;
+  path?: string;
+}
+
+interface ParsedSpan {
+  startChapter: number;
+  startVerse: number;
+  endChapter: number;
+  endVerse: number;
+}
+
+export interface ParsedReference {
+  bookId?: number;
+  bookOnly: boolean;
+  display: string;
+  path?: string;
+  /** Verse ranges in Hebrew counting; a whole chapter is verse 0 to 999. */
+  spans?: ParsedSpan[];
+  groups: ParsedReferenceGroup[];
+}
+
+export interface ParseReferenceError {
+  code: string;
+  position: number;
+  args: Record<string, string>;
+}
+
+export interface ParseReferenceResponse {
+  references: ParsedReference[];
+  error?: ParseReferenceError;
+  bookCandidates: number[];
+}
+
+/** `GET passageText`: the verses of each requested span, in request order. */
+export interface GetPassageTextResponse {
+  passages: {
+    bookId: number;
+    chapter: number;
+    verse: number;
+    endVerse?: number;
+    verses: ChapterVerse[];
+  }[];
+  /** More than 10 spans or 40 verses were asked for; the rest is left out. */
+  truncated: boolean;
 }

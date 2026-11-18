@@ -43,6 +43,7 @@ import type {
   WordToken,
 } from "@/lib/bible/types";
 import { useSaveVerseMapping, useVerseMapping } from "@/lib/bible/verseMapping";
+import { parseVerseSelection } from "@/lib/bible/verseSelection";
 import { useWordDetail, wordDetailQuery, wordDetailSource } from "@/lib/bible/wordDetail";
 import { buildHighlights, phraseWordIds, wordKey } from "@/lib/bible/words";
 import { useSetHeaderInfo } from "@/lib/headerInfo";
@@ -413,6 +414,11 @@ export function ChapterPage() {
     if (!verses.isSuccess || !hash.startsWith("#v")) return;
     document.getElementById(hash.slice(1))?.scrollIntoView();
   }, [verses.isSuccess, hash]);
+  // `?v=1-5,7,9-10` (deep link from a reference) marks those verses; the hash scrolls to the first one
+  const passageVerses = useMemo(
+    () => parseVerseSelection(new URLSearchParams(location.search).get("v")),
+    [location.search],
+  );
 
   // `?map=<verse>` (data-quality jump) opens the mapping editor of that verse once per chapter visit
   const mapParam = new URLSearchParams(location.search).get("map");
@@ -621,7 +627,7 @@ export function ChapterPage() {
                 <div
                   key={v.verse}
                   id={`v${v.verse}`}
-                  className={`verse-row relative mt-2 scroll-mt-32 ${v.revised ? "before:absolute before:inset-y-0 before:-left-3 before:w-1 before:bg-accent" : ""}`}
+                  className={`verse-row relative mt-2 scroll-mt-32 ${passageVerses.has(v.verse) ? "bg-mark-passage" : ""} ${v.revised ? "before:absolute before:inset-y-0 before:-left-3 before:w-1 before:bg-accent" : ""}`}
                   {...(v.revised && {
                     role: "group",
                     title: revisedLabel(v.revised.level),

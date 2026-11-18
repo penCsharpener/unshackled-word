@@ -64,6 +64,14 @@ export function useChapterWords(ref: ChapterRef | null, level = BASE_LEVEL) {
   });
 }
 
+/** Text of reference spans (`66002001-66002005,66002007`), as asked for by a reference card or preview. */
+export const passageTextQuery = (spans: string, level = BASE_LEVEL) =>
+  queryOptions({
+    queryKey: ["bible", "passageText", spans, level] as const,
+    queryFn: ({ signal }) => bibleApi.passageText(spans, level, signal),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+
 /** Texts of all TSK targets of one verse: one request, cached for the page, so every link of the verse shows its text on hover. */
 export const verseCrossReferenceTextsQuery = (
   bookId: number,

@@ -6,8 +6,10 @@ using UnshackledWord.Application.Features.ChapterOriginals;
 using UnshackledWord.Application.Features.CrossReferences;
 using UnshackledWord.Application.Features.Revision;
 using UnshackledWord.Application.Features.Backup;
+using UnshackledWord.Application.Features.ScriptureReferences;
 using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Features.StrongsStats;
+using UnshackledWord.Application.Features.VerseCounting;
 using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Application.Features.VerseSearch;
 using UnshackledWord.Application.Features.WordDetail;
@@ -25,6 +27,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IElb1871WordRepository, Elb1871WordRepository>();
         services.AddScoped<IElb1871VerseRepository, Elb1871VerseRepository>();
         services.AddScoped<ITskRepository, TskRepository>();
+        services.AddScoped<IVerseCountingRepository, VerseCountingRepository>();
+        services.AddSingleton<IVerseCountingMapProvider>(sp => new VerseCountingMapProvider(async token =>
+        {
+            using var scope = sp.CreateScope();
+            return await scope.ServiceProvider.GetRequiredService<IVerseCountingRepository>().GetDifferingAsync(token);
+        }));
         services.AddScoped<IStepBibleVerseRepository, StepBibleVerseRepository>();
         services.AddScoped<IStrongsLexiconRepository, StrongsLexiconRepository>();
         services.AddScoped<ISblTextRepository, SblTextRepository>();
@@ -51,6 +59,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISearchOriginalsService, SearchOriginalsService>();
         services.AddScoped<IVerseSearchRepository, VerseSearchRepository>();
         services.AddScoped<IVerseSearchService, VerseSearchService>();
+        services.AddSingleton<IScriptureReferenceService, ScriptureReferenceService>();
         services.AddScoped<ISttsTagRepository, SttsTagRepository>();
         services.AddScoped<IAgentDataRepository, AgentDataRepository>();
         services.AddScoped<IAgentStoreRepository, AgentStoreRepository>();

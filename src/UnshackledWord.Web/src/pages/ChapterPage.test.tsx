@@ -100,6 +100,26 @@ describe("ChapterPage", () => {
     expect(container.querySelector("article")?.getAttribute("lang")).toBe("de");
   });
 
+  it("marks exactly the verses named by ?v=", async () => {
+    stubFetch();
+    const { container } = renderAt("/bible/43/3?v=1-2");
+    await screen.findByText("Dieser");
+    const marked = Array.from(container.querySelectorAll(".verse-row"))
+      .filter((row) => row.className.includes("bg-mark-passage"))
+      .map((row) => row.id);
+    expect(marked).toEqual(["v1", "v2"]);
+  });
+
+  it("scrolls to the verse named by the hash", async () => {
+    const scroll = vi.fn();
+    window.HTMLElement.prototype.scrollIntoView = scroll;
+    stubFetch();
+    renderAt("/bible/43/3?v=2-3#v2");
+    await screen.findByText("Dieser");
+    await waitFor(() => expect(scroll).toHaveBeenCalled());
+    expect(scroll.mock.contexts).toContain(document.getElementById("v2"));
+  });
+
   it("highlights words sharing a Strong's number on hover", async () => {
     stubFetch();
     renderAt("/bible/43/3");

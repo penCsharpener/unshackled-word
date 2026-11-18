@@ -1,10 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { type KeyboardEvent, type ReactNode, useId, useRef, useState } from "react";
+import { type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { ApiError, describeApiError } from "@/lib/api";
 import { bookName } from "@/lib/bible/books";
 import { structureQuery } from "@/lib/bible/queries";
+import {
+  firstReferencePath,
+  replaceTypedBook,
+  useReferenceParse,
+  viewOfParse,
+} from "@/lib/bible/referenceParse";
 import {
   isLookupQuery,
   originalTextAttributes,
@@ -29,6 +35,7 @@ import { Button } from "./Button";
 import { Dialog } from "./Dialog";
 import { DonutChart, type DonutSlice } from "./DonutChart";
 import { EmptyState } from "./EmptyState";
+import { ReferenceCard } from "./ReferenceCard";
 import { TextField } from "./TextField";
 import { hitOptionId, hitPath, VerseHitList } from "./VerseHitList";
 
@@ -38,6 +45,8 @@ export interface SearchOverlayProps {
 }
 
 type Tab = "verses" | "originals";
+
+const normalized = (input: string) => input.trim().replace(/\s+/g, " ");
 
 function OriginalText({ language, children }: { language: OriginalLanguage; children: ReactNode }) {
   const { lang, dir } = originalTextAttributes(language);
@@ -202,8 +211,14 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const structure = useQuery({ ...structureQuery(), enabled: open });
   const books = structure.data ?? [];
   const reader = useReaderLevel();
+  const parse = useReferenceParse(open ? query : "");
+  const reference = viewOfParse(parse.data);
+  // Full-text search is skipped for a reference. A query with a digit may be one, so it waits for the parse
+  // answer (a failed parse counts as "no reference"); plain words search at once.
+  const waitsForParse = parse.isPending && /\d/.test(query);
+  const searchQuery = open && !waitsForParse && !reference.skipsFullText ? query : "";
   const search = useVerseSearch(
-    open ? query : "",
+    searchQuery,
     bookId,
     VERSE_SEARCH_PAGE_SIZE,
     reader.level,
@@ -218,8 +233,15 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const pages = search.data?.pages ?? [];
   const first = pages[0];
   const hits = pages.flatMap((page) => page.hits);
-  const searching = query !== "";
-  const invalid = searching && !isVerseSearchQuery(query);
+  const searching = searchQuery !== "";
+  const invalid = searching && !isVerseSearchQuery(searchQuery);
+  const showReference =
+    open &&
+    query !== "" &&
+    (reference.passages.length > 0 ||
+      reference.books.length > 0 ||
+      reference.error !== null ||
+      (parse.data?.bookCandidates.length ?? 0) > 0);
   const dimmed = search.isPlaceholderData || (search.isFetching && !search.isFetchingNextPage);
 
   const openHit = (index: number) => {
@@ -228,6 +250,18 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
     navigate(hitPath(hit));
     onClose();
   };
+
+  // Enter on a reference jumps to it; when the answer is not there yet, the jump waits for it.
+  const pendingEnter = useRef("");
+  const referencePath = firstReferencePath(parse.data);
+  useEffect(() => {
+    if (pendingEnter.current === "" || pendingEnter.current !== query || parse.isPending) return;
+    pendingEnter.current = "";
+    if (referencePath) {
+      navigate(referencePath);
+      onClose();
+    }
+  }, [query, parse.isPending, referencePath, navigate, onClose]);
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown" && hits.length > 0) {
@@ -239,7 +273,13 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
     } else if (event.key === "Enter") {
       event.preventDefault();
       if (activeIndex >= 0) openHit(activeIndex);
-      else submit();
+      else if (referencePath && query !== "" && normalized(input) === query) {
+        navigate(referencePath);
+        onClose();
+      } else {
+        pendingEnter.current = normalized(input);
+        submit();
+      }
     }
   };
 
@@ -259,7 +299,20 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       <p role="status" aria-live="polite" className="text-sm text-fg-muted">
         {showList && !dimmed ? t("search.count", { count: first.total }) : ""}
       </p>
-      {!searching ? <EmptyState>{t("search.hint")}</EmptyState> : null}
+      {showReference ? (
+        <ReferenceCard
+          passages={reference.passages}
+          bookRefs={reference.books}
+          error={reference.error}
+          bookCandidates={parse.data?.bookCandidates}
+          books={books}
+          language={language}
+          level={reader.level}
+          onNavigate={onClose}
+          onPickBook={(book) => setInput(replaceTypedBook(input, bookName(book, language)))}
+        />
+      ) : null}
+      {query === "" ? <EmptyState>{t("search.hint")}</EmptyState> : null}
       {invalid ? (
         <p role="alert" className="text-sm text-fg">
           {t("search.tooLong")}
@@ -324,7 +377,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             </div>
           ) : null}
           {first.total === 0 ? (
-            <EmptyState>{t("search.empty", { query })}</EmptyState>
+            <EmptyState>{t("search.empty", { query: searchQuery })}</EmptyState>
           ) : (
             <>
               <VerseHitList

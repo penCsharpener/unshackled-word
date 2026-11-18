@@ -1,4 +1,6 @@
+using UnshackledWord.Application.Features.VerseCounting;
 using UnshackledWord.Application.Features.WordDetail;
+using UnshackledWord.Domain.Models.BibleStructure.References;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Domain.Models.Study;
@@ -15,9 +17,11 @@ public class WordDetailServiceTests
     private readonly ITskRepository _tsk = Substitute.For<ITskRepository>();
     private readonly WordDetailService _sut;
 
+    private static readonly IVerseCountingMapProvider CountingProvider = new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>([]));
+
     public WordDetailServiceTests()
     {
-        _sut = new WordDetailService(_words, _morphemes, _lexicon, _tsk);
+        _sut = new WordDetailService(_words, _morphemes, _lexicon, _tsk, CountingProvider);
         _tsk.GetOutgoingAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns([]);
         _words.GetCoMappedWordsAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns([]);
         _lexicon.GetEntriesAsync(Arg.Any<StrongsNumber>(), Arg.Any<CancellationToken>()).Returns([]);

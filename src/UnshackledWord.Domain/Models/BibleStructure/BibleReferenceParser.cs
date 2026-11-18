@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using UnshackledWord.Domain.Models.BibleStructure.References;
 
 namespace UnshackledWord.Domain.Models.BibleStructure;
 
@@ -11,14 +11,15 @@ public sealed record ParseResult(PassageRange? Range, string? Error)
 }
 
 /// <summary>
-/// Parses references like "Joh 3,16-18", "John 3:16", "Röm 8", "Röm 8-9", "1Mo 1,1-2,3".
-/// Never throws; invalid input yields an error message.
+/// Parses references like "Joh 3,16-18", "John 3:16", "Röm 8", "Röm 8-9", "1Mo 1,1-2,3" for the MCP tools.
+/// A thin wrapper over <see cref="ScriptureReferenceParser"/> with profile <see cref="AliasProfile.Legacy"/>:
+/// exactly one span in one book, Elberfelder counting. Never throws; invalid input yields an error message.
 /// </summary>
-public static partial class BibleReferenceParser
+public static class BibleReferenceParser
 {
-    // book, chapter, [verse], [-, [endChapter ,] endVerse | endChapter]
-    [GeneratedRegex(@"^\s*(?<book>[1-3]?\s*\.?\s*[^\d\s.,:;-][^\d,:;-]*?)\s*\.?\s*(?<c1>\d+)(?:\s*[,:]\s*(?<v1>\d+))?(?:\s*[-–]\s*(?:(?<c2>\d+)\s*[,:]\s*)?(?<n2>\d+))?\s*$")]
-    private static partial Regex ReferenceRegex();
+    // English counting skips the verse-table check, as the old parser did: numbers are taken as given and
+    // unknown chapters or verses reach the database lookup ("No verses found").
+    private static readonly ScriptureParseOptions Options = new(AliasProfile.Legacy, AllowPrefix: false, WholeInput: true, Counting: VerseCounting.English);
 
     public static ParseResult Parse(string? reference)
     {
@@ -27,71 +28,58 @@ public static partial class BibleReferenceParser
             return Fail("Reference is empty. Example: 'Joh 3,16-18'.");
         }
 
-        var match = ReferenceRegex().Match(reference);
-        if (!match.Success)
+        var parsed = ScriptureReferenceParser.Parse(reference, Options);
+        if (parsed.Error is not null)
         {
-            return Fail($"Could not parse reference '{reference}'. Examples: 'Joh 3,16-18', 'Röm 8', '1Mo 1,1-2,3'.");
+            return MapError(parsed.Error, reference);
         }
 
-        var bookText = match.Groups["book"].Value;
-        var bookId = GermanBookNames.FindBookId(bookText) ?? BibleBook.FindByAbbreviation(bookText.Replace(" ", ""))?.Id
-                     ?? BibleBook.FindByAbbreviation(bookText.Trim())?.Id;
-        if (bookId is null)
+        if (parsed.References.Count != 1)
         {
-            return Fail($"Unknown book '{bookText.Trim()}'. Use a German name or abbreviation such as 'Joh', 'Röm', '1Mo'.");
+            return CouldNotParse(reference);
         }
 
-        var c1 = int.Parse(match.Groups["c1"].Value);
-        var hasV1 = match.Groups["v1"].Success;
-        var hasEnd = match.Groups["n2"].Success;
-        var hasC2 = match.Groups["c2"].Success;
-        var n2 = hasEnd ? int.Parse(match.Groups["n2"].Value) : 0;
-
-        int startChapter = c1, endChapter = c1, startVerse, endVerse;
-        if (!hasV1)
+        var single = parsed.References[0];
+        if (single.BookOnly || single.Spans.Count != 1)
         {
-            // whole chapter(s): "Röm 8" or "Röm 8-9"
-            startVerse = 0;
-            endVerse = 999;
-            if (hasEnd)
-            {
-                if (hasC2)
-                {
-                    return Fail($"Could not parse reference '{reference}'.");
-                }
-
-                endChapter = n2;
-            }
-        }
-        else
-        {
-            startVerse = int.Parse(match.Groups["v1"].Value);
-            endVerse = startVerse;
-            if (hasEnd)
-            {
-                if (hasC2)
-                {
-                    endChapter = int.Parse(match.Groups["c2"].Value);
-                }
-
-                endVerse = n2;
-            }
+            return CouldNotParse(reference);
         }
 
-        if (startChapter < 1 || endChapter < 1 || (hasV1 && (startVerse < 1 || endVerse < 1)))
+        if (single.BookId is not { } bookId)
+        {
+            return UnknownBook(single.NonCanonical ?? reference);
+        }
+
+        var span = single.Spans[0];
+        var isWholeChapter = span.StartVerse == 0 && span.EndVerse == VerseSpan.WholeChapterEndVerse;
+        if (!isWholeChapter && (span.StartVerse < 1 || span.EndVerse < 1))
         {
             return Fail("Chapter and verse numbers start at 1.");
         }
 
-        if (endChapter < startChapter || (endChapter == startChapter && endVerse < startVerse))
-        {
-            return Fail($"The end of '{reference}' lies before its start.");
-        }
-
-        var start = bookId.Value * 1_000_000 + startChapter * 1_000 + startVerse;
-        var end = bookId.Value * 1_000_000 + endChapter * 1_000 + endVerse;
-        return new ParseResult(new PassageRange(bookId.Value, start, end), null);
+        var (start, end) = span.ToRefIds(bookId);
+        return new ParseResult(new PassageRange(bookId, start, end), null);
     }
+
+    private static ParseResult MapError(ScriptureParseError error, string reference) => error.Code switch
+    {
+        ScriptureParseErrorCodes.Empty => Fail("Reference is empty. Example: 'Joh 3,16-18'."),
+        ScriptureParseErrorCodes.UnknownBook => UnknownBook(error.Args.GetValueOrDefault("text", reference).Trim()),
+        ScriptureParseErrorCodes.EndBeforeStart => Fail($"The end of '{reference}' lies before its start."),
+        ScriptureParseErrorCodes.ChapterOutOfRange or ScriptureParseErrorCodes.VerseOutOfRange => OutOfRange(error, reference),
+        _ => CouldNotParse(reference),
+    };
+
+    private static ParseResult OutOfRange(ScriptureParseError error, string reference) =>
+        error.Args.GetValueOrDefault("value") == "0"
+            ? Fail("Chapter and verse numbers start at 1.")
+            : Fail($"Chapter or verse out of range in '{reference}'.");
+
+    private static ParseResult UnknownBook(string bookText) =>
+        Fail($"Unknown book '{bookText}'. Use a German name or abbreviation such as 'Joh', 'Röm', '1Mo'.");
+
+    private static ParseResult CouldNotParse(string reference) =>
+        Fail($"Could not parse reference '{reference}'. Examples: 'Joh 3,16-18', 'Röm 8', '1Mo 1,1-2,3'.");
 
     private static ParseResult Fail(string message) => new(null, message);
 }

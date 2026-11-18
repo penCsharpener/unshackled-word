@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
+import { ScriptureText, StrongsLink } from "@/components/ScriptureText";
 import { formatMorphology } from "@/lib/bible/morphology";
-import { normalizeStrongs } from "@/lib/bible/wordDetail";
 import { type HeaderWordInfo as HeaderWordInfoData, useHeaderInfo } from "@/lib/headerInfo";
 
 /**
@@ -76,7 +75,7 @@ function WordInfoBody({
         )}
         {info.definition && (
           <p lang="en" className="w-full text-xs text-fg-muted">
-            <LinkedStrongs text={info.definition} />
+            <ScriptureText text={info.definition} segments={info.definitionSegments} />
           </p>
         )}
       </div>
@@ -100,30 +99,5 @@ function WordInfoBody({
       </p>
       {morphology && <p className={`max-w-full text-xs text-fg-muted ${truncate}`}>{morphology}</p>}
     </div>
-  );
-}
-
-const STRONGS_IN_TEXT = /\b([GH]\d{1,4}[A-Za-z]?)\b/g;
-
-/** A Strong's number as a link to its page; plain text when it is not a valid number. */
-function StrongsLink({ value }: { value: string }) {
-  const strongs = normalizeStrongs(value);
-  if (!strongs) return <>{value}</>;
-  return (
-    <Link to={`/bible/strongs/${strongs}`} className="text-accent underline">
-      {value}
-    </Link>
-  );
-}
-
-/** Lexicon text with every Strong's number in it (e.g. "H7225H") turned into a link. */
-function LinkedStrongs({ text }: { text: string }) {
-  return text.split(STRONGS_IN_TEXT).map((part, index) =>
-    index % 2 === 1 ? (
-      // biome-ignore lint/suspicious/noArrayIndexKey: static split of one string
-      <StrongsLink key={index} value={part} />
-    ) : (
-      part
-    ),
   );
 }

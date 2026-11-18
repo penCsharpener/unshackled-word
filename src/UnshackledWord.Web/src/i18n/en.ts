@@ -1580,6 +1580,23 @@ export const en: Translation = {
       summary_one: "{{count, number}} verse in {{books}} of {{total}} books",
       summary_other: "{{count, number}} verses in {{books}} of {{total}} books",
     },
+    reference: {
+      label: "Scripture references",
+      booksLabel: "Books",
+      didYouMean: "Did you mean:",
+      moreVerses_one: "… {{count}} more verse",
+      moreVerses_other: "… {{count}} more verses",
+      toBook: "To {{book}} 1",
+      errors: {
+        generic: "This looks like a scripture reference but cannot be read.",
+        chapterOutOfRange: "There is no chapter {{value}} (at most {{max}}).",
+        verseOutOfRange: "There is no verse {{value}} (at most {{max}}).",
+        ambiguousBook: "The book is ambiguous.",
+        missingChapter: "The chapter number is missing.",
+        endBeforeStart: "The end comes before the start.",
+        unexpectedToken: "Unexpected character. Verses follow the comma, e.g. John 3,16.18.",
+      },
+    },
     originals: {
       heading: "Original text of the search words",
       prompt: "Type a word to see which Greek and Hebrew words stand behind it.",

@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { bookAbbreviation, bookName, chapterPath } from "@/lib/bible/books";
 import { verseCrossReferenceTextsQuery } from "@/lib/bible/queries";
 import type { BibleStructureBook, CrossReference } from "@/lib/bible/types";
+import { PassagePreviewCard } from "./PassagePreviewCard";
 
 export interface CrossReferenceListProps {
   references: CrossReference[];
@@ -47,37 +48,18 @@ function PreviewCard({
   hover: Hover;
   preview: NonNullable<CrossReferenceListProps["preview"]>;
 }) {
-  const { t } = useTranslation();
   // first hover of any link of the verse fetches all of its texts, later hovers hit the cache
   const texts = useQuery(
     verseCrossReferenceTextsQuery(preview.bookId, preview.chapter, preview.verse, preview.level),
   );
   const entry = texts.data?.references.find((r) => keyOf(r) === hover.key);
-  const range = (entry?.verses.length ?? 0) > 1;
   return (
-    <div
-      role="tooltip"
-      data-testid="cross-reference-preview"
-      ref={(element) => {
-        // measured pixel position: the only value that cannot be a design token
-        element?.style.setProperty("left", `${hover.x}px`);
-        element?.style.setProperty("top", `${hover.y}px`);
-      }}
-      className={`pointer-events-none fixed z-50 ${hover.above ? "-translate-y-full" : ""} w-80 rounded-lg border border-border bg-surface p-3 font-serif text-sm text-fg shadow-lg`}
-    >
-      {entry ? (
-        entry.verses.map((v) => (
-          <p key={v.verse}>
-            {range && <sup className="me-1 font-sans text-xs text-fg-muted">{v.verse}</sup>}
-            {v.text}
-          </p>
-        ))
-      ) : texts.isError ? (
-        <p className="text-fg-muted">{t("bible.sidePanel.previewError")}</p>
-      ) : (
-        <p className="text-fg-muted">{t("bible.sidePanel.previewLoading")}</p>
-      )}
-    </div>
+    <PassagePreviewCard
+      position={hover}
+      verses={entry?.verses}
+      error={texts.isError}
+      loading={!texts.isError}
+    />
   );
 }
 

@@ -4,6 +4,7 @@ import type {
   GetChapterCrossReferencesResponse,
   GetChapterOriginalsResponse,
   GetChapterTextResponse,
+  GetPassageTextResponse,
   GetStrongsOccurrencesResponse,
   GetStrongsSummaryResponse,
   GetVerseCrossReferenceTextsResponse,
@@ -13,6 +14,7 @@ import type {
   GetWordsOfChapterResponse,
   OriginalsLookupOptions,
   OriginalsLookupResponse,
+  ParseReferenceResponse,
   SearchVersesOptions,
   SearchVersesResponse,
   StrongsOccurrenceFilters,
@@ -111,6 +113,13 @@ export const bibleApi = {
     if (options.includeFrequent) query.set("includeFrequent", "true");
     return api.get<OriginalsLookupResponse>(`/elberfelder/search/originals?${query}`, signal);
   },
+  passageText: (spans: string, level = BASE_LEVEL, signal?: AbortSignal) =>
+    api.get<GetPassageTextResponse>(
+      `/passageText?${new URLSearchParams({ spans, level: String(level) })}`,
+      signal,
+    ),
+  parseReference: (q: string, signal?: AbortSignal) =>
+    api.get<ParseReferenceResponse>(`/references/parse?${new URLSearchParams({ q })}`, signal),
   searchVerses: (q: string, options: SearchVersesOptions = {}, signal?: AbortSignal) => {
     const query = new URLSearchParams({
       q,

@@ -48,6 +48,7 @@ EF migrations for BibleTagger (run in `src/UnshackledWord.Tooling.BibleTagger`):
 Layered projects under `src/`:
 
 - `Domain` – models (`Dbo/`, `Dbo/Step/`, `BibleStructure/`, `Grammar/`, `Dto/`, `Settings/`). `Domain.WebApi` – request/response contracts shared by API and BibleTagger client, grouped per feature.
+- `Domain/Models/BibleStructure/References/` – scripture references: alias catalogue (`BookAliasCatalog`), tokenizer, parser, German formatter, verse-counting map (`VerseCountingMap`/`VerseTables`), lexicon text scanner (`ScriptureScanner`); served by `api/references/parse` and `api/passageText`.
 - `Application` – abstractions (repository/importer interfaces, `Abstractions/Step`), repositories interfaces, `Features/` (e.g. Backup).
 - `Infrastructure` – repository implementations and services. `Persistence.Postgres` – Npgsql/connection setup.
 - `Tooling.Postgres.Migration` – runs the numbered raw SQL in `scripts/` (`0001_…sql` etc.) to create schema/tables; add new schema changes as a new numbered script.

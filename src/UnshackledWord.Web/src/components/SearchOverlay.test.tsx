@@ -24,12 +24,14 @@ function Where() {
 interface Stub {
   verses: (params: URLSearchParams) => Response;
   originals: (params: URLSearchParams) => Response;
+  parse: (params: URLSearchParams) => Response;
 }
 
 function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
   const handlers: Stub = {
     verses: () => json(fixtureVerseSearch),
     originals: () => json(fixtureOriginals),
+    parse: () => json({ references: [], bookCandidates: [] }),
     ...overrides,
   };
   const fetchMock = vi.fn(async (url: string) => {
@@ -38,6 +40,7 @@ function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
     if (path === "/meta-bible/structure") return json(fixtureStructure);
     if (path === "/revision/levels") return json(levels);
     if (path === "/elberfelder/search/verses") return handlers.verses(parsed.searchParams);
+    if (path === "/references/parse") return handlers.parse(parsed.searchParams);
     if (path === "/elberfelder/search/originals") return handlers.originals(parsed.searchParams);
     return new Response("", { status: 404 });
   });
@@ -460,5 +463,142 @@ describe("SearchOverlay originals", () => {
     for (const control of within(dialog).getAllByRole("combobox")) {
       expect(control).toHaveAccessibleName();
     }
+  });
+  describe("scripture references", () => {
+    const reference = (display: string, path: string, groups = [{ display, path }]) => ({
+      bookId: 66,
+      bookOnly: false,
+      display,
+      spans: [],
+      path,
+      groups,
+    });
+
+    it("shows the reference as a link, skips the full-text search and jumps with Enter", async () => {
+      const path = "/bible/66/2?v=1-5,7,9-10";
+      const fetchMock = stubFetch({
+        parse: () =>
+          json({ references: [reference("Off 2,1–5.7.9–10", path)], bookCandidates: [] }),
+      });
+      const user = userEvent.setup();
+      const router = setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: "Offb 2,1-5.7.9-10 " } });
+      expect(await screen.findByRole("link", { name: "Off 2,1–5.7.9–10" })).toHaveAttribute(
+        "href",
+        path,
+      );
+      expect(verseCalls(fetchMock)).toHaveLength(0);
+
+      await user.keyboard("{Enter}");
+      await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+      expect(router.state.location.pathname).toBe("/bible/66/2");
+      expect(router.state.location.search).toBe("?v=1-5,7,9-10");
+    });
+
+    it("jumps with Enter although the answer is not there yet", async () => {
+      stubFetch({
+        parse: () => json({ references: [reference("Off 2", "/bible/66/2")], bookCandidates: [] }),
+      });
+      const user = userEvent.setup();
+      const router = setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: "Offb 2" } });
+      fireEvent.keyDown(searchField(), { key: "Enter" });
+      await waitFor(() => expect(router.state.location.pathname).toBe("/bible/66/2"));
+    });
+
+    it("gives every chapter group its own link", async () => {
+      stubFetch({
+        parse: () =>
+          json({
+            references: [
+              reference("Röm 8,28; 12,1–2", "/bible/45/8?v=28", [
+                { display: "Röm 8,28", path: "/bible/45/8?v=28" },
+                { display: "12,1–2", path: "/bible/45/12?v=1-2" },
+              ]),
+            ],
+            bookCandidates: [],
+          }),
+      });
+      const user = userEvent.setup();
+      setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: "Röm 8,28; 12,1-2 " } });
+      const first = await screen.findByRole("link", { name: "Röm 8,28" });
+      expect(first).toHaveAttribute("href", "/bible/45/8?v=28");
+      expect(screen.getByRole("link", { name: "12,1–2" })).toHaveAttribute(
+        "href",
+        "/bible/45/12?v=1-2",
+      );
+    });
+
+    it("offers the candidates of an ambiguous book and puts the chosen one into the input", async () => {
+      const fetchMock = stubFetch({
+        parse: () =>
+          json({
+            references: [],
+            error: { code: "ambiguousBook", position: 0, args: { text: "Ma" } },
+            bookCandidates: [39, 40],
+          }),
+      });
+      const user = userEvent.setup();
+      setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: "Ma 1 " } });
+      await user.click(await screen.findByRole("button", { name: "Matthäus" }));
+      expect(searchField()).toHaveValue("Matthäus 1 ");
+      expect(screen.getByRole("button", { name: "Maleachi" })).toBeInTheDocument();
+      expect(verseCalls(fetchMock)).toHaveLength(0);
+    });
+
+    it("shows the error hint of a wrong reference and skips the full-text search", async () => {
+      const fetchMock = stubFetch({
+        parse: () =>
+          json({
+            references: [],
+            error: { code: "chapterOutOfRange", position: 5, args: { value: "23", max: "22" } },
+            bookCandidates: [],
+          }),
+      });
+      const user = userEvent.setup();
+      setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: "Offb 23 " } });
+      expect(
+        await screen.findByText("Kapitel 23 gibt es nicht (höchstens 22)."),
+      ).toBeInTheDocument();
+      expect(verseCalls(fetchMock)).toHaveLength(0);
+    });
+
+    it("keeps the full-text hits for a whole book and adds the book link", async () => {
+      const fetchMock = stubFetch({
+        parse: () =>
+          json({
+            references: [{ bookId: 19, bookOnly: true, display: "Psalmen", spans: [], groups: [] }],
+            bookCandidates: [],
+          }),
+      });
+      const user = userEvent.setup();
+      setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: "Psalmen " } });
+      expect(await screen.findByRole("link", { name: "Zu Psalmen 1" })).toHaveAttribute(
+        "href",
+        "/bible/19/1",
+      );
+      expect(await screen.findByRole("listbox", { name: "Treffer" })).toBeInTheDocument();
+      expect(verseCalls(fetchMock).length).toBeGreaterThan(0);
+    });
+
+    it("shows no reference card for plain words", async () => {
+      stubFetch();
+      const user = userEvent.setup();
+      setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: "ging " } });
+      expect(await screen.findByRole("listbox", { name: "Treffer" })).toBeInTheDocument();
+      expect(screen.queryByRole("list", { name: "Bibelstellen" })).not.toBeInTheDocument();
+    });
   });
 });

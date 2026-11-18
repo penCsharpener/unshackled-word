@@ -14,7 +14,7 @@ public class BibleReferenceParserTests
     [InlineData("1Mo 1,1-2,3", 1001001, 1002003)]
     [InlineData("1. Mose 1,1", 1001001, 1001001)]
     [InlineData("1 Kor. 13,4", 46013004, 46013004)]
-    [InlineData("Jud 3", 65003000, 65003999)]
+    [InlineData("Jud 3", 65001003, 65001003)]
     [InlineData("Offb 22,21", 66022021, 66022021)]
     public void Parse_ValidReference(string input, int start, int end)
     {
