@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+/*
+ * SBL BibLit is not distributed with this repo (licence). Self-hosters drop the TTFs into ./fonts/sbl
+ * (bind-mounted to /fonts/sbl). If a file is missing the request 404s and the browser silently falls
+ * back to the next family in --font-original. local() also picks the font up when it is installed on the OS.
+ */
+@font-face {
+  font-family: "SBL BibLit";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    local("SBL BibLit"),
+    url("/fonts/sbl/SBL_BibLit.ttf") format("truetype");
+}
+
 /* Design tokens. Components use only these semantic names (bg-surface, text-fg, ...), never raw colors. */
 :root {
   /* Mobile: menu row (14) + word-info row (12); from md the info sits in the menu row. */

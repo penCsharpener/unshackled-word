@@ -415,3 +415,7 @@ temp/*
 package-lock.json
 
 compose.override.yml
+
+# Optional self-hosted fonts (licence: not redistributable)
+/fonts/*
+!/fonts/README.md

@@ -126,6 +126,7 @@ services:
       - ./src/UnshackledWord.Web:/app
       - unshackled_web_node_modules:/app/node_modules
       - ./Components.md:/Components.md:ro
+      - ./fonts:/app/public/fonts:ro   # optional SBL fonts in ./fonts/sbl (not distributed, see fonts/README.md)
 
 volumes:
   unshackled_postgres:
