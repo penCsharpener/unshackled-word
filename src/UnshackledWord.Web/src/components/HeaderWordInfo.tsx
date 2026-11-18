@@ -50,31 +50,39 @@ function WordInfoBody({
   if (stacked) {
     return (
       <div className={`flex min-w-0 flex-col gap-1 leading-tight ${className}`} aria-live="off">
-        <p lang={lang} dir={dir} className="w-full font-original text-xl text-fg">
+        <p
+          lang={lang}
+          dir={dir}
+          className={`w-full font-original text-fg ${dir === "rtl" ? "text-3xl" : "text-2xl"}`}
+        >
           {info.original}
         </p>
         {showLemma && (
-          <p className="w-full text-sm text-fg-muted">
+          <p className="w-full text-base text-fg-muted">
             {t("bible.mapping.headerInfo.lemma")}
-            <span lang={lang} dir={dir} className="block font-original">
+            <span
+              lang={lang}
+              dir={dir}
+              className={`block font-original ${dir === "rtl" ? "text-2xl" : "text-xl"}`}
+            >
               {info.lemma}
             </span>
           </p>
         )}
         {(info.strongs || morphology) && (
-          <p className="w-full text-xs text-fg-muted" dir="ltr">
+          <p className="w-full text-base text-fg-muted" dir="ltr">
             {info.strongs && <StrongsLink value={info.strongs} />}
             {info.strongs && morphology && " · "}
             {morphology}
           </p>
         )}
         {info.gloss && (
-          <p lang="en" className="w-full text-sm text-fg">
+          <p lang="en" className="w-full text-lg text-fg">
             {info.gloss}
           </p>
         )}
         {info.definition && (
-          <p lang="en" className="w-full text-xs text-fg-muted">
+          <p lang="en" className="w-full text-base text-fg-muted">
             <ScriptureText text={info.definition} segments={info.definitionSegments} />
           </p>
         )}

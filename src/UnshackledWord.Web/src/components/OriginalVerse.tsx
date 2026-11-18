@@ -100,7 +100,11 @@ export function OriginalVerse({
   if (variant === "margin") {
     return (
       <>
-        <p dir={isRtl ? "rtl" : "ltr"} lang={lang} className="font-original text-lg leading-snug">
+        <p
+          dir={isRtl ? "rtl" : "ltr"}
+          lang={lang}
+          className={`font-original leading-snug ${isRtl ? "text-3xl" : "text-2xl"}`}
+        >
           {words.map((word) => {
             const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
             const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";

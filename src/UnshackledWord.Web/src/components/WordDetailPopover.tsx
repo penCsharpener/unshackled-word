@@ -245,7 +245,7 @@ function ReadingSection({
         </div>
       )}
       {reading.lexicon?.definition && (
-        <details className="mt-2 text-sm">
+        <details className="mt-2 text-lg">
           <summary className="cursor-pointer text-fg-muted">{label("definition")}</summary>
           <p lang="en" className="mt-1">
             <ScriptureText
