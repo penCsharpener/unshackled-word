@@ -25,12 +25,19 @@ export function PassagePreviewCard({
     <div
       role="tooltip"
       data-testid="cross-reference-preview"
+      popover="manual"
       ref={(element) => {
         // measured pixel position: the only value that cannot be a design token
         element?.style.setProperty("left", `${position.x}px`);
         element?.style.setProperty("top", `${position.y}px`);
+        // top layer: escapes ancestors that act as the containing block of `fixed` and stays above native popovers
+        try {
+          if (element && !element.matches(":popover-open")) element.showPopover();
+        } catch {
+          // no popover support (jsdom, old browsers): the plain fixed card is shown
+        }
       }}
-      className={`pointer-events-none fixed z-50 ${position.above ? "-translate-y-full" : ""} w-80 rounded-lg border border-border bg-surface p-3 font-serif text-base text-fg shadow-lg`}
+      className={`pointer-events-none fixed inset-auto m-0 h-fit overflow-visible z-50 ${position.above ? "-translate-y-full" : ""} w-80 rounded-lg border border-border bg-surface p-3 font-serif text-base text-fg shadow-lg`}
     >
       {title ? <p className="mb-1 font-sans font-medium">{title}</p> : null}
       {verses ? (

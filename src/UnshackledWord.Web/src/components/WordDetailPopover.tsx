@@ -42,6 +42,8 @@ export interface WordDetailPopoverProps {
    */
   variant?: "popover" | "margin";
   pinned?: boolean;
+  /** the verse of the word: with it the cross references show the target text on hover */
+  verse?: { bookId: number; chapter: number; verse: number; level: number };
 }
 
 const LANG_TAG: Record<OriginalLanguage, string> = { greek: "grc", hebrew: "he", aramaic: "arc" };
@@ -272,6 +274,7 @@ export function WordDetailPopover({
   onEditMapping,
   variant = "popover",
   pinned = true,
+  verse,
 }: WordDetailPopoverProps) {
   const { t } = useTranslation();
   const headingId = useId();
@@ -422,6 +425,7 @@ export function WordDetailPopover({
           references={detail.crossReferences}
           truncated={detail.crossReferencesTruncated}
           books={books}
+          preview={verse}
         />
       )}
       {success && pinned && (

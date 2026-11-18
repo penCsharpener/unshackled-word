@@ -19,7 +19,7 @@ export interface CrossReferenceListProps {
   /** `details` only: the verse has more references than listed */
   truncated?: boolean;
   /**
-   * `inline` only: the verse the references belong to. With it a hover or focus on a link shows the text of the
+   * The verse the references belong to. With it a hover or focus on a link shows the text of the
    * target; the texts of all references of the verse come in one request and are cached for the page.
    */
   preview?: { bookId: number; chapter: number; verse: number; level: number };
@@ -77,7 +77,7 @@ export function CrossReferenceList({
   const [hover, setHover] = useState<Hover | null>(null);
   const show = (r: CrossReference, element: HTMLElement) => {
     if (!preview) return;
-    const rect = element.getBoundingClientRect();
+    const rect = element.getClientRects()[0] ?? element.getBoundingClientRect();
     const above = rect.bottom + 160 > window.innerHeight && rect.top > window.innerHeight / 2;
     setHover({
       key: keyOf(r),
@@ -168,11 +168,20 @@ export function CrossReferenceList({
       <ul className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
         {references.map((r) => (
           <li key={keyOf(r)}>
-            <Link to={to(r)} className="text-accent underline">
+            <Link
+              to={to(r)}
+              onFocus={(event) => show(r, event.currentTarget)}
+              onBlur={hide}
+              onMouseEnter={(event) => show(r, event.currentTarget)}
+              onMouseLeave={hide}
+              onKeyDown={(event) => event.key === "Escape" && hide()}
+              className="text-accent underline"
+            >
               {label(r, false)}
             </Link>
           </li>
         ))}
+        {hover && preview && <PreviewCard hover={hover} preview={preview} />}
       </ul>
       {truncated && (
         <p className="mt-1 text-xs text-fg-muted">{t("bible.wordDetail.crossReferencesMore")}</p>

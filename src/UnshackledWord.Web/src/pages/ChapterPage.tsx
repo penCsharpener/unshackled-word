@@ -541,6 +541,16 @@ export function ChapterPage() {
       onRetry={() => detail.refetch()}
       onClose={close}
       variant={margin ? "margin" : "popover"}
+      verse={
+        ref && selectedVerse
+          ? {
+              bookId: ref.bookId,
+              chapter: ref.chapter,
+              verse: selectedVerse.verse,
+              level: reader.level,
+            }
+          : undefined
+      }
       onEditMapping={() => {
         if (selectedVerse) openEditor(selectedVerse.verse, triggerRef.current);
       }}
