@@ -13,6 +13,8 @@ export interface DonutSlice {
   value: number;
   /** Emphasised in the legend and ring without dimming the others. */
   highlight?: boolean;
+  /** Extra legend columns (e.g. lemma, total use); when any slice has them the legend aligns like a table. */
+  columns?: ReactNode[];
 }
 
 export interface DonutChartProps {
@@ -82,6 +84,8 @@ export function DonutChart({
   const emphasised = active?.key ?? shown.find((s) => s.highlight)?.key;
   const interactive = onSelectSlice !== undefined;
   const showTable = !interactive && sliceHref === undefined;
+
+  const columnCount = Math.max(0, ...shown.map((s) => s.columns?.length ?? 0));
 
   const toggle = (key: string) => onSelectSlice?.(activeKey === key ? null : key);
 
@@ -154,7 +158,11 @@ export function DonutChart({
           </div>
         </div>
 
-        <ul className="grid gap-1" aria-hidden={showTable ? true : undefined}>
+        <ul
+          className="donut-legend grid gap-1"
+          data-columns={columnCount > 0 ? columnCount : undefined}
+          aria-hidden={showTable ? true : undefined}
+        >
           {shown.map((slice, i) => {
             const selectable = interactive && slice.key !== OTHER_KEY;
             return (
@@ -185,6 +193,12 @@ export function DonutChart({
                 ) : (
                   <span className="donut-slice-label">{slice.label}</span>
                 )}
+                {Array.from({ length: columnCount }, (_, c) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: fixed column positions
+                  <span key={c} className="donut-slice-cell">
+                    {slice.columns?.[c]}
+                  </span>
+                ))}
                 <span className="donut-slice-count">
                   {t("chart.donut.slice", {
                     count: formatNumber(slice.value, language),

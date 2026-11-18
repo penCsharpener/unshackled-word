@@ -1162,6 +1162,13 @@
     }
   }
 
+  /* Strong's page donuts: the two testament boxes are 40% wider than the translations box. */
+  @container (width >= 72rem) {
+    .strongs-donuts {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.4fr);
+    }
+  }
+
   /* DonutChart: ring is an SVG circle per slice (pathLength 100), legend beside it. */
   .donut-body {
     display: grid;
@@ -1252,6 +1259,27 @@
 
   .donut-slice .chart-swatch {
     align-self: center;
+  }
+
+  /* Table legend (slices with extra columns): swatch | label | lemma | detail | count, rows share the columns. */
+  .donut-legend[data-columns="2"] {
+    grid-template-columns: auto auto auto minmax(0, 1fr) auto;
+    column-gap: calc(var(--spacing) * 2);
+  }
+
+  .donut-legend[data-columns="2"] .donut-slice {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+  }
+
+  .donut-legend[data-columns="2"] .donut-slice-count {
+    text-align: right;
+  }
+
+  .donut-slice-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .donut-slice-label {

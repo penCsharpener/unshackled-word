@@ -51,19 +51,17 @@ function originalSlice(
     text: original.gloss ? `${name} – ${original.gloss}` : name,
     value: original.count,
     highlight: shown,
-    label: (
-      <>
-        <span className="font-medium">{original.strongs}</span>
-        {original.lemma ? (
-          <>
-            {" "}
-            <OriginalText language={original.language}>{original.lemma}</OriginalText>
-          </>
-        ) : null}
-        {original.gloss ? <span className="text-fg-muted"> – {original.gloss}</span> : null}
-        <span className="text-fg-muted"> · {ofTotalUse}</span>
-      </>
-    ),
+    label: <span className="font-medium">{original.strongs}</span>,
+    columns: [
+      original.lemma ? (
+        <OriginalText key="lemma" language={original.language}>
+          {original.lemma}
+        </OriginalText>
+      ) : null,
+      <span key="total" className="text-fg-muted">
+        {ofTotalUse}
+      </span>,
+    ],
   };
 }
 
@@ -201,6 +199,7 @@ function WordStatsDonut({
           </>
         ) : undefined
       }
+      sliceHref={(strongs) => `/bible/strongs/${encodeURIComponent(strongs)}`}
       slices={data.originals.map((original) =>
         originalSlice(
           original,
@@ -379,7 +378,7 @@ export function StrongsStatsHeader({
                 {t("bible.stats.donut.unmapped", { count: summary.unmappedCount })}
               </EmptyState>
             ) : (
-              <div className="grid gap-4 @3xl:grid-cols-2 @6xl:grid-cols-3">
+              <div className="strongs-donuts grid gap-4 @3xl:grid-cols-2">
                 <DonutChart
                   title={
                     <>
