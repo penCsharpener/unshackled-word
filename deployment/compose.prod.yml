@@ -39,6 +39,9 @@ services:
       mailpit: !reset null
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      # Required: the base compose.yml falls back to http://localhost:5173, which put localhost links into the emails.
+      # Compose refuses to start the API while FRONTEND_BASE_URL is unset in .env.
+      - UNSHACKLEDWORD_APP__FRONTENDBASEURL=${FRONTEND_BASE_URL:?set FRONTEND_BASE_URL in .env to the public https origin}
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true   # trust X-Forwarded-Proto/-For from the proxies
       - UNSHACKLEDWORD_REVERSEPROXY__FORWARDLIMIT=2  # two hops: NPM -> unshackledword-web (nginx) -> API
     volumes:
