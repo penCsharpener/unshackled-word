@@ -278,6 +278,15 @@ export interface AgentLemmaDiff {
   changed: boolean;
 }
 
+/** A word of the verse with its live lemma; `proposed` = the proposal changes it. */
+export interface AgentVerseLemma {
+  elbWordId: number;
+  german: string;
+  lemma?: string;
+  stts?: string;
+  proposed: boolean;
+}
+
 /** One link change of a lemma-mode proposal; `before*` = stored when the package was built. */
 export interface AgentRoleDiff {
   elbWordId: number;
@@ -334,6 +343,8 @@ export interface AgentProposalDiff {
   /** The live links with their role fields (older API: absent, then the diff links are used). */
   currentLinks?: VerseMappingLink[];
   lemmaChanges: AgentLemmaDiff[];
+  /** Every word of the verse with its live lemma (older API: absent). */
+  verseLemmas?: AgentVerseLemma[];
   /** Lemma mode only (empty otherwise). */
   roleChanges?: AgentRoleDiff[];
   flags: AgentFlagDiff[];

@@ -361,6 +361,9 @@ public class AgentReviewServiceTests
         lemma.CurrentLemma.ShouldBe("gehn");
         lemma.Lemma.ShouldBe("gehen");
         lemma.Changed.ShouldBeFalse();
+        diff.VerseLemmas.ShouldNotBeEmpty();
+        diff.VerseLemmas.Single(v => v.ElbWordId == 105).Proposed.ShouldBeTrue();
+        diff.VerseLemmas.Where(v => v.ElbWordId != 105).ShouldAllBe(v => !v.Proposed);
         diff.AiUserId.ShouldBe(AiUser);
     }
 

@@ -2020,6 +2020,10 @@ export const en: Translation = {
         skip: "Do not merge",
         changedLive: "changed live",
         changedHint: "The proposal started from “{{before}}”.",
+        verseTitle: "All lemmas of the verse",
+        verseHint: "Highlighted words are changed by this proposal; check the others for lemmas that were wrong before.",
+        proposed: "changed",
+        proposedTo: "→ {{lemma}}",
       },
       roles: {
         title: "Role and morpheme changes",

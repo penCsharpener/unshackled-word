@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - unshackled_postgres:/var/lib/postgresql
+      - ./temp/postgres-data:/var/lib/postgresql
 
   unshackledword.tooling.db-migration:
     #image: unshackledword.migration.postgres
@@ -51,10 +51,11 @@ services:
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
+    user: "1000:1000"
     ports:
       - "7654:8080"
-    # The maintainer seed page (menu "Wartung") writes assets/seed and temp/seed-report: both folders must be writable for the container user
-    # (default UID 1654; or add `user: "1000:1000"` like the seed container). Not verified in a compose run yet.
+    # The maintainer seed page (menu "Wartung") writes assets/seed and temp/seed-report: both folders must be writable for the container user,
+    # so it runs as 1000:1000 like the seed container (default would be UID 1654). Not verified in a compose run yet.
     volumes:
       - ./assets:/src/assets
       - ./temp:/src/temp
@@ -129,5 +130,4 @@ services:
       - ./fonts:/app/public/fonts:ro   # optional SBL fonts in ./fonts/sbl (not distributed, see fonts/README.md)
 
 volumes:
-  unshackled_postgres:
   unshackled_web_node_modules:

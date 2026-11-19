@@ -2053,6 +2053,10 @@ export const de = {
         skip: "Nicht übernehmen",
         changedLive: "live geändert",
         changedHint: "Der Vorschlag ging von „{{before}}“ aus.",
+        verseTitle: "Alle Lemmata des Verses",
+        verseHint: "Hervorgehobene Wörter ändert dieser Vorschlag; prüfe die übrigen auf Lemmata, die schon vorher falsch waren.",
+        proposed: "geändert",
+        proposedTo: "→ {{lemma}}",
       },
       roles: {
         title: "Rollen- und Morphemänderungen",

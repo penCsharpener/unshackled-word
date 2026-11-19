@@ -171,8 +171,19 @@ public sealed class AgentReviewService : IAgentReviewService
         response.Stale = stale is not null;
         response.StaleReason = stale;
 
-        var currentLemmas = (await _lemmas.GetVerseAsync(record.BibleBookId, record.Chapter, record.Verse, token)).ToDictionary(r => r.WordId);
-        foreach (var change in ParseLemmas(record))
+        var verseRows = await _lemmas.GetVerseAsync(record.BibleBookId, record.Chapter, record.Verse, token);
+        var currentLemmas = verseRows.ToDictionary(r => r.WordId);
+        var lemmaChanges = ParseLemmas(record);
+        var proposedIds = lemmaChanges.Select(c => c.ElbWordId).ToHashSet();
+        response.VerseLemmas.AddRange(verseRows.OrderBy(r => r.PositionInVerse).Select(r => new AgentVerseLemmaDto
+        {
+            ElbWordId = r.WordId,
+            German = germanText.GetValueOrDefault(r.WordId, r.WordInContext),
+            Lemma = r.Lemma,
+            Stts = r.Stts,
+            Proposed = proposedIds.Contains(r.WordId),
+        }));
+        foreach (var change in lemmaChanges)
         {
             currentLemmas.TryGetValue(change.ElbWordId, out var row);
             response.LemmaChanges.Add(new AgentLemmaDiffDto

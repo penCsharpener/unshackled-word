@@ -92,6 +92,18 @@ public sealed class AgentLemmaDiffDto
     public bool Changed { get; set; }
 }
 
+/// <summary>One German word of the verse with its live lemma, so a review can spot a wrong lemma the proposal left alone.</summary>
+public sealed class AgentVerseLemmaDto
+{
+    public int ElbWordId { get; set; }
+    public string German { get; set; } = string.Empty;
+    public string? Lemma { get; set; }
+    public string? Stts { get; set; }
+
+    /// <summary>The proposal changes this word's lemma (it is also in <see cref="AgentProposalDiffResponse.LemmaChanges"/>).</summary>
+    public bool Proposed { get; set; }
+}
+
 /// <summary>One link change of a lemma-mode proposal; <c>Before*</c> = stored when the package was built, <c>Current*</c> = live now.</summary>
 public sealed class AgentRoleDiffDto
 {
@@ -170,6 +182,9 @@ public sealed class AgentProposalDiffResponse
     public List<VerseMappingLink> CurrentLinks { get; set; } = [];
 
     public List<AgentLemmaDiffDto> LemmaChanges { get; set; } = [];
+
+    /// <summary>Every word of the verse in reading order with its live lemma; the words in <see cref="LemmaChanges"/> are marked.</summary>
+    public List<AgentVerseLemmaDto> VerseLemmas { get; set; } = [];
 
     /// <summary>Run mode <c>lemma</c> (roadmap 0018): role, morpheme, multi-head and part-lemma changes of links, and links that become added words.</summary>
     public List<AgentRoleDiffDto> RoleChanges { get; set; } = [];

@@ -21,6 +21,7 @@ import {
   type AgentLemmaDiff,
   type AgentProposalDiff,
   type AgentRoleDiff,
+  type AgentVerseLemma,
   proposalTone,
 } from "@/lib/agent/types";
 import { ApiError, describeApiErrors } from "@/lib/api";
@@ -164,6 +165,70 @@ function LemmaTable({
                       </Button>
                     </td>
                   ) : null}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/** All words of the verse with their live lemma; the ones the proposal changes are highlighted and show the new lemma. */
+function VerseLemmaTable({
+  words,
+  changes,
+}: {
+  words: AgentVerseLemma[];
+  changes: AgentLemmaDiff[];
+}) {
+  const { t } = useTranslation();
+  const proposed = useMemo(() => new Map(changes.map((c) => [c.elbWordId, c])), [changes]);
+  if (words.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-2">
+      <h3 className="text-sm font-semibold">{t("agent.proposals.lemmas.verseTitle")}</h3>
+      <p className="text-xs text-fg-muted">{t("agent.proposals.lemmas.verseHint")}</p>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <caption className="sr-only">{t("agent.proposals.lemmas.verseTitle")}</caption>
+          <thead className="text-fg-muted">
+            <tr className="border-b border-border">
+              {["word", "old", "stts"].map((column) => (
+                <th key={column} scope="col" className="px-2 py-1 font-medium">
+                  {t(`agent.proposals.lemmas.${column}`)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {words.map((word) => {
+              const change = word.proposed ? proposed.get(word.elbWordId) : undefined;
+              return (
+                <tr
+                  key={word.elbWordId}
+                  data-proposed={word.proposed ? "true" : undefined}
+                  className={`border-b border-border align-top ${word.proposed ? "border-s-2 border-s-sev-warning bg-surface" : ""}`}
+                >
+                  <th scope="row" className="whitespace-nowrap px-2 py-1 font-medium" lang="de">
+                    {word.german}
+                  </th>
+                  <td className="px-2 py-1">
+                    {word.lemma ?? "–"}
+                    {change ? (
+                      <span className="ms-2">
+                        <strong>{t("agent.proposals.lemmas.proposedTo", { lemma: change.lemma })}</strong>{" "}
+                        <StatusBadge tone="warning">{t("agent.proposals.lemmas.proposed")}</StatusBadge>
+                      </span>
+                    ) : null}
+                  </td>
+                  <td className="px-2 py-1">
+                    {word.stts ?? "–"}
+                    {change?.stts && change.stts !== word.stts ? (
+                      <strong> → {change.stts}</strong>
+                    ) : null}
+                  </td>
                 </tr>
               );
             })}
@@ -577,6 +642,7 @@ function ReviewBody({ diff, reference, onDone, onEditingChange }: ReviewBodyProp
           />
           <RoleTable changes={roleChanges} originalWords={diff.originalWords} />
           <LemmaTable changes={diff.lemmaChanges} />
+          <VerseLemmaTable words={diff.verseLemmas ?? []} changes={diff.lemmaChanges} />
         </>
       )}
 
