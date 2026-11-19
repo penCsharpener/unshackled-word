@@ -12,7 +12,7 @@ public static partial class TranslitFolding
 {
     private static readonly char[] Dropped = ['.', '-', 'ʼ', 'ʽ', '\'', '’', '‘', '`'];
 
-    /// <summary>Lower case → Normalize(FormD) → drop non-spacing marks → drop separators → ς→σ.</summary>
+    /// <summary>Lower case → Normalize(FormD) → drop non-spacing marks → drop separators → ς→σ and the Hebrew final forms to their regular letters.</summary>
     public static string Fold(string? input)
     {
         if (string.IsNullOrWhiteSpace(input)) return string.Empty;
@@ -27,10 +27,29 @@ public static partial class TranslitFolding
         {
             if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark) continue;
             if (Array.IndexOf(Dropped, c) >= 0) continue;
-            sb.Append(c == 'ς' ? 'σ' : c);
+            sb.Append(c switch
+            {
+                'ς' => 'σ',
+                'ך' => 'כ',
+                'ם' => 'מ',
+                'ן' => 'נ',
+                'ף' => 'פ',
+                'ץ' => 'צ',
+                _ => c,
+            });
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// <see cref="Fold"/> for Greek / Hebrew words as typed or printed: also drops everything that is no letter or digit
+    /// (maqaf, sof pasuq, paseq, Greek ano teleia and question mark, punctuation) except spaces. Hebrew final forms and ς are normalised by <see cref="Fold"/>.
+    /// </summary>
+    public static string FoldScript(string? input)
+    {
+        var folded = Fold(input);
+        return folded.Length == 0 ? folded : string.Concat(folded.Where(c => char.IsLetterOrDigit(c) || c == ' '));
     }
 
     /// <summary>Folded text with the Latin equivalences applied, so that "Phaneros" and "faneros", "wayyiqra" and "vayyiqra" meet.</summary>

@@ -541,6 +541,37 @@ export interface OriginalsLookupOptions {
   includeFrequent?: boolean;
 }
 
+/** Smart-search lookup of Hebrew / Greek words (`search/sourcewords`), roadmap 0019. */
+export interface SourceWordRef {
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+}
+export interface SourceWordForm {
+  /** The form as printed, with diacritics. */
+  form: string;
+  occurrences: number;
+  refs: SourceWordRef[];
+}
+export interface SourceWordLemma {
+  /** "G1577", "H430". */
+  strongs: string;
+  language: Exclude<OriginalLanguage, "aramaic">;
+  lemma: string;
+  transliteration: string;
+  gloss: string;
+  occurrences: number;
+  matchedBy: "strongs" | "script" | "translit" | "skeleton" | "gloss" | "form";
+  forms: SourceWordForm[];
+}
+export interface SourceWordsToken {
+  token: string;
+  lemmas: SourceWordLemma[];
+}
+export interface SourceWordsResponse {
+  tokens: SourceWordsToken[];
+}
+
 export interface VerseSearchToken {
   text: string;
   matched: boolean;

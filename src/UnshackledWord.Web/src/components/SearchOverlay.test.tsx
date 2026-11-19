@@ -10,6 +10,7 @@ import { fixtureStructure } from "@/test/fixtures/bibleStructure";
 import {
   fixtureOriginals,
   fixtureOriginalsFrequent,
+  fixtureSourceWords,
   fixtureVerseSearch,
 } from "@/test/fixtures/verseSearch";
 import { AppShell } from "./AppShell";
@@ -24,6 +25,7 @@ function Where() {
 interface Stub {
   verses: (params: URLSearchParams) => Response;
   originals: (params: URLSearchParams) => Response;
+  sourceWords: (params: URLSearchParams) => Response;
   parse: (params: URLSearchParams) => Response;
 }
 
@@ -31,6 +33,7 @@ function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
   const handlers: Stub = {
     verses: () => json(fixtureVerseSearch),
     originals: () => json(fixtureOriginals),
+    sourceWords: () => json(fixtureSourceWords),
     parse: () => json({ references: [], bookCandidates: [] }),
     ...overrides,
   };
@@ -42,6 +45,8 @@ function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
     if (path === "/elberfelder/search/verses") return handlers.verses(parsed.searchParams);
     if (path === "/references/parse") return handlers.parse(parsed.searchParams);
     if (path === "/elberfelder/search/originals") return handlers.originals(parsed.searchParams);
+    if (path === "/elberfelder/search/sourcewords")
+      return handlers.sourceWords(parsed.searchParams);
     return new Response("", { status: 404 });
   });
   vi.stubGlobal("fetch", fetchMock);
@@ -439,6 +444,109 @@ describe("SearchOverlay originals", () => {
       fetchMock.mock.calls.filter(([u]) => String(u).includes("/search/originals")).at(-1)?.[0],
     );
     expect(new URL(url, "http://x").searchParams.get("q")).toBe("ging hin Gott");
+  });
+
+  describe("source words", () => {
+    const sourceCalls = (fetchMock: ReturnType<typeof stubFetch>) =>
+      fetchMock.mock.calls.filter(([url]) => String(url).includes("/search/sourcewords"));
+    const originalsCalls = (fetchMock: ReturnType<typeof stubFetch>) =>
+      fetchMock.mock.calls.filter(([url]) => String(url).includes("/search/originals"));
+
+    it("looks up Greek script as source words, shows the lemma card with its forms and does not ask the German lookup", async () => {
+      const fetchMock = stubFetch();
+      const { user, router } = await openWith("λογου ");
+
+      const card = await screen.findByRole("article", { name: /G3056/ });
+      expect(within(card).getByRole("link", { name: "G3056" })).toHaveAttribute(
+        "href",
+        "/bible/strongs/G3056",
+      );
+      const lemma = within(card).getByText("λόγος");
+      expect(lemma).toHaveAttribute("lang", "el");
+      expect(lemma).toHaveAttribute("dir", "ltr");
+      expect(within(card).getByText("word")).toBeInTheDocument();
+      expect(within(card).getByText("330 Vorkommen")).toBeInTheDocument();
+      expect(within(card).getByText("λόγου")).toHaveAttribute("lang", "el");
+      expect(within(card).getByRole("link", { name: "Mt 5,1" })).toHaveAttribute(
+        "href",
+        "/bible/40/5#v1",
+      );
+      const url = String(sourceCalls(fetchMock).at(-1)?.[0]);
+      expect(new URL(url, "http://x").searchParams.get("q")).toBe("λογου");
+      expect(originalsCalls(fetchMock)).toHaveLength(0);
+
+      await user.click(within(card).getByRole("link", { name: "G3056" }));
+      await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+      expect(router.state.location.pathname).toBe("/bible/strongs/G3056");
+    });
+
+    it("renders Hebrew lemmas right to left", async () => {
+      stubFetch({
+        sourceWords: () =>
+          json({
+            tokens: [
+              {
+                token: "מלך",
+                lemmas: [
+                  {
+                    strongs: "H4428",
+                    language: "hebrew",
+                    lemma: "מֶלֶךְ",
+                    transliteration: "melek",
+                    gloss: "king",
+                    occurrences: 2523,
+                    matchedBy: "script",
+                    forms: [],
+                  },
+                ],
+              },
+            ],
+          }),
+      });
+      await openWith("מלך ");
+
+      const lemma = await screen.findByText("מֶלֶךְ");
+      expect(lemma).toHaveAttribute("lang", "he");
+      expect(lemma).toHaveAttribute("dir", "rtl");
+    });
+
+    it("splits a mixed query: script and Strong's numbers go to the source lookup, the German words to the originals lookup", async () => {
+      const fetchMock = stubFetch();
+      await openWith("ging θεός G3056 h430 ");
+
+      await screen.findByRole("article", { name: /G3056/ });
+      await screen.findByRole("figure", { name: "ging → gehen, Verb" });
+      expect(
+        new URL(String(sourceCalls(fetchMock).at(-1)?.[0]), "http://x").searchParams.get("q"),
+      ).toBe("θεός G3056 h430");
+      expect(
+        new URL(String(originalsCalls(fetchMock).at(-1)?.[0]), "http://x").searchParams.get("q"),
+      ).toBe("ging");
+      expect(
+        screen.getByRole("heading", { name: "Griechische und hebräische Wörter" }),
+      ).toBeInTheDocument();
+    });
+
+    it("keeps German words on the originals lookup only", async () => {
+      const fetchMock = stubFetch();
+      await openWith("ging ");
+      await screen.findByRole("figure", { name: "ging → gehen, Verb" });
+      expect(sourceCalls(fetchMock)).toHaveLength(0);
+    });
+
+    it("says when nothing was found and when the statistics are missing", async () => {
+      stubFetch({ sourceWords: () => json({ tokens: [{ token: "ωωω", lemmas: [] }] }) });
+      await openWith("ωωω ");
+      expect(
+        await screen.findByText("Zu diesen Grundtextwörtern wurde nichts gefunden."),
+      ).toBeInTheDocument();
+    });
+
+    it("shows the missing-statistics note on a 503", async () => {
+      stubFetch({ sourceWords: () => new Response("", { status: 503 }) });
+      await openWith("G3056 ");
+      expect(await screen.findByText("Statistik noch nicht berechnet")).toBeInTheDocument();
+    });
   });
 
   it("switches between the verse and the original text view with the tab buttons", async () => {

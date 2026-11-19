@@ -36,6 +36,16 @@ public sealed class StrongsLexiconIndex
         _scopeFactory = scopeFactory;
     }
 
+    /// <summary>An index over ready-made entries (no database); the tests build the source word search on it.</summary>
+    public static StrongsLexiconIndex FromEntries(IEnumerable<LexiconEntry> entries)
+    {
+        var index = new StrongsLexiconIndex(null!);
+        var byKey = entries.ToDictionary(e => e.Key, StringComparer.Ordinal);
+        index._all = [.. byKey.Values.OrderBy(e => e.Key, StringComparer.Ordinal)];
+        index._byKey = byKey;
+        return index;
+    }
+
     private const string SelectLexicon = """
         SELECT l."LanguageId"                AS "LanguageId"
              , l."Number"                    AS "Number"
@@ -92,7 +102,7 @@ public sealed class StrongsLexiconIndex
                     Lemma = chosen.OriginalWord ?? string.Empty,
                     Transliteration = translit,
                     Gloss = chosen.Gloss ?? string.Empty,
-                    FoldedScript = TranslitFolding.Fold(allScript),
+                    FoldedScript = TranslitFolding.FoldScript(allScript),
                     FoldedTranslit = string.Join(' ', translits.Select(TranslitFolding.Latin)),
                     Skeleton = string.Join(' ', translits.Select(TranslitFolding.Skeleton)),
                     GlossWords = glossText.ToLowerInvariant().Split([' ', ',', ';', '(', ')', '/', '-', '.', '?', '!'], StringSplitOptions.RemoveEmptyEntries),
@@ -147,7 +157,7 @@ public sealed class StrongsLexiconIndex
         // 1. Strong's number
         Add(TranslitFolding.ParseStrongs(q).Select(k => _byKey!.GetValueOrDefault(k)).OfType<LexiconEntry>(), "strongs");
 
-        var folded = TranslitFolding.Fold(q);
+        var folded = TranslitFolding.FoldScript(q);
         if (folded.Length == 0) return hits;
 
         // 2. Greek / Hebrew script without diacritics

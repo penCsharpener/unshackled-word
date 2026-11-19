@@ -1752,6 +1752,13 @@ export const en: Translation = {
       total_other: "{{count, number}} occurrences",
       centerLabel: "mappings",
     },
+    sourceWords: {
+      heading: "Greek and Hebrew words",
+      none: "Nothing was found for these original-language words.",
+      forms: "Matching forms",
+      times_one: "{{count, number}}×",
+      times_other: "{{count, number}}×",
+    },
   },
   agent: {
     status: {

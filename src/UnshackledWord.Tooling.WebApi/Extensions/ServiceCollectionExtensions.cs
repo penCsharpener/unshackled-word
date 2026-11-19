@@ -39,6 +39,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Endpoints.Revision.BulkReplaceSearch.BulkReplaceSearchService>();
         services.AddHostedService<Endpoints.Lemmas.Stts.SttsDriftCheck>();
         services.AddSingleton<Endpoints.DataQuality.StrongsLexiconIndex>();
+        services.AddSingleton<Endpoints.Elberfelder.Search.SourceWords.SourceFormIndex>();
+        services.AddScoped<Endpoints.Elberfelder.Search.SourceWords.ISourceWordRefs, Endpoints.Elberfelder.Search.SourceWords.SourceWordRefs>();
+        services.AddScoped<Endpoints.Elberfelder.Search.SourceWords.ISourceWordSearchService, Endpoints.Elberfelder.Search.SourceWords.SourceWordSearchService>();
         services.AddSingleton<Endpoints.DataQuality.DqRefreshCoordinator>();
         services.AddSingleton<UnshackledWord.Application.Features.StrongsStats.IStatsRefreshStatus>(sp => sp.GetRequiredService<Endpoints.DataQuality.DqRefreshCoordinator>());
         services.AddScoped<Endpoints.DataQuality.IDqFactsRepository, Endpoints.DataQuality.DqFactsRepository>();

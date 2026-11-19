@@ -17,6 +17,7 @@ import type {
   ParseReferenceResponse,
   SearchVersesOptions,
   SearchVersesResponse,
+  SourceWordsResponse,
   StrongsOccurrenceFilters,
   VerseMappingLink,
   WordStatsTestament,
@@ -112,6 +113,11 @@ export const bibleApi = {
     if (options.top !== undefined) query.set("top", String(options.top));
     if (options.includeFrequent) query.set("includeFrequent", "true");
     return api.get<OriginalsLookupResponse>(`/elberfelder/search/originals?${query}`, signal);
+  },
+  sourceWordsLookup: (q: string, limit?: number, signal?: AbortSignal) => {
+    const query = new URLSearchParams({ q });
+    if (limit !== undefined) query.set("limit", String(limit));
+    return api.get<SourceWordsResponse>(`/elberfelder/search/sourcewords?${query}`, signal);
   },
   passageText: (spans: string, level = BASE_LEVEL, signal?: AbortSignal) =>
     api.get<GetPassageTextResponse>(

@@ -1,4 +1,8 @@
-import type { OriginalsLookupResponse, SearchVersesResponse } from "@/lib/bible/types";
+import type {
+  OriginalsLookupResponse,
+  SearchVersesResponse,
+  SourceWordsResponse,
+} from "@/lib/bible/types";
 
 const words = (text: string, matched: string[]) =>
   text.split(" ").map((word) => ({ text: word, matched: matched.includes(word) }));
@@ -112,6 +116,36 @@ export const fixtureOriginalsFrequent: OriginalsLookupResponse = {
               count: 9000,
               share: 1,
               totalCount: 9000,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+/** Contract fixture of `GET api/elberfelder/search/sourcewords` for `λογου`: the inflected form leads to its lemma. */
+export const fixtureSourceWords: SourceWordsResponse = {
+  tokens: [
+    {
+      token: "λογου",
+      lemmas: [
+        {
+          strongs: "G3056",
+          language: "greek",
+          lemma: "λόγος",
+          transliteration: "logos",
+          gloss: "word",
+          occurrences: 330,
+          matchedBy: "form",
+          forms: [
+            {
+              form: "λόγου",
+              occurrences: 120,
+              refs: [
+                { bibleBookId: 40, chapter: 5, verse: 1 },
+                { bibleBookId: 66, chapter: 10, verse: 9 },
+              ],
             },
           ],
         },

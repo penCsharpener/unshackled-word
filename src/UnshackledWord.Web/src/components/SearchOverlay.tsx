@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ApiError, describeApiError } from "@/lib/api";
-import { bookName } from "@/lib/bible/books";
+import { bookAbbreviation, bookName } from "@/lib/bible/books";
 import { structureQuery } from "@/lib/bible/queries";
 import {
   firstReferencePath,
@@ -11,15 +11,19 @@ import {
   useReferenceParse,
   viewOfParse,
 } from "@/lib/bible/referenceParse";
+import { splitSourceWords, useSourceWordsLookup } from "@/lib/bible/sourceWords";
 import {
   isLookupQuery,
   originalTextAttributes,
   useOriginalsLookup,
 } from "@/lib/bible/strongsStats";
 import type {
+  BibleStructureBook,
   OriginalLanguage,
   OriginalsLookupLemma,
   OriginalsLookupOriginal,
+  SourceWordForm,
+  SourceWordLemma,
 } from "@/lib/bible/types";
 import {
   isVerseSearchQuery,
@@ -136,15 +140,165 @@ function LemmaBlock({
   );
 }
 
-/** The originals column: per query word the Greek / Hebrew words it is mapped to, from the stats snapshot. */
-function OriginalsPanel({ query, onNavigate }: { query: string; onNavigate: () => void }) {
+const linkClasses = "text-accent underline";
+
+/** One inflected form with its occurrences and a few verses it stands in. */
+function SourceFormItem({
+  form,
+  language,
+  books,
+  appLanguage,
+  onNavigate,
+}: {
+  form: SourceWordForm;
+  language: OriginalLanguage;
+  books: BibleStructureBook[];
+  appLanguage: string;
+  onNavigate: () => void;
+}) {
   const { t } = useTranslation();
-  const words = originalsQueryOf(query);
+  return (
+    <li className="flex flex-wrap items-baseline gap-x-2 text-sm">
+      <span className="text-base">
+        <OriginalText language={language}>{form.form}</OriginalText>
+      </span>
+      <span className="text-fg-muted">
+        {t("search.sourceWords.times", { count: form.occurrences })}
+      </span>
+      {form.refs.map((ref) => {
+        const book = books.find((b) => b.id === ref.bibleBookId);
+        const label = `${book ? bookAbbreviation(book, appLanguage) : ref.bibleBookId} ${ref.chapter},${ref.verse}`;
+        return (
+          <Link
+            key={`${ref.bibleBookId}:${ref.chapter}:${ref.verse}`}
+            to={`/bible/${ref.bibleBookId}/${ref.chapter}#v${ref.verse}`}
+            className={linkClasses}
+            onClick={onNavigate}
+          >
+            {label}
+          </Link>
+        );
+      })}
+    </li>
+  );
+}
+
+/** One Hebrew / Greek lemma of the source word lookup: Strong's link, lemma in the original font, gloss, occurrences, matching forms. */
+function SourceLemmaCard({
+  lemma,
+  books,
+  appLanguage,
+  onNavigate,
+}: {
+  lemma: SourceWordLemma;
+  books: BibleStructureBook[];
+  appLanguage: string;
+  onNavigate: () => void;
+}) {
+  const { t } = useTranslation();
+  const headingId = useId();
+  return (
+    <article
+      aria-labelledby={headingId}
+      className="grid content-start gap-2 rounded-lg border border-border bg-surface p-4"
+    >
+      <h4 id={headingId} className="flex flex-wrap items-baseline gap-x-2 font-semibold">
+        <Link
+          to={`/bible/strongs/${encodeURIComponent(lemma.strongs)}`}
+          className={linkClasses}
+          onClick={onNavigate}
+        >
+          {lemma.strongs}
+        </Link>
+        <span className="font-scripture text-lg">
+          <OriginalText language={lemma.language}>{lemma.lemma}</OriginalText>
+        </span>
+        {lemma.transliteration ? (
+          <span className="text-sm font-normal text-fg-muted">{lemma.transliteration}</span>
+        ) : null}
+      </h4>
+      {lemma.gloss ? <p className="text-sm">{lemma.gloss}</p> : null}
+      <p className="text-sm text-fg-muted">
+        {t("search.originals.total", { count: lemma.occurrences })}
+      </p>
+      {lemma.forms.length > 0 ? (
+        <ul aria-label={t("search.sourceWords.forms")} className="grid gap-1">
+          {lemma.forms.map((form) => (
+            <SourceFormItem
+              key={form.form}
+              form={form}
+              language={lemma.language}
+              books={books}
+              appLanguage={appLanguage}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </ul>
+      ) : null}
+    </article>
+  );
+}
+
+/** Hebrew / Greek words and Strong's numbers of the query: the lemmas they name or inflect from, with the matching forms. */
+function SourceWordsSection({
+  words,
+  books,
+  appLanguage,
+  onNavigate,
+}: {
+  words: string;
+  books: BibleStructureBook[];
+  appLanguage: string;
+  onNavigate: () => void;
+}) {
+  const { t } = useTranslation();
+  const lookup = useSourceWordsLookup(words);
+
+  if (lookup.isError) {
+    if (lookup.error instanceof ApiError && lookup.error.status === 503) {
+      return (
+        <EmptyState title={t("search.originals.notReady")}>
+          {t("search.originals.notReadyHint")}
+        </EmptyState>
+      );
+    }
+    return (
+      <EmptyState>
+        <div role="alert" className="grid justify-items-start gap-2">
+          <p>{describeApiError(lookup.error, t("search.originals.error"))}</p>
+          <Button variant="secondary" size="sm" onClick={() => lookup.refetch()}>
+            {t("search.retry")}
+          </Button>
+        </div>
+      </EmptyState>
+    );
+  }
+  if (!lookup.data) return <EmptyState>{t("search.originals.loading")}</EmptyState>;
+
+  const lemmas = lookup.data.tokens.flatMap((token) =>
+    token.lemmas.map((lemma) => ({ token: token.token, lemma })),
+  );
+  if (lemmas.length === 0) return <EmptyState>{t("search.sourceWords.none")}</EmptyState>;
+  return (
+    <div className="grid gap-4">
+      {lemmas.map(({ token, lemma }) => (
+        <SourceLemmaCard
+          key={`${token}|${lemma.strongs}`}
+          lemma={lemma}
+          books={books}
+          appLanguage={appLanguage}
+          onNavigate={onNavigate}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** German query words: per word the Greek / Hebrew words it is mapped to, from the stats snapshot. */
+function GermanOriginals({ words, onNavigate }: { words: string; onNavigate: () => void }) {
+  const { t } = useTranslation();
   const lookup = useOriginalsLookup(words);
 
-  if (words === "" || !isLookupQuery(words)) {
-    return <EmptyState>{t("search.originals.prompt")}</EmptyState>;
-  }
   if (lookup.isError) {
     if (lookup.error instanceof ApiError && lookup.error.status === 503) {
       return (
@@ -180,6 +334,49 @@ function OriginalsPanel({ query, onNavigate }: { query: string; onNavigate: () =
           />
         )),
       )}
+    </div>
+  );
+}
+
+/**
+ * The originals column. A query with Hebrew / Greek script or Strong's numbers looks those words up as source
+ * words (lemmas and matching forms); the remaining words are German and keep the per-word originals lookup.
+ */
+function OriginalsPanel({
+  query,
+  books,
+  appLanguage,
+  onNavigate,
+}: {
+  query: string;
+  books: BibleStructureBook[];
+  appLanguage: string;
+  onNavigate: () => void;
+}) {
+  const { t } = useTranslation();
+  const { source, german } = splitSourceWords(originalsQueryOf(query));
+  const hasGerman = german !== "" && isLookupQuery(german);
+  if (source === "" && !hasGerman) {
+    return <EmptyState>{t("search.originals.prompt")}</EmptyState>;
+  }
+  return (
+    <div className="grid gap-4">
+      {source !== "" ? (
+        <section aria-label={t("search.sourceWords.heading")} className="grid gap-3">
+          {hasGerman ? (
+            <h4 className="text-sm font-semibold text-fg-muted">
+              {t("search.sourceWords.heading")}
+            </h4>
+          ) : null}
+          <SourceWordsSection
+            words={source}
+            books={books}
+            appLanguage={appLanguage}
+            onNavigate={onNavigate}
+          />
+        </section>
+      ) : null}
+      {hasGerman ? <GermanOriginals words={german} onNavigate={onNavigate} /> : null}
     </div>
   );
 }
@@ -413,7 +610,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       <h3 className="text-sm font-semibold text-fg-muted max-lg:hidden">
         {t("search.originals.heading")}
       </h3>
-      <OriginalsPanel query={query} onNavigate={onClose} />
+      <OriginalsPanel query={query} books={books} appLanguage={language} onNavigate={onClose} />
     </section>
   );
 
