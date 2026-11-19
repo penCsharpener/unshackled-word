@@ -1780,6 +1780,13 @@ export const de = {
       total_other: "{{count, number}} Vorkommen",
       centerLabel: "Zuordnungen",
     },
+    sourceWords: {
+      heading: "Griechische und hebräische Wörter",
+      none: "Zu diesen Grundtextwörtern wurde nichts gefunden.",
+      forms: "Gefundene Formen",
+      times_one: "{{count, number}}×",
+      times_other: "{{count, number}}×",
+    },
   },
   agent: {
     status: {

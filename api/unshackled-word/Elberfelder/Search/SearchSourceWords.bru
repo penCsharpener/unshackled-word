@@ -1,0 +1,21 @@
+meta {
+  name: SearchSourceWords
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}elberfelder/search/sourcewords?q=λογου G3056 מלך&limit=8
+  body: none
+  auth: none
+}
+
+params:query {
+  q: λογου G3056 מלך
+  limit: 8
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

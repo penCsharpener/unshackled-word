@@ -31,6 +31,25 @@ function LinkedStrongs({ text }: { text: string }) {
       // biome-ignore lint/suspicious/noArrayIndexKey: static split of one string
       <StrongsLink key={index} value={part} />
     ) : (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static split of one string
+      <OriginalRuns key={index} text={part} />
+    ),
+  );
+}
+
+const ORIGINAL_RUN =
+  /([\u0590-\u05FF\uFB1D-\uFB4F][\u0590-\u05FF\uFB1D-\uFB4F\s\u2066-\u2069]*|[\u0370-\u03FF\u1F00-\u1FFF][\u0370-\u03FF\u1F00-\u1FFF\s\u2066-\u2069]*)/u;
+const GREEK_START = /^[\u0370-\u03FF\u1F00-\u1FFF]/u;
+
+/** Plain text with every Hebrew and Greek run in a `lang` span of the `original-text` class (original-text font and size). */
+function OriginalRuns({ text }: { text: string }) {
+  return text.split(ORIGINAL_RUN).map((part, index) =>
+    index % 2 === 1 ? (
+      // biome-ignore lint/suspicious/noArrayIndexKey: static split of one string
+      <span key={index} lang={GREEK_START.test(part) ? "grc" : "he"} className="original-text">
+        {part}
+      </span>
+    ) : (
       part
     ),
   );

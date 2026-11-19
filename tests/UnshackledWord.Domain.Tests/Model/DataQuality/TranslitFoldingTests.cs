@@ -16,6 +16,22 @@ public class TranslitFoldingTests
         TranslitFolding.Fold(input).ShouldBe(expected);
 
     [Theory]
+    [InlineData("מֶלֶךְ", "מלכ")]
+    [InlineData("מלך", "מלכ")]
+    [InlineData("אֶרֶץ", "ארצ")]
+    public void Fold_normalises_the_hebrew_final_forms(string input, string expected) =>
+        TranslitFolding.Fold(input).ShouldBe(expected);
+
+    [Theory]
+    [InlineData("ἀγάπη,", "αγαπη")]
+    [InlineData("τί;", "τι")]
+    [InlineData("ἀγάπη·", "αγαπη")]
+    [InlineData("אֶת־הָאָרֶץ", "אתהארצ")]
+    [InlineData("λόγος θεός", "λογοσ θεοσ")]
+    public void FoldScript_also_drops_punctuation_but_keeps_spaces(string input, string expected) =>
+        TranslitFolding.FoldScript(input).ShouldBe(expected);
+
+    [Theory]
     [InlineData("Phaneros", "faneros")]
     [InlineData("wayyiqra", "vayyiqra")]
     [InlineData("khesed", "chesed")]
