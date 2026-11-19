@@ -216,6 +216,7 @@ export function OriginalVerse({
                 setInfo({
                   original: word.original,
                   strongs: word.strongs,
+                  morphology: word.morphology,
                   morphologyCode: word.morphologyCode,
                   language: data.language,
                 });

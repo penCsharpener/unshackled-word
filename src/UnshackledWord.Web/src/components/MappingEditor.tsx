@@ -59,6 +59,7 @@ import {
   wordStatus,
 } from "@/lib/bible/mappingEditor";
 import { useReverseGerman } from "@/lib/bible/mappingOrder";
+import { formatMorphology } from "@/lib/bible/morphology";
 import type { GetVerseMappingResponse, VerseMappingLink } from "@/lib/bible/types";
 import { useCoarsePointer } from "@/lib/useCoarsePointer";
 import { Button } from "./Button";
@@ -685,7 +686,14 @@ export function MappingEditor({
             {o.original}
           </span>{" "}
           <span dir="ltr">
-            {[o.lemma, o.strongs, o.morphologyCode, o.gloss].filter(Boolean).join(" · ")}
+            {[
+              o.lemma,
+              o.strongs,
+              o.morphology ? formatMorphology(o.morphology, t) : o.morphologyCode,
+              o.gloss,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
           </span>
           {edgesOf(work, "o", id).length === 0 && (
             <span className="text-fg-muted"> · {t("bible.mapping.info.originalUnmapped")}</span>

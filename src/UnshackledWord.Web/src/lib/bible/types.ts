@@ -451,7 +451,7 @@ export interface VerseMappingOriginalWord {
   strongs?: string;
   gloss?: string; // English
   morphologyCode?: string;
-  /** decoded `morphologyCode`; only in the chapter originals response */
+  /** decoded `morphologyCode`; chapter originals and verse mapping responses */
   morphology?: Morphology;
   /** Hebrew only (verse mapping): the morphemes of the word in order (וַיֹּאמֶר = H9001 + H0559), punctuation left out. */
   morphemes?: VerseMappingMorpheme[];

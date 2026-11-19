@@ -2041,6 +2041,8 @@ export const de = {
       merging: "Wird übernommen …",
       edit: "Bearbeiten",
       discard: "Verwerfen",
+      openMapping: "Zuordnungseditor",
+      openLemmas: "Lemma-Editor",
       needsEdit:
         "Ein Lemma wurde seit dem Vorschlag live geändert. Übernehmen geht nur über Bearbeiten.",
       saveEdited: "Bearbeitet übernehmen",
@@ -2061,7 +2063,8 @@ export const de = {
         changedLive: "live geändert",
         changedHint: "Der Vorschlag ging von „{{before}}“ aus.",
         verseTitle: "Alle Lemmata des Verses",
-        verseHint: "Hervorgehobene Wörter ändert dieser Vorschlag; prüfe die übrigen auf Lemmata, die schon vorher falsch waren.",
+        verseHint:
+          "Hervorgehobene Wörter ändert dieser Vorschlag; prüfe die übrigen auf Lemmata, die schon vorher falsch waren.",
         proposed: "geändert",
         proposedTo: "→ {{lemma}}",
       },

@@ -2008,6 +2008,8 @@ export const en: Translation = {
       merging: "Merging …",
       edit: "Edit",
       discard: "Discard",
+      openMapping: "Mapping editor",
+      openLemmas: "Lemma editor",
       needsEdit:
         "A lemma was changed live since the proposal. Merging is only possible through Edit.",
       saveEdited: "Merge edited",
@@ -2028,7 +2030,8 @@ export const en: Translation = {
         changedLive: "changed live",
         changedHint: "The proposal started from “{{before}}”.",
         verseTitle: "All lemmas of the verse",
-        verseHint: "Highlighted words are changed by this proposal; check the others for lemmas that were wrong before.",
+        verseHint:
+          "Highlighted words are changed by this proposal; check the others for lemmas that were wrong before.",
         proposed: "changed",
         proposedTo: "→ {{lemma}}",
       },

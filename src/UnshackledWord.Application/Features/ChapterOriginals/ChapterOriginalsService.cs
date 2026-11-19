@@ -1,5 +1,6 @@
 using UnshackledWord.Application.Features.ScriptureReferences;
 using UnshackledWord.Application.Features.VerseCounting;
+using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.Models.Study;
@@ -53,7 +54,7 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
                     Lemma = w.Lemma,
                     Strongs = w.Strongs,
                     MorphologyCode = w.MorphologyCode,
-                    Morphology = Decode(hebrew, w.MorphologyCode),
+                    Morphology = MorphologyResponses.Decode(hebrew, w.MorphologyCode),
                 }).ToList(),
                 Links = linksByVerse.GetValueOrDefault(g.Key) ?? [],
             })
@@ -110,29 +111,4 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
         return result;
     }
 
-    private static MorphologyResponse? Decode(bool hebrew, string? code)
-    {
-        if (string.IsNullOrWhiteSpace(code))
-        {
-            return null;
-        }
-
-        var keys = hebrew ? HebrewMorphologyDecoder.Decode(code).Root : GreekMorphologyDecoder.Decode(code);
-        return new MorphologyResponse
-        {
-            Code = code.Trim(),
-            PartOfSpeech = keys.PartOfSpeech,
-            Tense = keys.Tense,
-            Voice = keys.Voice,
-            Mood = keys.Mood,
-            Person = keys.Person,
-            Case = keys.Case,
-            Number = keys.Number,
-            Gender = keys.Gender,
-            Degree = keys.Degree,
-            Stem = keys.Stem,
-            HebrewForm = keys.HebrewForm,
-            State = keys.State,
-        };
-    }
 }

@@ -1,7 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/Button";
+import { Link } from "react-router";
+import { Button, buttonClasses } from "@/components/Button";
 import { Dialog } from "@/components/Dialog";
 import { FormError } from "@/components/FormError";
 import { MappingEditor } from "@/components/MappingEditor";
@@ -33,7 +34,7 @@ import type {
   VerseMappingOriginalWord,
 } from "@/lib/bible/types";
 import { formatStamp } from "@/lib/format";
-import { buildLabels } from "@/lib/lemmas/labels";
+import { buildLabels, type Labels } from "@/lib/lemmas/labels";
 import { useLemmaValueMaps } from "@/lib/lemmas/queries";
 import { buildStts } from "@/lib/lemmas/stts";
 
@@ -47,6 +48,13 @@ export function reviewProblems(error: unknown, t: (key: string) => string): stri
     if (error.status === 400 && messages.length > 0) return messages;
   }
   return messages.length > 0 ? messages : [t("agent.proposals.error.failed")];
+}
+
+/** STTS tag with its full name as hover tip. */
+function SttsTag({ labels, code }: { labels: Labels; code: string | null | undefined }) {
+  if (!code) return <>–</>;
+  const option = labels.stts?.find((o) => o.value === code);
+  return <span title={option ? `${option.label} (${code})` : undefined}>{code}</span>;
 }
 
 interface LemmaEdit {
@@ -73,7 +81,7 @@ function LemmaTable({
   onEdit?: (id: number, edit: LemmaEdit) => void;
 }) {
   const { t, i18n } = useTranslation();
-  const maps = useLemmaValueMaps(edits !== undefined);
+  const maps = useLemmaValueMaps(true);
   const labels = useMemo(() => buildLabels(maps.data, i18n.language), [maps.data, i18n.language]);
   const stts = useMemo(() => buildStts(maps.data, labels), [maps.data, labels]);
   if (changes.length === 0) return null;
@@ -109,7 +117,10 @@ function LemmaTable({
                   <td className="px-2 py-1">
                     {change.currentLemma ?? "–"}
                     {change.currentStts ? (
-                      <span className="text-fg-muted"> · {change.currentStts}</span>
+                      <span className="text-fg-muted">
+                        {" · "}
+                        <SttsTag labels={labels} code={change.currentStts} />
+                      </span>
                     ) : null}
                     {change.changed ? (
                       <p className="mt-1">
@@ -151,7 +162,7 @@ function LemmaTable({
                         options={[{ value: "", label: "–" }, ...options]}
                       />
                     ) : (
-                      (change.stts ?? "–")
+                      <SttsTag labels={labels} code={change.stts} />
                     )}
                   </td>
                   {edit && onEdit ? (
@@ -183,7 +194,9 @@ function VerseLemmaTable({
   words: AgentVerseLemma[];
   changes: AgentLemmaDiff[];
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const maps = useLemmaValueMaps(true);
+  const labels = useMemo(() => buildLabels(maps.data, i18n.language), [maps.data, i18n.language]);
   const proposed = useMemo(() => new Map(changes.map((c) => [c.elbWordId, c])), [changes]);
   if (words.length === 0) return null;
   return (
@@ -218,15 +231,22 @@ function VerseLemmaTable({
                     {word.lemma ?? "–"}
                     {change ? (
                       <span className="ms-2">
-                        <strong>{t("agent.proposals.lemmas.proposedTo", { lemma: change.lemma })}</strong>{" "}
-                        <StatusBadge tone="warning">{t("agent.proposals.lemmas.proposed")}</StatusBadge>
+                        <strong>
+                          {t("agent.proposals.lemmas.proposedTo", { lemma: change.lemma })}
+                        </strong>{" "}
+                        <StatusBadge tone="warning">
+                          {t("agent.proposals.lemmas.proposed")}
+                        </StatusBadge>
                       </span>
                     ) : null}
                   </td>
                   <td className="px-2 py-1">
-                    {word.stts ?? "–"}
+                    <SttsTag labels={labels} code={word.stts} />
                     {change?.stts && change.stts !== word.stts ? (
-                      <strong> → {change.stts}</strong>
+                      <strong>
+                        {" → "}
+                        <SttsTag labels={labels} code={change.stts} />
+                      </strong>
                     ) : null}
                   </td>
                 </tr>
@@ -539,6 +559,18 @@ function ReviewBody({ diff, reference, onDone, onEditingChange }: ReviewBodyProp
           {t("agent.proposals.discard")}
           <Kbd>d</Kbd>
         </Button>
+        <Link
+          to={`/bible/${diff.book}/${diff.chapter}?map=${diff.verse}#v${diff.verse}`}
+          className={buttonClasses({ variant: "ghost" })}
+        >
+          {t("agent.proposals.openMapping")}
+        </Link>
+        <Link
+          to={`/edit/lemmas/${diff.book}/${diff.chapter}`}
+          className={buttonClasses({ variant: "ghost" })}
+        >
+          {t("agent.proposals.openLemmas")}
+        </Link>
       </div>
       {open && liveChangedLemma ? (
         <p className="text-sm text-fg-muted">{t("agent.proposals.needsEdit")}</p>
