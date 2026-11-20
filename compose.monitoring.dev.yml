@@ -1,0 +1,21 @@
+# Development tweaks for the monitoring layer. Throwaway values only, nothing here is secret.
+# Start (from the repo root; compose.override.yml is picked up automatically only when no -f is given, so list it):
+#   docker compose --env-file .env --env-file .env.monitoring.dev \
+#     -f compose.yml -f compose.override.yml -f compose.monitoring.yml -f compose.monitoring.dev.yml up -d
+# Then once, against the dev database (migration 0036 must have run):
+#   ALTER ROLE uw_monitor LOGIN PASSWORD 'dev-exporter';
+#   ALTER ROLE uw_grafana LOGIN PASSWORD 'dev-grafana';
+#   CREATE ROLE umami LOGIN PASSWORD 'dev-umami';
+#   CREATE DATABASE umami OWNER umami;
+# Restart the database container once afterwards (pg_stat_statements needs shared_preload_libraries).
+# Grafana: http://localhost:3000 (admin / dev-admin), Uptime Kuma: http://localhost:3001, Umami: http://localhost:3002 (admin / umami).
+
+services:
+  # Light dev footprint: keep metrics for a week only.
+  unshackledword.monitoring:
+    environment:
+      - PROMETHEUS_EXTRA_ARGS=--storage.tsdb.retention.time=7d
+      - GF_USERS_DEFAULT_THEME=dark
+    # Mails from alert rules land in mailpit (http://localhost:8025).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
