@@ -5,6 +5,7 @@ import { AuthCard } from "@/components/AuthCard";
 import { Button } from "@/components/Button";
 import { FormError } from "@/components/FormError";
 import { TextField } from "@/components/TextField";
+import { track } from "@/lib/analytics";
 import { ApiError, isRateLimited, rateLimitMessage } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { passkeysApi } from "@/lib/auth/api";
@@ -60,6 +61,7 @@ export function SignInPage() {
       const credential = await getPasskeyAssertion(options);
       await passkeysApi.login(flowId, credential);
       await refresh();
+      track("login", {});
       navigate("/");
     } catch (err) {
       setPasskeyError(

@@ -5,6 +5,7 @@ using Serilog;
 using UnshackledWord.Application.Features.AgentMapping;
 using UnshackledWord.Domain.WebApi.Maintainer;
 using UnshackledWord.Infrastructure.Extensions;
+using UnshackledWord.Infrastructure.Observability;
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Persistence.Postgres.Extensions;
 
@@ -22,12 +23,15 @@ namespace UnshackledWord.Tooling.AgentWorker;
 /// </summary>
 public partial class Program
 {
+    private const string ServiceName = "unshackledword-agentworker";
+
     public static async Task<int> Main(string[] args)
     {
         var builder = Host.CreateApplicationBuilder(args);
         builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
         AddLocalSecrets(builder.Configuration);
-        builder.Services.AddSerilog((_, logger) => logger.ReadFrom.Configuration(builder.Configuration));
+        builder.Services.AddSerilog((_, logger) => logger.ReadFrom.Configuration(builder.Configuration).WriteToTelemetry(builder.Configuration, ServiceName));
+        builder.AddUnshackledTelemetry(ServiceName);
         builder.Services.AddPostgresPersistence();
         builder.Services.AddInfrastructureServices();
         builder.Services.AddRepositories();

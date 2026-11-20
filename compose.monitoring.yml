@@ -1,0 +1,102 @@
+# Opt-in monitoring layer (telemetry, Grafana/Loki/Tempo/Prometheus, uptime, web analytics).
+# Start with: docker compose -f compose.yml -f compose.monitoring.yml up -d
+# All published ports bind 127.0.0.1 only. Copy the variables from .env.monitoring.example into .env.
+#
+# One-time role and database setup (see docs/deployment.md "Monitoring"), run against the database:
+#   ALTER ROLE uw_monitor LOGIN PASSWORD '...';
+#   ALTER ROLE uw_grafana LOGIN PASSWORD '...';
+#   CREATE ROLE umami LOGIN PASSWORD '...';
+#   CREATE DATABASE umami OWNER umami;
+
+services:
+  unshackledword.tooling.database:
+    # pg_stat_statements needs a DB restart once after adding this command.
+    command: ["postgres", "-c", "shared_preload_libraries=pg_stat_statements"]
+
+  unshackledword.tooling.webapi:
+    environment:
+      - UNSHACKLEDWORD_TELEMETRY__ENABLED=${TELEMETRY_ENABLED:-true}
+      # In dev the webapi runs with host networking, so set TELEMETRY_OTLP_ENDPOINT=http://localhost:4317 in .env.
+      - UNSHACKLEDWORD_TELEMETRY__OTLPENDPOINT=${TELEMETRY_OTLP_ENDPOINT:-http://unshackledword.monitoring:4317}
+      - UNSHACKLEDWORD_TELEMETRY__TRACESAMPLERATIO=${TELEMETRY_TRACE_SAMPLE_RATIO:-1.0}
+
+  unshackledword.tooling.mcpserver:
+    environment:
+      - UNSHACKLEDWORD_TELEMETRY__ENABLED=${TELEMETRY_ENABLED:-true}
+      - UNSHACKLEDWORD_TELEMETRY__OTLPENDPOINT=${TELEMETRY_OTLP_ENDPOINT:-http://unshackledword.monitoring:4317}
+      - UNSHACKLEDWORD_TELEMETRY__TRACESAMPLERATIO=${TELEMETRY_TRACE_SAMPLE_RATIO:-1.0}
+
+  unshackledword.web:
+    environment:
+      # Vite dev proxy target for Umami (/stats), reached from the web container.
+      - UMAMI_PROXY_TARGET=${UMAMI_PROXY_TARGET:-http://host.docker.internal:3002}
+
+  unshackledword.monitoring:
+    image: grafana/otel-lgtm:0.41.1
+    container_name: unshackledword-monitoring
+    restart: unless-stopped
+    depends_on:
+      - unshackledword.tooling.database
+    ports:
+      - "127.0.0.1:3000:3000" # Grafana
+      - "127.0.0.1:4317:4317" # OTLP gRPC (loopback only, needed by the host-network dev API)
+      - "127.0.0.1:4318:4318" # OTLP HTTP
+    volumes:
+      - ./temp/monitoring/lgtm:/data
+      - ./deploy/monitoring/otelcol-config.yaml:/otel-lgtm/otelcol-config.yaml:ro
+      - ./deploy/monitoring/loki-config.yaml:/otel-lgtm/loki-config.yaml:ro
+      - ./deploy/monitoring/tempo-config.yaml:/otel-lgtm/tempo-config.yaml:ro
+      - ./deploy/monitoring/grafana/provisioning/datasources/uw-datasources.yaml:/otel-lgtm/grafana/conf/provisioning/datasources/uw-datasources.yaml:ro
+      - ./deploy/monitoring/grafana/provisioning/dashboards/uw-dashboards.yaml:/otel-lgtm/grafana/conf/provisioning/dashboards/uw-dashboards.yaml:ro
+      - ./deploy/monitoring/grafana/provisioning/alerting/uw-alerting.yaml:/otel-lgtm/grafana/conf/provisioning/alerting/uw-alerting.yaml:ro
+      - ./deploy/monitoring/grafana/dashboards:/otel-lgtm/uw-dashboards:ro
+    environment:
+      - PROMETHEUS_EXTRA_ARGS=--storage.tsdb.retention.time=30d
+      - MONITORING_DB_HOST=unshackledword.tooling.database:5432
+      - MONITORING_DB_NAME=${POSTGRES_DB:-postgres}
+      - MONITORING_GRAFANA_DB_PASSWORD=${MONITORING_GRAFANA_DB_PASSWORD:-}
+      - MONITORING_ALERT_EMAIL=${MONITORING_ALERT_EMAIL:-alerts@unshackled-word.local}
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD in .env}
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost:3000}
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=${EMAIL_SMTP_HOST:-mailpit}:${EMAIL_SMTP_PORT:-1025}
+      - GF_SMTP_USER=${EMAIL_USERNAME:-}
+      - GF_SMTP_PASSWORD=${EMAIL_PASSWORD:-}
+      - GF_SMTP_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-noreply@unshackled-word.local}
+      - GF_SMTP_FROM_NAME=Unshackled Word Monitoring
+      - GF_SMTP_STARTTLS_POLICY=${GRAFANA_SMTP_STARTTLS_POLICY:-NoStartTLS}
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.21.1
+    restart: unless-stopped
+    command: ["--collector.stat_statements", "--collector.stat_statements.include_query"]
+    environment:
+      - DATA_SOURCE_NAME=postgresql://uw_monitor:${MONITORING_EXPORTER_DB_PASSWORD:-}@unshackledword.tooling.database:5432/${POSTGRES_DB:-postgres}?sslmode=disable
+    depends_on:
+      - unshackledword.tooling.database
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:2.5.12
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - ./temp/monitoring/kuma:/app/data
+    # Lets dev monitors reach the host-network API.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  umami:
+    image: ghcr.io/umami-software/umami:3.5.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:3000"
+    environment:
+      - DATABASE_URL=postgresql://umami:${UMAMI_DB_PASSWORD:-}@unshackledword.tooling.database:5432/umami
+      - APP_SECRET=${UMAMI_APP_SECRET:?set UMAMI_APP_SECRET in .env}
+      - DISABLE_TELEMETRY=1
+    # The proxy strips the /stats prefix, so /stats/script.js becomes /script.js and /stats/api/send becomes /api/send (Umami defaults).
+    depends_on:
+      - unshackledword.tooling.database

@@ -23,6 +23,7 @@ import { MarginStack } from "@/components/MarginStack";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { RevisionEditor } from "@/components/RevisionEditor";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
+import { track, trackRevisionLevel } from "@/lib/analytics";
 import { ApiError, describeApiErrors } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
@@ -403,6 +404,15 @@ export function ChapterPage() {
     setReviseVerse(undefined);
   }, [bookId, chapterNumber]);
 
+  const testament = books?.find((b) => b.id === bookId)?.testament;
+  const trackedChapter = useRef("");
+  useEffect(() => {
+    const key = `${bookId}:${chapterNumber}`;
+    if (!testament || trackedChapter.current === key) return;
+    trackedChapter.current = key;
+    track("chapter-open", { testament });
+  }, [bookId, chapterNumber, testament]);
+
   useEffect(() => {
     if (verses.isSuccess && next) {
       void queryClient.prefetchQuery(chapterWordsQuery(next.bookId, next.chapter, reader.level));
@@ -568,7 +578,10 @@ export function ChapterPage() {
           <LevelSlider
             levels={reader.levels}
             value={reader.level}
-            onChange={reader.setLevel}
+            onChange={(level) => {
+              reader.setLevel(level);
+              trackRevisionLevel(level);
+            }}
             label={t("bible.revision.levelSlider")}
           />
         </div>

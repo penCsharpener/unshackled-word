@@ -34,12 +34,22 @@ public static class RateLimitingExtensions
 
         var general = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         {
+            if (RateLimitPartitioner.IsExemptPath(context.Request.Path.Value))
+            {
+                return RateLimitPartition.GetNoLimiter("health");
+            }
+
             var key = RateLimitPartitioner.GeneralKey(IsAuthenticated(context), RemoteIp(context));
             return Partition(key, settings.Value.General, context, logger, ref unknownLogged);
         });
 
         var strict = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         {
+            if (RateLimitPartitioner.IsExemptPath(context.Request.Path.Value))
+            {
+                return RateLimitPartition.GetNoLimiter("health");
+            }
+
             var key = RateLimitPartitioner.StrictKey(IsAuthenticated(context), GroupOf(context), RemoteIp(context));
             return Partition(key, settings.Value.Strict, context, logger, ref unknownLogged);
         });

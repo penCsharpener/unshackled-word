@@ -12,7 +12,7 @@ export const en: Translation = {
     signIn: "Sign in",
     reload: "Reload",
   },
-  nav: { about: "About" },
+  nav: { about: "About", privacy: "Privacy", privacyPath: "/privacy" },
   theme: { label: "Appearance", light: "Light", dark: "Dark", system: "System" },
   toast: { close: "Close notification" },
   language: { label: "Language", de: "Deutsch", en: "English" },
@@ -2222,6 +2222,41 @@ export const en: Translation = {
     confirmBody: "This level will show the Elberfelder 1871 wording again.",
     cancel: "Cancel",
     confirm: "Remove",
+  },
+  privacy: {
+    title: "Privacy",
+    lead: "This site collects as little as possible. Here is what is stored and why.",
+    analytics: {
+      title: "Usage statistics (Umami)",
+      intro:
+        "The operator runs Umami on their own server. It records the page you open, the referring page, your browser and operating system, and your country. It also counts these events, only as coarse categories and never with text you typed:",
+      events: [
+        "Search: which kind (verses, original words, references) and whether it found nothing, 1 to 10 or more than 10 results. The search text is never recorded.",
+        "Translation slider: the range of the level you rest on (1-99, 100-199, 200, 201-500, above 500).",
+        "Word detail: whether a Greek or Hebrew word was opened.",
+        "Chapter: whether it is from the Old or New Testament.",
+        "Sign-in: that someone signed in, nothing about who.",
+      ],
+      note: "Umami sets no cookies and stores no IP address. Browsers with Do Not Track enabled are not counted. Maintainer and admin sessions are not counted at all.",
+    },
+    logs: {
+      title: "Server logs",
+      intro:
+        "The server writes technical logs to find errors and to limit abuse. Where requests are rate limited, the IP address is stored shortened.",
+      note: "Logs are kept for 14 days in Loki; rolling log files on the server are rotated and deleted automatically.",
+    },
+    monitoring: {
+      title: "Monitoring",
+      intro:
+        "Logs, metrics and statistics stay on the operator's own host. Nothing is sent to third-party analytics or advertising services.",
+      note: "Signed-in users have an account (email and name) that is needed to log in and to attribute edits.",
+    },
+    operator: {
+      title: "Operator",
+      name: "Name",
+      contact: "Contact",
+      placeholder: "Not configured (set by the operator)",
+    },
   },
   dialog: { close: "Close" },
   notFound: { title: "Page not found", back: "Back to start" },

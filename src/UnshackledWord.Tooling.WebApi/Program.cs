@@ -2,6 +2,7 @@ using System.Text.Json;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
+using UnshackledWord.Infrastructure.Observability;
 using UnshackledWord.Tooling.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Extensions;
 using UnshackledWord.Tooling.WebApi.RateLimiting;
@@ -10,11 +11,13 @@ namespace UnshackledWord.Tooling.WebApi;
 
 public partial class Program
 {
+    private const string ServiceName = "unshackledword-webapi";
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddSerilog((_, logger) => logger.ReadFrom.Configuration(builder.Configuration));
+        builder.Services.AddSerilog((_, logger) => logger.ReadFrom.Configuration(builder.Configuration).WriteToTelemetry(builder.Configuration, ServiceName));
         builder.Services.AddFastEndpoints()
             .SwaggerDocument();
         builder.Configuration.AddEnvironmentVariables("UNSHACKLEDWORD_");
@@ -22,6 +25,8 @@ public partial class Program
         builder.Services.AddAuth(builder.Configuration);
         builder.Services.AddWebApiServices(builder.Configuration);
         builder.Services.AddRateLimiting(builder.Configuration);
+        builder.AddUnshackledTelemetry(ServiceName);
+        builder.Services.AddUnshackledHealthChecks();
 
         builder.Services.AddOpenApi();
         builder.Services.AddCors();
@@ -95,6 +100,7 @@ public partial class Program
                 }
             };
         }).UseSwaggerGen();
+        app.MapUnshackledHealth("/api/health");
 
         app.Run();
     }

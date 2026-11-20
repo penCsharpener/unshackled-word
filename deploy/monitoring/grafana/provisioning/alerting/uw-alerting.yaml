@@ -1,0 +1,135 @@
+# Contact point, notification policy and the four alert rules, all provisioned. SMTP itself comes from GF_SMTP_* (compose env).
+# Recipient: MONITORING_ALERT_EMAIL.
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: email
+    receivers:
+      - uid: uw-email
+        type: email
+        settings:
+          addresses: $__env{MONITORING_ALERT_EMAIL}
+          singleEmail: false
+
+policies:
+  - orgId: 1
+    receiver: email
+    group_by: ["alertname", "run_id"]
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h
+
+groups:
+  - orgId: 1
+    name: unshackled-word
+    folder: Unshackled Word
+    interval: 1m
+    rules:
+      - uid: uw-api-5xx
+        title: API 5xx above 2 percent
+        condition: C
+        for: 2m
+        noDataState: OK
+        execErrState: OK
+        labels: { severity: critical }
+        annotations:
+          summary: "5xx share is {{ printf \"%.1f\" $values.B.Value }} % of requests (10 min window, at least 20 requests)."
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: 100 * sum(rate(http_server_request_duration_seconds_count{http_response_status_code=~"5.."}[10m])) / sum(rate(http_server_request_duration_seconds_count[10m]))
+              instant: true
+          - refId: D
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prometheus
+            model:
+              refId: D
+              expr: sum(increase(http_server_request_duration_seconds_count[10m]))
+              instant: true
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: last, settings: { mode: dropNN } }
+          - refId: E
+            datasourceUid: __expr__
+            model: { refId: E, type: reduce, expression: D, reducer: last, settings: { mode: dropNN } }
+          - refId: C
+            datasourceUid: __expr__
+            model: { refId: C, type: math, expression: "$B > 2 && $E >= 20" }
+      - uid: uw-api-p95
+        title: API p95 above 2 s
+        condition: C
+        for: 2m
+        noDataState: OK
+        execErrState: OK
+        labels: { severity: warning }
+        annotations:
+          summary: "p95 request duration is {{ printf \"%.2f\" $values.B.Value }} s over 10 minutes."
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket[10m])))
+              instant: true
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: last, settings: { mode: dropNN } }
+          - refId: C
+            datasourceUid: __expr__
+            model: { refId: C, type: threshold, expression: B, conditions: [{ evaluator: { type: gt, params: [2] } }] }
+      - uid: uw-agent-run-failed
+        title: Agent run failed or over budget
+        condition: C
+        for: 0s
+        noDataState: OK
+        execErrState: OK
+        labels: { severity: warning }
+        annotations:
+          summary: "Agent run {{ $labels.run_id }} ({{ $labels.model }}) ended as {{ $labels.status }}."
+        data:
+          - refId: A
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: uw-postgres
+            model:
+              refId: A
+              format: table
+              editorMode: code
+              rawQuery: true
+              rawSql: >-
+                SELECT id::text AS run_id, model, status, 1 AS value
+                FROM monitoring."AgentRunOutcomes"
+                WHERE status IN ('failed', 'budget-exceeded') AND finished_at > now() - interval '15 minutes'
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: last, settings: { mode: dropNN } }
+          - refId: C
+            datasourceUid: __expr__
+            model: { refId: C, type: threshold, expression: B, conditions: [{ evaluator: { type: gt, params: [0] } }] }
+      - uid: uw-pg-connections
+        title: Postgres connections above 80 percent
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: OK
+        labels: { severity: warning }
+        annotations:
+          summary: "Postgres uses {{ printf \"%.0f\" $values.B.Value }} % of max_connections."
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: 100 * sum(pg_stat_database_numbackends) / max(pg_settings_max_connections)
+              instant: true
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: last, settings: { mode: dropNN } }
+          - refId: C
+            datasourceUid: __expr__
+            model: { refId: C, type: threshold, expression: B, conditions: [{ evaluator: { type: gt, params: [80] } }] }

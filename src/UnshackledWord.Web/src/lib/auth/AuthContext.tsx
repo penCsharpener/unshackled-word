@@ -7,7 +7,9 @@ import {
   useMemo,
   useState,
 } from "react";
+import { setStaffSession, track } from "@/lib/analytics";
 import { authApi, type Me } from "./api";
+import { hasWriteRole } from "./roles";
 
 export type AuthStatus = "loading" | "authenticated" | "anonymous";
 
@@ -30,9 +32,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      setUser(await authApi.me());
+      const me = await authApi.me();
+      // Maintainer and admin sessions are excluded from the usage statistics (set before any event).
+      setStaffSession(hasWriteRole(me));
+      setUser(me);
       setStatus("authenticated");
     } catch {
+      setStaffSession(false);
       setUser(null);
       setStatus("anonymous");
     }
@@ -50,13 +56,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login: async (email, password) => {
         await authApi.login(email, password);
         await refresh();
+        track("login", {});
       },
       loginWithMagicLink: async (token) => {
         await authApi.magicLinkLogin(token);
         await refresh();
+        track("login", {});
       },
       logout: async () => {
         await authApi.logout();
+        setStaffSession(false);
         setUser(null);
         setStatus("anonymous");
       },

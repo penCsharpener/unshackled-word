@@ -66,6 +66,8 @@ services:
     restart: unless-stopped
     depends_on:
       - unshackledword.tooling.webapi
+    # Monitoring layer (compose.monitoring.yml, docs/deployment.md §9): nothing to add. Its services (unshackledword.monitoring,
+    # uptime-kuma, umami) share the default compose network, and nginx.prod.conf resolves them at request time.
     volumes:
       - ./deployment/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
       - ./src/UnshackledWord.Web/dist:/usr/share/nginx/html:ro

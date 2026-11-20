@@ -1,0 +1,20 @@
+# Added next to the image's grafana-datasources.yaml (Prometheus uid=prometheus, Loki uid=loki, Tempo uid=tempo stay untouched).
+# Grafana resolves $__env{...} from the container environment, so no secret is in the repo.
+apiVersion: 1
+
+datasources:
+  - name: Postgres (monitoring views)
+    type: grafana-postgresql-datasource
+    uid: uw-postgres
+    access: proxy
+    url: $__env{MONITORING_DB_HOST}
+    user: uw_grafana
+    editable: false
+    jsonData:
+      database: $__env{MONITORING_DB_NAME}
+      sslmode: disable
+      postgresVersion: 1800
+      timescaledb: false
+      maxOpenConns: 5
+    secureJsonData:
+      password: $__env{MONITORING_GRAFANA_DB_PASSWORD}

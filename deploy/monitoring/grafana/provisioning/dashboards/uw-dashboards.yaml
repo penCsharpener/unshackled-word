@@ -1,0 +1,12 @@
+# Added next to the image's grafana-dashboards.yaml. Read-only: edits in the UI cannot be saved, change the JSON instead.
+apiVersion: 1
+
+providers:
+  - name: "Unshackled Word"
+    type: file
+    allowUiUpdates: false
+    disableDeletion: true
+    updateIntervalSeconds: 60
+    options:
+      path: /otel-lgtm/uw-dashboards
+      foldersFromFilesStructure: false

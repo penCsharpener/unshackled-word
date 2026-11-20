@@ -33,6 +33,7 @@ import {
 } from "@/lib/bible/verseSearch";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
 import { useSubmittedQuery } from "@/lib/search/useSubmittedQuery";
+import { useTrackSearch } from "@/lib/search/useTrackSearch";
 import { useCoarsePointer } from "@/lib/useCoarsePointer";
 import { BookBarChart } from "./BookBarChart";
 import { Button } from "./Button";
@@ -253,6 +254,13 @@ function SourceWordsSection({
 }) {
   const { t } = useTranslation();
   const lookup = useSourceWordsLookup(words);
+  useTrackSearch(
+    "originals",
+    `source|${words}`,
+    lookup.data
+      ? lookup.data.tokens.reduce((sum, token) => sum + token.lemmas.length, 0)
+      : undefined,
+  );
 
   if (lookup.isError) {
     if (lookup.error instanceof ApiError && lookup.error.status === 503) {
@@ -298,6 +306,11 @@ function SourceWordsSection({
 function GermanOriginals({ words, onNavigate }: { words: string; onNavigate: () => void }) {
   const { t } = useTranslation();
   const lookup = useOriginalsLookup(words);
+  useTrackSearch(
+    "originals",
+    `german|${words}`,
+    lookup.data ? lookup.data.tokens.filter((token) => token.lemmas.length > 0).length : undefined,
+  );
 
   if (lookup.isError) {
     if (lookup.error instanceof ApiError && lookup.error.status === 503) {
@@ -440,6 +453,13 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       reference.error !== null ||
       (parse.data?.bookCandidates.length ?? 0) > 0);
   const dimmed = search.isPlaceholderData || (search.isFetching && !search.isFetchingNextPage);
+
+  useTrackSearch("verses", searchQuery, first && !dimmed ? first.total : undefined);
+  useTrackSearch(
+    "references",
+    showReference && !parse.isPending ? query : "",
+    reference.passages.length,
+  );
 
   const openHit = (index: number) => {
     const hit = hits[index];

@@ -15,7 +15,7 @@ Browser ──HTTPS──▶ Reverse proxy (Caddy/nginx/Traefik)   one public or
 
 unshackledword.tooling.db-migration   one-shot, applies numbered SQL scripts, then exits
 unshackledword.tooling.seed-db        one-shot, downloads sources and imports data, then exits
-unshackledword.tooling.mcpserver      optional, MCP over HTTP at /mcp (no authentication, see §9)
+unshackledword.tooling.mcpserver      optional, MCP over HTTP at /mcp (no authentication, see §10)
 ```
 
 Serve the SPA and the API from **one origin**. The frontend calls the relative `/api`, the session cookie is `SameSite=Lax`, and the passkey (WebAuthn) relying-party id and origin are derived from `App:FrontendBaseUrl`. A second origin for the API only adds CORS and cookie problems.
@@ -81,6 +81,23 @@ EMAIL_PASSWORD=<smtp password>
 EMAIL_FROM_ADDRESS=noreply@example.org
 
 MCP_LOG_LEVEL=Information
+
+# --- Monitoring and analytics (only with compose.monitoring.yml, see §9) -----
+TELEMETRY_ENABLED=true                         # OpenTelemetry export from API/workers; false = no export
+TELEMETRY_OTLP_ENDPOINT=http://unshackledword.monitoring:4317   # dev with the host-network API: http://localhost:4317
+TELEMETRY_TRACE_SAMPLE_RATIO=0.1               # share of traces kept
+GRAFANA_ADMIN_PASSWORD=<long random password>  # required
+GRAFANA_ROOT_URL=https://monitor.example.org
+GRAFANA_SMTP_STARTTLS_POLICY=OpportunisticStartTLS   # Grafana SMTP uses the EMAIL_* values above
+MONITORING_ALERT_EMAIL=ops@example.org         # alert recipient
+MONITORING_GRAFANA_DB_PASSWORD=<random>        # login password of the Postgres role uw_grafana (§9.2)
+MONITORING_EXPORTER_DB_PASSWORD=<random>       # login password of the Postgres role uw_monitor (§9.2)
+UMAMI_DB_PASSWORD=<random>                     # Postgres role umami
+UMAMI_APP_SECRET=<long random string>          # required
+# Frontend build time (§5): set these before `bun run build`
+VITE_UMAMI_WEBSITE_ID=<id from Umami, §9.6>
+VITE_OPERATOR_NAME=<name for the privacy page>
+VITE_OPERATOR_CONTACT=<contact for the privacy page>
 ```
 
 Notes:
@@ -137,7 +154,7 @@ services:
     ports: !reset []
 
   unshackledword.tooling.mcpserver:
-    profiles: ["mcp"]                # opt in with `--profile mcp`, see §9
+    profiles: ["mcp"]                # opt in with `--profile mcp`, see §10
     ports: !reset []
 
   unshackledword.web:
@@ -292,15 +309,106 @@ docker compose -f compose.yml -f compose.prod.yml exec -T unshackledword.tooling
   pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists < /backups/unshackledword-YYYY-MM-DD.dump
 ```
 
+The Umami database (`umami`) is **not** backed up on purpose: losing the analytics history is acceptable. The `pg_dump` above only covers the app database. Grafana, Loki, Tempo, Prometheus and Uptime Kuma data live in `temp/monitoring` and are not backed up either; the dashboards and alert rules are provisioned from files in `deploy/monitoring/` (git).
+
 Also keep: `.env` (in a password manager, not in git), the `dataprotection` volume (optional, only preserves sessions) and `assets/seed` (it is in git once you commit exports). `temp/` is a download cache and can be rebuilt. Test a restore at least once. Do not back up by copying the live Postgres data directory.
 
 ### Logs and health
 
 * Serilog writes to the console (use `docker compose logs`) and to `./bin/unshackled-word.tooling.web-api-<date>.log` inside the container (ephemeral). Set levels with `UNSHACKLEDWORD_SERILOG__MINIMUMLEVEL__DEFAULT=Warning` (and `...__OVERRIDE__MICROSOFT`) if the logs are too chatty. Add `logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }` per service to cap Docker log growth.
-* There is no dedicated health endpoint; use the anonymous read endpoint check from §6 for uptime monitoring.
+* Health endpoints (anonymous, exempt from rate limiting, not traced):
+  * API: `GET /api/health/live` always returns 200 while the process runs. `GET /api/health/ready` returns 503 when the database is down or a migration is pending (checks `database` and `migrations`).
+  * MCP server: `/health/live` and `/health/ready` with the same meaning.
+  * The aspnet image has no `curl`, so the compose files define no healthcheck for these services. Uptime Kuma checks from outside (§9.5). Use `/api/health/ready` for uptime monitoring.
 * Postgres 18 stores data under `/var/lib/postgresql` (the volume mount in `compose.yml`). When upgrading to a new Postgres major version, dump and restore; do not just change the image tag.
 
-## 9. Security checklist
+## 9. Monitoring and analytics (optional)
+
+Roadmap 0021. A second compose layer, `compose.monitoring.yml`, adds Grafana/Loki/Tempo/Prometheus (one `grafana/otel-lgtm` container), a Postgres exporter, Uptime Kuma and Umami (privacy-friendly web analytics, no cookies). All of it binds to `127.0.0.1` only; the public reaches it through the nginx of `deployment/nginx.prod.conf` (§9.3).
+
+```bash
+docker compose -f compose.yml -f compose.monitoring.yml -f compose.prod.yml up -d
+```
+
+Use the same three `-f` files for every later command in production (§6, §8), otherwise compose treats the monitoring services as orphans.
+
+### 9.1 RAM
+
+`otel-lgtm` needs roughly 1 to 1.5 GB RAM on top of the app. On a 2 GB host run only Uptime Kuma and Umami (`docker compose -f compose.yml -f compose.monitoring.yml -f compose.prod.yml up -d uptime-kuma umami`) and set `TELEMETRY_ENABLED=false`. The data folder `temp/monitoring/lgtm` must be writable by the container user (`chmod -R a+rwX temp/monitoring` once, or `chown` it to the UID the image reports).
+
+### 9.2 One-time database steps
+
+Migration `0036_Monitoring.sql` creates the roles `uw_monitor` (`pg_monitor`, for the exporter) and `uw_grafana` (SELECT on the views of schema `monitoring` only) as `NOLOGIN`. Give them logins once, with the passwords from `.env`:
+
+```sql
+ALTER ROLE uw_monitor LOGIN PASSWORD '<MONITORING_EXPORTER_DB_PASSWORD>';
+ALTER ROLE uw_grafana LOGIN PASSWORD '<MONITORING_GRAFANA_DB_PASSWORD>';
+CREATE ROLE umami LOGIN PASSWORD '<UMAMI_DB_PASSWORD>';
+CREATE DATABASE umami OWNER umami;
+```
+
+```bash
+docker compose -f compose.yml -f compose.prod.yml exec unshackledword.tooling.database psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+```
+
+The layer adds `shared_preload_libraries=pg_stat_statements` to Postgres, which needs **one restart of the database container** the first time (`up -d` with the new layer recreates it; plan a short downtime).
+
+### 9.3 Subdomains and nginx
+
+Create three DNS names and NPM proxy hosts that all forward to the same address as the main site (`WEB_BIND`, nginx in `unshackledword-web`), with their own certificates:
+
+| Host | Target (inside the compose network) | Purpose |
+|---|---|---|
+| `monitor.<domain>` | `unshackledword.monitoring:3000` | Grafana |
+| `status.<domain>` | `uptime-kuma:3001` (websocket) | Uptime Kuma |
+| `analytics.<domain>` | `umami:3000` | Umami UI |
+| `<domain>/stats/script.js`, `/stats/api/send` | `umami:3000`, `/stats` prefix stripped | tracker, same origin |
+
+`deployment/nginx.prod.conf` already contains these server blocks (replace `example.org`). Key parts: upstreams are set through variables with `resolver 127.0.0.11`, so nginx starts even when the monitoring layer is down, Uptime Kuma gets the websocket upgrade headers, and the tracker location only allows the two public paths:
+
+```nginx
+location ~ ^/stats/(script\.js|api/send)$ {
+    set $umami http://umami:3000;
+    rewrite ^/stats/(.*)$ /$1 break;     # /stats/script.js -> /script.js, /stats/api/send -> /api/send
+    proxy_pass $umami;
+}
+```
+
+`compose.prod.yml` needs no change: the monitoring services share the default compose network with `unshackledword.web-prod`. After editing the config: `docker compose -f compose.yml -f compose.monitoring.yml -f compose.prod.yml exec unshackledword.web-prod nginx -s reload`.
+
+### 9.4 Grafana
+
+* Log in at `https://monitor.<domain>` as `admin` with `GRAFANA_ADMIN_PASSWORD` (required; compose refuses to start without it). Anonymous access and sign-up are off.
+* The dashboards "API", "Postgres" and "Mapping & Agents" and four alert rules are provisioned from files (`deploy/monitoring/`) and survive restarts. Do not edit them in the UI; change the files.
+* Alert mail goes to `MONITORING_ALERT_EMAIL` through the same SMTP account as the login links (`EMAIL_*`). A flapping alert can exhaust the send limit of that account and delay login mails; use a dedicated sending account if your provider has a low limit.
+* Retention: Loki and Tempo 14 days, Prometheus 30 days (configs in `deploy/monitoring/`).
+* Telemetry export from the API is controlled by `TELEMETRY_ENABLED`, `TELEMETRY_OTLP_ENDPOINT` and `TELEMETRY_TRACE_SAMPLE_RATIO`.
+
+### 9.5 Uptime Kuma
+
+Open `https://status.<domain>`, create the admin account on first visit, then:
+
+* Monitor 1: HTTP(s), `https://<site>/api/health/ready`, interval 60 s (catches database down and pending migrations).
+* Monitor 2: HTTP(s), `https://<site>/` (the SPA), interval 60 s.
+* Notification: SMTP with the values of `EMAIL_*` (host, port, security, user, password, from), recipient `MONITORING_ALERT_EMAIL`; attach it to both monitors.
+* Development: notification SMTP host `mailpit`, port 1025, no TLS. The monitor URL for the host-network dev API is `http://host.docker.internal:5142/api/health/ready`.
+
+### 9.6 Umami
+
+1. Open `https://analytics.<domain>`, log in with the default account and change the password immediately.
+2. Settings, Websites, add a website named "Unshackled Word" with your domain, and copy its website id.
+3. Put the id into `VITE_UMAMI_WEBSITE_ID` (plus `VITE_OPERATOR_NAME` and `VITE_OPERATOR_CONTACT` for the privacy page `/datenschutz` / `/privacy`) and rebuild the frontend (§5). The tracker script is loaded from `/stats/script.js` on your own origin.
+
+### 9.7 Verify
+
+```bash
+ss -tlnp    # besides 80/443 (and 22) every listener of the stack must be on 127.0.0.1: 3000, 3001, 3002, 4317, 4318
+curl -s https://<site>/api/health/ready                      # 200
+curl -sI https://<site>/stats/script.js                      # 200 once Umami runs
+curl -sI https://<site>/stats/api/heartbeat                  # must NOT reach Umami (404 from the SPA fallback or nginx)
+```
+
+## 10. Security checklist
 
 - [ ] Strong, unique `POSTGRES_PASSWORD`; Postgres has **no published host port** (the default `compose.yml` publishes `5432` on all interfaces, which `compose.prod.yml` resets).
 - [ ] Only ports 80/443 of the proxy are reachable from outside (firewall: allow 22, 80, 443; deny the rest).
@@ -312,9 +420,11 @@ Also keep: `.env` (in a password manager, not in git), the `dataprotection` volu
 - [ ] **MCP server:** it speaks stateless HTTP at `/mcp` and has **no authentication** (access policy is still undecided, see `CLAUDE.md`). Do not expose it publicly: leave it off (profile `mcp`), or bind it to localhost / a VPN and, if the proxy exposes it, protect that route with basic auth or an IP allowlist.
 - [ ] `.env` is `chmod 600`, not in git; SMTP credentials are a dedicated sending account.
 - [ ] Host OS and Docker images are updated regularly (`docker compose pull` for `postgres`/`caddy`, rebuild for the .NET images to pick up base-image patches).
+- [ ] Monitoring layer: `GRAFANA_ADMIN_PASSWORD` is strong, Grafana anonymous access and sign-up are off, and `ss -tlnp` shows only `127.0.0.1` bindings for 3000/3001/3002/4317/4318 besides 80/443 (§9.7).
+- [ ] The pinned monitoring images (`otel-lgtm`, `postgres-exporter`, `uptime-kuma`, `umami`) are bumped deliberately together with the other images; the roles `uw_grafana` (views of schema `monitoring` only) and `uw_monitor` have only the grants from migration 0036.
 - [ ] Backups run, are stored off the host, and a restore has been tested.
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 | Symptom | Likely cause |
 |---|---|
@@ -329,10 +439,11 @@ Also keep: `.env` (in a password manager, not in git), the `dataprotection` volu
 | Seed shows orphans or fails on download | An upstream source is unreachable or changed; read the seed log and the `SeedImports` rows on the data-quality page. Re-run only after reading the README "Seed" section. |
 | Deep link such as `/read/...` returns 404 | The proxy lacks the SPA fallback to `index.html`. |
 
-## 11. Open items (not solved in the repo yet)
+## 12. Open items (not solved in the repo yet)
 
 * A production frontend image (multi-stage build, static server) and a committed `compose.prod.yml` / `deploy/Caddyfile`.
 * Data Protection key persistence configured in code instead of via a volume.
-* A health endpoint for orchestrators and uptime checks.
+* A compose healthcheck for the API needs a probe binary in the image (the aspnet image has no `curl`); deferred, Uptime Kuma checks `/api/health/ready` from outside (§8, §9.5).
+* Frontend errors are not captured (GlitchTip or similar is deferred).
 * An access policy (authentication) for the MCP server.
 * Published container images, so a deployment does not need to build from source.

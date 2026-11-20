@@ -17,6 +17,7 @@ import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
 import { MaintainerPage } from "@/pages/MaintainerPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PasskeysPage } from "@/pages/PasskeysPage";
+import { PrivacyPage } from "@/pages/PrivacyPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
 import { SignInPage } from "@/pages/SignInPage";
@@ -29,6 +30,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/bible" replace /> },
       { path: "about", element: <AboutPage /> },
+      { path: "datenschutz", element: <PrivacyPage /> },
+      { path: "privacy", element: <PrivacyPage /> },
       { path: "bible", element: <BiblePage /> },
       { path: "bible/strongs/:strongs", element: <StrongsPage /> },
       { path: "bible/:bookId/:chapter", element: <ChapterPage /> },

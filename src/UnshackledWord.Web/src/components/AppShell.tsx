@@ -126,6 +126,11 @@ function AppShellContent() {
         >
           <Outlet />
         </main>
+        <footer className="mx-auto w-full max-w-page-wide px-4 pb-6 text-sm text-fg-muted md:px-8">
+          <NavLink to={t("nav.privacyPath")} className="hover:text-fg">
+            {t("nav.privacy")}
+          </NavLink>
+        </footer>
         {searchAvailable && (
           <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
         )}

@@ -8,6 +8,10 @@ public static class RateLimitPartitioner
     public const string UnknownClient = "unknown";
     public const string GeneralTier = "general";
 
+    /// <summary>Health probes (<c>/api/health/*</c>) are never limited: the orchestrator polls them from one address.</summary>
+    public static bool IsExemptPath(string? path) =>
+        path is not null && (path.Equals("/api/health", StringComparison.OrdinalIgnoreCase) || path.StartsWith("/api/health/", StringComparison.OrdinalIgnoreCase));
+
     /// <summary>Key of the general tier: every anonymous request counts, signed-in users are exempt.</summary>
     public static string? GeneralKey(bool isAuthenticated, IPAddress? ip) =>
         isAuthenticated ? null : $"{GeneralTier}:{ClientKey(ip)}";

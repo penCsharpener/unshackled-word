@@ -1,6 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { track } from "@/lib/analytics";
 import { formatMorphology } from "@/lib/bible/morphology";
 import type {
   BibleStructureBook,
@@ -315,6 +316,12 @@ export function WordDetailPopover({
 
   const readings = status === "success" ? (detail?.readings ?? []) : [];
   const success = status === "success" && detail !== undefined;
+  // Counted once per opened detail, only when the reader pinned it (not for hover previews).
+  const trackedLanguage = pinned && success ? readings[0]?.language : undefined;
+  useEffect(() => {
+    if (trackedLanguage)
+      track("word-detail", { language: trackedLanguage === "greek" ? "grc" : "hbo" });
+  }, [trackedLanguage]);
   const coMapped = success ? (detail.coMappedWords ?? []) : [];
   const parent = coMapped.find((w) => w.relation === "parent");
   const mapStatus = success && detail.mapping ? mappingStatus(detail.mapping) : undefined;

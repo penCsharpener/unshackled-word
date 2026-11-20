@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -65,6 +66,11 @@ public sealed class AgentRunExecutor
             return;
         }
 
+        using var runSpan = AgentTelemetry.Source.StartActivity("agent.run");
+        runSpan?.SetTag("run.id", runId);
+        runSpan?.SetTag("profile", run.Profile);
+        runSpan?.SetTag("model", run.Model);
+
         var state = new RunState(run);
         try
         {
@@ -72,11 +78,13 @@ public sealed class AgentRunExecutor
         }
         catch (OperationCanceledException) when (stop.IsCancellationRequested)
         {
+            runSpan?.SetStatus(ActivityStatusCode.Error, "interrupted");
             await _runs.SetRunStatusUnlessCancelledAsync(runId, AgentRunStatuses.Failed, "Interrupted by shutdown; resume continues with the verses without a proposal.", CancellationToken.None);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Agent run {RunId} failed", runId);
+            runSpan?.SetStatus(ActivityStatusCode.Error, e.GetType().Name);
             await _runs.SetRunStatusUnlessCancelledAsync(runId, AgentRunStatuses.Failed, $"{e.GetType().Name}: {e.Message}", CancellationToken.None);
         }
     }
@@ -168,7 +176,8 @@ public sealed class AgentRunExecutor
 
                 work.ReservedTokens = estimateTokens;
                 work.ReservedCost = estimateCost;
-                inflight[ProcessAsync(run, profile, client, prompt, work, state, prefixTokens, stop)] = work;
+                // Task.Run: the activities ProcessAsync starts must not leak into this loop's context.
+                inflight[Task.Run(() => ProcessAsync(run, profile, client, prompt, work, state, prefixTokens, stop), CancellationToken.None)] = work;
             }
 
             if (inflight.Count == 0)
@@ -267,6 +276,12 @@ public sealed class AgentRunExecutor
     /// <summary>One package: call, submit, resubmit rejected verses; usage is stored after every call.</summary>
     private async Task<PackageOutcome> ProcessAsync(AgentRunRecord run, AgentProfile profile, IAgentModelClient client, AgentPrompt prompt, PackageWork work, RunState state, int prefixTokens, CancellationToken stop)
     {
+        using var packageSpan = AgentTelemetry.Source.StartActivity("agent.package");
+        packageSpan?.SetTag("run.id", run.Id);
+        packageSpan?.SetTag("package.id", work.Id.ToString());
+        packageSpan?.SetTag("profile", run.Profile);
+        packageSpan?.SetTag("model", run.Model);
+        long inputSum = 0, cachedSum = 0, outputSum = 0;
         try
         {
             var turns = new List<AgentModelTurn>();
@@ -276,6 +291,12 @@ public sealed class AgentRunExecutor
 
             for (var attempt = 0; attempt <= MaxResubmissions; attempt++)
             {
+                using var attemptSpan = AgentTelemetry.Source.StartActivity("agent.attempt");
+                attemptSpan?.SetTag("run.id", run.Id);
+                attemptSpan?.SetTag("package.id", work.Id.ToString());
+                attemptSpan?.SetTag("attempt", attempt + 1);
+                attemptSpan?.SetTag("profile", run.Profile);
+                attemptSpan?.SetTag("model", run.Model);
                 AgentModelResult result;
                 try
                 {
@@ -292,6 +313,9 @@ public sealed class AgentRunExecutor
                 catch (AgentModelException e)
                 {
                     await RecordAsync(run, profile, work, state, e.InputTokens, e.CachedInputTokens, e.OutputTokens);
+                    TagUsage(attemptSpan, e.InputTokens, e.CachedInputTokens, e.OutputTokens);
+                    (inputSum, cachedSum, outputSum) = (inputSum + e.InputTokens, cachedSum + e.CachedInputTokens, outputSum + e.OutputTokens);
+                    attemptSpan?.SetStatus(ActivityStatusCode.Error, e.Kind.ToString());
 
                     return e.Kind switch
                     {
@@ -302,6 +326,8 @@ public sealed class AgentRunExecutor
                 }
 
                 await RecordAsync(run, profile, work, state, result.InputTokens, result.CachedInputTokens, result.OutputTokens);
+                TagUsage(attemptSpan, result.InputTokens, result.CachedInputTokens, result.OutputTokens);
+                (inputSum, cachedSum, outputSum) = (inputSum + result.InputTokens, cachedSum + result.CachedInputTokens, outputSum + result.OutputTokens);
                 _logger.LogInformation("Agent run {RunId} package {Package} attempt {Attempt}: {Input} input ({Cached} cached), {Output} output tokens, finish '{Finish}'",
                     run.Id, work.Id, attempt + 1, result.InputTokens, result.CachedInputTokens, result.OutputTokens, result.FinishReason);
 
@@ -359,9 +385,21 @@ public sealed class AgentRunExecutor
         catch (Exception e)
         {
             _logger.LogError(e, "Agent run {RunId}: package {Package} failed", run.Id, work.Id);
+            packageSpan?.SetStatus(ActivityStatusCode.Error, e.GetType().Name);
 
             return new PackageOutcome(PackageOutcomeKind.Transient, $"{e.GetType().Name}: {e.Message}");
         }
+        finally
+        {
+            TagUsage(packageSpan, inputSum, cachedSum, outputSum);
+        }
+    }
+
+    private static void TagUsage(Activity? span, long input, long cached, long output)
+    {
+        span?.SetTag("tokens.input", input);
+        span?.SetTag("tokens.cached", cached);
+        span?.SetTag("tokens.output", output);
     }
 
     private async Task RecordAsync(AgentRunRecord run, AgentProfile profile, PackageWork work, RunState state, long input, long cached, long output)

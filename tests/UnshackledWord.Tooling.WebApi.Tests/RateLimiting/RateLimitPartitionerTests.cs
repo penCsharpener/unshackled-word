@@ -78,3 +78,15 @@ public class RateLimitPartitionerTests
         RateLimitPartitioner.ShortenForLog(IPAddress.Parse("2001:db8:1:2:aaaa:bbbb:cccc:dddd")).ShouldBe("2001:db8:1:2::/64");
     }
 }
+
+public class RateLimitExemptionTests
+{
+    [Theory]
+    [InlineData("/api/health/live", true)]
+    [InlineData("/api/health/ready", true)]
+    [InlineData("/API/health", true)]
+    [InlineData("/api/healthy", false)]
+    [InlineData("/api/search", false)]
+    [InlineData(null, false)]
+    public void IsExemptPath(string? path, bool expected) => RateLimitPartitioner.IsExemptPath(path).ShouldBe(expected);
+}

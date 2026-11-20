@@ -12,7 +12,7 @@ export const de = {
     signIn: "Anmelden",
     reload: "Neu laden",
   },
-  nav: { about: "Über" },
+  nav: { privacy: "Datenschutz", privacyPath: "/datenschutz", about: "Über" },
   theme: { label: "Darstellung", light: "Hell", dark: "Dunkel", system: "System" },
   toast: { close: "Hinweis schließen" },
   language: { label: "Sprache", de: "Deutsch", en: "English" },
@@ -2259,6 +2259,41 @@ export const de = {
     confirm: "Entfernen",
   },
   dialog: { close: "Schließen" },
+  privacy: {
+    title: "Datenschutz",
+    lead: "Diese Seite sammelt so wenig wie möglich. Hier steht, was gespeichert wird und warum.",
+    analytics: {
+      title: "Nutzungsstatistik (Umami)",
+      intro:
+        "Der Betreiber setzt Umami auf dem eigenen Server ein. Erfasst werden die aufgerufene Seite, die verweisende Seite, Browser und Betriebssystem sowie das Land. Zusätzlich werden diese Ereignisse gezählt, nur als grobe Kategorien und nie mit eingegebenem Text:",
+      events: [
+        "Suche: welche Art (Verse, Grundtextwörter, Stellenangaben) und ob es keine, 1 bis 10 oder mehr als 10 Treffer gab. Der Suchtext wird nie gespeichert.",
+        "Übersetzungsregler: der Bereich der eingestellten Stufe (1-99, 100-199, 200, 201-500, über 500).",
+        "Worterklärung: ob ein griechisches oder hebräisches Wort geöffnet wurde.",
+        "Kapitel: ob es zum Alten oder Neuen Testament gehört.",
+        "Anmeldung: dass sich jemand angemeldet hat, ohne Angabe, wer.",
+      ],
+      note: "Umami setzt keine Cookies und speichert keine IP-Adresse. Browser mit aktivierter Do-Not-Track-Einstellung werden nicht gezählt. Sitzungen von Maintainern und Admins werden gar nicht gezählt.",
+    },
+    logs: {
+      title: "Server-Protokolle",
+      intro:
+        "Der Server schreibt technische Protokolle, um Fehler zu finden und Missbrauch zu begrenzen. Wo Anfragen begrenzt werden, wird die IP-Adresse verkürzt gespeichert.",
+      note: "Die Protokolle werden 14 Tage in Loki aufbewahrt; rollierende Logdateien auf dem Server werden automatisch rotiert und gelöscht.",
+    },
+    monitoring: {
+      title: "Überwachung",
+      intro:
+        "Protokolle, Messwerte und Statistiken bleiben auf dem eigenen Rechner des Betreibers. Nichts wird an Analyse- oder Werbedienste Dritter gesendet.",
+      note: "Angemeldete Nutzer haben ein Konto (E-Mail und Name), das für die Anmeldung und die Zuordnung von Änderungen nötig ist.",
+    },
+    operator: {
+      title: "Betreiber",
+      name: "Name",
+      contact: "Kontakt",
+      placeholder: "Nicht konfiguriert (vom Betreiber festzulegen)",
+    },
+  },
   notFound: { title: "Seite nicht gefunden", back: "Zur Startseite" },
 };
 
