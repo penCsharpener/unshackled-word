@@ -1,0 +1,19 @@
+meta {
+  name: Me
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}auth/me
+  body: none
+  auth: inherit
+}
+
+docs {
+  The logged-in user with roles. 401 when the session cookie is missing or expired: run Login again.
+}
+
+settings {
+  encodeUrl: true
+}

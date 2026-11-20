@@ -65,6 +65,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAgentStoreRepository, AgentStoreRepository>();
         services.AddScoped<IAgentPackageBuilder, AgentPackageBuilder>();
         services.AddScoped<AgentProposalStore>();
+        services.AddScoped<IAgentExampleExporter, AgentExampleExporter>();
         services.AddScoped<IAgentProposalService, AgentProposalService>();
         services.AddScoped<IAgentReviewRepository, AgentReviewRepository>();
         services.AddScoped<IApiTokenRepository, ApiTokenRepository>();

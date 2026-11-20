@@ -1,0 +1,7 @@
+script:pre-request {
+  // Send the session cookie that Auth/Login stored; without it the browser-style cookie jar of the Bruno app still applies.
+  const cookie = bru.getEnvVar("sessionCookie");
+  if (cookie) {
+    req.setHeader("Cookie", cookie);
+  }
+}

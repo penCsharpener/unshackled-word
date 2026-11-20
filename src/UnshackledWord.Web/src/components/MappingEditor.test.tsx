@@ -552,7 +552,7 @@ describe("MappingEditor", () => {
       await userEvent.click(node("g2"));
       await userEvent.click(screen.getByRole("button", { name: "Wort teilen …" }));
       await userEvent.keyboard("{Escape}");
-      expect(screen.queryByRole("group")).toBeNull();
+      expect(screen.queryByRole("group", { name: /teilen/ })).toBeNull();
       expect(onCancel).not.toHaveBeenCalled();
       expect(node("g2")).toBeInTheDocument();
     });

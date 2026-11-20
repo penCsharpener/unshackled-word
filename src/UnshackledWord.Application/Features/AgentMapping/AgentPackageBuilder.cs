@@ -44,6 +44,9 @@ public sealed class AgentBuildRequest
     /// <summary>MCP: the token that asks; the new run is bound to it (daily proposal cap) and named <c>mcp</c> instead of <c>manual</c>.</summary>
     public int? ApiTokenId { get; init; }
 
+    /// <summary>When set, the id map of every built package is appended in package order (the example exporter needs the real ids of a dry run).</summary>
+    public List<AgentPackageMap>? Maps { get; init; }
+
     /// <summary>
     /// The prompt version the packages are for (<c>greek-v2</c>). Mapping modes: from version 2 on (<see cref="AgentPromptProvider.CarriesRoles"/>)
     /// links carry role and morpheme and Hebrew source words their morphemes (roadmap 0018.9); null or v1 keeps the v1 format.
@@ -135,6 +138,7 @@ public sealed class AgentPackageBuilder : IAgentPackageBuilder
         {
             var packageId = Guid.NewGuid();
             var (dto, map) = Materialize(packageId, range.BibleBookId, hebrew, mode, roles, group);
+            request.Maps?.Add(map);
             var first = group[0];
             var last = group[^1];
 

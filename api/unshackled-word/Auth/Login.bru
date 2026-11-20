@@ -1,0 +1,38 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{email}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  // Keep the session cookie in the environment; collection.bru sends it with every request.
+  if (res.status === 200) {
+    const raw = res.getHeader("set-cookie");
+    const cookies = Array.isArray(raw) ? raw : raw ? [raw] : [];
+    const pairs = cookies.map((c) => c.split(";")[0].trim()).filter(Boolean);
+    if (pairs.length > 0) {
+      bru.setEnvVar("sessionCookie", pairs.join("; "));
+    }
+  }
+}
+
+docs {
+  Run this first. Set `email` in the environment and `password` as the environment's secret variable. On 200 the post-response script stores the session cookie in `sessionCookie` and the collection pre-request script sends it with every other request (also with `bru run`, where no cookie jar persists). Rate limited per IP; a wrong password answers 401.
+}
+
+settings {
+  encodeUrl: true
+}

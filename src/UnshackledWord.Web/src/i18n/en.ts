@@ -518,6 +518,50 @@ export const en: Translation = {
         multiHeadAccepted: "Several heads are accepted on {{original}} ({{words}}).",
         withdrawMultiHead: "Withdraw",
         serverErrors: "Server says:",
+        help: {
+          summary: "Roles and terms explained",
+          intro:
+            "Every German word is linked to a source word. The role says how it contributes to the rendering of that source word.",
+          items: {
+            head: {
+              term: "Head",
+              text: "The word carries the meaning of the source word and is counted. Each source word has exactly one head.",
+              example: "“killed” ↔ ἀπεκτάνθη, “said” ↔ וַיֹּאמֶר.",
+            },
+            unit: {
+              term: "Unit (Formteil)",
+              text: "The word only belongs to the German form of the head and adds no meaning of its own from the source. It is not counted and always needs a head on the same source word.",
+              example:
+                "“habe” in “habe getauft”, “hinaus” in “ging hinaus”, “wurde” in “wurde getötet”, “sich” with reflexive verbs.",
+            },
+            multiHead: {
+              term: "Several heads",
+              text: "An exception for idioms in which several German words together render the source. Allow it only when there is no other way.",
+              example: "“zur Antwort geben” for a single verb.",
+            },
+            added: {
+              term: "Added word",
+              text: "The word has no counterpart in the source; German grammar requires it. It hangs on a parent word and is not a link.",
+              example:
+                "“er” in “und er sprach” (parent “sprach”), “Es” in “Es werde Licht” (parent “werde”), a supplied article.",
+            },
+            morpheme: {
+              term: "Morpheme (Hebrew)",
+              text: "A Hebrew word often consists of several parts of meaning, each with its own Strong's number. Pick which morpheme the German word renders. Without a choice the main morpheme applies.",
+              example: "וַיֹּאמֶר = “And” (H9001) + “said” (H0559); “ihren” renders the suffix H9024.",
+            },
+            part: {
+              term: "Word part",
+              text: "A German compound is split so that each part gets its own source word. The parts must spell the word together; each part has its own lemma.",
+              example: "“Gerstenernte” = “Gersten” (lemma Gerste) + “ernte” (lemma Ernte).",
+            },
+            unmapped: {
+              term: "Unmapped",
+              text: "The word has neither a counterpart nor a parent, such as punctuation or a filler word that does not read as supplied.",
+              example: "A comma or a purely stylistic “doch”.",
+            },
+          },
+        },
       },
       error: {
         validation: "The mapping is invalid and was not saved.",

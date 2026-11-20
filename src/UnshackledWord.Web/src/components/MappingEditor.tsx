@@ -70,6 +70,16 @@ import { Switch } from "./Switch";
 import { TextField } from "./TextField";
 import { WordSplitter } from "./WordSplitter";
 
+const ROLE_HELP_ITEMS = [
+  "head",
+  "unit",
+  "multiHead",
+  "added",
+  "morpheme",
+  "part",
+  "unmapped",
+] as const;
+
 export type MappingSaveError = "validation" | "forbidden" | "failed";
 
 export interface MappingEditorProps {
@@ -1242,6 +1252,28 @@ export function MappingEditor({
           {t("bible.mapping.legend.details")}
         </Button>
       </div>
+
+      <details className="rounded-md border border-border bg-surface px-3 py-2 text-sm">
+        <summary className="cursor-pointer font-medium text-fg">
+          {t("bible.mapping.roles.help.summary")}
+        </summary>
+        <p className="mt-2 text-fg-muted">{t("bible.mapping.roles.help.intro")}</p>
+        <dl className="mt-2 flex flex-col gap-2">
+          {ROLE_HELP_ITEMS.map((item) => (
+            <div key={item}>
+              <dt className="font-semibold text-fg">
+                {t(`bible.mapping.roles.help.items.${item}.term`)}
+              </dt>
+              <dd className="text-fg-muted">
+                {t(`bible.mapping.roles.help.items.${item}.text`)}{" "}
+                <span className="text-fg">
+                  {t(`bible.mapping.roles.help.items.${item}.example`)}
+                </span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </details>
 
       <div className="map-sec">
         {(!readOnly || compare) && (

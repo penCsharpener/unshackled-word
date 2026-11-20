@@ -532,6 +532,51 @@ export const de = {
         multiHeadAccepted: "Auf {{original}} sind mehrere Kerne zugelassen ({{words}}).",
         withdrawMultiHead: "Zulassung aufheben",
         serverErrors: "Hinweise des Servers:",
+        help: {
+          summary: "Rollen und Begriffe erklärt",
+          intro:
+            "Jedes deutsche Wort ist mit einem Urtextwort verbunden. Die Rolle sagt, wie es zur Übersetzung dieses Urtextwortes beiträgt.",
+          items: {
+            head: {
+              term: "Kern",
+              text: "Das Wort trägt die Bedeutung des Urtextwortes und wird gezählt. Pro Urtextwort gibt es genau einen Kern.",
+              example: "„getötet“ ↔ ἀπεκτάνθη, „sprach“ ↔ וַיֹּאמֶר.",
+            },
+            unit: {
+              term: "Formteil",
+              text: "Das Wort gehört nur zur deutschen Form des Kerns und bringt keine eigene Bedeutung des Urtextes mit. Es wird nicht gezählt und braucht immer einen Kern am selben Urtextwort.",
+              example:
+                "„habe“ in „habe getauft“, „hinaus“ in „ging hinaus“, „wurde“ in „wurde getötet“, „sich“ bei reflexiven Verben.",
+            },
+            multiHead: {
+              term: "Mehrere Kerne",
+              text: "Ausnahme für Redewendungen, in denen mehrere deutsche Wörter zusammen den Urtext wiedergeben. Nur zulassen, wenn es wirklich nicht anders geht.",
+              example: "„zur Antwort geben“ für ein einziges Verb.",
+            },
+            added: {
+              term: "Ergänztes Wort",
+              text: "Das Wort hat kein Gegenstück im Urtext, die deutsche Grammatik verlangt es. Es hängt an einem Elternwort und ist keine Verknüpfung.",
+              example:
+                "„er“ in „und er sprach“ (Elternwort „sprach“), „Es“ in „Es werde Licht“ (Elternwort „werde“), ein ergänzter Artikel.",
+            },
+            morpheme: {
+              term: "Morphem (Hebräisch)",
+              text: "Ein hebräisches Wort besteht oft aus mehreren Bedeutungsteilen mit eigener Strong-Nummer. Wähle, welches Morphem das deutsche Wort wiedergibt. Ohne Auswahl gilt das Hauptmorphem.",
+              example:
+                "וַיֹּאמֶר = „Und“ (H9001) + „sprach“ (H0559); „ihren“ gibt das Suffix H9024 wieder.",
+            },
+            part: {
+              term: "Wortteil",
+              text: "Ein zusammengesetztes deutsches Wort wird geteilt, damit jeder Teil sein eigenes Urtextwort bekommt. Die Teile müssen zusammen das Wort ergeben; jeder Teil hat ein eigenes Lemma.",
+              example: "„Gerstenernte“ = „Gersten“ (Lemma Gerste) + „ernte“ (Lemma Ernte).",
+            },
+            unmapped: {
+              term: "Nicht zugeordnet",
+              text: "Das Wort hat weder ein Gegenstück noch einen Elternteil, etwa Satzzeichen oder ein Füllwort, das nicht ergänzt wirkt.",
+              example: "Ein Komma oder ein rein stilistisches „doch“.",
+            },
+          },
+        },
       },
       error: {
         validation: "Die Zuordnung ist ungültig und wurde nicht gespeichert.",

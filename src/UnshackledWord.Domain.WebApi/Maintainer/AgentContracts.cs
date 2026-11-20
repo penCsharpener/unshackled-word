@@ -149,3 +149,36 @@ public sealed class SubmitAgentProposalResponse
     /// <summary>Older open proposals of the same verses that this submission replaced.</summary>
     public int Superseded { get; set; }
 }
+
+/// <summary>Query of <c>GET api/maintainer/agent/example</c>: turns one stored proposal into a worked example for the prompt files.</summary>
+public sealed class GetAgentExampleRequest
+{
+    /// <summary>Id of the proposal (<c>AgentVerseProposals.Id</c>).</summary>
+    public long Id { get; set; }
+
+    /// <summary><c>redo</c> (default) or <c>fill-open</c>; the mode the example package is built in. Lemma mode is not supported.</summary>
+    public string? Mode { get; set; }
+
+    /// <summary>Prompt version the example is for (<c>hebrew-v2</c>); default <c>{language}-v2</c>. From version 2 on links carry role and morpheme.</summary>
+    public string? PromptVersion { get; set; }
+
+    /// <summary>True when the maintainer has confirmed the example: the Markdown heading then has no <c>[UNCONFIRMED]</c> tag.</summary>
+    public bool Confirmed { get; set; }
+}
+
+/// <summary>A worked example for <c>assets/agent-prompts/*.md</c>: package and answer as compact JSON plus a ready-to-paste Markdown block.</summary>
+public sealed class AgentExampleResponse
+{
+    public long ProposalId { get; set; }
+    public string ProposalStatus { get; set; } = string.Empty;
+    public string Ref { get; set; } = string.Empty;
+    public string PromptVersion { get; set; } = string.Empty;
+    public string PackageJson { get; set; } = string.Empty;
+    public string AnswerJson { get; set; } = string.Empty;
+
+    /// <summary><c>## Example: ref</c> heading (with <c>[UNCONFIRMED]</c> unless <c>confirmed=true</c>), the <c>Package:</c> and <c>Answer:</c> blocks; the "What to notice" text is yours to write.</summary>
+    public string Markdown { get; set; } = string.Empty;
+
+    /// <summary>Things to check before pasting (proposal already merged, <c>TODO</c> reasons for unmapped words, unknown ids).</summary>
+    public List<string> Warnings { get; set; } = [];
+}

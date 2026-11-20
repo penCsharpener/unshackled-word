@@ -1,0 +1,26 @@
+meta {
+  name: GetAgentExample
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{url}}maintainer/agent/example?id=1&promptVersion=greek-v2
+  body: none
+  auth: inherit
+}
+
+params:query {
+  id: 1
+  promptVersion: greek-v2
+  ~mode: redo
+  ~confirmed: true
+}
+
+docs {
+  Needs admin or maintainer. Turns a stored agent proposal (id from agent-runs/{runId}/proposals) into a worked example for assets/agent-prompts: packageJson (one-verse dry-run package), answerJson (the proposal as a diff against the hints), a paste-ready markdown block and warnings. confirmed=true drops the [UNCONFIRMED] tag from the markdown heading. Export before the proposal is merged; after a merge the links are fixed and the hints are gone. 409 when the verse has no open work, 400 for lemma mode.
+}
+
+settings {
+  encodeUrl: true
+}
