@@ -9,6 +9,6 @@ if [ $# -eq 0 ]; then
 fi
 
 docker compose \
-    --env-file .env --env-file .env.monitoring.dev \
+    --env-file .env \
     -f compose.yml -f compose.override.yml -f compose.monitoring.yml -f compose.monitoring.dev.yml \
     "$@"
