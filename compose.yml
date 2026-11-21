@@ -121,6 +121,8 @@ services:
       # Browsers call the same-origin /api; the Vite dev server proxies it to the API on the host.
       - VITE_WORD_DETAIL_SOURCE=api
       - API_PROXY_TARGET=${API_PROXY_TARGET:-http://host.docker.internal:5142}
+      # Build-time: the Vite build injects the Umami tag only when this is set (read from the repo-root .env).
+      - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID:-}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
