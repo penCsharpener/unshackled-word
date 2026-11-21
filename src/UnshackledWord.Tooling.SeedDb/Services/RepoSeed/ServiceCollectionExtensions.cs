@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISeedVerb, RebaseVerb>();
         services.AddScoped<ISeedVerb, AnchorCheckVerb>();
         services.AddScoped<ISeedVerb, VocabGenerateVerb>();
+        services.AddScoped<ISeedVerb, VocabDeriveVerb>();
         services.AddScoped<StepLexiconRepairService>();
         services.AddScoped<ISeedVerb, StepLexiconRepairVerb>();
 

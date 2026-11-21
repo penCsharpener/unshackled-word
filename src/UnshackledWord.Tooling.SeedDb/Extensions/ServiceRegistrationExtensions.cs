@@ -59,6 +59,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddSingleton<IDbConnectionFactory, PostgresDbConnectionFactory>();
         services.AddSingleton<ParseHelper>();
         services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
+        services.Configure<UnshackledWord.Domain.Models.Settings.VocabOptions>(configuration.GetSection(UnshackledWord.Domain.Models.Settings.VocabOptions.SectionName));
 
         services.AddHttpClient<GithubFileDownloader>(client =>
         {
