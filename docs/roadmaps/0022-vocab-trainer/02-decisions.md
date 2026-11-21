@@ -3,7 +3,7 @@
 ## Given by the maintainer (2026-11-21)
 
 - **Lexio is the reference, with these differences:** no synsets. The learner works through the Strong's lexicon, most frequent words first. The scheduler is the FsrsSharp v6 port, used as a NuGet package and not copied into the repo.
-- **The learner learns lemmas, not Strong's numbers.** A separate vocab table holds the lemmas. A mapping table connects Strong's keys to vocab entries, so H1254a and H1254b, which share בָּרָא, become one entry with several German meanings.
+- **The learner learns lemmas, not Strong's numbers.** A separate vocab table holds the lemmas. A mapping table connects Strong's keys to vocab entries, so H1254A and H1254B, which share בָּרָא, become one entry with several German meanings.
 - **Dictionary form column:** the card shows a learning form such as `μέσος, -η, -ον` or `λόγος, -ου, ὁ` next to the plain lemma, so that declension patterns are learned too. Code fills it where possible, then an agent run (gender, training data), then the maintainer. A vocab editor is required.
 - **German meanings:** code derives them from the renderings view and the maintainer overrides them. When the Elberfelder 2027 revision has grown, the derived meanings are regenerated on demand.
 - **Renderings view:** a materialized view maps Strong's to German renderings in Elberfelder 2027 with Elb1871 as fallback, with counts, so the learner sees which translations are common.

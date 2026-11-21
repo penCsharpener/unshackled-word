@@ -57,7 +57,7 @@ CREATE INDEX IF NOT EXISTS "VocabEntries_Rank_idx" ON "unshackled-word"."VocabEn
 
 CREATE TABLE IF NOT EXISTS "unshackled-word"."VocabStrongs"
 (
-    "StrongsKey"   varchar(10) NOT NULL,   -- 'H1254a', 'G3056' (same form as StatsStrongsRenderings."StrongsKey")
+    "StrongsKey"   varchar(10) NOT NULL,   -- 'H1254A', 'G3056' (same form as StatsStrongsRenderings."StrongsKey")
     "Lang"         char(1)     NOT NULL,
     "VocabEntryId" int4        NOT NULL,
     "Occurrences"  int4        NOT NULL DEFAULT 0,
@@ -101,7 +101,7 @@ Plus constraints in the project style for origin checks and the FKs to `Users`. 
 
 ## Generator (`VocabLexiconGenerator`)
 
-- Group `StepStrongsLexicon` by (track, `OriginalWord`): one entry per group, one `VocabStrongs` row per key. H1254a/H1254b → one entry.
+- Group `StepStrongsLexicon` by (track, `OriginalWord`): one entry per group, one `VocabStrongs` row per key. H1254A/H1254B → one entry.
 - `Occurrences` per key from the STEP word tables (Greek `DisambiguatedStrongs`, Hebrew main morpheme of `DisambiguatedStrongs`). The entry's occurrences are the sum. `FrequencyRank` is `row_number()` per track by occurrences desc, then Strong's number.
 - `IsProperName` comes from `StepPersonLexicon`/`StepPlaceLexicon`, `IsMorpheme` from H9001–H9049.
 - `DictionaryForm` is generated only where it is safe from the STEP lexicon (e.g. Greek nouns whose lexicon line holds the genitive and article). Otherwise it stays null.

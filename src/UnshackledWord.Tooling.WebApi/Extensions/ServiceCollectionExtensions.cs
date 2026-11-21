@@ -52,6 +52,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Endpoints.Maintainer.ExportSeed.SeedZipBuilder>();
         services.TryAddSingleton(TimeProvider.System);
         services.AddSingleton<Endpoints.Maintainer.SeedAdmin.SeedJobRunner>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabCourseRepository>();
         services.AddSingleton<Endpoints.Maintainer.LinkRoles.LinkRoleJobRunner>();
         // Agent runs (roadmap 0016.6): validates the provider profiles at startup and runs the background loop of started runs.
         services.AddSingleton<Endpoints.Maintainer.AgentRuns.AgentRunManager>();

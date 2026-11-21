@@ -10,7 +10,7 @@
 
 ## End state
 
-- A curated **vocab lexicon** (`VocabEntries`): one row per learnable lemma with a dictionary form (`μέσος, -η, -ον`), a list of German meanings and pronunciation audio. A mapping table connects one or more Strong's keys (H1254a, H1254b …) to one entry.
+- A curated **vocab lexicon** (`VocabEntries`): one row per learnable lemma with a dictionary form (`μέσος, -η, -ον`), a list of German meanings and pronunciation audio. A mapping table connects one or more Strong's keys (H1254A, H1254B …) to one entry.
 - Code generates the lexicon from the STEP lemmas. German meanings come from a revision-aware renderings view (Elberfelder 2027 where a variant exists, Elb1871 otherwise) with counts. The maintainer overrides meanings and forms in a vocab editor and regenerates the derived meanings when the revision has grown.
 - Two system courses, **NT Greek** and **OT Hebrew/Aramaic**, each ordered by frequency. Any signed-in user studies them. Progress is one FSRS-6 card per user and entry, scheduled by the FsrsSharp v6 NuGet package.
 - Quiz types: introduction, lemma → German (MC), German → lemma (MC), typing the lemma with an on-screen Greek/Hebrew keyboard, listening, verse context.

@@ -3,6 +3,7 @@ using UnshackledWord.Infrastructure.Seed.BaseText;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Infrastructure.Seed.Morphology;
 using UnshackledWord.Infrastructure.Seed.Revision;
+using UnshackledWord.Infrastructure.Vocab;
 
 namespace UnshackledWord.Infrastructure.Seed;
 
@@ -46,6 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<RebaseRepository>();
         services.AddScoped<SeedRebaseService>();
         services.AddScoped<SeedImportsRepository>();
+        services.AddScoped<VocabLexiconGenerator>();
 
         return services;
     }
