@@ -1,0 +1,32 @@
+meta {
+  name: StartSession
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}vocab/sessions
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "course": "nt-greek"
+  }
+}
+
+script:post-response {
+  // Keep the session id for GetNext and SubmitAnswer.
+  if (res.status === 200) {
+    bru.setEnvVar("vocabSessionId", String(res.body.sessionId));
+  }
+}
+
+docs {
+  Starts the study session of a course (up to 20 words: due reviews first, then 4 to 10 new words by frequency rank), or resumes the open one (`resumed: true`). Login required (run Auth/Login first). 404 for an unknown course. Nothing to study: 200 with `finished: true`, `sessionId` 0 and an empty `summary`.
+}
+
+settings {
+  encodeUrl: true
+}

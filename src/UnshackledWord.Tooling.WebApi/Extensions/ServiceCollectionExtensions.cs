@@ -57,6 +57,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabEntryRepository>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabEditorRepository>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabEntryEditor>();
+        // Study sessions (roadmap 0022.8): the FSRS wrapper holds only its parameters, so one instance serves everyone.
+        services.AddSingleton<UnshackledWord.Application.Features.Vocab.VocabScheduler>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabSessionService>();
         services.AddSingleton<Endpoints.Maintainer.LinkRoles.LinkRoleJobRunner>();
         // Agent runs (roadmap 0016.6): validates the provider profiles at startup and runs the background loop of started runs.
         services.AddSingleton<Endpoints.Maintainer.AgentRuns.AgentRunManager>();

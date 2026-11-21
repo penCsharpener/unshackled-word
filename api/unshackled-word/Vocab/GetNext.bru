@@ -1,0 +1,26 @@
+meta {
+  name: GetNext
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}vocab/sessions/{{vocabSessionId}}/next
+  body: none
+  auth: inherit
+}
+
+script:post-response {
+  // Keep the seq of the card (and, for multiple choice, nothing about the answer: the response never has it) for SubmitAnswer.
+  if (res.status === 200 && res.body.card) {
+    bru.setEnvVar("vocabSeq", String(res.body.card.seq));
+  }
+}
+
+docs {
+  The next card of the session. `card.kind` is `introduction` (meanings with counts, one verse with the word highlighted) or `multiple_choice` (`options`: id and text, never marked). The same card comes back until it is answered. `finished: true` with `summary` and no card at the end. 404 for a session of another user.
+}
+
+settings {
+  encodeUrl: true
+}

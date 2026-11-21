@@ -30,6 +30,12 @@ public sealed class VocabEntryRepository
             AND (@IncludeRetired OR e."RetiredAt" IS NULL)
         """;
 
+    private const string SelectTrack = """
+        SELECT e."Track"::text
+        FROM "unshackled-word"."VocabEntries" e
+        WHERE e."Id" = @Id
+        """;
+
     private const string SelectKeys = """
         SELECT vs."StrongsKey"
              , vs."Occurrences"
@@ -295,7 +301,22 @@ public sealed class VocabEntryRepository
         return response;
     }
 
-    private async Task<List<VocabSampleVerseResponse>> GetSampleVersesAsync(string track, string[] keys)
+    /// <summary>The best sample verse of an entry (human-made link first, then short; same query as <see cref="GetAsync"/>), or null when it has none. The study session shows it with the word highlighted.</summary>
+    public async Task<VocabSampleVerseResponse?> GetSampleVerseAsync(int id)
+    {
+        var track = await _dbReader.ReadFirstOrDefaultAsync<string>(SelectTrack, new { Id = id });
+
+        if (track is null)
+        {
+            return null;
+        }
+
+        var keys = (await _dbReader.ReadAsListAsync<VocabEntryKeyResponse>(SelectKeys, new { Id = id })).Select(k => k.StrongsKey).ToArray();
+
+        return (await GetSampleVersesAsync(track, keys, 1)).FirstOrDefault();
+    }
+
+    private async Task<List<VocabSampleVerseResponse>> GetSampleVersesAsync(string track, string[] keys, int take = SampleVerseCount)
     {
         if (keys.Length == 0)
         {
@@ -305,7 +326,7 @@ public sealed class VocabEntryRepository
         var greek = track == "G";
         var upperKeys = keys.Select(k => k.ToUpperInvariant()).ToArray();
         var likes = keys.Select(k => "%" + k.ToUpperInvariant() + "%").ToArray();
-        var hits = (await _dbReader.ReadAsListAsync<HitRow>(greek ? GreekSampleHits : HebrewSampleHits, new { Keys = upperKeys, Likes = likes, Take = SampleVerseCount })).ToList();
+        var hits = (await _dbReader.ReadAsListAsync<HitRow>(greek ? GreekSampleHits : HebrewSampleHits, new { Keys = upperKeys, Likes = likes, Take = take })).ToList();
 
         if (hits.Count == 0)
         {

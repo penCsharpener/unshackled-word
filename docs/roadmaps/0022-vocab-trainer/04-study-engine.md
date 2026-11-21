@@ -54,6 +54,7 @@ Cards are keyed by entry, not by course. A later curated course over the same le
 
 - **New entries:** the lowest `FrequencyRank` in the course without a card, skipping `IsMorpheme`, `RetiredAt`, and entries without an accepted meaning. The learner walks down the list.
 - **Reviews:** cards that are due, most at risk first (lowest retrievability). Lexio's allowance: reviews take the 20-word target first, new words get what is left, clamped to 4–10.
+- **Order in a session:** the due review words are each asked once (as multiple choice) before the first introduction; after that Lexio's order applies (an introduction beats everything, the open wave must pass). With nothing due and nothing new, `POST api/vocab/sessions` answers 200 with `finished: true` and no session.
 
 ## Quiz types
 

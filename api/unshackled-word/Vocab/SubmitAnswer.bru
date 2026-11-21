@@ -1,0 +1,27 @@
+meta {
+  name: SubmitAnswer
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}vocab/sessions/{{vocabSessionId}}/answers
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "seq": {{vocabSeq}},
+    "optionId": 0,
+    "responseMs": 1500
+  }
+}
+
+docs {
+  Answers the open card. Send `seq` of the card and, for multiple choice, `optionId` (omit it for an introduction: the acknowledgment "verstanden"). The server judges: the response has `correct`, `correctOptionId`, `correctAnswers` (every accepted meaning), `strength` (before, after, change = moved, held or dropped), `due`, `verse`, `progress` and, when the session ends, `finished: true` with `summary`. 409 for a stale seq, 400 for an unknown option.
+}
+
+settings {
+  encodeUrl: true
+}
