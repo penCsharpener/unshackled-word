@@ -37,6 +37,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.21.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.21.0" />
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
+    <PackageVersion Include="PenCsharpener.FsrsSharp" Version="6.0.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="Polly" Version="8.6.6" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
