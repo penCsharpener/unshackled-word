@@ -23,6 +23,7 @@ import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
 import { SignInPage } from "@/pages/SignInPage";
 import { StrongsPage } from "@/pages/StrongsPage";
 import { VerifyEmailPage } from "@/pages/VerifyEmailPage";
+import { VocabDetailPage } from "@/pages/VocabDetailPage";
 import { VocabListPage } from "@/pages/VocabListPage";
 
 export const router = createBrowserRouter([
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
       { path: "bible/strongs/:strongs", element: <StrongsPage /> },
       { path: "bible/:bookId/:chapter", element: <ChapterPage /> },
       { path: "vocab", element: <VocabListPage /> },
+      { path: "vocab/:id", element: <VocabDetailPage /> },
       { path: "login", element: <SignInPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },

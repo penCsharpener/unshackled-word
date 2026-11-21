@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import type { SeedJobState, SeedStepReport } from "@/lib/maintainer/seedJobs";
 
 /** Course track: `G` = Neues Testament (Greek), `H` = Altes Testament (Hebrew and Aramaic). */
 export type VocabTrack = "G" | "H";
@@ -52,6 +53,101 @@ export interface VocabEntriesQuery {
   q?: string;
 }
 
+/** Mirrors `GET api/vocab/entries/{id}` (`VocabEntryDetailResponse`); nulls are omitted by the API. */
+export interface VocabEntryDetail {
+  id: number;
+  track: VocabTrack;
+  rank?: number | null;
+  lemma: string;
+  transliteration?: string | null;
+  dictionaryForm?: string | null;
+  pos?: string | null;
+  occurrences: number;
+  isProperName: boolean;
+  reviewed: boolean;
+  hasAudio: boolean;
+}
+
+/** One Strong's key of an entry with its occurrences. */
+export interface VocabEntryKey {
+  strongsKey: string;
+  occurrences: number;
+}
+
+/** Accepted meaning in rank order; empty until the meanings are derived (roadmap 0022.3). */
+export interface VocabMeaning {
+  german: string;
+  rank: number;
+}
+
+/** One German rendering summed over the entry's Strong's keys. */
+export interface VocabRendering {
+  germanKey: string;
+  germanDisplay: string;
+  linkCount: number;
+  /** Part of `linkCount` from Elberfelder 2027 variants. */
+  fromRevisionCount: number;
+  /** Share of all head links of the entry, in percent (one decimal). */
+  share: number;
+  posTags: string[];
+  keyIsForm: boolean;
+}
+
+export interface VocabSampleWord {
+  position: number;
+  text: string;
+  transliteration?: string | null;
+  isHit: boolean;
+}
+
+/** A sample verse; the reader route is `/bible/{bibleBookId}/{chapter}#v{verse}`. */
+export interface VocabSampleVerse {
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  fromRevision: boolean;
+  humanMade: boolean;
+  original: VocabSampleWord[];
+  german: VocabSampleWord[];
+}
+
+export interface VocabEntryResponse {
+  entry: VocabEntryDetail;
+  strongsKeys: VocabEntryKey[];
+  meanings: VocabMeaning[];
+  renderings: VocabRendering[];
+  renderingsTotal: number;
+  totalLinks: number;
+  /** Last refresh of the renderings; absent = never refreshed, `renderings` is then empty. */
+  refreshedAt?: string | null;
+  sampleVerses: VocabSampleVerse[];
+}
+
+/** A vocab background job on the shared seed job runner (`SeedJobResponse` with vocab operation names). */
+export interface VocabJob {
+  id: string;
+  /** `vocabRenderings` or `vocabGenerate`. */
+  operation: string;
+  kind: string;
+  status: SeedJobState;
+  startedAt: string;
+  finishedAt?: string | null;
+  log: string[];
+  error?: string | null;
+  result?: { steps: SeedStepReport[] } | null;
+}
+
+/** Mirrors `GET api/maintainer/vocab/renderings/status`. */
+export interface VocabRenderingsStatus {
+  job?: VocabJob | null;
+  refreshedAt?: string | null;
+}
+
+/** Mirrors `GET api/maintainer/vocab/status` (lexicon generation). */
+export interface VocabGenerateStatus {
+  job?: VocabJob | null;
+}
+
 /** Language of a track's lemmas: Greek for `G`, Hebrew for `H`. */
 export function vocabLang(track: VocabTrack): VocabLang {
   return track === "H" ? "he" : "grc";
@@ -77,4 +173,29 @@ export function getCourseEntries(code: string, query: VocabEntriesQuery, signal?
     `/vocab/courses/${encodeURIComponent(code)}/entries?${vocabEntriesQueryString(query)}`,
     signal,
   );
+}
+
+/** One entry with its keys, renderings and sample verses (`GET api/vocab/entries/{id}`). */
+export function getVocabEntry(id: number, signal?: AbortSignal) {
+  return api.get<VocabEntryResponse>(`/vocab/entries/${id}`, signal);
+}
+
+/** Last renderings refresh and its job (`GET api/maintainer/vocab/renderings/status`). */
+export function getRenderingsStatus(signal?: AbortSignal) {
+  return api.get<VocabRenderingsStatus>("/maintainer/vocab/renderings/status", signal);
+}
+
+/** Starts the renderings refresh job (`POST api/maintainer/vocab/renderings/refresh`, 202 with the job). */
+export function startRenderingsRefresh() {
+  return api.post<VocabJob>("/maintainer/vocab/renderings/refresh", undefined);
+}
+
+/** Last lexicon generation and its job (`GET api/maintainer/vocab/status`). */
+export function getVocabGenerateStatus(signal?: AbortSignal) {
+  return api.get<VocabGenerateStatus>("/maintainer/vocab/status", signal);
+}
+
+/** Starts the lexicon generation job (`POST api/maintainer/vocab/generate`, 202 with the job). */
+export function startVocabGenerate() {
+  return api.post<VocabJob>("/maintainer/vocab/generate", undefined);
 }

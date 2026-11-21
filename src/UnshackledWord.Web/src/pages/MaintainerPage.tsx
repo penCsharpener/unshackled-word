@@ -15,6 +15,7 @@ import { LinkRolesSection } from "./LinkRolesSection";
 import { RevisionLevelsSection } from "./RevisionLevelsSection";
 import { RevisionOverviewSection } from "./RevisionOverviewSection";
 import { SeedRoundTripSection } from "./SeedRoundTripSection";
+import { VocabJobsSection } from "./VocabJobsSection";
 
 const KINDS: SeedKind[] = ["all", "morphology", "mappings", "revision"];
 
@@ -81,6 +82,7 @@ export function MaintainerPage() {
             </div>
           ) : null}
           {hasWriteRole(user) ? <SeedRoundTripSection /> : null}
+          {hasWriteRole(user) ? <VocabJobsSection /> : null}
           {hasWriteRole(user) ? <LinkRolesSection /> : null}
           <RevisionOverviewSection />
           {hasWriteRole(user) ? <RevisionLevelsSection /> : null}
