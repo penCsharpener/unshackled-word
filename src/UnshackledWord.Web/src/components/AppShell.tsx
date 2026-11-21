@@ -76,6 +76,12 @@ function AppShellContent() {
               >
                 {t("nav.about")}
               </NavLink>
+              <NavLink
+                to="/vocab"
+                className={({ isActive }) => (isActive ? "text-fg" : "text-fg-muted hover:text-fg")}
+              >
+                {t("nav.vocab")}
+              </NavLink>
             </nav>
             {/* Own line below the menu on mobile, centre of the menu from md. */}
             <div className="order-last flex h-12 w-full min-w-0 items-center md:order-none md:h-full md:w-auto md:flex-1 laptop:flex-none">
