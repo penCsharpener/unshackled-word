@@ -60,6 +60,8 @@ public sealed class VocabCourseRepository
         SELECT m."VocabEntryId" AS "EntryId"
              , m."German"
              , m."Rank"
+             , m."Count"
+             , m."Share"
         FROM "unshackled-word"."VocabMeanings" m
         WHERE 1=1
             AND m."VocabEntryId" = ANY(@Ids)
@@ -119,7 +121,7 @@ public sealed class VocabCourseRepository
 
             foreach (var item in items)
             {
-                item.Meanings = meanings[item.Id].Select(m => new VocabMeaningResponse { German = m.German, Rank = m.Rank }).ToList();
+                item.Meanings = meanings[item.Id].Select(m => new VocabMeaningResponse { German = m.German, Rank = m.Rank, Count = m.Count, Share = m.Share }).ToList();
                 item.StrongsKeys = keys[item.Id].Select(k => k.StrongsKey).ToList();
             }
         }
@@ -135,6 +137,8 @@ public sealed class VocabCourseRepository
         public int EntryId { get; init; }
         public string German { get; init; } = string.Empty;
         public int Rank { get; init; }
+        public int? Count { get; init; }
+        public decimal? Share { get; init; }
     }
 
     private sealed class KeyRow

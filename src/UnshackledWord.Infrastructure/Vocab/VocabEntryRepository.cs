@@ -27,7 +27,7 @@ public sealed class VocabEntryRepository
         FROM "unshackled-word"."VocabEntries" e
         WHERE 1=1
             AND e."Id" = @Id
-            AND e."RetiredAt" IS NULL
+            AND (@IncludeRetired OR e."RetiredAt" IS NULL)
         """;
 
     private const string SelectKeys = """
@@ -42,6 +42,8 @@ public sealed class VocabEntryRepository
     private const string SelectMeanings = """
         SELECT m."German"
              , m."Rank"
+             , m."Count"
+             , m."Share"
         FROM "unshackled-word"."VocabMeanings" m
         WHERE 1=1
             AND m."VocabEntryId" = @Id
@@ -255,10 +257,10 @@ public sealed class VocabEntryRepository
     public async Task<DateTime?> GetRenderingsRefreshedAtAsync() =>
         await _dbReader.ExecuteScalarAsync<DateTime?>(SelectRefreshedAt);
 
-    /// <summary>Null when the entry is unknown or retired.</summary>
-    public async Task<GetVocabEntryResponse?> GetAsync(int id)
+    /// <summary>Null when the entry is unknown or retired (the maintainer editor asks with <paramref name="includeRetired"/>).</summary>
+    public async Task<GetVocabEntryResponse?> GetAsync(int id, bool includeRetired = false)
     {
-        var entry = await _dbReader.ReadFirstOrDefaultAsync<VocabEntryDetailResponse>(SelectEntry, new { Id = id });
+        var entry = await _dbReader.ReadFirstOrDefaultAsync<VocabEntryDetailResponse>(SelectEntry, new { Id = id, IncludeRetired = includeRetired });
 
         if (entry is null)
         {

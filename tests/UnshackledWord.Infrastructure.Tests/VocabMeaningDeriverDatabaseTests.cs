@@ -10,6 +10,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// course nt-greek). Everything runs in one transaction that is rolled back. Set <c>UNSHACKLEDWORD_TEST_POSTGRES</c> (a copy of the dev
 /// database is the safe choice), otherwise the test is skipped.
 /// </summary>
+[Collection("VocabDatabase")]
 public class VocabMeaningDeriverDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

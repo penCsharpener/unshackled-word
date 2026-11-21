@@ -42,6 +42,12 @@ public sealed class VocabMeaningResponse
 {
     public string German { get; set; } = string.Empty;
     public int Rank { get; set; }
+
+    /// <summary>Head links with this rendering at derivation time; null for manual meanings.</summary>
+    public int? Count { get; set; }
+
+    /// <summary>Percent of the entry's head links at derivation time; null for manual meanings.</summary>
+    public decimal? Share { get; set; }
 }
 
 public sealed class VocabCourseEntryResponse
