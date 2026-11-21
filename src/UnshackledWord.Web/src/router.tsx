@@ -24,6 +24,8 @@ import { SignInPage } from "@/pages/SignInPage";
 import { StrongsPage } from "@/pages/StrongsPage";
 import { VerifyEmailPage } from "@/pages/VerifyEmailPage";
 import { VocabDetailPage } from "@/pages/VocabDetailPage";
+import { VocabEditorListPage } from "@/pages/VocabEditorListPage";
+import { VocabEditorPage } from "@/pages/VocabEditorPage";
 import { VocabListPage } from "@/pages/VocabListPage";
 
 export const router = createBrowserRouter([
@@ -53,6 +55,8 @@ export const router = createBrowserRouter([
         element: <LemmaEditorPage />,
         handle: { layout: "fill" },
       },
+      { path: "edit/vocab", element: <VocabEditorListPage /> },
+      { path: "edit/vocab/:id", element: <VocabEditorPage /> },
       { path: "edit/quality", element: <DataQualityPage /> },
       { path: "edit/maintainer", element: <MaintainerPage /> },
       { path: "edit/proposals/:runId?/:proposalId?", element: <AgentProposalsPage /> },

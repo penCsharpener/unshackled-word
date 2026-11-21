@@ -28,6 +28,7 @@ export function UserMenu() {
   ];
   if (hasWriteRole(user)) {
     items.push(
+      { key: "vocab", to: "/edit/vocab", label: t("vocab.editor.nav") },
       { key: "quality", to: "/edit/quality", label: t("quality.nav") },
       { key: "maintainer", to: "/edit/maintainer", label: t("maintainer.nav") },
       { key: "proposals", to: "/edit/proposals", label: t("agent.proposals.nav") },

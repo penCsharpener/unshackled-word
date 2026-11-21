@@ -74,6 +74,8 @@ export const api = {
     request<T>("POST", path, body, signal),
   put: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("PUT", path, body, signal),
+  patch: <T>(path: string, body: unknown, signal?: AbortSignal) =>
+    request<T>("PATCH", path, body, signal),
   delete: <T>(path: string, signal?: AbortSignal) => request<T>("DELETE", path, undefined, signal),
 };
 

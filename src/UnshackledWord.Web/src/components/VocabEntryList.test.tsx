@@ -86,3 +86,40 @@ describe("VocabEntryList", () => {
     expect(link).not.toHaveAttribute("dir");
   });
 });
+
+describe("VocabEntryList in editor mode", () => {
+  function renderEditor(entries: VocabEntryRow[]) {
+    return render(
+      <MemoryRouter>
+        <VocabEntryList mode="editor" entries={entries} linkTo={(id) => `/edit/vocab/${id}`} />
+      </MemoryRouter>,
+    );
+  }
+
+  it("links each lemma to the editor and shows audio, reviewed and learners", () => {
+    renderEditor([greek({ id: 3, hasAudio: true, reviewed: false, learners: 12 })]);
+    const table = screen.getByRole("table");
+    expect(within(table).getByRole("link", { name: "λόγος" })).toHaveAttribute(
+      "href",
+      "/edit/vocab/3",
+    );
+    expect(within(table).getByText("yes")).toBeInTheDocument();
+    expect(within(table).getByText("no")).toBeInTheDocument();
+    expect(within(table).getByText("12")).toBeInTheDocument();
+    expect(within(table).queryByRole("button", { name: "Play pronunciation" })).toBeNull();
+  });
+
+  it("shows the agent origin of a study form and no occurrences column", () => {
+    renderEditor([greek({ formOrigin: "agent" })]);
+    const table = screen.getByRole("table");
+    expect(within(table).getByText("from AI")).toBeInTheDocument();
+    expect(within(table).queryByText("330")).toBeNull();
+  });
+
+  it("shows a dash for an entry without a rank", () => {
+    renderEditor([greek({ rank: null })]);
+    expect(
+      within(screen.getByRole("table")).getByText("–", { selector: "td" }),
+    ).toBeInTheDocument();
+  });
+});
