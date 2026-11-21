@@ -313,6 +313,39 @@ The Umami database (`umami`) is **not** backed up on purpose: losing the analyti
 
 Also keep: `.env` (in a password manager, not in git), the `dataprotection` volume (optional, only preserves sessions) and `assets/seed` (it is in git once you commit exports). `temp/` is a download cache and can be rebuilt. Test a restore at least once. Do not back up by copying the live Postgres data directory.
 
+### Object storage (Garage, optional, vocab audio)
+
+Only needed for vocab audio. Without `ObjectStorage` config the API does not register storage and `api/health/ready` stays green; with it, a `storage` check (bucket reachable) is added.
+
+1. Start Garage (single node, `dxflrs/garage:v2.4.1`, config `deploy/garage/garage.toml`, volumes `garage_meta`/`garage_data`):
+   `docker compose --env-file deployment/.env -f compose.yml -f deployment/compose.prod.yml up -d unshackledword.garage`
+2. Bootstrap once (idempotent: layout, bucket `unshackledword-media`, key `unshackledword-api`; prints the values for `.env`):
+   `COMPOSE="docker compose --env-file deployment/.env -f compose.yml -f deployment/compose.prod.yml" deploy/garage/bootstrap.sh`
+3. Put the printed values into `.env` (never in git) and set the public URL to your own origin plus `/media`:
+
+```bash
+GARAGE_RPC_SECRET=<64 hex chars, openssl rand -hex 32>   # set before the first start; dev default is all zeros
+GARAGE_ADMIN_TOKEN=<random>
+OBJECT_STORAGE_SERVICE_URL=http://unshackledword.garage:3900
+OBJECT_STORAGE_PUBLIC_URL=https://example.org/media      # dev: http://localhost:5173/media
+UNSHACKLEDWORD_OBJECT_STORAGE_ACCESS_KEY=GK...
+UNSHACKLEDWORD_OBJECT_STORAGE_SECRET_KEY=...
+```
+
+4. Recreate the API: `up -d unshackledword.tooling.webapi`.
+
+Reads are presigned GET URLs on `OBJECT_STORAGE_PUBLIC_URL`. The signature covers the public host, so the proxy in front must strip only `/media` and forward the `Host` header unchanged (`nginx.prod.conf` uses `$http_host`; Nginx Proxy Manager must keep the Host header too). `ObjectStorage:Region` and `s3_region` in `garage.toml` must both be `garage`; a mismatch is answered with a bare 400. Uploads go through the API, so Garage's S3 port is not published in production.
+
+Backup: copy the Garage volumes next to the Postgres dump, e.g. with the container stopped or after `garage meta snapshot`:
+
+```bash
+docker run --rm -v unshackled-word_garage_data:/data:ro -v unshackled-word_garage_meta:/meta:ro -v /backups:/backups rclone/rclone \
+  copy /data /backups/garage-$(date +%F)/data
+docker run --rm -v unshackled-word_garage_meta:/meta:ro -v /backups:/backups rclone/rclone copy /meta /backups/garage-$(date +%F)/meta
+```
+
+The volume prefix is your compose project name (`docker volume ls | grep garage`). Restoring means copying both folders back into empty volumes before the first start. Without audio nothing is lost if Garage is gone: the audio is re-recorded.
+
 ### Logs and health
 
 * Serilog writes to the console (use `docker compose logs`) and to `./bin/unshackled-word.tooling.web-api-<date>.log` inside the container (ephemeral). Set levels with `UNSHACKLEDWORD_SERILOG__MINIMUMLEVEL__DEFAULT=Warning` (and `...__OVERRIDE__MICROSOFT`) if the logs are too chatty. Add `logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }` per service to cap Docker log growth.

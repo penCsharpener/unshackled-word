@@ -47,6 +47,9 @@ services:
     volumes:
       - dataprotection:/home/app/.aspnet           # cookie encryption keys: keeps sessions valid across deploys
 
+  unshackledword.garage:
+    ports: !reset []                 # only the compose network (API, nginx) reaches Garage
+
   mailpit:
     profiles: ["dev"]                # never started in production
     ports: !reset []

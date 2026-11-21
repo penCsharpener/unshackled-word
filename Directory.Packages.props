@@ -7,6 +7,7 @@
     <PackageVersion Include="coverlet.collector" Version="10.1.1" />
     <PackageVersion Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.104.6" />
     <PackageVersion Include="Dapper" Version="2.1.89" />
     <PackageVersion Include="dbup-postgresql" Version="7.0.1" />
     <PackageVersion Include="dbup-sqlite" Version="6.0.4" />

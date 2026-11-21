@@ -84,6 +84,11 @@ services:
       - UNSHACKLEDWORD_EMAIL__USERNAME=${EMAIL_USERNAME:-}
       - UNSHACKLEDWORD_EMAIL__PASSWORD=${EMAIL_PASSWORD:-}
       - UNSHACKLEDWORD_EMAIL__FROMADDRESS=${EMAIL_FROM_ADDRESS:-noreply@unshackled-word.local}
+      # Object storage (Garage, roadmap 0022). Empty ServiceUrl = feature off and no storage ready check. Values come from deploy/garage/bootstrap.sh.
+      - UNSHACKLEDWORD_OBJECTSTORAGE__SERVICEURL=${OBJECT_STORAGE_SERVICE_URL:-}
+      - UNSHACKLEDWORD_OBJECTSTORAGE__PUBLICSERVICEURL=${OBJECT_STORAGE_PUBLIC_URL:-}
+      - UNSHACKLEDWORD_OBJECTSTORAGE__ACCESSKEY=${UNSHACKLEDWORD_OBJECT_STORAGE_ACCESS_KEY:-}
+      - UNSHACKLEDWORD_OBJECTSTORAGE__SECRETKEY=${UNSHACKLEDWORD_OBJECT_STORAGE_SECRET_KEY:-}
 
   # Local SMTP sandbox with a catch-all web inbox (http://localhost:8025); nothing ever leaves the machine.
   mailpit:
@@ -91,6 +96,21 @@ services:
     ports:
       - "127.0.0.1:1025:1025" # SMTP
       - "127.0.0.1:8025:8025" # web UI
+
+  # S3-compatible object storage for vocab audio. Layout, bucket and key: deploy/garage/bootstrap.sh (once, idempotent).
+  unshackledword.garage:
+    image: dxflrs/garage:v2.4.1
+    command: /garage server
+    restart: unless-stopped
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET:-0000000000000000000000000000000000000000000000000000000000000000}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN:-unshackledword_dev_garage_admin}
+    ports:
+      - "127.0.0.1:3900:3900" # S3 API (tests, curl); prod overlay removes it
+    volumes:
+      - ./deploy/garage/garage.toml:/etc/garage.toml:ro
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
 
   unshackledword.tooling.mcpserver:
     #image: unshackledword.tooling.mcpserver
@@ -121,6 +141,7 @@ services:
       # Browsers call the same-origin /api; the Vite dev server proxies it to the API on the host.
       - VITE_WORD_DETAIL_SOURCE=api
       - API_PROXY_TARGET=${API_PROXY_TARGET:-http://host.docker.internal:5142}
+      - MEDIA_PROXY_TARGET=${MEDIA_PROXY_TARGET:-http://unshackledword.garage:3900}
       # Build-time: the Vite build injects the Umami tag only when this is set (read from the repo-root .env).
       - VITE_UMAMI_WEBSITE_ID=${VITE_UMAMI_WEBSITE_ID:-}
     extra_hosts:
@@ -133,3 +154,5 @@ services:
 
 volumes:
   unshackled_web_node_modules:
+  garage_meta:
+  garage_data:

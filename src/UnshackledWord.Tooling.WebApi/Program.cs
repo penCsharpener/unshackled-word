@@ -2,6 +2,7 @@ using System.Text.Json;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
+using UnshackledWord.Infrastructure.ObjectStorage;
 using UnshackledWord.Infrastructure.Observability;
 using UnshackledWord.Tooling.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Extensions;
@@ -27,6 +28,7 @@ public partial class Program
         builder.Services.AddRateLimiting(builder.Configuration);
         builder.AddUnshackledTelemetry(ServiceName);
         builder.Services.AddUnshackledHealthChecks();
+        builder.Services.AddObjectStorageIfConfigured(builder.Configuration);
 
         builder.Services.AddOpenApi();
         builder.Services.AddCors();

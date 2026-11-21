@@ -1,0 +1,21 @@
+# Garage node configuration (roadmap 0022.5), bind-mounted to /etc/garage.toml by compose.yml.
+# No secrets here: rpc_secret and admin_token come from GARAGE_RPC_SECRET / GARAGE_ADMIN_TOKEN (compose, .env).
+# One node, no replication; the cluster layout, bucket and key are created by deploy/garage/bootstrap.sh.
+
+metadata_dir = "/var/lib/garage/meta"
+data_dir     = "/var/lib/garage/data"
+db_engine    = "lmdb"
+
+replication_factor = 1
+
+rpc_bind_addr   = "[::]:3901"
+rpc_public_addr = "127.0.0.1:3901"
+
+[s3_api]
+# Must equal ObjectStorage:Region in the API. A mismatch is answered with a bare 400 that never mentions the region.
+s3_region     = "garage"
+api_bind_addr = "[::]:3900"
+# root_domain stays unset: path-style /<bucket>/<key>. The proxy forwards the public Host header, which SigV4 signs.
+
+[admin]
+api_bind_addr = "[::]:3903"

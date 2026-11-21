@@ -49,6 +49,11 @@ export default defineConfig(({ mode }) => {
       // Same-origin /api so LAN clients don't need to reach the API host directly.
       proxy: {
         "/api": env.API_PROXY_TARGET ?? "http://host.docker.internal:5142",
+        // Presigned media reads (Garage): /media/<bucket>/<key>?... -> /<bucket>/<key>?... byte for byte. No changeOrigin: SigV4 signs the public Host header.
+        "/media": {
+          target: env.MEDIA_PROXY_TARGET ?? "http://unshackledword.garage:3900",
+          rewrite: (path: string) => path.replace(/^\/media/, ""),
+        },
         // Same-origin Umami tracker: /stats/script.js -> Umami /script.js, /stats/api/send -> /api/send.
         "/stats": {
           target: env.UMAMI_PROXY_TARGET ?? "http://host.docker.internal:3002",
