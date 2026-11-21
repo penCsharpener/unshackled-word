@@ -5,6 +5,7 @@ using UnshackledWord.Infrastructure.Seed.BaseText;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Infrastructure.Seed.Morphology;
 using UnshackledWord.Infrastructure.Seed.Revision;
+using UnshackledWord.Infrastructure.Vocab;
 
 namespace UnshackledWord.Infrastructure.Seed;
 
@@ -25,6 +26,7 @@ public sealed class SeedRebaseService
     private readonly MorphologySeedImporter _morphologyImporter;
     private readonly MappingSeedImporter _mappingImporter;
     private readonly RebaseRepository _repository;
+    private readonly VocabRenderingsRefresher _vocabRenderings;
     private readonly Elberfelder1871Strategy _wordStrategy;
     private readonly Elberfelder1871VerseStrategy _verseStrategy;
     private readonly IFileService _fileService;
@@ -38,6 +40,7 @@ public sealed class SeedRebaseService
         MorphologySeedImporter morphologyImporter,
         MappingSeedImporter mappingImporter,
         RebaseRepository repository,
+        VocabRenderingsRefresher vocabRenderings,
         Elberfelder1871Strategy wordStrategy,
         Elberfelder1871VerseStrategy verseStrategy,
         IFileService fileService,
@@ -50,6 +53,7 @@ public sealed class SeedRebaseService
         _morphologyImporter = morphologyImporter;
         _mappingImporter = mappingImporter;
         _repository = repository;
+        _vocabRenderings = vocabRenderings;
         _wordStrategy = wordStrategy;
         _verseStrategy = verseStrategy;
         _fileService = fileService;
@@ -115,6 +119,10 @@ public sealed class SeedRebaseService
         result.RevisionRealigned = realigned;
         result.RevisionMissing = missing;
         Report(progress, $"Revision: base links of {realigned} active variants recomputed, {missing} variants sit on verses that no longer exist");
+
+        // The vocab renderings read the rebuilt German words and mappings (roadmap 0022.2).
+        Report(progress, "Refreshing the vocab renderings");
+        result.Steps.Add(await _vocabRenderings.RefreshAsync(progress, token));
 
         var after = await _repository.ReadCountsAsync();
         result.After = ToCounts(after);

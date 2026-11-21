@@ -48,6 +48,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<SeedRebaseService>();
         services.AddScoped<SeedImportsRepository>();
         services.AddScoped<VocabLexiconGenerator>();
+        services.AddScoped<VocabRenderingsRefresher>();
 
         return services;
     }
