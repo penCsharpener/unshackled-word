@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vokabeltrainer Click-Dummy (0022)</title>
+<!--
+  Click dummy for roadmap 0022 (spec: 07-ui-drafts.md). Mock data only, nothing is saved, reload resets.
+
+  HOW TO COPY THIS INTO THE APP (for implementers):
+  - Every class on an element inside <main> is a real class of the app (Tailwind v4 with the tokens of
+    src/UnshackledWord.Web/src/styles/index.css, copied below). No arbitrary values, no inline styles. Copy them as they are.
+  - data-c="Name"        -> the element is the root of component Name. data-new="1" marks a NEW component
+                            (src/components/Name.tsx, register in Components.md); without data-new it is an EXISTING one.
+  - data-page="File"     -> the page/section file (src/pages/...) that owns this block.
+  - data-btn="v s"       -> <Button variant="v" size="s">. The dummy's script expands it into buttonClasses(); in the app
+                            write <Button>, never a raw <button>.
+  - data-uses="..."      -> the existing component (with props) to use for this element instead of the raw markup.
+  - Texts are the German i18n strings; the key is in data-i18n where it is not obvious. English goes to en.ts.
+  - Everything with data-dummy is the dummy's control bar and is NOT copied.
+  Needs internet once: the Tailwind browser build from jsdelivr renders the real classes.
+-->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
+<style type="text/tailwindcss">
+  /* Copied from src/styles/index.css: tokens and @theme. Keep in sync by hand; the dummy has no other colours. */
+  :root {
+    color-scheme: light;
+    --uw-bg: oklch(0.99 0.004 85); --uw-surface: oklch(1 0 0); --uw-surface-muted: oklch(0.96 0.006 85);
+    --uw-fg: oklch(0.22 0.01 60); --uw-fg-muted: oklch(0.48 0.01 60); --uw-border: oklch(0.88 0.008 80);
+    --uw-accent: oklch(0.42 0.1 30); --uw-accent-fg: oklch(0.99 0.004 85); --uw-focus: oklch(0.6 0.15 250);
+    --uw-mark-same: oklch(0.88 0.08 240); --uw-mark-related: oklch(0.9 0.1 150); --uw-mark-linked: oklch(0.9 0.14 95);
+    --uw-mark-passage: oklch(0.95 0.03 75); --uw-chart-1: #2a78d6; --uw-chart-3: #1baf7a; --uw-chart-empty: oklch(0.9 0.006 80);
+    --uw-sev-error: #d03b3b; --uw-sev-warning: #fab219; --uw-sev-info: #2a78d6; --uw-sev-ok: #0ca30c;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --uw-bg: oklch(0.18 0.008 60); --uw-surface: oklch(0.22 0.01 60); --uw-surface-muted: oklch(0.27 0.012 60);
+    --uw-fg: oklch(0.94 0.005 85); --uw-fg-muted: oklch(0.7 0.01 70); --uw-border: oklch(0.34 0.012 60);
+    --uw-accent: oklch(0.78 0.1 50); --uw-accent-fg: oklch(0.2 0.01 60); --uw-focus: oklch(0.72 0.14 250);
+    --uw-mark-same: oklch(0.42 0.09 240); --uw-mark-related: oklch(0.42 0.09 150); --uw-mark-linked: oklch(0.5 0.1 90);
+    --uw-mark-passage: oklch(0.3 0.035 75); --uw-chart-1: #3987e5; --uw-chart-3: #199e70; --uw-chart-empty: oklch(0.3 0.01 60);
+  }
+  @theme inline {
+    --color-bg: var(--uw-bg); --color-surface: var(--uw-surface); --color-surface-muted: var(--uw-surface-muted);
+    --color-fg: var(--uw-fg); --color-fg-muted: var(--uw-fg-muted); --color-border: var(--uw-border);
+    --color-accent: var(--uw-accent); --color-accent-fg: var(--uw-accent-fg); --color-focus: var(--uw-focus);
+    --color-mark-same: var(--uw-mark-same); --color-mark-related: var(--uw-mark-related);
+    --color-mark-linked: var(--uw-mark-linked); --color-mark-passage: var(--uw-mark-passage);
+    --color-chart-1: var(--uw-chart-1); --color-chart-3: var(--uw-chart-3); --color-chart-empty: var(--uw-chart-empty);
+    --color-sev-error: var(--uw-sev-error); --color-sev-warning: var(--uw-sev-warning);
+    --color-sev-info: var(--uw-sev-info); --color-sev-ok: var(--uw-sev-ok);
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-scripture: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --font-original: "SBL BibLit", "Noto Serif Hebrew", "Noto Serif", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --container-popover: 24rem; --container-page: 72rem;
+  }
+  body { background-color: var(--color-bg); color: var(--color-fg); font-family: var(--font-sans); }
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 1px; }
+</style>
+<style>
+  /* Dummy only: control bar and the component outline overlay. Not part of the app. */
+  #ctl { position: sticky; top: 0; z-index: 60; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 6px 12px; background: #111216; color: #e8e8ec; border-bottom: 2px dashed #ff4fd8; font: 12px ui-monospace, monospace; }
+  #ctl b { color: #ff4fd8; }
+  #ctl button, #ctl select { font: inherit; background: #2b2d35; color: #e8e8ec; border: 1px solid #44464f; border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+  #ctl button[aria-pressed="true"] { background: #ff4fd8; color: #111; }
+  body.show-c [data-c] { outline: 1px dashed #2a78d6; outline-offset: 2px; position: relative; }
+  body.show-c [data-c][data-new] { outline-color: #ff4fd8; }
+  body.show-c [data-c]::before { content: attr(data-c); position: absolute; top: -9px; left: 4px; z-index: 50;
+    font: 10px/1 ui-monospace, monospace; padding: 1px 3px; background: #2a78d6; color: #fff; border-radius: 3px; pointer-events: none; }
+  body.show-c [data-c][data-new]::before { content: attr(data-c) " (neu)"; background: #ff4fd8; color: #111; }
+  body.show-c [data-page] { box-shadow: inset 0 0 0 2px #1baf7a55; }
+</style>
+</head>
+<body>
+
+<div id="ctl" data-dummy>
+  <b>0022 Dummy</b>
+  <span>Screen:</span>
+  <button data-go="vocab-list" aria-pressed="true">1 /vocab</button>
+  <button data-go="vocab-detail">2 /vocab/:id</button>
+  <button data-go="learn">3 /learn</button>
+  <button data-go="session">4 /learn/:course</button>
+  <button data-go="editor-list">5 /edit/vocab</button>
+  <button data-go="editor">6 /edit/vocab/:id</button>
+  <button data-go="jobs">7 /edit/maintainer</button>
+  <span>|</span>
+  <span>Karte:</span>
+  <select id="cardSel" aria-label="Kartentyp">
+    <option value="intro">introduction</option><option value="mc">multiple_choice</option>
+    <option value="reverse">reverse_multiple_choice</option><option value="listening">listening</option>
+    <option value="verse">verse_context</option><option value="typing">typing (Griechisch)</option>
+    <option value="typing-he">typing (Hebräisch)</option><option value="summary">Zusammenfassung</option>
+  </select>
+  <button id="anonBtn" aria-pressed="false">anonym</button>
+  <button id="themeBtn">Hell/Dunkel</button>
+  <button id="compBtn" aria-pressed="false">Komponenten zeigen</button>
+</div>
+
+<!-- AppShell header (existing). Only the new menu entries are relevant: "Vokabeln" (public) and "Lernen". -->
+<header class="flex h-12 items-center gap-4 border-b border-border bg-surface px-4" data-c="AppShell">
+  <span class="font-semibold">Unshackled Word</span>
+  <nav class="flex gap-3 text-sm text-fg-muted">
+    <a href="#" class="hover:text-fg">Bibel</a>
+    <a href="#" data-go="vocab-list" class="hover:text-fg" data-i18n="nav.vocab">Vokabeln</a>
+    <a href="#" data-go="learn" class="hover:text-fg" data-i18n="nav.learn">Lernen</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============================================================ 1 /vocab -->
+<section data-screen="vocab-list" data-page="pages/VocabListPage.tsx" class="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div class="grid gap-1">
+      <h1 class="text-2xl font-semibold" data-i18n="vocab.list.title">Vokabeln</h1>
+      <p class="text-sm text-fg-muted" data-i18n="vocab.list.intro">Der ganze Wortschatz des Grundtexts, die häufigsten Wörter zuerst.</p>
+    </div>
+    <div class="flex gap-1" role="group" aria-label="Testament" data-uses="Button variant=secondary aria-pressed (segmented, two buttons)">
+      <button data-btn="secondary sm" aria-pressed="true" data-track="G">NT · Griechisch</button>
+      <button data-btn="secondary sm" aria-pressed="false" data-track="H">AT · Hebräisch/Aramäisch</button>
+    </div>
+  </div>
+  <div class="flex flex-wrap items-end gap-3">
+    <label class="grid gap-1 text-sm" data-uses="TextField label='Suchen' size=sm icon=magnifier">
+      <span class="text-fg-muted">Suchen</span>
+      <input type="search" placeholder="Lemma, Umschrift oder Deutsch" class="w-72 rounded-md border border-border bg-bg px-2 py-1 text-sm">
+    </label>
+    <label class="grid gap-1 text-sm" data-uses="Select label='Anzeigen' size=sm">
+      <span class="text-fg-muted">Anzeigen</span>
+      <select class="rounded-md border border-border bg-bg px-2 py-1 text-sm"><option>Alle</option><option>Nur geprüfte</option><option>Nur mit Audio</option></select>
+    </label>
+    <p class="ml-auto text-sm text-fg-muted tabular-nums">5.412 Einträge · 138.019 Vorkommen</p>
+  </div>
+
+  <!-- VocabEntryList mode="public": table from md, cards below md. Rows come from GET api/vocab/courses/{code}/entries. -->
+  <div data-c="VocabEntryList" data-new="1" class="grid gap-2">
+    <div class="hidden overflow-x-auto md:block">
+      <table class="w-full text-left text-sm">
+        <thead class="text-fg-muted">
+          <tr class="border-b border-border">
+            <th class="py-2 pr-4 font-medium">Rang</th><th class="py-2 pr-4 font-medium">Lemma</th>
+            <th class="py-2 pr-4 font-medium">Lernform</th><th class="py-2 pr-4 font-medium">Bedeutungen</th>
+            <th class="py-2 pr-4 text-right font-medium">Vorkommen</th><th class="py-2 font-medium"><span class="sr-only">Aussprache</span></th>
+          </tr>
+        </thead>
+        <tbody id="listBody" class="divide-y divide-border"></tbody>
+      </table>
+    </div>
+    <ol id="listCards" class="grid gap-2 md:hidden"></ol>
+    <div class="flex items-center justify-between gap-3 text-sm text-fg-muted">
+      <span class="tabular-nums">1–8 von 5.412</span>
+      <div class="flex gap-2"><button data-btn="secondary sm" disabled>Zurück</button><button data-btn="secondary sm">Weiter</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 2 /vocab/:id -->
+<section data-screen="vocab-detail" hidden data-page="pages/VocabDetailPage.tsx" class="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4">
+  <div class="flex flex-wrap items-start justify-between gap-4">
+    <div class="grid gap-1">
+      <a href="#" data-go="vocab-list" class="text-sm text-accent underline">← Vokabeln</a>
+      <h1 class="flex flex-wrap items-baseline gap-3">
+        <span lang="grc" class="font-original text-4xl">λόγος</span>
+        <span lang="grc" class="font-original text-2xl text-fg-muted">λόγος, -ου, ὁ</span>
+      </h1>
+      <p class="text-sm text-fg-muted">logos · Substantiv, maskulin · Rang 87 im NT · 330 Vorkommen in 316 Versen</p>
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <span data-uses="StatusBadge tone=warning" class="inline-flex items-center gap-1 rounded-md border border-sev-warning bg-surface px-2 py-0.5 text-xs font-medium text-fg">⚠ ungeprüft</span>
+        <span class="text-sm text-fg-muted">Strong's:</span>
+        <a href="#" class="rounded-md border border-border px-2 py-0.5 text-sm text-accent underline">G3056</a>
+      </div>
+    </div>
+    <div data-c="AudioField" data-new="1" class="flex items-center gap-2">
+      <button data-btn="secondary md" aria-label="Aussprache abspielen" data-play>▶ Anhören</button>
+    </div>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-2">
+    <section class="grid content-start gap-3 rounded-lg border border-border bg-surface p-4">
+      <h2 class="text-lg font-semibold" data-i18n="vocab.detail.meanings">Bedeutungen zum Lernen</h2>
+      <ol class="grid gap-1 text-sm">
+        <li class="flex items-baseline justify-between gap-2"><span><span class="font-medium">Wort</span></span><span class="tabular-nums text-fg-muted">220×</span></li>
+        <li class="flex items-baseline justify-between gap-2"><span class="font-medium">Rede</span><span class="tabular-nums text-fg-muted">40×</span></li>
+        <li class="flex items-baseline justify-between gap-2"><span class="font-medium">Sache</span><span class="tabular-nums text-fg-muted">12×</span></li>
+        <li class="flex items-baseline justify-between gap-2"><span class="font-medium">Rechenschaft</span><span class="tabular-nums text-fg-muted">8×</span></li>
+      </ol>
+      <p class="text-xs text-fg-muted">Abgeleitet aus der Elberfelder (2027, sonst 1871). Alle vier gelten im Quiz als richtig.</p>
+    </section>
+
+    <!-- Existing RankedBarList: items = renderings (label German, sub "davon n aus 2027", value LinkCount, flags for not accepted). -->
+    <section class="grid content-start gap-3 rounded-lg border border-border bg-surface p-4"
+             data-c="RankedBarList" data-uses="RankedBarList title='Wiedergaben in der Elberfelder' items=renderings">
+      <h3 class="text-sm font-medium text-fg">Wiedergaben in der Elberfelder</h3>
+      <ol class="grid gap-1" id="detailRenderings"></ol>
+      <p class="text-xs text-fg-muted">Stand der Wiedergaben: 21.11.2026, 09:14</p>
+    </section>
+  </div>
+
+  <section class="grid gap-3">
+    <h2 class="text-lg font-semibold">Beispielverse</h2>
+    <ol class="grid gap-3" id="detailVerses"></ol>
+  </section>
+</section>
+
+<!-- ============================================================ 3 /learn -->
+<section data-screen="learn" hidden data-page="pages/LearnPage.tsx" class="mx-auto flex w-full max-w-4xl flex-col gap-4 p-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-2xl font-semibold" data-i18n="learn.title">Lernen</h1>
+    <button data-btn="ghost sm" data-open="settingsDlg" class="signed-in">⚙ Quiz-Einstellungen</button>
+  </div>
+
+  <p class="anon-only hidden rounded-lg border border-border bg-surface-muted p-3 text-sm">
+    Zum Lernen bitte <a href="#" class="text-accent underline">anmelden</a>. Der Fortschritt wird für dein Konto gespeichert.
+  </p>
+
+  <!-- Change notice (roadmap 0022.8bf). Rendered only when GET api/vocab/changes returns items. Never blocks a session. -->
+  <div class="signed-in flex flex-wrap items-center justify-between gap-3 rounded-lg border border-sev-info bg-surface p-3" role="status" id="changeNotice">
+    <p class="text-sm"><span aria-hidden="true">ℹ </span><span id="changeCount">3</span> deiner Wörter wurden überarbeitet.</p>
+    <button data-btn="secondary sm" data-open="changesDlg">Ansehen</button>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2">
+    <article data-c="CourseCard" data-new="1" class="grid content-start gap-3 rounded-lg border border-border bg-surface p-4">
+      <div class="grid gap-1">
+        <h2 class="text-lg font-semibold">Neues Testament</h2>
+        <p class="text-sm text-fg-muted">Griechisch · 5.412 Wörter nach Häufigkeit</p>
+      </div>
+      <div class="signed-in grid gap-1">
+        <div data-uses="ProgressBar value=62.4 max=100 label='Textabdeckung'" class="h-2 w-full overflow-hidden rounded-sm bg-chart-empty"><div class="h-2 w-3/5 bg-accent"></div></div>
+        <p class="text-sm"><span class="font-semibold tabular-nums">62,4 %</span> des NT-Textes kennst du schon.</p>
+      </div>
+      <dl class="signed-in grid grid-cols-3 gap-2 text-sm">
+        <div><dt class="text-fg-muted">Bekannt</dt><dd class="text-lg font-semibold tabular-nums">142</dd></div>
+        <div><dt class="text-fg-muted">Fällig</dt><dd class="text-lg font-semibold tabular-nums">18</dd></div>
+        <div><dt class="text-fg-muted">Neu</dt><dd class="text-lg font-semibold tabular-nums">5.270</dd></div>
+      </dl>
+      <button data-btn="primary md" data-go="session" class="signed-in">Weiterlernen · 18 fällig</button>
+      <a href="#" class="anon-only hidden text-sm text-accent underline">Wortliste ansehen</a>
+    </article>
+    <article data-c="CourseCard" data-new="1" class="grid content-start gap-3 rounded-lg border border-border bg-surface p-4">
+      <div class="grid gap-1">
+        <h2 class="text-lg font-semibold">Altes Testament</h2>
+        <p class="text-sm text-fg-muted">Hebräisch und Aramäisch · 8.311 Wörter nach Häufigkeit</p>
+      </div>
+      <div class="signed-in grid gap-1">
+        <div class="h-2 w-full overflow-hidden rounded-sm bg-chart-empty"><div class="h-2 w-0 bg-accent"></div></div>
+        <p class="text-sm text-fg-muted">Noch nicht begonnen.</p>
+      </div>
+      <button data-btn="secondary md" data-go="session" class="signed-in">Beginnen</button>
+      <a href="#" class="anon-only hidden text-sm text-accent underline">Wortliste ansehen</a>
+    </article>
+  </div>
+</section>
+
+<!-- ============================================================ 4 /learn/:course -->
+<section data-screen="session" hidden data-page="pages/StudySessionPage.tsx" class="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
+  <div class="flex items-center gap-3">
+    <button data-btn="ghost sm" data-go="learn" aria-label="Sitzung verlassen">✕</button>
+    <div class="grid flex-1 gap-1" data-uses="ProgressBar value=7 max=20 label='Wort 7 von 20'">
+      <div class="h-2 w-full overflow-hidden rounded-sm bg-chart-empty"><div class="h-2 w-1/3 bg-accent"></div></div>
+    </div>
+    <span class="text-sm tabular-nums text-fg-muted">7 / 20</span>
+  </div>
+
+  <!-- StudyCard: frame for every card type. Props: kind (label), children (prompt + answer area), footer. -->
+  <article data-c="StudyCard" data-new="1" class="grid gap-5 rounded-lg border border-border bg-surface p-4 md:p-6" id="card"></article>
+</section>
+
+<!-- ============================================================ 5 /edit/vocab -->
+<section data-screen="editor-list" hidden data-page="pages/VocabEditorListPage.tsx" class="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-2xl font-semibold">Vokabeln bearbeiten</h1>
+    <div class="flex gap-1" role="group" aria-label="Testament">
+      <button data-btn="secondary sm" aria-pressed="true">NT</button><button data-btn="secondary sm" aria-pressed="false">AT</button>
+    </div>
+  </div>
+  <div class="flex flex-wrap items-end gap-3">
+    <label class="grid gap-1 text-sm" data-uses="TextField size=sm"><span class="text-fg-muted">Suchen</span>
+      <input type="search" class="w-56 rounded-md border border-border bg-bg px-2 py-1 text-sm" placeholder="Lemma oder Deutsch"></label>
+    <label class="grid gap-1 text-sm" data-uses="Select size=sm"><span class="text-fg-muted">Filter</span>
+      <select class="rounded-md border border-border bg-bg px-2 py-1 text-sm">
+        <option>Alle</option><option selected>Ungeprüft</option><option>Ohne Audio</option><option>Lernform fehlt</option>
+        <option>Lernform von KI</option><option>Mehrere Strong's</option><option>Stillgelegt</option></select></label>
+    <label class="grid gap-1 text-sm" data-uses="TextField size=sm type=number"><span class="text-fg-muted">Rang von</span>
+      <input type="number" value="1" class="w-24 rounded-md border border-border bg-bg px-2 py-1 text-sm"></label>
+    <label class="grid gap-1 text-sm" data-uses="TextField size=sm type=number"><span class="text-fg-muted">bis</span>
+      <input type="number" value="300" class="w-24 rounded-md border border-border bg-bg px-2 py-1 text-sm"></label>
+    <p class="ml-auto text-sm tabular-nums text-fg-muted">214 Treffer</p>
+  </div>
+  <!-- VocabEntryList mode="editor": extra columns form origin, audio, reviewed, learners; row links to /edit/vocab/:id. -->
+  <div data-c="VocabEntryList" data-new="1" class="overflow-x-auto">
+    <table class="w-full text-left text-sm">
+      <thead class="text-fg-muted"><tr class="border-b border-border">
+        <th class="py-2 pr-4 font-medium">Rang</th><th class="py-2 pr-4 font-medium">Lemma</th><th class="py-2 pr-4 font-medium">Lernform</th>
+        <th class="py-2 pr-4 font-medium">Bedeutungen</th><th class="py-2 pr-4 font-medium">Audio</th>
+        <th class="py-2 pr-4 font-medium">Geprüft</th><th class="py-2 pr-4 text-right font-medium">Nutzer</th></tr></thead>
+      <tbody id="editorListBody" class="divide-y divide-border"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ 6 /edit/vocab/:id -->
+<section data-screen="editor" hidden data-page="pages/VocabEditorPage.tsx" class="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4 pb-24">
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <div class="grid gap-1">
+      <a href="#" data-go="editor-list" class="text-sm text-accent underline">← Vokabeln bearbeiten</a>
+      <h1 class="flex flex-wrap items-baseline gap-3"><span lang="grc" class="font-original text-3xl">μέσος</span>
+        <span class="text-sm text-fg-muted">Rang 241 · 58 Vorkommen · Adjektiv · 12 Nutzer</span></h1>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <button data-btn="ghost sm">← εὐθύς</button><button data-btn="ghost sm">ἕτερος →</button>
+      <span data-uses="Switch checked onCheckedChange" class="inline-flex items-center gap-2 text-sm">
+        <button role="switch" aria-checked="false" id="reviewedSw" class="relative inline-flex h-6 w-11 items-center rounded-full border border-border bg-surface-muted transition-colors aria-checked:bg-accent">
+          <span class="ml-1 h-4 w-4 rounded-full bg-fg-muted transition-transform"></span></button>
+        Geprüft</span>
+    </div>
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-5">
+    <div class="grid content-start gap-4 lg:col-span-3">
+
+      <!-- Lernform -->
+      <section class="grid gap-3 rounded-lg border border-border bg-surface p-4">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="text-lg font-semibold">Lernform</h2>
+          <span data-uses="StatusBadge tone=info" id="formOrigin" class="inline-flex items-center gap-1 rounded-md border border-sev-info bg-surface px-2 py-0.5 text-xs font-medium text-fg">ℹ von KI</span>
+        </div>
+        <label class="grid gap-1 text-sm" data-uses="TextField label='Lernform' (lang=grc, font-original)">
+          <span class="text-fg-muted">Lernform (Tippziel, leer = Lemma)</span>
+          <input id="formInput" lang="grc" value="μέσος, -η, -ον" class="rounded-md border border-border bg-bg px-2 py-1 font-original text-lg">
+        </label>
+        <div class="grid gap-1">
+          <span class="text-sm text-fg-muted">So sieht die Tippaufgabe aus:</span>
+          <div id="formPreview" class="flex flex-wrap items-end gap-1"></div>
+        </div>
+        <label class="grid gap-1 text-sm" data-uses="TextField label='Umschrift' size=sm"><span class="text-fg-muted">Umschrift</span>
+          <input value="mesos" class="w-48 rounded-md border border-border bg-bg px-2 py-1 text-sm"></label>
+      </section>
+
+      <!-- Bedeutungen -->
+      <section class="grid gap-3 rounded-lg border border-border bg-surface p-4">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="text-lg font-semibold">Bedeutungen</h2>
+          <span class="text-xs text-fg-muted">Angenommene gelten im Quiz als richtig.</span>
+        </div>
+        <!-- MeaningListEditor: rows {id, german, count, share, isAccepted, origin, isPinned}; onChange(rows). -->
+        <ol data-c="MeaningListEditor" data-new="1" class="grid gap-2" id="meanings"></ol>
+        <div class="flex flex-wrap items-end gap-2">
+          <label class="grid flex-1 gap-1 text-sm" data-uses="TextField size=sm"><span class="text-fg-muted">Eigene Bedeutung</span>
+            <input id="newMeaning" class="rounded-md border border-border bg-bg px-2 py-1 text-sm" placeholder="z. B. inmitten"></label>
+          <button data-btn="secondary sm" id="addMeaning">Hinzufügen</button>
+        </div>
+      </section>
+
+      <!-- Strong's -->
+      <section class="grid gap-3 rounded-lg border border-border bg-surface p-4">
+        <h2 class="text-lg font-semibold">Strong's</h2>
+        <!-- StrongsKeyList: keys {key, occurrences}; onMove(key). Link to /bible/strongs/:key. -->
+        <ul data-c="StrongsKeyList" data-new="1" class="divide-y divide-border text-sm">
+          <li class="flex items-center justify-between gap-3 py-2">
+            <span class="flex items-baseline gap-3"><a href="#" class="text-accent underline">G3319</a><span class="tabular-nums text-fg-muted">58 Vorkommen</span></span>
+            <button data-btn="ghost sm" data-open="moveDlg">Verschieben…</button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Aussprache -->
+      <section class="grid gap-3 rounded-lg border border-border bg-surface p-4">
+        <h2 class="text-lg font-semibold">Aussprache</h2>
+        <!-- AudioField editable: states empty | ready | recording | preview | uploading. Props src, onUpload(file), onRecord(blob), onDelete. -->
+        <div data-c="AudioField" data-new="1" class="grid gap-2" id="audioField"></div>
+      </section>
+
+      <!-- Danger zone -->
+      <section class="grid gap-3 rounded-lg border border-sev-error bg-surface p-4">
+        <h2 class="text-lg font-semibold">Eintrag umbauen</h2>
+        <p class="text-sm text-fg-muted">Nutzer mit einer Karte auf diesem Wort werden benachrichtigt und entscheiden selbst, ob sie weiterlernen oder neu beginnen.</p>
+        <div class="flex flex-wrap gap-2">
+          <button data-btn="secondary sm" data-open="mergeDlg">Zusammenführen mit…</button>
+          <button data-btn="secondary sm">Stilllegen</button>
+          <button data-btn="secondary sm" disabled title="Erst alle Strong's verschieben">Löschen</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right column: renderings for reference, sticky from lg. Click a row = add as meaning (RankedBarList onSelect). -->
+    <aside class="grid content-start gap-3 lg:col-span-2">
+      <section class="grid gap-3 rounded-lg border border-border bg-surface p-4 lg:sticky lg:top-4"
+               data-c="RankedBarList" data-uses="RankedBarList onSelect=addAsMeaning expandLabel='Verse'">
+        <h3 class="text-sm font-medium text-fg">Wiedergaben (anklicken = übernehmen)</h3>
+        <ol class="grid gap-1" id="editorRenderings"></ol>
+      </section>
+    </aside>
+  </div>
+
+  <!-- Existing SaveBar: count, hint = learner notice, onSave/onDiscard. -->
+  <div data-c="SaveBar" data-uses="SaveBar count hint='12 Nutzer werden benachrichtigt' saveLabel='Speichern'"
+       class="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface" id="saveBar" hidden>
+    <div class="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-3 p-3">
+      <span class="text-sm font-medium"><span id="dirtyCount">1</span> Änderung(en)</span>
+      <span class="text-sm text-fg-muted">12 Nutzer werden benachrichtigt (Bedeutungen geändert).</span>
+      <span class="ml-auto flex gap-2"><button data-btn="ghost sm" id="discard">Verwerfen</button><button data-btn="primary sm" id="save">Speichern</button></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 /edit/maintainer section -->
+<section data-screen="jobs" hidden data-page="pages/VocabJobsSection.tsx (inside MaintainerPage)" class="mx-auto flex w-full max-w-4xl flex-col gap-4 p-4">
+  <h1 class="text-2xl font-semibold">Wartung</h1>
+  <div class="grid gap-4 rounded-lg border border-border bg-surface p-4">
+    <h2 class="text-lg font-semibold">Vokabeln</h2>
+    <ul class="divide-y divide-border">
+      <li class="flex flex-wrap items-center justify-between gap-3 py-3">
+        <div class="grid gap-1"><span class="font-medium">Lexikon erzeugen</span><span class="text-sm text-fg-muted">Zuletzt 20.11.2026, 22:10 · 13.723 Einträge, 0 neu</span></div>
+        <button data-btn="secondary sm">Starten</button></li>
+      <li class="flex flex-wrap items-center justify-between gap-3 py-3">
+        <div class="grid gap-1"><span class="font-medium">Wiedergaben aktualisieren</span><span class="text-sm text-fg-muted">Stand 21.11.2026, 09:14 · 4,1 % aus Elberfelder 2027</span></div>
+        <button data-btn="secondary sm">Aktualisieren</button></li>
+      <li class="grid gap-3 py-3">
+        <div class="grid gap-1"><span class="font-medium">Bedeutungen ableiten</span><span class="text-sm text-fg-muted">Ersetzt nur abgeleitete, nicht fixierte Bedeutungen. Eigene bleiben.</span></div>
+        <div class="flex flex-wrap items-end gap-3">
+          <label class="grid gap-1 text-sm" data-uses="Select size=sm"><span class="text-fg-muted">Umfang</span>
+            <select class="rounded-md border border-border bg-bg px-2 py-1 text-sm"><option>NT</option><option>AT</option><option>Alle</option><option>Rangbereich</option></select></label>
+          <label class="grid gap-1 text-sm" data-uses="TextField size=sm type=number"><span class="text-fg-muted">Mindestanteil %</span>
+            <input type="number" value="5" class="w-20 rounded-md border border-border bg-bg px-2 py-1 text-sm"></label>
+          <span data-uses="Switch" class="inline-flex items-center gap-2 text-sm">
+            <button role="switch" aria-checked="true" class="relative inline-flex h-6 w-11 items-center justify-end rounded-full border border-border bg-accent"><span class="mr-1 h-4 w-4 rounded-full bg-accent-fg"></span></button>Probelauf</span>
+          <button data-btn="primary sm" id="deriveBtn">Ableiten</button>
+        </div>
+        <div id="deriveReport" hidden class="grid gap-3">
+          <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+            <div data-uses="StatTile title='Geprüft' value" class="grid gap-1 rounded-lg border border-border p-3"><span class="text-sm text-fg-muted">Einträge</span><span class="text-2xl font-semibold tabular-nums">5.412</span></div>
+            <div data-uses="StatTile" class="grid gap-1 rounded-lg border border-border p-3"><span class="text-sm text-fg-muted">Erste Bedeutung neu</span><span class="text-2xl font-semibold tabular-nums">37</span></div>
+            <div data-uses="StatTile" class="grid gap-1 rounded-lg border border-border p-3"><span class="text-sm text-fg-muted">Bedeutungen geändert</span><span class="text-2xl font-semibold tabular-nums">412</span></div>
+            <div data-uses="StatTile" class="grid gap-1 rounded-lg border border-border p-3"><span class="text-sm text-fg-muted">Betroffene Nutzer</span><span class="text-2xl font-semibold tabular-nums">9</span></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <caption class="pb-2 text-left font-medium">Erste Bedeutung ändert sich</caption>
+              <thead class="text-fg-muted"><tr class="border-b border-border"><th class="py-2 pr-4 font-medium">Rang</th><th class="py-2 pr-4 font-medium">Lemma</th><th class="py-2 pr-4 font-medium">Vorher</th><th class="py-2 pr-4 font-medium">Nachher</th><th class="py-2 pr-4 text-right font-medium">Nutzer</th></tr></thead>
+              <tbody class="divide-y divide-border">
+                <tr><td class="py-2 pr-4 tabular-nums">9</td><td lang="grc" class="py-2 pr-4 font-original text-base">λέγω</td><td class="py-2 pr-4">sagen</td><td class="py-2 pr-4">sprechen</td><td class="py-2 pr-4 text-right tabular-nums">7</td></tr>
+                <tr><td class="py-2 pr-4 tabular-nums">54</td><td lang="grc" class="py-2 pr-4 font-original text-base">ἔρχομαι</td><td class="py-2 pr-4">kommen</td><td class="py-2 pr-4">kommen, gehen</td><td class="py-2 pr-4 text-right tabular-nums">2</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex gap-2"><button data-btn="primary sm">Anwenden</button><button data-btn="ghost sm">Verwerfen</button></div>
+        </div>
+      </li>
+      <li class="flex flex-wrap items-end justify-between gap-3 py-3">
+        <div class="grid gap-1"><span class="font-medium">Lernformen per KI</span><span class="text-sm text-fg-muted">Füllt leere oder erzeugte Lernformen. Eigene bleiben unberührt.</span></div>
+        <div class="flex flex-wrap items-end gap-2">
+          <label class="grid gap-1 text-sm" data-uses="Select size=sm"><span class="text-fg-muted">Profil</span>
+            <select class="rounded-md border border-border bg-bg px-2 py-1 text-sm"><option>ollama</option><option>gemini</option></select></label>
+          <button data-btn="secondary sm">Lauf starten</button>
+        </div></li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<!-- ============================================================ Dialogs (existing Dialog component) -->
+<dialog id="changesDlg" data-c="Dialog" data-uses="Dialog title='Überarbeitete Wörter' size=lg footer=[Alle weiterlernen]" class="m-auto w-full max-w-2xl rounded-lg border border-border bg-surface p-0 text-fg backdrop:bg-fg/40">
+  <div class="grid gap-4 p-4">
+    <div class="flex items-center justify-between gap-2"><h2 class="text-lg font-semibold">Überarbeitete Wörter</h2><button data-btn="ghost sm" data-close>✕</button></div>
+    <p class="text-sm text-fg-muted">Der Wortschatz wird laufend verbessert. Entscheide pro Wort: weiterlernen (Fortschritt bleibt) oder zurücksetzen (das Wort kommt als neu wieder).</p>
+    <!-- ChangeReviewList: items {entryId, lemma, form, kind, before, after, removed}; onKeep(id), onReset(id). -->
+    <ul data-c="ChangeReviewList" data-new="1" class="grid gap-3" id="changeList"></ul>
+    <div class="flex justify-end gap-2 border-t border-border pt-3"><button data-btn="primary sm" id="keepAll">Alle weiterlernen</button></div>
+  </div>
+</dialog>
+
+<dialog id="moveDlg" data-c="Dialog" data-uses="Dialog title='G3319 verschieben' (page file pages/vocab/KeyMoveDialog.tsx)" class="m-auto w-full max-w-lg rounded-lg border border-border bg-surface p-0 text-fg backdrop:bg-fg/40">
+  <div class="grid gap-4 p-4">
+    <div class="flex items-center justify-between gap-2"><h2 class="text-lg font-semibold">G3319 verschieben</h2><button data-btn="ghost sm" data-close>✕</button></div>
+    <fieldset class="grid gap-2 text-sm">
+      <legend class="sr-only">Ziel</legend>
+      <label class="flex items-center gap-2"><input type="radio" name="mv" checked> In einen neuen Eintrag abspalten</label>
+      <label class="flex items-center gap-2"><input type="radio" name="mv"> Zu einem bestehenden Eintrag</label>
+    </fieldset>
+    <label class="grid gap-1 text-sm" data-uses="TextField size=sm"><span class="text-fg-muted">Eintrag suchen</span>
+      <input class="rounded-md border border-border bg-bg px-2 py-1 text-sm" placeholder="Lemma"></label>
+    <p class="rounded-md border border-sev-warning p-2 text-sm">⚠ Das ist der letzte Strong's-Schlüssel: μέσος wird danach stillgelegt. 12 Nutzer werden benachrichtigt.</p>
+    <div class="flex justify-end gap-2"><button data-btn="ghost sm" data-close>Abbrechen</button><button data-btn="primary sm" data-close>Verschieben</button></div>
+  </div>
+</dialog>
+
+<dialog id="mergeDlg" data-c="Dialog" data-uses="Dialog title='Zusammenführen' (page file pages/vocab/MergeDialog.tsx)" class="m-auto w-full max-w-lg rounded-lg border border-border bg-surface p-0 text-fg backdrop:bg-fg/40">
+  <div class="grid gap-4 p-4">
+    <div class="flex items-center justify-between gap-2"><h2 class="text-lg font-semibold">μέσος zusammenführen</h2><button data-btn="ghost sm" data-close>✕</button></div>
+    <label class="grid gap-1 text-sm" data-uses="TextField size=sm"><span class="text-fg-muted">In diesen Eintrag übernehmen</span>
+      <input class="rounded-md border border-border bg-bg px-2 py-1 font-original text-base" value="μεσόω"></label>
+    <dl class="grid grid-cols-2 gap-2 text-sm">
+      <div><dt class="text-fg-muted">μέσος (wird gelöscht)</dt><dd>1 Strong's · 12 Nutzer</dd></div>
+      <div><dt class="text-fg-muted">μεσόω (bleibt)</dt><dd>1 Strong's · 1 Nutzer</dd></div>
+    </dl>
+    <p class="text-sm text-fg-muted">Nutzer mit beiden Karten behalten die stabilere. Alle Betroffenen werden benachrichtigt.</p>
+    <div class="flex justify-end gap-2"><button data-btn="ghost sm" data-close>Abbrechen</button><button data-btn="primary sm" data-close>Zusammenführen</button></div>
+  </div>
+</dialog>
+
+<dialog id="settingsDlg" data-c="Dialog" data-uses="Dialog title='Quiz-Einstellungen'" class="m-auto w-full max-w-md rounded-lg border border-border bg-surface p-0 text-fg backdrop:bg-fg/40">
+  <div class="grid gap-4 p-4">
+    <div class="flex items-center justify-between gap-2"><h2 class="text-lg font-semibold">Quiz-Einstellungen</h2><button data-btn="ghost sm" data-close>✕</button></div>
+    <ul class="grid gap-3 text-sm" data-uses="Switch per quiz type (at least one MC type stays on: the last one is disabled)">
+      <li class="flex items-center justify-between gap-3">Lemma → Deutsch (Auswahl)<span class="text-fg-muted">immer an</span></li>
+      <li class="flex items-center justify-between gap-3">Deutsch → Lemma (Auswahl)<input type="checkbox" checked></li>
+      <li class="flex items-center justify-between gap-3">Hören<input type="checkbox" checked></li>
+      <li class="flex items-center justify-between gap-3">Vers-Kontext<input type="checkbox" checked></li>
+      <li class="flex items-center justify-between gap-3">Lemma tippen<input type="checkbox" checked></li>
+    </ul>
+    <div class="flex justify-end"><button data-btn="primary sm" data-close>Fertig</button></div>
+  </div>
+</dialog>
+
+<script>
+/* ---------- Button classes: a copy of buttonClasses() in components/Button.tsx ---------- */
+const VARIANTS = {
+  primary: "bg-accent text-accent-fg hover:opacity-90",
+  secondary: "border border-border bg-surface text-fg hover:bg-surface-muted aria-pressed:border-accent aria-pressed:bg-mark-same",
+  ghost: "text-fg hover:bg-surface-muted",
+};
+const SIZES = { sm: "px-2 py-1 text-sm", md: "px-4 py-2 text-base" };
+function btnClass(v, s) {
+  return `inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[v]} ${SIZES[s]}`;
+}
+function expandButtons(root = document) {
+  root.querySelectorAll("[data-btn]").forEach((b) => {
+    if (b.dataset.expanded) return;
+    const [v, s] = b.dataset.btn.split(" ");
+    b.className = `${btnClass(v, s || "md")} ${b.className}`;
+    b.type = "button";
+    b.dataset.expanded = "1";
+  });
+}
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+/* ---------- Mock data ---------- */
+const ENTRIES = [
+  { rank: 1, lemma: "ὁ", form: "ὁ, ἡ, τό", tr: "ho", meanings: ["der, die, das"], occ: 20754, audio: true, reviewed: true, learners: 14 },
+  { rank: 2, lemma: "καί", form: null, tr: "kai", meanings: ["und", "auch"], occ: 9441, audio: true, reviewed: true, learners: 14 },
+  { rank: 3, lemma: "αὐτός", form: "αὐτός, -ή, -ό", tr: "autos", meanings: ["er, sie, es", "selbst"], occ: 5870, audio: true, reviewed: false, learners: 13 },
+  { rank: 4, lemma: "σύ", form: null, tr: "sy", meanings: ["du"], occ: 3003, audio: false, reviewed: false, learners: 13 },
+  { rank: 5, lemma: "δέ", form: null, tr: "de", meanings: ["aber", "und"], occ: 2945, audio: false, reviewed: false, learners: 12 },
+  { rank: 6, lemma: "ἐν", form: null, tr: "en", meanings: ["in", "unter", "bei"], occ: 2842, audio: true, reviewed: false, learners: 12 },
+  { rank: 87, lemma: "λόγος", form: "λόγος, -ου, ὁ", tr: "logos", meanings: ["Wort", "Rede", "Sache", "Rechenschaft"], occ: 330, audio: true, reviewed: false, learners: 9 },
+  { rank: 241, lemma: "μέσος", form: "μέσος, -η, -ον", tr: "mesos", meanings: ["Mitte", "mitten"], occ: 58, audio: false, reviewed: false, learners: 12, formOrigin: "KI" },
+];
+const RENDER_LOGOS = [
+  { label: "Wort", value: 220, sub: "davon 9 aus 2027" }, { label: "Rede", value: 40 }, { label: "Sache", value: 12 },
+  { label: "Rechenschaft", value: 8 }, { label: "Botschaft", value: 5, sub: "alle aus 2027", flag: "nicht angenommen" },
+  { label: "Ausspruch", value: 2, flag: "unter 5 %" },
+];
+const RENDER_MESOS = [
+  { label: "Mitte", value: 39 }, { label: "mitten", value: 11 }, { label: "inmitten", value: 3, flag: "unter 5 %" },
+  { label: "zwischen", value: 2, flag: "unter 5 %" },
+];
+
+/* ---------- Screen 1: list ---------- */
+function playBtn(has) {
+  return has ? `<button data-btn="ghost sm" aria-label="Aussprache abspielen" data-play>▶</button>` : `<span class="text-fg-muted" aria-label="kein Audio">–</span>`;
+}
+function badge(e) {
+  return e.reviewed ? "" : `<span class="ml-2 inline-flex items-center gap-1 rounded-md border border-sev-warning bg-surface px-2 py-0.5 text-xs font-medium text-fg">⚠ ungeprüft</span>`;
+}
+$("#listBody").innerHTML = ENTRIES.map((e) => `
+  <tr class="hover:bg-surface-muted">
+    <td class="py-2 pr-4 tabular-nums text-fg-muted">${e.rank}</td>
+    <td class="py-2 pr-4"><a href="#" data-go="vocab-detail" lang="grc" class="font-original text-lg text-accent underline">${e.lemma}</a>
+      <span class="ml-2 text-fg-muted">${e.tr}</span></td>
+    <td lang="grc" class="py-2 pr-4 font-original text-base">${e.form ?? '<span class="font-sans text-fg-muted">–</span>'}</td>
+    <td class="py-2 pr-4">${esc(e.meanings.join(", "))}${badge(e)}</td>
+    <td class="py-2 pr-4 text-right tabular-nums">${e.occ.toLocaleString("de-DE")}</td>
+    <td class="py-2">${playBtn(e.audio)}</td>
+  </tr>`).join("");
+$("#listCards").innerHTML = ENTRIES.map((e) => `
+  <li class="grid gap-1 rounded-lg border border-border bg-surface p-3">
+    <div class="flex items-baseline justify-between gap-2">
+      <a href="#" data-go="vocab-detail" lang="grc" class="font-original text-xl text-accent underline">${e.lemma}</a>
+      <span class="text-sm tabular-nums text-fg-muted">#${e.rank} · ${e.occ.toLocaleString("de-DE")}×</span>
+    </div>
+    ${e.form ? `<span lang="grc" class="font-original text-base text-fg-muted">${e.form}</span>` : ""}
+    <div class="flex items-center justify-between gap-2 text-sm"><span>${esc(e.meanings.join(", "))}${badge(e)}</span>${playBtn(e.audio)}</div>
+  </li>`).join("");
+
+/* ---------- RankedBarList look (copy of components/RankedBarList.tsx markup) ---------- */
+function rankedRows(items, selectable) {
+  const total = items.reduce((a, i) => a + i.value, 0);
+  return items.map((i) => {
+    const share = Math.round((i.value / total) * 100);
+    const label = selectable
+      ? `<button data-btn="ghost sm" data-add="${esc(i.label)}" class="min-w-0 truncate text-left text-accent underline">${esc(i.label)}</button>`
+      : `<span class="min-w-0 truncate">${esc(i.label)}</span>`;
+    return `<li class="grid gap-1 rounded-md px-1 py-1 ${i.flag ? "opacity-60" : ""}">
+      <div class="flex items-baseline justify-between gap-2 text-sm">
+        <span class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">${label}
+          ${i.sub ? `<span class="text-fg-muted">${i.sub}</span>` : ""}
+          ${i.flag ? `<span class="rounded-sm border border-border px-1 text-xs text-fg-muted">${i.flag}</span>` : ""}</span>
+        <span class="flex shrink-0 items-center gap-2 tabular-nums">${i.value}<span class="w-12 text-right text-fg-muted">${share} %</span></span>
+      </div>
+      <div class="h-1.5 w-full rounded-sm bg-chart-empty" aria-hidden="true"><div class="h-1.5 rounded-sm bg-chart-1 ${share > 60 ? "w-2/3" : share > 20 ? "w-1/4" : share > 5 ? "w-1/12" : "w-1"}"></div></div>
+    </li>`;
+  }).join("");
+}
+$("#detailRenderings").innerHTML = rankedRows(RENDER_LOGOS, false);
+$("#editorRenderings").innerHTML = rankedRows(RENDER_MESOS, true);
+
+/* ---------- Verse block: OriginalVerse (existing, new prop highlight) + German line with mark/gap ---------- */
+function verseBlock({ ref, grc, hit, de, deHit, gap }) {
+  const orig = grc.split(" ").map((w, i) => i === hit ? `<mark class="rounded-sm bg-mark-linked px-0.5 text-fg">${w}</mark>` : w).join(" ");
+  const german = gap
+    ? de.replace(deHit, `<span class="inline-block w-16 border-b-2 border-accent align-baseline" aria-label="Lücke"></span>`)
+    : de.replace(deHit, `<mark class="rounded-sm bg-mark-linked px-0.5 text-fg">${deHit}</mark>`);
+  return `<div data-c="VerseContext" data-new="1" class="grid gap-1 rounded-md bg-surface-muted p-3">
+    <a href="#" class="text-sm font-medium text-accent underline">${ref}</a>
+    <p lang="${/[\u0590-\u05ff]/.test(grc) ? "he" : "grc"}" dir="auto" class="font-original text-lg" data-uses="OriginalVerse data highlight=[positions]">${orig}</p>
+    <p class="font-scripture text-base">${german}</p>
+  </div>`;
+}
+const JOH11 = { ref: "Joh 1,1", grc: "Ἐν ἀρχῇ ἦν ὁ λόγος, καὶ ὁ λόγος ἦν πρὸς τὸν θεόν", hit: 4, de: "Im Anfang war das Wort, und das Wort war bei Gott,", deHit: "Wort" };
+$("#detailVerses").innerHTML = [JOH11,
+  { ref: "Mt 12,36", grc: "πᾶν ῥῆμα ἀργὸν ὃ λαλήσουσιν οἱ ἄνθρωποι ἀποδώσουσιν περὶ αὐτοῦ λόγον", hit: 10, de: "von jedem unnützen Worte, das irgend die Menschen reden werden, davon werden sie Rechenschaft geben", deHit: "Rechenschaft" },
+].map((v) => `<li>${verseBlock(v)}</li>`).join("");
+
+/* ---------- Typing: VocabText.Segment / Normalize (same rules as the server) ---------- */
+function segment(form) {
+  const out = []; const re = /(\p{L}[\p{L}\p{M}]*)|([^\p{L}\p{M}]+)/gu; let m;
+  while ((m = re.exec(form))) out.push(m[1] ? { g: m[1] } : { sep: m[2] });
+  return out;
+}
+const norm = (s) => s.normalize("NFD").replace(/[̀-֑ͯͅ-ׇ]/g, "").replace(/ς/g, "σ").toLowerCase().trim();
+const letters = (g) => [...g.normalize("NFD").replace(/[̀-֑ͯͅ-ׇ]/g, "")];
+
+/* LetterBoxInput: one input per letter, separators as text. Props: layout (groups + separators), value[], onChange, dir. */
+function letterBoxes(form, { readonly = false, dir = "ltr", lang = "grc" } = {}) {
+  return `<div data-c="LetterBoxInput" data-new="1" dir="${dir}" lang="${lang}" class="flex flex-wrap items-end gap-1" role="group" aria-label="Lernform eingeben">` +
+    segment(form).map((p, gi) => p.sep
+      ? `<span class="pb-2 font-original text-2xl text-fg-muted" aria-hidden="true">${esc(p.sep.replace(/ /g, " "))}</span>`
+      : `<span class="flex gap-1" data-group="${gi}">` + letters(p.g).map(() =>
+          `<input ${readonly ? "disabled" : ""} maxlength="1" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Buchstabe"
+            class="h-10 w-8 rounded-md border border-border bg-bg text-center font-original text-xl disabled:bg-surface-muted md:h-12 md:w-10 md:text-2xl">`).join("") + `</span>`
+    ).join("") + `</div>`;
+}
+function scriptKeyboard(lang) {
+  const rows = lang === "he"
+    ? [["ק","ר","א","ט","ו","ן","ם","פ"],["ש","ד","ג","כ","ע","י","ח","ל","ך","ף"],["ז","ס","ב","ה","נ","מ","צ","ת","ץ"]]
+    : [["ς","ε","ρ","τ","υ","θ","ι","ο","π"],["α","σ","δ","φ","γ","η","ξ","κ","λ"],["ζ","χ","ψ","ω","β","ν","μ"]];
+  return `<div data-c="ScriptKeyboard" data-new="1" lang="${lang === "he" ? "he" : "grc"}" class="grid gap-1 rounded-lg bg-surface-muted p-2" aria-label="Bildschirmtastatur">` +
+    rows.map((r, i) => `<div class="flex justify-center gap-1">${r.map((k) => `<button data-btn="secondary sm" data-key="${k}" class="h-11 w-8 font-original text-xl md:w-10">${k}</button>`).join("")}${i === 2 ? `<button data-btn="secondary sm" data-key="⌫" class="h-11 px-3" aria-label="Löschen">⌫</button>` : ""}</div>`).join("") +
+    `</div>`;
+}
+function wireBoxes(root) {
+  const cells = [...root.querySelectorAll("[data-group] input")];
+  cells.forEach((c, i) => {
+    c.addEventListener("input", () => { if (c.value && cells[i + 1]) cells[i + 1].focus(); });
+    c.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !c.value && cells[i - 1]) cells[i - 1].focus(); });
+  });
+  let last = cells[0];
+  cells.forEach((c) => c.addEventListener("focus", () => { last = c; }));
+  root.querySelectorAll("[data-key]").forEach((k) => k.addEventListener("click", () => {
+    const i = cells.indexOf(last);
+    if (k.dataset.key === "⌫") { if (last.value) last.value = ""; else if (cells[i - 1]) { cells[i - 1].value = ""; last = cells[i - 1]; } last.focus(); return; }
+    last.value = k.dataset.key; (cells[i + 1] ?? last).focus(); if (cells[i + 1]) last = cells[i + 1];
+  }));
+  cells[0]?.focus();
+  return () => [...root.querySelectorAll("[data-group]")].map((g) => [...g.querySelectorAll("input")].map((x) => x.value).join(""));
+}
+
+/* ---------- Screen 4: session cards ---------- */
+function strengthBar(before, after) {
+  const state = after > before ? "moved" : after < before ? "dropped" : "held";
+  const text = { moved: "Stärker geworden", held: "Gehalten", dropped: "Kommt in dieser Sitzung wieder" }[state];
+  return `<div data-c="StrengthBar" data-new="1" class="flex items-center gap-3" role="img" aria-label="Stärke ${after} von 5, ${text}">
+    <span class="flex gap-1">${[1,2,3,4,5].map((n) => `<span class="h-3 w-6 rounded-sm ${n <= after ? (state === "dropped" ? "bg-sev-warning" : "bg-accent") : "bg-chart-empty"} ${n > before && n <= after ? "animate-pulse" : ""}"></span>`).join("")}</span>
+    <span class="text-sm text-fg-muted">${text}</span></div>`;
+}
+function kindLabel(t) { return `<p class="text-xs font-medium uppercase tracking-wide text-fg-muted">${t}</p>`; }
+function choiceList(opts, correct, grc) {
+  return `<ol data-c="ChoiceList" data-new="1" class="grid gap-2 md:grid-cols-2">` + opts.map((o, i) =>
+    `<li><button data-btn="secondary md" data-choice="${esc(o)}" data-ok="${o === correct ? 1 : 0}" class="w-full justify-start ${grc ? "font-original text-xl" : ""}">
+      <span class="w-5 text-sm text-fg-muted" aria-hidden="true">${i + 1}</span>${esc(o)}</button></li>`).join("") + `</ol>`;
+}
+const LK246 = { ref: "Lk 2,46", grc: "καθεζόμενον ἐν μέσῳ τῶν διδασκάλων", hit: 2, de: "wie er inmitten der Lehrer saß", deHit: "inmitten" };
+const GEN11 = { ref: "1. Mo 1,1", grc: "בְּרֵאשִׁית בָּרָא אֱלֹהִים", hit: 1, de: "Im Anfang schuf Gott die Himmel und die Erde.", deHit: "schuf" };
+function feedback(ok, correctText, verse = JOH11) {
+  return `<div class="grid gap-3 border-t border-border pt-4" role="status">
+    <p class="text-lg font-semibold">${ok ? "✓ Richtig" : "✗ Leider nicht"}</p>
+    ${ok ? "" : `<p class="text-sm">Richtig: <span class="font-medium">${correctText}</span></p>`}
+    ${strengthBar(2, ok ? 3 : 1)}
+    ${verseBlock(verse)}
+    <button data-btn="primary md" id="nextBtn">Weiter <span class="text-sm opacity-75">(Enter)</span></button>
+  </div>`;
+}
+const CARDS = {
+  intro: () => `${kindLabel("Neues Wort")}
+    <div class="grid justify-items-center gap-2 text-center">
+      <p lang="grc" class="font-original text-5xl">λόγος</p>
+      <p lang="grc" class="font-original text-2xl text-fg-muted">λόγος, -ου, ὁ</p>
+      <p class="text-sm text-fg-muted">logos · Substantiv, maskulin · 330× im NT</p>
+      <button data-btn="secondary sm" data-play>▶ Anhören</button>
+    </div>
+    <ol class="grid gap-1 text-sm">${RENDER_LOGOS.slice(0, 4).map((r) => `<li class="flex justify-between gap-2"><span class="font-medium">${r.label}</span><span class="tabular-nums text-fg-muted">${r.value}×</span></li>`).join("")}</ol>
+    ${verseBlock(JOH11)}
+    <button data-btn="primary md" id="nextBtn">Verstanden</button>`,
+  mc: () => `${kindLabel("Was bedeutet …")}
+    <div class="grid justify-items-center gap-1 text-center"><p lang="grc" class="font-original text-5xl">λόγος</p><p lang="grc" class="font-original text-xl text-fg-muted">λόγος, -ου, ὁ</p></div>
+    ${choiceList(["Gesetz", "Wort", "Geist", "Tag"], "Wort")}<div id="fb"></div>`,
+  reverse: () => `${kindLabel("Welches Wort heißt …")}
+    <p class="text-center text-3xl font-semibold">Wort, Rede</p>
+    ${choiceList(["νόμος", "λόγος", "ῥῆμα", "λαός"], "λόγος", true)}<div id="fb"></div>
+    <p class="text-xs text-fg-muted">ῥῆμα ist erlaubt, weil „Wort“ nicht zu seinen angenommenen Bedeutungen gehört. Sonst würde es ausgeschlossen (Regel: nie eine zweite richtige Antwort).</p>`,
+  listening: () => `${kindLabel("Hören")}
+    <div class="grid justify-items-center"><button data-btn="primary md" data-play class="h-20 w-20 rounded-full text-3xl" aria-label="Abspielen">▶</button></div>
+    ${choiceList(["λόγος", "λαός", "λίθος", "λύω"], "λόγος", true)}<div id="fb"></div>`,
+  verse: () => `${kindLabel("Im Vers")}
+    ${verseBlock({ ...JOH11, gap: true })}
+    <p class="text-sm text-fg-muted">Was steht für das markierte Wort?</p>
+    ${choiceList(["Licht", "Wort", "Leben", "Geist"], "Wort")}<div id="fb"></div>`,
+  typing: () => `${kindLabel("Tippe die Lernform")}
+    <div class="grid justify-items-center gap-1 text-center"><p class="text-3xl font-semibold">Mitte, mitten</p><p class="text-sm text-fg-muted">Adjektiv · Satzzeichen sind vorgegeben</p></div>
+    <div class="grid justify-items-center">${letterBoxes("μέσος, -η, -ον")}</div>
+    ${scriptKeyboard("grc")}
+    <button data-btn="primary md" id="checkBtn">Prüfen</button><div id="fb"></div>`,
+  "typing-he": () => `${kindLabel("Tippe die Lernform")}
+    <div class="grid justify-items-center gap-1 text-center"><p class="text-3xl font-semibold">schaffen, erschaffen</p><p class="text-sm text-fg-muted">Verb · ohne Vokalzeichen</p></div>
+    <div class="grid justify-items-center">${letterBoxes("בָּרָא", { dir: "rtl", lang: "he" })}</div>
+    ${scriptKeyboard("he")}
+    <button data-btn="primary md" id="checkBtn">Prüfen</button><div id="fb"></div>`,
+  summary: () => `${kindLabel("Sitzung beendet")}
+    <h2 class="text-2xl font-semibold">Gut gemacht!</h2>
+    <div class="grid grid-cols-3 gap-2">
+      <div data-uses="StatTile" class="grid gap-1 rounded-lg border border-border p-3"><span class="text-sm text-fg-muted">Neu gelernt</span><span class="text-2xl font-semibold tabular-nums">4</span></div>
+      <div data-uses="StatTile" class="grid gap-1 rounded-lg border border-border p-3"><span class="text-sm text-fg-muted">Wiederholt</span><span class="text-2xl font-semibold tabular-nums">16</span></div>
+      <div data-uses="StatTile delta" class="grid gap-1 rounded-lg border border-border p-3"><span class="text-sm text-fg-muted">NT-Text</span><span class="text-2xl font-semibold tabular-nums">62,4 %</span><span class="text-sm text-fg-muted">+1,3 %</span></div>
+    </div>
+    <ul class="grid gap-2">${[["λόγος", 2, 3], ["ἐν", 3, 4], ["μέσος", 2, 1], ["δέ", 4, 4]].map(([l, b, a]) =>
+      `<li class="flex flex-wrap items-center justify-between gap-2"><span lang="grc" class="font-original text-xl">${l}</span>${strengthBar(b, a)}</li>`).join("")}</ul>
+    <div class="flex flex-wrap gap-2"><button data-btn="primary md">Noch eine Sitzung</button><button data-btn="secondary md" data-go="learn">Zur Übersicht</button></div>`,
+};
+function showCard(kind) {
+  const card = $("#card");
+  card.innerHTML = CARDS[kind]();
+  expandButtons(card);
+  card.querySelectorAll("[data-choice]").forEach((b) => b.addEventListener("click", () => {
+    const ok = b.dataset.ok === "1";
+    card.querySelectorAll("[data-choice]").forEach((x) => {
+      x.disabled = true;
+      if (x.dataset.ok === "1") x.classList.add("border-sev-ok");
+    });
+    if (!ok) b.classList.add("border-sev-error");
+    $("#fb", card).innerHTML = feedback(ok, card.querySelector('[data-ok="1"]').dataset.choice);
+    expandButtons(card); wireNext();
+  }));
+  if (kind.startsWith("typing")) {
+    const read = wireBoxes(card);
+    const target = segment(kind === "typing" ? "μέσος, -η, -ον" : "בָּרָא").filter((p) => p.g).map((p) => norm(p.g));
+    $("#checkBtn", card).addEventListener("click", () => {
+      const given = read().map(norm);
+      const ok = given.every((g, i) => g === target[i]);
+      $("#checkBtn", card).disabled = true;
+      $("#fb", card).innerHTML = feedback(ok, kind === "typing" ? "μέσος, -η, -ον" : "בָּרָא", kind === "typing" ? LK246 : GEN11);
+      expandButtons(card); wireNext();
+    });
+  }
+  wireNext();
+}
+function wireNext() {
+  const n = $("#nextBtn");
+  if (n) n.onclick = () => { const s = $("#cardSel"); s.selectedIndex = (s.selectedIndex + 1) % s.options.length; showCard(s.value); };
+}
+document.addEventListener("keydown", (e) => {
+  if ($("[data-screen=session]").hidden || e.target.tagName === "INPUT") return;
+  if (/^[1-4]$/.test(e.key)) $(`#card [data-choice]:nth-of-type(1)`) && document.querySelectorAll("#card [data-choice]")[+e.key - 1]?.click();
+  if (e.key === "Enter") $("#nextBtn")?.click();
+});
+
+/* ---------- Screen 5: editor list ---------- */
+$("#editorListBody").innerHTML = ENTRIES.filter((e) => !e.reviewed).map((e) => `
+  <tr class="hover:bg-surface-muted">
+    <td class="py-2 pr-4 tabular-nums text-fg-muted">${e.rank}</td>
+    <td class="py-2 pr-4"><a href="#" data-go="editor" lang="grc" class="font-original text-lg text-accent underline">${e.lemma}</a></td>
+    <td class="py-2 pr-4"><span lang="grc" class="font-original text-base">${e.form ?? "–"}</span>
+      ${e.formOrigin ? `<span class="ml-2 inline-flex items-center gap-1 rounded-md border border-sev-info bg-surface px-2 py-0.5 text-xs font-medium text-fg">ℹ KI</span>` : ""}</td>
+    <td class="py-2 pr-4 tabular-nums">${e.meanings.length}</td>
+    <td class="py-2 pr-4">${e.audio ? "✓" : '<span class="text-fg-muted">–</span>'}</td>
+    <td class="py-2 pr-4">${e.reviewed ? "✓" : '<span class="text-fg-muted">–</span>'}</td>
+    <td class="py-2 pr-4 text-right tabular-nums">${e.learners}</td>
+  </tr>`).join("");
+
+/* ---------- Screen 6: editor ---------- */
+let meanings = [
+  { german: "Mitte", count: 39, share: 71, accepted: true, origin: "abgeleitet", pinned: true },
+  { german: "mitten", count: 11, share: 20, accepted: true, origin: "abgeleitet", pinned: false },
+];
+let dirty = 0;
+function markDirty() { dirty++; $("#dirtyCount").textContent = dirty; $("#saveBar").hidden = false; }
+function renderMeanings() {
+  $("#meanings").innerHTML = meanings.map((m, i) => `
+    <li class="flex flex-wrap items-center gap-2 rounded-md border border-border p-2 ${m.accepted ? "" : "opacity-60"}">
+      <span class="flex flex-col"><button data-btn="ghost sm" data-up="${i}" aria-label="Nach oben" ${i === 0 ? "disabled" : ""}>▲</button>
+        <button data-btn="ghost sm" data-down="${i}" aria-label="Nach unten" ${i === meanings.length - 1 ? "disabled" : ""}>▼</button></span>
+      <span class="min-w-0 flex-1"><span class="font-medium">${esc(m.german)}</span>
+        <span class="ml-2 text-sm tabular-nums text-fg-muted">${m.count != null ? `${m.count}× · ${m.share} %` : "ohne Beleg"}</span></span>
+      <span class="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-0.5 text-xs font-medium text-fg" data-uses="StatusBadge tone=neutral">${m.origin}</span>
+      <button data-btn="secondary sm" data-pin="${i}" aria-pressed="${m.pinned}" title="Fixiert: bleibt beim erneuten Ableiten">📌 fixiert</button>
+      <label class="inline-flex items-center gap-2 text-sm" data-uses="Switch"><input type="checkbox" data-acc="${i}" ${m.accepted ? "checked" : ""}> angenommen</label>
+      ${m.origin === "eigene" ? `<button data-btn="ghost sm" data-del="${i}" aria-label="Löschen">🗑</button>` : ""}
+    </li>`).join("");
+  expandButtons($("#meanings"));
+}
+$("#meanings").addEventListener("click", (e) => {
+  const t = e.target.closest("[data-up],[data-down],[data-pin],[data-del]"); if (!t) return;
+  if (t.dataset.up) { const i = +t.dataset.up; [meanings[i - 1], meanings[i]] = [meanings[i], meanings[i - 1]]; }
+  if (t.dataset.down) { const i = +t.dataset.down; [meanings[i + 1], meanings[i]] = [meanings[i], meanings[i + 1]]; }
+  if (t.dataset.pin) meanings[+t.dataset.pin].pinned = !meanings[+t.dataset.pin].pinned;
+  if (t.dataset.del) meanings.splice(+t.dataset.del, 1);
+  renderMeanings(); markDirty();
+});
+$("#meanings").addEventListener("change", (e) => { if (e.target.dataset.acc) { meanings[+e.target.dataset.acc].accepted = e.target.checked; renderMeanings(); markDirty(); } });
+function addMeaning(text, fromRendering) {
+  if (!text || meanings.some((m) => m.german === text)) return;
+  const r = RENDER_MESOS.find((x) => x.label === text);
+  meanings.push({ german: text, count: r?.value ?? null, share: r ? Math.round(r.value / 55 * 100) : null, accepted: true, origin: fromRendering ? "abgeleitet" : "eigene", pinned: true });
+  renderMeanings(); markDirty();
+}
+$("#addMeaning").addEventListener("click", () => { addMeaning($("#newMeaning").value.trim()); $("#newMeaning").value = ""; });
+$("#editorRenderings").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) addMeaning(b.dataset.add, true); });
+function renderPreview() {
+  const v = $("#formInput").value.trim() || "μέσος";
+  $("#formPreview").innerHTML = letterBoxes(v, { readonly: true });
+  $("#formOrigin").textContent = "ℹ manuell";
+}
+$("#formInput").addEventListener("input", () => { renderPreview(); markDirty(); });
+$("#reviewedSw").addEventListener("click", (e) => {
+  const sw = e.currentTarget; const on = sw.getAttribute("aria-checked") !== "true";
+  sw.setAttribute("aria-checked", on); sw.firstElementChild.classList.toggle("translate-x-5", on); markDirty();
+});
+let audioState = "empty";
+function renderAudio() {
+  const f = $("#audioField");
+  const html = {
+    empty: `<p class="text-sm text-fg-muted">Noch keine Aufnahme.</p>
+      <div class="flex flex-wrap gap-2"><button data-btn="secondary sm" data-a="rec">● Aufnehmen</button>
+      <label class="${btnClass("secondary", "sm")} cursor-pointer">⤒ MP3 hochladen<input type="file" accept="audio/mpeg" class="sr-only" data-a="upload"></label></div>
+      <p class="text-xs text-fg-muted">MP3, höchstens 1 MB.</p>`,
+    recording: `<p class="flex items-center gap-2 text-sm" role="status"><span class="h-3 w-3 animate-pulse rounded-full bg-sev-error"></span> Aufnahme läuft · 0:02</p>
+      <div class="flex gap-2"><button data-btn="primary sm" data-a="stop">■ Stopp</button></div>`,
+    preview: `<p class="text-sm">Aufnahme 0:02 · 14 KB</p>
+      <div class="flex flex-wrap gap-2"><button data-btn="secondary sm" data-play>▶ Anhören</button><button data-btn="primary sm" data-a="keep">Übernehmen</button><button data-btn="ghost sm" data-a="drop">Verwerfen</button></div>`,
+    ready: `<div class="flex flex-wrap items-center gap-2"><button data-btn="secondary sm" data-play>▶ Anhören</button>
+      <span class="text-sm text-fg-muted">mesos.mp3 · 14 KB · 21.11.2026</span>
+      <button data-btn="ghost sm" data-a="rec">Neu aufnehmen</button><button data-btn="ghost sm" data-a="del">Löschen</button></div>`,
+  }[audioState];
+  f.innerHTML = html; expandButtons(f);
+}
+$("#audioField").addEventListener("click", (e) => {
+  const a = e.target.closest("[data-a]")?.dataset.a; if (!a || a === "upload") return;
+  audioState = { rec: "recording", stop: "preview", keep: "ready", drop: "empty", del: "empty" }[a]; renderAudio();
+});
+$("#audioField").addEventListener("change", () => { audioState = "ready"; renderAudio(); });
+$("#discard").addEventListener("click", () => { dirty = 0; $("#saveBar").hidden = true; });
+$("#save").addEventListener("click", () => { dirty = 0; $("#saveBar").hidden = true; });
+
+/* ---------- Screen 7: derive dry run ---------- */
+$("#deriveBtn").addEventListener("click", () => { $("#deriveReport").hidden = false; });
+
+/* ---------- Change list (dialog) ---------- */
+let changes = [
+  { id: 1, lemma: "μέσος", kind: "Bedeutungen geändert", before: ["Mitte"], after: ["Mitte", "mitten"] },
+  { id: 2, lemma: "λέγω", kind: "Lernform geändert", before: ["λέγω"], after: ["λέγω, ἐρῶ, εἶπον"], note: "Die Tippaufgabe hat jetzt drei Teile." },
+  { id: 3, lemma: "κράβαττος", kind: "entfernt", removed: true, note: "Zusammengeführt mit κράβατος." },
+];
+function renderChanges() {
+  $("#changeList").innerHTML = changes.map((c) => `
+    <li class="grid gap-2 rounded-lg border border-border p-3">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <span lang="grc" class="font-original text-xl">${c.lemma}</span>
+        <span class="inline-flex items-center gap-1 rounded-md border ${c.removed ? "border-sev-warning" : "border-sev-info"} bg-surface px-2 py-0.5 text-xs font-medium text-fg">${c.removed ? "⚠" : "ℹ"} ${c.kind}</span>
+      </div>
+      ${c.before ? `<p class="text-sm"><span class="text-fg-muted">vorher</span> <s class="text-fg-muted">${c.before.filter((b) => !c.after.includes(b)).join(", ")}</s>
+        ${c.before.filter((b) => c.after.includes(b)).join(", ")}
+        <span class="text-fg-muted">→ jetzt</span> <span class="font-medium">${c.after.join(", ")}</span></p>` : ""}
+      ${c.note ? `<p class="text-sm text-fg-muted">${c.note}</p>` : ""}
+      <div class="flex flex-wrap gap-2">
+        ${c.removed ? `<button data-btn="secondary sm" data-done="${c.id}">Entfernen</button>`
+          : `<button data-btn="secondary sm" data-done="${c.id}">Weiterlernen</button><button data-btn="ghost sm" data-done="${c.id}">Zurücksetzen</button>`}
+      </div>
+    </li>`).join("") || `<li class="text-sm text-fg-muted">Alles erledigt.</li>`;
+  expandButtons($("#changeList"));
+  $("#changeCount").textContent = changes.length;
+  $("#changeNotice").hidden = changes.length === 0;
+}
+$("#changeList").addEventListener("click", (e) => { const b = e.target.closest("[data-done]"); if (b) { changes = changes.filter((c) => c.id !== +b.dataset.done); renderChanges(); } });
+$("#keepAll").addEventListener("click", () => { changes = changes.filter((c) => c.removed); renderChanges(); });
+
+/* ---------- Dummy plumbing ---------- */
+function go(screen) {
+  document.querySelectorAll("[data-screen]").forEach((s) => { s.hidden = s.dataset.screen !== screen; });
+  document.querySelectorAll("#ctl [data-go]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.go === screen));
+  if (screen === "session") showCard($("#cardSel").value);
+  window.scrollTo(0, 0);
+}
+document.addEventListener("click", (e) => {
+  const g = e.target.closest("[data-go]"); if (g) { e.preventDefault(); go(g.dataset.go); }
+  const o = e.target.closest("[data-open]"); if (o) document.getElementById(o.dataset.open).showModal();
+  const c = e.target.closest("[data-close]"); if (c) c.closest("dialog").close();
+  const p = e.target.closest("[data-play]"); if (p) { p.setAttribute("aria-busy", "true"); setTimeout(() => p.removeAttribute("aria-busy"), 600); }
+  const t = e.target.closest("[data-track]");
+  if (t) t.parentElement.querySelectorAll("[data-track]").forEach((x) => x.setAttribute("aria-pressed", x === t));
+});
+$("#cardSel").addEventListener("change", (e) => { go("session"); showCard(e.target.value); });
+$("#themeBtn").addEventListener("click", () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "dark" ? "light" : "dark"; });
+$("#compBtn").addEventListener("click", (e) => { const on = document.body.classList.toggle("show-c"); e.currentTarget.setAttribute("aria-pressed", on); });
+$("#anonBtn").addEventListener("click", (e) => {
+  const anon = e.currentTarget.getAttribute("aria-pressed") !== "true";
+  e.currentTarget.setAttribute("aria-pressed", anon);
+  document.querySelectorAll(".signed-in").forEach((x) => x.classList.toggle("hidden", anon));
+  document.querySelectorAll(".anon-only").forEach((x) => x.classList.toggle("hidden", !anon));
+});
+
+renderMeanings(); renderPreview(); $("#formOrigin").textContent = "ℹ von KI"; renderAudio(); renderChanges();
+expandButtons();
+</script>
+</body>
+</html>

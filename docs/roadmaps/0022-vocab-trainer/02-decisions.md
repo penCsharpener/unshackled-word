@@ -20,7 +20,7 @@
 
 - **Hebrew morpheme Strong's (H9001–H9049) are not vocab entries.** "and", "the" and "his" would take the top ranks of the OT course and are prefixes or suffixes, not lemmas. They get `IsMorpheme = true` and stay out of the course order. They can still be listed.
 - **Frequency is counted in the original text** (STEP word rows per Strong's key, summed per entry), not in German mapping counts. It is independent of mapping quality and stable while the revision changes.
-- **Derived meanings are studied right away**, marked "ungeprüft" until the maintainer sets `ReviewedAt`. Waiting for 5,000+ reviews would block the trainer for months. See [08-risks.md](08-risks.md).
+- **Derived meanings are studied right away**, marked "ungeprüft" until the maintainer sets `ReviewedAt`. Waiting for 5,000+ reviews would block the trainer for months. See [09-risks.md](09-risks.md).
 - **The session engine follows Lexio's 04-study-engine:** up to 20 words, waves of at most 4 new words, three quizzes per word, a single `10m` learning step, target retention 0.9, `wrong → Again` and `correct → Good`, a strength bar 0–5 from stability. Quiz type by age: day 0 MC, from day 1 reverse MC, listening and verse context, from day 2 typing.
 - **The vocab lexicon is seed data** (`assets/seed/vocab`), exported and imported like the revision. Learner progress is never part of the seed.
 - **Version 0.8.0** for this roadmap.
