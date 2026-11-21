@@ -17,4 +17,6 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-21)
 
-Planned, nothing implemented. All decisions are settled. On 2026-11-21 the maintainer changed two of them: typing uses the dictionary form with the separators pre-filled, and lexicon edits flag the learner's cards for keep or reset instead of being refused. UI drafts (click dummy + spec) added the same day, waiting for review.
+Planned, nothing implemented. All decisions are settled. On 2026-11-21 the maintainer changed two of them: typing uses the dictionary form with the separators pre-filled, and lexicon edits flag the learner's cards for keep or reset instead of being refused. UI drafts (click dummy + spec) added the same day.
+
+Implemented on `feature/vocab-learning` (2026-11-21, 0.8.0): migrations 0037–0039, 0022.1, 0022.1f, 0022.1b (extra row: STEP Hebrew lexicon import fix, verb `step-lexicon-repair`), 0022.2. Next: 0022.2f. Deviations so far: `StatsVocabRenderings` has `GermanPos` (STTS) so derivation can drop function words; `VocabCards` has no FK to `VocabEntries` (cards outlive deleted entries); entry renderings capped at 100 rows; Hebrew sample verses use the braced main key only; the public list's "Anzeigen" filter only offers "Alle" so far.
