@@ -45,6 +45,53 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
         return await _dbReader.ReadAsListAsync<StepStrongsLexiconDbo>(sql, parameter);
     }
 
+    public async Task<IReadOnlyList<string>> InsertMissingAsync(StepStrongsLexiconDbo[] entries, CancellationToken token = default)
+    {
+        var existing = (await _dbReader.ReadAsListAsync<ExistingKey>($"""
+                                                                     SELECT s."LanguageId", s."Number", s."Extra"
+                                                                     FROM {StepStrongsLexiconDbo.DboName} AS s
+                                                                     """))
+            .Select(x => (x.LanguageId, x.Number, x.Extra ?? string.Empty))
+            .ToHashSet();
+
+        var missing = new List<StepStrongsLexiconDbo>();
+        foreach (var entry in entries)
+        {
+            if (existing.Add(((int)entry.LanguageId, entry.Number, entry.Extra ?? string.Empty)))
+            {
+                missing.Add(entry);
+            }
+        }
+
+        if (missing.Count == 0)
+        {
+            return [];
+        }
+
+        var maxId = await _dbReader.ExecuteScalarAsync<int>($"SELECT COALESCE(MAX(s.\"Id\"), 0) FROM {StepStrongsLexiconDbo.DboName} AS s");
+        var nextId = maxId + 1;
+        foreach (var entry in missing)
+        {
+            entry.Id = nextId++;
+        }
+
+        await BulkInsertAsync(missing.ToArray(), token);
+
+        // explicit ids do not move the sequence; keep it behind them for later inserts that rely on the default
+        await _dbWriter.WriteAsync($"""
+                                    SELECT setval(pg_get_serial_sequence('{StepStrongsLexiconDbo.DboName}', 'Id'), (SELECT MAX(s."Id") FROM {StepStrongsLexiconDbo.DboName} AS s));
+                                    """);
+
+        return missing.Select(x => $"{(x.LanguageId == StrongsLanguage.Greek ? 'G' : 'H')}{x.Number:D4}{x.Extra}").ToList();
+    }
+
+    private sealed class ExistingKey
+    {
+        public int LanguageId { get; set; }
+        public int Number { get; set; }
+        public string? Extra { get; set; }
+    }
+
     public async Task BulkInsertAsync(StepStrongsLexiconDbo[] entries, CancellationToken token = default)
     {
         if (entries.Length == 0)
@@ -117,7 +164,8 @@ public sealed class StepStrongsRepository : IStepStrongsRepository
             Extra = new List<string?>(dataSize),
         };
 
-        var i = 1;
+        // ids continue behind the existing rows (1.. on an empty table), so a later repair does not collide with the first import
+        var i = await _dbReader.ExecuteScalarAsync<int>($"SELECT COALESCE(MAX(u.\"Id\"), 0) + 1 FROM {StepUnifiedStrongsDbo.DboName} AS u");
         foreach (var entry in entries)
         {
             parameters.Id.Add(i);

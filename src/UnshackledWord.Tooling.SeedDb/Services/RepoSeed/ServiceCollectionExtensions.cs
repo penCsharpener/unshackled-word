@@ -2,6 +2,7 @@ using UnshackledWord.Infrastructure.Seed;
 using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Morphology;
 using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 using UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
+using UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed;
 
@@ -16,6 +17,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISeedVerb, RebaseVerb>();
         services.AddScoped<ISeedVerb, AnchorCheckVerb>();
         services.AddScoped<ISeedVerb, VocabGenerateVerb>();
+        services.AddScoped<StepLexiconRepairService>();
+        services.AddScoped<ISeedVerb, StepLexiconRepairVerb>();
 
         return services;
     }
