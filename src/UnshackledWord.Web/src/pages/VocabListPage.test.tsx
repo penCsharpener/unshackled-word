@@ -113,6 +113,19 @@ describe("VocabListPage", () => {
     expect(await screen.findByText("No entries for this search.")).toBeInTheDocument();
   });
 
+  it("shows the accepted meanings of each entry in rank order", async () => {
+    stubApi({
+      "GET /vocab/courses": () => json(courses),
+      "GET /vocab/courses/nt-greek/entries?skip=0&take=50": () =>
+        json(
+          page("nt-greek", [entry({ reviewed: true, meanings: ["Wort", "Rede", "Sache"] })], 5407),
+        ),
+    });
+    renderPage();
+    expect((await screen.findAllByText("Wort, Rede, Sache")).length).toBeGreaterThan(0);
+    expect(screen.queryByText("unreviewed")).not.toBeInTheDocument();
+  });
+
   it("pages forward with the Next button", async () => {
     const fetchMock = stubApi({
       "GET /vocab/courses": () => json(courses),

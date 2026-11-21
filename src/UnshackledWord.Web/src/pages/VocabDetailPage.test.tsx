@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
@@ -88,6 +88,34 @@ describe("VocabDetailPage", () => {
       "/bible/strongs/G3056",
     );
     expect(screen.getByRole("link", { name: /1,1$/ })).toHaveAttribute("href", "/bible/43/1#v1");
+  });
+
+  it("lists the accepted meanings in rank order with the derivation note", async () => {
+    stubApi({
+      "GET /vocab/entries/56": () =>
+        json({
+          ...logos,
+          meanings: [
+            { german: "Wort", rank: 1 },
+            { german: "Rede", rank: 2 },
+          ],
+        }),
+      "GET /meta-bible/structure": () => json(fixtureStructure),
+    });
+    renderAt();
+    const section = (await screen.findByRole("heading", { name: "Meanings to learn" })).closest(
+      "section",
+    ) as HTMLElement;
+    expect(
+      within(section)
+        .getAllByRole("listitem")
+        .map((item) => item.textContent),
+    ).toEqual(["Wort", "Rede"]);
+    expect(
+      within(section).getByText(
+        "Derived from the Elberfelder (2027, otherwise 1871). All meanings count as correct in the quiz.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("says so when the entry does not exist", async () => {

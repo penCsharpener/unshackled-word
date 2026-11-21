@@ -199,3 +199,28 @@ export function getVocabGenerateStatus(signal?: AbortSignal) {
 export function startVocabGenerate() {
   return api.post<VocabJob>("/maintainer/vocab/generate", undefined);
 }
+
+/** Body of `POST api/maintainer/vocab/meanings/derive`; without `course` the scope is all entries. */
+export interface DeriveVocabMeaningsRequest {
+  /** Course code (`nt-greek`, `ot-hebrew`); absent = all entries. */
+  course?: string;
+  rankFrom?: number;
+  rankTo?: number;
+  /** Computes and reports only, writes nothing. */
+  dryRun: boolean;
+}
+
+/** Mirrors `GET api/maintainer/vocab/meanings/status`. */
+export interface VocabMeaningsStatus {
+  job?: VocabJob | null;
+}
+
+/** Last meaning derivation and its job (`GET api/maintainer/vocab/meanings/status`). */
+export function getMeaningsStatus(signal?: AbortSignal) {
+  return api.get<VocabMeaningsStatus>("/maintainer/vocab/meanings/status", signal);
+}
+
+/** Starts the meaning derivation job (`POST api/maintainer/vocab/meanings/derive`, 202 with the job; 409 while another job runs). */
+export function startMeaningsDerive(request: DeriveVocabMeaningsRequest) {
+  return api.post<VocabJob>("/maintainer/vocab/meanings/derive", request);
+}
