@@ -1,4 +1,5 @@
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Application.Features.Vocab;
 using UnshackledWord.Domain.WebApi.Vocab;
 
 namespace UnshackledWord.Infrastructure.Vocab;
@@ -88,9 +89,73 @@ public sealed class VocabCourseRepository
         _storage = storage;
     }
 
-    public async Task<List<VocabCourseResponse>> GetCoursesAsync()
+    private const string SelectUserCards = """
+        SELECT e."Track"::text AS "Track"
+             , e."Occurrences"
+             , c."Stability"
+             , (c."Due" <= now() AND EXISTS (SELECT 1 FROM "unshackled-word"."VocabMeanings" m WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted")) AS "IsDue"
+        FROM "unshackled-word"."VocabCards" c
+            JOIN "unshackled-word"."VocabEntries" e ON e."Id" = c."VocabEntryId"
+        WHERE 1=1
+            AND c."UserId" = @UserId
+            AND c."State" <> 'new'
+            AND e."RetiredAt" IS NULL
+            AND e."FrequencyRank" IS NOT NULL
+        """;
+
+    // same rules as the session's new-word candidates
+    private const string SelectUserNewAvailable = """
+        SELECT e."Track"::text AS "Track"
+             , count(*)::int AS "Count"
+        FROM "unshackled-word"."VocabEntries" e
+            LEFT JOIN "unshackled-word"."VocabCards" c ON c."VocabEntryId" = e."Id" AND c."UserId" = @UserId
+        WHERE 1=1
+            AND e."FrequencyRank" IS NOT NULL
+            AND NOT e."IsMorpheme"
+            AND e."RetiredAt" IS NULL
+            AND EXISTS (SELECT 1 FROM "unshackled-word"."VocabMeanings" m WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted")
+            AND (c."UserId" IS NULL OR c."State" = 'new')
+        GROUP BY e."Track"
+        """;
+
+    private sealed class UserCardRow
     {
-        return (await _dbReader.ReadAsListAsync<VocabCourseResponse>(SelectCourses)).ToList();
+        public string Track { get; init; } = string.Empty;
+        public int Occurrences { get; init; }
+        public double Stability { get; init; }
+        public bool IsDue { get; init; }
+    }
+
+    private sealed class NewCountRow
+    {
+        public string Track { get; init; } = string.Empty;
+        public int Count { get; init; }
+    }
+
+    /// <summary>The courses; with a <paramref name="userId"/> also known, due, new available and coverage per course.</summary>
+    public async Task<List<VocabCourseResponse>> GetCoursesAsync(int? userId = null)
+    {
+        var courses = (await _dbReader.ReadAsListAsync<VocabCourseResponse>(SelectCourses)).ToList();
+
+        if (userId is null)
+        {
+            return courses;
+        }
+
+        var cards = (await _dbReader.ReadAsListAsync<UserCardRow>(SelectUserCards, new { UserId = userId })).ToList();
+        var newCounts = (await _dbReader.ReadAsListAsync<NewCountRow>(SelectUserNewAvailable, new { UserId = userId })).ToDictionary(x => x.Track, x => x.Count);
+
+        foreach (var course in courses)
+        {
+            var own = cards.Where(x => x.Track == course.Track).ToList();
+            var known = own.Where(x => VocabScheduler.StrengthFromStability(x.Stability) >= 3).ToList();
+            course.Known = known.Count;
+            course.Due = own.Count(x => x.IsDue);
+            course.NewAvailable = newCounts.GetValueOrDefault(course.Track);
+            course.Coverage = course.TotalOccurrences == 0 ? 0 : Math.Round(100.0 * known.Sum(x => (long)x.Occurrences) / course.TotalOccurrences, 1);
+        }
+
+        return courses;
     }
 
     /// <summary>Null when the course code is unknown.</summary>

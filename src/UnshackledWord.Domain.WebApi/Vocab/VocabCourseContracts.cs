@@ -18,11 +18,28 @@ public sealed class VocabCourseResponse
 
     /// <summary>Original-text occurrences of all ranked entries (morphemes are not ranked, so they are not counted).</summary>
     public int TotalOccurrences { get; set; }
+
+    // Signed-in user only (null when anonymous):
+
+    /// <summary>Cards with strength 3 or more.</summary>
+    public int? Known { get; set; }
+
+    /// <summary>Cards due now (not retired, not new).</summary>
+    public int? Due { get; set; }
+
+    /// <summary>Entries that would still come as new words (ranked, not retired, with an accepted meaning, no card yet or an unquizzed one).</summary>
+    public int? NewAvailable { get; set; }
+
+    /// <summary>Percent (0–100, one decimal) of the course's occurrences covered by known words.</summary>
+    public double? Coverage { get; set; }
 }
 
 public sealed class GetVocabCoursesResponse
 {
     public List<VocabCourseResponse> Courses { get; set; } = [];
+
+    /// <summary>Signed-in user only: cards that were revised or removed since the user last accepted them (<c>GET api/vocab/changes</c>). Omitted when anonymous.</summary>
+    public int? ChangedCount { get; set; }
 }
 
 /// <summary>Query of <c>GET api/vocab/courses/{code}/entries</c>.</summary>

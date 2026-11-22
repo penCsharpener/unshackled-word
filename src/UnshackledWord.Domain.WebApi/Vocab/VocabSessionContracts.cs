@@ -36,6 +36,9 @@ public sealed class StartVocabSessionResponse
     public int ReviewWords { get; set; }
     public int NewWords { get; set; }
     public VocabSessionProgress Progress { get; set; } = new();
+
+    /// <summary>Flagged cards of the user (revised or removed words, see <c>GET api/vocab/changes</c>).</summary>
+    public int ChangedCount { get; set; }
 }
 
 /// <summary>The word a card is about. <c>Lang</c> is <c>grc</c> or <c>he</c> (script, font and direction).</summary>

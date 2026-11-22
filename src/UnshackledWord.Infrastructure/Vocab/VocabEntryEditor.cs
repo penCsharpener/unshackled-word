@@ -262,6 +262,44 @@ public sealed class VocabEntryEditor
             AND "Id" = @Id
         """;
 
+    // Merge, cards. 1: a learner with a card on both entries gets the source's FSRS values on the target when the source is more stable.
+    private const string MergeCardsTakeHigher = """
+        UPDATE "unshackled-word"."VocabCards" b
+        SET "State" = a."State"
+          , "Stability" = a."Stability"
+          , "Difficulty" = a."Difficulty"
+          , "Due" = a."Due"
+          , "Reps" = a."Reps"
+          , "Lapses" = a."Lapses"
+          , "LastReview" = a."LastReview"
+          , "CreatedAt" = LEAST(a."CreatedAt", b."CreatedAt")
+        FROM "unshackled-word"."VocabCards" a
+        WHERE 1=1
+            AND a."VocabEntryId" = @Id
+            AND b."VocabEntryId" = @TargetId
+            AND a."UserId" = b."UserId"
+            AND a."Stability" > b."Stability"
+        """;
+
+    // 2: the source card of such a learner is dropped
+    private const string MergeCardsDropDuplicate = """
+        DELETE FROM "unshackled-word"."VocabCards" a
+        USING "unshackled-word"."VocabCards" b
+        WHERE 1=1
+            AND a."VocabEntryId" = @Id
+            AND b."VocabEntryId" = @TargetId
+            AND a."UserId" = b."UserId"
+        """;
+
+    // 3: the remaining source cards move to the target (flagged: seen version below the merge version)
+    private const string MergeCardsMove = """
+        UPDATE "unshackled-word"."VocabCards"
+        SET "VocabEntryId" = @TargetId
+          , "SeenContentVersion" = @Seen
+        WHERE 1=1
+            AND "VocabEntryId" = @Id
+        """;
+
     private const string DeleteEntry = """
         DELETE FROM "unshackled-word"."VocabEntries"
         WHERE 1=1
@@ -693,14 +731,17 @@ public sealed class VocabEntryEditor
         var targetVersion = await BumpAsync(c, t, targetId, userId);
         await WriteChangeAsync(c, t, targetId, targetVersion, VocabChangeKinds.Merge,
             new { keys = targetKeysBefore, meanings = targetMeaningsBefore },
-            new { keys = await KeysAsync(c, t, targetId), meanings = await AcceptedAsync(c, t, targetId), mergedFrom = id }, id, userId);
+            new { keys = await KeysAsync(c, t, targetId), meanings = await AcceptedAsync(c, t, targetId), mergedFrom = id, mergedFromLemma = source.Lemma, mergedFromForm = source.DictionaryForm }, id, userId);
 
         var sourceVersion = source.ContentVersion + 1;
         await WriteChangeAsync(c, t, id, sourceVersion, VocabChangeKinds.Merge,
             new { keys = sourceKeys, meanings = sourceMeanings }, new { mergedInto = targetId }, targetId, userId);
 
-        // TODO 0022.8b: move the VocabCards of the source entry to the target (the card with the higher stability wins when a learner has
-        // both; the review log stays). Until then the learners' cards on the deleted source entry are flagged as "entfernt".
+        // cards of the source move to the target; a learner who had both keeps the card with the higher stability (the review log stays).
+        // The moved card is flagged by the merge row: its seen version is one below the version the merge produced.
+        await c.ExecuteAsync(MergeCardsTakeHigher, new { Id = id, TargetId = targetId }, t);
+        await c.ExecuteAsync(MergeCardsDropDuplicate, new { Id = id, TargetId = targetId }, t);
+        await c.ExecuteAsync(MergeCardsMove, new { Id = id, TargetId = targetId, Seen = targetVersion - 1 }, t);
         await c.ExecuteAsync(DeleteEntry, new { Id = id }, t);
         await RecomputeRanksAsync(c, t);
 

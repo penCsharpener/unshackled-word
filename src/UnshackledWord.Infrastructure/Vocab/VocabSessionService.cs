@@ -82,6 +82,18 @@ public sealed class VocabSessionService
 
     public async Task<VocabSessionOutcome<StartVocabSessionResponse>> StartAsync(IDbConnection c, IDbTransaction t, int userId, string courseCode)
     {
+        var outcome = await StartCoreAsync(c, t, userId, courseCode);
+
+        if (outcome.Response is not null)
+        {
+            outcome.Response.ChangedCount = await VocabChangeService.CountAsync(c, t, userId);
+        }
+
+        return outcome;
+    }
+
+    private async Task<VocabSessionOutcome<StartVocabSessionResponse>> StartCoreAsync(IDbConnection c, IDbTransaction t, int userId, string courseCode)
+    {
         var course = await VocabSessionRepository.GetCourseAsync(c, t, courseCode);
 
         if (course is null)

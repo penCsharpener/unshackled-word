@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FastEndpoints;
 using UnshackledWord.Domain.WebApi.Vocab;
 using UnshackledWord.Infrastructure.Vocab;
@@ -8,10 +9,12 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.Vocab.GetCourses;
 public sealed class Endpoint : EndpointWithoutRequest<GetVocabCoursesResponse>
 {
     private readonly VocabCourseRepository _repository;
+    private readonly VocabChangeService _changes;
 
-    public Endpoint(VocabCourseRepository repository)
+    public Endpoint(VocabCourseRepository repository, VocabChangeService changes)
     {
         _repository = repository;
+        _changes = changes;
     }
 
     public override void Configure()
@@ -24,6 +27,14 @@ public sealed class Endpoint : EndpointWithoutRequest<GetVocabCoursesResponse>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await Send.OkAsync(new GetVocabCoursesResponse { Courses = await _repository.GetCoursesAsync() }, ct);
+        int? userId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
+        var response = new GetVocabCoursesResponse { Courses = await _repository.GetCoursesAsync(userId) };
+
+        if (userId is not null)
+        {
+            response.ChangedCount = await _changes.CountAsync(userId.Value, ct);
+        }
+
+        await Send.OkAsync(response, ct);
     }
 }
