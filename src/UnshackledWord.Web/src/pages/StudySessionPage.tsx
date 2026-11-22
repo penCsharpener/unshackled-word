@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useParams } from "react-router";
+import { AudioField } from "@/components/AudioField";
 import { Button, buttonClasses } from "@/components/Button";
 import { ChoiceList } from "@/components/ChoiceList";
 import { EmptyState } from "@/components/EmptyState";
@@ -201,6 +202,7 @@ function StudySession() {
             </p>
           ) : null}
           {meta ? <p className="text-sm text-fg-muted">{meta}</p> : null}
+          <AudioField src={entry.audioUrl ?? null} readOnly />
         </div>
         {current.meanings?.length ? (
           <ol className="grid gap-1 text-sm">

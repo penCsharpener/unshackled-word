@@ -71,6 +71,8 @@ export interface VocabEditorListItem {
   dictionaryFormOrigin?: VocabFormOrigin | null;
   occurrences: number;
   hasAudio: boolean;
+  /** Presigned URL, expires after 1 h. */
+  audioUrl?: string | null;
   reviewed: boolean;
   retired: boolean;
   contentVersion: number;
@@ -102,6 +104,8 @@ export interface VocabEditorEntry {
   isProperName: boolean;
   isMorpheme: boolean;
   hasAudio: boolean;
+  /** Presigned URL, expires after 1 h. */
+  audioUrl?: string | null;
   reviewedAt?: string | null;
   retiredAt?: string | null;
   contentVersion: number;
@@ -226,4 +230,16 @@ export function retireVocabEntry(id: number) {
 /** Deletes an entry; the API refuses while it still has keys (`DELETE`). */
 export function deleteVocabEntry(id: number) {
   return api.delete<VocabEditResponse>(`${BASE}/${id}`);
+}
+
+/** Uploads an MP3 (`PUT .../audio`, multipart field `file`, MP3 only, at most 1 MB; 503 when storage is not configured). */
+export function uploadVocabAudio(id: number, file: Blob, fileName = "audio.mp3") {
+  const form = new FormData();
+  form.append("file", file, fileName);
+  return api.putForm<VocabEditResponse>(`${BASE}/${id}/audio`, form);
+}
+
+/** Removes the entry's audio (`DELETE .../audio`). */
+export function deleteVocabAudio(id: number) {
+  return api.delete<VocabEditResponse>(`${BASE}/${id}/audio`);
 }

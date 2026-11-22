@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate, useParams } from "react-router";
+import { AudioField } from "@/components/AudioField";
 import { Button, buttonClasses } from "@/components/Button";
 import { Dialog } from "@/components/Dialog";
 import { FormError } from "@/components/FormError";
@@ -23,10 +24,12 @@ import { hasWriteRole } from "@/lib/auth/roles";
 import { formatStamp } from "@/lib/format";
 import { getCourses, vocabLang } from "@/lib/vocab/api";
 import {
+  deleteVocabAudio,
   deleteVocabEntry,
   getVocabEditorEntry,
   getVocabEditorList,
   retireVocabEntry,
+  uploadVocabAudio,
   type VocabEditorEntryResponse,
   type VocabEditorListItem,
   vocabEditorKeys,
@@ -147,6 +150,8 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
   const nextQuery = useNeighbour(course?.code, rank, 1);
   const prev: VocabEditorListItem | undefined = prevQuery.data?.items[0];
   const next: VocabEditorListItem | undefined = nextQuery.data?.items[0];
+
+  const reloadEditor = () => queryClient.invalidateQueries({ queryKey: vocabEditorKeys.all });
 
   const retire = useMutation({
     mutationFn: () => retireVocabEntry(entry.id),
@@ -344,6 +349,25 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
                 occurrences: key.occurrences,
               }))}
               onMove={setMoveKey}
+            />
+          </section>
+
+          <section className="grid gap-3 rounded-lg border border-border bg-surface p-4">
+            <h2 className="text-lg font-semibold">{t("vocab.editor.audio.title")}</h2>
+            <AudioField
+              src={entry.audioUrl ?? null}
+              onUpload={async (file) => {
+                await uploadVocabAudio(entry.id, file, file.name);
+                await reloadEditor();
+              }}
+              onRecord={async (mp3) => {
+                await uploadVocabAudio(entry.id, mp3);
+                await reloadEditor();
+              }}
+              onDelete={async () => {
+                await deleteVocabAudio(entry.id);
+                await reloadEditor();
+              }}
             />
           </section>
 

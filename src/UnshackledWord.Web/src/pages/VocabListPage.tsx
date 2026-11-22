@@ -17,6 +17,7 @@ import {
   type VocabTrack,
   vocabLang,
 } from "@/lib/vocab/api";
+import { useAudioPlayer } from "@/lib/vocab/useAudioPlayer";
 
 const TRACKS: VocabTrack[] = ["G", "H"];
 
@@ -42,6 +43,7 @@ export function VocabListPage() {
   const [entriesFailed, setEntriesFailed] = useState(false);
 
   const number = (value: number) => value.toLocaleString(i18n.language);
+  const player = useAudioPlayer();
 
   function updateParams(changes: Record<string, string | null>, replace = false) {
     setParams(
@@ -150,7 +152,15 @@ export function VocabListPage() {
       {data && data.items.length === 0 ? <EmptyState>{t("vocab.list.empty")}</EmptyState> : null}
       {data && data.items.length > 0 ? (
         <div className="grid gap-2">
-          <VocabEntryList mode="public" entries={rows} linkTo={(id) => `/vocab/${id}`} />
+          <VocabEntryList
+            mode="public"
+            entries={rows}
+            linkTo={(id) => `/vocab/${id}`}
+            onPlay={(id) => {
+              const url = data?.items.find((item) => item.id === id)?.audioUrl;
+              if (url) player.play(url);
+            }}
+          />
           <div className="flex items-center justify-between gap-3 text-sm text-fg-muted">
             <span className="tabular-nums">
               {t("vocab.list.range", {

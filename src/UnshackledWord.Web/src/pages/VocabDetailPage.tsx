@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";
+import { AudioField } from "@/components/AudioField";
 import { FormError } from "@/components/FormError";
 import { RankedBarList, type RankedItem } from "@/components/RankedBarList";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -109,6 +110,7 @@ export function VocabDetailPage() {
             ))}
           </div>
         </div>
+        <AudioField src={entry.audioUrl ?? null} readOnly />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">

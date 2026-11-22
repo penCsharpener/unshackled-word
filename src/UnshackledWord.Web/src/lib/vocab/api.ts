@@ -35,6 +35,8 @@ export interface VocabEntryItem {
   meanings: string[];
   occurrences: number;
   hasAudio: boolean;
+  /** Presigned URL, expires after 1 h. */
+  audioUrl?: string | null;
   reviewed: boolean;
   strongsKeys: string[];
 }
@@ -66,6 +68,8 @@ export interface VocabEntryDetail {
   isProperName: boolean;
   reviewed: boolean;
   hasAudio: boolean;
+  /** Presigned URL, expires after 1 h. */
+  audioUrl?: string | null;
 }
 
 /** One Strong's key of an entry with its occurrences. */

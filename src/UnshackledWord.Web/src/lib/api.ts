@@ -53,8 +53,12 @@ async function request<T>(
     signal,
     cache: options.cache,
     credentials: "include",
-    headers: body === undefined ? undefined : { "Content-Type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body),
+    // FormData sets its own multipart boundary header, so it is sent as is.
+    headers:
+      body === undefined || body instanceof FormData
+        ? undefined
+        : { "Content-Type": "application/json" },
+    body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -74,6 +78,8 @@ export const api = {
     request<T>("POST", path, body, signal),
   put: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("PUT", path, body, signal),
+  putForm: <T>(path: string, form: FormData, signal?: AbortSignal) =>
+    request<T>("PUT", path, form, signal),
   patch: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("PATCH", path, body, signal),
   delete: <T>(path: string, signal?: AbortSignal) => request<T>("DELETE", path, undefined, signal),

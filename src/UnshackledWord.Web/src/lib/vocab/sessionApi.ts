@@ -20,6 +20,8 @@ export interface VocabCardEntry {
   transliteration?: string | null;
   pos?: string | null;
   lang: VocabLang;
+  /** Presigned URL, expires after 1 h. */
+  audioUrl?: string | null;
 }
 
 /** One German option of a multiple-choice card; `id` is its position and is sent back as `optionId`. */
