@@ -1,0 +1,238 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter, Route, Routes } from "react-router";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import "@/i18n";
+import { AuthProvider } from "@/lib/auth/AuthContext";
+import { json, me } from "@/test/authHelpers";
+import { fixtureStructure } from "@/test/fixtures/bibleStructure";
+import { StudySessionPage } from "./StudySessionPage";
+
+const entry = {
+  id: 56,
+  lemma: "λόγος",
+  dictionaryForm: "λόγος, -ου, ὁ",
+  transliteration: "logos",
+  pos: "Substantiv",
+  lang: "grc",
+};
+
+const verse = {
+  bibleBookId: 43,
+  chapter: 1,
+  verse: 1,
+  fromRevision: true,
+  humanMade: false,
+  original: [
+    { position: 1, text: "Ἐν", isHit: false },
+    { position: 5, text: "λόγος", isHit: true },
+  ],
+  german: [
+    { position: 1, text: "Im", isHit: false },
+    { position: 4, text: "Wort", isHit: true },
+  ],
+};
+
+const progress = (wordsDone: number, cardsServed: number) => ({
+  cardsServed,
+  wordsTotal: 20,
+  wordsDone,
+  newWordsTotal: 1,
+  newWordsIntroduced: wordsDone > 0 ? 1 : 0,
+  openWave: wordsDone > 0 ? 0 : 1,
+});
+
+const introductionCard = {
+  seq: 1,
+  kind: "introduction",
+  entry,
+  meanings: [
+    { german: "Wort", rank: 1, count: 220 },
+    { german: "Rede", rank: 2, count: 40 },
+  ],
+  verse,
+};
+
+const choiceCard = {
+  seq: 2,
+  kind: "multiple_choice",
+  entry,
+  options: [
+    { id: 0, text: "Gesetz" },
+    { id: 1, text: "Wort" },
+    { id: 2, text: "Geist" },
+    { id: 3, text: "Tag" },
+  ],
+};
+
+const summary = {
+  newWords: 1,
+  reviewedWords: 0,
+  answers: 2,
+  correctAnswers: 1,
+  words: [
+    {
+      entryId: 56,
+      lemma: "λόγος",
+      dictionaryForm: "λόγος, -ου, ὁ",
+      lang: "grc",
+      isNew: true,
+      reps: 2,
+      correct: 1,
+      strengthBefore: 0,
+      strengthAfter: 1,
+      change: "moved",
+    },
+  ],
+};
+
+const started = {
+  sessionId: 7,
+  course: "nt-greek",
+  resumed: false,
+  finished: false,
+  reviewWords: 0,
+  newWords: 1,
+  progress: progress(0, 0),
+};
+
+/**
+ * A scripted server: the session walks introduction, multiple choice, finished. The answer to the
+ * multiple-choice card is correct for option 1 ("Wort") and a drop for anything else.
+ */
+function scriptedApi(options: { nothingDue?: boolean } = {}) {
+  let phase: "introduction" | "choice" | "done" = "introduction";
+  const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+    const path = url.replace(/^\/api/, "");
+    const method = init?.method ?? "GET";
+    if (path === "/auth/me") return json(me);
+    if (path === "/meta-bible/structure") return json(fixtureStructure);
+    if (method === "POST" && path === "/vocab/sessions") {
+      return options.nothingDue
+        ? json({ ...started, sessionId: 0, finished: true, newWords: 0 })
+        : json(started);
+    }
+    if (method === "GET" && path === "/vocab/sessions/7/next") {
+      if (phase === "introduction") {
+        return json({
+          sessionId: 7,
+          finished: false,
+          progress: progress(0, 0),
+          card: introductionCard,
+        });
+      }
+      if (phase === "choice") {
+        return json({ sessionId: 7, finished: false, progress: progress(0, 1), card: choiceCard });
+      }
+      return json({ sessionId: 7, finished: true, progress: progress(1, 2), summary });
+    }
+    if (method === "POST" && path === "/vocab/sessions/7/answers") {
+      const body = JSON.parse(String(init?.body)) as { seq: number; optionId?: number };
+      if (body.seq === 1) {
+        phase = "choice";
+        return json({
+          seq: 1,
+          kind: "introduction",
+          correct: true,
+          correctAnswers: ["Wort", "Rede"],
+          entry,
+          finished: false,
+          progress: progress(0, 1),
+        });
+      }
+      phase = "done";
+      const right = body.optionId === 1;
+      return json({
+        seq: 2,
+        kind: "multiple_choice",
+        correct: right,
+        correctOptionId: 1,
+        correctAnswers: ["Wort", "Rede"],
+        given: ["Gesetz", "Wort", "Geist", "Tag"][body.optionId ?? 0],
+        entry,
+        strength: right
+          ? { before: 2, after: 3, change: "moved" }
+          : { before: 2, after: 1, change: "dropped" },
+        verse,
+        finished: true,
+        progress: progress(1, 2),
+        summary,
+      });
+    }
+    return new Response("", { status: 404 });
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+function renderSession() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={client}>
+      <AuthProvider>
+        <MemoryRouter initialEntries={["/learn/nt-greek"]}>
+          <Routes>
+            <Route path="/learn/:course" element={<StudySessionPage />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    </QueryClientProvider>,
+  );
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+describe("StudySessionPage", () => {
+  it("runs introduction, multiple choice with feedback, then the summary", async () => {
+    const fetchMock = scriptedApi();
+    const user = userEvent.setup();
+    renderSession();
+
+    // Introduction: the word, its meanings and the sample verse.
+    expect(await screen.findByText("Neues Wort")).toBeInTheDocument();
+    expect(screen.getByText("Rede")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /1,1/ })).toHaveAttribute("href", "/bible/43/1#v1");
+    await user.click(screen.getByRole("button", { name: "Verstanden" }));
+
+    // Multiple choice: a wrong pick shows the correct answers and the strength.
+    expect(await screen.findByText("Was bedeutet …")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /Gesetz/ }));
+    expect(await screen.findByText("✗ Leider nicht")).toBeInTheDocument();
+    expect(screen.getByText("Wort, Rede")).toBeInTheDocument();
+    expect(screen.getByText("Kommt in dieser Sitzung wieder")).toBeInTheDocument();
+
+    // Enter continues to the summary.
+    await user.keyboard("{Enter}");
+    expect(await screen.findByText("Gut gemacht!")).toBeInTheDocument();
+    expect(screen.getByText("Neu gelernt")).toBeInTheDocument();
+
+    const bodies = fetchMock.mock.calls
+      .filter(([url]) => String(url).endsWith("/answers"))
+      .map(([, init]) => JSON.parse(String(init?.body)) as unknown);
+    expect(bodies).toHaveLength(2);
+    expect(bodies[1]).toMatchObject({ seq: 2, optionId: 0 });
+  });
+
+  it("picks an option with the number keys", async () => {
+    scriptedApi();
+    const user = userEvent.setup();
+    renderSession();
+
+    expect(await screen.findByText("Neues Wort")).toBeInTheDocument();
+    await user.keyboard("{Enter}");
+    expect(await screen.findByText("Was bedeutet …")).toBeInTheDocument();
+    await user.keyboard("2");
+    expect(await screen.findByText("✓ Richtig")).toBeInTheDocument();
+    expect(screen.getByText("Stärker geworden")).toBeInTheDocument();
+  });
+
+  it("says when nothing is due", async () => {
+    scriptedApi({ nothingDue: true });
+    renderSession();
+    expect(await screen.findByText("Nichts zu lernen")).toBeInTheDocument();
+    expect(screen.queryByText("Neues Wort")).toBeNull();
+  });
+});

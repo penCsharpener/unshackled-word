@@ -12,6 +12,7 @@ import { BulkReplacePage } from "@/pages/BulkReplacePage";
 import { ChapterPage } from "@/pages/ChapterPage";
 import { DataQualityPage } from "@/pages/DataQualityPage";
 import { ForgotPasswordPage, MagicLinkRequestPage } from "@/pages/EmailRequestPage";
+import { LearnPage } from "@/pages/LearnPage";
 import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
 import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
 import { MaintainerPage } from "@/pages/MaintainerPage";
@@ -22,6 +23,7 @@ import { RegisterPage } from "@/pages/RegisterPage";
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
 import { SignInPage } from "@/pages/SignInPage";
 import { StrongsPage } from "@/pages/StrongsPage";
+import { StudySessionPage } from "@/pages/StudySessionPage";
 import { VerifyEmailPage } from "@/pages/VerifyEmailPage";
 import { VocabDetailPage } from "@/pages/VocabDetailPage";
 import { VocabEditorListPage } from "@/pages/VocabEditorListPage";
@@ -41,6 +43,8 @@ export const router = createBrowserRouter([
       { path: "bible/:bookId/:chapter", element: <ChapterPage /> },
       { path: "vocab", element: <VocabListPage /> },
       { path: "vocab/:id", element: <VocabDetailPage /> },
+      { path: "learn", element: <LearnPage /> },
+      { path: "learn/:course", element: <StudySessionPage /> },
       { path: "login", element: <SignInPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },

@@ -1,38 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";
 import { FormError } from "@/components/FormError";
 import { RankedBarList, type RankedItem } from "@/components/RankedBarList";
 import { StatusBadge } from "@/components/StatusBadge";
+import { VerseContext } from "@/components/VerseContext";
 import { ApiError } from "@/lib/api";
-import { bookAbbreviation } from "@/lib/bible/books";
 import { useBibleStructure } from "@/lib/bible/queries";
 import { formatStamp } from "@/lib/format";
-import {
-  getVocabEntry,
-  type VocabEntryResponse,
-  type VocabSampleWord,
-  vocabLang,
-} from "@/lib/vocab/api";
+import { getVocabEntry, type VocabEntryResponse, vocabLang } from "@/lib/vocab/api";
+import { sampleVerseHref, sampleVerseReference } from "@/lib/vocab/verseReference";
 
 const entryKey = (id: number) => ["vocab", "entry", id] as const;
-
-/** Sample verse words; the hit words carry the entry. */
-function Words({ words }: { words: VocabSampleWord[] }) {
-  return [...words]
-    .sort((a, b) => a.position - b.position)
-    .map((word, index) => (
-      <Fragment key={word.position}>
-        {index > 0 ? " " : null}
-        {word.isHit ? (
-          <mark className="rounded-sm bg-mark-linked px-0.5 text-fg">{word.text}</mark>
-        ) : (
-          word.text
-        )}
-      </Fragment>
-    ));
-}
 
 /** Entry detail (screen 2): the lemma, its Strong's keys, the German renderings with their share and the sample verses. */
 export function VocabDetailPage() {
@@ -85,11 +64,6 @@ export function VocabDetailPage() {
     value: rendering.linkCount,
     share: rendering.share / 100,
   }));
-
-  const bookName = (bibleBookId: number) => {
-    const book = structure.data?.find((item) => item.id === bibleBookId);
-    return book ? bookAbbreviation(book, i18n.language) : String(bibleBookId);
-  };
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4">
@@ -168,26 +142,14 @@ export function VocabDetailPage() {
           <h2 className="text-lg font-semibold">{t("vocab.detail.samples")}</h2>
           <ol className="grid gap-3">
             {data.sampleVerses.map((verse) => (
-              <li
-                key={`${verse.bibleBookId}-${verse.chapter}-${verse.verse}`}
-                className="grid gap-1 rounded-md bg-surface-muted p-3"
-              >
-                <Link
-                  to={`/bible/${verse.bibleBookId}/${verse.chapter}#v${verse.verse}`}
-                  className="text-sm font-medium text-accent underline"
-                >
-                  {`${bookName(verse.bibleBookId)} ${verse.chapter},${verse.verse}`}
-                </Link>
-                <p
+              <li key={`${verse.bibleBookId}-${verse.chapter}-${verse.verse}`}>
+                <VerseContext
+                  reference={sampleVerseReference(verse, structure.data, i18n.language)}
+                  href={sampleVerseHref(verse)}
                   lang={lang}
-                  dir={lang === "he" ? "rtl" : undefined}
-                  className="font-original text-lg"
-                >
-                  <Words words={verse.original} />
-                </p>
-                <p lang="de" className="font-scripture text-base">
-                  <Words words={verse.german} />
-                </p>
+                  original={verse.original}
+                  german={verse.german}
+                />
               </li>
             ))}
           </ol>
