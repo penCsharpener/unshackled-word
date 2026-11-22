@@ -191,6 +191,7 @@ export const en: Translation = {
     session: {
       progress: "Progress",
       leave: "Leave session",
+      editWord: "Edit word (new tab)",
       loading: "Loading session …",
       loadFailed: "The session could not be loaded.",
       signIn: "Please sign in again.",
@@ -278,6 +279,7 @@ export const en: Translation = {
     },
     detail: {
       back: "← Vocabulary",
+      edit: "Edit",
       testaments: { G: "NT", H: "OT" },
       rank: "Rank {{rank}} in the {{testament}}",
       occurrences: "{{count}} occurrences",
@@ -430,8 +432,7 @@ export const en: Translation = {
         own: "Own meaning",
         ownPlaceholder: "e.g. amid",
         add: "Add",
-        up: "Move up",
-        down: "Move down",
+        drag: "Reorder (drag, or use the arrow keys)",
         accepted: "Accepted",
         pin: "Pin",
         delete: "Remove",

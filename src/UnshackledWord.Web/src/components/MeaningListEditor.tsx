@@ -1,3 +1,4 @@
+import { type KeyboardEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./Button";
 import { Switch } from "./Switch";
@@ -21,7 +22,7 @@ export interface MeaningListEditorProps {
 }
 
 /**
- * Meanings of one entry in their order: up/down, accept (Switch), pin (`aria-pressed`) and delete for manual meanings.
+ * Meanings of one entry in their order: drag and drop (grip handle; arrow keys on the focused handle for the keyboard), accept (Switch), pin (`aria-pressed`) and delete for manual meanings.
  * Controlled: every change is passed to `onChange` with the whole list; the editor page saves it.
  */
 export function MeaningListEditor({ rows, onChange }: MeaningListEditorProps) {
@@ -32,14 +33,27 @@ export function MeaningListEditor({ rows, onChange }: MeaningListEditorProps) {
   const update = (index: number, patch: Partial<MeaningRow>) =>
     onChange(rows.map((row, position) => (position === index ? { ...row, ...patch } : row)));
 
-  const move = (index: number, delta: number) => {
-    const target = index + delta;
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+
+  const moveTo = (index: number, target: number) => {
     const row = rows[index];
-    if (!row || target < 0 || target >= rows.length) return;
+    if (!row || target === index || target < 0 || target >= rows.length) return;
     const next = [...rows];
     next.splice(index, 1);
     next.splice(target, 0, row);
     onChange(next);
+  };
+
+  const endDrag = () => {
+    setDragIndex(null);
+    setOverIndex(null);
+  };
+
+  const handleKey = (index: number, event: KeyboardEvent) => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    moveTo(index, index + (event.key === "ArrowUp" ? -1 : 1));
   };
 
   return (
@@ -56,28 +70,34 @@ export function MeaningListEditor({ rows, onChange }: MeaningListEditorProps) {
         return (
           <li
             key={row.id ?? `new-${index}`}
-            className={`flex flex-wrap items-center gap-2 rounded-md border border-border bg-surface p-2 text-sm ${row.isAccepted ? "" : "text-fg-muted"}`}
+            draggable
+            onDragStart={(event) => {
+              event.dataTransfer.effectAllowed = "move";
+              event.dataTransfer.setData("text/plain", String(index));
+              setDragIndex(index);
+            }}
+            onDragOver={(event) => {
+              if (dragIndex === null) return;
+              event.preventDefault();
+              event.dataTransfer.dropEffect = "move";
+              setOverIndex(index);
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              if (dragIndex !== null) moveTo(dragIndex, index);
+              endDrag();
+            }}
+            onDragEnd={endDrag}
+            className={`flex cursor-grab flex-wrap items-center gap-2 rounded-md border bg-surface p-2 text-sm ${overIndex === index && dragIndex !== null && dragIndex !== index ? "border-accent" : "border-border"} ${dragIndex === index ? "opacity-50" : ""} ${row.isAccepted ? "" : "text-fg-muted"}`}
           >
-            <span className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-label={t("vocab.editor.meanings.up")}
-                disabled={index === 0}
-                onClick={() => move(index, -1)}
-              >
-                ↑
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-label={t("vocab.editor.meanings.down")}
-                disabled={index === rows.length - 1}
-                onClick={() => move(index, 1)}
-              >
-                ↓
-              </Button>
-            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label={t("vocab.editor.meanings.drag")}
+              onKeyDown={(event) => handleKey(index, event)}
+            >
+              ⠿
+            </Button>
             <span className="grid min-w-0 flex-1 gap-0.5">
               <span lang="de" className="font-medium">
                 {row.german}

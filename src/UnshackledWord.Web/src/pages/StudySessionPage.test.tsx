@@ -101,12 +101,14 @@ const started = {
  * A scripted server: the session walks introduction, multiple choice, finished. The answer to the
  * multiple-choice card is correct for option 1 ("Wort") and a drop for anything else.
  */
-function scriptedApi(options: { nothingDue?: boolean; changedCount?: number } = {}) {
+function scriptedApi(
+  options: { nothingDue?: boolean; changedCount?: number; roles?: string[] } = {},
+) {
   let phase: "introduction" | "choice" | "done" = "introduction";
   const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
     const path = url.replace(/^\/api/, "");
     const method = init?.method ?? "GET";
-    if (path === "/auth/me") return json(me);
+    if (path === "/auth/me") return json({ ...me, roles: options.roles ?? [] });
     if (path === "/meta-bible/structure") return json(fixtureStructure);
     if (method === "POST" && path === "/vocab/sessions") {
       const changedCount = options.changedCount ?? 0;
@@ -207,6 +209,21 @@ afterEach(() => {
 });
 
 describe("StudySessionPage", () => {
+  it("offers maintainers an edit link that opens in a new tab", async () => {
+    scriptedApi({ roles: ["maintainer"] });
+    renderSession();
+    const link = await screen.findByRole("link", { name: "Wort bearbeiten (neuer Tab)" });
+    expect(link).toHaveAttribute("href", expect.stringMatching(/^\/edit\/vocab\/\d+$/));
+    expect(link).toHaveAttribute("target", "_blank");
+  });
+
+  it("hides the edit link without a write role", async () => {
+    scriptedApi({ roles: [] });
+    renderSession();
+    await screen.findByText("Neues Wort");
+    expect(screen.queryByRole("link", { name: /Wort bearbeiten/ })).not.toBeInTheDocument();
+  });
+
   it("runs introduction, multiple choice with feedback, then the summary", async () => {
     const fetchMock = scriptedApi();
     const user = userEvent.setup();

@@ -16,6 +16,7 @@ import { StudyCard } from "@/components/StudyCard";
 import { VerseContext } from "@/components/VerseContext";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { hasWriteRole } from "@/lib/auth/roles";
 import { useBibleStructure } from "@/lib/bible/queries";
 import { getCourses, type VocabLang, type VocabSampleVerse } from "@/lib/vocab/api";
 import { BACKSPACE_KEY } from "@/lib/vocab/scriptLayouts";
@@ -81,6 +82,7 @@ export function StudySessionPage() {
 }
 
 function StudySession() {
+  const { user } = useAuth();
   const { t, i18n } = useTranslation();
   const { course = "" } = useParams();
   const queryClient = useQueryClient();
@@ -477,6 +479,18 @@ function StudySession() {
               label={t("learn.session.progress")}
             />
           </div>
+        ) : (
+          <div className="flex-1" />
+        )}
+        {card && hasWriteRole(user) ? (
+          <a
+            href={`/edit/vocab/${card.entry.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonClasses({ variant: "ghost", size: "sm" })}
+          >
+            {t("learn.session.editWord")}
+          </a>
         ) : null}
       </div>
       {changedCount > 0 ? <ChangedWordsNotice changedCount={changedCount} /> : null}

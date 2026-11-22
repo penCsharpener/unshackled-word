@@ -32,12 +32,13 @@ export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryList
   const number = (value: number) => value.toLocaleString(i18n.language);
   const editor = mode === "editor";
 
-  const lemma = (entry: VocabEntryRow, size: "text-lg" | "text-xl") => (
+  /** `stretch` extends the link over its positioned parent (the table cell), so the whole cell is the click target. */
+  const lemma = (entry: VocabEntryRow, size: "text-lg" | "text-xl", stretch = false) => (
     <Link
       to={linkTo(entry.id)}
       lang={entry.lang}
       dir={entry.lang === "he" ? "rtl" : undefined}
-      className={`font-original ${size} text-accent underline`}
+      className={`font-original ${size} text-accent underline${stretch ? " after:absolute after:inset-0" : ""}`}
     >
       {entry.lemma}
     </Link>
@@ -114,8 +115,8 @@ export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryList
             {entries.map((entry) => (
               <tr key={entry.id} className="hover:bg-surface-muted">
                 <td className="py-2 pr-4 tabular-nums text-fg-muted">{entry.rank ?? "–"}</td>
-                <td className="py-2 pr-4">
-                  {lemma(entry, "text-lg")}
+                <td className="relative py-2 pr-4">
+                  {lemma(entry, "text-lg", true)}
                   <span className="ml-2 text-fg-muted">{entry.transliteration}</span>
                 </td>
                 <td

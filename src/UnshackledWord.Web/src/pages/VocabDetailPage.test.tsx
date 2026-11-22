@@ -3,7 +3,8 @@ import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
-import { json, stubApi } from "@/test/authHelpers";
+import { AuthProvider } from "@/lib/auth/AuthContext";
+import { json, me, stubApi } from "@/test/authHelpers";
 import { fixtureStructure } from "@/test/fixtures/bibleStructure";
 import { VocabDetailPage } from "./VocabDetailPage";
 
@@ -59,11 +60,13 @@ function renderAt(route = "/vocab/56") {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={[route]}>
-        <Routes>
-          <Route path="/vocab/:id" element={<VocabDetailPage />} />
-        </Routes>
-      </MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[route]}>
+          <Routes>
+            <Route path="/vocab/:id" element={<VocabDetailPage />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
     </QueryClientProvider>,
   );
 }
@@ -116,6 +119,26 @@ describe("VocabDetailPage", () => {
         "Derived from the Elberfelder (2027, otherwise 1871). All meanings count as correct in the quiz.",
       ),
     ).toBeInTheDocument();
+  });
+
+  it("offers the editor link only to maintainers", async () => {
+    const stubs = (roles: string[]) =>
+      stubApi({
+        "GET /auth/me": () => json({ ...me, roles }),
+        "GET /vocab/entries/56": () => json(logos),
+        "GET /meta-bible/structure": () => json(fixtureStructure),
+      });
+    stubs(["maintainer"]);
+    const { unmount } = renderAt();
+    expect(await screen.findByRole("link", { name: "Edit" })).toHaveAttribute(
+      "href",
+      "/edit/vocab/56",
+    );
+    unmount();
+    stubs([]);
+    renderAt();
+    await screen.findByRole("heading", { level: 1 });
+    expect(screen.queryByRole("link", { name: "Edit" })).not.toBeInTheDocument();
   });
 
   it("says so when the entry does not exist", async () => {

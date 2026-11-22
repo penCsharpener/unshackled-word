@@ -193,6 +193,7 @@ export const de = {
     session: {
       progress: "Fortschritt",
       leave: "Sitzung verlassen",
+      editWord: "Wort bearbeiten (neuer Tab)",
       loading: "Sitzung wird geladen …",
       loadFailed: "Die Sitzung konnte nicht geladen werden.",
       signIn: "Bitte melde dich erneut an.",
@@ -280,6 +281,7 @@ export const de = {
     },
     detail: {
       back: "← Vokabeln",
+      edit: "Bearbeiten",
       testaments: { G: "NT", H: "AT" },
       rank: "Rang {{rank}} im {{testament}}",
       occurrences: "{{count}} Vorkommen",
@@ -432,8 +434,7 @@ export const de = {
         own: "Eigene Bedeutung",
         ownPlaceholder: "z. B. inmitten",
         add: "Hinzufügen",
-        up: "Nach oben",
-        down: "Nach unten",
+        drag: "Reihenfolge ändern (ziehen oder Pfeiltasten)",
         accepted: "Angenommen",
         pin: "Anpinnen",
         delete: "Entfernen",
