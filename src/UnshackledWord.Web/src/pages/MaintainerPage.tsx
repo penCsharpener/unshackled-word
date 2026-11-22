@@ -17,7 +17,7 @@ import { RevisionOverviewSection } from "./RevisionOverviewSection";
 import { SeedRoundTripSection } from "./SeedRoundTripSection";
 import { VocabJobsSection } from "./VocabJobsSection";
 
-const KINDS: SeedKind[] = ["all", "morphology", "mappings", "revision"];
+const KINDS: SeedKind[] = ["all", "morphology", "mappings", "revision", "vocab"];
 
 /** Maintainer tools; anonymous users go to sign-in, users without the role see a 403 note. */
 export function MaintainerPage() {

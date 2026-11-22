@@ -132,6 +132,11 @@ public sealed class SeedFileExportService
             folders.Add(SeedLayout.RevisionFolder);
         }
 
+        if (kind is SeedExportKind.All or SeedExportKind.Vocab)
+        {
+            folders.Add(SeedLayout.VocabFolder);
+        }
+
         foreach (var folder in folders)
         {
             var root = layout.Resolve(folder);

@@ -27,7 +27,7 @@ public sealed class Endpoint : Endpoint<ExportSeedRequest>
         Post("exportSeed");
         Group<RouteGroupConfig>();
         Roles(AppRoles.Admin, AppRoles.Maintainer);
-        Summary(s => s.Summary = "Builds the repo seed (kind all|morphology|mappings|revision) from the database, read-only, and returns it as a zip of repo-relative paths (assets/seed/..., assets/Elb1871Mappings/..., assets/seed/revision/...). 409 while another export runs.");
+        Summary(s => s.Summary = "Builds the repo seed (kind all|morphology|mappings|revision|vocab) from the database, read-only, and returns it as a zip of repo-relative paths (assets/seed/..., assets/Elb1871Mappings/..., assets/seed/revision/...). 409 while another export runs.");
     }
 
     public override async Task HandleAsync(ExportSeedRequest req, CancellationToken ct)
@@ -72,6 +72,7 @@ public sealed class Endpoint : Endpoint<ExportSeedRequest>
         ExportSeedRequest.Morphology => SeedExportKind.Morphology,
         ExportSeedRequest.Mappings => SeedExportKind.Mappings,
         ExportSeedRequest.Revision => SeedExportKind.Revision,
+        ExportSeedRequest.Vocab => SeedExportKind.Vocab,
         _ => SeedExportKind.All
     };
 }
@@ -81,7 +82,7 @@ public sealed class ExportSeedValidator : Validator<ExportSeedRequest>
     public ExportSeedValidator()
     {
         RuleFor(x => x.Kind)
-            .Must(k => k is not null && k.ToLowerInvariant() is ExportSeedRequest.All or ExportSeedRequest.Morphology or ExportSeedRequest.Mappings or ExportSeedRequest.Revision)
+            .Must(k => k is not null && k.ToLowerInvariant() is ExportSeedRequest.All or ExportSeedRequest.Morphology or ExportSeedRequest.Mappings or ExportSeedRequest.Revision or ExportSeedRequest.Vocab)
             .WithMessage("kind must be all, morphology, mappings or revision.");
     }
 }

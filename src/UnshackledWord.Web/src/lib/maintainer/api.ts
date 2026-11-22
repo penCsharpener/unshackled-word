@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/api";
 
-export type SeedKind = "all" | "morphology" | "mappings" | "revision";
+export type SeedKind = "all" | "morphology" | "mappings" | "revision" | "vocab";
 
 const baseUrl = (import.meta.env.VITE_API_URL ?? "/api").replace(/\/$/, "");
 

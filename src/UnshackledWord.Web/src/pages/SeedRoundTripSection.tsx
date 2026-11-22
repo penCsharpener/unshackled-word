@@ -15,7 +15,7 @@ import {
 } from "@/lib/maintainer/seedJobs";
 import { SeedJobResultView } from "./SeedJobResultView";
 
-const KINDS: SeedKind[] = ["revision", "mappings", "morphology", "all"];
+const KINDS: SeedKind[] = ["revision", "vocab", "mappings", "morphology", "all"];
 const OPERATIONS: Exclude<SeedOperation, "rebase">[] = ["export", "import", "update", "roundTrip"];
 
 function ImportsTable({ rows }: { rows: SeedImportRow[] }) {

@@ -6,7 +6,7 @@ using UnshackledWord.Infrastructure.Seed;
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 
 /// <summary>
-/// <c>export-seed [--only morphology|mappings|revision] [--out DIR]</c>: writes the repo seed from the configured database (read-only) into
+/// <c>export-seed [--only morphology|mappings|revision|vocab] [--out DIR]</c>: writes the repo seed from the configured database (read-only) into
 /// <c>assets/seed</c> (or DIR). The maintainer runs it and commits the diff.
 /// </summary>
 public sealed class ExportSeedVerb : ISeedVerb
@@ -30,9 +30,9 @@ public sealed class ExportSeedVerb : ISeedVerb
     {
         var only = arguments.Get("--only") ?? "all";
 
-        if (only is not ("all" or "morphology" or "mappings" or "revision"))
+        if (only is not ("all" or "morphology" or "mappings" or "revision" or "vocab"))
         {
-            _logger.LogError("--only {Only} is not supported; supported: morphology, mappings, revision (default: all)", only);
+            _logger.LogError("--only {Only} is not supported; supported: morphology, mappings, revision, vocab (default: all)", only);
             return 2;
         }
 
@@ -44,6 +44,7 @@ public sealed class ExportSeedVerb : ISeedVerb
             "morphology" => SeedExportKind.Morphology,
             "mappings" => SeedExportKind.Mappings,
             "revision" => SeedExportKind.Revision,
+            "vocab" => SeedExportKind.Vocab,
             _ => SeedExportKind.All
         };
 

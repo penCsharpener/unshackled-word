@@ -1164,6 +1164,7 @@ export const en: Translation = {
         morphology: "Morphology",
         mappings: "Mappings",
         revision: "Revision",
+        vocab: "Vocabulary",
       },
       export: "Export seed",
       exporting: "Building …",

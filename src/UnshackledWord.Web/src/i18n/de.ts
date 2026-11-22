@@ -1179,6 +1179,7 @@ export const de = {
         morphology: "Morphologie",
         mappings: "Zuordnungen",
         revision: "Revision",
+        vocab: "Vokabeln",
       },
       export: "Seed exportieren",
       exporting: "wird erstellt …",

@@ -22,6 +22,9 @@ public sealed class SeedLayout
     public const string RevisionVersesFolder = "verses";
     public const string RevisionMappingFolder = "mapping";
 
+    /// <summary>Vocab seed (roadmap 0022.14), below the seed root: <c>vocab/entries.csv</c>, <c>vocab/keys.csv</c>, <c>vocab/meanings.csv</c>.</summary>
+    public const string VocabFolder = "vocab";
+
     public static readonly UTF8Encoding Utf8NoBom = new(false);
 
     private readonly IFileService _fileService;

@@ -295,6 +295,10 @@ The official repo ships a rolling seed for mappings and the Elb1871 revision. Af
 
 These are background jobs inside the API process; their state is lost if the API restarts. Self-hosters who keep their own data simply never import the repo seed over it.
 
+### Vocab seed
+
+`assets/seed/vocab` (`entries.csv`, `keys.csv`, `meanings.csv`) holds the vocab lexicon content: entries, Strong's keys, German meanings (derived/manual, accepted, pinned, ranks), dictionary forms and the audio object *keys*. It never holds progress (cards, sessions, review log, settings, change rows) and no ids. The first start imports it; "Import" and "Update" on the maintainer page run the same sync: entries are matched by `(Track, Lemma)` (fallback: a Strong's key they hold), matched entries take the seed, unknown ones are created, entries missing from the seed are left alone. A learning-relevant difference (accepted meanings, dictionary form, keys, lemma) bumps the entry's content version and writes a change row, so learners see it in their change list; anything else is updated silently. The audio key is only set from the seed, never cleared by it. Export fails if `(Track, Lemma)` exists twice among live entries: merge or retire the duplicate first.
+
 ### Backups
 
 Back up Postgres, plus the seed folders if you export from this instance.
@@ -336,7 +340,7 @@ UNSHACKLEDWORD_OBJECT_STORAGE_SECRET_KEY=...
 
 Reads are presigned GET URLs on `OBJECT_STORAGE_PUBLIC_URL`. The signature covers the public host, so the proxy in front must strip only `/media` and forward the `Host` header unchanged (`nginx.prod.conf` uses `$http_host`; Nginx Proxy Manager must keep the Host header too). `ObjectStorage:Region` and `s3_region` in `garage.toml` must both be `garage`; a mismatch is answered with a bare 400. Uploads go through the API, so Garage's S3 port is not published in production.
 
-Backup: copy the Garage volumes next to the Postgres dump, e.g. with the container stopped or after `garage meta snapshot`:
+The vocab seed stores only the audio *keys*; the audio objects live in Garage and must be backed up separately (neither the Postgres dump nor `assets/seed` contains them). Backup: copy the Garage volumes next to the Postgres dump, e.g. with the container stopped or after `garage meta snapshot`:
 
 ```bash
 docker run --rm -v unshackled-word_garage_data:/data:ro -v unshackled-word_garage_meta:/meta:ro -v /backups:/backups rclone/rclone \

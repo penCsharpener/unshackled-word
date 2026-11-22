@@ -3,6 +3,7 @@ using UnshackledWord.Infrastructure.Seed;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Infrastructure.Seed.Morphology;
 using UnshackledWord.Infrastructure.Seed.Revision;
+using UnshackledWord.Infrastructure.Seed.Vocab;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Maintainer.SeedAdmin;
 
@@ -18,6 +19,7 @@ public sealed class SeedOperationService
     private readonly MorphologySeedImporter _morphology;
     private readonly MappingSeedImporter _mappings;
     private readonly RevisionSeedImporter _revision;
+    private readonly VocabSeedImporter _vocab;
     private readonly SeedRebaseService _rebase;
     private readonly ILogger<SeedOperationService> _logger;
 
@@ -26,6 +28,7 @@ public sealed class SeedOperationService
         MorphologySeedImporter morphology,
         MappingSeedImporter mappings,
         RevisionSeedImporter revision,
+        VocabSeedImporter vocab,
         SeedRebaseService rebase,
         ILogger<SeedOperationService> logger)
     {
@@ -33,6 +36,7 @@ public sealed class SeedOperationService
         _morphology = morphology;
         _mappings = mappings;
         _revision = revision;
+        _vocab = vocab;
         _rebase = rebase;
         _logger = logger;
     }
@@ -42,6 +46,7 @@ public sealed class SeedOperationService
         ExportSeedRequest.Morphology => SeedExportKind.Morphology,
         ExportSeedRequest.Mappings => SeedExportKind.Mappings,
         ExportSeedRequest.Revision => SeedExportKind.Revision,
+        ExportSeedRequest.Vocab => SeedExportKind.Vocab,
         _ => SeedExportKind.All
     };
 
@@ -109,6 +114,12 @@ public sealed class SeedOperationService
             steps.Add(await _revision.ImportFromLayoutAsync(layout, token));
         }
 
+        if (kind is SeedExportKind.All or SeedExportKind.Vocab)
+        {
+            progress.Report("Importing the vocab seed: matched entries take the seed, learners get a change row for every learning-relevant difference");
+            steps.Add(await _vocab.ImportFromLayoutAsync(layout, token));
+        }
+
         return steps;
     }
 
@@ -133,6 +144,12 @@ public sealed class SeedOperationService
         {
             progress.Report("Updating the revision: variants nobody changed since the last import follow the seed, the others are kept");
             steps.Add(await _revision.UpdateFromLayoutAsync(layout, token));
+        }
+
+        if (kind is SeedExportKind.All or SeedExportKind.Vocab)
+        {
+            progress.Report("Updating the vocab entries from the seed: learning-relevant differences bump the entry version");
+            steps.Add(await _vocab.ImportFromLayoutAsync(layout, token));
         }
 
         return steps;

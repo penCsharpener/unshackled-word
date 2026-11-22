@@ -3,6 +3,7 @@ using UnshackledWord.Infrastructure.Seed.BaseText;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Infrastructure.Seed.Morphology;
 using UnshackledWord.Infrastructure.Seed.Revision;
+using UnshackledWord.Infrastructure.Seed.Vocab;
 using UnshackledWord.Infrastructure.Vocab;
 
 namespace UnshackledWord.Infrastructure.Seed;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<MappingExporter>();
         services.AddScoped<RevisionExportRepository>();
         services.AddScoped<RevisionExporter>();
+        services.AddScoped<VocabSeedExporter>();
         services.AddScoped<SeedExportRunner>();
         services.AddScoped<SeedFileExportService>();
 
@@ -44,6 +46,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<RevisionSeedSourceReader>();
         services.AddScoped<RevisionSeedImporter>();
         services.AddScoped<RevisionBaseRealigner>();
+        services.AddScoped<VocabSeedImporter>();
         services.AddScoped<RebaseRepository>();
         services.AddScoped<SeedRebaseService>();
         services.AddScoped<SeedImportsRepository>();

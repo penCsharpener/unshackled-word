@@ -6,7 +6,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.Maintainer.SeedAdmin.StartJob;
 
 public sealed class Validator : Validator<StartSeedJobRequest>
 {
-    private static readonly string[] Kinds = [ExportSeedRequest.All, ExportSeedRequest.Morphology, ExportSeedRequest.Mappings, ExportSeedRequest.Revision];
+    private static readonly string[] Kinds = [ExportSeedRequest.All, ExportSeedRequest.Morphology, ExportSeedRequest.Mappings, ExportSeedRequest.Revision, ExportSeedRequest.Vocab];
 
     public Validator()
     {

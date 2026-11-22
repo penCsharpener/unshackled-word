@@ -25,6 +25,7 @@ public sealed partial class SeedingService
         typeof(StepBible.StrongsToText.StepStrongsImport),
         typeof(AiMappingImport.AiMappingImportRunner),
         typeof(RevisionSeed.RevisionSeedRunner),
+        typeof(VocabSeed.VocabSeedRunner),
     ];
 
     public SeedingService(IServiceScopeFactory scopeFactory, ILogger<SeedingService> logger)
