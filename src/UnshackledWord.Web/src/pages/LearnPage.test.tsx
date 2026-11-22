@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import "@/i18n";
@@ -56,6 +57,25 @@ describe("LearnPage", () => {
     expect(screen.getByRole("link", { name: "anmelden" })).toHaveAttribute("href", "/login");
     expect(screen.queryByRole("link", { name: "Beginnen" })).toBeNull();
     expect(screen.getAllByRole("link", { name: "Wortliste ansehen" })).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: "⚙ Quiz-Einstellungen" })).toBeNull();
+  });
+
+  it("opens the quiz settings from the header of a signed-in learner", async () => {
+    stubApi({
+      "GET /auth/me": () => json(me),
+      "GET /vocab/courses": () => json(courses),
+      "GET /vocab/settings": () =>
+        json({
+          disabledQuizTypes: [],
+          availableQuizTypes: ["multiple_choice", "reverse_multiple_choice"],
+        }),
+    });
+    const user = userEvent.setup();
+    renderLearn();
+    await user.click(await screen.findByRole("button", { name: "⚙ Quiz-Einstellungen" }));
+    expect(
+      await screen.findByRole("switch", { name: "Deutsch → Lemma (Auswahl)" }),
+    ).toBeInTheDocument();
   });
 
   it("gives a signed-in learner a start link per course", async () => {

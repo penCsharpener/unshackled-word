@@ -132,6 +132,25 @@ export const en: Translation = {
     kind: {
       introduction: "New word",
       multipleChoice: "What does … mean",
+      reverseMultipleChoice: "Which word is …",
+    },
+    settings: {
+      button: "⚙ Quiz settings",
+      title: "Quiz settings",
+      done: "Done",
+      loading: "Loading settings …",
+      loadFailed: "The settings could not be loaded.",
+      saveFailed: "The setting could not be saved. Please try again.",
+      atLeastOne: "At least one of the two choice types must stay on.",
+      atLeastOneHint: "One of the two choice types always stays on.",
+      alwaysOn: "always on",
+    },
+    quizTypes: {
+      multiple_choice: "Lemma → German (choice)",
+      reverse_multiple_choice: "German → lemma (choice)",
+      listening: "Listening",
+      verse_context: "Verse context",
+      typing: "Type the lemma",
     },
     intro: {
       meanings: "Meanings",

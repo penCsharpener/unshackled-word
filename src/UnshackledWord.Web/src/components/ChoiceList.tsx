@@ -29,6 +29,7 @@ export function ChoiceList({ options, lang = "de", state, onPick }: ChoiceListPr
               variant="secondary"
               size="md"
               lang={lang}
+              dir={lang === "he" ? "rtl" : undefined}
               aria-disabled={locked || undefined}
               className={`w-full justify-start ${original ? "font-original text-xl" : ""} ${
                 isCorrect ? "border-sev-ok" : ""

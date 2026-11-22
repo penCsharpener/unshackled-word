@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { Button } from "@/components/Button";
 import { CourseCard, type CourseCardProps } from "@/components/CourseCard";
 import { FormError } from "@/components/FormError";
+import { QuizSettingsDialog } from "@/components/QuizSettingsDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getCourses, type VocabCourse } from "@/lib/vocab/api";
 import { ChangedWordsNotice } from "@/pages/vocab/ChangedWordsNotice";
@@ -32,6 +35,7 @@ function statsOf(course: VocabCourse): CourseCardProps["stats"] {
 export function LearnPage() {
   const { t, i18n } = useTranslation();
   const { status } = useAuth();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const courses = useQuery({
     queryKey: ["vocab", "courses"],
     queryFn: ({ signal }) => getCourses(signal),
@@ -41,7 +45,17 @@ export function LearnPage() {
   const changedCount = signedIn ? (courses.data?.changedCount ?? 0) : 0;
   return (
     <section className="grid w-full max-w-4xl gap-4">
-      <h1 className="text-2xl font-semibold">{t("learn.title")}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-semibold">{t("learn.title")}</h1>
+        {signedIn ? (
+          <Button variant="ghost" size="sm" onClick={() => setSettingsOpen(true)}>
+            {t("learn.settings.button")}
+          </Button>
+        ) : null}
+      </div>
+      {signedIn ? (
+        <QuizSettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      ) : null}
       {signedIn ? null : (
         <p className="rounded-lg border border-border bg-surface-muted p-3 text-sm">
           {t("learn.anonHint.lead")}{" "}

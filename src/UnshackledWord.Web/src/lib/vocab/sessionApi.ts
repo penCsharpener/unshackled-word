@@ -24,10 +24,14 @@ export interface VocabCardEntry {
   audioUrl?: string | null;
 }
 
-/** One German option of a multiple-choice card; `id` is its position and is sent back as `optionId`. */
+/**
+ * One option of a multiple-choice card; `id` is its position and is sent back as `optionId`. German
+ * options have no `lang`; the lemma options of a reverse card carry their script (`grc` or `he`).
+ */
 export interface VocabCardOption {
   id: number;
   text: string;
+  lang?: VocabLang;
 }
 
 /** Accepted meaning on an introduction card, in rank order. */
@@ -39,13 +43,15 @@ export interface VocabCardMeaning {
 }
 
 /** Kinds the backend serves so far; later quiz kinds extend this union. */
-export type VocabCardKind = "introduction" | "multiple_choice";
+export type VocabCardKind = "introduction" | "multiple_choice" | "reverse_multiple_choice";
 
 /** The card to show. It never says which option is correct. */
 export interface VocabCard {
   /** Timeline position; `answers` sends it back. */
   seq: number;
   kind: VocabCardKind;
+  /** Reverse multiple choice: the German meaning the learner reads; the question has no entry data. */
+  prompt?: string | null;
   entry: VocabCardEntry;
   meanings?: VocabCardMeaning[] | null;
   options?: VocabCardOption[] | null;

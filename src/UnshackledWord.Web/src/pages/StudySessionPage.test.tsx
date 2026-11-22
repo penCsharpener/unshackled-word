@@ -268,3 +268,101 @@ describe("StudySessionPage", () => {
     expect(screen.queryByText("Neues Wort")).toBeNull();
   });
 });
+
+const reverseCard = {
+  seq: 2,
+  kind: "reverse_multiple_choice",
+  prompt: "Wort, Rede",
+  // The question carries no lemma data (roadmap 0022.9): the entry is blank until the answer.
+  entry: { id: 56, lemma: "", lang: "grc" },
+  options: [
+    { id: 0, text: "νόμος", lang: "grc" },
+    { id: 1, text: "λόγος", lang: "grc" },
+    { id: 2, text: "ῥῆμα", lang: "grc" },
+    { id: 3, text: "λαός", lang: "grc" },
+  ],
+};
+
+/** A session that starts straight with a reverse multiple-choice card and ends after its answer. */
+function reverseApi() {
+  let answered = false;
+  const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+    const path = url.replace(/^\/api/, "");
+    const method = init?.method ?? "GET";
+    if (path === "/auth/me") return json(me);
+    if (path === "/meta-bible/structure") return json(fixtureStructure);
+    if (method === "POST" && path === "/vocab/sessions") {
+      return json({ ...started, newWords: 0, reviewWords: 1 });
+    }
+    if (method === "GET" && path === "/vocab/courses") return json({ courses: [] });
+    if (method === "GET" && path === "/vocab/sessions/7/next") {
+      if (!answered) {
+        return json({ sessionId: 7, finished: false, progress: progress(0, 1), card: reverseCard });
+      }
+      return json({ sessionId: 7, finished: true, progress: progress(1, 2), summary });
+    }
+    if (method === "POST" && path === "/vocab/sessions/7/answers") {
+      const body = JSON.parse(String(init?.body)) as { optionId?: number };
+      answered = true;
+      const right = body.optionId === 1;
+      return json({
+        seq: 2,
+        kind: "reverse_multiple_choice",
+        correct: right,
+        correctOptionId: 1,
+        correctAnswers: ["λόγος"],
+        given: ["νόμος", "λόγος", "ῥῆμα", "λαός"][body.optionId ?? 0],
+        entry,
+        strength: right
+          ? { before: 2, after: 3, change: "moved" }
+          : { before: 2, after: 1, change: "dropped" },
+        finished: true,
+        progress: progress(1, 2),
+        summary,
+      });
+    }
+    return new Response("", { status: 404 });
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+describe("StudySessionPage reverse multiple choice", () => {
+  it("asks for the lemma by its German meaning, with Greek options and no lemma on the question", async () => {
+    reverseApi();
+    renderSession();
+
+    expect(await screen.findByText("Welches Wort heißt …")).toBeInTheDocument();
+    expect(screen.getByText("Wort, Rede")).toBeInTheDocument();
+    // The question shows no dictionary form or lemma: only the options are Greek.
+    expect(screen.queryByText("λόγος, -ου, ὁ")).toBeNull();
+    expect(screen.getByRole("button", { name: /λόγος/ })).toHaveAttribute("lang", "grc");
+    expect(screen.getByRole("button", { name: /νόμος/ })).toHaveAttribute("lang", "grc");
+  });
+
+  it("gives feedback with the lemma as the correct answer after a wrong pick", async () => {
+    const fetchMock = reverseApi();
+    const user = userEvent.setup();
+    renderSession();
+
+    await user.click(await screen.findByRole("button", { name: /νόμος/ }));
+    expect(await screen.findByText("✗ Leider nicht")).toBeInTheDocument();
+    // The correct lemma is named in the feedback line (the verse below also shows the word).
+    expect(screen.getByText(/^Richtig:/)).toHaveTextContent("Richtig: λόγος");
+    expect(screen.getByText("Kommt in dieser Sitzung wieder")).toBeInTheDocument();
+
+    const answer = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/answers"));
+    expect(JSON.parse(String(answer?.[1]?.body))).toMatchObject({ seq: 2, optionId: 0 });
+  });
+
+  it("accepts the number keys and marks the right lemma", async () => {
+    reverseApi();
+    const user = userEvent.setup();
+    renderSession();
+
+    expect(await screen.findByText("Welches Wort heißt …")).toBeInTheDocument();
+    await user.keyboard("2");
+    expect(await screen.findByText("✓ Richtig")).toBeInTheDocument();
+    expect(screen.getByText("Stärker geworden")).toBeInTheDocument();
+  });
+});

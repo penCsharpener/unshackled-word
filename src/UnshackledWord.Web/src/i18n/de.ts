@@ -134,6 +134,25 @@ export const de = {
     kind: {
       introduction: "Neues Wort",
       multipleChoice: "Was bedeutet …",
+      reverseMultipleChoice: "Welches Wort heißt …",
+    },
+    settings: {
+      button: "⚙ Quiz-Einstellungen",
+      title: "Quiz-Einstellungen",
+      done: "Fertig",
+      loading: "Einstellungen werden geladen …",
+      loadFailed: "Die Einstellungen konnten nicht geladen werden.",
+      saveFailed: "Die Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      atLeastOne: "Mindestens eine der beiden Auswahl-Arten muss an bleiben.",
+      atLeastOneHint: "Eine der beiden Auswahl-Arten bleibt immer an.",
+      alwaysOn: "immer an",
+    },
+    quizTypes: {
+      multiple_choice: "Lemma → Deutsch (Auswahl)",
+      reverse_multiple_choice: "Deutsch → Lemma (Auswahl)",
+      listening: "Hören",
+      verse_context: "Vers-Kontext",
+      typing: "Lemma tippen",
     },
     intro: {
       meanings: "Bedeutungen",

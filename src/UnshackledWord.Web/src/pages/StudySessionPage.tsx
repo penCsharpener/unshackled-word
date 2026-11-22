@@ -42,6 +42,11 @@ interface CoverageGrowth {
   delta: number | null;
 }
 
+/** Cards with options: the German-to-lemma and the lemma-to-German multiple choice (roadmap 0022.9). */
+function isChoiceKind(kind: VocabCard["kind"]): boolean {
+  return kind === "multiple_choice" || kind === "reverse_multiple_choice";
+}
+
 /** The growth in percentage points, one decimal; null when the coverage did not grow. */
 function pointsGrown(before: number, after: number): number | null {
   const delta = Math.round((after - before) * 10) / 10;
@@ -49,8 +54,8 @@ function pointsGrown(before: number, after: number): number | null {
 }
 
 /**
- * `/learn/:course` (roadmap 0022.8f): the study session, one card per screen. Introductions and
- * multiple choice only for now. Keys 1–4 pick an option, Enter continues.
+ * `/learn/:course` (roadmap 0022.8f, 0022.9f): the study session, one card per screen. Introductions,
+ * multiple choice and reverse multiple choice for now. Keys 1–4 pick an option, Enter continues.
  */
 export function StudySessionPage() {
   const { status } = useAuth();
@@ -201,7 +206,7 @@ function StudySession() {
       else if (card?.kind === "introduction" && !answer.isPending) answerCard(card);
       return;
     }
-    if (card?.kind === "multiple_choice" && !feedback && /^[1-4]$/.test(event.key)) {
+    if (card && isChoiceKind(card.kind) && !feedback && /^[1-4]$/.test(event.key)) {
       pick(card, Number(event.key) - 1);
     }
   };
@@ -280,23 +285,33 @@ function StudySession() {
     const { entry } = current;
     const dir = entry.lang === "he" ? "rtl" : undefined;
     const options = current.options ?? [];
+    // A reverse card asks for the lemma, so its question is the German prompt and its options are lemmas.
+    const reverse = current.kind === "reverse_multiple_choice";
+    const optionLang = options.find((option) => option.lang)?.lang ?? "de";
     const correctIndex = feedback
       ? options.findIndex((option) => option.id === feedback.result.correctOptionId)
       : -1;
     return (
-      <StudyCard kindLabel={t("learn.kind.multipleChoice")}>
-        <div className="grid justify-items-center gap-1 text-center">
-          <p lang={entry.lang} dir={dir} className="font-original text-5xl">
-            {entry.lemma}
-          </p>
-          {entry.dictionaryForm ? (
-            <p lang={entry.lang} dir={dir} className="font-original text-xl text-fg-muted">
-              {entry.dictionaryForm}
+      <StudyCard
+        kindLabel={t(reverse ? "learn.kind.reverseMultipleChoice" : "learn.kind.multipleChoice")}
+      >
+        {reverse ? (
+          <p className="text-center text-3xl font-semibold">{current.prompt ?? ""}</p>
+        ) : (
+          <div className="grid justify-items-center gap-1 text-center">
+            <p lang={entry.lang} dir={dir} className="font-original text-5xl">
+              {entry.lemma}
             </p>
-          ) : null}
-        </div>
+            {entry.dictionaryForm ? (
+              <p lang={entry.lang} dir={dir} className="font-original text-xl text-fg-muted">
+                {entry.dictionaryForm}
+              </p>
+            ) : null}
+          </div>
+        )}
         <ChoiceList
           options={options.map((option) => option.text)}
+          lang={optionLang}
           state={{ picked, correct: correctIndex >= 0 ? correctIndex : null }}
           onPick={(index) => pick(current, index)}
         />
@@ -347,7 +362,7 @@ function StudySession() {
         {answerFailed ? <FormError message={t("learn.session.answerFailed")} /> : null}
         {card.kind === "introduction" ? (
           introductionView(card)
-        ) : card.kind === "multiple_choice" ? (
+        ) : isChoiceKind(card.kind) ? (
           choiceView(card)
         ) : (
           <FormError message={t("learn.session.unsupported")} />
