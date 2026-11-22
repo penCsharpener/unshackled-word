@@ -42,7 +42,7 @@ export interface VocabEntryItem {
   transliteration: string;
   /** Study form (Lernform), absent when the entry has none. */
   dictionaryForm?: string | null;
-  meanings: string[];
+  meanings: VocabMeaning[];
   occurrences: number;
   hasAudio: boolean;
   /** Presigned URL, expires after 1 h. */

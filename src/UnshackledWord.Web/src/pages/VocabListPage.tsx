@@ -94,7 +94,13 @@ export function VocabListPage() {
   }, [courseCode, skip, query]);
 
   const lang = vocabLang(track);
-  const rows: VocabEntryRow[] = data ? data.items.map((item) => ({ ...item, lang })) : [];
+  const rows: VocabEntryRow[] = data
+    ? data.items.map((item) => ({
+        ...item,
+        meanings: item.meanings.map((meaning) => meaning.german),
+        lang,
+      }))
+    : [];
   const last = data ? skip + data.items.length : 0;
 
   return (

@@ -6,7 +6,8 @@ import { Button } from "./Button";
 import { StatusBadge } from "./StatusBadge";
 
 /** One list row: the API item plus the language of its course track. Editor rows add the editor fields. */
-export interface VocabEntryRow extends Omit<VocabEntryItem, "rank"> {
+export interface VocabEntryRow extends Omit<VocabEntryItem, "rank" | "meanings"> {
+  meanings: string[];
   /** Null for morphemes and retired entries (editor list only). */
   rank: number | null;
   lang: VocabLang;

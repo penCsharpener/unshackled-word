@@ -32,7 +32,7 @@ const entry = (over: Record<string, unknown>) => ({
   rank: 1,
   lemma: "ὁ",
   transliteration: "ho",
-  meanings: ["der, die, das"],
+  meanings: [{ german: "der, die, das", rank: 1 }],
   occurrences: 20754,
   hasAudio: false,
   reviewed: false,
@@ -118,7 +118,20 @@ describe("VocabListPage", () => {
       "GET /vocab/courses": () => json(courses),
       "GET /vocab/courses/nt-greek/entries?skip=0&take=50": () =>
         json(
-          page("nt-greek", [entry({ reviewed: true, meanings: ["Wort", "Rede", "Sache"] })], 5407),
+          page(
+            "nt-greek",
+            [
+              entry({
+                reviewed: true,
+                meanings: [
+                  { german: "Wort", rank: 1 },
+                  { german: "Rede", rank: 2 },
+                  { german: "Sache", rank: 3 },
+                ],
+              }),
+            ],
+            5407,
+          ),
         ),
     });
     renderPage();
