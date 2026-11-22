@@ -20,6 +20,7 @@ import { WordInfoCard } from "@/components/HeaderWordInfo";
 import { LevelSlider } from "@/components/LevelSlider";
 import { MappingEditor, type MappingSaveError } from "@/components/MappingEditor";
 import { MarginStack } from "@/components/MarginStack";
+import { NoteMarker } from "@/components/NoteMarker";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { RevisionEditor } from "@/components/RevisionEditor";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
@@ -48,10 +49,13 @@ import { parseVerseSelection } from "@/lib/bible/verseSelection";
 import { useWordDetail, wordDetailQuery, wordDetailSource } from "@/lib/bible/wordDetail";
 import { buildHighlights, phraseWordIds, wordKey } from "@/lib/bible/words";
 import { useSetHeaderInfo } from "@/lib/headerInfo";
+import { type Note, type NoteTarget, noteVerse } from "@/lib/notes/api";
+import { useChapterNotes } from "@/lib/notes/queries";
 import { reviewMarkers, toMappingData } from "@/lib/revision/mapping";
 import { useRevisionMapping, useSaveRevisionMapping } from "@/lib/revision/queries";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
 import { useMediaQuery } from "@/lib/useMediaQuery";
+import { NotesPanel } from "./chapter/NotesPanel";
 import { SidePanelRail } from "./chapter/SidePanelRail";
 import { VerseSide } from "./chapter/VerseSide";
 
@@ -84,7 +88,9 @@ export function ChapterPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-  const canRevise = hasWriteRole(useAuth().user);
+  const auth = useAuth();
+  const canRevise = hasWriteRole(auth.user);
+  const signedIn = auth.status === "authenticated";
   const structure = useBibleStructure();
   const books = structure.data;
 
@@ -284,6 +290,52 @@ export function ChapterPage() {
             : "idle"
         : "idle";
 
+  // Notes (roadmap 0023): markers at verse numbers and the heading open the notes panel (left margin from 120rem,
+  // a sheet below). MDXEditor is only fetched once a note is shown or written (see NotesPanel).
+  const notes = useChapterNotes(books ? ref : null);
+  const notesByVerse = useMemo(() => {
+    const byVerse = new Map<number | "chapter", Note[]>();
+    for (const note of notes.data ?? []) {
+      const key = noteVerse(note) ?? "chapter";
+      byVerse.set(key, [...(byVerse.get(key) ?? []), note]);
+    }
+    return byVerse;
+  }, [notes.data]);
+  const [notesSheet, setNotesSheet] = useState(false);
+  const [noteFocus, setNoteFocus] = useState<{ id: string; token: number }>();
+  const [noteDraft, setNoteDraft] = useState<NoteTarget>();
+  const focusToken = useRef(0);
+  const notesVisible = wide ? sideMode === "notes" : notesSheet;
+  function showNotes() {
+    if (wide) changeSideMode("notes");
+    else setNotesSheet(true);
+  }
+  function focusNote(id: string) {
+    focusToken.current += 1;
+    setNoteFocus({ id, token: focusToken.current });
+  }
+  function openNote(id: string) {
+    focusNote(id);
+    showNotes();
+  }
+  function startNote(target: NoteTarget) {
+    setNoteDraft(target);
+    showNotes();
+  }
+  const markerFor = (key: number | "chapter", label: (count: number) => string) => {
+    const list = notesByVerse.get(key);
+    const first = list?.[0];
+    if (!list || !first) return null;
+    return (
+      <NoteMarker
+        label={label(list.length)}
+        count={list.length}
+        own={list.some((n) => n.isOwn)}
+        onClick={() => openNote(first.id)}
+      />
+    );
+  };
+
   function openEditor(verse: number, trigger: HTMLElement | null) {
     saveMapping.reset();
     editTriggerRef.current = trigger;
@@ -402,6 +454,9 @@ export function ChapterPage() {
     setSelectedKey(undefined);
     setEditingVerse(undefined);
     setReviseVerse(undefined);
+    setNoteDraft(undefined);
+    setNoteFocus(undefined);
+    setNotesSheet(false);
   }, [bookId, chapterNumber]);
 
   const testament = books?.find((b) => b.id === bookId)?.testament;
@@ -540,6 +595,27 @@ export function ChapterPage() {
     );
   }
 
+  function renderNotesPanel(variant: "rail" | "sheet") {
+    if (!ref) return null;
+    return (
+      <NotesPanel
+        variant={variant}
+        bookId={ref.bookId}
+        chapter={ref.chapter}
+        chapterLabel={reference(ref)}
+        notes={notes.data ?? []}
+        status={notes.status}
+        onRetry={() => void notes.refetch()}
+        focus={noteFocus}
+        onFocus={focusNote}
+        draft={noteDraft}
+        onDraftDone={() => setNoteDraft(undefined)}
+        signedIn={signedIn}
+        onClose={variant === "sheet" ? () => setNotesSheet(false) : undefined}
+      />
+    );
+  }
+
   const pinnedPopover = selectedWord && (
     <WordDetailPopover
       id={popoverId}
@@ -589,18 +665,26 @@ export function ChapterPage() {
       <div ref={colRef} className="reader-col mt-6">
         <header className="flex items-center justify-between gap-4">
           {renderLink(prev, "previous", false)}
-          <h1 className="text-center font-scripture text-3xl font-semibold md:text-4xl">
-            {reference(ref)}
-          </h1>
+          <div className="flex items-start gap-1">
+            <h1 className="text-center font-scripture text-3xl font-semibold md:text-4xl">
+              {reference(ref)}
+            </h1>
+            {markerFor("chapter", (count) =>
+              t("notes.markerChapter", { count, reference: reference(ref) }),
+            )}
+          </div>
           {renderLink(next, "next", false)}
         </header>
-        {canRevise && (
-          <div className="mt-2 flex justify-center">
+        <div className="mt-2 flex flex-wrap justify-center gap-2">
+          {canRevise && (
             <Button variant="ghost" size="sm" onClick={() => setAiRange({ fromVerse: 1 })}>
               {t("agent.chapter.aiRedo")}
             </Button>
-          </div>
-        )}
+          )}
+          <Button variant="ghost" size="sm" onClick={() => startNote({ kind: "chapter" })}>
+            {t("notes.addChapter")}
+          </Button>
+        </div>
         {aiRange && (
           <AgentRunDialog
             open
@@ -623,7 +707,9 @@ export function ChapterPage() {
             onRetry={() =>
               void (sideMode === "tsk" ? crossReferences.refetch() : originals.refetch())
             }
-          />
+          >
+            {notesVisible && renderNotesPanel("rail")}
+          </SidePanelRail>
         )}
         <article
           lang="de"
@@ -660,6 +746,9 @@ export function ChapterPage() {
                   <div className="verse-main">
                     <p>
                       <sup className="mr-1 text-xs text-fg-muted">{v.verse}</sup>
+                      {markerFor(v.verse, (count) =>
+                        t("notes.markerVerse", { count, verse: v.verse }),
+                      )}
                       {v.words.map((word) => {
                         const key = wordKey(word);
                         const hasDetail = hasDetailId(word);
@@ -689,6 +778,28 @@ export function ChapterPage() {
                           </Fragment>
                         );
                       })}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="map-trigger"
+                        aria-label={t("notes.addVerse", { verse: v.verse })}
+                        title={t("notes.addVerse", { verse: v.verse })}
+                        onClick={() => startNote({ kind: "verse", verse: v.verse })}
+                      >
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 24 24"
+                          className="size-5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M14.5 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.5Z" />
+                          <path d="M14 3v6h6M12 12v6M9 15h6" />
+                        </svg>
+                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -840,7 +951,7 @@ export function ChapterPage() {
                       </div>
                     )}
                   </div>
-                  {wide && sideMode !== "off" && (
+                  {wide && (sideMode === "tsk" || sideMode === "original") && (
                     <VerseSide
                       mode={sideMode}
                       verse={v.verse}
@@ -890,6 +1001,7 @@ export function ChapterPage() {
         )}
       </div>
       {!margin && pinnedPopover}
+      {!wide && notesVisible && renderNotesPanel("sheet")}
       <footer className="reader-col mt-8 flex justify-between">
         {renderLink(prev, "previous", true)}
         {renderLink(next, "next", true)}

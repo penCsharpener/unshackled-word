@@ -1,8 +1,7 @@
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
-import type { SidePanelMode } from "@/lib/bible/sidePanel";
-
-const MODES: SidePanelMode[] = ["tsk", "original", "off"];
+import { SIDE_PANEL_MODES, type SidePanelMode } from "@/lib/bible/sidePanel";
 
 function ModeIcon({ mode }: { mode: SidePanelMode }) {
   if (mode === "tsk") {
@@ -28,6 +27,23 @@ function ModeIcon({ mode }: { mode: SidePanelMode }) {
       </span>
     );
   }
+  if (mode === "notes") {
+    return (
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        className="size-5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M14.5 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.5Z" />
+        <path d="M14 3v6h6M8 13h8M8 17h5" />
+      </svg>
+    );
+  }
   return (
     <svg
       aria-hidden="true"
@@ -51,17 +67,28 @@ export interface SidePanelRailProps {
   /** state of the data behind the current mode */
   status: "idle" | "loading" | "error" | "empty";
   onRetry: () => void;
+  /** content shown under the control inside the sticky head (the notes list) */
+  children?: ReactNode;
 }
 
 /** Sticky head of the left margin: heading of the shown content and the TSK / Grundtext / off control. */
-export function SidePanelRail({ mode, onModeChange, status, onRetry }: SidePanelRailProps) {
+export function SidePanelRail({
+  mode,
+  onModeChange,
+  status,
+  onRetry,
+  children,
+}: SidePanelRailProps) {
   const { t } = useTranslation();
   const heading =
     mode === "tsk"
       ? t("bible.sidePanel.headingTsk")
       : mode === "original"
         ? t("bible.sidePanel.headingOriginal")
-        : "";
+        : mode === "notes"
+          ? t("bible.sidePanel.headingNotes")
+          : "";
+  // the notes list shows its own loading and error state
   const kind = mode === "original" ? "Original" : "Tsk";
 
   return (
@@ -73,7 +100,7 @@ export function SidePanelRail({ mode, onModeChange, status, onRetry }: SidePanel
           </h2>
           <fieldset className="flex gap-1">
             <legend className="sr-only">{t("bible.sidePanel.modeGroup")}</legend>
-            {MODES.map((value) => (
+            {SIDE_PANEL_MODES.map((value) => (
               <Button
                 key={value}
                 variant="secondary"
@@ -103,6 +130,7 @@ export function SidePanelRail({ mode, onModeChange, status, onRetry }: SidePanel
         <p role="status" className="sr-only">
           {t(`bible.sidePanel.announce.${mode}`)}
         </p>
+        {children && <div className="side-rail-body">{children}</div>}
       </div>
     </aside>
   );

@@ -403,8 +403,9 @@ describe("mapping editor", () => {
 
   const puts = (fetchMock: ReturnType<typeof stubMapping>) =>
     fetchMock.mock.calls.filter(([, init]) => init?.method === "PUT");
+  // the eye icon; "Notiz zum Vers N" sits next to it
   const trigger = (verse: number) =>
-    screen.getByRole("button", { name: new RegExp(`Vers ${verse}\\b`) });
+    screen.getByRole("button", { name: new RegExp(`^(?!Notiz).*Vers ${verse}\\b`) });
   /** Ctrl+click on the eye jumps straight to the mapping editor. */
   const openAlign = (verse: number) => fireEvent.click(trigger(verse), { ctrlKey: true });
   const editorNode = (key: string) =>

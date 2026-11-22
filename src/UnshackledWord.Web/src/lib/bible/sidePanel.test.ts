@@ -13,11 +13,14 @@ describe("side panel mode", () => {
   it("reads a stored mode", () => {
     localStorage.setItem(SIDE_PANEL_KEY, "off");
     expect(readSidePanelMode()).toBe("off");
+    localStorage.setItem(SIDE_PANEL_KEY, "notes");
+    expect(readSidePanelMode()).toBe("notes");
   });
 
-  it("cycles TSK → original → off → TSK", () => {
+  it("cycles TSK → original → notes → off → TSK", () => {
     expect(nextSidePanelMode("tsk")).toBe("original");
-    expect(nextSidePanelMode("original")).toBe("off");
+    expect(nextSidePanelMode("original")).toBe("notes");
+    expect(nextSidePanelMode("notes")).toBe("off");
     expect(nextSidePanelMode("off")).toBe("tsk");
   });
 });

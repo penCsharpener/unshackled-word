@@ -3,12 +3,13 @@ import { useCallback, useState } from "react";
 import { bibleApi } from "./api";
 import type { ChapterRef } from "./types";
 
-export type SidePanelMode = "tsk" | "original" | "off";
+export type SidePanelMode = "tsk" | "original" | "notes" | "off";
 
 export const SIDE_PANEL_KEY = "uw.sidePanel";
-const MODES: readonly SidePanelMode[] = ["tsk", "original", "off"];
+export const SIDE_PANEL_MODES: readonly SidePanelMode[] = ["tsk", "original", "notes", "off"];
+const MODES = SIDE_PANEL_MODES;
 
-/** Next state of the `G` shortcut: TSK → Grundtext → off → TSK. */
+/** Next state of the `G` shortcut: TSK → Grundtext → Notizen → off → TSK. */
 export function nextSidePanelMode(mode: SidePanelMode): SidePanelMode {
   return MODES[(MODES.indexOf(mode) + 1) % MODES.length] ?? "tsk";
 }

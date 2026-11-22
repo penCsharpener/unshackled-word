@@ -1451,3 +1451,138 @@
 .script-keyboard .hg-theme-default .hg-row .hg-button:not(:last-child) {
   margin-right: var(--spacing);
 }
+
+/*
+ * Notes (roadmap 0023). The list lives in the sticky head of the left margin from 120rem (`.side-rail-body`); below it
+ * is a bottom sheet on phones and a drawer at the right edge from 48rem.
+ */
+.side-rail-body {
+  width: 100%;
+  max-height: calc(100dvh - var(--app-header-h) - var(--spacing) * 24);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.notes-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
+  max-height: 70dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+  border-top: 1px solid var(--color-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-bg);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (min-width: 48rem) {
+  .notes-sheet {
+    inset: var(--app-header-h) 0 0 auto;
+    width: min(var(--container-md), 100vw);
+    max-height: none;
+    border-top: 0;
+    border-inline-start: 1px solid var(--color-border);
+    border-radius: 0;
+  }
+}
+
+/*
+ * MDXEditor (NoteEditor / NoteView) themed with the design tokens, so light and dark follow `data-theme`. Its own
+ * stylesheet comes with the lazy chunk, i.e. later in the cascade: `body` raises the specificity above its
+ * single-class rules. `.note-md` is also set on the editor's popup container (link dialog, tooltips).
+ */
+body .note-md {
+  --font-body: var(--font-sans);
+  --basePageBg: var(--color-surface);
+  --baseBase: var(--color-surface-muted);
+  --baseBgSubtle: var(--color-surface-muted);
+  --baseBg: var(--color-surface-muted);
+  --baseBgHover: var(--color-border);
+  --baseBgActive: var(--color-mark-same);
+  --baseLine: var(--color-border);
+  --baseBorder: var(--color-border);
+  --baseBorderHover: var(--color-fg-muted);
+  --baseSolid: var(--color-fg-muted);
+  --baseSolidHover: var(--color-fg);
+  --baseText: var(--color-fg-muted);
+  --baseTextContrast: var(--color-fg);
+  --accentBase: var(--color-mark-same);
+  --accentBgSubtle: var(--color-mark-same);
+  --accentBg: var(--color-mark-same);
+  --accentBgHover: var(--color-mark-same);
+  --accentBgActive: var(--color-mark-same);
+  --accentLine: var(--color-accent);
+  --accentBorder: var(--color-accent);
+  --accentBorderHover: var(--color-accent);
+  --accentSolid: var(--color-accent);
+  --accentSolidHover: var(--color-accent);
+  --accentText: var(--color-accent);
+  --accentTextContrast: var(--color-accent);
+  --error-color: var(--color-sev-error);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
+
+body .mdxeditor.note-md-edit {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+body .mdxeditor.note-md-edit:focus-within {
+  border-color: var(--color-focus);
+}
+
+body .note-md .note-md-content {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  color: var(--color-fg);
+}
+
+body .mdxeditor.note-md:not(.note-md-edit) .note-md-content {
+  padding: 0;
+}
+
+body .note-md-content > * + * {
+  margin-top: calc(var(--spacing) * 2);
+}
+
+body .note-md-content h3 {
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  font-weight: var(--font-weight-semibold);
+}
+
+body .note-md-content h4 {
+  font-weight: var(--font-weight-semibold);
+}
+
+body .note-md-content ul {
+  list-style: disc;
+  padding-inline-start: calc(var(--spacing) * 5);
+}
+
+body .note-md-content ol {
+  list-style: decimal;
+  padding-inline-start: calc(var(--spacing) * 5);
+}
+
+body .note-md-content blockquote {
+  border-inline-start: 2px solid var(--color-border);
+  padding-inline-start: calc(var(--spacing) * 3);
+  color: var(--color-fg-muted);
+}
+
+body .note-md-content code {
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  padding-inline: var(--spacing);
+  font-family: var(--font-mono);
+}
+
+body .note-md-content a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
