@@ -192,6 +192,35 @@ public class VocabEntryEditorDatabaseTests
     });
 
     [Fact]
+    public async Task MeaningOverride_ReplacesTheShownText_KeepsStats_AndBumpsOnce() => await WithTransactionAsync(async (c, t) =>
+    {
+        var id = await EntryOfAsync(c, t, "G3056");
+        await c.ExecuteAsync("""DELETE FROM "unshackled-word"."VocabMeanings" WHERE "VocabEntryId" = @Id""", new { Id = id }, t);
+        await c.ExecuteAsync("""
+            INSERT INTO "unshackled-word"."VocabMeanings" ("VocabEntryId", "German", "GermanKey", "Rank", "Count", "Share", "IsAccepted", "Origin", "IsPinned")
+            VALUES (@Id, 'der', 'der', 1, 10437, 99.74, true, 'derived', false), (@Id, 'Rede', 'rede', 2, 5, 0.1, true, 'derived', false)
+            """, new { Id = id }, t);
+        var ids = (await c.QueryAsync<int>("""SELECT "Id" FROM "unshackled-word"."VocabMeanings" WHERE "VocabEntryId" = @Id ORDER BY "Rank" """, new { Id = id }, t)).ToList();
+        var start = await StateAsync(c, t, id);
+
+        var set = await VocabEntryEditor.UpdateMeaningAsync(c, t, id, ids[0], null, null, null, "  der, die, das ");
+        set.Response!.Bumped.ShouldBeTrue();
+        (await StateAsync(c, t, id)).Version.ShouldBe(start.Version + 1);
+        var row = await c.QuerySingleAsync<(string German, string? Override, int? Count, decimal? Share)>("""SELECT "German", "GermanOverride", "Count", "Share" FROM "unshackled-word"."VocabMeanings" WHERE "Id" = @Id""", new { Id = ids[0] }, t);
+        row.ShouldBe(("der", "der, die, das", 10437, 99.74m));
+
+        // the accepted set the quiz and the lists read is the override
+        (await c.QueryAsync<string>("""SELECT COALESCE("GermanOverride", "German") FROM "unshackled-word"."VocabMeanings" WHERE "VocabEntryId" = @Id AND "IsAccepted" ORDER BY "Rank" """, new { Id = id }, t))
+            .ShouldBe(["der, die, das", "Rede"]);
+
+        // the same text on another meaning is refused; an override equal to the derived text is none; blank removes it
+        (await VocabEntryEditor.UpdateMeaningAsync(c, t, id, ids[1], null, null, null, "der, die, das")).Status.ShouldBe(VocabEditStatus.Conflict);
+        (await VocabEntryEditor.UpdateMeaningAsync(c, t, id, ids[0], null, null, null, "")).Response!.Bumped.ShouldBeTrue();
+        (await c.QuerySingleAsync<string?>("""SELECT "GermanOverride" FROM "unshackled-word"."VocabMeanings" WHERE "Id" = @Id""", new { Id = ids[0] }, t)).ShouldBeNull();
+        (await VocabEntryEditor.UpdateMeaningAsync(c, t, id, ids[0], null, null, null, "der")).Response!.Bumped.ShouldBeFalse();
+    });
+
+    [Fact]
     public async Task MoveKey_ToNewEntry_SplitsOccurrencesAndKeepsRanksConsistent() => await WithTransactionAsync(async (c, t) =>
     {
         var user = await UserAsync(c, t);

@@ -116,6 +116,8 @@ export interface VocabEditorEntry {
 export interface VocabEditorMeaning {
   id: number;
   german: string;
+  /** Text shown and accepted instead of `german`; count and share stay. */
+  germanOverride?: string | null;
   rank: number;
   isAccepted: boolean;
   /** `derived` or `manual`; only manual meanings can be deleted. */
@@ -173,6 +175,8 @@ export interface UpdateVocabEntryBody {
 export interface UpdateVocabMeaningBody {
   isAccepted?: boolean;
   isPinned?: boolean;
+  /** Blank removes the override; omitted leaves it. */
+  germanOverride?: string;
 }
 
 /** One page of the editor list (`GET api/maintainer/vocab/entries`). */

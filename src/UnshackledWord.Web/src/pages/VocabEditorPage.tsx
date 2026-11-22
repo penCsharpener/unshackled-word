@@ -11,7 +11,7 @@ import { AudioField } from "@/components/AudioField";
 import { Button, buttonClasses } from "@/components/Button";
 import { Dialog } from "@/components/Dialog";
 import { FormError } from "@/components/FormError";
-import { MeaningListEditor, type MeaningRow } from "@/components/MeaningListEditor";
+import { MeaningListEditor, type MeaningRow, meaningText } from "@/components/MeaningListEditor";
 import { RankedBarList, type RankedItem } from "@/components/RankedBarList";
 import { SaveBar, type SaveStatus } from "@/components/SaveBar";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -42,6 +42,7 @@ import {
   type SavePlan,
   saveVocabEntryPlan,
 } from "@/lib/vocab/editorDraft";
+import { formatPos } from "@/lib/vocab/pos";
 import { KeyMoveDialog } from "./vocab/KeyMoveDialog";
 import { MergeDialog } from "./vocab/MergeDialog";
 
@@ -182,7 +183,7 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
     const text = german.trim();
     if (!text) return;
     const same = draft.meanings.findIndex(
-      (row) => row.german.trim().toLowerCase() === text.toLowerCase(),
+      (row) => meaningText(row).trim().toLowerCase() === text.toLowerCase(),
     );
     if (same >= 0) {
       // Already listed (accepted or not): accept it instead of listing it twice.
@@ -205,7 +206,9 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
   };
 
   const acceptedGermans = new Set(
-    draft.meanings.filter((row) => row.isAccepted).map((row) => row.german.trim().toLowerCase()),
+    draft.meanings
+      .filter((row) => row.isAccepted)
+      .map((row) => meaningText(row).trim().toLowerCase()),
   );
   const renderings: RankedItem[] = data.renderings.map((rendering) => {
     const notAccepted = !acceptedGermans.has(rendering.germanDisplay.trim().toLowerCase());
@@ -234,7 +237,7 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
   const meta = [
     rank !== null ? t("vocab.editor.meta.rank", { rank }) : null,
     t("vocab.editor.meta.occurrences", { count: number(entry.occurrences) }),
-    entry.pos ?? null,
+    formatPos(entry.pos, t),
     t("vocab.editor.learners", { count: number(data.learners) }),
   ].filter((part): part is string => part !== null);
 

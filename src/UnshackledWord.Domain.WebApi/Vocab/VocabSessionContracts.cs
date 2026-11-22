@@ -13,6 +13,11 @@ public sealed class VocabSessionProgress
     public int CardsServed { get; set; }
     public int WordsTotal { get; set; }
     public int WordsDone { get; set; }
+
+    /// <summary>Finer measure for the progress bar: per word one introduction (new words) plus its quizzes, so every answer moves it.</summary>
+    public int StepsDone { get; set; }
+
+    public int StepsTotal { get; set; }
     public int NewWordsTotal { get; set; }
     public int NewWordsIntroduced { get; set; }
 
@@ -64,6 +69,9 @@ public sealed class VocabCardOptionResponse
 
     /// <summary>Reverse MC only: <c>grc</c> or <c>he</c>, the script of the lemma options (script, font and direction); omitted for German options.</summary>
     public string? Lang { get; set; }
+
+    /// <summary>True on the fixed last "None of the above" option of a multiple-choice card (the UI shows its own localised label); omitted otherwise.</summary>
+    public bool? None { get; set; }
 }
 
 /// <summary>One piece of the typing layout: a <c>group</c> (<c>length</c> boxes, never the letters) or a fixed <c>separator</c> (<c>text</c>).</summary>

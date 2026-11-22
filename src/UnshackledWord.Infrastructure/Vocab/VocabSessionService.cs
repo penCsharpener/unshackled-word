@@ -263,6 +263,9 @@ public sealed class VocabSessionService
             candidates.Add(VocabQuizTypes.MultipleChoice);
         }
 
+        // "None of the above" (Lexio): a fixed last option of the two multiple-choice types; for one card in five it is the right answer
+        // and the four others are all distractors. The roll is stored with the options (no option of the entry), so reloads agree.
+        var noneCorrect = _random.Next(100) < VocabSessionRules.NoneOfTheAbovePercent;
         foreach (var type in candidates)
         {
             int? verseRefId = null;
@@ -271,7 +274,7 @@ public sealed class VocabSessionService
             switch (type)
             {
                 case VocabQuizTypes.ReverseMultipleChoice:
-                    options = await BuildReverseOptionsAsync(c, t, plan, entry, meanings);
+                    options = WithNone(await BuildReverseOptionsAsync(c, t, plan, entry, meanings, noneCorrect));
                     break;
                 case VocabQuizTypes.Listening:
                     // the audio is the prompt: no audio (or no storage to sign a URL) means no listening question
@@ -286,7 +289,7 @@ public sealed class VocabSessionService
                     options = VocabText.Segment(FormOf(entry)).Any(x => x.IsGroup) ? [] : null;
                     break;
                 default:
-                    options = await BuildOptionsAsync(c, t, plan, entry, meanings);
+                    options = WithNone(await BuildOptionsAsync(c, t, plan, entry, meanings, 0, noneCorrect));
                     break;
             }
 
@@ -300,13 +303,13 @@ public sealed class VocabSessionService
     }
 
     /// <summary>Reverse MC: the correct option is the entry's lemma form; three distractor entries whose accepted meanings do not include the prompt meaning.</summary>
-    private async Task<List<VocabPendingOption>?> BuildReverseOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings)
+    private async Task<List<VocabPendingOption>?> BuildReverseOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings, bool noneCorrect = false)
     {
         var waveIds = plan.Words.Where(w => w.InWave && !w.Dropped && w.EntryId != entry.Id).Select(w => w.EntryId).ToList();
         var pool = await VocabSessionRepository.GetDistractorPoolAsync(c, t, plan.Track, entry.Id, entry.Pos, entry.Rank ?? 0, waveIds);
         var prompt = new VocabDistractorPrompt(entry.Id, entry.Pos, entry.Rank ?? 0, meanings[0].German, meanings.Select(m => m.German).ToList());
         var form = FormOf(entry);
-        var distractors = VocabDistractorPicker.PickLemmas(prompt, form, pool, waveIds.ToHashSet(), VocabSessionRules.OptionCount - 1, _random);
+        var distractors = VocabDistractorPicker.PickLemmas(prompt, form, pool, waveIds.ToHashSet(), noneCorrect ? VocabSessionRules.OptionCount : VocabSessionRules.OptionCount - 1, _random);
 
         if (distractors.Count == 0)
         {
@@ -314,20 +317,28 @@ public sealed class VocabSessionService
         }
 
         return distractors.Select(d => new VocabPendingOption { EntryId = d.EntryId, Text = d.Form ?? d.TopMeaning })
-            .Append(new VocabPendingOption { EntryId = entry.Id, Text = form })
+            .Concat(noneCorrect ? [] : [new VocabPendingOption { EntryId = entry.Id, Text = form }])
             .OrderBy(_ => _random.Next())
             .ToList();
+    }
+
+    /// <summary>Appends the fixed last "None of the above" option (the builders leave out the entry's own option when it is the right answer).</summary>
+    private static List<VocabPendingOption>? WithNone(List<VocabPendingOption>? options)
+    {
+        options?.Add(new VocabPendingOption { EntryId = 0, Text = VocabSessionRules.NoneOfTheAboveText, IsNone = true });
+
+        return options;
     }
 
     private static string FormOf(VocabSessionRepository.EntryRow entry) => entry.DictionaryForm ?? entry.Lemma;
 
     /// <summary>The correct option is the entry's top accepted meaning (verse context: the meaning the verse's rendering matches); three distractors by tier; shuffled. Null when no distractor exists at all.</summary>
-    private async Task<List<VocabPendingOption>?> BuildOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings, int meaningIndex = 0)
+    private async Task<List<VocabPendingOption>?> BuildOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings, int meaningIndex = 0, bool noneCorrect = false)
     {
         var waveIds = plan.Words.Where(w => w.InWave && !w.Dropped && w.EntryId != entry.Id).Select(w => w.EntryId).ToList();
         var pool = await VocabSessionRepository.GetDistractorPoolAsync(c, t, plan.Track, entry.Id, entry.Pos, entry.Rank ?? 0, waveIds);
         var prompt = new VocabDistractorPrompt(entry.Id, entry.Pos, entry.Rank ?? 0, meanings[meaningIndex].German, meanings.Select(m => m.German).ToList());
-        var distractors = VocabDistractorPicker.Pick(prompt, pool, waveIds.ToHashSet(), VocabSessionRules.OptionCount - 1, _random);
+        var distractors = VocabDistractorPicker.Pick(prompt, pool, waveIds.ToHashSet(), noneCorrect ? VocabSessionRules.OptionCount : VocabSessionRules.OptionCount - 1, _random);
 
         if (distractors.Count == 0)
         {
@@ -335,7 +346,7 @@ public sealed class VocabSessionService
         }
 
         var options = distractors.Select(d => new VocabPendingOption { EntryId = d.EntryId, Text = d.TopMeaning })
-            .Append(new VocabPendingOption { EntryId = entry.Id, Text = meanings[meaningIndex].German })
+            .Concat(noneCorrect ? [] : [new VocabPendingOption { EntryId = entry.Id, Text = meanings[meaningIndex].German }])
             .OrderBy(_ => _random.Next())
             .ToList();
 
@@ -382,11 +393,11 @@ public sealed class VocabSessionService
         else if (reverse)
         {
             card.Prompt = (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].First().German;
-            card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text, Lang = Lang(entry.Track) }).ToList();
+            card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text, Lang = o.IsNone ? null : Lang(entry.Track), None = o.IsNone ? true : null }).ToList();
         }
         else
         {
-            card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text }).ToList();
+            card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text, None = o.IsNone ? true : null }).ToList();
         }
 
         return card;
@@ -470,7 +481,14 @@ public sealed class VocabSessionService
                     return VocabSessionOutcome<VocabAnswerResponse>.Fail(VocabSessionStatus.Invalid, "optionId is not an option of this card.");
                 }
 
-                correctIndex = pending.Options.FindIndex(o => o.EntryId == pending.EntryId);
+                // no option of the entry itself: "None of the above" is the right answer
+                correctIndex = pending.Options.FindIndex(o => !o.IsNone && o.EntryId == pending.EntryId);
+
+                if (correctIndex < 0)
+                {
+                    correctIndex = pending.Options.FindIndex(o => o.IsNone);
+                }
+
                 givenText = pending.Options[optionId.Value].Text;
                 correct = optionId.Value == correctIndex;
             }
@@ -530,10 +548,20 @@ public sealed class VocabSessionService
     {
         var words = plan.Words.Where(w => !w.Dropped).ToList();
 
+        // Fine-grained steps for the bar: an introduction (once answered) and up to RepsPerWord quizzes per word.
+        // A word still in the open wave never reaches its last step, so the bar only fills with the word's pass.
+        var introPending = plan.Pending is { Kind: "introduction" } pending ? pending.EntryId : (int?)null;
+        var stepsTotal = words.Sum(w => VocabSessionRules.RepsPerWord + (w.IsNew ? 1 : 0));
+        var stepsDone = words.Sum(w =>
+            (w.IsNew && w.Introduced && w.EntryId != introPending ? 1 : 0)
+            + Math.Min(w.Reps, w.InWave ? VocabSessionRules.RepsPerWord - 1 : VocabSessionRules.RepsPerWord));
+
         return new VocabSessionProgress
         {
             CardsServed = plan.Position,
             WordsTotal = words.Count,
+            StepsDone = stepsDone,
+            StepsTotal = stepsTotal,
             WordsDone = words.Count(w => (!w.IsNew || w.Introduced) && w.Reps >= VocabSessionRules.RepsPerWord && !w.InWave),
             NewWordsTotal = words.Count(w => w.IsNew),
             NewWordsIntroduced = words.Count(w => w.Introduced),

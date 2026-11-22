@@ -38,6 +38,8 @@ const progress = (wordsDone: number, cardsServed: number) => ({
   cardsServed,
   wordsTotal: 20,
   wordsDone,
+  stepsDone: wordsDone * 3,
+  stepsTotal: 80,
   newWordsTotal: 1,
   newWordsIntroduced: wordsDone > 0 ? 1 : 0,
   openWave: wordsDone > 0 ? 0 : 1,
@@ -301,8 +303,14 @@ const reverseCard = {
 };
 
 /** A session that starts straight with a reverse multiple-choice card and ends after its answer. */
-function reverseApi() {
+function reverseApi(options: { noneCorrect?: boolean } = {}) {
   let answered = false;
+  const card = {
+    ...reverseCard,
+    options: [...reverseCard.options, { id: 4, text: "None of the above", none: true }].filter(
+      (option) => !options.noneCorrect || option.text !== "λόγος",
+    ),
+  };
   const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
     const path = url.replace(/^\/api/, "");
     const method = init?.method ?? "GET";
@@ -314,21 +322,22 @@ function reverseApi() {
     if (method === "GET" && path === "/vocab/courses") return json({ courses: [] });
     if (method === "GET" && path === "/vocab/sessions/7/next") {
       if (!answered) {
-        return json({ sessionId: 7, finished: false, progress: progress(0, 1), card: reverseCard });
+        return json({ sessionId: 7, finished: false, progress: progress(0, 1), card });
       }
       return json({ sessionId: 7, finished: true, progress: progress(1, 2), summary });
     }
     if (method === "POST" && path === "/vocab/sessions/7/answers") {
       const body = JSON.parse(String(init?.body)) as { optionId?: number };
       answered = true;
-      const right = body.optionId === 1;
+      const rightId = options.noneCorrect ? 4 : 1;
+      const right = body.optionId === rightId;
       return json({
         seq: 2,
         kind: "reverse_multiple_choice",
         correct: right,
-        correctOptionId: 1,
+        correctOptionId: rightId,
         correctAnswers: ["λόγος"],
-        given: ["νόμος", "λόγος", "ῥῆμα", "λαός"][body.optionId ?? 0],
+        given: ["νόμος", "λόγος", "ῥῆμα", "λαός", "None of the above"][body.optionId ?? 0],
         entry,
         strength: right
           ? { before: 2, after: 3, change: "moved" }
@@ -370,6 +379,30 @@ describe("StudySessionPage reverse multiple choice", () => {
 
     const answer = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/answers"));
     expect(JSON.parse(String(answer?.[1]?.body))).toMatchObject({ seq: 2, optionId: 0 });
+  });
+
+  it("shows the localised fifth option, set in plain text, and reaches it with key 5", async () => {
+    const fetchMock = reverseApi();
+    const user = userEvent.setup();
+    renderSession();
+
+    const none = await screen.findByRole("button", { name: /Keine der Antworten/ });
+    expect(none).not.toHaveAttribute("lang", "grc");
+    await user.keyboard("5");
+    expect(await screen.findByText("✗ Leider nicht")).toBeInTheDocument();
+    const answer = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/answers"));
+    expect(JSON.parse(String(answer?.[1]?.body))).toMatchObject({ optionId: 4 });
+  });
+
+  it("names the real answer when none of the above was the right one", async () => {
+    reverseApi({ noneCorrect: true });
+    const user = userEvent.setup();
+    renderSession();
+
+    await user.click(await screen.findByRole("button", { name: /Keine der Antworten/ }));
+    expect(await screen.findByText("✓ Richtig")).toBeInTheDocument();
+    expect(screen.getByText(/Keine der vier Antworten stimmte/)).toBeInTheDocument();
+    expect(screen.getByText(/^Richtig:/)).toHaveTextContent("Richtig: λόγος");
   });
 
   it("accepts the number keys and marks the right lemma", async () => {

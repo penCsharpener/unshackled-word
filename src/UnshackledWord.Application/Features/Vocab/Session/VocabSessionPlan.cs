@@ -13,6 +13,11 @@ public static class VocabSessionRules
     public const int MaxNewWords = 10;
     public const int OptionCount = 4;
 
+    /// <summary>Share of multiple-choice and reverse cards (in percent) where "None of the above" is the right answer.</summary>
+    public const int NoneOfTheAbovePercent = 20;
+
+    public const string NoneOfTheAboveText = "None of the above";
+
     /// <summary>
     /// How many review words and how many new words a session takes. <paramref name="dueReviews"/> and <paramref name="newSupply"/> are what the
     /// course offers; the result never exceeds either.
@@ -96,4 +101,7 @@ public sealed class VocabPendingOption
 {
     public int EntryId { get; set; }
     public string Text { get; set; } = string.Empty;
+
+    /// <summary>The fixed last "None of the above" option of a multiple-choice card.</summary>
+    public bool IsNone { get; set; }
 }

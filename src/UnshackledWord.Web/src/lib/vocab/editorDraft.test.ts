@@ -46,6 +46,21 @@ function withMeanings(meanings: MeaningRow[], over: Partial<EditorDraft> = {}): 
 
 afterEach(() => vi.unstubAllGlobals());
 
+describe("buildSavePlan text override", () => {
+  it("sends a changed override, and a blank one when it is removed", () => {
+    const withOverride: EditorDraft = {
+      ...base,
+      meanings: [{ ...mitte, germanOverride: "Mitte, Zentrum" }, wort],
+    };
+    const set = buildSavePlan(base, withOverride);
+    expect(set.changed).toEqual([{ id: 101, body: { germanOverride: "Mitte, Zentrum" } }]);
+    expect(set.learningRelevant).toBe(true);
+    const cleared = buildSavePlan(withOverride, base);
+    expect(cleared.changed).toEqual([{ id: 101, body: { germanOverride: "" } }]);
+    expect(buildSavePlan(withOverride, withOverride).count).toBe(0);
+  });
+});
+
 describe("buildSavePlan", () => {
   it("has nothing to save for an unchanged draft", () => {
     const plan = buildSavePlan(base, withMeanings([mitte, wort]));

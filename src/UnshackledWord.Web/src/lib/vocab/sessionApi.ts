@@ -6,6 +6,9 @@ export interface VocabSessionProgress {
   cardsServed: number;
   wordsTotal: number;
   wordsDone: number;
+  /** Finer than words: introductions and quizzes answered, so every answer moves the bar. */
+  stepsDone: number;
+  stepsTotal: number;
   newWordsTotal: number;
   newWordsIntroduced: number;
   /** Words introduced and not yet passed; they must pass before the session ends. */
@@ -33,6 +36,8 @@ export interface VocabCardOption {
   id: number;
   text: string;
   lang?: VocabLang;
+  /** The fixed last "None of the above" option; the UI shows its own localised label instead of `text`. */
+  none?: boolean;
 }
 
 /** Accepted meaning on an introduction card, in rank order. */

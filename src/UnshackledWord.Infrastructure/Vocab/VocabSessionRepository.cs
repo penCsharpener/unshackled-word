@@ -239,7 +239,7 @@ public static class VocabSessionRepository
 
     private const string SelectAcceptedMeanings = """
         SELECT m."VocabEntryId" AS "EntryId"
-             , m."German"
+             , COALESCE(m."GermanOverride", m."German") AS "German"
              , m."Rank"
              , m."Count"
              , m."Share"
@@ -258,11 +258,11 @@ public static class VocabSessionRepository
              , m."German"        AS "TopMeaning"
              , e."Lemma"
              , e."DictionaryForm"
-             , ARRAY(SELECT x."German"
+             , ARRAY(SELECT COALESCE(x."GermanOverride", x."German")
                      FROM "unshackled-word"."VocabMeanings" x
                      WHERE x."VocabEntryId" = e."Id" AND x."IsAccepted") AS "Meanings"
         FROM "unshackled-word"."VocabEntries" e
-            CROSS JOIN LATERAL (SELECT m."German"
+            CROSS JOIN LATERAL (SELECT COALESCE(m."GermanOverride", m."German") AS "German"
                                 FROM "unshackled-word"."VocabMeanings" m
                                 WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted"
                                 ORDER BY m."Rank"

@@ -28,7 +28,7 @@ export interface SavePlan {
   removed: number[];
   /** Meanings without id, in the order of the draft. */
   added: MeaningRow[];
-  /** Saved meanings with changed accept or pin. */
+  /** Saved meanings with changed accept, pin or text override. */
   changed: { id: number; body: UpdateVocabMeaningBody }[];
   /** One ref per draft meaning, in the draft order. */
   refs: MeaningRef[];
@@ -53,6 +53,7 @@ export function draftFromEntry(data: VocabEditorEntryResponse): EditorDraft {
     meanings: data.meanings.map((meaning) => ({
       id: meaning.id,
       german: meaning.german,
+      germanOverride: meaning.germanOverride ?? null,
       count: meaning.count ?? null,
       share: meaning.share ?? null,
       isAccepted: meaning.isAccepted,
@@ -91,6 +92,9 @@ export function buildSavePlan(saved: EditorDraft, draft: EditorDraft): SavePlan 
     const body: UpdateVocabMeaningBody = {};
     if (row.isAccepted !== before.isAccepted) body.isAccepted = row.isAccepted;
     if (row.isPinned !== before.isPinned) body.isPinned = row.isPinned;
+    if ((row.germanOverride ?? null) !== (before.germanOverride ?? null)) {
+      body.germanOverride = row.germanOverride ?? "";
+    }
     return Object.keys(body).length > 0 ? [{ id: row.id, body }] : [];
   });
 

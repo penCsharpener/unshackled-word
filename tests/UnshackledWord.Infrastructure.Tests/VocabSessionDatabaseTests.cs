@@ -111,8 +111,11 @@ public class VocabSessionDatabaseTests
             }
             else
             {
-                card.Options!.Count.ShouldBe(4);
-                card.Options.Select(o => o.Text).Distinct(StringComparer.OrdinalIgnoreCase).Count().ShouldBe(4);
+                // four options plus the fixed last "None of the above"
+                card.Options!.Count.ShouldBe(5);
+                card.Options.Select(o => o.Text).Distinct(StringComparer.OrdinalIgnoreCase).Count().ShouldBe(5);
+                card.Options[^1].None.ShouldBe(true);
+                card.Options.Take(4).ShouldAllBe(o => o.None == null);
                 card.Meanings.ShouldBeNull();
                 var answer = Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, 0, 900));
                 answer.Seq.ShouldBe(card.Seq);
@@ -173,7 +176,7 @@ public class VocabSessionDatabaseTests
 
         // a stale seq and an unknown option are refused
         (await service.AnswerAsync(c, t, userId, start.SessionId, question.Seq + 5, 0, null)).Status.ShouldBe(VocabSessionStatus.Conflict);
-        (await service.AnswerAsync(c, t, userId, start.SessionId, question.Seq, 4, null)).Status.ShouldBe(VocabSessionStatus.Invalid);
+        (await service.AnswerAsync(c, t, userId, start.SessionId, question.Seq, 5, null)).Status.ShouldBe(VocabSessionStatus.Invalid);
 
         // find the right option through the verdict of a first wrong pick, then answer the next question of the same kind correctly
         var wrong = Ok(await service.AnswerAsync(c, t, userId, start.SessionId, question.Seq, 0, 700));
@@ -189,7 +192,17 @@ public class VocabSessionDatabaseTests
             wrong.Strength!.After.ShouldBeLessThanOrEqualTo(wrong.Strength.Before + 0.0001);
         }
 
-        wrong.CorrectAnswers.ShouldContain(question.Options![rightIndex].Text);
+
+        // "None of the above" can be the right answer: the verdict then still names the word's meanings
+        if (question.Options![rightIndex].None != true)
+        {
+            wrong.CorrectAnswers.ShouldContain(question.Options[rightIndex].Text);
+        }
+        else
+        {
+            wrong.CorrectAnswers.ShouldNotBeEmpty();
+            rightIndex.ShouldBe(4);
+        }
 
         var log = (await c.QueryAsync<(string QuizType, bool IsCorrect, int? Rating, int? ResponseMs, string State)>("""
             SELECT "QuizType", "IsCorrect", "Rating", "ResponseMs", "StateBefore" FROM "unshackled-word"."VocabReviewLog" WHERE "UserId" = @UserId ORDER BY "Id"
@@ -207,6 +220,33 @@ public class VocabSessionDatabaseTests
         card.LastReview.ShouldNotBeNull();
         card.State.ShouldBe(wrong.Correct ? "review" : "learning");
     });
+
+    [Fact]
+    public void Progress_MovesWithEveryAnsweredIntroductionAndQuiz()
+    {
+        var word = new VocabPlanWord { EntryId = 1, IsNew = true, Introduced = true, InWave = true };
+        var plan = new VocabSessionPlan
+        {
+            Words = [word],
+            Pending = new VocabPendingCard { Kind = "introduction", EntryId = 1 },
+        };
+
+        var served = VocabSessionService.Progress(plan);
+        served.StepsTotal.ShouldBe(4);
+        served.StepsDone.ShouldBe(0);
+
+        plan.Pending = null;
+        VocabSessionService.Progress(plan).StepsDone.ShouldBe(1);
+
+        word.Reps = 1;
+        VocabSessionService.Progress(plan).StepsDone.ShouldBe(2);
+
+        word.Reps = 5;
+        VocabSessionService.Progress(plan).StepsDone.ShouldBe(3);
+
+        word.InWave = false;
+        VocabSessionService.Progress(plan).StepsDone.ShouldBe(4);
+    }
 
     [Fact]
     public async Task FullSession_EndsWithAllWordsQuizzedThreeTimes_AndTheOpenSessionIsResumed() => await WithTransactionAsync(async (c, t) =>
@@ -244,6 +284,7 @@ public class VocabSessionDatabaseTests
         last.Summary.Answers.ShouldBeGreaterThanOrEqualTo(30);
         last.Progress.OpenWave.ShouldBe(0);
         last.Progress.WordsDone.ShouldBe(10);
+        last.Progress.StepsDone.ShouldBe(last.Progress.StepsTotal);
 
         var perWord = await c.QueryAsync<int>("""
             SELECT count(*)::int FROM "unshackled-word"."VocabReviewLog" WHERE "UserId" = @UserId AND "QuizType" = 'multiple_choice' GROUP BY "VocabEntryId"
@@ -515,9 +556,10 @@ public class VocabSessionDatabaseTests
                 JsonSerializer.Serialize(again, Web).ShouldBe(JsonSerializer.Serialize(card, Web));
 
                 card.Prompt.ShouldNotBeNullOrWhiteSpace();
-                card.Options!.Count.ShouldBe(4);
-                card.Options.ShouldAllBe(o => o.Lang == "grc");
-                card.Options.Select(o => o.Text).Distinct(StringComparer.OrdinalIgnoreCase).Count().ShouldBe(4);
+                card.Options!.Count.ShouldBe(5);
+                card.Options[^1].None.ShouldBe(true);
+                card.Options.Take(4).ShouldAllBe(o => o.Lang == "grc");
+                card.Options.Select(o => o.Text).Distinct(StringComparer.OrdinalIgnoreCase).Count().ShouldBe(5);
                 card.Entry.Lemma.ShouldBeEmpty();
                 card.Entry.DictionaryForm.ShouldBeNull();
                 JsonSerializer.Serialize(next, Web).ToLowerInvariant().ShouldNotContain("correct");
@@ -530,7 +572,8 @@ public class VocabSessionDatabaseTests
                 var answer = Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, 0, 800));
                 answer.Kind.ShouldBe("reverse_multiple_choice");
                 answer.CorrectAnswers.ShouldBe([form]);
-                card.Options[answer.CorrectOptionId!.Value].Text.ShouldBe(form);
+                var rightOption = card.Options[answer.CorrectOptionId!.Value];
+                (rightOption.None == true || rightOption.Text == form).ShouldBeTrue();
                 answer.Given.ShouldBe(card.Options[0].Text);
                 answer.Correct.ShouldBe(answer.CorrectOptionId == 0);
                 answer.Entry.Lemma.ShouldBe(entry.Lemma);

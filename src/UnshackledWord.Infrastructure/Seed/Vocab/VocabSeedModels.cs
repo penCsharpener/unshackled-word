@@ -46,6 +46,9 @@ public sealed class VocabSeedKeyLine
 /// <summary><c>vocab/meanings.csv</c>: the German meanings of an entry (derived and manual, accepted or not, pinned or not).</summary>
 public sealed class VocabSeedMeaningLine
 {
+    /// <summary>Text shown and accepted instead of <see cref="German"/> (maintainer override); empty when none. German, count and share stay.</summary>
+    public string? GermanOverride { get; set; }
+
     public string Track { get; set; } = string.Empty;
     public string Lemma { get; set; } = string.Empty;
 
@@ -112,6 +115,7 @@ public sealed class VocabSeedMeaningLineMap : ClassMap<VocabSeedMeaningLine>
         Map(x => x.Origin).Index(8).Name("Origin");
         Map(x => x.IsPinned).Index(9).Name("IsPinned");
         Map(x => x.Homograph).Index(10).Name("Homograph").Optional().Default(1);
+        Map(x => x.GermanOverride).Index(11).Name("GermanOverride").Optional();
     }
 }
 

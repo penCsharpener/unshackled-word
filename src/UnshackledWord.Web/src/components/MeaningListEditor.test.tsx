@@ -65,6 +65,31 @@ describe("MeaningListEditor", () => {
     expect(onChange).toHaveBeenCalledWith([inmitten, mitte]);
   });
 
+  it("overrides the text of a saved meaning and keeps its derived text and numbers", async () => {
+    const onChange = vi.fn();
+    render(<MeaningListEditor rows={[mitte, inmitten]} onChange={onChange} />);
+    await userEvent.click(within(itemWith("Mitte")).getByRole("button", { name: "Change text" }));
+    const field = screen.getByRole("textbox", { name: "Meaning text" });
+    await userEvent.clear(field);
+    await userEvent.type(field, "Mitte, Zentrum{Enter}");
+    expect(onChange).toHaveBeenCalledWith([
+      { ...mitte, germanOverride: "Mitte, Zentrum" },
+      inmitten,
+    ]);
+  });
+
+  it("shows the override with its derived text and removes it when the field is emptied", async () => {
+    const onChange = vi.fn();
+    const overridden = { ...mitte, germanOverride: "Mitte, Zentrum" };
+    render(<MeaningListEditor rows={[overridden]} onChange={onChange} />);
+    expect(screen.getByText("Mitte, Zentrum")).toBeInTheDocument();
+    expect(screen.getByText(/derived from “Mitte”/)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Change text" }));
+    await userEvent.clear(screen.getByRole("textbox", { name: "Meaning text" }));
+    await userEvent.keyboard("{Enter}");
+    expect(onChange).toHaveBeenCalledWith([{ ...mitte, germanOverride: null }]);
+  });
+
   it("unaccepts a meaning through its switch", async () => {
     const onChange = vi.fn();
     render(<MeaningListEditor rows={[mitte, inmitten]} onChange={onChange} />);

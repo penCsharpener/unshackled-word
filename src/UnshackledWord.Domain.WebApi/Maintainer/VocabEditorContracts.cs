@@ -126,7 +126,13 @@ public sealed class VocabEditorEntryResponse
 public sealed class VocabEditorMeaningResponse
 {
     public int Id { get; set; }
+
+    /// <summary>The derived (or manual) text; stays when an override is set.</summary>
     public string German { get; set; } = string.Empty;
+
+    /// <summary>Text shown and accepted instead of <see cref="German"/>; omitted when none. Count and share stay.</summary>
+    public string? GermanOverride { get; set; }
+
     public int Rank { get; set; }
     public bool IsAccepted { get; set; }
 
@@ -195,6 +201,9 @@ public sealed class UpdateVocabMeaningRequest
     public int MeaningId { get; set; }
     public bool? IsAccepted { get; set; }
     public bool? IsPinned { get; set; }
+
+    /// <summary>Text shown and accepted instead of the derived one (at most 80 characters); blank removes the override; omitted leaves it.</summary>
+    public string? GermanOverride { get; set; }
 }
 
 /// <summary>Route of <c>DELETE api/maintainer/vocab/entries/{id}/meanings/{meaningId}</c> (manual meanings only).</summary>

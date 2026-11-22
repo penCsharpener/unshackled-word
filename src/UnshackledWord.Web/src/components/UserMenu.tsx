@@ -33,6 +33,7 @@ export function UserMenu() {
       { key: "maintainer", to: "/edit/maintainer", label: t("maintainer.nav") },
       { key: "proposals", to: "/edit/proposals", label: t("agent.proposals.nav") },
       { key: "replace", to: "/edit/revision/replace", label: t("bulkReplace.nav") },
+      { key: "imports", to: "/edit/imports", label: t("imports.nav") },
     );
   }
 

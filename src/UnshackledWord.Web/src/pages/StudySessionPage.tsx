@@ -19,6 +19,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { useBibleStructure } from "@/lib/bible/queries";
 import { getCourses, type VocabLang, type VocabSampleVerse } from "@/lib/vocab/api";
+import { formatPos } from "@/lib/vocab/pos";
 import { BACKSPACE_KEY } from "@/lib/vocab/scriptLayouts";
 import {
   getVocabSessionNext,
@@ -72,13 +73,21 @@ function pointsGrown(before: number, after: number): number | null {
 
 /**
  * `/learn/:course` (roadmap 0022.8f, 0022.9f): the study session, one card per screen. Introductions,
- * multiple choice, reverse multiple choice, listening and verse context for now. Keys 1–4 pick an option, Enter continues.
+ * multiple choice, reverse multiple choice, listening and verse context for now. Keys 1–5 pick an option, Enter continues.
  */
 export function StudySessionPage() {
   const { status } = useAuth();
   if (status === "loading") return null;
   if (status === "anonymous") return <Navigate to="/login" replace />;
   return <StudySession />;
+}
+
+/** The answer and the next card of one step report the same `cardsServed`; the one with more steps done is newer. */
+function isNewer(candidate: VocabSessionProgress, current: VocabSessionProgress | undefined) {
+  if (!current) return true;
+  if (candidate.cardsServed !== current.cardsServed)
+    return candidate.cardsServed > current.cardsServed;
+  return candidate.stepsDone >= current.stepsDone;
 }
 
 function StudySession() {
@@ -126,8 +135,13 @@ function StudySession() {
 
   const card = feedback?.card ?? next.data?.card ?? null;
   const cardSeq = card?.seq;
-  const progress: VocabSessionProgress | undefined =
+  const fresh: VocabSessionProgress | undefined =
     feedback?.result.progress ?? next.data?.progress ?? start.data?.progress;
+  // While the next card loads (after "Weiter") `fresh` falls back to an older value; the bar keeps the last
+  // value it showed until a response at least as new arrives.
+  const [shownProgress, setShownProgress] = useState<VocabSessionProgress | undefined>(undefined);
+  if (fresh && fresh !== shownProgress && isNewer(fresh, shownProgress)) setShownProgress(fresh);
+  const progress = shownProgress ?? fresh;
   const nothingDue = start.data?.finished === true && start.data.sessionId === 0;
   // Flagged words of the learner: the notice shows them at the start and never blocks the session.
   const changedCount = start.data?.changedCount ?? 0;
@@ -229,7 +243,7 @@ function StudySession() {
       else if (card?.kind === "introduction" && !answer.isPending) answerCard(card);
       return;
     }
-    if (card && isChoiceKind(card.kind) && !feedback && /^[1-4]$/.test(event.key)) {
+    if (card && isChoiceKind(card.kind) && !feedback && /^[1-5]$/.test(event.key)) {
       pick(card, Number(event.key) - 1);
     }
   };
@@ -264,7 +278,7 @@ function StudySession() {
   const introductionView = (current: VocabCard) => {
     const { entry } = current;
     const dir = entry.lang === "he" ? "rtl" : undefined;
-    const meta = [entry.transliteration, entry.pos].filter(Boolean).join(" · ");
+    const meta = [entry.transliteration, formatPos(entry.pos, t)].filter(Boolean).join(" · ");
     return (
       <StudyCard kindLabel={t("learn.kind.introduction")}>
         <div className="grid justify-items-center gap-2 text-center">
@@ -314,9 +328,12 @@ function StudySession() {
     const listening = current.kind === "listening";
     const verseContext = current.kind === "verse_context";
     const optionLang = options.find((option) => option.lang)?.lang ?? "de";
+    const noneIndex = options.findIndex((option) => option.none);
     const correctIndex = feedback
       ? options.findIndex((option) => option.id === feedback.result.correctOptionId)
       : -1;
+    // "None of the above" was the right answer: the feedback must still say what the word means.
+    const noneWasRight = feedback !== null && correctIndex >= 0 && correctIndex === noneIndex;
     const kindKey = listening
       ? "learn.kind.listening"
       : verseContext
@@ -375,22 +392,26 @@ function StudySession() {
       <StudyCard kindLabel={t(kindKey)}>
         {question}
         <ChoiceList
-          options={options.map((option) => option.text)}
+          options={options.map((option) =>
+            option.none ? t("learn.session.noneOfTheAbove") : option.text,
+          )}
           lang={optionLang}
+          plainIndex={noneIndex >= 0 ? noneIndex : null}
           state={{ picked, correct: correctIndex >= 0 ? correctIndex : null }}
           onPick={(index) => pick(current, index)}
         />
-        {feedback ? renderFeedback(feedback.result) : null}
+        {feedback ? renderFeedback(feedback.result, noneWasRight) : null}
       </StudyCard>
     );
   };
 
-  const renderFeedback = (result: VocabAnswerResponse) => (
+  const renderFeedback = (result: VocabAnswerResponse, noneWasRight = false) => (
     <div role="status" className="grid gap-3 border-t border-border pt-4">
       <p className="text-lg font-semibold">
         {result.correct ? t("learn.feedback.correct") : t("learn.feedback.wrong")}
       </p>
-      {result.correct ? null : (
+      {noneWasRight ? <p className="text-sm">{t("learn.feedback.noneWasRight")}</p> : null}
+      {result.correct && !noneWasRight ? null : (
         <p className="text-sm">
           {t("learn.feedback.correctAnswers")}:{" "}
           <span
@@ -474,8 +495,8 @@ function StudySession() {
         {progress ? (
           <div className="min-w-0 flex-1">
             <ProgressBar
-              value={progress.wordsDone}
-              max={progress.wordsTotal}
+              value={progress.stepsDone}
+              max={progress.stepsTotal}
               label={t("learn.session.progress")}
             />
           </div>
@@ -519,7 +540,9 @@ function TypingCard({ card, result, pending, onSubmit, feedbackView }: TypingCar
   const submit = () => {
     if (complete && !locked) onSubmit(typed);
   };
-  const meta = [card.entry.pos, t(`learn.typing.hint.${lang}`)].filter(Boolean).join(" · ");
+  const meta = [formatPos(card.entry.pos, t), t(`learn.typing.hint.${lang}`)]
+    .filter(Boolean)
+    .join(" · ");
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: Enter inside a letter box submits
     <div

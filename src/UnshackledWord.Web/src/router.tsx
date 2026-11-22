@@ -21,6 +21,7 @@ import { PasskeysPage } from "@/pages/PasskeysPage";
 import { PrivacyPage } from "@/pages/PrivacyPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
+import { SeedImportsPage } from "@/pages/SeedImportsPage";
 import { SignInPage } from "@/pages/SignInPage";
 import { StrongsPage } from "@/pages/StrongsPage";
 import { StudySessionPage } from "@/pages/StudySessionPage";
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
       },
       { path: "edit/vocab", element: <VocabEditorListPage /> },
       { path: "edit/vocab/:id", element: <VocabEditorPage /> },
+      { path: "edit/imports", element: <SeedImportsPage /> },
       { path: "edit/quality", element: <DataQualityPage /> },
       { path: "edit/maintainer", element: <MaintainerPage /> },
       { path: "edit/proposals/:runId?/:proposalId?", element: <AgentProposalsPage /> },

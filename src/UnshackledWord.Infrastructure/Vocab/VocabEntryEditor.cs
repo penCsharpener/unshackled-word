@@ -103,7 +103,7 @@ public sealed class VocabEntryEditor
         """;
 
     private const string SelectAcceptedGerman = """
-        SELECT m."German"
+        SELECT COALESCE(m."GermanOverride", m."German")
         FROM "unshackled-word"."VocabMeanings" m
         WHERE 1=1
             AND m."VocabEntryId" = @Id
@@ -114,6 +114,7 @@ public sealed class VocabEntryEditor
     private const string SelectMeaningRows = """
         SELECT m."Id"
              , m."German"
+             , m."GermanOverride"
              , m."Rank"
              , m."IsAccepted"
              , m."Origin"
@@ -143,6 +144,7 @@ public sealed class VocabEntryEditor
         UPDATE "unshackled-word"."VocabMeanings"
         SET "IsAccepted" = @IsAccepted
           , "IsPinned" = @IsPinned
+          , "GermanOverride" = @GermanOverride
         WHERE 1=1
             AND "Id" = @MeaningId
         """;
@@ -230,9 +232,10 @@ public sealed class VocabEntryEditor
 
     private const string MergeMeanings = """
         INSERT INTO "unshackled-word"."VocabMeanings"
-            ("VocabEntryId", "German", "GermanKey", "Rank", "Count", "Share", "IsAccepted", "Origin", "IsPinned")
+            ("VocabEntryId", "German", "GermanOverride", "GermanKey", "Rank", "Count", "Share", "IsAccepted", "Origin", "IsPinned")
         SELECT @TargetId
              , a."German"
+             , a."GermanOverride"
              , a."GermanKey"
              , @Offset + (row_number() OVER (ORDER BY a."Rank", a."Id"))::int
              , a."Count"
@@ -339,8 +342,8 @@ public sealed class VocabEntryEditor
     public Task<VocabEditOutcome> AddMeaningAsync(int id, string german, int? userId, CancellationToken token) =>
         RunAsync((c, t) => AddMeaningAsync(c, t, id, german, userId), token);
 
-    public Task<VocabEditOutcome> UpdateMeaningAsync(int id, int meaningId, bool? isAccepted, bool? isPinned, int? userId, CancellationToken token) =>
-        RunAsync((c, t) => UpdateMeaningAsync(c, t, id, meaningId, isAccepted, isPinned, userId), token);
+    public Task<VocabEditOutcome> UpdateMeaningAsync(int id, int meaningId, bool? isAccepted, bool? isPinned, string? germanOverride, int? userId, CancellationToken token) =>
+        RunAsync((c, t) => UpdateMeaningAsync(c, t, id, meaningId, isAccepted, isPinned, userId, germanOverride), token);
 
     public Task<VocabEditOutcome> DeleteMeaningAsync(int id, int meaningId, int? userId, CancellationToken token) =>
         RunAsync((c, t) => DeleteMeaningAsync(c, t, id, meaningId, userId), token);
@@ -504,7 +507,7 @@ public sealed class VocabEntryEditor
         var text = german.Trim();
         var before = await AcceptedAsync(c, t, id);
 
-        if ((await MeaningsAsync(c, t, id)).Any(m => string.Equals(m.German, text, StringComparison.Ordinal)))
+        if ((await MeaningsAsync(c, t, id)).Any(m => string.Equals(m.Shown, text, StringComparison.Ordinal) || string.Equals(m.German, text, StringComparison.Ordinal)))
         {
             return VocabEditOutcome.Conflict($"The entry already has the meaning '{text}'.");
         }
@@ -518,10 +521,10 @@ public sealed class VocabEntryEditor
     }
 
     /// <summary>
-    /// Accepts, unaccepts or pins a meaning. Unaccepting a derived meaning pins it as well, otherwise the next derivation would accept it
+    /// Accepts, unaccepts or pins a meaning, or sets/clears its text override (<c>germanOverride</c>: the shown and accepted text; stats stay). Unaccepting a derived meaning pins it as well, otherwise the next derivation would accept it
     /// again. The last accepted meaning cannot be unaccepted. Only a change of the accepted set bumps; pinning does not.
     /// </summary>
-    public static async Task<VocabEditOutcome> UpdateMeaningAsync(IDbConnection c, IDbTransaction t, int id, int meaningId, bool? isAccepted, bool? isPinned, int? userId)
+    public static async Task<VocabEditOutcome> UpdateMeaningAsync(IDbConnection c, IDbTransaction t, int id, int meaningId, bool? isAccepted, bool? isPinned, int? userId, string? germanOverride = null)
     {
         var entry = await LockAsync(c, t, id);
 
@@ -551,8 +554,22 @@ public sealed class VocabEntryEditor
             return VocabEditOutcome.Conflict("The last accepted meaning cannot be unaccepted; add the replacement first.");
         }
 
+        // null = unchanged, blank = remove the override; an override equal to the derived text is none
+        var overrideText = germanOverride is null ? meaning.GermanOverride : germanOverride.Trim();
+        if (overrideText is not null && (overrideText.Length == 0 || overrideText == meaning.German))
+        {
+            overrideText = null;
+        }
+        if (overrideText is not null && overrideText.Length > 80)
+        {
+            return VocabEditOutcome.Invalid("germanOverride is at most 80 characters.");
+        }
+        if (overrideText is not null && meanings.Any(m => m.Id != meaningId && string.Equals(m.Shown, overrideText, StringComparison.Ordinal)))
+        {
+            return VocabEditOutcome.Conflict($"The entry already has the meaning '{overrideText}'.");
+        }
         var before = await AcceptedAsync(c, t, id);
-        await c.ExecuteAsync(UpdateMeaningFlags, new { MeaningId = meaningId, IsAccepted = accepted, IsPinned = pinned }, t);
+        await c.ExecuteAsync(UpdateMeaningFlags, new { MeaningId = meaningId, IsAccepted = accepted, IsPinned = pinned, GermanOverride = overrideText }, t);
         var after = await AcceptedAsync(c, t, id);
 
         return await FinishMeaningEditAsync(c, t, id, before, after, userId);
@@ -980,10 +997,14 @@ public sealed class VocabEntryEditor
     {
         public int Id { get; init; }
         public string German { get; init; } = string.Empty;
+        public string? GermanOverride { get; init; }
         public int Rank { get; init; }
         public bool IsAccepted { get; init; }
         public string Origin { get; init; } = string.Empty;
         public bool IsPinned { get; init; }
+
+        /// <summary>What the learner sees and what the quiz accepts.</summary>
+        public string Shown => GermanOverride ?? German;
     }
 
     private sealed class LexiconRow

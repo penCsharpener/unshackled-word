@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS "unshackled-word"."VocabMeanings"
     "Id"           serial4      NOT NULL,
     "VocabEntryId" int4         NOT NULL,
     "German"       varchar(80)  NOT NULL,
+    "GermanOverride" varchar(80) NULL,         -- migration 0041: maintainer text shown/accepted instead of "German" ("der" -> "der, die, das"); German, Count, Share stay and keep being refreshed
     "GermanKey"    varchar(80)  NULL,          -- renderings key it was derived from
     "Rank"         int4         NOT NULL,
     "Count"        int4         NULL,          -- renderings count at derivation

@@ -35,7 +35,7 @@ public sealed class VocabSeedImporter
         """;
 
     private const string SelectMeanings = """
-        SELECT m."Id", m."VocabEntryId" AS "EntryId", m."German", m."GermanKey", m."Rank", m."Count", m."Share", m."IsAccepted", m."Origin", m."IsPinned"
+        SELECT m."Id", m."VocabEntryId" AS "EntryId", m."German", m."GermanOverride", m."GermanKey", m."Rank", m."Count", m."Share", m."IsAccepted", m."Origin", m."IsPinned"
         FROM "unshackled-word"."VocabMeanings" m
         """;
 
@@ -93,10 +93,11 @@ public sealed class VocabSeedImporter
         """;
 
     private const string UpsertMeaning = """
-        INSERT INTO "unshackled-word"."VocabMeanings" ("VocabEntryId", "German", "GermanKey", "Rank", "Count", "Share", "IsAccepted", "Origin", "IsPinned")
-        VALUES (@EntryId, @German, @GermanKey, @Rank, @Count, @Share, @IsAccepted, @Origin, @IsPinned)
+        INSERT INTO "unshackled-word"."VocabMeanings" ("VocabEntryId", "German", "GermanOverride", "GermanKey", "Rank", "Count", "Share", "IsAccepted", "Origin", "IsPinned")
+        VALUES (@EntryId, @German, @GermanOverride, @GermanKey, @Rank, @Count, @Share, @IsAccepted, @Origin, @IsPinned)
         ON CONFLICT ("VocabEntryId", "German") DO UPDATE
-        SET "GermanKey" = EXCLUDED."GermanKey"
+        SET "GermanOverride" = EXCLUDED."GermanOverride"
+          , "GermanKey" = EXCLUDED."GermanKey"
           , "Rank" = EXCLUDED."Rank"
           , "Count" = EXCLUDED."Count"
           , "Share" = EXCLUDED."Share"
@@ -124,9 +125,7 @@ public sealed class VocabSeedImporter
 
     public SeedLayout CreateLayout(string? seedRootOverride = null) => new(_fileService, _settings, seedRootOverride);
 
-    /// <summary>First start (SeedDb runner): syncs when the seed folder exists, otherwise does nothing.</summary>
-    public async Task RunAsync(SeedLayout layout, CancellationToken token = default) => await ImportFromLayoutAsync(layout, token);
-
+    /// <summary>Only the maintainer page imports vocab (never at startup, so a restart cannot overwrite maintainer edits).</summary>
     public async Task<SeedStepReport> ImportFromLayoutAsync(SeedLayout layout, CancellationToken token = default)
     {
         var data = await LoadAsync(layout, token);
@@ -189,6 +188,7 @@ public sealed class VocabSeedImporter
         foreach (var m in data.Meanings)
         {
             m.GermanKey = NullIfEmpty(m.GermanKey);
+            m.GermanOverride = NullIfEmpty(m.GermanOverride);
         }
 
         return data;
@@ -276,8 +276,8 @@ public sealed class VocabSeedImporter
             }
 
             var currentMeanings = dbMeanings[entry.Id].ToList();
-            var acceptedBefore = currentMeanings.Where(m => m.IsAccepted).OrderBy(m => m.Rank).ThenBy(m => m.Id).Select(m => m.German).ToList();
-            var acceptedAfter = wantedMeanings.Where(m => m.IsAccepted).OrderBy(m => m.Rank).Select(m => m.German).ToList();
+            var acceptedBefore = currentMeanings.Where(m => m.IsAccepted).OrderBy(m => m.Rank).ThenBy(m => m.Id).Select(m => m.GermanOverride ?? m.German).ToList();
+            var acceptedAfter = wantedMeanings.Where(m => m.IsAccepted).OrderBy(m => m.Rank).Select(m => m.GermanOverride ?? m.German).ToList();
 
             if (VocabChangeRules.AcceptedSetChanged(acceptedBefore, acceptedAfter))
             {
@@ -367,7 +367,7 @@ public sealed class VocabSeedImporter
         var byGerman = current.ToDictionary(m => m.German, StringComparer.Ordinal);
 
         return wanted.Any(w => !byGerman.TryGetValue(w.German, out var m)
-            || m.GermanKey != w.GermanKey || m.Rank != w.Rank || m.Count != w.Count || m.Share != w.Share
+            || m.GermanOverride != w.GermanOverride || m.GermanKey != w.GermanKey || m.Rank != w.Rank || m.Count != w.Count || m.Share != w.Share
             || m.IsAccepted != w.IsAccepted || m.Origin != w.Origin || m.IsPinned != w.IsPinned);
     }
 
@@ -410,7 +410,7 @@ public sealed class VocabSeedImporter
 
         foreach (var meaning in wanted)
         {
-            await c.ExecuteAsync(UpsertMeaning, new { EntryId = entryId, meaning.German, meaning.GermanKey, meaning.Rank, meaning.Count, meaning.Share, meaning.IsAccepted, meaning.Origin, meaning.IsPinned }, t);
+            await c.ExecuteAsync(UpsertMeaning, new { EntryId = entryId, meaning.German, meaning.GermanOverride, meaning.GermanKey, meaning.Rank, meaning.Count, meaning.Share, meaning.IsAccepted, meaning.Origin, meaning.IsPinned }, t);
         }
     }
 
@@ -453,6 +453,7 @@ public sealed class VocabSeedImporter
         public int Id { get; init; }
         public int EntryId { get; init; }
         public string German { get; init; } = string.Empty;
+        public string? GermanOverride { get; init; }
         public string? GermanKey { get; init; }
         public int Rank { get; init; }
         public int? Count { get; init; }

@@ -13,7 +13,6 @@ public static class ServiceCollectionExtensions
         services.AddSeedImportServices();
         services.AddScoped<MorphologySeedRunner>();
         services.AddScoped<RevisionSeedRunner>();
-        services.AddScoped<VocabSeed.VocabSeedRunner>();
         services.AddScoped<ISeedVerb, ExportSeedVerb>();
         services.AddScoped<ISeedVerb, RebaseVerb>();
         services.AddScoped<ISeedVerb, AnchorCheckVerb>();

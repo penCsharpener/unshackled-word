@@ -2,11 +2,14 @@ import { type KeyboardEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./Button";
 import { Switch } from "./Switch";
+import { TextField } from "./TextField";
 
 /** One meaning of the vocab editor; `id` is absent until the meaning is saved. */
 export interface MeaningRow {
   id?: number;
   german: string;
+  /** Text shown and accepted instead of `german` (count and share stay); null or absent when none. */
+  germanOverride?: string | null;
   /** Head links at derivation time; null for manual meanings. */
   count: number | null;
   /** Percent of the head links at derivation time; null for manual meanings. */
@@ -15,6 +18,10 @@ export interface MeaningRow {
   origin: "derived" | "manual";
   isPinned: boolean;
 }
+
+/** The text a learner sees and the quiz accepts: the override, else the derived or manual text. */
+export const meaningText = (row: Pick<MeaningRow, "german" | "germanOverride">) =>
+  row.germanOverride || row.german;
 
 export interface MeaningListEditorProps {
   rows: MeaningRow[];
@@ -35,6 +42,28 @@ export function MeaningListEditor({ rows, onChange }: MeaningListEditorProps) {
 
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
+  const [editing, setEditing] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+
+  const startEdit = (index: number) => {
+    const row = rows[index];
+    if (!row) return;
+    setEditText(meaningText(row));
+    setEditing(index);
+  };
+
+  // A saved meaning keeps its derived text and stats and gets an override; a new one is simply rewritten.
+  const commitEdit = (index: number) => {
+    const row = rows[index];
+    const text = editText.trim();
+    setEditing(null);
+    if (!row || text === meaningText(row)) return;
+    if (row.id === undefined) {
+      if (text) update(index, { german: text });
+      return;
+    }
+    update(index, { germanOverride: text === "" || text === row.german ? null : text });
+  };
 
   const moveTo = (index: number, target: number) => {
     const row = rows[index];
@@ -99,11 +128,35 @@ export function MeaningListEditor({ rows, onChange }: MeaningListEditorProps) {
               ⠿
             </Button>
             <span className="grid min-w-0 flex-1 gap-0.5">
-              <span lang="de" className="font-medium">
-                {row.german}
+              {editing === index ? (
+                <TextField
+                  label={t("vocab.editor.meanings.editText")}
+                  labelHidden
+                  size="sm"
+                  value={editText}
+                  maxLength={80}
+                  autoFocus
+                  onChange={setEditText}
+                  onBlur={() => commitEdit(index)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") commitEdit(index);
+                    if (event.key === "Escape") setEditing(null);
+                  }}
+                />
+              ) : (
+                <span lang="de" className="font-medium">
+                  {meaningText(row)}
+                </span>
+              )}
+              <span className="text-xs text-fg-muted tabular-nums">
+                {row.germanOverride
+                  ? `${t("vocab.editor.meanings.derivedFrom", { german: row.german })} · ${details}`
+                  : details}
               </span>
-              <span className="text-xs text-fg-muted tabular-nums">{details}</span>
             </span>
+            <Button variant="ghost" size="sm" onClick={() => startEdit(index)}>
+              {t("vocab.editor.meanings.edit")}
+            </Button>
             <Switch
               checked={row.isAccepted}
               onCheckedChange={(isAccepted) => update(index, { isAccepted })}

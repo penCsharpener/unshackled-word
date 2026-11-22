@@ -37,7 +37,7 @@ public sealed class VocabCourseRepository
                  OR lower(e."Transliteration") LIKE @Like
                  OR EXISTS (SELECT 1
                             FROM "unshackled-word"."VocabMeanings" m
-                            WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted" AND lower(m."German") LIKE @LikeContains))
+                            WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted" AND lower(COALESCE(m."GermanOverride", m."German")) LIKE @LikeContains))
         """;
 
     private const string SelectCount = "SELECT count(*)::int " + Filter;
@@ -60,7 +60,7 @@ public sealed class VocabCourseRepository
 
     private const string SelectMeanings = """
         SELECT m."VocabEntryId" AS "EntryId"
-             , m."German"
+             , COALESCE(m."GermanOverride", m."German") AS "German"
              , m."Rank"
              , m."Count"
              , m."Share"

@@ -73,6 +73,7 @@ public sealed class VocabSeedExporter
              , e."Lemma"
              , e."Homograph"
              , m."German"
+             , m."GermanOverride"
              , m."GermanKey"
              , m."Rank"
              , m."Count"

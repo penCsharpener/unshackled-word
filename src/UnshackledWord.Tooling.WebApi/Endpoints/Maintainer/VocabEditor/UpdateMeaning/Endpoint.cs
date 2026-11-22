@@ -28,7 +28,7 @@ public sealed class Endpoint : VocabEditEndpoint<UpdateVocabMeaningRequest>
 
     public override async Task HandleAsync(UpdateVocabMeaningRequest req, CancellationToken ct)
     {
-        await SendOutcomeAsync(await _editor.UpdateMeaningAsync(req.Id, req.MeaningId, req.IsAccepted, req.IsPinned, UserId, ct), ct);
+        await SendOutcomeAsync(await _editor.UpdateMeaningAsync(req.Id, req.MeaningId, req.IsAccepted, req.IsPinned, req.GermanOverride, UserId, ct), ct);
     }
 }
 
@@ -38,6 +38,7 @@ public sealed class Validator : Validator<UpdateVocabMeaningRequest>
     {
         RuleFor(x => x.Id).GreaterThan(0);
         RuleFor(x => x.MeaningId).GreaterThan(0);
-        RuleFor(x => x).Must(x => x.IsAccepted is not null || x.IsPinned is not null).WithMessage("Send isAccepted, isPinned or both.");
+        RuleFor(x => x.GermanOverride).MaximumLength(80);
+        RuleFor(x => x).Must(x => x.IsAccepted is not null || x.IsPinned is not null || x.GermanOverride is not null).WithMessage("Send isAccepted, isPinned, germanOverride or a combination.");
     }
 }

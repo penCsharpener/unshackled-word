@@ -50,7 +50,7 @@ public sealed class VocabEntryRepository
         """;
 
     private const string SelectMeanings = """
-        SELECT m."German"
+        SELECT COALESCE(m."GermanOverride", m."German") AS "German"
              , m."Rank"
              , m."Count"
              , m."Share"
