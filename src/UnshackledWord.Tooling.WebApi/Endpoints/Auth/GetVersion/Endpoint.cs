@@ -1,5 +1,5 @@
-using System.Reflection;
 using FastEndpoints;
+using UnshackledWord.Tooling.WebApi.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Auth.GetVersion;
 
@@ -8,9 +8,6 @@ public sealed record VersionResponse(string Version);
 /// <summary>Anonymous: the app version from Directory.Build.props (same number as the frontend).</summary>
 public sealed class Endpoint : EndpointWithoutRequest<VersionResponse>
 {
-    private static readonly string Version = (typeof(Endpoint).Assembly
-        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown").Split('+')[0];
-
     public override void Configure()
     {
         Get("version");
@@ -20,5 +17,5 @@ public sealed class Endpoint : EndpointWithoutRequest<VersionResponse>
         Summary(s => s.Summary = "Reports the app version.");
     }
 
-    public override async Task HandleAsync(CancellationToken ct) => await Send.OkAsync(new VersionResponse(Version), ct);
+    public override async Task HandleAsync(CancellationToken ct) => await Send.OkAsync(new VersionResponse(AppVersion.Current), ct);
 }

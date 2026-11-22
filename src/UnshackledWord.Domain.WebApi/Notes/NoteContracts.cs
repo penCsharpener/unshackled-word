@@ -130,6 +130,33 @@ public sealed class NoteResponse
     public DateTime? UpdatedAt { get; set; }
 }
 
+/// <summary><c>GET api/notes/mine?book=&amp;visibility=&amp;q=&amp;skip=&amp;take=</c>: the caller's own notes, newest change first.</summary>
+public sealed class ListMyNotesRequest
+{
+    /// <summary>Query parameter: only notes of this book (1..66).</summary>
+    public int? Book { get; set; }
+
+    /// <summary>Query parameter: <c>private</c> | <c>internal</c> | <c>public</c>.</summary>
+    public string? Visibility { get; set; }
+
+    /// <summary>Query parameter: case-insensitive text search in the body (wildcards are literal), max 200 characters.</summary>
+    public string? Q { get; set; }
+
+    public int Skip { get; set; }
+
+    /// <summary>Page size, 1..50 (default 50).</summary>
+    public int Take { get; set; } = 50;
+}
+
+/// <summary>One page of the caller's notes; <see cref="Total"/> counts all notes matching the filters.</summary>
+public sealed class MyNotesResponse
+{
+    public int Total { get; set; }
+
+    /// <summary>Ordered by last change (<c>UpdatedAt</c>, else <c>CreatedAt</c>), newest first. Anchor state is the Elb1871 one.</summary>
+    public List<NoteResponse> Notes { get; set; } = [];
+}
+
 public sealed class ChapterNotesResponse
 {
     /// <summary>In reading order: chapter notes first, then by verse and word position, then oldest first.</summary>

@@ -110,3 +110,21 @@ public sealed class UpdateNoteRequestValidator : AbstractValidator<UpdateNoteReq
         RuleFor(x => x.BodyMarkdown).NotEmpty().MaximumLength(NoteBody.MaxLength);
     }
 }
+
+public sealed class ListMyNotesRequestValidator : AbstractValidator<ListMyNotesRequest>
+{
+    public const int MaxTake = 50;
+    public const int MaxQueryLength = 200;
+
+    public ListMyNotesRequestValidator()
+    {
+        RuleFor(x => x.Book!.Value).InclusiveBetween(1, NoteAnchorValidator.MaxBookId).When(x => x.Book is not null).WithName("Book");
+        RuleFor(x => x.Visibility)
+            .Must(v => v is NoteVisibilities.Private or NoteVisibilities.Internal or NoteVisibilities.Public)
+            .When(x => x.Visibility is not null)
+            .WithMessage("'{PropertyValue}' is not a visibility (private, internal, public).");
+        RuleFor(x => x.Q).MaximumLength(MaxQueryLength);
+        RuleFor(x => x.Skip).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.Take).InclusiveBetween(1, MaxTake);
+    }
+}

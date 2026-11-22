@@ -313,4 +313,134 @@ public class NoteDatabaseTests
         // without a level the Elb1871 positions apply
         (await ReadAsync(c, t, id, author)).MappedWords.ShouldBeNull();
     });
+
+    private static Task<Guid> InsertAtAsync(IDbConnection c, IDbTransaction t, int userId, int book, string body, DateTime changedAt, string visibility = NoteVisibilities.Private) =>
+        c.QuerySingleAsync<Guid>("""
+            INSERT INTO "unshackled-word"."Notes" ("UserId", "Kind", "BibleBookId", "Chapter", "BodyMarkdown", "Visibility", "PublicState", "CreatedAt", "UpdatedAt")
+            VALUES (@UserId, 'chapter', @Book, 1, @Body, @Visibility, CASE WHEN @Visibility = 'public' THEN 'pending' ELSE 'none' END, @ChangedAt, @ChangedAt)
+            RETURNING "Id"
+            """, new { UserId = userId, Book = book, Body = body, Visibility = visibility, ChangedAt = changedAt }, t);
+
+    [Fact]
+    public async Task ListMineAsync_ShouldPageNewestChangeFirstAndReportTheTotal_WhenTheUserHas120Notes() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var start = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var ids = new List<Guid>();
+        for (var i = 0; i < 120; i++)
+        {
+            ids.Add(await InsertAtAsync(c, t, author, 45, $"Notiz {i}", start.AddMinutes(i)));
+        }
+
+        var first = await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(null, null, null, 0, 50));
+        var second = await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(null, null, null, 50, 50));
+        var third = await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(null, null, null, 100, 50));
+
+        first.Total.ShouldBe(120);
+        first.Rows.Count.ShouldBe(50);
+        second.Rows.Count.ShouldBe(50);
+        third.Rows.Count.ShouldBe(20);
+        first.Rows.Select(n => n.Id).Concat(second.Rows.Select(n => n.Id)).Concat(third.Rows.Select(n => n.Id)).ShouldBe(Enumerable.Reverse(ids));
+    });
+
+    [Fact]
+    public async Task ListMineAsync_ShouldOrderByCreatedAt_WhenTheNoteWasNeverEdited() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var old = await InsertAtAsync(c, t, author, 45, "alt", new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        var neverEdited = await NoteRepository.InsertAsync(c, t, author, ChapterAnchor, "frisch"); // UpdatedAt null, CreatedAt now
+        await c.ExecuteAsync("""UPDATE "unshackled-word"."Notes" SET "UpdatedAt" = NULL WHERE "Id" = @Id""", new { Id = old }, t);
+
+        var page = await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(null, null, null, 0, 50));
+
+        page.Rows.Select(n => n.Id).ShouldBe([neverEdited, old]);
+    });
+
+    [Fact]
+    public async Task ListMineAsync_ShouldFilterByBookAndVisibility_WhenBothAreGiven() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var at = DateTime.UtcNow;
+        var romPrivate = await InsertAtAsync(c, t, author, 45, "a", at);
+        var romInternal = await InsertAtAsync(c, t, author, 45, "b", at.AddMinutes(1), NoteVisibilities.Internal);
+        var johnPrivate = await InsertAtAsync(c, t, author, 43, "c", at.AddMinutes(2));
+
+        (await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(45, null, null, 0, 50))).Rows.Select(n => n.Id).ShouldBe([romInternal, romPrivate]);
+        (await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(null, NoteVisibilities.Private, null, 0, 50))).Rows.Select(n => n.Id).ShouldBe([johnPrivate, romPrivate]);
+        var both = await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(45, NoteVisibilities.Internal, null, 0, 50));
+        both.Total.ShouldBe(1);
+        both.Rows.Single().Id.ShouldBe(romInternal);
+    });
+
+    [Theory]
+    [InlineData("GOTT", 1)]
+    [InlineData("100%", 1)]
+    [InlineData("%", 1)]
+    [InlineData("a_b", 1)]
+    [InlineData("_", 1)]
+    [InlineData("\\", 1)]
+    [InlineData("nichts", 0)]
+    public async Task ListMineAsync_ShouldSearchTheBodyCaseInsensitiveWithLiteralWildcards_WhenQIsGiven(string q, int expected) => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var at = DateTime.UtcNow;
+        await InsertAtAsync(c, t, author, 45, "Gott ist treu", at);
+        await InsertAtAsync(c, t, author, 45, "xaxb", at.AddMinutes(1)); // would match 'a_b' and '%' if they were wildcards
+        // exactly one of these bodies contains each special character as text
+        await c.ExecuteAsync("""UPDATE "unshackled-word"."Notes" SET "BodyMarkdown" = 'Gott 100% treu a_b \\ ende' WHERE "UserId" = @UserId AND "BodyMarkdown" = 'Gott ist treu'""", new { UserId = author }, t);
+
+        var page = await NoteRepository.ListMineAsync(c, t, author, new NoteListFilter(null, null, q, 0, 50));
+
+        page.Total.ShouldBe(expected);
+        page.Rows.Count.ShouldBe(expected);
+    });
+
+    [Fact]
+    public async Task ListMineAsync_ShouldNeverReturnAnotherUsersNotes_WhenTheyAreInternalOrPublic() => await WithTransactionAsync(async (c, t) =>
+    {
+        var me = await NewUserAsync(c, t);
+        var other = await NewUserAsync(c, t);
+        var mine = await InsertAtAsync(c, t, me, 45, "Gott meins", DateTime.UtcNow);
+        await InsertAtAsync(c, t, other, 45, "Gott fremd intern", DateTime.UtcNow, NoteVisibilities.Internal);
+        await InsertAtAsync(c, t, other, 45, "Gott fremd öffentlich", DateTime.UtcNow, NoteVisibilities.Public);
+
+        var all = await NoteRepository.ListMineAsync(c, t, me, new NoteListFilter(null, null, null, 0, 50));
+        var search = await NoteRepository.ListMineAsync(c, t, me, new NoteListFilter(45, NoteVisibilities.Public, "Gott", 0, 50));
+
+        all.Total.ShouldBe(1);
+        all.Rows.Single().Id.ShouldBe(mine);
+        search.Total.ShouldBe(0);
+        (await NoteRepository.ListForExportAsync(c, t, me)).Select(n => n.Id).ShouldBe([mine]);
+    });
+
+    [Fact]
+    public async Task ListForExportAsync_ShouldReturnEveryOwnNoteWithItsAnchorAndApprover_WhenTheUserHasAllKinds() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var approver = await NewUserAsync(c, t, "approver");
+        var quote = await QuoteAsync(c, t, 3, 5);
+        var chapter = await NoteRepository.InsertAsync(c, t, author, ChapterAnchor, "Kapitel");
+        var verse = await NoteRepository.InsertAsync(c, t, author, VerseAnchor, "Vers");
+        var range = await NoteRepository.InsertAsync(c, t, author, new NoteAnchor(NoteKinds.Verses, 45, 8, 45008028, 45008030, null, null, null), "Bereich");
+        var words = await NoteRepository.InsertAsync(c, t, author, WordsAnchor(3, 5, quote), "Wörter");
+        await c.ExecuteAsync("""
+            UPDATE "unshackled-word"."Notes"
+            SET "Visibility" = 'public', "PublicState" = 'approved', "ApprovedBodyMarkdown" = 'Vers', "ApprovedAt" = now(), "ApprovedByUserId" = @Approver
+            WHERE "Id" = @Id
+            """, new { Id = verse, Approver = approver }, t);
+
+        var rows = await NoteRepository.ListForExportAsync(c, t, author);
+
+        rows.Count.ShouldBe(4);
+        rows.Select(r => r.Id).ShouldBe(new[] { chapter, verse, range, words }.Order());
+        var wordsRow = rows.Single(r => r.Id == words);
+        (wordsRow.StartPosition, wordsRow.EndPosition, wordsRow.QuotedText, wordsRow.StartHebRefId).ShouldBe((3, 5, quote, Rom828));
+        var range2 = rows.Single(r => r.Id == range);
+        (range2.StartHebRefId, range2.EndHebRefId).ShouldBe((45008028, 45008030));
+        var verseRow = rows.Single(r => r.Id == verse);
+        verseRow.ApprovedByEmail.ShouldStartWith("approver-");
+        verseRow.AuthorEmail.ShouldStartWith("notes-");
+        verseRow.ApprovedBodyMarkdown.ShouldBe("Vers");
+        rows.Single(r => r.Id == chapter).StartHebRefId.ShouldBeNull();
+    });
 }

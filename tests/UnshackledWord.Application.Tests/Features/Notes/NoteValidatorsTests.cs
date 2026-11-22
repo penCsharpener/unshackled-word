@@ -148,4 +148,45 @@ public class NoteValidatorsTests
 
         new UpdateNoteRequestValidator().Validate(request).IsValid.ShouldBe(valid);
     }
+
+    private static ListMyNotesRequest Mine(int? book = null, string? visibility = null, string? q = null, int skip = 0, int take = 50) =>
+        new() { Book = book, Visibility = visibility, Q = q, Skip = skip, Take = take };
+
+    [Fact]
+    public void ListMine_ShouldPass_WhenNoFilterIsGiven() =>
+        new ListMyNotesRequestValidator().Validate(new ListMyNotesRequest()).IsValid.ShouldBeTrue();
+
+    [Theory]
+    [InlineData(45, "private", "Gott", 0, 1)]
+    [InlineData(1, "internal", null, 100, 50)]
+    [InlineData(66, "public", "", 0, 50)]
+    public void ListMine_ShouldPass_WhenFiltersAreInRange(int book, string visibility, string? q, int skip, int take) =>
+        new ListMyNotesRequestValidator().Validate(Mine(book, visibility, q, skip, take)).IsValid.ShouldBeTrue();
+
+    [Theory]
+    [InlineData(0, null, 0, 50, "Book")]
+    [InlineData(67, null, 0, 50, "Book")]
+    [InlineData(null, "secret", 0, 50, "Visibility")]
+    [InlineData(null, null, -1, 50, "Skip")]
+    [InlineData(null, null, 0, 0, "Take")]
+    [InlineData(null, null, 0, 51, "Take")]
+    public void ListMine_ShouldFail_WhenAFilterIsOutOfRange(int? book, string? visibility, int skip, int take, string property)
+    {
+        var result = new ListMyNotesRequestValidator().Validate(Mine(book, visibility, null, skip, take));
+
+        result.IsValid.ShouldBeFalse();
+        result.Errors.ShouldContain(e => e.PropertyName.StartsWith(property));
+    }
+
+    [Fact]
+    public void ListMine_ShouldFail_WhenTheSearchTextIsTooLong() =>
+        new ListMyNotesRequestValidator().Validate(Mine(q: new string('x', ListMyNotesRequestValidator.MaxQueryLength + 1))).IsValid.ShouldBeFalse();
+
+    [Theory]
+    [InlineData("Gott", "%Gott%")]
+    [InlineData("100%", "%100\\%%")]
+    [InlineData("a_b", "%a\\_b%")]
+    [InlineData("\\", "%\\\\%")]
+    public void ContainsPattern_ShouldEscapeLikeWildcards(string query, string expected) =>
+        NoteSearch.ContainsPattern(query).ShouldBe(expected);
 }

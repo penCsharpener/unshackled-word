@@ -69,6 +69,11 @@ public sealed class NoteRecord
     public DateTime? UpdatedAt { get; init; }
 }
 
+/// <summary>Filters of "my notes"; <see cref="Query"/> is plain text (the repository escapes the LIKE wildcards).</summary>
+public sealed record NoteListFilter(int? BookId, string? Visibility, string? Query, int Skip, int Take);
+
+public sealed record NotePage(int Total, IReadOnlyList<NoteRecord> Rows);
+
 public enum NoteStatus
 {
     Ok,
@@ -147,4 +152,11 @@ public static class NoteQuote
     }
 
     public static bool Matches(string? stored, string? current) => Normalize(stored) == Normalize(current);
+}
+
+/// <summary>Escapes a user's search text for <c>ILIKE ... ESCAPE '\'</c>.</summary>
+public static class NoteSearch
+{
+    public static string ContainsPattern(string query) =>
+        "%" + query.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_") + "%";
 }

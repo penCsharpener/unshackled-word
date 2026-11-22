@@ -75,6 +75,7 @@ public static class ServiceCollectionExtensions
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteService>();
+        services.AddScoped<UnshackledWord.Application.Features.Notes.NoteExportService>();
         services.AddScoped<IAgentRunRepository, AgentRunRepository>();
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentScoreRepository, AgentScoreRepository>();
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentScoreService, UnshackledWord.Application.Features.AgentMapping.Scoring.AgentScoreService>();

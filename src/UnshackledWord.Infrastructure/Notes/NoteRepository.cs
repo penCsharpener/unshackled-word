@@ -82,6 +82,42 @@ public sealed class NoteRepository : INoteRepository
         return await ListChapterAsync(connection, null, bookId, chapter, viewerId, others, token);
     }
 
+    public async Task<NotePage> ListMineAsync(int userId, NoteListFilter filter, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await ListMineAsync(connection, null, userId, filter, token);
+    }
+
+    public async Task<IReadOnlyList<NoteExportRow>> ListForExportAsync(int? userId, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await ListForExportAsync(connection, null, userId, token);
+    }
+
+    public static async Task<NotePage> ListMineAsync(IDbConnection c, IDbTransaction? t, int userId, NoteListFilter filter, CancellationToken token = default)
+    {
+        var parameters = new
+        {
+            UserId = userId,
+            ViewerId = userId,
+            BookId = filter.BookId,
+            filter.Visibility,
+            Pattern = string.IsNullOrWhiteSpace(filter.Query) ? null : NoteSearch.ContainsPattern(filter.Query.Trim()),
+            filter.Skip,
+            filter.Take,
+        };
+        using var multi = await c.QueryMultipleAsync(new CommandDefinition(NoteSql.ListMine, parameters, t, cancellationToken: token));
+        var total = await multi.ReadSingleAsync<int>();
+        var rows = (await multi.ReadAsync<NoteRecord>()).ToList();
+
+        return new NotePage(total, rows);
+    }
+
+    public static async Task<IReadOnlyList<NoteExportRow>> ListForExportAsync(IDbConnection c, IDbTransaction? t, int? userId, CancellationToken token = default) =>
+        (await c.QueryAsync<NoteExportRow>(new CommandDefinition(NoteSql.ListForExport, new { UserId = userId }, t, cancellationToken: token))).ToList();
+
     public static Task<bool> VerseExistsAsync(IDbConnection c, IDbTransaction? t, int hebRefId, CancellationToken token = default) =>
         c.ExecuteScalarAsync<bool>(new CommandDefinition(NoteSql.VerseExists, new { HebRefId = hebRefId }, t, cancellationToken: token));
 
@@ -301,5 +337,54 @@ internal static class NoteSql
           AND {VisibilityFilter}
           AND (@Others OR n."UserId" = @ViewerId)
         ORDER BY n."StartHebRefId" NULLS FIRST, n."StartPosition" NULLS FIRST, n."CreatedAt", n."Id"
+        """;
+
+    /// <summary>The caller's own notes, all visibilities (own hidden notes too); filters are optional. Two result sets: total, then the page.</summary>
+    internal const string ListMine = $"""
+        SELECT count(*)::int4
+        FROM "unshackled-word"."Notes" n
+        WHERE n."UserId" = @UserId
+          AND (@BookId::int4 IS NULL OR n."BibleBookId" = @BookId)
+          AND (@Visibility::text IS NULL OR n."Visibility" = @Visibility)
+          AND (@Pattern::text IS NULL OR n."BodyMarkdown" ILIKE @Pattern ESCAPE '\');
+
+        SELECT {Columns}
+        FROM "unshackled-word"."Notes" n
+        JOIN "unshackled-word"."Users" u ON u."Id" = n."UserId"
+        WHERE n."UserId" = @UserId
+          AND (@BookId::int4 IS NULL OR n."BibleBookId" = @BookId)
+          AND (@Visibility::text IS NULL OR n."Visibility" = @Visibility)
+          AND (@Pattern::text IS NULL OR n."BodyMarkdown" ILIKE @Pattern ESCAPE '\')
+        ORDER BY COALESCE(n."UpdatedAt", n."CreatedAt") DESC, n."Id"
+        OFFSET @Skip LIMIT @Take;
+        """;
+
+    internal const string ListForExport = """
+        SELECT n."Id"                   AS "Id",
+               u."Email"                AS "AuthorEmail",
+               u."DisplayName"          AS "AuthorDisplayName",
+               n."Kind"                 AS "Kind",
+               n."BibleBookId"          AS "BibleBookId",
+               n."Chapter"              AS "Chapter",
+               n."StartHebRefId"        AS "StartHebRefId",
+               n."EndHebRefId"          AS "EndHebRefId",
+               n."StartPosition"        AS "StartPosition",
+               n."EndPosition"          AS "EndPosition",
+               n."QuotedText"           AS "QuotedText",
+               n."BodyMarkdown"         AS "BodyMarkdown",
+               n."Visibility"           AS "Visibility",
+               n."PublicState"          AS "PublicState",
+               n."ApprovedBodyMarkdown" AS "ApprovedBodyMarkdown",
+               n."ApprovedAt"           AS "ApprovedAt",
+               a."Email"                AS "ApprovedByEmail",
+               n."ReviewNote"           AS "ReviewNote",
+               n."HiddenAt"             AS "HiddenAt",
+               n."CreatedAt"            AS "CreatedAt",
+               n."UpdatedAt"            AS "UpdatedAt"
+        FROM "unshackled-word"."Notes" n
+        JOIN "unshackled-word"."Users" u ON u."Id" = n."UserId"
+        LEFT JOIN "unshackled-word"."Users" a ON a."Id" = n."ApprovedByUserId"
+        WHERE @UserId::int4 IS NULL OR n."UserId" = @UserId
+        ORDER BY n."Id"
         """;
 }

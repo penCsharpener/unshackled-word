@@ -58,6 +58,14 @@ public sealed class NoteService
         return new ChapterNotesResponse { Notes = await ToResponsesAsync(rows, viewerId, level, token) };
     }
 
+    /// <summary>One page of the caller's own notes with the Elb1871 anchor state; the excerpt is the frontend's job.</summary>
+    public async Task<MyNotesResponse> ListMineAsync(int userId, ListMyNotesRequest request, CancellationToken token = default)
+    {
+        var page = await _repository.ListMineAsync(userId, new NoteListFilter(request.Book, request.Visibility, request.Q, request.Skip, request.Take), token);
+
+        return new MyNotesResponse { Total = page.Total, Notes = await ToResponsesAsync(page.Rows, userId, null, token) };
+    }
+
     /// <summary>The normalised anchor (verse: end = start), or null when the Elb1871 text does not have what the anchor points at. The shape is validated before.</summary>
     private async Task<NoteAnchor?> ResolveAnchorAsync(NoteAnchorDto dto, CancellationToken token)
     {

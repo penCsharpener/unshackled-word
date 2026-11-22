@@ -32,4 +32,10 @@ public interface INoteRepository
 
     /// <summary>The chapter's notes the viewer may see, in reading order; <paramref name="others"/> false = only the viewer's own.</summary>
     Task<IReadOnlyList<NoteRecord>> ListChapterAsync(int bookId, int chapter, int? viewerId, bool others, CancellationToken token = default);
+
+    /// <summary>One page of the user's own notes (all visibilities, hidden ones included), newest change first, plus the total matching the filter.</summary>
+    Task<NotePage> ListMineAsync(int userId, NoteListFilter filter, CancellationToken token = default);
+
+    /// <summary>Every note of the user (<paramref name="userId"/>) or of everybody (null) with author and approver emails, ordered by id; for the export file.</summary>
+    Task<IReadOnlyList<NoteExportRow>> ListForExportAsync(int? userId, CancellationToken token = default);
 }
