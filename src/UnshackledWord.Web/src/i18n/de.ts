@@ -135,6 +135,7 @@ export const de = {
       introduction: "Neues Wort",
       multipleChoice: "Was bedeutet …",
       reverseMultipleChoice: "Welches Wort heißt …",
+      typing: "Tippe die Lernform",
     },
     settings: {
       button: "⚙ Quiz-Einstellungen",
@@ -153,6 +154,14 @@ export const de = {
       listening: "Hören",
       verse_context: "Vers-Kontext",
       typing: "Lemma tippen",
+    },
+    typing: {
+      boxes: "Lernform eingeben",
+      letter: "Buchstabe",
+      keyboard: "Bildschirmtastatur",
+      backspace: "Löschen",
+      check: "Prüfen",
+      hint: { grc: "Satzzeichen sind vorgegeben", he: "ohne Vokalzeichen" },
     },
     intro: {
       meanings: "Bedeutungen",
@@ -341,6 +350,17 @@ export const de = {
         truncated: "Gezeigt werden {{shown}} von {{total}} Lemmata.",
         noTopChange: "Keine erste Bedeutung ändert sich.",
       },
+      forms: {
+        title: "Lernformen per KI",
+        intro: "Füllt leere oder erzeugte Lernformen. Eigene bleiben unberührt.",
+        course: "Kurs",
+        profile: "Profil",
+        entries: "Einträge",
+        ranks: "Rang {{from}} bis {{to}}",
+        noEntries: "Im gewählten Bereich braucht keine Lernform eine KI-Ergänzung.",
+        start: "Lauf starten",
+        startFailed: "Der Lauf konnte nicht gestartet werden.",
+      },
     },
     editor: {
       audio: { title: "Aussprache" },
@@ -394,6 +414,7 @@ export const de = {
         title: "Lernform",
         label: "Lernform (Tippziel, leer = Lemma)",
         transliteration: "Umschrift",
+        accept: "Übernehmen",
       },
       meanings: {
         title: "Bedeutungen",

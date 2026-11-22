@@ -24,6 +24,7 @@ import { hasWriteRole } from "@/lib/auth/roles";
 import { formatStamp } from "@/lib/format";
 import { getCourses, vocabLang } from "@/lib/vocab/api";
 import {
+  acceptVocabForm,
   deleteVocabAudio,
   deleteVocabEntry,
   getVocabEditorEntry,
@@ -153,6 +154,12 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
 
   const reloadEditor = () => queryClient.invalidateQueries({ queryKey: vocabEditorKeys.all });
 
+  // Accepting an agent form keeps its text and only sets the origin to manual; the reload shows the new badge.
+  const acceptForm = useMutation({
+    mutationFn: () => acceptVocabForm(entry.id),
+    onSuccess: () => reloadEditor(),
+  });
+
   const retire = useMutation({
     mutationFn: () => retireVocabEntry(entry.id),
     onSuccess: () => {
@@ -232,6 +239,8 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
   ].filter((part): part is string => part !== null);
 
   const origin = entry.dictionaryFormOrigin ?? null;
+  // Unsaved text would be lost by the reload that accepting causes: save the form first.
+  const formDirty = draft.dictionaryForm !== saved.dictionaryForm;
   const dangerError = retire.error ?? remove.error;
   const confirmBusy = retire.isPending || remove.isPending;
 
@@ -288,12 +297,25 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
           <section className="grid gap-3 rounded-lg border border-border bg-surface p-4">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-lg font-semibold">{t("vocab.editor.form.title")}</h2>
-              {origin ? (
-                <StatusBadge tone={origin === "agent" ? "info" : "neutral"}>
-                  {t(`vocab.editor.formOrigin.${origin}`)}
-                </StatusBadge>
-              ) : null}
+              <div className="flex flex-wrap items-center gap-2">
+                {origin ? (
+                  <StatusBadge tone={origin === "agent" ? "info" : "neutral"}>
+                    {t(`vocab.editor.formOrigin.${origin}`)}
+                  </StatusBadge>
+                ) : null}
+                {origin === "agent" ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={formDirty || acceptForm.isPending}
+                    onClick={() => acceptForm.mutate()}
+                  >
+                    {t("vocab.editor.form.accept")}
+                  </Button>
+                ) : null}
+              </div>
             </div>
+            <FormError message={acceptForm.isError ? t("vocab.editor.actionFailed") : ""} />
             <TextField
               required={false}
               label={t("vocab.editor.form.label")}

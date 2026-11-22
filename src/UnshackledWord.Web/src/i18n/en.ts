@@ -133,6 +133,7 @@ export const en: Translation = {
       introduction: "New word",
       multipleChoice: "What does … mean",
       reverseMultipleChoice: "Which word is …",
+      typing: "Type the study form",
     },
     settings: {
       button: "⚙ Quiz settings",
@@ -151,6 +152,14 @@ export const en: Translation = {
       listening: "Listening",
       verse_context: "Verse context",
       typing: "Type the lemma",
+    },
+    typing: {
+      boxes: "Enter the study form",
+      letter: "Letter",
+      keyboard: "On-screen keyboard",
+      backspace: "Delete",
+      check: "Check",
+      hint: { grc: "punctuation is given", he: "without vowel points" },
     },
     intro: {
       meanings: "Meanings",
@@ -339,6 +348,17 @@ export const en: Translation = {
         truncated: "Showing {{shown}} of {{total}} lemmas.",
         noTopChange: "No first meaning changes.",
       },
+      forms: {
+        title: "Study forms by AI",
+        intro: "Fills empty or generated study forms. Your own stay untouched.",
+        course: "Course",
+        profile: "Profile",
+        entries: "Entries",
+        ranks: "Ranks {{from}} to {{to}}",
+        noEntries: "No study form in this range needs an AI fill.",
+        start: "Start run",
+        startFailed: "The run could not be started.",
+      },
     },
     editor: {
       audio: { title: "Pronunciation" },
@@ -392,6 +412,7 @@ export const en: Translation = {
         title: "Study form",
         label: "Study form (typing target, empty = lemma)",
         transliteration: "Transliteration",
+        accept: "Accept",
       },
       meanings: {
         title: "Meanings",

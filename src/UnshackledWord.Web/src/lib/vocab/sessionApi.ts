@@ -43,7 +43,18 @@ export interface VocabCardMeaning {
 }
 
 /** Kinds the backend serves so far; later quiz kinds extend this union. */
-export type VocabCardKind = "introduction" | "multiple_choice" | "reverse_multiple_choice";
+export type VocabCardKind =
+  | "introduction"
+  | "multiple_choice"
+  | "reverse_multiple_choice"
+  | "typing";
+
+/** One piece of a typing card's layout: a `group` of `length` letter boxes or a fixed `separator` text. */
+export interface VocabTypingPart {
+  kind: "group" | "separator";
+  length?: number | null;
+  text?: string | null;
+}
 
 /** The card to show. It never says which option is correct. */
 export interface VocabCard {
@@ -55,6 +66,10 @@ export interface VocabCard {
   entry: VocabCardEntry;
   meanings?: VocabCardMeaning[] | null;
   options?: VocabCardOption[] | null;
+  /** Typing: the German meanings to type the lemma form for, top first; `entry` then has only `id`, `pos`, `lang`. */
+  typingPrompt?: string[] | null;
+  /** Typing: groups and separators of the target form; `answers` sends one string per group. */
+  layout?: VocabTypingPart[] | null;
   verse?: VocabSampleVerse | null;
 }
 
@@ -117,6 +132,8 @@ export interface VocabNextResponse {
 export interface SubmitVocabAnswerRequest {
   seq: number;
   optionId?: number;
+  /** Typing only: one string per letter group of the card's layout, in order. */
+  answers?: string[];
   responseMs?: number;
 }
 
@@ -127,6 +144,8 @@ export interface VocabAnswerResponse {
   correct: boolean;
   correctOptionId?: number | null;
   correctAnswers: string[];
+  /** Typing only: per letter group, whether the typed text matched. */
+  groupResults?: boolean[] | null;
   given?: string | null;
   entry: VocabCardEntry;
   strength?: VocabStrength | null;

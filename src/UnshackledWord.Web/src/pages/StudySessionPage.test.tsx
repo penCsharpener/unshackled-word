@@ -366,3 +366,116 @@ describe("StudySessionPage reverse multiple choice", () => {
     expect(screen.getByText("Stärker geworden")).toBeInTheDocument();
   });
 });
+
+const typingCard = {
+  seq: 3,
+  kind: "typing",
+  typingPrompt: ["Mitte", "mitten"],
+  entry: { id: 56, lemma: "", lang: "grc", pos: "Adjektiv" },
+  layout: [
+    { kind: "group", length: 5 },
+    { kind: "separator", text: ", -" },
+    { kind: "group", length: 1 },
+    { kind: "separator", text: ", -" },
+    { kind: "group", length: 2 },
+  ],
+};
+
+/** A session with one typing card; the second group is judged wrong. */
+function typingApi() {
+  let answered = false;
+  const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+    const path = url.replace(/^\/api/, "");
+    const method = init?.method ?? "GET";
+    if (path === "/auth/me") return json(me);
+    if (path === "/meta-bible/structure") return json(fixtureStructure);
+    if (method === "POST" && path === "/vocab/sessions") {
+      return json({ ...started, newWords: 0, reviewWords: 1 });
+    }
+    if (method === "GET" && path === "/vocab/courses") return json({ courses: [] });
+    if (method === "GET" && path === "/vocab/sessions/7/next") {
+      if (!answered) {
+        return json({ sessionId: 7, finished: false, progress: progress(0, 1), card: typingCard });
+      }
+      return json({ sessionId: 7, finished: true, progress: progress(1, 2), summary });
+    }
+    if (method === "POST" && path === "/vocab/sessions/7/answers") {
+      answered = true;
+      return json({
+        seq: 3,
+        kind: "typing",
+        correct: false,
+        correctAnswers: ["μέσος, -η, -ον"],
+        groupResults: [true, false, true],
+        given: "μέσος, -ο, -ον",
+        entry,
+        strength: { before: 2, after: 1, change: "dropped" },
+        finished: true,
+        progress: progress(1, 2),
+        summary,
+      });
+    }
+    return new Response("", { status: 404 });
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+describe("StudySessionPage typing", () => {
+  it("shows the meanings and the boxes with the separators", async () => {
+    typingApi();
+    renderSession();
+
+    expect(await screen.findByText("Tippe die Lernform")).toBeInTheDocument();
+    expect(screen.getByText("Mitte, mitten")).toBeInTheDocument();
+    expect(screen.getAllByLabelText("Buchstabe")).toHaveLength(8);
+    expect(screen.getByRole("button", { name: "Prüfen" })).toBeDisabled();
+  });
+
+  it("posts one answer per group on Enter and shows the result per group", async () => {
+    const fetchMock = typingApi();
+    const user = userEvent.setup();
+    renderSession();
+
+    await screen.findByText("Tippe die Lernform");
+    // The number keys type into the boxes (no letters, ignored) and never pick anything.
+    await user.keyboard("1");
+    await user.keyboard("mesoj");
+    await user.click(screen.getByRole("button", { name: "ο" }));
+    await user.keyboard("{Enter}");
+    // Only 6 of 8 boxes are filled: nothing is sent.
+    expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith("/answers"))).toBe(false);
+    await user.keyboard("on");
+    await user.keyboard("{Enter}");
+
+    expect(await screen.findByText("✗ Leider nicht")).toBeInTheDocument();
+    const request = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/answers"));
+    const body = JSON.parse(String(request?.[1]?.body));
+    expect(body).toMatchObject({ seq: 3, answers: ["μεσος", "ο", "ον"] });
+    expect(body.optionId).toBeUndefined();
+
+    const boxes = screen.getAllByLabelText("Buchstabe");
+    expect(boxes[0]).toHaveClass("border-sev-ok");
+    expect(boxes[5]).toHaveClass("border-sev-error");
+    expect(boxes[6]).toHaveClass("border-sev-ok");
+    expect(screen.getByText(/^Richtig:/)).toHaveTextContent("Richtig: μέσος, -η, -ον");
+  });
+
+  it("types with the on-screen keyboard and submits with the check button", async () => {
+    const fetchMock = typingApi();
+    const user = userEvent.setup();
+    renderSession();
+
+    await screen.findByText("Tippe die Lernform");
+    for (const letter of "μεσοςηον") {
+      await user.click(screen.getByRole("button", { name: letter }));
+    }
+    await user.click(screen.getByRole("button", { name: "Löschen" }));
+    await user.click(screen.getByRole("button", { name: "ν" }));
+    await user.click(screen.getByRole("button", { name: "Prüfen" }));
+
+    expect(await screen.findByText("✗ Leider nicht")).toBeInTheDocument();
+    const request = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/answers"));
+    expect(JSON.parse(String(request?.[1]?.body))).toMatchObject({ answers: ["μεσος", "η", "ον"] });
+  });
+});

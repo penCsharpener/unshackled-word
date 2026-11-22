@@ -13,6 +13,7 @@
         "react-dom": "^19.3.1",
         "react-i18next": "^18.0.0",
         "react-router": "^8.5.1",
+        "simple-keyboard": "^3.8.190",
       },
       "devDependencies": {
         "@biomejs/biome": "^2.6.6",
@@ -351,6 +352,8 @@
     "saxes": ["saxes@6.0.0", "", { "dependencies": { "xmlchars": "^2.2.0" } }, "sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA=="],
 
     "scheduler": ["scheduler@0.28.0", "", {}, "sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw=="],
+
+    "simple-keyboard": ["simple-keyboard@3.8.206", "", {}, "sha512-DSeSTr+tYLFf/vdho3gSauww9gO4ZLZIloAKSKZpl7opE4dBtXbr8mowdQ8zAn7YsqqUKDlcQgqdqzYEtgKmmA=="],
 
     "source-map-js": ["source-map-js@1.2.2", "", {}, "sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw=="],
 

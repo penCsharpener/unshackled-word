@@ -215,4 +215,28 @@ describe("VocabEditorPage", () => {
     renderAt();
     expect(await screen.findByText("You do not have access to this page.")).toBeInTheDocument();
   });
+
+  it("accepts an agent form as written: one POST, then the origin reads manual", async () => {
+    let current = editor;
+    const fetchMock = stubEditor({
+      "GET /maintainer/vocab/entries/56": () => json(current),
+      "POST /maintainer/vocab/entries/56/accept-form": () => {
+        current = { ...editor, entry: { ...editor.entry, dictionaryFormOrigin: "manual" } };
+        return json(saved);
+      },
+    });
+    renderAt();
+    await screen.findByRole("heading", { level: 1 });
+    expect(screen.getByText("from AI")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Accept" }));
+
+    await waitFor(() => expect(callsWith(fetchMock, "POST")).toHaveLength(1));
+    expect(callsWith(fetchMock, "POST")[0]?.[0]).toMatch(
+      /\/maintainer\/vocab\/entries\/56\/accept-form$/,
+    );
+    expect(await screen.findByText("manual")).toBeInTheDocument();
+    expect(screen.queryByText("from AI")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Accept" })).not.toBeInTheDocument();
+  });
 });

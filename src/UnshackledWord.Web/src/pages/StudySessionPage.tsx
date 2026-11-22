@@ -7,7 +7,9 @@ import { Button, buttonClasses } from "@/components/Button";
 import { ChoiceList } from "@/components/ChoiceList";
 import { EmptyState } from "@/components/EmptyState";
 import { FormError } from "@/components/FormError";
+import { LetterBoxInput } from "@/components/LetterBoxInput";
 import { ProgressBar } from "@/components/ProgressBar";
+import { ScriptKeyboard } from "@/components/ScriptKeyboard";
 import { StatTile } from "@/components/StatTile";
 import { StrengthBar } from "@/components/StrengthBar";
 import { StudyCard } from "@/components/StudyCard";
@@ -16,6 +18,7 @@ import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useBibleStructure } from "@/lib/bible/queries";
 import { getCourses, type VocabLang, type VocabSampleVerse } from "@/lib/vocab/api";
+import { BACKSPACE_KEY } from "@/lib/vocab/scriptLayouts";
 import {
   getVocabSessionNext,
   type SubmitVocabAnswerRequest,
@@ -26,6 +29,13 @@ import {
   type VocabSessionProgress,
   type VocabSessionSummary,
 } from "@/lib/vocab/sessionApi";
+import {
+  emptyAnswers,
+  isComplete,
+  popLetter,
+  pushLetter,
+  toTypingLayout,
+} from "@/lib/vocab/typing";
 import { sampleVerseHref, sampleVerseReference } from "@/lib/vocab/verseReference";
 import { ChangedWordsNotice } from "@/pages/vocab/ChangedWordsNotice";
 
@@ -152,10 +162,11 @@ function StudySession() {
     if (focusKey) primaryRef.current?.focus();
   }, [focusKey]);
 
-  function answerCard(current: VocabCard, optionId?: number) {
+  function answerCard(current: VocabCard, optionId?: number, answers?: string[]) {
     const responseMs = Math.round(performance.now() - shown.current.at);
-    const request: SubmitVocabAnswerRequest =
-      optionId === undefined
+    const request: SubmitVocabAnswerRequest = answers
+      ? { seq: current.seq, answers, responseMs }
+      : optionId === undefined
         ? { seq: current.seq, responseMs }
         : { seq: current.seq, optionId, responseMs };
     answer.mutate(request, {
@@ -315,35 +326,48 @@ function StudySession() {
           state={{ picked, correct: correctIndex >= 0 ? correctIndex : null }}
           onPick={(index) => pick(current, index)}
         />
-        {feedback ? (
-          <div role="status" className="grid gap-3 border-t border-border pt-4">
-            <p className="text-lg font-semibold">
-              {feedback.result.correct ? t("learn.feedback.correct") : t("learn.feedback.wrong")}
-            </p>
-            {feedback.result.correct ? null : (
-              <p className="text-sm">
-                {t("learn.feedback.correctAnswers")}:{" "}
-                <span className="font-medium">{feedback.result.correctAnswers.join(", ")}</span>
-              </p>
-            )}
-            {feedback.result.strength ? (
-              <StrengthBar
-                before={feedback.result.strength.before}
-                after={feedback.result.strength.after}
-              />
-            ) : null}
-            {feedback.result.verse
-              ? renderVerse(feedback.result.verse, feedback.result.entry.lang)
-              : null}
-            <Button ref={primaryRef} variant="primary" size="md" onClick={continueFromFeedback}>
-              {t("learn.feedback.next")}{" "}
-              <span className="text-sm opacity-75">{t("learn.feedback.enter")}</span>
-            </Button>
-          </div>
-        ) : null}
+        {feedback ? renderFeedback(feedback.result) : null}
       </StudyCard>
     );
   };
+
+  const renderFeedback = (result: VocabAnswerResponse) => (
+    <div role="status" className="grid gap-3 border-t border-border pt-4">
+      <p className="text-lg font-semibold">
+        {result.correct ? t("learn.feedback.correct") : t("learn.feedback.wrong")}
+      </p>
+      {result.correct ? null : (
+        <p className="text-sm">
+          {t("learn.feedback.correctAnswers")}:{" "}
+          <span
+            lang={result.kind === "typing" ? result.entry.lang : undefined}
+            className="font-medium"
+          >
+            {result.correctAnswers.join(", ")}
+          </span>
+        </p>
+      )}
+      {result.strength ? (
+        <StrengthBar before={result.strength.before} after={result.strength.after} />
+      ) : null}
+      {result.verse ? renderVerse(result.verse, result.entry.lang) : null}
+      <Button ref={primaryRef} variant="primary" size="md" onClick={continueFromFeedback}>
+        {t("learn.feedback.next")}{" "}
+        <span className="text-sm opacity-75">{t("learn.feedback.enter")}</span>
+      </Button>
+    </div>
+  );
+
+  const typingView = (current: VocabCard) => (
+    <TypingCard
+      key={current.seq}
+      card={current}
+      result={feedback?.card.seq === current.seq ? feedback.result : null}
+      pending={answer.isPending}
+      onSubmit={(answers) => answerCard(current, undefined, answers)}
+      feedbackView={renderFeedback}
+    />
+  );
 
   let body: ReactNode;
   if (start.isError || next.isError) {
@@ -364,6 +388,8 @@ function StudySession() {
           introductionView(card)
         ) : isChoiceKind(card.kind) ? (
           choiceView(card)
+        ) : card.kind === "typing" && card.layout ? (
+          typingView(card)
         ) : (
           <FormError message={t("learn.session.unsupported")} />
         )}
@@ -400,6 +426,74 @@ function StudySession() {
       {changedCount > 0 ? <ChangedWordsNotice changedCount={changedCount} /> : null}
       {body}
     </section>
+  );
+}
+
+interface TypingCardProps {
+  card: VocabCard;
+  /** The server's verdict once the card is answered. */
+  result: VocabAnswerResponse | null;
+  pending: boolean;
+  onSubmit: (answers: string[]) => void;
+  feedbackView: (result: VocabAnswerResponse) => ReactNode;
+}
+
+/** The typing card (roadmap 0022.10f): meanings on top, letter boxes per group and the script keyboard. */
+function TypingCard({ card, result, pending, onSubmit, feedbackView }: TypingCardProps) {
+  const { t } = useTranslation();
+  const layout = toTypingLayout(card.layout ?? []);
+  const [typed, setTyped] = useState(() => emptyAnswers(layout));
+  const lang = card.entry.lang === "he" ? "he" : "grc";
+  const complete = isComplete(layout, typed);
+  const locked = result !== null || pending;
+  const submit = () => {
+    if (complete && !locked) onSubmit(typed);
+  };
+  const meta = [card.entry.pos, t(`learn.typing.hint.${lang}`)].filter(Boolean).join(" · ");
+  return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: Enter inside a letter box submits
+    <div
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
+          event.preventDefault();
+          submit();
+        }
+      }}
+    >
+      <StudyCard kindLabel={t("learn.kind.typing")}>
+        <div className="grid justify-items-center gap-1 text-center">
+          <p className="text-3xl font-semibold">{(card.typingPrompt ?? []).join(", ")}</p>
+          <p className="text-sm text-fg-muted">{meta}</p>
+        </div>
+        <div className="grid justify-items-center">
+          <LetterBoxInput
+            layout={layout}
+            value={typed}
+            onChange={setTyped}
+            dir={lang === "he" ? "rtl" : "ltr"}
+            lang={lang}
+            readOnly={locked}
+            results={result?.groupResults ?? undefined}
+          />
+        </div>
+        {result ? null : (
+          <>
+            <ScriptKeyboard
+              layout={lang === "he" ? "hebrew" : "greek"}
+              onKey={(key) =>
+                setTyped((value) =>
+                  key === BACKSPACE_KEY ? popLetter(layout, value) : pushLetter(layout, value, key),
+                )
+              }
+            />
+            <Button variant="primary" size="md" disabled={!complete || locked} onClick={submit}>
+              {t("learn.typing.check")}
+            </Button>
+          </>
+        )}
+        {result ? feedbackView(result) : null}
+      </StudyCard>
+    </div>
   );
 }
 

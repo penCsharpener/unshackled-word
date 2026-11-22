@@ -190,6 +190,11 @@ export function updateVocabEntry(id: number, body: UpdateVocabEntryBody) {
   return api.put<VocabEditResponse>(`${BASE}/${id}`, body);
 }
 
+/** Accepts the stored agent form as written: its origin becomes `manual`, text and version stay (`POST .../accept-form`, 409 without a form). */
+export function acceptVocabForm(id: number) {
+  return api.post<VocabEditResponse>(`${BASE}/${id}/accept-form`, undefined);
+}
+
 /** Adds a manual, accepted meaning at the end (`POST .../meanings`). */
 export function addVocabMeaning(id: number, german: string) {
   return api.post<VocabEditResponse>(`${BASE}/${id}/meanings`, { german });

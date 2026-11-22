@@ -143,3 +143,83 @@ describe("VocabJobsSection meaning derivation", () => {
     );
   });
 });
+
+const profile = { name: "ollama", kind: "ollama", model: "qwen3", usable: true, maxParallel: 1 };
+
+const formEstimate = {
+  course: "nt-greek",
+  profile: "ollama",
+  model: "qwen3",
+  promptVersion: "vocab-form-greek-v1",
+  entries: 120,
+  batches: 6,
+  fromRank: 1,
+  toRank: 200,
+  estimatedInputTokens: 52000,
+  estimatedOutputTokens: 3000,
+  estimatedCostUsd: 0.12,
+  warnings: [],
+};
+
+const formRun = {
+  id: 7,
+  profile: "ollama",
+  model: "qwen3",
+  promptVersion: "vocab-form-greek-v1",
+  book: 0,
+  fromRefId: 0,
+  toRefId: 0,
+  mode: "vocab-form",
+  status: "completed",
+  statusNote: "118 forms written, 2 kept",
+  inputTokens: 52000,
+  cachedInputTokens: 0,
+  outputTokens: 3000,
+  costUsd: 0.11,
+  cacheRate: 0,
+  createdAt: "2026-11-21T09:00:00Z",
+  packages: 6,
+  packagesCompleted: 6,
+  packagesFailed: 0,
+  proposedVerses: 0,
+  flaggedVerses: 0,
+  openProposals: 0,
+  active: false,
+};
+
+/** The bodies of the POSTs to one endpoint of the form runs, parsed. */
+function formPosts(fetchMock: ReturnType<typeof stubApi>, path: string) {
+  return fetchMock.mock.calls
+    .filter(([url, init]) => url.endsWith(path) && init?.method === "POST")
+    .map(([, init]) => JSON.parse(String(init?.body)) as Record<string, unknown>);
+}
+
+describe("VocabJobsSection study-form run", () => {
+  it("estimates the range first, then starts the run with the same body", async () => {
+    const fetchMock = stubApi({
+      "GET /maintainer/vocab/renderings/status": () => json({}),
+      "GET /maintainer/vocab/status": () => json({}),
+      "GET /maintainer/vocab/meanings/status": () => json({}),
+      "GET /maintainer/agent-runs/profiles": () => json([profile]),
+      "GET /maintainer/agent-runs?limit=50": () => json({ runs: [] }),
+      "POST /maintainer/vocab/form-runs/estimate": () => json(formEstimate),
+      "POST /maintainer/vocab/form-runs": () => json(formRun, 202),
+      "GET /maintainer/agent-runs/7": () => json(formRun),
+    });
+    renderSection();
+
+    const start = await screen.findByRole("button", { name: "Start run" });
+    expect(start).toBeDisabled();
+    expect(await screen.findByText("Ranks 1 to 200")).toBeInTheDocument();
+    await waitFor(() => expect(start).toBeEnabled());
+
+    await userEvent.click(start);
+
+    const body = { course: "nt-greek", fromRank: 1, toRank: 200, profile: "ollama" };
+    await waitFor(() =>
+      expect(formPosts(fetchMock, "/maintainer/vocab/form-runs")).toEqual([body]),
+    );
+    expect(formPosts(fetchMock, "/maintainer/vocab/form-runs/estimate")).toContainEqual(body);
+    expect(await screen.findByText("118 forms written, 2 kept")).toBeInTheDocument();
+  });
+});
