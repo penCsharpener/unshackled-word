@@ -1,10 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { type ChapterNotesResponse, type Note, type NoteAnchor, notesApi } from "./api";
+import {
+  type ChapterNotesResponse,
+  type MyNotesQuery,
+  type Note,
+  type NoteAnchor,
+  notesApi,
+} from "./api";
 
 export const notesKeys = {
   /** Prefix of every cached chapter note list, invalidated after each note change. */
   chapters: ["notes", "chapter"] as const,
+  /** Prefix of every "my notes" page; changing a note invalidates them too. */
+  mine: ["notes", "mine"] as const,
+  myPage: (viewer: number | undefined, query: MyNotesQuery) =>
+    ["notes", "mine", viewer ?? 0, query] as const,
   /** The list depends on who asks (own private notes), so the viewer is part of the key. */
   chapter: (bookId: number, chapter: number, viewer: number | undefined, level: number) =>
     ["notes", "chapter", bookId, chapter, viewer ?? 0, level] as const,
@@ -29,9 +39,24 @@ export function useChapterNotes(ref: { bookId: number; chapter: number } | null,
   });
 }
 
+/** One page of the signed-in user's own notes. */
+export function useMyNotes(query: MyNotesQuery) {
+  const { status, user } = useAuth();
+  return useQuery({
+    queryKey: notesKeys.myPage(user?.userId, query),
+    queryFn: ({ signal }) => notesApi.mine(query, signal),
+    enabled: status === "authenticated",
+    placeholderData: keepPreviousData,
+  });
+}
+
 function useInvalidateNotes() {
   const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries({ queryKey: notesKeys.chapters });
+  return () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: notesKeys.chapters }),
+      queryClient.invalidateQueries({ queryKey: notesKeys.mine }),
+    ]);
 }
 
 export function useCreateNote() {

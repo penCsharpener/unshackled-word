@@ -23,6 +23,7 @@ export function UserMenu() {
 
   const initial = (user.displayName || user.email).trim().charAt(0).toUpperCase();
   const items: HeaderMenuItem[] = [
+    { key: "notes", to: "/notes", label: t("notes.mine.nav") },
     { key: "passkeys", to: "/account/passkeys", label: t("auth.passkeys.title") },
     { key: "lemmas", to: "/edit/lemmas", label: t("lemmas.menu") },
   ];

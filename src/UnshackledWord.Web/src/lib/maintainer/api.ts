@@ -23,15 +23,3 @@ export async function exportSeed(kind: SeedKind): Promise<{ blob: Blob; fileName
     /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition)?.[1] ?? `seed-export-${kind}.zip`;
   return { blob: await response.blob(), fileName };
 }
-
-/** Hands the blob to the browser as a download. */
-export function saveBlob(blob: Blob, fileName: string) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}

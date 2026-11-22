@@ -48,6 +48,26 @@ export interface ChapterNotesResponse {
   notes: Note[];
 }
 
+export type NoteVisibility = Note["visibility"];
+
+/** Filters and paging of `GET /notes/mine`; every field is optional. */
+export interface MyNotesQuery {
+  book?: number;
+  visibility?: NoteVisibility;
+  q?: string;
+  skip?: number;
+  take?: number;
+}
+
+export const MY_NOTES_PAGE_SIZE = 50;
+
+export interface MyNotesResponse {
+  /** All notes matching the filters, not only this page. */
+  total: number;
+  /** Newest change first. */
+  notes: Note[];
+}
+
 /** Anchor of a new note: the chapter, one verse, a verse range or words (Elb1871 positions) of one verse. */
 export type NoteTarget =
   | { kind: "chapter" }
@@ -109,12 +129,34 @@ export function noteExcerpt(markdown: string, max = 140): string {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
+/** Reader link of a note: the passage with its verses marked, the note opened in the notes panel and the first verse in view. */
+export function noteHref(note: Note): string {
+  const { bookId, chapter, kind } = note.anchor;
+  const base = `/bible/${bookId}/${chapter}`;
+  const verse = noteVerse(note);
+  if (kind === "chapter" || verse === undefined) return `${base}?note=${note.id}`;
+  const end = noteEndVerse(note) ?? verse;
+  const range = end > verse ? `${verse}-${end}` : `${verse}`;
+  return `${base}?v=${range}&note=${note.id}#v${verse}`;
+}
+
 export const notesApi = {
   chapter: (bookId: number, chapter: number, level: number, signal?: AbortSignal) =>
     api.get<ChapterNotesResponse>(
       `/notes/chapter/${bookId}/${chapter}${level > 0 ? `?level=${level}` : ""}`,
       signal,
     ),
+  mine: (query: MyNotesQuery, signal?: AbortSignal) => {
+    const params = new URLSearchParams();
+    if (query.book) params.set("book", String(query.book));
+    if (query.visibility) params.set("visibility", query.visibility);
+    if (query.q) params.set("q", query.q);
+    params.set("skip", String(query.skip ?? 0));
+    params.set("take", String(query.take ?? MY_NOTES_PAGE_SIZE));
+    return api.get<MyNotesResponse>(`/notes/mine?${params}`, signal);
+  },
+  /** All own notes as the JSON file of the export format. */
+  exportMine: () => api.download("/notes/mine/export", "notes.json"),
   create: (anchor: NoteAnchor, bodyMarkdown: string) =>
     api.post<Note>("/notes", { anchor, bodyMarkdown }),
   /** `anchor` re-anchors the note; omitted keeps it. */

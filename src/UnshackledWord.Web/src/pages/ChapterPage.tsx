@@ -704,6 +704,20 @@ export function ChapterPage() {
     [location.search],
   );
 
+  // `?note=<id>` (link from "Meine Notizen") opens the notes panel at that note once per chapter visit; the hash scrolls to its verse
+  const noteParam = new URLSearchParams(location.search).get("note");
+  const openedNoteKey = useRef<string | undefined>(undefined);
+  const noteLoaded = notes.isSuccess;
+  const noteKnown = noteParam !== null && (notes.data ?? []).some((n) => n.id === noteParam);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: openNote only sets local state
+  useEffect(() => {
+    if (!noteParam || !noteLoaded || !noteKnown) return;
+    const key = `${bookId}:${chapterNumber}:${noteParam}`;
+    if (openedNoteKey.current === key) return;
+    openedNoteKey.current = key;
+    openNote(noteParam);
+  }, [noteParam, noteLoaded, noteKnown, bookId, chapterNumber]);
+
   // `?map=<verse>` (data-quality jump) opens the mapping editor of that verse once per chapter visit
   const mapParam = new URLSearchParams(location.search).get("map");
   const mapVerse = mapParam && /^\d+$/.test(mapParam) ? Number(mapParam) : undefined;

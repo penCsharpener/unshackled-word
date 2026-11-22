@@ -138,4 +138,27 @@ describe("ChapterPage notes", () => {
     expect(screen.getByText("Melde dich an, um Notizen zu schreiben.")).toBeInTheDocument();
     expect(screen.queryByLabelText("Notiztext")).toBeNull();
   });
+
+  it("opens the notes panel at the note named by ?note= and scrolls to its verse", async () => {
+    stubFetch(true, [
+      note("c", undefined, "Kapitel", true),
+      note("a", 2, "Erste", true),
+      note("b", 3, "Zweite", false),
+    ]);
+    renderAt("/bible/43/3?v=3&note=b#v3");
+    const panel = await screen.findByRole("region", { name: "Notizen zu Johannes 3" });
+    expect(await within(panel).findByTestId("note-body")).toHaveTextContent("Zweite");
+    expect(within(panel).getAllByTestId("note-body")).toHaveLength(1);
+    expect(
+      within(panel).getByRole("button", { name: /Johannes 3,3/, expanded: true }),
+    ).toBeVisible();
+    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled();
+  });
+
+  it("keeps the panel closed when the ?note= id is not in the chapter", async () => {
+    stubFetch(true, [note("a", 2, "Erste", true)]);
+    renderAt("/bible/43/3?note=gone");
+    await screen.findByRole("button", { name: "Notiz zu Vers 2 öffnen" });
+    expect(screen.queryByRole("region", { name: "Notizen zu Johannes 3" })).toBeNull();
+  });
 });

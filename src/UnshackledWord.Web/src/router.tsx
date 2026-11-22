@@ -16,6 +16,7 @@ import { LearnPage } from "@/pages/LearnPage";
 import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
 import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
 import { MaintainerPage } from "@/pages/MaintainerPage";
+import { MyNotesPage } from "@/pages/MyNotesPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PasskeysPage } from "@/pages/PasskeysPage";
 import { PrivacyPage } from "@/pages/PrivacyPage";
@@ -54,6 +55,7 @@ export const router = createBrowserRouter([
       { path: "magic-link-login", element: <MagicLinkLoginPage /> },
       { path: "verify-email", element: <VerifyEmailPage /> },
       { path: "account/passkeys", element: <PasskeysPage /> },
+      { path: "notes", element: <MyNotesPage /> },
       { path: "edit/lemmas", element: <LemmaEditorPage />, handle: { layout: "fill" } },
       {
         path: "edit/lemmas/:bookId/:chapter",

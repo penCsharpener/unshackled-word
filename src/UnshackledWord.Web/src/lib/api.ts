@@ -83,6 +83,17 @@ export const api = {
   patch: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("PATCH", path, body, signal),
   delete: <T>(path: string, signal?: AbortSignal) => request<T>("DELETE", path, undefined, signal),
+  /** GET a file: the blob plus the file name the server suggested (Content-Disposition), else `fallbackName`. */
+  download: async (path: string, fallbackName: string, signal?: AbortSignal) => {
+    const response = await fetch(`${baseUrl}${path}`, { signal, credentials: "include" });
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      throw new ApiError(response.status, `GET ${path} failed with ${response.status}`, text);
+    }
+    const disposition = response.headers.get("Content-Disposition") ?? "";
+    const fileName = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition)?.[1] ?? fallbackName;
+    return { blob: await response.blob(), fileName };
+  },
 };
 
 /** "Too many requests, try again in N s" in the tier's wording; the wait is left out when the body had none. */
