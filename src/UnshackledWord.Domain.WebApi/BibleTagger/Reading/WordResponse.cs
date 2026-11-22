@@ -16,4 +16,7 @@ public record WordResponse
 
     /// <summary>Set for words of a revision variant (Id is then the base word or 0).</summary>
     public int? RevisionWordId { get; set; }
+
+    /// <summary>Revision words only: the Elb1871 <c>PositionInVerse</c> the word is based on (null for a variant-only word). Note anchors use it (roadmap 0023.2f).</summary>
+    public int? BasePositionInVerse { get; set; }
 }

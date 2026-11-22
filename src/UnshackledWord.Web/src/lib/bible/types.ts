@@ -46,6 +46,8 @@ export interface ChapterWord {
   grammaticalKey?: string;
   /** Words of revised verses only. `id` is then the base word id, or 0 for a word without base word. */
   revisionWordId?: number;
+  /** Words of revised verses only: the Elb1871 position the word is based on (omitted for a word without base word). */
+  basePositionInVerse?: number;
 }
 export interface GetWordsOfChapterResponse {
   bibleBookId: number;
@@ -77,6 +79,10 @@ export interface WordToken {
   text: string;
   senses: WordSense[];
   revisionWordId?: number;
+  /** Position in the shown verse (Elb1871 or variant). */
+  position?: number;
+  /** Elb1871 `PositionInVerse` (base words: `position`; variant words: their base position, none for a variant-only word). Note anchors use it. */
+  basePosition?: number;
 }
 export interface VerseWords {
   verse: number;

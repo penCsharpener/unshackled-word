@@ -6,20 +6,23 @@ export const notesKeys = {
   /** Prefix of every cached chapter note list, invalidated after each note change. */
   chapters: ["notes", "chapter"] as const,
   /** The list depends on who asks (own private notes), so the viewer is part of the key. */
-  chapter: (bookId: number, chapter: number, viewer: number | undefined) =>
-    ["notes", "chapter", bookId, chapter, viewer ?? 0] as const,
+  chapter: (bookId: number, chapter: number, viewer: number | undefined, level: number) =>
+    ["notes", "chapter", bookId, chapter, viewer ?? 0, level] as const,
 };
 
 const NO_NOTES: Note[] = [];
 const notesOf = (data: ChapterNotesResponse | undefined) =>
   Array.isArray(data?.notes) ? data.notes : NO_NOTES;
 
-/** Notes of a chapter the viewer may see, in reading order (chapter notes first). */
-export function useChapterNotes(ref: { bookId: number; chapter: number } | null) {
+/**
+ * Notes of a chapter the viewer may see, in reading order (chapter notes first). `level` is the reader's revision level, so
+ * words notes on a revised verse come with the variant words that carry their marker.
+ */
+export function useChapterNotes(ref: { bookId: number; chapter: number } | null, level = 0) {
   const { status, user } = useAuth();
   return useQuery({
-    queryKey: notesKeys.chapter(ref?.bookId ?? 0, ref?.chapter ?? 0, user?.userId),
-    queryFn: ({ signal }) => notesApi.chapter(ref?.bookId ?? 0, ref?.chapter ?? 0, signal),
+    queryKey: notesKeys.chapter(ref?.bookId ?? 0, ref?.chapter ?? 0, user?.userId, level),
+    queryFn: ({ signal }) => notesApi.chapter(ref?.bookId ?? 0, ref?.chapter ?? 0, level, signal),
     select: notesOf,
     // wait for the session, else the anonymous list is fetched and thrown away right after
     enabled: ref !== null && status !== "loading",
@@ -43,8 +46,15 @@ export function useCreateNote() {
 export function useUpdateNote() {
   const invalidate = useInvalidateNotes();
   return useMutation({
-    mutationFn: ({ id, bodyMarkdown }: { id: string; bodyMarkdown: string }) =>
-      notesApi.update(id, bodyMarkdown),
+    mutationFn: ({
+      id,
+      bodyMarkdown,
+      anchor,
+    }: {
+      id: string;
+      bodyMarkdown: string;
+      anchor?: NoteAnchor;
+    }) => notesApi.update(id, bodyMarkdown, anchor),
     onSuccess: invalidate,
   });
 }

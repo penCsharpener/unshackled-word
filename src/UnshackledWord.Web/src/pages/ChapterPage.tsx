@@ -1,6 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Fragment,
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
   useId,
@@ -25,7 +27,7 @@ import { OriginalVerse } from "@/components/OriginalVerse";
 import { RevisionEditor } from "@/components/RevisionEditor";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
 import { track, trackRevisionLevel } from "@/lib/analytics";
-import { ApiError, describeApiErrors } from "@/lib/api";
+import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
@@ -49,8 +51,16 @@ import { parseVerseSelection } from "@/lib/bible/verseSelection";
 import { useWordDetail, wordDetailQuery, wordDetailSource } from "@/lib/bible/wordDetail";
 import { buildHighlights, phraseWordIds, wordKey } from "@/lib/bible/words";
 import { useSetHeaderInfo } from "@/lib/headerInfo";
-import { type Note, type NoteTarget, noteVerse } from "@/lib/notes/api";
-import { useChapterNotes } from "@/lib/notes/queries";
+import { anchorFor, type Note, type NoteTarget, noteEndVerse, noteVerse } from "@/lib/notes/api";
+import { useChapterNotes, useUpdateNote } from "@/lib/notes/queries";
+import {
+  isWordSelected,
+  noteMarkerWord,
+  selectionRange,
+  selectionTarget,
+  type WordPoint,
+  type WordSelection,
+} from "@/lib/notes/selection";
 import { reviewMarkers, toMappingData } from "@/lib/revision/mapping";
 import { useRevisionMapping, useSaveRevisionMapping } from "@/lib/revision/queries";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
@@ -68,6 +78,12 @@ const HIGHLIGHT_CLASSES: Record<HighlightKind, string> = {
 const PREFETCH_DELAY_MS = 200;
 const NO_IDS: ReadonlySet<number> = new Set();
 const PHRASE_CLASSES = "underline decoration-accent decoration-2 underline-offset-4";
+/** Touch: holding a word this long marks it as the first word of a note selection. */
+const LONG_PRESS_MS = 500;
+/** A touch that moves further than this (px) is a scroll, not a long press. */
+const LONG_PRESS_SLOP = 10;
+/** After a drag or a long press the click that follows must not open the word detail. */
+const CLICK_SUPPRESS_MS = 400;
 
 /** Words of the base text have a detail through their Elb1871 id, words of a revised verse through their revision word id. */
 const hasDetailId = (word: WordToken) => word.id > 0 || word.revisionWordId !== undefined;
@@ -292,15 +308,29 @@ export function ChapterPage() {
 
   // Notes (roadmap 0023): markers at verse numbers and the heading open the notes panel (left margin from 120rem,
   // a sheet below). MDXEditor is only fetched once a note is shown or written (see NotesPanel).
-  const notes = useChapterNotes(books ? ref : null);
-  const notesByVerse = useMemo(() => {
+  const notes = useChapterNotes(books ? ref : null, reader.level);
+  /** Words notes sit on their last shown word; verse, range, drifted and unmapped notes at the verse number. */
+  const noteMarkers = useMemo(() => {
     const byVerse = new Map<number | "chapter", Note[]>();
+    const byWord = new Map<string, Note[]>();
+    const ranges: { start: number; end: number; own: boolean }[] = [];
+    const shown = new Map((verses.data ?? []).map((v) => [v.verse, v]));
     for (const note of notes.data ?? []) {
-      const key = noteVerse(note) ?? "chapter";
+      const verse = noteVerse(note);
+      const word = verse === undefined ? undefined : noteMarkerWord(note, shown.get(verse));
+      if (word !== undefined) {
+        byWord.set(word, [...(byWord.get(word) ?? []), note]);
+        continue;
+      }
+      const key = verse ?? "chapter";
       byVerse.set(key, [...(byVerse.get(key) ?? []), note]);
+      const end = noteEndVerse(note);
+      if (verse !== undefined && end !== undefined && end > verse) {
+        ranges.push({ start: verse, end, own: note.isOwn });
+      }
     }
-    return byVerse;
-  }, [notes.data]);
+    return { byVerse, byWord, ranges };
+  }, [notes.data, verses.data]);
   const [notesSheet, setNotesSheet] = useState(false);
   const [noteFocus, setNoteFocus] = useState<{ id: string; token: number }>();
   const [noteDraft, setNoteDraft] = useState<NoteTarget>();
@@ -322,19 +352,190 @@ export function ChapterPage() {
     setNoteDraft(target);
     showNotes();
   }
-  const markerFor = (key: number | "chapter", label: (count: number) => string) => {
-    const list = notesByVerse.get(key);
+  const renderMarker = (
+    list: Note[] | undefined,
+    label: (count: number, first: Note) => string,
+  ) => {
     const first = list?.[0];
     if (!list || !first) return null;
     return (
       <NoteMarker
-        label={label(list.length)}
+        label={label(list.length, first)}
         count={list.length}
         own={list.some((n) => n.isOwn)}
         onClick={() => openNote(first.id)}
       />
     );
   };
+  const markerFor = (key: number | "chapter", label: (count: number) => string) =>
+    renderMarker(noteMarkers.byVerse.get(key), label);
+
+  function startVerseNote(verse: number, extend: boolean) {
+    // shift-click on a second verse's note action turns the open verse draft into a range
+    const from =
+      noteDraft?.kind === "verse" || noteDraft?.kind === "verses" ? noteDraft.verse : undefined;
+    if (extend && from !== undefined && from !== verse) {
+      startNote({ kind: "verses", verse: Math.min(from, verse), endVerse: Math.max(from, verse) });
+      return;
+    }
+    startNote({ kind: "verse", verse });
+  }
+
+  // Word selection for notes (roadmap 0023.2f): mouse drag or click, shift-click; touch: long-press, then tap the last word.
+  const [selection, setSelection] = useState<WordSelection>();
+  const [dragging, setDragging] = useState(false);
+  /** Own drifted note being re-anchored: the next selection's action moves it there. */
+  const [reanchor, setReanchor] = useState<Note>();
+  const updateNote = useUpdateNote();
+  const dragFrom = useRef<WordPoint>(undefined);
+  const dragged = useRef(false);
+  const lastClicked = useRef<WordPoint>(undefined);
+  /** a drag swallows the next word click, a long press only the click on the pressed word */
+  const suppressClick = useRef<{ until: number; point?: WordPoint }>({ until: 0 });
+  const longPress = useRef<{
+    timer?: ReturnType<typeof setTimeout>;
+    x: number;
+    y: number;
+    /** the word whose long press marked it */
+    fired?: WordPoint;
+    /** the last press on a word was a touch */
+    touch: boolean;
+  }>({ x: 0, y: 0, touch: false });
+  useEffect(() => {
+    const press = longPress.current;
+    function onUp() {
+      clearTimeout(press.timer);
+      if (dragged.current || press.fired) {
+        suppressClick.current = { until: Date.now() + CLICK_SUPPRESS_MS, point: press.fired };
+      }
+      press.fired = undefined;
+      dragFrom.current = undefined;
+      dragged.current = false;
+      setDragging(false);
+    }
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      clearTimeout(press.timer);
+    };
+  }, []);
+  // a press outside the words and the selection action clears the selection
+  useEffect(() => {
+    if (!selection) return;
+    function onDown(event: PointerEvent) {
+      if (
+        event.target instanceof Element &&
+        event.target.closest("[data-word-trigger], [data-note-selection]")
+      ) {
+        return;
+      }
+      setSelection(undefined);
+    }
+    window.addEventListener("pointerdown", onDown);
+    return () => window.removeEventListener("pointerdown", onDown);
+  }, [selection]);
+
+  function wordPointerDown(event: ReactPointerEvent, point: WordPoint) {
+    longPress.current.touch = event.pointerType === "touch";
+    if (event.pointerType === "touch") {
+      const press = longPress.current;
+      clearTimeout(press.timer);
+      press.x = event.clientX;
+      press.y = event.clientY;
+      press.fired = undefined;
+      press.timer = setTimeout(() => {
+        press.fired = point;
+        setSelectedKey(undefined);
+        setSelection({ anchor: point, focus: point, pending: true });
+      }, LONG_PRESS_MS);
+      return;
+    }
+    if (event.button !== 0 || event.shiftKey) return;
+    dragFrom.current = point;
+    dragged.current = false;
+  }
+  function wordPointerMove(event: ReactPointerEvent) {
+    if (event.pointerType !== "touch") return;
+    const press = longPress.current;
+    const moved = Math.abs(event.clientX - press.x) + Math.abs(event.clientY - press.y);
+    if (moved > LONG_PRESS_SLOP) clearTimeout(press.timer);
+  }
+  function wordPointerEnter(event: ReactPointerEvent, point: WordPoint) {
+    const from = dragFrom.current;
+    if (!from || event.pointerType === "touch" || (event.buttons & 1) === 0) return;
+    if (!dragged.current && from.verse === point.verse && from.index === point.index) return;
+    if (!dragged.current) {
+      dragged.current = true;
+      setDragging(true);
+      setSelectedKey(undefined);
+    }
+    window.getSelection()?.removeAllRanges();
+    setSelection({ anchor: from, focus: point });
+  }
+  function wordClick(event: ReactMouseEvent<HTMLElement>, point: WordPoint, word: WordToken) {
+    const suppress = suppressClick.current;
+    if (
+      Date.now() < suppress.until &&
+      (!suppress.point ||
+        (suppress.point.verse === point.verse && suppress.point.index === point.index))
+    ) {
+      return;
+    }
+    if (selection?.pending) {
+      setSelection({ anchor: selection.anchor, focus: point });
+      return;
+    }
+    const from = lastClicked.current;
+    if (event.shiftKey && from) {
+      setSelectedKey(undefined);
+      setSelection({ anchor: from, focus: point });
+      return;
+    }
+    lastClicked.current = point;
+    if (reanchor) {
+      setSelection({ anchor: point, focus: point });
+      return;
+    }
+    setSelection(undefined);
+    toggle(word, event.currentTarget);
+  }
+
+  const selected = useMemo(() => {
+    if (!selection || !verses.data) return undefined;
+    const target = selectionTarget(selection, verses.data);
+    return target && { target, end: selectionRange(selection).end };
+  }, [selection, verses.data]);
+  function actOnSelection(target: NoteTarget) {
+    if (!ref) return;
+    const note = reanchor;
+    if (note) {
+      updateNote.mutate(
+        {
+          id: note.id,
+          bodyMarkdown: note.bodyMarkdown,
+          anchor: anchorFor(ref.bookId, ref.chapter, target),
+        },
+        {
+          onSuccess: () => {
+            setReanchor(undefined);
+            setSelection(undefined);
+            openNote(note.id);
+          },
+        },
+      );
+      return;
+    }
+    setSelection(undefined);
+    startNote(target);
+  }
+  function startReanchor(note: Note) {
+    updateNote.reset();
+    setSelection(undefined);
+    setReanchor(note);
+    setNotesSheet(false);
+  }
 
   function openEditor(verse: number, trigger: HTMLElement | null) {
     saveMapping.reset();
@@ -435,6 +636,11 @@ export function ChapterPage() {
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (isTypingTarget(event.target)) return;
       if (event.target instanceof Element && event.target.closest("[data-mapping-editor]")) return;
+      if (event.key === "Escape" && (selection || reanchor)) {
+        if (selection) setSelection(undefined);
+        else setReanchor(undefined);
+        return;
+      }
       if (event.key === "g" && wide) {
         changeSideMode(nextSidePanelMode(sideMode));
         return;
@@ -445,7 +651,17 @@ export function ChapterPage() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [prevPath, nextPath, navigate, selectedKey, wide, sideMode, changeSideMode]);
+  }, [
+    prevPath,
+    nextPath,
+    navigate,
+    selectedKey,
+    wide,
+    sideMode,
+    changeSideMode,
+    selection,
+    reanchor,
+  ]);
 
   const bookId = ref?.bookId;
   const chapterNumber = ref?.chapter;
@@ -457,6 +673,9 @@ export function ChapterPage() {
     setNoteDraft(undefined);
     setNoteFocus(undefined);
     setNotesSheet(false);
+    setSelection(undefined);
+    setReanchor(undefined);
+    lastClicked.current = undefined;
   }, [bookId, chapterNumber]);
 
   const testament = books?.find((b) => b.id === bookId)?.testament;
@@ -612,6 +831,7 @@ export function ChapterPage() {
         onDraftDone={() => setNoteDraft(undefined)}
         signedIn={signedIn}
         onClose={variant === "sheet" ? () => setNotesSheet(false) : undefined}
+        onReanchor={signedIn ? startReanchor : undefined}
       />
     );
   }
@@ -711,10 +931,30 @@ export function ChapterPage() {
             {notesVisible && renderNotesPanel("rail")}
           </SidePanelRail>
         )}
+        {reanchor && (
+          <div
+            role="status"
+            className="mt-4 flex flex-wrap items-center gap-2 rounded-md border border-accent bg-surface p-2 font-sans text-sm"
+          >
+            <span>
+              {t("notes.reanchorPrompt", {
+                anchor: `${reference(ref)},${noteVerse(reanchor) ?? ""}`,
+              })}
+            </span>
+            {updateNote.isError && (
+              <span role="alert">
+                {describeApiError(updateNote.error, t("notes.reanchorError"))}
+              </span>
+            )}
+            <Button variant="ghost" size="sm" onClick={() => setReanchor(undefined)}>
+              {t("notes.cancel")}
+            </Button>
+          </div>
+        )}
         <article
           lang="de"
           aria-busy={verses.isLoading}
-          className="mt-6 font-scripture text-lg leading-relaxed md:text-xl laptop:text-2xl"
+          className={`mt-6 font-scripture text-lg leading-relaxed md:text-xl laptop:text-2xl ${dragging ? "select-none" : ""}`}
         >
           {verses.isLoading && <p className="text-fg-muted">{t("bible.chapter.loading")}</p>}
           {verses.isError && (
@@ -732,6 +972,9 @@ export function ChapterPage() {
             verses.data.map((v) => {
               const editing = editingVerse === v.verse;
               const revising = reviseVerse === v.verse;
+              const bracket = noteMarkers.ranges.find(
+                (r) => r.start <= v.verse && v.verse <= r.end,
+              );
               return (
                 <div
                   key={v.verse}
@@ -743,38 +986,119 @@ export function ChapterPage() {
                     "aria-label": revisedLabel(v.revised.level),
                   })}
                 >
+                  {bracket && (
+                    <span
+                      aria-hidden="true"
+                      data-note-bracket={
+                        v.verse === bracket.start
+                          ? "start"
+                          : v.verse === bracket.end
+                            ? "end"
+                            : "mid"
+                      }
+                      className={`pointer-events-none absolute -left-6 hidden w-1.5 border-l-2 laptop:block ${bracket.own ? "border-accent" : "border-fg-muted"} ${v.verse === bracket.start ? "top-1 rounded-tl-sm border-t-2" : "top-0"} ${v.verse === bracket.end ? "bottom-1 rounded-bl-sm border-b-2" : "-bottom-2"}`}
+                    />
+                  )}
                   <div className="verse-main">
                     <p>
                       <sup className="mr-1 text-xs text-fg-muted">{v.verse}</sup>
                       {markerFor(v.verse, (count) =>
                         t("notes.markerVerse", { count, verse: v.verse }),
                       )}
-                      {v.words.map((word) => {
+                      {v.words.map((word, index) => {
                         const key = wordKey(word);
                         const hasDetail = hasDetailId(word);
                         const linkId = word.revisionWordId ?? word.id;
                         const interactive = word.senses.length > 0 && hasDetail;
                         const kind = highlights.get(key);
+                        const point = { verse: v.verse, index };
+                        const marked = isWordSelected(selection, point);
+                        const background = marked
+                          ? "bg-mark-note"
+                          : (hasDetail && linked.german.has(linkId)) ||
+                              (v.verse === sideLinks.verse &&
+                                word.revisionWordId === undefined &&
+                                sideLinks.german.has(word.id))
+                            ? "bg-mark-linked"
+                            : kind
+                              ? HIGHLIGHT_CLASSES[kind]
+                              : "";
+                        const actionHere =
+                          selected &&
+                          selected.end.verse === v.verse &&
+                          selected.end.index === index;
                         return (
                           <Fragment key={key}>
                             <Button
                               variant="inline"
                               data-word-trigger=""
+                              data-selected={marked ? "" : undefined}
                               aria-haspopup={hasDetail ? "dialog" : undefined}
                               aria-expanded={hasDetail ? selectedKey === key : undefined}
                               aria-controls={selectedKey === key ? popoverId : undefined}
                               aria-label={t("bible.wordDetail.trigger", { word: word.text })}
-                              onClick={(e) => toggle(word, e.currentTarget)}
+                              onClick={(e) => wordClick(e, point, word)}
+                              onPointerDown={(e) => wordPointerDown(e, point)}
+                              onPointerMove={wordPointerMove}
+                              onPointerEnter={(e) => wordPointerEnter(e, point)}
+                              onContextMenu={(e) => {
+                                // a long press marks the word instead of opening the system menu
+                                if (longPress.current.touch) e.preventDefault();
+                              }}
                               onMouseEnter={
                                 interactive ? () => startIntent(word, v.words) : undefined
                               }
                               onMouseLeave={interactive ? endIntent : undefined}
                               onFocus={interactive ? () => startIntent(word, v.words) : undefined}
                               onBlur={interactive ? endIntent : undefined}
-                              className={`${(hasDetail && linked.german.has(linkId)) || (v.verse === sideLinks.verse && word.revisionWordId === undefined && sideLinks.german.has(word.id)) ? "bg-mark-linked" : kind ? HIGHLIGHT_CLASSES[kind] : ""} ${hasDetail && phrase.has(linkId) ? PHRASE_CLASSES : ""} ${selectedKey === key ? "word-anchor" : ""}`}
+                              className={`${background} ${hasDetail && phrase.has(linkId) ? PHRASE_CLASSES : ""} ${selectedKey === key ? "word-anchor" : ""}`}
                             >
                               {word.text}
-                            </Button>{" "}
+                            </Button>
+                            {renderMarker(noteMarkers.byWord.get(key), (count, first) =>
+                              t("notes.markerWords", {
+                                count,
+                                quote: first.anchor.quotedText ?? word.text,
+                              }),
+                            )}
+                            {actionHere && (
+                              <span data-note-selection="" className="relative">
+                                <span className="absolute start-0 top-full z-20 mt-1 flex items-center gap-1 whitespace-nowrap rounded-md border border-border bg-surface p-1 font-sans text-sm leading-normal shadow-lg">
+                                  <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={() => actOnSelection(selected.target)}
+                                  >
+                                    {reanchor
+                                      ? t("notes.reanchorHere")
+                                      : selected.target.kind === "verses"
+                                        ? t("notes.selectionVerses", {
+                                            from: selected.target.verse,
+                                            to: selected.target.endVerse,
+                                          })
+                                        : selected.target.kind === "verse"
+                                          ? t("notes.selectionVerse", {
+                                              verse: selected.target.verse,
+                                            })
+                                          : t("notes.selectionWords")}
+                                  </Button>
+                                  {selection?.pending && (
+                                    <span className="px-1 text-xs text-fg-muted">
+                                      {t("notes.selectionPending")}
+                                    </span>
+                                  )}
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    aria-label={t("notes.selectionCancel")}
+                                    title={t("notes.selectionCancel")}
+                                    onClick={() => setSelection(undefined)}
+                                  >
+                                    <span aria-hidden="true">×</span>
+                                  </Button>
+                                </span>
+                              </span>
+                            )}{" "}
                           </Fragment>
                         );
                       })}
@@ -784,7 +1108,7 @@ export function ChapterPage() {
                         className="map-trigger"
                         aria-label={t("notes.addVerse", { verse: v.verse })}
                         title={t("notes.addVerse", { verse: v.verse })}
-                        onClick={() => startNote({ kind: "verse", verse: v.verse })}
+                        onClick={(e) => startVerseNote(v.verse, e.shiftKey)}
                       >
                         <svg
                           aria-hidden="true"

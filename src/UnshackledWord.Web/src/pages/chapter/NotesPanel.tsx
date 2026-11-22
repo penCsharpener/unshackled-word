@@ -3,7 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Button, buttonClasses } from "@/components/Button";
 import { describeApiError } from "@/lib/api";
-import { anchorFor, type Note, type NoteTarget, noteExcerpt, noteVerse } from "@/lib/notes/api";
+import {
+  anchorFor,
+  type Note,
+  type NoteTarget,
+  noteEndVerse,
+  noteExcerpt,
+  noteVerse,
+} from "@/lib/notes/api";
 import { useCreateNote, useDeleteNote, useUpdateNote } from "@/lib/notes/queries";
 
 // MDXEditor is heavy: both components are separate chunks, loaded only once a note is shown or written.
@@ -29,8 +36,37 @@ export interface NotesPanelProps {
   draft?: NoteTarget;
   onDraftDone: () => void;
   signedIn: boolean;
-  /** `sheet` only */
+  /** `sheet` only; also on `Esc` outside the editor */
   onClose?: () => void;
+  /** owner action on a drifted words note: pick a new place in the text */
+  onReanchor?: (note: Note) => void;
+}
+
+/** The anchor of a saved note as a target, for its reference line. */
+function noteTarget(note: Note): NoteTarget {
+  const verse = noteVerse(note);
+  if (verse === undefined) return { kind: "chapter" };
+  const { anchor } = note;
+  if (anchor.kind === "verses") {
+    return { kind: "verses", verse, endVerse: noteEndVerse(note) ?? verse };
+  }
+  if (anchor.kind === "words") {
+    return {
+      kind: "words",
+      verse,
+      startPosition: anchor.startPosition ?? 0,
+      endPosition: anchor.endPosition ?? anchor.startPosition ?? 0,
+      quote: anchor.quotedText ?? "",
+    };
+  }
+  return { kind: "verse", verse };
+}
+
+function isTyping(target: EventTarget | null): boolean {
+  return (
+    target instanceof Element &&
+    target.closest("input, textarea, select, dialog, [contenteditable='true']") !== null
+  );
 }
 
 /** The chapter's notes in reading order (chapter notes first); one editor open at a time. */
@@ -48,6 +84,7 @@ export function NotesPanel({
   onDraftDone,
   signedIn,
   onClose,
+  onReanchor,
 }: NotesPanelProps) {
   const { t } = useTranslation();
   const headingId = useId();
@@ -58,10 +95,28 @@ export function NotesPanel({
   const update = useUpdateNote();
   const remove = useDeleteNote();
 
-  const anchorLabel = (target: { verse?: number }) =>
-    target.verse === undefined
-      ? t("notes.anchorChapter", { reference: chapterLabel })
-      : t("notes.anchorVerse", { reference: `${chapterLabel},${target.verse}` });
+  const anchorLabel = (target: NoteTarget) => {
+    if (target.kind === "chapter") return t("notes.anchorChapter", { reference: chapterLabel });
+    const reference =
+      target.kind === "verses"
+        ? `${chapterLabel},${target.verse}–${target.endVerse}`
+        : `${chapterLabel},${target.verse}`;
+    return target.kind === "words" && target.quote
+      ? t("notes.anchorWords", { quote: target.quote, reference })
+      : t("notes.anchorVerse", { reference });
+  };
+
+  // Esc closes the sheet, but not while typing in the editor or answering its delete dialog
+  useEffect(() => {
+    if (!onClose) return;
+    const close = onClose;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape" || event.defaultPrevented || isTyping(event.target)) return;
+      close();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
 
   // the clicked marker's note opens and comes into view
   useEffect(() => {
@@ -90,7 +145,6 @@ export function NotesPanel({
     });
 
   const fallback = <p className="text-fg-muted">{t("notes.loadingEditor")}</p>;
-  const draftVerse = draft?.kind === "verse" ? draft.verse : undefined;
 
   return (
     <section
@@ -117,7 +171,7 @@ export function NotesPanel({
             <Suspense fallback={fallback}>
               <NoteEditor
                 label={t("notes.newNote", {
-                  anchor: anchorLabel({ verse: draftVerse }),
+                  anchor: anchorLabel(draft),
                 })}
                 saving={create.isPending}
                 error={create.isError ? describeApiError(create.error, t("notes.saveError")) : null}
@@ -171,7 +225,8 @@ export function NotesPanel({
         {notes.map((note) => {
           const open = expanded.has(note.id);
           const editing = editingId === note.id;
-          const label = anchorLabel({ verse: noteVerse(note) });
+          const label = anchorLabel(noteTarget(note));
+          const drifted = note.anchorState === "drifted";
           return (
             <li
               key={note.id}
@@ -190,6 +245,11 @@ export function NotesPanel({
                   <span className="text-xs text-fg-muted">{note.authorDisplayName}</span>
                 )}
               </Button>
+              {drifted && note.anchor.quotedText && (
+                <p className="mt-1 px-2 text-xs italic text-fg-muted">
+                  {t("notes.driftHint", { quote: note.anchor.quotedText })}
+                </p>
+              )}
               {!open && <p className="mt-1 px-2 text-fg-muted">{noteExcerpt(note.bodyMarkdown)}</p>}
               {open && (
                 <div className="mt-1 px-2">
@@ -231,6 +291,16 @@ export function NotesPanel({
                       />
                     )}
                   </Suspense>
+                  {note.isOwn && !editing && drifted && onReanchor && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="mt-1 me-1"
+                      onClick={() => onReanchor(note)}
+                    >
+                      {t("notes.reanchor")}
+                    </Button>
+                  )}
                   {note.isOwn && !editing && (
                     <Button
                       variant="ghost"

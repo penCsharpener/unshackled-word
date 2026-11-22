@@ -12,6 +12,7 @@ public sealed class ChapterWordRow : Elb1871WordDbo
     public int? RevisionWordId { get; set; }
     public int? RevisionVerseId { get; set; }
     public int? RevisionLevel { get; set; }
+    public int? BasePositionInVerse { get; set; }
 }
 
 /// <summary>Reads the words of one chapter at a literalness level (roadmap 0011). Level 0 (Elb1871 only) runs the untouched base query.</summary>
@@ -39,7 +40,8 @@ public static class ChapterWordsQuery
             WordInContext = x.WordInContext,
             Original = x.Original,
             GrammaticalKey = x.GrammaticalKey,
-            RevisionWordId = x.RevisionWordId
+            RevisionWordId = x.RevisionWordId,
+            BasePositionInVerse = x.BasePositionInVerse
         }).ToList();
 
         var revised = rows
@@ -100,6 +102,7 @@ public static class ChapterWordsQuery
                                                , shw."Hebrew" "Original"
                                                , shw."Grammar" "GrammaticalKey"
                                                , NULL::int4 "RevisionWordId"
+                                               , NULL::int4 "BasePositionInVerse"
                                                , NULL::int4 "RevisionVerseId"
                                                , NULL::int4 "RevisionLevel"
                                                , ew."HebRefId" "SortRefId"
@@ -118,6 +121,7 @@ public static class ChapterWordsQuery
                                                , shw."Hebrew"
                                                , shw."Grammar"
                                                , rw."Id"
+                                               , rw."BasePositionInVerse"
                                                , ev."RevisionVerseId"
                                                , ev."Level"
                                                , ev."HebRefId"
@@ -141,6 +145,7 @@ public static class ChapterWordsQuery
                                               , sgw."Greek" "Original"
                                               , sgw."Morphology" "GrammaticalKey"
                                               , NULL::int4 "RevisionWordId"
+                                              , NULL::int4 "BasePositionInVerse"
                                               , NULL::int4 "RevisionVerseId"
                                               , NULL::int4 "RevisionLevel"
                                               , ew."HebRefId" "SortRefId"
@@ -160,6 +165,7 @@ public static class ChapterWordsQuery
                                               , sgw."Greek"
                                               , sgw."Morphology"
                                               , rw."Id"
+                                              , rw."BasePositionInVerse"
                                               , ev."RevisionVerseId"
                                               , ev."Level"
                                               , ev."HebRefId"

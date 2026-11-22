@@ -38,7 +38,12 @@ export function groupWordsByVerse(
           id: row.id,
           text: row.wordInContext,
           senses: [],
+          position: row.positionInVerse,
           ...(row.revisionWordId !== undefined && { revisionWordId: row.revisionWordId }),
+          ...((row.revisionWordId === undefined || row.basePositionInVerse !== undefined) && {
+            basePosition:
+              row.revisionWordId === undefined ? row.positionInVerse : row.basePositionInVerse,
+          }),
         },
       };
       tokens.set(rowKey, entry);

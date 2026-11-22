@@ -33,6 +33,7 @@
   --uw-mark-related: oklch(0.9 0.1 150);
   --uw-mark-linked: oklch(0.9 0.14 95);
   --uw-mark-passage: oklch(0.95 0.03 75);
+  --uw-mark-note: oklch(0.9 0.07 320);
   /* Categorical chart slots (BookBarChart sections, DonutChart slices) and the empty track. */
   --uw-chart-1: #2a78d6;
   --uw-chart-2: #eb6834;
@@ -247,6 +248,7 @@
   --uw-mark-related: oklch(0.42 0.09 150);
   --uw-mark-linked: oklch(0.5 0.1 90);
   --uw-mark-passage: oklch(0.3 0.035 75);
+  --uw-mark-note: oklch(0.42 0.1 320);
   --uw-chart-1: #3987e5;
   --uw-chart-2: #d95926;
   --uw-chart-3: #199e70;
@@ -283,6 +285,7 @@
   --color-mark-related: var(--uw-mark-related);
   --color-mark-linked: var(--uw-mark-linked);
   --color-mark-passage: var(--uw-mark-passage);
+  --color-mark-note: var(--uw-mark-note);
   --color-chart-1: var(--uw-chart-1);
   --color-chart-2: var(--uw-chart-2);
   --color-chart-3: var(--uw-chart-3);
@@ -1461,6 +1464,15 @@
   max-height: calc(100dvh - var(--app-header-h) - var(--spacing) * 24);
   overflow-y: auto;
   overscroll-behavior: contain;
+}
+
+/* Word selection for notes (roadmap 0023.2f): a long press marks the first word, so no system callout or text selection on touch. */
+@media (pointer: coarse) {
+  .verse-main [data-word-trigger] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
 }
 
 .notes-sheet {
