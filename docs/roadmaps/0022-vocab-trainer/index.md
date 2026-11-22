@@ -19,7 +19,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 Planned, nothing implemented. All decisions are settled. On 2026-11-21 the maintainer changed two of them: typing uses the dictionary form with the separators pre-filled, and lexicon edits flag the learner's cards for keep or reset instead of being refused. UI drafts (click dummy + spec) added the same day.
 
-Implemented on `feature/vocab-learning` (2026-11-21, 0.8.0): migrations 0037–0039, 0022.1, 0022.1f, 0022.1b (extra row: STEP Hebrew lexicon import fix, verb `step-lexicon-repair`), 0022.2, 0022.2f, 0022.3, 0022.3f, 0022.4, 0022.4f, 0022.7, 0022.8. Next: 0022.5 (Garage; touches `compose.yml`), 0022.8f, 0022.6.
+Implemented on `feature/vocab-learning` (2026-11-21/22, 0.8.0): migrations 0037–0040, 0022.1, 0022.1f, 0022.1b (extra row: STEP Hebrew lexicon import fix, verb `step-lexicon-repair`), 0022.2–0022.13 with all frontend rows (0022.12 backend came with 0022.8b). Next: 0022.14 (seed), 0022.15 (docs gate), then the Opus review.
 
 Deviations so far:
 - `StatsVocabRenderings` has `GermanPos` (STTS) so derivation can filter by word class; `VocabCards` has no FK to `VocabEntries` (cards outlive deleted entries); entry renderings capped at 100 rows; Hebrew sample verses use the braced main key only; the public list's "Anzeigen" filter only offers "Alle".
@@ -28,3 +28,8 @@ Deviations so far:
 - Derive report's changed-top list is preformatted strings that the UI parses (should become structured).
 - Scheduler uses `PenCsharpener.FsrsSharp` 6.0.0's legacy `Fsrs` API (fits the `VocabCards` columns); strength is a double interpolated on Lexio's ladder; 30 days of reviews only when due reach strength 4.65, daily reviews reach 5.
 - Session: every answer is rated (as Lexio); introductions are logged with `Rating` null; due reviews are asked once each before the first introduction (0022.8f wording, Lexio does it the other way round); "nothing to study" returns 200 `finished`.
+- Audio: MP3 only (magic bytes, 1 MB); presigned URLs expire after 1 h; recording encodes in the browser with lamejs (30 s cap, no worker).
+- Typing cannot be turned off (0039 check constraint); listening and verse context fall back to the next type when no audio/verse exists.
+- Lexicon changes: cards still in state `new` are not listed as changed; the `form` change row uses `{form}` while the generator writes `{dictionaryForm}`.
+- Agent form runs reuse `AgentRuns` (migration 0040: mode `vocab-form`; `BibleBookId` = course id, From/ToHebRefId = rank range); counts only in `StatusNote`; accept-form is its own route.
+- Script keyboard follows Lexio's QWERTY-position rows (not the draft's alphabetical rows), no Shift.
