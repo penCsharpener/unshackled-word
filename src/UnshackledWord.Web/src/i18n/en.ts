@@ -133,6 +133,8 @@ export const en: Translation = {
       introduction: "New word",
       multipleChoice: "What does … mean",
       reverseMultipleChoice: "Which word is …",
+      listening: "Listening",
+      verseContext: "In the verse",
       typing: "Type the study form",
     },
     settings: {
@@ -164,6 +166,14 @@ export const en: Translation = {
     intro: {
       meanings: "Meanings",
       continue: "Got it",
+    },
+    listening: {
+      play: "Play",
+      failed: "The recording could not be played.",
+    },
+    verse: {
+      question: "What stands for the marked word?",
+      gap: "Gap",
     },
     feedback: {
       correct: "✓ Correct",

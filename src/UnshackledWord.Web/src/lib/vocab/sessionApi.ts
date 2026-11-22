@@ -15,7 +15,8 @@ export interface VocabSessionProgress {
 /** The word a card is about. Mirrors `VocabCardEntryResponse`; nulls are omitted by the API. */
 export interface VocabCardEntry {
   id: number;
-  lemma: string;
+  /** Omitted on a listening card until the answer: the question must not show the lemma. */
+  lemma?: string;
   dictionaryForm?: string | null;
   transliteration?: string | null;
   pos?: string | null;
@@ -47,6 +48,8 @@ export type VocabCardKind =
   | "introduction"
   | "multiple_choice"
   | "reverse_multiple_choice"
+  | "listening"
+  | "verse_context"
   | "typing";
 
 /** One piece of a typing card's layout: a `group` of `length` letter boxes or a fixed `separator` text. */

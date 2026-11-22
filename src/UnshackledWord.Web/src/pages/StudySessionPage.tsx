@@ -36,6 +36,7 @@ import {
   pushLetter,
   toTypingLayout,
 } from "@/lib/vocab/typing";
+import { useAudioPlayer } from "@/lib/vocab/useAudioPlayer";
 import { sampleVerseHref, sampleVerseReference } from "@/lib/vocab/verseReference";
 import { ChangedWordsNotice } from "@/pages/vocab/ChangedWordsNotice";
 
@@ -52,9 +53,14 @@ interface CoverageGrowth {
   delta: number | null;
 }
 
-/** Cards with options: the German-to-lemma and the lemma-to-German multiple choice (roadmap 0022.9). */
+/** Cards with options: the multiple choice kinds (roadmap 0022.9) and listening and verse context (0022.11). */
 function isChoiceKind(kind: VocabCard["kind"]): boolean {
-  return kind === "multiple_choice" || kind === "reverse_multiple_choice";
+  return (
+    kind === "multiple_choice" ||
+    kind === "reverse_multiple_choice" ||
+    kind === "listening" ||
+    kind === "verse_context"
+  );
 }
 
 /** The growth in percentage points, one decimal; null when the coverage did not grow. */
@@ -65,7 +71,7 @@ function pointsGrown(before: number, after: number): number | null {
 
 /**
  * `/learn/:course` (roadmap 0022.8f, 0022.9f): the study session, one card per screen. Introductions,
- * multiple choice and reverse multiple choice for now. Keys 1–4 pick an option, Enter continues.
+ * multiple choice, reverse multiple choice, listening and verse context for now. Keys 1–4 pick an option, Enter continues.
  */
 export function StudySessionPage() {
   const { status } = useAuth();
@@ -86,6 +92,8 @@ function StudySession() {
   // The card last shown and when it appeared; the response time is measured from there.
   const shown = useRef({ seq: 0, at: performance.now() });
   const primaryRef = useRef<HTMLButtonElement>(null);
+  const audio = useAudioPlayer();
+  const stopAudio = audio.stop;
   const number = (value: number) => value.toLocaleString(i18n.language);
 
   // POST resumes the open session of the course or starts one; it is only asked once per attempt.
@@ -152,9 +160,11 @@ function StudySession() {
         }
       : null;
 
+  // A new card stops the audio of the card before.
   useEffect(() => {
     shown.current = { seq: cardSeq ?? 0, at: performance.now() };
-  }, [cardSeq]);
+    stopAudio();
+  }, [cardSeq, stopAudio]);
 
   // The primary button of an introduction or of the feedback takes focus, so Enter continues.
   const focusKey = feedback ? "feedback" : card?.kind === "introduction" ? `intro-${card.seq}` : "";
@@ -238,10 +248,11 @@ function StudySession() {
   const answerFailed =
     answer.isError && !(answer.error instanceof ApiError && answer.error.status === 409);
 
-  const renderVerse = (verse: VocabSampleVerse, lang: VocabLang) => (
+  // The reader link only shows once the card is answered (a verse-context question must not lead to its answer).
+  const renderVerse = (verse: VocabSampleVerse, lang: VocabLang, link = true) => (
     <VerseContext
       reference={sampleVerseReference(verse, structure.data, i18n.language)}
-      href={sampleVerseHref(verse)}
+      href={link ? sampleVerseHref(verse) : undefined}
       lang={lang}
       original={verse.original}
       german={verse.german}
@@ -298,28 +309,69 @@ function StudySession() {
     const options = current.options ?? [];
     // A reverse card asks for the lemma, so its question is the German prompt and its options are lemmas.
     const reverse = current.kind === "reverse_multiple_choice";
+    const listening = current.kind === "listening";
+    const verseContext = current.kind === "verse_context";
     const optionLang = options.find((option) => option.lang)?.lang ?? "de";
     const correctIndex = feedback
       ? options.findIndex((option) => option.id === feedback.result.correctOptionId)
       : -1;
-    return (
-      <StudyCard
-        kindLabel={t(reverse ? "learn.kind.reverseMultipleChoice" : "learn.kind.multipleChoice")}
-      >
-        {reverse ? (
-          <p className="text-center text-3xl font-semibold">{current.prompt ?? ""}</p>
-        ) : (
-          <div className="grid justify-items-center gap-1 text-center">
-            <p lang={entry.lang} dir={dir} className="font-original text-5xl">
-              {entry.lemma}
+    const kindKey = listening
+      ? "learn.kind.listening"
+      : verseContext
+        ? "learn.kind.verseContext"
+        : reverse
+          ? "learn.kind.reverseMultipleChoice"
+          : "learn.kind.multipleChoice";
+    // No lemma before the answer: a listening card shows only the audio, a verse card the verse with its gap.
+    let question: ReactNode;
+    if (listening) {
+      question = (
+        <div className="grid justify-items-center gap-2">
+          <Button
+            variant="primary"
+            size="md"
+            aria-label={t("learn.listening.play")}
+            className="h-20 w-20 rounded-full text-3xl"
+            disabled={!entry.audioUrl}
+            onClick={() => {
+              if (entry.audioUrl) audio.play(entry.audioUrl);
+            }}
+          >
+            ▶
+          </Button>
+          {audio.failed ? (
+            <p role="alert" className="text-sm">
+              {t("learn.listening.failed")}
             </p>
-            {entry.dictionaryForm ? (
-              <p lang={entry.lang} dir={dir} className="font-original text-xl text-fg-muted">
-                {entry.dictionaryForm}
-              </p>
-            ) : null}
-          </div>
-        )}
+          ) : null}
+        </div>
+      );
+    } else if (verseContext) {
+      question = (
+        <>
+          {current.verse && !feedback ? renderVerse(current.verse, entry.lang, false) : null}
+          <p className="text-sm text-fg-muted">{t("learn.verse.question")}</p>
+        </>
+      );
+    } else if (reverse) {
+      question = <p className="text-center text-3xl font-semibold">{current.prompt ?? ""}</p>;
+    } else {
+      question = (
+        <div className="grid justify-items-center gap-1 text-center">
+          <p lang={entry.lang} dir={dir} className="font-original text-5xl">
+            {entry.lemma}
+          </p>
+          {entry.dictionaryForm ? (
+            <p lang={entry.lang} dir={dir} className="font-original text-xl text-fg-muted">
+              {entry.dictionaryForm}
+            </p>
+          ) : null}
+        </div>
+      );
+    }
+    return (
+      <StudyCard kindLabel={t(kindKey)}>
+        {question}
         <ChoiceList
           options={options.map((option) => option.text)}
           lang={optionLang}
@@ -340,7 +392,11 @@ function StudySession() {
         <p className="text-sm">
           {t("learn.feedback.correctAnswers")}:{" "}
           <span
-            lang={result.kind === "typing" ? result.entry.lang : undefined}
+            lang={
+              ["typing", "listening", "reverse_multiple_choice"].includes(result.kind)
+                ? result.entry.lang
+                : undefined
+            }
             className="font-medium"
           >
             {result.correctAnswers.join(", ")}

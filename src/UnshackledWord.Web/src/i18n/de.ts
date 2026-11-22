@@ -135,6 +135,8 @@ export const de = {
       introduction: "Neues Wort",
       multipleChoice: "Was bedeutet …",
       reverseMultipleChoice: "Welches Wort heißt …",
+      listening: "Hören",
+      verseContext: "Im Vers",
       typing: "Tippe die Lernform",
     },
     settings: {
@@ -166,6 +168,14 @@ export const de = {
     intro: {
       meanings: "Bedeutungen",
       continue: "Verstanden",
+    },
+    listening: {
+      play: "Abspielen",
+      failed: "Die Aufnahme konnte nicht abgespielt werden.",
+    },
+    verse: {
+      question: "Was steht für das markierte Wort?",
+      gap: "Lücke",
     },
     feedback: {
       correct: "✓ Richtig",

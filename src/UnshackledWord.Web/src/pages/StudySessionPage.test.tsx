@@ -479,3 +479,166 @@ describe("StudySessionPage typing", () => {
     expect(JSON.parse(String(request?.[1]?.body))).toMatchObject({ answers: ["μεσος", "η", "ον"] });
   });
 });
+
+// The listening card names no lemma: the options are the only Greek on the question.
+const listeningCard = {
+  seq: 4,
+  kind: "listening",
+  entry: { id: 56, lang: "grc", audioUrl: "https://audio.example/logos.mp3" },
+  options: [
+    { id: 0, text: "λαός", lang: "grc" },
+    { id: 1, text: "λόγος", lang: "grc" },
+    { id: 2, text: "λίθος", lang: "grc" },
+    { id: 3, text: "λύω", lang: "grc" },
+  ],
+};
+
+const listeningAnswer = {
+  seq: 4,
+  kind: "listening",
+  correct: false,
+  correctOptionId: 1,
+  correctAnswers: ["λόγος"],
+  given: "λαός",
+  entry,
+  strength: { before: 2, after: 1, change: "dropped" },
+  finished: true,
+  progress: progress(1, 2),
+  summary,
+};
+
+const verseContextCard = {
+  seq: 5,
+  kind: "verse_context",
+  entry,
+  options: [
+    { id: 0, text: "Licht" },
+    { id: 1, text: "Wort" },
+    { id: 2, text: "Leben" },
+    { id: 3, text: "Geist" },
+  ],
+  // The German hit word is a gap: empty text and `isGap`.
+  verse: {
+    bibleBookId: 43,
+    chapter: 1,
+    verse: 1,
+    fromRevision: true,
+    humanMade: false,
+    original: [
+      { position: 1, text: "Ἐν", isHit: false },
+      { position: 2, text: "ἀρχῇ", isHit: false },
+      { position: 3, text: "ἦν", isHit: false },
+      { position: 4, text: "ὁ", isHit: false },
+      { position: 5, text: "λόγος", isHit: true },
+    ],
+    german: [
+      { position: 1, text: "Im", isHit: false },
+      { position: 2, text: "Anfang", isHit: false },
+      { position: 3, text: "war", isHit: false },
+      { position: 4, text: "das", isHit: false },
+      { position: 5, text: "", isHit: true, isGap: true },
+    ],
+  },
+};
+
+// The answer carries the full verse: the German hit word is no gap any more.
+const verseContextAnswer = {
+  seq: 5,
+  kind: "verse_context",
+  correct: false,
+  correctOptionId: 1,
+  correctAnswers: ["Wort"],
+  given: "Licht",
+  entry,
+  strength: { before: 2, after: 1, change: "dropped" },
+  verse: {
+    ...verseContextCard.verse,
+    german: [
+      { position: 1, text: "Im", isHit: false },
+      { position: 2, text: "Anfang", isHit: false },
+      { position: 3, text: "war", isHit: false },
+      { position: 4, text: "das", isHit: false },
+      { position: 5, text: "Wort", isHit: true },
+    ],
+  },
+  finished: true,
+  progress: progress(1, 2),
+  summary,
+};
+
+/** A session with one card, answered with `answer`; the session ends after the answer. */
+function singleCardApi(card: object, answer: object) {
+  let answered = false;
+  const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+    const path = url.replace(/^\/api/, "");
+    const method = init?.method ?? "GET";
+    if (path === "/auth/me") return json(me);
+    if (path === "/meta-bible/structure") return json(fixtureStructure);
+    if (method === "POST" && path === "/vocab/sessions") {
+      return json({ ...started, newWords: 0, reviewWords: 1 });
+    }
+    if (method === "GET" && path === "/vocab/courses") return json({ courses: [] });
+    if (method === "GET" && path === "/vocab/sessions/7/next") {
+      if (!answered) {
+        return json({ sessionId: 7, finished: false, progress: progress(0, 1), card });
+      }
+      return json({ sessionId: 7, finished: true, progress: progress(1, 2), summary });
+    }
+    if (method === "POST" && path === "/vocab/sessions/7/answers") {
+      answered = true;
+      return json(answer);
+    }
+    return new Response("", { status: 404 });
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+describe("StudySessionPage listening and verse context", () => {
+  it("plays the audio on click and shows no lemma before the answer", async () => {
+    const plays: string[] = [];
+    class FakeAudio {
+      play = vi.fn(() => Promise.resolve());
+      pause = vi.fn();
+      constructor(url: string) {
+        plays.push(url);
+      }
+    }
+    vi.stubGlobal("Audio", FakeAudio);
+    singleCardApi(listeningCard, listeningAnswer);
+    const user = userEvent.setup();
+    renderSession();
+
+    expect(await screen.findByText("Hören")).toBeInTheDocument();
+    expect(document.querySelector('p[lang="grc"]')).toBeNull();
+    expect(screen.queryByText("λόγος, -ου, ὁ")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Abspielen" }));
+    expect(plays).toEqual(["https://audio.example/logos.mp3"]);
+
+    await user.click(screen.getByRole("button", { name: /λαός/ }));
+    expect(await screen.findByText("✗ Leider nicht")).toBeInTheDocument();
+    expect(screen.getByText(/^Richtig:/)).toHaveTextContent("Richtig: λόγος");
+  });
+
+  it("renders the gap without the German word, then the full verse with the reader link", async () => {
+    singleCardApi(verseContextCard, verseContextAnswer);
+    const user = userEvent.setup();
+    renderSession();
+
+    expect(await screen.findByText("Im Vers")).toBeInTheDocument();
+    expect(screen.getByText("λόγος", { selector: "mark" })).toBeInTheDocument();
+    expect(screen.getByText("Im Anfang war das")).not.toHaveTextContent("Wort");
+    expect(screen.getByRole("img", { name: "Lücke" })).toBeInTheDocument();
+    // No reader link before the answer.
+    expect(screen.queryByRole("link", { name: /1,1/ })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /Licht/ }));
+    expect(await screen.findByText("✗ Leider nicht")).toBeInTheDocument();
+    expect(screen.getByText(/^Richtig:/)).toHaveTextContent("Richtig: Wort");
+    expect(screen.getByText("Wort", { selector: "mark" }).parentElement).toHaveTextContent(
+      "Im Anfang war das Wort",
+    );
+    expect(screen.queryByRole("img", { name: "Lücke" })).toBeNull();
+    expect(screen.getByRole("link", { name: /1,1/ })).toHaveAttribute("href", "/bible/43/1#v1");
+  });
+});

@@ -112,6 +112,8 @@ export interface VocabSampleWord {
   text: string;
   transliteration?: string | null;
   isHit: boolean;
+  /** Verse-context question: the hit German word is a blank (its `text` is empty). */
+  isGap?: boolean;
 }
 
 /** A sample verse; the reader route is `/bible/{bibleBookId}/{chapter}#v{verse}`. */
