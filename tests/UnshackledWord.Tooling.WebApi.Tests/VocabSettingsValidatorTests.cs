@@ -13,12 +13,12 @@ public class VocabSettingsValidatorTests
     [InlineData("reverse_multiple_choice")]
     [InlineData("multiple_choice")]
     [InlineData("reverse_multiple_choice", "listening", "verse_context")]
-    [InlineData("typing")]
     public void Accepts_known_toggleable_types_when_one_multiple_choice_type_stays_on(params string[] disabled) =>
         IsValid(disabled).ShouldBeTrue();
 
     [Theory]
     [InlineData("introduction")]
+    [InlineData("typing")]
     [InlineData("nonsense")]
     public void Rejects_types_that_cannot_be_turned_off(string type) => IsValid(type).ShouldBeFalse();
 

@@ -213,7 +213,8 @@ public sealed class VocabSessionService
                 continue;
             }
 
-            VocabSessionPlanner.Serve(plan, step, quiz.Value.Kind, quiz.Value.Options);
+            var served = VocabSessionPlanner.Serve(plan, step, quiz.Value.Kind, quiz.Value.Options);
+            served.VerseRefId = quiz.Value.VerseRefId;
         }
 
         await VocabSessionRepository.SaveSessionAsync(c, t, sessionId, JsonSerializer.Serialize(plan, Json), null);
@@ -230,7 +231,7 @@ public sealed class VocabSessionService
     /// Picks the quiz type of a question: the candidates of <see cref="VocabQuizTypes.Candidates"/> (age ladder, learner's switches, fallback) in
     /// order, the first one that can be built wins. Later rows add their builders to the switch. Null when no type can be built.
     /// </summary>
-    private async Task<(string Kind, List<VocabPendingOption> Options)?> BuildQuizAsync(
+    private async Task<(string Kind, List<VocabPendingOption> Options, int? VerseRefId)?> BuildQuizAsync(
         IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings, int ageDays, IReadOnlySet<string> disabled)
     {
         var candidates = VocabQuizTypes.Candidates(ageDays, disabled, _random);
@@ -242,16 +243,34 @@ public sealed class VocabSessionService
 
         foreach (var type in candidates)
         {
-            var options = type switch
+            int? verseRefId = null;
+            List<VocabPendingOption>? options;
+
+            switch (type)
             {
-                VocabQuizTypes.ReverseMultipleChoice => await BuildReverseOptionsAsync(c, t, plan, entry, meanings),
-                VocabQuizTypes.Typing => VocabText.Segment(FormOf(entry)).Any(x => x.IsGroup) ? [] : null,
-                _ => await BuildOptionsAsync(c, t, plan, entry, meanings),
-            };
+                case VocabQuizTypes.ReverseMultipleChoice:
+                    options = await BuildReverseOptionsAsync(c, t, plan, entry, meanings);
+                    break;
+                case VocabQuizTypes.Listening:
+                    // the audio is the prompt: no audio (or no storage to sign a URL) means no listening question
+                    options = VocabAudio.UrlFor(_storage, entry.AudioObjectKey) is null ? null : await BuildReverseOptionsAsync(c, t, plan, entry, meanings);
+                    break;
+                case VocabQuizTypes.VerseContext:
+                    var quizVerse = _entries is null ? null : await _entries.GetQuizVerseAsync(entry.Id, meanings.Select(m => m.German).ToList());
+                    options = quizVerse is null ? null : await BuildOptionsAsync(c, t, plan, entry, meanings, quizVerse.MeaningIndex);
+                    verseRefId = quizVerse?.RefId;
+                    break;
+                case VocabQuizTypes.Typing:
+                    options = VocabText.Segment(FormOf(entry)).Any(x => x.IsGroup) ? [] : null;
+                    break;
+                default:
+                    options = await BuildOptionsAsync(c, t, plan, entry, meanings);
+                    break;
+            }
 
             if (options is not null)
             {
-                return (type, options);
+                return (type, options, verseRefId);
             }
         }
 
@@ -280,12 +299,12 @@ public sealed class VocabSessionService
 
     private static string FormOf(VocabSessionRepository.EntryRow entry) => entry.DictionaryForm ?? entry.Lemma;
 
-    /// <summary>The correct option is the entry's top accepted meaning; three distractors by tier; shuffled. Null when no distractor exists at all.</summary>
-    private async Task<List<VocabPendingOption>?> BuildOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings)
+    /// <summary>The correct option is the entry's top accepted meaning (verse context: the meaning the verse's rendering matches); three distractors by tier; shuffled. Null when no distractor exists at all.</summary>
+    private async Task<List<VocabPendingOption>?> BuildOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings, int meaningIndex = 0)
     {
         var waveIds = plan.Words.Where(w => w.InWave && !w.Dropped && w.EntryId != entry.Id).Select(w => w.EntryId).ToList();
         var pool = await VocabSessionRepository.GetDistractorPoolAsync(c, t, plan.Track, entry.Id, entry.Pos, entry.Rank ?? 0, waveIds);
-        var prompt = new VocabDistractorPrompt(entry.Id, entry.Pos, entry.Rank ?? 0, meanings[0].German, meanings.Select(m => m.German).ToList());
+        var prompt = new VocabDistractorPrompt(entry.Id, entry.Pos, entry.Rank ?? 0, meanings[meaningIndex].German, meanings.Select(m => m.German).ToList());
         var distractors = VocabDistractorPicker.Pick(prompt, pool, waveIds.ToHashSet(), VocabSessionRules.OptionCount - 1, _random);
 
         if (distractors.Count == 0)
@@ -294,7 +313,7 @@ public sealed class VocabSessionService
         }
 
         var options = distractors.Select(d => new VocabPendingOption { EntryId = d.EntryId, Text = d.TopMeaning })
-            .Append(new VocabPendingOption { EntryId = entry.Id, Text = meanings[0].German })
+            .Append(new VocabPendingOption { EntryId = entry.Id, Text = meanings[meaningIndex].German })
             .OrderBy(_ => _random.Next())
             .ToList();
 
@@ -306,7 +325,14 @@ public sealed class VocabSessionService
         var entry = (await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId]))[pending.EntryId];
         var reverse = pending.Kind == VocabQuizTypes.ReverseMultipleChoice;
         var typing = pending.Kind == VocabQuizTypes.Typing;
-        var card = new VocabCardResponse { Seq = pending.Seq, Kind = pending.Kind, Entry = reverse || typing ? ToHiddenEntry(entry) : ToEntry(entry) };
+        var listening = pending.Kind == VocabQuizTypes.Listening;
+        var verseContext = pending.Kind == VocabQuizTypes.VerseContext;
+        var card = new VocabCardResponse
+        {
+            Seq = pending.Seq,
+            Kind = pending.Kind,
+            Entry = listening ? ToListeningEntry(entry) : reverse || typing ? ToHiddenEntry(entry) : ToEntry(entry)
+        };
 
         if (pending.Kind == "introduction")
         {
@@ -321,6 +347,15 @@ public sealed class VocabSessionService
             card.Layout = VocabText.Segment(FormOf(entry)).Select(x => x.IsGroup
                 ? new VocabTypingPartResponse { Kind = "group", Length = x.Length }
                 : new VocabTypingPartResponse { Kind = "separator", Text = x.Text }).ToList();
+        }
+        else if (listening)
+        {
+            card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text, Lang = Lang(entry.Track) }).ToList();
+        }
+        else if (verseContext)
+        {
+            card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text }).ToList();
+            card.Verse = await QuizVerseAsync(c, t, pending, withGaps: true);
         }
         else if (reverse)
         {
@@ -365,7 +400,7 @@ public sealed class VocabSessionService
         var now = _time.GetUtcNow();
         var entries = await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId]);
         var entry = entries[pending.EntryId];
-        var accepted = pending.Kind is VocabQuizTypes.ReverseMultipleChoice or VocabQuizTypes.Typing
+        var accepted = pending.Kind is VocabQuizTypes.ReverseMultipleChoice or VocabQuizTypes.Listening or VocabQuizTypes.Typing
             ? new List<string> { FormOf(entry) }
             : (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].Select(m => m.German).ToList();
         var response = new VocabAnswerResponse { Seq = seq, Kind = pending.Kind, Entry = ToEntry(entry), CorrectAnswers = accepted };
@@ -436,7 +471,7 @@ public sealed class VocabSessionService
             response.Strength = new VocabStrengthResponse { Before = strengthBefore, After = strengthAfter, Change = Change(strengthBefore, strengthAfter) };
         }
 
-        response.Verse = await VerseAsync(pending.EntryId);
+        response.Verse = pending.Kind == VocabQuizTypes.VerseContext ? await QuizVerseAsync(c, t, pending, withGaps: false) : await VerseAsync(pending.EntryId);
 
         // the answer closes the session when nothing is left (all quizzed, open wave passed, no word left to introduce)
         var finished = VocabSessionPlanner.Next(plan).Kind == VocabSessionStepKind.Done;
@@ -508,6 +543,36 @@ public sealed class VocabSessionService
 
     private async Task<VocabSampleVerseResponse?> VerseAsync(int entryId) =>
         _entries is null ? null : await _entries.GetSampleVerseAsync(entryId);
+
+    /// <summary>The verse of a verse-context card. With gaps the German hit words (the rendering) are blanked, so the card does not give the answer away.</summary>
+    private async Task<VocabSampleVerseResponse?> QuizVerseAsync(IDbConnection c, IDbTransaction t, VocabPendingCard pending, bool withGaps)
+    {
+        if (_entries is null)
+        {
+            return null;
+        }
+
+        var meanings = (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].Select(m => m.German).ToList();
+        var quiz = await _entries.GetQuizVerseAsync(pending.EntryId, meanings, pending.VerseRefId);
+
+        if (quiz is null || !withGaps)
+        {
+            return quiz?.Verse;
+        }
+
+        var verse = quiz.Verse;
+        verse.German = verse.German.Select(w => w.IsHit ? new VocabSampleWordResponse { Position = w.Position, Text = string.Empty, IsHit = true, IsGap = true } : w).ToList();
+
+        return verse;
+    }
+
+    /// <summary>The entry of a listening card: the audio is the prompt, so only the language and the audio URL are sent.</summary>
+    private VocabCardEntryResponse ToListeningEntry(VocabSessionRepository.EntryRow e) => new()
+    {
+        Id = e.Id,
+        Lang = Lang(e.Track),
+        AudioUrl = VocabAudio.UrlFor(_storage, e.AudioObjectKey)
+    };
 
     private VocabCardEntryResponse ToEntry(VocabSessionRepository.EntryRow e) => new()
     {

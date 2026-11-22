@@ -81,6 +81,9 @@ public sealed class VocabSampleWordResponse
     public string Text { get; set; } = string.Empty;
     public string? Transliteration { get; set; }
     public bool IsHit { get; set; }
+
+    /// <summary>Verse-context cards only: the word is blanked out (<c>text</c> is empty; <c>isHit</c> is true). The answer returns the verse without gaps.</summary>
+    public bool IsGap { get; set; }
 }
 
 /// <summary>A verse with a head link of one of the entry's keys. Reader route: <c>/bible/{bibleBookId}/{chapter}#v{verse}</c>.</summary>

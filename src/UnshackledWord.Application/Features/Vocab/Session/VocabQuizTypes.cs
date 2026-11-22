@@ -5,7 +5,7 @@ public sealed record VocabQuizRung(string Type, int FromDay);
 
 /// <summary>
 /// The quiz ladder (roadmap 0022.9, Lexio): which quiz types exist, from which word age each is allowed and which of them the learner may turn off.
-/// Types the engine does not build yet are left out of <see cref="Implemented"/>; later rows (typing, listening, verse context) add themselves
+/// Types the engine does not build yet are left out of <see cref="Implemented"/>; later rows add themselves
 /// there and give the service a builder, nothing else changes.
 /// </summary>
 public static class VocabQuizTypes
@@ -18,7 +18,7 @@ public static class VocabQuizTypes
     public const string Typing = "typing";
 
     /// <summary>What the learner may turn off (the introduction is no quiz).</summary>
-    public static readonly IReadOnlyList<string> Toggleable = [MultipleChoice, ReverseMultipleChoice, Typing, Listening, VerseContext];
+    public static readonly IReadOnlyList<string> Toggleable = [MultipleChoice, ReverseMultipleChoice, Listening, VerseContext];
 
     /// <summary>The two multiple-choice types; at least one of them stays on.</summary>
     public static readonly IReadOnlyList<string> MultipleChoiceTypes = [MultipleChoice, ReverseMultipleChoice];
@@ -33,7 +33,7 @@ public static class VocabQuizTypes
     ];
 
     /// <summary>The types the engine can build at the moment. Extend when a later row implements one.</summary>
-    public static readonly IReadOnlyList<string> Implemented = [MultipleChoice, ReverseMultipleChoice, Typing];
+    public static readonly IReadOnlyList<string> Implemented = [MultipleChoice, ReverseMultipleChoice, Listening, VerseContext, Typing];
 
     /// <summary>Whole days between the card's creation and now (never negative).</summary>
     public static int AgeDays(DateTime createdAtUtc, DateTime nowUtc) => Math.Max(0, (int)Math.Floor((nowUtc - createdAtUtc).TotalDays));

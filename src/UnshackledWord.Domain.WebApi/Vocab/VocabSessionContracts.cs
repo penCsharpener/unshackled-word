@@ -85,7 +85,7 @@ public sealed class VocabCardResponse
     /// <summary>Position on the session's timeline; <c>answers</c> must send it back.</summary>
     public int Seq { get; set; }
 
-    /// <summary><c>introduction</c>, <c>multiple_choice</c>, <c>reverse_multiple_choice</c> or <c>typing</c>.</summary>
+    /// <summary><c>introduction</c>, <c>multiple_choice</c>, <c>reverse_multiple_choice</c>, <c>listening</c>, <c>verse_context</c> or <c>typing</c>.</summary>
     public string Kind { get; set; } = string.Empty;
 
     public VocabCardEntryResponse Entry { get; set; } = new();
@@ -96,7 +96,7 @@ public sealed class VocabCardResponse
     /// <summary>Reverse multiple choice only: the German meaning to find the lemma for (the entry's top accepted meaning). <c>entry</c> is then not the answer to show; the UI shows only this prompt.</summary>
     public string? Prompt { get; set; }
 
-    /// <summary>Multiple choice and reverse multiple choice: the options in display order (German for MC, lemmas with <c>lang</c> for reverse MC).</summary>
+    /// <summary>The options in display order: German for MC and verse context, lemmas with <c>lang</c> for reverse MC and listening. Listening: <c>entry</c> carries only <c>id</c>, <c>lang</c> and <c>audioUrl</c> (the audio is the prompt).</summary>
     public List<VocabCardOptionResponse>? Options { get; set; }
 
     /// <summary>Typing only: the German meaning(s) to type the lemma form for (top accepted meaning first). <c>entry</c> then carries only <c>lang</c> and <c>pos</c>.</summary>
@@ -105,7 +105,10 @@ public sealed class VocabCardResponse
     /// <summary>Typing only: the groups and separators of the target form; <c>answers</c> must send one string per <c>group</c> part, in order.</summary>
     public List<VocabTypingPartResponse>? Layout { get; set; }
 
-    /// <summary>Introduction only: one sample verse with the word highlighted (<c>isHit</c> marks the highlighted words of <c>original</c> and <c>german</c>); null without one.</summary>
+    /// <summary>
+    /// Introduction: one sample verse with the word highlighted (<c>isHit</c> marks the highlighted words of <c>original</c> and <c>german</c>); null without one.
+    /// Verse context: the question's verse, the original with the word highlighted and the German rendering words blanked (<c>isGap</c>, no text).
+    /// </summary>
     public VocabSampleVerseResponse? Verse { get; set; }
 }
 
@@ -205,7 +208,7 @@ public sealed class VocabAnswerResponse
     /// <summary>When the card is due next.</summary>
     public DateTimeOffset? Due { get; set; }
 
-    /// <summary>One sample verse with the word highlighted; null without one.</summary>
+    /// <summary>One sample verse with the word highlighted; null without one. For a verse-context question it is the verse asked about, whole (no gaps).</summary>
     public VocabSampleVerseResponse? Verse { get; set; }
 
     public bool Finished { get; set; }

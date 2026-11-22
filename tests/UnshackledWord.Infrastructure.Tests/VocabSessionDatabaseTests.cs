@@ -2,6 +2,7 @@ using System.Data;
 using System.Text.Json;
 using Dapper;
 using Npgsql;
+using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Vocab;
 using UnshackledWord.Application.Features.Vocab.Session;
 using UnshackledWord.Domain.WebApi.Vocab;
@@ -547,7 +548,7 @@ public class VocabSessionDatabaseTests
         var saved = await VocabSettingsService.SetAsync(c, t, userId, ["reverse_multiple_choice", "reverse_multiple_choice"]);
 
         saved.DisabledQuizTypes.ShouldBe(["reverse_multiple_choice"]);
-        saved.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice", "typing"]);
+        saved.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice", "listening", "verse_context"]);
         (await VocabSettingsService.GetAsync(c, t, userId)).DisabledQuizTypes.ShouldBe(["reverse_multiple_choice"]);
 
         var cards = await PlayReviewSessionAsync(c, t, service, time, userId, cardAgeHours: 80);
@@ -577,7 +578,7 @@ public class VocabSessionDatabaseTests
 
         var initial = await VocabSettingsService.GetAsync(c, t, userId);
         initial.DisabledQuizTypes.ShouldBeEmpty();
-        initial.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice", "typing"]);
+        initial.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice", "listening", "verse_context"]);
 
         await VocabSettingsService.SetAsync(c, t, userId, ["listening", "reverse_multiple_choice"]);
         (await VocabSettingsService.GetAsync(c, t, userId)).DisabledQuizTypes.ShouldBe(["reverse_multiple_choice", "listening"]);
@@ -629,5 +630,127 @@ public class VocabSessionDatabaseTests
             picked.ShouldNotContain(p => p.EntryId == twin);
             picked.ShouldAllBe(p => p.Form != null && !p.AcceptedMeanings!.Select(VocabDistractorPicker.Fold).Contains(VocabDistractorPicker.Fold(meanings[0])));
         }
+    });
+
+    // ---- listening and verse context (0022.11) -------------------------------------------------------------------------------------
+
+    private const int LogosEntryId = 56;
+
+    private sealed class FakeStorage : IObjectStorage
+    {
+        public Task PutAsync(string key, Stream content, string contentType, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public Task DeleteAsync(string key, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public string GetReadUrl(string key, TimeSpan? lifetime = null) => "https://audio.test/" + key;
+
+        public Task<bool> BucketReachableAsync(CancellationToken cancellationToken = default) => Task.FromResult(true);
+    }
+
+    private sealed class TxReader(IDbConnection connection, IDbTransaction transaction) : IDbReader
+    {
+        public Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object? param = null) => connection.QueryFirstOrDefaultAsync<T>(sql, param, transaction);
+
+        public async Task<IEnumerable<T>> ReadAsListAsync<T>(string sql, object? param = null) => await connection.QueryAsync<T>(sql, param, transaction);
+
+        public Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null) => connection.ExecuteScalarAsync<T>(sql, param, transaction);
+
+        public Task<List<T>> ReadMultipleAsListAsync<T>(string sql, object? param, Func<IMultiDbReader, Task<List<T>>> mappingFunc, CancellationToken token = default) =>
+            throw new NotSupportedException();
+    }
+
+    /// <summary>A review session with λόγος as the only word (card aged 36 hours: typing, which cannot be turned off, is only the fallback) and only <paramref name="allowed"/> turned on.</summary>
+    private static async Task<(VocabSessionService Service, int UserId, int SessionId)> LogosSessionAsync(IDbConnection c, IDbTransaction t, string allowed, bool audio, bool withEntries = true)
+    {
+        var userId = await NewUserAsync(c, t);
+        var time = new FixedTime(T0);
+        var service = new VocabSessionService(null!, new VocabScheduler(), time, withEntries ? new VocabEntryRepository(new TxReader(c, t)) : null, new Random(1), new FakeStorage());
+        var entry = await c.QuerySingleAsync<(string Lemma, int ContentVersion)>("""SELECT e."Lemma", e."ContentVersion" FROM "unshackled-word"."VocabEntries" e WHERE e."Id" = @Id""", new { Id = LogosEntryId }, t);
+        entry.Lemma.Normalize(System.Text.NormalizationForm.FormC).ShouldBe("λόγος");
+        await c.ExecuteAsync("""UPDATE "unshackled-word"."VocabEntries" SET "AudioObjectKey" = @Key WHERE "Id" = @Id""", new { Key = audio ? "vocab/g/56-test.mp3" : null, Id = LogosEntryId }, t);
+        await VocabSettingsService.SetAsync(c, t, userId, VocabQuizTypes.Toggleable.Where(x => x != allowed && x != "typing"));
+        await VocabSessionRepository.EnsureCardAsync(c, t, userId, LogosEntryId, entry.ContentVersion, T0.UtcDateTime.AddHours(-36));
+
+        var course = (await VocabSessionRepository.GetCourseAsync(c, t, Course))!;
+        var plan = new VocabSessionPlan { CourseCode = Course, Track = course.Track };
+        plan.Words.Add(new VocabPlanWord { EntryId = LogosEntryId });
+        var sessionId = await VocabSessionRepository.InsertSessionAsync(c, t, userId, course.Id, T0.UtcDateTime, JsonSerializer.Serialize(plan, Web));
+
+        return (service, userId, sessionId);
+    }
+
+    [Fact]
+    public async Task Listening_WithAudio_IsAsked_WithOnlyLangAndAudioUrl_AndOptionsAreLemmas() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, userId, sessionId) = await LogosSessionAsync(c, t, "listening", audio: true);
+        var next = Ok(await service.NextAsync(c, t, userId, sessionId));
+        var card = next.Card.ShouldNotBeNull();
+
+        var lemma = await c.QuerySingleAsync<string>("""SELECT COALESCE(e."DictionaryForm", e."Lemma") FROM "unshackled-word"."VocabEntries" e WHERE e."Id" = @Id""", new { Id = LogosEntryId }, t);
+
+        card.Kind.ShouldBe("listening");
+        card.Entry.AudioUrl.ShouldBe("https://audio.test/vocab/g/56-test.mp3");
+        card.Entry.Lang.ShouldBe("grc");
+        card.Entry.Lemma.ShouldBeEmpty();
+        card.Entry.DictionaryForm.ShouldBeNull();
+        card.Entry.Transliteration.ShouldBeNull();
+        card.Options.ShouldNotBeNull().Count.ShouldBe(4);
+        card.Options.ShouldAllBe(o => o.Lang == "grc");
+        card.Options.Select(o => o.Text).ShouldContain(lemma);
+        JsonSerializer.Serialize(next, Web).ToLowerInvariant().ShouldNotContain("correct");
+
+        var correct = card.Options.First(o => o.Text == lemma).Id;
+        var answer = Ok(await service.AnswerAsync(c, t, userId, sessionId, card.Seq, correct, 800));
+
+        answer.Correct.ShouldBeTrue();
+        answer.Kind.ShouldBe("listening");
+        answer.CorrectAnswers.ShouldBe([lemma]);
+    });
+
+    [Fact]
+    public async Task Listening_WithoutAudio_IsNeverAsked() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, userId, sessionId) = await LogosSessionAsync(c, t, "listening", audio: false);
+        var next = Ok(await service.NextAsync(c, t, userId, sessionId));
+
+        next.Card.ShouldNotBeNull().Kind.ShouldBe("typing");
+    });
+
+    [Fact]
+    public async Task VerseContext_BlanksTheGermanRendering_AndTheAnswerReturnsTheWholeVerse() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, userId, sessionId) = await LogosSessionAsync(c, t, "verse_context", audio: false);
+        var next = Ok(await service.NextAsync(c, t, userId, sessionId));
+        var card = next.Card.ShouldNotBeNull();
+
+        card.Kind.ShouldBe("verse_context");
+        card.Options.ShouldNotBeNull().Count.ShouldBe(4);
+
+        var verse = card.Verse.ShouldNotBeNull();
+        verse.Original.ShouldContain(w => w.IsHit);
+        verse.German.Where(w => w.IsHit).ShouldNotBeEmpty();
+        verse.German.Where(w => w.IsHit).ShouldAllBe(w => w.IsGap && w.Text == string.Empty);
+        verse.German.Where(w => !w.IsHit).ShouldAllBe(w => !w.IsGap && w.Text.Length > 0);
+
+        // idempotent: the same card and verse again
+        JsonSerializer.Serialize(Ok(await service.NextAsync(c, t, userId, sessionId)).Card, Web).ShouldBe(JsonSerializer.Serialize(card, Web));
+        JsonSerializer.Serialize(next, Web).ToLowerInvariant().ShouldNotContain("\"correct");
+
+        var correct = card.Options.First(o => o.Id >= 0 && o.Text.Length > 0).Id;
+        var answer = Ok(await service.AnswerAsync(c, t, userId, sessionId, card.Seq, correct, 800));
+        var full = answer.Verse.ShouldNotBeNull();
+
+        (full.BibleBookId, full.Chapter, full.Verse).ShouldBe((verse.BibleBookId, verse.Chapter, verse.Verse));
+        full.German.ShouldAllBe(w => !w.IsGap && w.Text.Length > 0);
+        full.German.Where(w => w.IsHit).ShouldNotBeEmpty();
+        answer.CorrectAnswers.ShouldNotBeEmpty();
+    });
+
+    [Fact]
+    public async Task VerseContext_WithoutAVerseSource_IsNeverAsked() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, userId, sessionId) = await LogosSessionAsync(c, t, "verse_context", audio: false, withEntries: false);
+
+        Ok(await service.NextAsync(c, t, userId, sessionId)).Card.ShouldNotBeNull().Kind.ShouldBe("typing");
     });
 }

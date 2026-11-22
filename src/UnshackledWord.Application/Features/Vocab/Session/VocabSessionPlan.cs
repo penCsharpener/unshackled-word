@@ -80,13 +80,16 @@ public sealed class VocabPendingCard
 {
     public int Seq { get; set; }
 
-    /// <summary><c>introduction</c>, <c>multiple_choice</c> or <c>reverse_multiple_choice</c>.</summary>
+    /// <summary><c>introduction</c>, <c>multiple_choice</c>, <c>reverse_multiple_choice</c>, <c>listening</c>, <c>verse_context</c> or <c>typing</c>.</summary>
     public string Kind { get; set; } = string.Empty;
 
     public int EntryId { get; set; }
 
     /// <summary>MC options in display order (the correct one is the option of <see cref="EntryId"/>). Never sent to the client with that mark.</summary>
     public List<VocabPendingOption> Options { get; set; } = [];
+
+    /// <summary>Verse context only: the verse (<c>HebRefId</c>) the question was built on, so repeated <c>next</c> calls and the answer use the same verse.</summary>
+    public int? VerseRefId { get; set; }
 }
 
 public sealed class VocabPendingOption

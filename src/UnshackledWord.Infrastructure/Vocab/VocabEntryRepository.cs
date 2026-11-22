@@ -8,6 +8,9 @@ namespace UnshackledWord.Infrastructure.Vocab;
 /// <c>StatsVocabRenderings</c> summed over the keys, and a few sample verses. Samples read the live text like the view does: a verse with an
 /// Elberfelder 2027 variant (<c>Revisions."Code" = 'elb2027'</c>) uses the variant's links, never its Elb1871 links.
 /// </summary>
+/// <summary>The verse chosen for a verse-context question, its <c>HebRefId</c> and the index of the accepted meaning its rendering matches (0 when none).</summary>
+public sealed record VocabQuizVerse(VocabSampleVerseResponse Verse, int RefId, int MeaningIndex);
+
 public sealed class VocabEntryRepository
 {
     public const int SampleVerseCount = 3;
@@ -320,6 +323,67 @@ public sealed class VocabEntryRepository
         var keys = (await _dbReader.ReadAsListAsync<VocabEntryKeyResponse>(SelectKeys, new { Id = id })).Select(k => k.StrongsKey).ToArray();
 
         return (await GetSampleVersesAsync(track, keys, 1)).FirstOrDefault();
+    }
+
+    /// <summary>How many candidate verses the verse-context choice looks at.</summary>
+    private const int QuizVerseCandidates = 30;
+
+    /// <summary>
+    /// The verse of a verse-context question. Candidates are the entry's head-linked verses (human-made links and short verses first, as in the
+    /// sample query). Among them the order is: a verse whose rendering (the hit German words) is an accepted meaning, then human-made links,
+    /// then fewer German words. With <paramref name="refId"/> (the verse a served card was built on) that verse is returned if it is still a
+    /// candidate. <c>MeaningIndex</c> is the accepted meaning the rendering matches, or 0 when none does.
+    /// </summary>
+    public async Task<VocabQuizVerse?> GetQuizVerseAsync(int id, IReadOnlyList<string> meanings, int? refId = null)
+    {
+        var track = await _dbReader.ReadFirstOrDefaultAsync<string>(SelectTrack, new { Id = id });
+
+        if (track is null)
+        {
+            return null;
+        }
+
+        var keys = (await _dbReader.ReadAsListAsync<VocabEntryKeyResponse>(SelectKeys, new { Id = id })).Select(k => k.StrongsKey).ToArray();
+        var verses = await GetSampleVersesAsync(track, keys, QuizVerseCandidates);
+
+        var ranked = verses
+            .Select(v => (Verse: v, Match: MatchMeaning(v, meanings)))
+            .OrderBy(x => x.Match is null ? 1 : 0)
+            .ThenBy(x => x.Verse.HumanMade ? 0 : 1)
+            .ThenBy(x => x.Verse.German.Count)
+            .ThenBy(x => x.Verse.BibleBookId)
+            .ThenBy(x => x.Verse.Chapter)
+            .ThenBy(x => x.Verse.Verse)
+            .ToList();
+
+        var chosen = ranked.FirstOrDefault(x => refId is not null && RefId(x.Verse) == refId);
+
+        if (chosen.Verse is null)
+        {
+            chosen = ranked.FirstOrDefault();
+        }
+
+        return chosen.Verse is null ? null : new VocabQuizVerse(chosen.Verse, RefId(chosen.Verse), chosen.Match ?? 0);
+    }
+
+    private static int RefId(VocabSampleVerseResponse v) => v.BibleBookId * 1_000_000 + v.Chapter * 1_000 + v.Verse;
+
+    /// <summary>Index of the first accepted meaning the hit German words render (the word, or a longer form that starts with it), else null.</summary>
+    private static int? MatchMeaning(VocabSampleVerseResponse verse, IReadOnlyList<string> meanings)
+    {
+        var hits = verse.German.Where(w => w.IsHit).Select(w => w.Text.Trim().Trim('.', ',', ';', ':', '!', '?', '"', '„', '“', '»', '«', '(', ')', '-', '\'').ToLowerInvariant()).Where(x => x.Length > 0).ToList();
+
+        for (var i = 0; i < meanings.Count; i++)
+        {
+            var meaning = meanings[i].Trim().ToLowerInvariant();
+
+            if (hits.Any(h => h == meaning || meaning.Length >= 3 && h.StartsWith(meaning, StringComparison.Ordinal)) || string.Join(" ", hits) == meaning)
+            {
+                return i;
+            }
+        }
+
+        return null;
     }
 
     private async Task<List<VocabSampleVerseResponse>> GetSampleVersesAsync(string track, string[] keys, int take = SampleVerseCount)
