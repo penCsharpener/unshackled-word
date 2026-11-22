@@ -61,6 +61,9 @@ public sealed class VocabCardOptionResponse
     public int Id { get; set; }
 
     public string Text { get; set; } = string.Empty;
+
+    /// <summary>Reverse MC only: <c>grc</c> or <c>he</c>, the script of the lemma options (script, font and direction); omitted for German options.</summary>
+    public string? Lang { get; set; }
 }
 
 /// <summary>The card to show. It never says which MC option is correct.</summary>
@@ -69,7 +72,7 @@ public sealed class VocabCardResponse
     /// <summary>Position on the session's timeline; <c>answers</c> must send it back.</summary>
     public int Seq { get; set; }
 
-    /// <summary><c>introduction</c> or <c>multiple_choice</c>.</summary>
+    /// <summary><c>introduction</c>, <c>multiple_choice</c> or <c>reverse_multiple_choice</c>.</summary>
     public string Kind { get; set; } = string.Empty;
 
     public VocabCardEntryResponse Entry { get; set; } = new();
@@ -77,7 +80,10 @@ public sealed class VocabCardResponse
     /// <summary>Introduction only: the accepted meanings in rank order with counts.</summary>
     public List<VocabMeaningResponse>? Meanings { get; set; }
 
-    /// <summary>Multiple choice only: the German options in display order.</summary>
+    /// <summary>Reverse multiple choice only: the German meaning to find the lemma for (the entry's top accepted meaning). <c>entry</c> is then not the answer to show; the UI shows only this prompt.</summary>
+    public string? Prompt { get; set; }
+
+    /// <summary>Multiple choice and reverse multiple choice: the options in display order (German for MC, lemmas with <c>lang</c> for reverse MC).</summary>
     public List<VocabCardOptionResponse>? Options { get; set; }
 
     /// <summary>Introduction only: one sample verse with the word highlighted (<c>isHit</c> marks the highlighted words of <c>original</c> and <c>german</c>); null without one.</summary>
@@ -157,10 +163,10 @@ public sealed class VocabAnswerResponse
     /// <summary>Judged on the server. An introduction is always true.</summary>
     public bool Correct { get; set; }
 
-    /// <summary>The option that was correct (the entry's top meaning); null for an introduction.</summary>
+    /// <summary>The option that was correct (the entry's top meaning, or its lemma in reverse MC); null for an introduction.</summary>
     public int? CorrectOptionId { get; set; }
 
-    /// <summary>Every accepted meaning of the entry (any of them is right).</summary>
+    /// <summary>Every accepted meaning of the entry (any of them is right); in reverse MC the entry's lemma form (dictionary form, else lemma).</summary>
     public List<string> CorrectAnswers { get; set; } = [];
 
     /// <summary>The text of the option the learner picked.</summary>

@@ -65,6 +65,9 @@ public static class VocabSessionRepository
         public string? Pos { get; init; }
         public int Rank { get; init; }
         public string TopMeaning { get; init; } = string.Empty;
+        public string Lemma { get; init; } = string.Empty;
+        public string? DictionaryForm { get; init; }
+        public string[] Meanings { get; init; } = [];
     }
 
     public sealed record ReviewLogEntry(
@@ -171,6 +174,26 @@ public static class VocabSessionRepository
         FOR UPDATE
         """;
 
+    private const string SelectCardCreatedAt = """
+        SELECT c."CreatedAt"
+        FROM "unshackled-word"."VocabCards" c
+        WHERE 1=1
+            AND c."UserId" = @UserId
+            AND c."VocabEntryId" = @EntryId
+        """;
+
+    private const string SelectDisabledQuizTypes = """
+        SELECT s."DisabledQuizTypes"
+        FROM "unshackled-word"."VocabUserSettings" s
+        WHERE s."UserId" = @UserId
+        """;
+
+    private const string UpsertDisabledQuizTypes = """
+        INSERT INTO "unshackled-word"."VocabUserSettings" ("UserId", "DisabledQuizTypes")
+        VALUES (@UserId, @Disabled)
+        ON CONFLICT ("UserId") DO UPDATE SET "DisabledQuizTypes" = EXCLUDED."DisabledQuizTypes"
+        """;
+
     private const string InsertCard = """
         INSERT INTO "unshackled-word"."VocabCards" ("UserId", "VocabEntryId", "State", "Stability", "Difficulty", "Due", "Reps", "Lapses", "LastReview", "CreatedAt", "SeenContentVersion")
         VALUES (@UserId, @EntryId, 'new', 0, 0, @Now, 0, 0, NULL, @Now, @ContentVersion)
@@ -232,6 +255,11 @@ public static class VocabSessionRepository
              , e."Pos"
              , e."FrequencyRank" AS "Rank"
              , m."German"        AS "TopMeaning"
+             , e."Lemma"
+             , e."DictionaryForm"
+             , ARRAY(SELECT x."German"
+                     FROM "unshackled-word"."VocabMeanings" x
+                     WHERE x."VocabEntryId" = e."Id" AND x."IsAccepted") AS "Meanings"
         FROM "unshackled-word"."VocabEntries" e
             CROSS JOIN LATERAL (SELECT m."German"
                                 FROM "unshackled-word"."VocabMeanings" m
@@ -294,6 +322,16 @@ public static class VocabSessionRepository
     public static async Task<DueCardRow?> GetCardForUpdateAsync(IDbConnection c, IDbTransaction t, int userId, int entryId) =>
         await c.QueryFirstOrDefaultAsync<DueCardRow>(SelectCard, new { UserId = userId, EntryId = entryId }, t);
 
+    /// <summary>When the user's card of the entry was created (the word's age starts there); null without a card.</summary>
+    public static async Task<DateTime?> GetCardCreatedAtAsync(IDbConnection c, IDbTransaction t, int userId, int entryId) =>
+        await c.QueryFirstOrDefaultAsync<DateTime?>(SelectCardCreatedAt, new { UserId = userId, EntryId = entryId }, t);
+
+    public static async Task<string[]> GetDisabledQuizTypesAsync(IDbConnection c, IDbTransaction t, int userId) =>
+        await c.QueryFirstOrDefaultAsync<string[]>(SelectDisabledQuizTypes, new { UserId = userId }, t) ?? [];
+
+    public static async Task SetDisabledQuizTypesAsync(IDbConnection c, IDbTransaction t, int userId, string[] disabled) =>
+        await c.ExecuteAsync(UpsertDisabledQuizTypes, new { UserId = userId, Disabled = disabled }, t);
+
     /// <summary>Creates the card of an introduced entry (state new, due now); an existing card is left alone.</summary>
     public static async Task EnsureCardAsync(IDbConnection c, IDbTransaction t, int userId, int entryId, int contentVersion, DateTime now) =>
         await c.ExecuteAsync(InsertCard, new { UserId = userId, EntryId = entryId, ContentVersion = contentVersion, Now = now }, t);
@@ -335,7 +373,7 @@ public static class VocabSessionRepository
         return rows
             .GroupBy(r => r.EntryId)
             .Select(g => g.First())
-            .Select(r => new VocabDistractorCandidate(r.EntryId, r.Pos, r.Rank, r.TopMeaning))
+            .Select(r => new VocabDistractorCandidate(r.EntryId, r.Pos, r.Rank, r.TopMeaning, r.Meanings, r.DictionaryForm ?? r.Lemma))
             .ToList();
     }
 }

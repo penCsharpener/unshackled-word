@@ -80,7 +80,7 @@ public sealed class VocabPendingCard
 {
     public int Seq { get; set; }
 
-    /// <summary><c>introduction</c> or <c>multiple_choice</c>.</summary>
+    /// <summary><c>introduction</c>, <c>multiple_choice</c> or <c>reverse_multiple_choice</c>.</summary>
     public string Kind { get; set; } = string.Empty;
 
     public int EntryId { get; set; }

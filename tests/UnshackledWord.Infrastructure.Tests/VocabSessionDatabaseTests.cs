@@ -201,7 +201,7 @@ public class VocabSessionDatabaseTests
             }
 
             var card = next.Card!;
-            last = Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, card.Kind == "multiple_choice" ? 0 : null, null));
+            last = Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, card.Kind != "introduction" ? 0 : null, null));
 
             if (last.Finished)
             {
@@ -248,7 +248,7 @@ public class VocabSessionDatabaseTests
                 break;
             }
 
-            Ok(await service.AnswerAsync(c, t, userId, start.SessionId, next.Card!.Seq, next.Card.Kind == "multiple_choice" ? 0 : null, null));
+            Ok(await service.AnswerAsync(c, t, userId, start.SessionId, next.Card!.Seq, next.Card.Kind != "introduction" ? 0 : null, null));
         }
 
         time.Now = T0.AddDays(3);
@@ -265,13 +265,13 @@ public class VocabSessionDatabaseTests
         {
             var card = Ok(await service.NextAsync(c, t, userId, second.SessionId)).Card!;
             kinds.Add((card.Kind, card.Entry.Id));
-            Ok(await service.AnswerAsync(c, t, userId, second.SessionId, card.Seq, card.Kind == "multiple_choice" ? 0 : null, null));
+            Ok(await service.AnswerAsync(c, t, userId, second.SessionId, card.Seq, card.Kind != "introduction" ? 0 : null, null));
         }
 
         // a due repeat may slip in before the last review word, but no introduction comes before each review word was asked once
         var firstIntro = kinds.FindIndex(k => k.Kind == "introduction");
         firstIntro.ShouldBeGreaterThanOrEqualTo(second.ReviewWords);
-        kinds.Take(firstIntro).ShouldAllBe(k => k.Kind == "multiple_choice");
+        kinds.Take(firstIntro).ShouldAllBe(k => k.Kind == "multiple_choice" || k.Kind == "reverse_multiple_choice");
         kinds.Take(firstIntro).Select(k => k.EntryId).Distinct().Count().ShouldBe(second.ReviewWords);
     });
 
@@ -336,6 +336,219 @@ public class VocabSessionDatabaseTests
             picked.Count.ShouldBe(3);
             picked.ShouldNotContain(p => p.EntryId == twin);
             picked.ShouldAllBe(p => !promptMeanings.Select(VocabDistractorPicker.Fold).Contains(VocabDistractorPicker.Fold(p.TopMeaning)));
+        }
+    });
+
+    private static async Task<(VocabSessionService Service, FixedTime Time, int UserId)> UserWithFinishedFirstSessionAsync(IDbConnection c, IDbTransaction t, int seed)
+    {
+        var userId = await NewUserAsync(c, t);
+        var time = new FixedTime(T0);
+        var service = Service(time, seed);
+        var start = Ok(await service.StartAsync(c, t, userId, Course));
+
+        while (true)
+        {
+            var next = Ok(await service.NextAsync(c, t, userId, start.SessionId));
+
+            if (next.Finished)
+            {
+                break;
+            }
+
+            next.Card!.Kind.ShouldBeOneOf("introduction", "multiple_choice");
+            Ok(await service.AnswerAsync(c, t, userId, start.SessionId, next.Card.Seq, next.Card.Kind != "introduction" ? 0 : null, null));
+        }
+
+        return (service, time, userId);
+    }
+
+    /// <summary>Starts the next session three days later with every card created <paramref name="cardAgeHours"/> hours before that moment and plays it to the end.</summary>
+    private static async Task<List<VocabCardResponse>> PlayReviewSessionAsync(IDbConnection c, IDbTransaction t, VocabSessionService service, FixedTime time, int userId, int cardAgeHours)
+    {
+        time.Now = T0.AddDays(3);
+        await c.ExecuteAsync("""UPDATE "unshackled-word"."VocabCards" SET "CreatedAt" = @CreatedAt WHERE "UserId" = @UserId""",
+            new { CreatedAt = time.Now.UtcDateTime.AddHours(-cardAgeHours), UserId = userId }, t);
+        var start = Ok(await service.StartAsync(c, t, userId, Course));
+        var cards = new List<VocabCardResponse>();
+
+        for (var i = 0; i < 300; i++)
+        {
+            var next = Ok(await service.NextAsync(c, t, userId, start.SessionId));
+
+            if (next.Finished)
+            {
+                break;
+            }
+
+            cards.Add(next.Card!);
+            var answer = await service.AnswerAsync(c, t, userId, start.SessionId, next.Card!.Seq, next.Card.Kind != "introduction" ? 0 : null, null);
+            Ok(answer);
+        }
+
+        return cards;
+    }
+
+    [Fact]
+    public async Task ACardCreatedYesterday_CanGetReverseMultipleChoice_AndTheCardNeverRevealsTheAnswer() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, time, userId) = await UserWithFinishedFirstSessionAsync(c, t, 5);
+
+        time.Now = T0.AddDays(3);
+        await c.ExecuteAsync("""UPDATE "unshackled-word"."VocabCards" SET "CreatedAt" = @CreatedAt WHERE "UserId" = @UserId""",
+            new { CreatedAt = time.Now.UtcDateTime.AddHours(-25), UserId = userId }, t);
+        var start = Ok(await service.StartAsync(c, t, userId, Course));
+        var seenReverse = false;
+
+        for (var i = 0; i < 300 && !seenReverse; i++)
+        {
+            var next = Ok(await service.NextAsync(c, t, userId, start.SessionId));
+            var card = next.Card!;
+
+            if (card.Kind == "reverse_multiple_choice")
+            {
+                seenReverse = true;
+                var again = Ok(await service.NextAsync(c, t, userId, start.SessionId)).Card!;
+                JsonSerializer.Serialize(again, Web).ShouldBe(JsonSerializer.Serialize(card, Web));
+
+                card.Prompt.ShouldNotBeNullOrWhiteSpace();
+                card.Options!.Count.ShouldBe(4);
+                card.Options.ShouldAllBe(o => o.Lang == "grc");
+                card.Options.Select(o => o.Text).Distinct(StringComparer.OrdinalIgnoreCase).Count().ShouldBe(4);
+                card.Entry.Lemma.ShouldBeEmpty();
+                card.Entry.DictionaryForm.ShouldBeNull();
+                JsonSerializer.Serialize(next, Web).ToLowerInvariant().ShouldNotContain("correct");
+
+                var entry = await c.QuerySingleAsync<(string Lemma, string? Form)>("""SELECT "Lemma", "DictionaryForm" FROM "unshackled-word"."VocabEntries" WHERE "Id" = @Id""", new { Id = card.Entry.Id }, t);
+                var form = entry.Form ?? entry.Lemma;
+                var topMeaning = await c.QuerySingleAsync<string>("""SELECT "German" FROM "unshackled-word"."VocabMeanings" WHERE "VocabEntryId" = @Id AND "IsAccepted" ORDER BY "Rank" LIMIT 1""", new { Id = card.Entry.Id }, t);
+                card.Prompt.ShouldBe(topMeaning);
+
+                var answer = Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, 0, 800));
+                answer.Kind.ShouldBe("reverse_multiple_choice");
+                answer.CorrectAnswers.ShouldBe([form]);
+                card.Options[answer.CorrectOptionId!.Value].Text.ShouldBe(form);
+                answer.Given.ShouldBe(card.Options[0].Text);
+                answer.Correct.ShouldBe(answer.CorrectOptionId == 0);
+                answer.Entry.Lemma.ShouldBe(entry.Lemma);
+
+                // a distractor lemma never has the prompt meaning among its accepted meanings
+                var others = card.Options.Where((_, index) => index != answer.CorrectOptionId).Select(o => o.Text).ToList();
+                var clashes = await c.QuerySingleAsync<int>("""
+                    SELECT count(*)::int
+                    FROM "unshackled-word"."VocabEntries" e
+                        JOIN "unshackled-word"."VocabMeanings" m ON m."VocabEntryId" = e."Id" AND m."IsAccepted"
+                    WHERE e."Track" = 'G' AND COALESCE(e."DictionaryForm", e."Lemma") = ANY(@Forms) AND lower(m."German") = lower(@Prompt)
+                    """, new { Forms = others.ToArray(), Prompt = topMeaning }, t);
+                clashes.ShouldBe(0);
+
+                (await c.QuerySingleAsync<int>("""SELECT count(*)::int FROM "unshackled-word"."VocabReviewLog" WHERE "UserId" = @UserId AND "QuizType" = 'reverse_multiple_choice'""", new { UserId = userId }, t)).ShouldBe(1);
+            }
+            else
+            {
+                Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, card.Kind != "introduction" ? 0 : null, null));
+            }
+        }
+
+        seenReverse.ShouldBeTrue();
+    });
+
+    [Fact]
+    public async Task ACardCreatedToday_NeverGetsReverseMultipleChoice() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, time, userId) = await UserWithFinishedFirstSessionAsync(c, t, 5);
+        var cards = await PlayReviewSessionAsync(c, t, service, time, userId, cardAgeHours: 2);
+
+        cards.Where(card => card.Kind != "introduction").ShouldAllBe(card => card.Kind == "multiple_choice");
+    });
+
+    [Fact]
+    public async Task WithReverseMultipleChoiceDisabled_ItIsNeverAsked() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, time, userId) = await UserWithFinishedFirstSessionAsync(c, t, 5);
+        var saved = await VocabSettingsService.SetAsync(c, t, userId, ["reverse_multiple_choice", "reverse_multiple_choice"]);
+
+        saved.DisabledQuizTypes.ShouldBe(["reverse_multiple_choice"]);
+        saved.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice"]);
+        (await VocabSettingsService.GetAsync(c, t, userId)).DisabledQuizTypes.ShouldBe(["reverse_multiple_choice"]);
+
+        var cards = await PlayReviewSessionAsync(c, t, service, time, userId, cardAgeHours: 80);
+
+        cards.Count(card => card.Kind == "multiple_choice").ShouldBeGreaterThan(10);
+        cards.ShouldNotContain(card => card.Kind == "reverse_multiple_choice");
+    });
+
+    [Fact]
+    public async Task WithMultipleChoiceDisabledOnDayZero_TheAgeIsIgnoredAndReverseMultipleChoiceIsAsked() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, time, userId) = await UserWithFinishedFirstSessionAsync(c, t, 5);
+        await VocabSettingsService.SetAsync(c, t, userId, ["multiple_choice"]);
+
+        var cards = await PlayReviewSessionAsync(c, t, service, time, userId, cardAgeHours: 1);
+        var quizzes = cards.Where(card => card.Kind != "introduction").ToList();
+
+        quizzes.ShouldNotBeEmpty();
+        quizzes.ShouldAllBe(card => card.Kind == "reverse_multiple_choice");
+    });
+
+    [Fact]
+    public async Task Settings_DefaultToNothingDisabled_AndAreStoredPerUser() => await WithTransactionAsync(async (c, t) =>
+    {
+        var userId = await NewUserAsync(c, t);
+        var other = await NewUserAsync(c, t);
+
+        var initial = await VocabSettingsService.GetAsync(c, t, userId);
+        initial.DisabledQuizTypes.ShouldBeEmpty();
+        initial.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice"]);
+
+        await VocabSettingsService.SetAsync(c, t, userId, ["listening", "reverse_multiple_choice"]);
+        (await VocabSettingsService.GetAsync(c, t, userId)).DisabledQuizTypes.ShouldBe(["reverse_multiple_choice", "listening"]);
+        (await VocabSettingsService.GetAsync(c, t, other)).DisabledQuizTypes.ShouldBeEmpty();
+
+        await VocabSettingsService.SetAsync(c, t, userId, []);
+        (await VocabSettingsService.GetAsync(c, t, userId)).DisabledQuizTypes.ShouldBeEmpty();
+    });
+
+    [Fact]
+    public async Task ReverseDistractor_NeverHasThePromptMeaningAmongItsAcceptedMeanings_InTheRealPool() => await WithTransactionAsync(async (c, t) =>
+    {
+        var prompt = await c.QueryFirstAsync<(int Id, int Rank, string Pos, string Lemma, string? Form)>("""
+            SELECT e."Id", e."FrequencyRank", e."Pos", e."Lemma", e."DictionaryForm"
+            FROM "unshackled-word"."VocabEntries" e
+            WHERE e."Track" = 'G' AND e."Pos" = 'G:V' AND e."FrequencyRank" > 50 AND NOT e."IsMorpheme" AND e."RetiredAt" IS NULL
+                AND EXISTS (SELECT 1 FROM "unshackled-word"."VocabMeanings" m WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted")
+            ORDER BY e."FrequencyRank"
+            LIMIT 1
+            """, transaction: t);
+        var meanings = (await c.QueryAsync<string>("""
+            SELECT m."German" FROM "unshackled-word"."VocabMeanings" m WHERE m."VocabEntryId" = @Id AND m."IsAccepted" ORDER BY m."Rank"
+            """, new { prompt.Id }, t)).ToList();
+        var twin = await c.QueryFirstAsync<int>("""
+            SELECT e."Id"
+            FROM "unshackled-word"."VocabEntries" e
+            WHERE e."Track" = 'G' AND e."Pos" = @Pos AND e."FrequencyRank" BETWEEN @From AND @To AND e."Id" <> @Id AND e."RetiredAt" IS NULL
+                AND EXISTS (SELECT 1 FROM "unshackled-word"."VocabMeanings" m WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted")
+            ORDER BY e."FrequencyRank"
+            LIMIT 1
+            """, new { prompt.Pos, From = prompt.Rank - 200, To = prompt.Rank + 200, prompt.Id }, t);
+
+        // like εἶπον: the twin gets the prompt meaning as an additional accepted meaning (different case), while its top meaning stays another one
+        await c.ExecuteAsync("""
+            INSERT INTO "unshackled-word"."VocabMeanings" ("VocabEntryId", "German", "Rank", "IsAccepted", "Origin")
+            VALUES (@Id, @German, 99, true, 'manual')
+            """, new { Id = twin, German = meanings[0].ToUpperInvariant() }, t);
+
+        var pool = await VocabSessionRepository.GetDistractorPoolAsync(c, t, "G", prompt.Id, prompt.Pos, prompt.Rank, []);
+        pool.ShouldContain(p => p.EntryId == twin);
+
+        var promptEntry = new VocabDistractorPrompt(prompt.Id, prompt.Pos, prompt.Rank, meanings[0], meanings);
+
+        for (var seed = 0; seed < 30; seed++)
+        {
+            var picked = VocabDistractorPicker.PickLemmas(promptEntry, prompt.Form ?? prompt.Lemma, pool, new HashSet<int>(), 3, new Random(seed));
+
+            picked.Count.ShouldBe(3);
+            picked.ShouldNotContain(p => p.EntryId == twin);
+            picked.ShouldAllBe(p => p.Form != null && !p.AcceptedMeanings!.Select(VocabDistractorPicker.Fold).Contains(VocabDistractorPicker.Fold(meanings[0])));
         }
     });
 }

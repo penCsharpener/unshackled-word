@@ -69,4 +69,41 @@ public class VocabDistractorPickerTests
 
         picked.Select(p => p.EntryId).ShouldBe([2]);
     }
+
+    private static VocabDistractorCandidate Lemma(int id, string form, params string[] meanings) =>
+        new(id, "G:V", 100, meanings[0], meanings, form);
+
+    [Fact]
+    public void Reverse_distractor_never_has_the_prompt_meaning_among_its_accepted_meanings()
+    {
+        // λέγω (prompt "sagen") must not be shown next to εἶπον, which accepts "sagen" as a second meaning, even if its top meaning differs
+        var prompt = Prompt("sagen", "reden");
+        var pool = new[]
+        {
+            Lemma(2, "εἶπον", "sprechen", "Sagen"),
+            Lemma(3, "ἔρχομαι", "kommen"),
+            Lemma(4, "βλέπω", "sehen"),
+            Lemma(5, "πορεύομαι", "gehen"),
+            Lemma(6, "λέγω", "sagen"),
+        };
+
+        for (var seed = 0; seed < 50; seed++)
+        {
+            var picked = VocabDistractorPicker.PickLemmas(prompt, "λέγω", pool, new HashSet<int>(), 3, new Random(seed));
+
+            picked.Select(p => p.EntryId).Order().ShouldBe([3, 4, 5]);
+        }
+    }
+
+    [Fact]
+    public void Reverse_distractor_forms_are_unique_and_differ_from_the_correct_form()
+    {
+        var prompt = Prompt("sagen");
+        var pool = new[] { Lemma(2, "ἔρχομαι", "kommen"), Lemma(3, "ἐρχομαι", "gehen"), Lemma(4, "ΒΛΈΠΩ", "sehen"), Lemma(5, "βλέπω", "schauen"), Lemma(6, "λέγω", "reden") };
+
+        var picked = VocabDistractorPicker.PickLemmas(prompt, "λέγω", pool, new HashSet<int>(), 3, new Random(1));
+
+        picked.Select(p => VocabDistractorPicker.Fold(p.Form!)).Distinct().Count().ShouldBe(picked.Count);
+        picked.ShouldNotContain(p => p.EntryId == 6);
+    }
 }

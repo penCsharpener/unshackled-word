@@ -24,8 +24,8 @@ public sealed record VocabSessionOutcome<T>(VocabSessionStatus Status, T? Respon
 }
 
 /// <summary>
-/// The study session engine, part 1 (roadmap 0022.8): start or resume, serve the next card, judge an answer. Only <c>introduction</c> and
-/// <c>multiple_choice</c>. The engine state lives in <c>VocabSessions.Plan</c>; the pure rules are in <see cref="VocabSessionPlanner"/> and
+/// The study session engine, part 1 (roadmap 0022.8): start or resume, serve the next card, judge an answer. Quiz types: <c>introduction</c>,
+/// <c>multiple_choice</c> and (0022.9) <c>reverse_multiple_choice</c>, chosen by <see cref="VocabQuizTypes"/>. The engine state lives in <c>VocabSessions.Plan</c>; the pure rules are in <see cref="VocabSessionPlanner"/> and
 /// <see cref="VocabDistractorPicker"/>. FSRS runs on every answer (Lexio: repeats within a session count; wrong = Again, correct = Good).
 /// </summary>
 public sealed class VocabSessionService
@@ -168,6 +168,7 @@ public sealed class VocabSessionService
         }
 
         var now = _time.GetUtcNow();
+        var disabled = (await VocabSessionRepository.GetDisabledQuizTypesAsync(c, t, userId)).ToHashSet();
 
         while (plan.Pending is null)
         {
@@ -201,16 +202,17 @@ public sealed class VocabSessionService
 
             // a review word whose card is gone (reset in between) comes back as a fresh card
             await VocabSessionRepository.EnsureCardAsync(c, t, userId, entry.Id, entry.ContentVersion, now.UtcDateTime);
-            var options = await BuildOptionsAsync(c, t, plan, entry, meanings);
+            var createdAt = await VocabSessionRepository.GetCardCreatedAtAsync(c, t, userId, entry.Id) ?? now.UtcDateTime;
+            var quiz = await BuildQuizAsync(c, t, plan, entry, meanings, VocabQuizTypes.AgeDays(createdAt, now.UtcDateTime), disabled);
 
-            if (options is null)
+            if (quiz is null)
             {
                 VocabSessionPlanner.Drop(plan, step.EntryId);
 
                 continue;
             }
 
-            VocabSessionPlanner.Serve(plan, step, "multiple_choice", options);
+            VocabSessionPlanner.Serve(plan, step, quiz.Value.Kind, quiz.Value.Options);
         }
 
         await VocabSessionRepository.SaveSessionAsync(c, t, sessionId, JsonSerializer.Serialize(plan, Json), null);
@@ -222,6 +224,59 @@ public sealed class VocabSessionService
             Card = await BuildCardAsync(c, t, plan.Pending),
         });
     }
+
+    /// <summary>
+    /// Picks the quiz type of a question: the candidates of <see cref="VocabQuizTypes.Candidates"/> (age ladder, learner's switches, fallback) in
+    /// order, the first one that can be built wins. Later rows add their builders to the switch. Null when no type can be built.
+    /// </summary>
+    private async Task<(string Kind, List<VocabPendingOption> Options)?> BuildQuizAsync(
+        IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings, int ageDays, IReadOnlySet<string> disabled)
+    {
+        var candidates = VocabQuizTypes.Candidates(ageDays, disabled, _random);
+
+        if (candidates.Count == 0)
+        {
+            candidates.Add(VocabQuizTypes.MultipleChoice);
+        }
+
+        foreach (var type in candidates)
+        {
+            var options = type switch
+            {
+                VocabQuizTypes.ReverseMultipleChoice => await BuildReverseOptionsAsync(c, t, plan, entry, meanings),
+                _ => await BuildOptionsAsync(c, t, plan, entry, meanings),
+            };
+
+            if (options is not null)
+            {
+                return (type, options);
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>Reverse MC: the correct option is the entry's lemma form; three distractor entries whose accepted meanings do not include the prompt meaning.</summary>
+    private async Task<List<VocabPendingOption>?> BuildReverseOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings)
+    {
+        var waveIds = plan.Words.Where(w => w.InWave && !w.Dropped && w.EntryId != entry.Id).Select(w => w.EntryId).ToList();
+        var pool = await VocabSessionRepository.GetDistractorPoolAsync(c, t, plan.Track, entry.Id, entry.Pos, entry.Rank ?? 0, waveIds);
+        var prompt = new VocabDistractorPrompt(entry.Id, entry.Pos, entry.Rank ?? 0, meanings[0].German, meanings.Select(m => m.German).ToList());
+        var form = FormOf(entry);
+        var distractors = VocabDistractorPicker.PickLemmas(prompt, form, pool, waveIds.ToHashSet(), VocabSessionRules.OptionCount - 1, _random);
+
+        if (distractors.Count == 0)
+        {
+            return null;
+        }
+
+        return distractors.Select(d => new VocabPendingOption { EntryId = d.EntryId, Text = d.Form ?? d.TopMeaning })
+            .Append(new VocabPendingOption { EntryId = entry.Id, Text = form })
+            .OrderBy(_ => _random.Next())
+            .ToList();
+    }
+
+    private static string FormOf(VocabSessionRepository.EntryRow entry) => entry.DictionaryForm ?? entry.Lemma;
 
     /// <summary>The correct option is the entry's top accepted meaning; three distractors by tier; shuffled. Null when no distractor exists at all.</summary>
     private async Task<List<VocabPendingOption>?> BuildOptionsAsync(IDbConnection c, IDbTransaction t, VocabSessionPlan plan, VocabSessionRepository.EntryRow entry, List<VocabSessionRepository.MeaningRow> meanings)
@@ -247,7 +302,8 @@ public sealed class VocabSessionService
     private async Task<VocabCardResponse> BuildCardAsync(IDbConnection c, IDbTransaction t, VocabPendingCard pending)
     {
         var entry = (await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId]))[pending.EntryId];
-        var card = new VocabCardResponse { Seq = pending.Seq, Kind = pending.Kind, Entry = ToEntry(entry) };
+        var reverse = pending.Kind == VocabQuizTypes.ReverseMultipleChoice;
+        var card = new VocabCardResponse { Seq = pending.Seq, Kind = pending.Kind, Entry = reverse ? ToHiddenEntry(entry) : ToEntry(entry) };
 
         if (pending.Kind == "introduction")
         {
@@ -255,6 +311,11 @@ public sealed class VocabSessionService
                 .Select(m => new VocabMeaningResponse { German = m.German, Rank = m.Rank, Count = m.Count, Share = m.Share })
                 .ToList();
             card.Verse = await VerseAsync(pending.EntryId);
+        }
+        else if (reverse)
+        {
+            card.Prompt = (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].First().German;
+            card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text, Lang = Lang(entry.Track) }).ToList();
         }
         else
         {
@@ -294,7 +355,9 @@ public sealed class VocabSessionService
         var now = _time.GetUtcNow();
         var entries = await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId]);
         var entry = entries[pending.EntryId];
-        var accepted = (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].Select(m => m.German).ToList();
+        var accepted = pending.Kind == VocabQuizTypes.ReverseMultipleChoice
+            ? new List<string> { FormOf(entry) }
+            : (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].Select(m => m.German).ToList();
         var response = new VocabAnswerResponse { Seq = seq, Kind = pending.Kind, Entry = ToEntry(entry), CorrectAnswers = accepted };
         var dueRow = await VocabSessionRepository.GetCardForUpdateAsync(c, t, userId, pending.EntryId);
         var before = dueRow is null ? _scheduler.NewCard(now) : ToCard(dueRow);
@@ -326,7 +389,7 @@ public sealed class VocabSessionService
 
             await VocabSessionRepository.UpdateCardAsync(c, t, userId, pending.EntryId, result.Card);
             await VocabSessionRepository.InsertReviewLogAsync(c, t, new VocabSessionRepository.ReviewLogEntry(
-                userId, pending.EntryId, sessionId, "multiple_choice", correct, Truncate(given.Text, 120), responseMs, correct ? 3 : 1,
+                userId, pending.EntryId, sessionId, pending.Kind, correct, Truncate(given.Text, 120), responseMs, correct ? 3 : 1,
                 result.StateBefore.ToString().ToLowerInvariant(), result.StabilityBefore, result.DifficultyBefore, result.StabilityAfter, result.DifficultyAfter, now.UtcDateTime));
 
             var strengthBefore = VocabScheduler.Strength(before);
@@ -422,6 +485,14 @@ public sealed class VocabSessionService
         Pos = e.Pos,
         Lang = Lang(e.Track),
         AudioUrl = VocabAudio.UrlFor(_storage, e.AudioObjectKey)
+    };
+
+    /// <summary>The entry of a reverse MC card: the lemma is the answer, so only what does not give it away is sent.</summary>
+    private static VocabCardEntryResponse ToHiddenEntry(VocabSessionRepository.EntryRow e) => new()
+    {
+        Id = e.Id,
+        Pos = e.Pos,
+        Lang = Lang(e.Track),
     };
 
     private static string Lang(string track) => track == "G" ? "grc" : "he";
