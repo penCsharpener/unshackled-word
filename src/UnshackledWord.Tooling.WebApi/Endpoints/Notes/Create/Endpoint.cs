@@ -21,7 +21,7 @@ public sealed class Endpoint : NoteEndpoint<CreateNoteRequest, NoteResponse>
         Post("");
         Group<RouteGroupConfig>();
         Description(b => b.Produces<NoteResponse>(201).ProducesProblem(400));
-        Summary(s => s.Summary = "Creates a private note. Anchor kinds `chapter` and `verse` (verses/words follow); the chapter/verse must exist in Elb1871. Body 1..20000 characters of Markdown. The author is the signed-in user.");
+        Summary(s => s.Summary = "Creates a private note. Anchor kinds `chapter`, `verses` (same chapter, start < end), `verse` and `words` (Elb1871 positions inside one verse, the server fills `quotedText`); chapter/verses/words must exist in Elb1871. Body 1..20000 characters of Markdown. The author is the signed-in user.");
     }
 
     public override async Task HandleAsync(CreateNoteRequest req, CancellationToken ct) =>

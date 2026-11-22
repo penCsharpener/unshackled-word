@@ -2,6 +2,7 @@ using System.Data;
 using Dapper;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Notes;
+using UnshackledWord.Application.Features.Revision;
 
 namespace UnshackledWord.Infrastructure.Notes;
 
@@ -30,6 +31,20 @@ public sealed class NoteRepository : INoteRepository
         using var connection = await _factory.CreateDbConnectionAsync(token);
 
         return await ChapterExistsAsync(connection, null, bookId, chapter, token);
+    }
+
+    public async Task<IReadOnlyList<NoteWordRow>> GetElbWordsAsync(IReadOnlyCollection<int> hebRefIds, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await GetElbWordsAsync(connection, null, hebRefIds, token);
+    }
+
+    public async Task<IReadOnlyList<NoteVariantWordRow>> GetVariantWordsAsync(IReadOnlyCollection<int> hebRefIds, int level, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await GetVariantWordsAsync(connection, null, hebRefIds, level, token);
     }
 
     public async Task<Guid> InsertAsync(int userId, NoteAnchor anchor, string bodyMarkdown, CancellationToken token = default)
@@ -76,6 +91,25 @@ public sealed class NoteRepository : INoteRepository
             From = bookId * 1_000_000 + chapter * 1_000,
             To = bookId * 1_000_000 + chapter * 1_000 + 999,
         }, t, cancellationToken: token));
+
+    public static async Task<IReadOnlyList<NoteWordRow>> GetElbWordsAsync(IDbConnection c, IDbTransaction? t, IReadOnlyCollection<int> hebRefIds, CancellationToken token = default) =>
+        (await c.QueryAsync<NoteWordRow>(new CommandDefinition(NoteSql.ElbWords, new { Ids = hebRefIds.ToArray() }, t, cancellationToken: token))).ToList();
+
+    public static async Task<IReadOnlyList<NoteVariantWordRow>> GetVariantWordsAsync(IDbConnection c, IDbTransaction? t, IReadOnlyCollection<int> hebRefIds, int level, CancellationToken token = default)
+    {
+        if (hebRefIds.Count == 0)
+        {
+            return [];
+        }
+
+        return (await c.QueryAsync<NoteVariantWordRow>(new CommandDefinition(NoteSql.VariantWords, new
+        {
+            Ids = hebRefIds.ToArray(),
+            Level = level,
+            FromRefId = hebRefIds.Min(),
+            ToRefId = hebRefIds.Max(),
+        }, t, cancellationToken: token))).ToList();
+    }
 
     public static Task<Guid> InsertAsync(IDbConnection c, IDbTransaction? t, int userId, NoteAnchor anchor, string bodyMarkdown, CancellationToken token = default) =>
         c.ExecuteScalarAsync<Guid>(new CommandDefinition(NoteSql.Insert, new
@@ -179,6 +213,30 @@ internal static class NoteSql
         SELECT EXISTS (SELECT 1
                        FROM "unshackled-word"."Elb1871Verses" v
                        WHERE v."HebRefId" BETWEEN @From AND @To)
+        """;
+
+    internal const string ElbWords = """
+        SELECT w."HebRefId"        AS "HebRefId",
+               w."PositionInVerse" AS "PositionInVerse",
+               w."WordInContext"   AS "WordInContext"
+        FROM "unshackled-word"."Elb1871Words" w
+        WHERE w."HebRefId" = ANY(@Ids)
+        ORDER BY w."HebRefId", w."PositionInVerse"
+        """;
+
+    /// <summary>The variant the reader shows at @Level (same selection as the chapter endpoints) with its words; verses without a variant return nothing.</summary>
+    internal const string VariantWords = $"""
+        WITH ev AS ({RevisionSql.EffectiveVerses})
+        SELECT ev."HebRefId"             AS "HebRefId",
+               ev."RevisionVerseId"      AS "RevisionVerseId",
+               rw."Id"                   AS "RevisionWordId",
+               rw."PositionInVerse"      AS "PositionInVerse",
+               rw."BasePositionInVerse"  AS "BasePositionInVerse"
+        FROM ev
+        JOIN "unshackled-word"."RevisionWords" rw ON rw."RevisionVerseId" = ev."RevisionVerseId"
+        WHERE ev."RevisionVerseId" IS NOT NULL
+          AND ev."HebRefId" = ANY(@Ids)
+        ORDER BY ev."HebRefId", rw."PositionInVerse"
         """;
 
     internal const string Insert = """

@@ -23,7 +23,7 @@ public sealed class Endpoint : NoteEndpoint<UpdateNoteRequest, NoteResponse>
         Description(b => b.Produces<NoteResponse>(200).ProducesProblem(400).ProducesProblem(404));
         Summary(s =>
         {
-            s.Summary = "Updates the body and, when `anchor` is given, the anchor of an own note. An approved public note goes back to review.";
+            s.Summary = "Updates the body and, when `anchor` is given, the anchor of an own note (\"Neu verankern\": same validation as create, `quotedText` is refreshed). An approved public note goes back to review.";
             s[404] = "No such note, or it belongs to someone else.";
         });
     }

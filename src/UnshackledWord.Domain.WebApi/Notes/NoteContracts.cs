@@ -5,7 +5,9 @@ namespace UnshackledWord.Domain.WebApi.Notes;
 /// <list type="bullet">
 /// <item><c>chapter</c>: only <see cref="BookId"/> and <see cref="Chapter"/>.</item>
 /// <item><c>verse</c>: <see cref="StartHebRefId"/> (and <see cref="EndHebRefId"/> = start or omitted).</item>
-/// <item><c>verses</c> (range within one chapter) and <c>words</c> (positions within one verse) follow in roadmap 0023.2.</item>
+/// <item><c>verses</c>: <see cref="StartHebRefId"/> &lt; <see cref="EndHebRefId"/>, same chapter, both verses exist in Elb1871.</item>
+/// <item><c>words</c>: one verse (<see cref="StartHebRefId"/>, end omitted or equal) and <see cref="StartPosition"/>..<see cref="EndPosition"/>,
+/// Elb1871 <c>PositionInVerse</c> values that exist; the server fills <see cref="QuotedText"/> (max 500 characters), a client quote is ignored.</item>
 /// </list>
 /// </summary>
 public sealed class NoteAnchorDto
@@ -67,6 +69,25 @@ public sealed class GetChapterNotesRequest
 
     /// <summary>Query parameter; false: only the caller's own notes. Default true.</summary>
     public bool Others { get; set; } = true;
+
+    /// <summary>
+    /// Query parameter, the reader's literalness level (0..1000, same meaning as on the verse endpoints). Omitted or 0: Elb1871 only.
+    /// With a level, words notes on verses that have an active variant at that level carry <see cref="NoteResponse.MappedWords"/>.
+    /// </summary>
+    public int? Level { get; set; }
+}
+
+/// <summary>One word of a revision variant that stands for an anchored Elb1871 word (mapped through <c>BasePositionInVerse</c>).</summary>
+public sealed class NoteMappedWordDto
+{
+    /// <summary><c>RevisionWords.Id</c>.</summary>
+    public int RevisionWordId { get; set; }
+
+    /// <summary><c>RevisionWords.PositionInVerse</c>: where to put the marker in the variant verse.</summary>
+    public int PositionInVerse { get; set; }
+
+    /// <summary>The Elb1871 position this variant word is based on (inside the note's start..end positions).</summary>
+    public int BasePositionInVerse { get; set; }
 }
 
 /// <summary>One note as the caller may see it.</summary>
@@ -75,8 +96,20 @@ public sealed class NoteResponse
     public Guid Id { get; set; }
     public NoteAnchorDto Anchor { get; set; } = new();
 
-    /// <summary><c>ok</c> | <c>drifted</c> | <c>noBaseWords</c> (the last two from roadmap 0023.2 on).</summary>
+    /// <summary>
+    /// <c>ok</c> | <c>drifted</c> (words notes: the Elb1871 words at the positions no longer equal the quote, or the positions are gone; show the note
+    /// at verse level with the quote as hint) | <c>noBaseWords</c> (words notes at a level whose variant has no word mapped into the range; verse level, no hint).
+    /// </summary>
     public string AnchorState { get; set; } = NoteAnchorStates.Ok;
+
+    /// <summary>
+    /// Words notes with <c>anchorState = ok</c> on a verse whose active variant at the requested level differs from Elb1871: the variant words that
+    /// carry the marker (none maps = <c>noBaseWords</c>). Null: use <c>anchor.startPosition..endPosition</c> (Elb1871 words).
+    /// </summary>
+    public List<NoteMappedWordDto>? MappedWords { get; set; }
+
+    /// <summary><c>RevisionVerses.Id</c> of the variant that <see cref="MappedWords"/> belongs to; null when Elb1871 positions apply.</summary>
+    public int? RevisionVerseId { get; set; }
 
     /// <summary>Raw Markdown (anonymous readers get the approved snapshot).</summary>
     public string BodyMarkdown { get; set; } = string.Empty;

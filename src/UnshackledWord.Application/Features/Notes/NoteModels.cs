@@ -9,8 +9,6 @@ public static class NoteKinds
 
     public static readonly IReadOnlyList<string> All = [Chapter, Verses, Verse, Words];
 
-    /// <summary>Kinds the API accepts at the moment; <c>verses</c> and <c>words</c> follow in roadmap 0023.2.</summary>
-    public static readonly IReadOnlyList<string> Supported = [Chapter, Verse];
 }
 
 public static class NoteVisibilities
@@ -89,4 +87,64 @@ public sealed class NoteOutcome<T> where T : class
     public static NoteOutcome<T> NotFound(string message) => new() { Status = NoteStatus.NotFound, Message = message };
 
     public static NoteOutcome<T> Invalid(string message) => new() { Status = NoteStatus.Invalid, Message = message };
+}
+
+/// <summary>One Elb1871 word of a verse.</summary>
+public sealed class NoteWordRow
+{
+    public int HebRefId { get; init; }
+    public int PositionInVerse { get; init; }
+    public string WordInContext { get; init; } = string.Empty;
+}
+
+/// <summary>One word of the active revision variant of a verse (at the reader's level).</summary>
+public sealed class NoteVariantWordRow
+{
+    public int HebRefId { get; init; }
+    public int RevisionVerseId { get; init; }
+    public int RevisionWordId { get; init; }
+    public int PositionInVerse { get; init; }
+    public int? BasePositionInVerse { get; init; }
+}
+
+/// <summary>Quote handling of words notes.</summary>
+public static class NoteQuote
+{
+    public const int MaxLength = 500;
+
+    /// <summary>The Elb1871 words joined by single spaces.</summary>
+    public static string Join(IEnumerable<string> words) => string.Join(' ', words);
+
+    /// <summary>Whitespace and punctuation do not count: letters and digits in word groups separated by single spaces (NFC).</summary>
+    public static string Normalize(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
+
+        var builder = new System.Text.StringBuilder(text.Length);
+        var pendingSpace = false;
+        foreach (var c in text.Normalize(System.Text.NormalizationForm.FormC))
+        {
+            if (char.IsLetterOrDigit(c) || char.GetUnicodeCategory(c) is System.Globalization.UnicodeCategory.NonSpacingMark)
+            {
+                if (pendingSpace && builder.Length > 0)
+                {
+                    builder.Append(' ');
+                }
+
+                pendingSpace = false;
+                builder.Append(c);
+            }
+            else if (char.IsWhiteSpace(c))
+            {
+                pendingSpace = true;
+            }
+        }
+
+        return builder.ToString();
+    }
+
+    public static bool Matches(string? stored, string? current) => Normalize(stored) == Normalize(current);
 }

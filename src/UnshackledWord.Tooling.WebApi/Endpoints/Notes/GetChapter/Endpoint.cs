@@ -21,13 +21,13 @@ public sealed class Endpoint : NoteEndpoint<GetChapterNotesRequest, ChapterNotes
         Group<RouteGroupConfig>();
         AllowAnonymous();
         Description(b => b.Produces<ChapterNotesResponse>(200).ProducesProblem(400));
-        Summary(s => s.Summary = "Notes of a chapter in reading order. Anonymous: approved public notes; signed in: own notes plus others' internal/public ones. `others=false` returns only own notes.");
+        Summary(s => s.Summary = "Notes of a chapter in reading order. Anonymous: approved public notes; signed in: own notes plus others' internal/public ones. `others=false` returns only own notes. Optional `level` (0..1000, reader level): words notes on verses with a variant at that level carry `mappedWords`.");
     }
 
     public override async Task HandleAsync(GetChapterNotesRequest req, CancellationToken ct)
     {
         HttpContext.Response.Headers.CacheControl = "private, no-store";
-        await Send.OkAsync(await _service.ListChapterAsync(ViewerId, req.BookId, req.Chapter, req.Others, ct), ct);
+        await Send.OkAsync(await _service.ListChapterAsync(ViewerId, req.BookId, req.Chapter, req.Others, req.Level, ct), ct);
     }
 }
 
@@ -37,5 +37,6 @@ public sealed class Validator : Validator<GetChapterNotesRequest>
     {
         RuleFor(x => x.BookId).InclusiveBetween(1, NoteAnchorValidator.MaxBookId);
         RuleFor(x => x.Chapter).InclusiveBetween(1, NoteAnchorValidator.MaxChapter);
+        RuleFor(x => x.Level!.Value).InclusiveBetween(0, 1000).When(x => x.Level is not null).WithName("Level");
     }
 }

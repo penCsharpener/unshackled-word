@@ -9,6 +9,15 @@ public interface INoteRepository
     /// <summary>Whether the Elb1871 text has at least one verse in this chapter.</summary>
     Task<bool> ChapterExistsAsync(int bookId, int chapter, CancellationToken token = default);
 
+    /// <summary>The Elb1871 words of these verses, ordered by verse and position.</summary>
+    Task<IReadOnlyList<NoteWordRow>> GetElbWordsAsync(IReadOnlyCollection<int> hebRefIds, CancellationToken token = default);
+
+    /// <summary>
+    /// The words of the variant that is active at <paramref name="level"/> (same selection as the reader) for these verses of one chapter;
+    /// verses without a variant at that level return nothing.
+    /// </summary>
+    Task<IReadOnlyList<NoteVariantWordRow>> GetVariantWordsAsync(IReadOnlyCollection<int> hebRefIds, int level, CancellationToken token = default);
+
     /// <summary>Inserts a private note and returns its id.</summary>
     Task<Guid> InsertAsync(int userId, NoteAnchor anchor, string bodyMarkdown, CancellationToken token = default);
 

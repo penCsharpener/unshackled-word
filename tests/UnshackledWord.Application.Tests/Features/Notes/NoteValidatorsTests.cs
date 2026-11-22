@@ -24,11 +24,9 @@ public class NoteValidatorsTests
         new CreateNoteRequestValidator().Validate(Request(Verse(end: end))).IsValid.ShouldBeTrue();
 
     [Theory]
-    [InlineData(NoteKinds.Verses)]
-    [InlineData(NoteKinds.Words)]
     [InlineData("paragraph")]
     [InlineData("")]
-    public void Validate_ShouldFail_WhenKindIsNotSupportedYet(string kind)
+    public void Validate_ShouldFail_WhenKindIsUnknown(string kind)
     {
         var anchor = Verse();
         anchor.Kind = kind;
@@ -44,6 +42,51 @@ public class NoteValidatorsTests
     [InlineData(Rom828, 45008030)]   // a range is a verses note, not a verse note
     public void Validate_ShouldFail_WhenVerseNoteHasAnotherEnd(int start, int end) =>
         new CreateNoteRequestValidator().Validate(Request(Verse(start, end))).IsValid.ShouldBeFalse();
+
+    private static NoteAnchorDto Verses(int? start = Rom828, int? end = 45008030) => new() { Kind = NoteKinds.Verses, BookId = 45, Chapter = 8, StartHebRefId = start, EndHebRefId = end };
+
+    private static NoteAnchorDto Words(int? start = Rom828, int? end = null, int? from = 2, int? to = 4) =>
+        new() { Kind = NoteKinds.Words, BookId = 45, Chapter = 8, StartHebRefId = start, EndHebRefId = end, StartPosition = from, EndPosition = to, QuotedText = "ignored" };
+
+    [Fact]
+    public void Validate_ShouldPass_WhenVersesNoteIsARangeInOneChapter() =>
+        new CreateNoteRequestValidator().Validate(Request(Verses())).IsValid.ShouldBeTrue();
+
+    [Theory]
+    [InlineData(Rom828, Rom828)]       // one verse is a verse note
+    [InlineData(45008030, Rom828)]     // backwards
+    [InlineData(Rom828, 45009001)]     // across chapters
+    [InlineData(Rom828, null)]
+    [InlineData(null, 45008030)]
+    [InlineData(Rom828, 46008030)]     // other book
+    public void Validate_ShouldFail_WhenVersesRangeIsNotAForwardRangeInTheChapter(int? start, int? end) =>
+        new CreateNoteRequestValidator().Validate(Request(Verses(start, end))).IsValid.ShouldBeFalse();
+
+    [Fact]
+    public void Validate_ShouldFail_WhenVersesNoteHasWordPositions()
+    {
+        var anchor = Verses();
+        anchor.StartPosition = 1;
+
+        new CreateNoteRequestValidator().Validate(Request(anchor)).IsValid.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(Rom828)]
+    public void Validate_ShouldPass_WhenWordsNoteHasPositionsInOneVerse(int? end) =>
+        new CreateNoteRequestValidator().Validate(Request(Words(end: end))).IsValid.ShouldBeTrue();
+
+    [Theory]
+    [InlineData(Rom828, 45008029, 2, 4)] // another end verse
+    [InlineData(null, null, 2, 4)]
+    [InlineData(Rom828, null, null, 4)]
+    [InlineData(Rom828, null, 2, null)]
+    [InlineData(Rom828, null, 0, 4)]
+    [InlineData(Rom828, null, 4, 2)]     // backwards
+    [InlineData(45009001, null, 2, 4)]   // verse in another chapter
+    public void Validate_ShouldFail_WhenWordsAnchorIsIncomplete(int? start, int? end, int? from, int? to) =>
+        new CreateNoteRequestValidator().Validate(Request(Words(start, end, from, to))).IsValid.ShouldBeFalse();
 
     [Theory]
     [InlineData(null)]

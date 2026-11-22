@@ -2,6 +2,7 @@ using System.Data;
 using Dapper;
 using Npgsql;
 using UnshackledWord.Application.Features.Notes;
+using UnshackledWord.Domain.WebApi.Notes;
 using UnshackledWord.Infrastructure.Notes;
 
 namespace UnshackledWord.Infrastructure.Tests;
@@ -207,4 +208,109 @@ public class NoteDatabaseTests
     [InlineData(45, 17, false)]
     public async Task ChapterExistsAsync_ShouldReflectTheElb1871Text_WhenAskedForRoemer(int book, int chapter, bool exists) => await WithTransactionAsync(async (c, t) =>
         (await NoteRepository.ChapterExistsAsync(c, t, book, chapter)).ShouldBe(exists));
+
+    private static NoteAnchor WordsAnchor(int from, int to, string quote) => new(NoteKinds.Words, 45, 8, Rom828, Rom828, from, to, quote);
+
+    /// <summary>The read path of <see cref="NoteService"/> on a connection in the test transaction.</summary>
+    private static async Task<NoteResponse> ReadAsync(IDbConnection c, IDbTransaction t, Guid id, int userId, int? level = null)
+    {
+        var row = (await NoteRepository.GetAsync(c, t, id, userId)).ShouldNotBeNull();
+        var response = NoteService.ToResponse(row, userId);
+        var elb = (await NoteRepository.GetElbWordsAsync(c, t, [Rom828])).ToList();
+        var variant = level is > 0 ? (await NoteRepository.GetVariantWordsAsync(c, t, [Rom828], level.Value)).ToList() : null;
+        NoteService.ApplyWordsState(response, row, elb, variant);
+
+        return response;
+    }
+
+    private static async Task<string> QuoteAsync(IDbConnection c, IDbTransaction t, int from, int to) =>
+        NoteQuote.Join((await NoteRepository.GetElbWordsAsync(c, t, [Rom828])).Where(w => w.PositionInVerse >= from && w.PositionInVerse <= to).Select(w => w.WordInContext));
+
+    [Fact]
+    public async Task WordsNote_ShouldBeOk_WhenTheElb1871WordsStillEqualTheQuote() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var quote = await QuoteAsync(c, t, 3, 5);
+        quote.ShouldNotBeNullOrWhiteSpace();
+        var id = await NoteRepository.InsertAsync(c, t, author, WordsAnchor(3, 5, quote), "Wörter");
+
+        var response = await ReadAsync(c, t, id, author);
+
+        response.AnchorState.ShouldBe(NoteAnchorStates.Ok);
+        response.Anchor.QuotedText.ShouldBe(quote);
+        response.MappedWords.ShouldBeNull();
+    });
+
+    [Fact]
+    public async Task WordsNote_ShouldBeDrifted_WhenAWordInContextChangesAfterTheNoteWasSaved() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var quote = await QuoteAsync(c, t, 3, 5);
+        var id = await NoteRepository.InsertAsync(c, t, author, WordsAnchor(3, 5, quote), "Wörter");
+
+        await c.ExecuteAsync("""
+            UPDATE "unshackled-word"."Elb1871Words"
+            SET "WordInContext" = 'ersetzt'
+            WHERE "HebRefId" = @HebRefId AND "PositionInVerse" = 4
+            """, new { HebRefId = Rom828 }, t);
+
+        var response = await ReadAsync(c, t, id, author);
+
+        response.AnchorState.ShouldBe(NoteAnchorStates.Drifted);
+        response.Anchor.QuotedText.ShouldBe(quote);
+    });
+
+    [Fact]
+    public async Task WordsNote_ShouldBeDrifted_WhenThePositionsAreGone() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var id = await NoteRepository.InsertAsync(c, t, author, WordsAnchor(900, 901, "weg"), "Wörter");
+
+        (await ReadAsync(c, t, id, author)).AnchorState.ShouldBe(NoteAnchorStates.Drifted);
+    });
+
+    [Fact]
+    public async Task WordsNote_ShouldMapThroughTheVariant_WhenTheVerseIsRevisedAtTheLevel() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var elb = (await NoteRepository.GetElbWordsAsync(c, t, [Rom828])).ToList();
+        elb.Count.ShouldBeGreaterThan(5);
+        var quote = await QuoteAsync(c, t, 3, 4);
+        var id = await NoteRepository.InsertAsync(c, t, author, WordsAnchor(3, 4, quote), "Wörter");
+
+        // a test revision above every existing level (it wins at its own level); its variant of Röm 8,28: base 1,2 same, one new word, base 3,4 behind it, base 5 dropped
+        var level = await c.QuerySingleAsync<int>("""SELECT COALESCE(MAX("Level") FILTER (WHERE "Level" < 1000), 200) + 1 FROM "unshackled-word"."Revisions" """, transaction: t);
+        var revisionId = await c.QuerySingleAsync<int>("""
+            INSERT INTO "unshackled-word"."Revisions" ("Level", "Code", "NameDe", "NameEn")
+            VALUES (@Level, 'notes-test', 'Notizen-Test', 'Notes test')
+            RETURNING "Id"
+            """, new { Level = level }, t);
+        var verseId = await c.QuerySingleAsync<int>("""
+            INSERT INTO "unshackled-word"."RevisionVerses" ("HebRefId", "RevisionId", "Version", "VerseText", "BaseTextHash")
+            VALUES (@HebRefId, @RevisionId, 1, 'x', 'x')
+            RETURNING "Id"
+            """, new { HebRefId = Rom828, RevisionId = revisionId }, t);
+        var variantWords = new (int Position, int? Base, string Change)[] { (1, 1, "same"), (2, 2, "same"), (3, null, "new"), (4, 3, "changed"), (5, 4, "same") };
+        foreach (var (position, basePosition, change) in variantWords)
+        {
+            await c.ExecuteAsync("""
+                INSERT INTO "unshackled-word"."RevisionWords" ("RevisionVerseId", "PositionInVerse", "WordInContext", "BasePositionInVerse", "Change")
+                VALUES (@VerseId, @Position, 'w', @Base, @Change)
+                """, new { VerseId = verseId, Position = position, Base = basePosition, Change = change }, t);
+        }
+
+        var response = await ReadAsync(c, t, id, author, level);
+
+        response.AnchorState.ShouldBe(NoteAnchorStates.Ok);
+        response.RevisionVerseId.ShouldBe(verseId);
+        response.MappedWords.ShouldNotBeNull().Select(w => (w.PositionInVerse, w.BasePositionInVerse)).ShouldBe([(4, 3), (5, 4)]);
+
+        // a note on a base word the variant dropped has nothing to mark
+        var droppedQuote = await QuoteAsync(c, t, 6, 6);
+        var dropped = await NoteRepository.InsertAsync(c, t, author, WordsAnchor(6, 6, droppedQuote), "weg");
+        (await ReadAsync(c, t, dropped, author, level)).AnchorState.ShouldBe(NoteAnchorStates.NoBaseWords);
+
+        // without a level the Elb1871 positions apply
+        (await ReadAsync(c, t, id, author)).MappedWords.ShouldBeNull();
+    });
 }
