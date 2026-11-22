@@ -25,7 +25,7 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
    * [ ] for enhancing the data
    * [ ] studying the Scriptures (the baseline goal is something like the csv-bible.de)
    * [ ] creating a new, modern, more precise, copyright free Elberfelder translation for the 21. century
-4. Vocab trainers for Greek and Hebrew
+4. Vocab trainers for Greek and Hebrew (done, roadmap 0022: `docs/roadmaps/0022-vocab-trainer/`)
    * flash card vocab training of the original languages (baseline is cerego.com-like UX)
    * unlike Anki, the user should not need to grade his own learning success but an algorithm is doing that automatically
 5. Enhancements to the Bible data akin to Logos Bible software

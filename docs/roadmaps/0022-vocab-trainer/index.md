@@ -15,11 +15,11 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 | [08-tasks.md](08-tasks.md) | Task table (backend and frontend woven) |
 | [09-risks.md](09-risks.md) | Risks worth naming before starting |
 
-## Status (2026-11-21)
+## Status (2026-11-22)
 
-Planned, nothing implemented. All decisions are settled. On 2026-11-21 the maintainer changed two of them: typing uses the dictionary form with the separators pre-filled, and lexicon edits flag the learner's cards for keep or reset instead of being refused. UI drafts (click dummy + spec) added the same day.
+All decisions are settled. On 2026-11-21 the maintainer changed two of them: typing uses the dictionary form with the separators pre-filled, and lexicon edits flag the learner's cards for keep or reset instead of being refused. UI drafts (click dummy + spec) added the same day.
 
-Implemented on `feature/vocab-learning` (2026-11-21/22, 0.8.0): migrations 0037–0040, 0022.1, 0022.1f, 0022.1b (extra row: STEP Hebrew lexicon import fix, verb `step-lexicon-repair`), 0022.2–0022.13 with all frontend rows (0022.12 backend came with 0022.8b). Next: 0022.14 (seed), 0022.15 (docs gate), then the Opus review.
+Implemented on `feature/vocab-learning` (2026-11-21/22, 0.8.0): all rows 0022.1–0022.15 (migrations 0037–0040, 0022.1b as an extra row: STEP Hebrew lexicon import fix, verb `step-lexicon-repair`; 0022.12 backend came with 0022.8b; 0022.14 seed; 0022.15 docs gate). The Opus review is pending.
 
 Deviations so far:
 - `StatsVocabRenderings` has `GermanPos` (STTS) so derivation can filter by word class; `VocabCards` has no FK to `VocabEntries` (cards outlive deleted entries); entry renderings capped at 100 rows; Hebrew sample verses use the braced main key only; the public list's "Anzeigen" filter only offers "Alle".
