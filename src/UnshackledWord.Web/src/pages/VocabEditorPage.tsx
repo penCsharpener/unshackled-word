@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useNavigate, useParams } from "react-router";
 import { AudioField } from "@/components/AudioField";
@@ -141,6 +141,22 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
   const [mergeOpen, setMergeOpen] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmAction | null>(null);
   const plan = buildSavePlan(saved, draft);
+
+  // Ctrl+S (Cmd+S) saves the pending changes, also while a field has focus; the browser's own "save page" stays quiet.
+  const saveRef = useRef<() => void>(() => {});
+  saveRef.current = () => {
+    if (plan.count > 0 && !save.isPending) save.mutate(plan);
+  };
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        saveRef.current();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const courses = useQuery({
     queryKey: ["vocab", "courses"],

@@ -172,6 +172,25 @@ describe("VocabEditorPage", () => {
     expect(callsWith(fetchMock, "PATCH")).toHaveLength(0);
   });
 
+  it("saves with Ctrl+S while a field has focus, and does nothing without changes", async () => {
+    const fetchMock = stubEditor();
+    renderAt();
+    const form = await screen.findByRole("textbox", {
+      name: "Study form (typing target, empty = lemma)",
+    });
+    await userEvent.keyboard("{Control>}s{/Control}");
+    expect(callsWith(fetchMock, "PUT")).toHaveLength(0);
+
+    await userEvent.clear(form);
+    await userEvent.type(form, "μέσος, -η, -ον");
+    await userEvent.keyboard("{Control>}s{/Control}");
+
+    await waitFor(() => expect(callsWith(fetchMock, "PUT")).toHaveLength(1));
+    expect(bodyOf(callsWith(fetchMock, "PUT")[0] as [string, RequestInit])).toMatchObject({
+      dictionaryForm: "μέσος, -η, -ον",
+    });
+  });
+
   it("unaccepting a meaning sends a PATCH with isAccepted false", async () => {
     const fetchMock = stubEditor();
     renderAt();
