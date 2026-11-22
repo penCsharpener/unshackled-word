@@ -10,6 +10,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// transaction that is rolled back, with fixture lexicon and word rows (Greek numbers 90001+, lemma "ΖΖΤΕΣΤΑ"), so nothing stays in the
 /// database. Set <c>UNSHACKLEDWORD_TEST_POSTGRES</c> (a copy of the dev database is the safe choice), otherwise the tests are skipped.
 /// </summary>
+[Collection("VocabDatabase")]
 public class VocabLexiconGeneratorDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

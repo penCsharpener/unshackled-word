@@ -2,11 +2,17 @@ using CsvHelper.Configuration;
 
 namespace UnshackledWord.Infrastructure.Seed.Vocab;
 
-/// <summary><c>vocab/entries.csv</c>: one line per live (not retired) entry, identity <c>(Track, Lemma)</c>.</summary>
+/// <summary><c>vocab/entries.csv</c>: one line per live (not retired) entry, identity <c>(Track, Lemma, Homograph)</c>.</summary>
 public sealed class VocabSeedEntryLine
 {
     public string Track { get; set; } = string.Empty;
     public string Lemma { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 1 for the only (or first) live entry with this lemma in the track; a split leaves two entries with the same lemma (H1254A/H1254B),
+    /// numbered by their lowest Strong's key (ordinal), then id. Part of the identity in all three files. Optional when reading (default 1).
+    /// </summary>
+    public int Homograph { get; set; } = 1;
     public int LanguageId { get; set; }
     public string LemmaNormalized { get; set; } = string.Empty;
     public string? DictionaryForm { get; set; }
@@ -27,6 +33,12 @@ public sealed class VocabSeedKeyLine
 {
     public string Track { get; set; } = string.Empty;
     public string Lemma { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 1 for the only (or first) live entry with this lemma in the track; a split leaves two entries with the same lemma (H1254A/H1254B),
+    /// numbered by their lowest Strong's key (ordinal), then id. Part of the identity in all three files. Optional when reading (default 1).
+    /// </summary>
+    public int Homograph { get; set; } = 1;
     public string StrongsKey { get; set; } = string.Empty;
     public int Occurrences { get; set; }
 }
@@ -36,6 +48,12 @@ public sealed class VocabSeedMeaningLine
 {
     public string Track { get; set; } = string.Empty;
     public string Lemma { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 1 for the only (or first) live entry with this lemma in the track; a split leaves two entries with the same lemma (H1254A/H1254B),
+    /// numbered by their lowest Strong's key (ordinal), then id. Part of the identity in all three files. Optional when reading (default 1).
+    /// </summary>
+    public int Homograph { get; set; } = 1;
     public string German { get; set; } = string.Empty;
     public string? GermanKey { get; set; }
     public int Rank { get; set; }
@@ -63,6 +81,7 @@ public sealed class VocabSeedEntryLineMap : ClassMap<VocabSeedEntryLine>
         Map(x => x.Occurrences).Index(10).Name("Occurrences");
         Map(x => x.FrequencyRank).Index(11).Name("FrequencyRank");
         Map(x => x.AudioObjectKey).Index(12).Name("AudioObjectKey");
+        Map(x => x.Homograph).Index(13).Name("Homograph").Optional().Default(1);
     }
 }
 
@@ -74,6 +93,7 @@ public sealed class VocabSeedKeyLineMap : ClassMap<VocabSeedKeyLine>
         Map(x => x.Lemma).Index(1).Name("Lemma");
         Map(x => x.StrongsKey).Index(2).Name("StrongsKey");
         Map(x => x.Occurrences).Index(3).Name("Occurrences");
+        Map(x => x.Homograph).Index(4).Name("Homograph").Optional().Default(1);
     }
 }
 
@@ -91,6 +111,7 @@ public sealed class VocabSeedMeaningLineMap : ClassMap<VocabSeedMeaningLine>
         Map(x => x.IsAccepted).Index(7).Name("IsAccepted");
         Map(x => x.Origin).Index(8).Name("Origin");
         Map(x => x.IsPinned).Index(9).Name("IsPinned");
+        Map(x => x.Homograph).Index(10).Name("Homograph").Optional().Default(1);
     }
 }
 

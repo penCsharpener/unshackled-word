@@ -16,6 +16,9 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// revision (text save = update in place, withdraw = delete). Needs a real Postgres with migration 0024 applied; point <c>UNSHACKLEDWORD_TEST_POSTGRES</c> at a COPY of the dev database (never the dev database itself), otherwise the tests are skipped.
 /// The tests write one verse (<see cref="HebRefId"/>) at level 200 and remove it afterwards.
 /// </summary>
+// The revision seed import takes LOCK TABLE on RevisionVerses; VocabRenderingsDatabaseTests refreshes StatsVocabRenderings (reads RevisionVerses)
+// inside a long transaction. Same collection, so the two never wait on each other past the command timeout.
+[Collection("VocabDatabase")]
 public class RevisionAuditDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

@@ -111,6 +111,7 @@ public static class VocabSessionRepository
     private const string InsertSession = """
         INSERT INTO "unshackled-word"."VocabSessions" ("UserId", "CourseId", "StartedAt", "Plan")
         VALUES (@UserId, @CourseId, @Now, @Plan::jsonb)
+        ON CONFLICT ("UserId", "CourseId") WHERE "FinishedAt" IS NULL DO NOTHING
         RETURNING "Id"
         """;
 
@@ -307,8 +308,9 @@ public static class VocabSessionRepository
     public static async Task<SessionRow?> GetOpenSessionAsync(IDbConnection c, IDbTransaction t, int userId, int courseId) =>
         await c.QueryFirstOrDefaultAsync<SessionRow>(SelectOpenSession, new { UserId = userId, CourseId = courseId }, t);
 
-    public static async Task<int> InsertSessionAsync(IDbConnection c, IDbTransaction t, int userId, int courseId, DateTime now, string planJson) =>
-        await c.QuerySingleAsync<int>(InsertSession, new { UserId = userId, CourseId = courseId, Now = now, Plan = planJson }, t);
+    /// <summary>The new session's id, or null when a concurrent start already opened one for the course (partial unique index).</summary>
+    public static async Task<int?> InsertSessionAsync(IDbConnection c, IDbTransaction t, int userId, int courseId, DateTime now, string planJson) =>
+        await c.QuerySingleOrDefaultAsync<int?>(InsertSession, new { UserId = userId, CourseId = courseId, Now = now, Plan = planJson }, t);
 
     public static async Task SaveSessionAsync(IDbConnection c, IDbTransaction t, int id, string planJson, DateTime? finishedAt) =>
         await c.ExecuteAsync(UpdateSession, new { Id = id, Plan = planJson, FinishedAt = finishedAt }, t);

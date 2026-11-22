@@ -126,6 +126,30 @@ public class VocabSessionDatabaseTests
     });
 
     [Fact]
+    public async Task PendingCardWhoseEntryIsMergedAway_IsDropped_AndTheSessionMovesOn() => await WithTransactionAsync(async (c, t) =>
+    {
+        var userId = await NewUserAsync(c, t);
+        var service = Service(new FixedTime(T0));
+        var start = Ok(await service.StartAsync(c, t, userId, Course));
+        var first = Ok(await service.NextAsync(c, t, userId, start.SessionId)).Card!;
+        first.Kind.ShouldBe("introduction");
+
+        // the maintainer merges the served word into another entry while the card is open
+        var target = await c.QuerySingleAsync<int>("""
+            SELECT e."Id" FROM "unshackled-word"."VocabEntries" e WHERE e."Track" = 'G' AND e."FrequencyRank" = 50
+            """, transaction: t);
+        (await VocabEntryEditor.MergeAsync(c, t, first.Entry.Id, target, null)).Status.ShouldBe(VocabEditStatus.Ok);
+
+        (await service.AnswerAsync(c, t, userId, start.SessionId, first.Seq, null, 500)).Status.ShouldBe(VocabSessionStatus.Conflict);
+
+        var next = Ok(await service.NextAsync(c, t, userId, start.SessionId));
+        next.Finished.ShouldBeFalse();
+        next.Card!.Entry.Id.ShouldNotBe(first.Entry.Id);
+        next.Card.Seq.ShouldBeGreaterThan(first.Seq);
+        Ok(await service.AnswerAsync(c, t, userId, start.SessionId, next.Card.Seq, null, 500));
+    });
+
+    [Fact]
     public async Task AnswerIsJudgedOnTheServer_AndWritesCardAndLog() => await WithTransactionAsync(async (c, t) =>
     {
         var userId = await NewUserAsync(c, t);
@@ -674,7 +698,7 @@ public class VocabSessionDatabaseTests
         var course = (await VocabSessionRepository.GetCourseAsync(c, t, Course))!;
         var plan = new VocabSessionPlan { CourseCode = Course, Track = course.Track };
         plan.Words.Add(new VocabPlanWord { EntryId = LogosEntryId });
-        var sessionId = await VocabSessionRepository.InsertSessionAsync(c, t, userId, course.Id, T0.UtcDateTime, JsonSerializer.Serialize(plan, Web));
+        var sessionId = (await VocabSessionRepository.InsertSessionAsync(c, t, userId, course.Id, T0.UtcDateTime, JsonSerializer.Serialize(plan, Web)))!.Value;
 
         return (service, userId, sessionId);
     }

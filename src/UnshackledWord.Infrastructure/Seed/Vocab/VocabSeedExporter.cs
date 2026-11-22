@@ -16,9 +16,25 @@ public sealed class VocabSeedExporter
     public const string KeysFile = "keys.csv";
     public const string MeaningsFile = "meanings.csv";
 
-    private const string SelectEntries = """
+    // Live entries with their homograph number: the n-th entry with this lemma in the track, by lowest Strong's key (ordinal), then id.
+    private const string LiveEntries = """
+        WITH live AS (
+            SELECT e.*
+                 , row_number() OVER (PARTITION BY e."Track", e."Lemma"
+                                      ORDER BY (SELECT min(s."StrongsKey" COLLATE "C")
+                                                FROM "unshackled-word"."VocabStrongs" s
+                                                WHERE s."VocabEntryId" = e."Id") NULLS LAST
+                                             , e."Id")::int AS "Homograph"
+            FROM "unshackled-word"."VocabEntries" e
+            WHERE 1=1
+                AND e."RetiredAt" IS NULL
+        )
+        """;
+
+    private const string SelectEntries = LiveEntries + """
         SELECT e."Track"
              , e."Lemma"
+             , e."Homograph"
              , e."LanguageId"
              , e."LemmaNormalized"
              , e."DictionaryForm"
@@ -30,24 +46,21 @@ public sealed class VocabSeedExporter
              , e."Occurrences"
              , e."FrequencyRank"
              , e."AudioObjectKey"
-        FROM "unshackled-word"."VocabEntries" e
-        WHERE 1=1
-            AND e."RetiredAt" IS NULL
+        FROM live e
         ORDER BY e."Track"
                , e."FrequencyRank" NULLS LAST
                , e."Lemma" COLLATE "C"
                , e."Id"
         """;
 
-    private const string SelectKeys = """
+    private const string SelectKeys = LiveEntries + """
         SELECT e."Track"
              , e."Lemma"
+             , e."Homograph"
              , s."StrongsKey"
              , s."Occurrences"
         FROM "unshackled-word"."VocabStrongs" s
-        JOIN "unshackled-word"."VocabEntries" e ON e."Id" = s."VocabEntryId"
-        WHERE 1=1
-            AND e."RetiredAt" IS NULL
+            JOIN live e ON e."Id" = s."VocabEntryId"
         ORDER BY e."Track"
                , e."FrequencyRank" NULLS LAST
                , e."Lemma" COLLATE "C"
@@ -55,9 +68,10 @@ public sealed class VocabSeedExporter
                , s."StrongsKey" COLLATE "C"
         """;
 
-    private const string SelectMeanings = """
+    private const string SelectMeanings = LiveEntries + """
         SELECT e."Track"
              , e."Lemma"
+             , e."Homograph"
              , m."German"
              , m."GermanKey"
              , m."Rank"
@@ -67,9 +81,7 @@ public sealed class VocabSeedExporter
              , m."Origin"
              , m."IsPinned"
         FROM "unshackled-word"."VocabMeanings" m
-        JOIN "unshackled-word"."VocabEntries" e ON e."Id" = m."VocabEntryId"
-        WHERE 1=1
-            AND e."RetiredAt" IS NULL
+            JOIN live e ON e."Id" = m."VocabEntryId"
         ORDER BY e."Track"
                , e."FrequencyRank" NULLS LAST
                , e."Lemma" COLLATE "C"
@@ -120,7 +132,7 @@ public sealed class VocabSeedExporter
         (MeaningsFile, SeedCsv.Serialize<VocabSeedMeaningLine, VocabSeedMeaningLineMap>(data.Meanings).Bytes)
     ];
 
-    /// <summary>Reads the live content. Identity across databases is <c>(Track, Lemma)</c>, so a duplicate pair is an error the maintainer must resolve first.</summary>
+    /// <summary>Reads the live content. Identity across databases is <c>(Track, Lemma, Homograph)</c>; a split leaves two entries with one lemma, the homograph number tells them apart.</summary>
     public static async Task<VocabSeedData> ReadAsync(IDbConnection c, IDbTransaction? t)
     {
         var data = new VocabSeedData
@@ -129,13 +141,6 @@ public sealed class VocabSeedExporter
             Keys = (await c.QueryAsync<VocabSeedKeyLine>(SelectKeys, transaction: t)).ToList(),
             Meanings = (await c.QueryAsync<VocabSeedMeaningLine>(SelectMeanings, transaction: t)).ToList()
         };
-
-        var duplicate = data.Entries.GroupBy(e => (e.Track, e.Lemma)).FirstOrDefault(g => g.Count() > 1);
-
-        if (duplicate is not null)
-        {
-            throw new InvalidOperationException($"The vocab seed identifies an entry by (Track, Lemma); {duplicate.Key.Track} '{duplicate.Key.Lemma}' exists more than once. Merge or retire the duplicate first.");
-        }
 
         return data;
     }

@@ -323,6 +323,7 @@ public sealed class VocabEntryEditor
         FROM "unshackled-word"."VocabCards" c
         WHERE 1=1
             AND c."VocabEntryId" = @Id
+            AND c."State" <> 'new'
         """;
 
     private readonly IDbConnectionFactory _connectionFactory;

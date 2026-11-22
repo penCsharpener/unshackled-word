@@ -12,8 +12,8 @@ namespace UnshackledWord.Infrastructure.Seed.Vocab;
 
 /// <summary>
 /// Imports <c>assets/seed/vocab</c> (roadmap 0022.14) on the first start and from the seed page; the same idempotent sync serves both.
-/// Entry identity across databases: <c>(Track, Lemma)</c> first; an entry whose lemma is not found is matched through a Strong's key it
-/// holds (renamed lemma). Never by the serial id. Unknown entries are created; entries missing from the seed are left alone.
+/// Entry identity across databases: <c>(Track, Lemma, Homograph)</c> first (the homograph number tells the entries of a split apart, see
+/// <see cref="VocabSeedEntryLine.Homograph"/>); an entry whose lemma is not found is matched through a Strong's key it holds (renamed lemma). Never by the serial id. Unknown entries are created; entries missing from the seed are left alone.
 /// A matched entry takes the seed's content. A change learners care about (accepted German set, dictionary form, key set, lemma, see
 /// <see cref="VocabChangeRules"/>) bumps <c>ContentVersion</c> and writes a <c>VocabEntryChanges</c> row exactly like the editor, so cards flag it;
 /// everything else (ranks, counts, shares, transliteration, occurrences, flags) is updated silently. The audio key is only set from the seed,
@@ -204,9 +204,17 @@ public sealed class VocabSeedImporter
         var dbMeanings = (await c.QueryAsync<DbMeaning>(SelectMeanings, transaction: t)).ToLookup(m => m.EntryId);
         var keyOwner = (await c.QueryAsync<DbKey>(SelectKeys, transaction: t)).ToDictionary(k => k.StrongsKey, k => k.EntryId, StringComparer.Ordinal);
 
-        var byLemma = db.OrderBy(e => e.Retired).GroupBy(e => (e.Track, e.Lemma)).ToDictionary(g => g.Key, g => g.First());
-        var seedKeys = seed.Keys.ToLookup(k => (k.Track, k.Lemma));
-        var seedMeanings = seed.Meanings.ToLookup(m => (m.Track, m.Lemma));
+        // the same homograph numbering as the exporter: live entries per (track, lemma), by lowest Strong's key (ordinal), then id
+        var byLemma = db
+            .Where(e => !e.Retired)
+            .GroupBy(e => (e.Track, e.Lemma))
+            .SelectMany(g => g
+                .OrderBy(e => dbKeys[e.Id].Select(k => k.StrongsKey).Order(StringComparer.Ordinal).FirstOrDefault() ?? "\uFFFF", StringComparer.Ordinal)
+                .ThenBy(e => e.Id)
+                .Select((e, index) => (Key: (e.Track, e.Lemma, Homograph: index + 1), Entry: e)))
+            .ToDictionary(x => x.Key, x => x.Entry);
+        var seedKeys = seed.Keys.ToLookup(k => (k.Track, k.Lemma, k.Homograph));
+        var seedMeanings = seed.Meanings.ToLookup(m => (m.Track, m.Lemma, m.Homograph));
         var claimed = new HashSet<int>();
         var created = 0;
         var updated = 0;
@@ -216,11 +224,11 @@ public sealed class VocabSeedImporter
 
         foreach (var line in seed.Entries)
         {
-            var identity = (line.Track, line.Lemma);
+            var identity = (line.Track, line.Lemma, line.Homograph);
             var wantedKeys = seedKeys[identity].ToList();
             var wantedMeanings = seedMeanings[identity].ToList();
 
-            if (!byLemma.TryGetValue(identity, out var entry) || entry.Retired || claimed.Contains(entry.Id))
+            if (!byLemma.TryGetValue(identity, out var entry) || claimed.Contains(entry.Id))
             {
                 entry = null;
                 var owner = wantedKeys.Select(k => keyOwner.GetValueOrDefault(k.StrongsKey)).FirstOrDefault(id => id != 0 && !claimed.Contains(id));

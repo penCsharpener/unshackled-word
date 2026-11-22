@@ -175,6 +175,7 @@ public sealed class VocabChangeService
                 JOIN "unshackled-word"."VocabEntries" e ON e."Id" = c."VocabEntryId"
             WHERE 1=1
                 AND c."VocabEntryId" = @EntryId
+                AND c."State" <> 'new'
             """, new { EntryId = entryId });
     }
 

@@ -11,6 +11,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// refresh included), with fixture verses at book 66, chapter 99 and Strong's keys G90001/G90002. Set <c>UNSHACKLEDWORD_TEST_POSTGRES</c>
 /// (a copy of the dev database is the safe choice), otherwise the tests are skipped. The refresh takes about 30 s and locks the view meanwhile.
 /// </summary>
+[Collection("VocabDatabase")]
 public class VocabRenderingsDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

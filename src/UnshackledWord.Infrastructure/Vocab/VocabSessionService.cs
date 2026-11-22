@@ -137,7 +137,17 @@ public sealed class VocabSessionService
 
         var id = await VocabSessionRepository.InsertSessionAsync(c, t, userId, course.Id, now.UtcDateTime, JsonSerializer.Serialize(plan, Json));
 
-        return VocabSessionOutcome<StartVocabSessionResponse>.Ok(StartResponse(id, plan, resumed: false));
+        if (id is null)
+        {
+            // a concurrent start (double click) opened the session first: resume that one
+            var raced = await VocabSessionRepository.GetOpenSessionAsync(c, t, userId, course.Id);
+
+            return raced is null
+                ? VocabSessionOutcome<StartVocabSessionResponse>.Fail(VocabSessionStatus.Conflict, "A session was started at the same time. Try again.")
+                : VocabSessionOutcome<StartVocabSessionResponse>.Ok(StartResponse(raced.Id, Read(raced), resumed: true));
+        }
+
+        return VocabSessionOutcome<StartVocabSessionResponse>.Ok(StartResponse(id.Value, plan, resumed: false));
     }
 
     private static StartVocabSessionResponse StartResponse(int id, VocabSessionPlan plan, bool resumed) => new()
@@ -170,6 +180,18 @@ public sealed class VocabSessionService
 
         var now = _time.GetUtcNow();
         var disabled = (await VocabSessionRepository.GetDisabledQuizTypesAsync(c, t, userId)).ToHashSet();
+
+        // the open card's entry was merged away, deleted or retired since it was served: drop it, or the session could never move on
+        if (plan.Pending is { } open)
+        {
+            var openEntry = (await VocabSessionRepository.GetEntriesAsync(c, t, [open.EntryId])).GetValueOrDefault(open.EntryId);
+
+            if (openEntry is null || openEntry.Retired || openEntry.Track != plan.Track)
+            {
+                VocabSessionPlanner.Drop(plan, open.EntryId);
+                plan.Pending = null;
+            }
+        }
 
         while (plan.Pending is null)
         {
@@ -398,8 +420,13 @@ public sealed class VocabSessionService
         }
 
         var now = _time.GetUtcNow();
-        var entries = await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId]);
-        var entry = entries[pending.EntryId];
+        var entry = (await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId])).GetValueOrDefault(pending.EntryId);
+
+        if (entry is null)
+        {
+            // merged away or deleted since the card was served; the next "next" call drops it from the plan
+            return VocabSessionOutcome<VocabAnswerResponse>.Fail(VocabSessionStatus.Conflict, "The word of this card no longer exists. Ask for the next card.");
+        }
         var accepted = pending.Kind is VocabQuizTypes.ReverseMultipleChoice or VocabQuizTypes.Listening or VocabQuizTypes.Typing
             ? new List<string> { FormOf(entry) }
             : (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].Select(m => m.German).ToList();

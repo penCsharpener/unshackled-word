@@ -2,6 +2,7 @@ using System.Data;
 using Dapper;
 using Npgsql;
 using UnshackledWord.Infrastructure.Seed.Vocab;
+using UnshackledWord.Infrastructure.Vocab;
 
 namespace UnshackledWord.Infrastructure.Tests;
 
@@ -59,6 +60,54 @@ public class VocabSeedDatabaseTests
         {
             second[i].Bytes.ShouldBe(first[i].Bytes, $"{first[i].Name} differs after the round trip");
         }
+    });
+
+    [Fact]
+    public async Task RoundTrip_AfterASplit_TellsTheTwoEntriesWithOneLemmaApart() => await WithTransactionAsync(async (c, t) =>
+    {
+        await ExportAsync(c, t);
+        var source = await c.QueryFirstOrDefaultAsync<(int Id, string Key)>("""
+            SELECT s."VocabEntryId", max(s."StrongsKey" COLLATE "C")
+            FROM "unshackled-word"."VocabStrongs" s
+                JOIN "unshackled-word"."VocabEntries" e ON e."Id" = s."VocabEntryId"
+            WHERE e."RetiredAt" IS NULL
+            GROUP BY s."VocabEntryId"
+            HAVING count(*) >= 2
+            ORDER BY s."VocabEntryId"
+            LIMIT 1
+            """, transaction: t);
+        Assert.SkipWhen(source.Id == 0, "No entry with two Strong's keys in this database.");
+
+        // a split keeps the lemma (H1254B gets its own בָּרָא), so (Track, Lemma) alone is no identity any more
+        var split = await VocabEntryEditor.MoveKeyAsync(c, t, source.Id, source.Key, null, null);
+        split.Status.ShouldBe(VocabEditStatus.Ok);
+
+        var data = await VocabSeedExporter.ReadAsync(c, t);
+        var lemma = data.Entries.Single(e => e.Homograph == 2);
+        data.Entries.Count(e => e.Track == lemma.Track && e.Lemma == lemma.Lemma).ShouldBe(2);
+        data.Keys.Single(k => k.StrongsKey == source.Key).Homograph.ShouldBe(2);
+        var first = VocabSeedExporter.Serialize(data);
+
+        foreach (var table in new[] { "VocabReviewLog", "VocabCards", "VocabEntryChanges", "VocabMeanings", "VocabStrongs", "VocabEntries" })
+        {
+            await c.ExecuteAsync($"""DELETE FROM "unshackled-word"."{table}" """, transaction: t);
+        }
+
+        var report = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes));
+        report.Counts["created"].ShouldBe(data.Entries.Count);
+        report.Counts["keyConflicts"].ShouldBe(0);
+
+        var second = VocabSeedExporter.Serialize(await VocabSeedExporter.ReadAsync(c, t));
+
+        for (var i = 0; i < first.Count; i++)
+        {
+            second[i].Bytes.ShouldBe(first[i].Bytes, $"{first[i].Name} differs after the round trip");
+        }
+
+        // a second import over the same files matches every entry, including both homographs
+        var again = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes));
+        again.Counts["created"].ShouldBe(0);
+        again.Counts["updated"].ShouldBe(0);
     });
 
     [Fact]
@@ -125,5 +174,5 @@ public class VocabSeedDatabaseTests
         (await c.QueryAsync<(int Id, int Version)>("""SELECT "Id", "ContentVersion" FROM "unshackled-word"."VocabEntries" """, transaction: t)).ToDictionary(x => x.Id, x => x.Version);
 
     private static async Task<int> EntryIdAsync(IDbConnection c, IDbTransaction t, VocabSeedEntryLine line) =>
-        await c.QuerySingleAsync<int>("""SELECT "Id" FROM "unshackled-word"."VocabEntries" WHERE "Track" = @Track AND "Lemma" = @Lemma""", new { line.Track, line.Lemma }, t);
+        await c.QuerySingleAsync<int>("""SELECT "Id" FROM "unshackled-word"."VocabEntries" WHERE "Track" = @Track AND "Lemma" = @Lemma AND "RetiredAt" IS NULL""", new { line.Track, line.Lemma }, t);
 }
