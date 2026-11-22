@@ -101,7 +101,7 @@ const started = {
  * A scripted server: the session walks introduction, multiple choice, finished. The answer to the
  * multiple-choice card is correct for option 1 ("Wort") and a drop for anything else.
  */
-function scriptedApi(options: { nothingDue?: boolean } = {}) {
+function scriptedApi(options: { nothingDue?: boolean; changedCount?: number } = {}) {
   let phase: "introduction" | "choice" | "done" = "introduction";
   const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
     const path = url.replace(/^\/api/, "");
@@ -109,9 +109,30 @@ function scriptedApi(options: { nothingDue?: boolean } = {}) {
     if (path === "/auth/me") return json(me);
     if (path === "/meta-bible/structure") return json(fixtureStructure);
     if (method === "POST" && path === "/vocab/sessions") {
+      const changedCount = options.changedCount ?? 0;
       return options.nothingDue
-        ? json({ ...started, sessionId: 0, finished: true, newWords: 0 })
-        : json(started);
+        ? json({ ...started, sessionId: 0, finished: true, newWords: 0, changedCount })
+        : json({ ...started, changedCount });
+    }
+    // Coverage is 61.1 % before the session and 62.4 % once the summary is reached.
+    if (method === "GET" && path === "/vocab/courses") {
+      const coverage = phase === "done" ? 62.4 : 61.1;
+      return json({
+        courses: [
+          {
+            code: "nt-greek",
+            track: "G",
+            nameDe: "NT",
+            nameEn: "NT",
+            totalEntries: 5407,
+            totalOccurrences: 141774,
+            coverage,
+          },
+        ],
+      });
+    }
+    if (method === "GET" && path === "/vocab/changes") {
+      return json({ count: options.changedCount ?? 0, items: [] });
     }
     if (method === "GET" && path === "/vocab/sessions/7/next") {
       if (phase === "introduction") {
@@ -208,6 +229,9 @@ describe("StudySessionPage", () => {
     await user.keyboard("{Enter}");
     expect(await screen.findByText("Gut gemacht!")).toBeInTheDocument();
     expect(screen.getByText("Neu gelernt")).toBeInTheDocument();
+    // Coverage grew from 61.1 % (when the page opened) to 62.4 %.
+    expect(screen.getByText("62,4 %")).toBeInTheDocument();
+    expect(screen.getByText("+1,3 %")).toBeInTheDocument();
 
     const bodies = fetchMock.mock.calls
       .filter(([url]) => String(url).endsWith("/answers"))
@@ -227,6 +251,14 @@ describe("StudySessionPage", () => {
     await user.keyboard("2");
     expect(await screen.findByText("✓ Richtig")).toBeInTheDocument();
     expect(screen.getByText("Stärker geworden")).toBeInTheDocument();
+  });
+
+  it("shows the Geändert notice at the start without blocking the session", async () => {
+    scriptedApi({ changedCount: 2 });
+    renderSession();
+    expect(await screen.findByText("2 deiner Wörter wurden überarbeitet.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ansehen" })).toBeInTheDocument();
+    expect(await screen.findByText("Neues Wort")).toBeInTheDocument();
   });
 
   it("says when nothing is due", async () => {

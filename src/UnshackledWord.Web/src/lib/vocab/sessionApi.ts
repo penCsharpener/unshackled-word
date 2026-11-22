@@ -94,6 +94,8 @@ export interface StartVocabSessionResponse {
   reviewWords: number;
   newWords: number;
   progress: VocabSessionProgress;
+  /** Flagged cards of the learner (revised or removed words); the notice shows when above 0. */
+  changedCount?: number | null;
 }
 
 /** Mirrors `GET api/vocab/sessions/{id}/next`; the card stays the same until it is answered. */

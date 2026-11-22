@@ -7,6 +7,7 @@ import { CourseCard, type CourseCardProps } from "./CourseCard";
 const base = {
   title: "Neues Testament (Griechisch)",
   subtitle: "Griechisch · 5.407 Wörter nach Häufigkeit",
+  coverageText: "NT-Textes",
   to: "/learn/nt-greek",
   listTo: "/vocab?track=G",
 };
@@ -41,11 +42,11 @@ describe("CourseCard", () => {
   it("shows the learner's numbers when they are given", () => {
     renderCard({
       signedIn: true,
-      stats: { known: 142, due: 18, new: 5270, coverage: 62 },
+      stats: { known: 142, due: 18, new: 5270, coverage: 62.4 },
     });
     expect(screen.getByText("Bekannt")).toBeInTheDocument();
     expect(screen.getByText("5.270")).toBeInTheDocument();
-    expect(screen.getByText("Deine Wörter decken 62 % des Textes ab.")).toBeInTheDocument();
+    expect(screen.getByText("62,4 % des NT-Textes kennst du schon.")).toBeInTheDocument();
   });
 
   it("shows no numbers without stats", () => {

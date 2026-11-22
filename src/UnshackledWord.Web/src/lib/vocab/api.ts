@@ -18,10 +18,20 @@ export interface VocabCourse {
   nameEn: string;
   totalEntries: number;
   totalOccurrences: number;
+  /** Signed-in learners only: cards with strength 3 or more. */
+  known?: number | null;
+  /** Signed-in learners only: cards due now. */
+  due?: number | null;
+  /** Signed-in learners only: entries that would still come as new words. */
+  newAvailable?: number | null;
+  /** Signed-in learners only: percent (0–100, one decimal) of the course's occurrences covered by known words. */
+  coverage?: number | null;
 }
 
 export interface VocabCoursesResponse {
   courses: VocabCourse[];
+  /** Signed-in learners only: flagged cards (see `GET api/vocab/changes`). */
+  changedCount?: number | null;
 }
 
 /** Mirrors one item of `GET api/vocab/courses/{code}/entries`; nulls are omitted by the API. */

@@ -71,4 +71,52 @@ describe("LearnPage", () => {
     ]);
     expect(screen.queryByRole("link", { name: "anmelden" })).toBeNull();
   });
+
+  it("shows the learner's numbers and coverage on the course cards", async () => {
+    stubApi({
+      "GET /auth/me": () => json(me),
+      "GET /vocab/courses": () =>
+        json({
+          changedCount: 0,
+          courses: [
+            {
+              ...courses.courses[0],
+              known: 142,
+              due: 18,
+              newAvailable: 5270,
+              coverage: 62.4,
+            },
+          ],
+        }),
+    });
+    renderLearn();
+    expect(await screen.findByText("62,4 % des NT-Textes kennst du schon.")).toBeInTheDocument();
+    expect(screen.getByText("142")).toBeInTheDocument();
+    expect(screen.getByText("18")).toBeInTheDocument();
+    expect(screen.getByText("5.270")).toBeInTheDocument();
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("shows the Geändert notice when words were revised", async () => {
+    stubApi({
+      "GET /auth/me": () => json(me),
+      "GET /vocab/courses": () => json({ changedCount: 3, courses: courses.courses }),
+      "GET /vocab/changes": () => json({ count: 3, items: [] }),
+    });
+    renderLearn();
+    expect(await screen.findByText("3 deiner Wörter wurden überarbeitet.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ansehen" })).toBeInTheDocument();
+    // The notice never replaces the course cards.
+    expect(screen.getAllByRole("link", { name: "Beginnen" })).toHaveLength(2);
+  });
+
+  it("hides the notice when no word was revised", async () => {
+    stubApi({
+      "GET /auth/me": () => json(me),
+      "GET /vocab/courses": () => json({ changedCount: 0, courses: courses.courses }),
+    });
+    renderLearn();
+    expect(await screen.findByText("Neues Testament (Griechisch)")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Ansehen" })).toBeNull();
+  });
 });

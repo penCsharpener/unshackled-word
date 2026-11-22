@@ -10,16 +10,28 @@ export interface CourseCardProps {
   signedIn: boolean;
   /** Learner numbers of the course; shown only when given (the API has no per-user numbers yet). */
   stats?: { known: number; due: number; new: number; coverage: number };
+  /** Name of the text the coverage refers to, e.g. "NT-Textes". */
+  coverageText: string;
   /** Study session route, e.g. `/learn/nt-greek`. */
   to: string;
   /** Word list route, e.g. `/vocab?track=G`. */
   listTo: string;
 }
 
-/** One course on `/learn` (roadmap 0022.8f): title, size, the learner's numbers and the start link. */
-export function CourseCard({ title, subtitle, signedIn, stats, to, listTo }: CourseCardProps) {
+/** One course on `/learn` (roadmap 0022.8f, 0022.12f): title, size, the learner's numbers, coverage and the start link. */
+export function CourseCard({
+  title,
+  subtitle,
+  signedIn,
+  stats,
+  coverageText,
+  to,
+  listTo,
+}: CourseCardProps) {
   const { t, i18n } = useTranslation();
   const number = (value: number) => value.toLocaleString(i18n.language);
+  const percent = (value: number) =>
+    value.toLocaleString(i18n.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   return (
     <article className="grid content-start gap-3 rounded-lg border border-border bg-surface p-4">
       <div className="grid gap-1">
@@ -35,7 +47,10 @@ export function CourseCard({ title, subtitle, signedIn, stats, to, listTo }: Cou
               label={t("learn.courses.coverageLabel")}
             />
             <p className="text-sm">
-              {t("learn.courses.coverage", { coverage: number(stats.coverage) })}
+              {t("learn.courses.coverage", {
+                coverage: percent(stats.coverage),
+                text: coverageText,
+              })}
             </p>
           </div>
           <dl className="grid grid-cols-3 gap-2 text-sm">

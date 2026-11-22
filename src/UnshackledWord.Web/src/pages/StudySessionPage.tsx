@@ -15,7 +15,7 @@ import { VerseContext } from "@/components/VerseContext";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useBibleStructure } from "@/lib/bible/queries";
-import type { VocabLang, VocabSampleVerse } from "@/lib/vocab/api";
+import { getCourses, type VocabLang, type VocabSampleVerse } from "@/lib/vocab/api";
 import {
   getVocabSessionNext,
   type SubmitVocabAnswerRequest,
@@ -27,11 +27,25 @@ import {
   type VocabSessionSummary,
 } from "@/lib/vocab/sessionApi";
 import { sampleVerseHref, sampleVerseReference } from "@/lib/vocab/verseReference";
+import { ChangedWordsNotice } from "@/pages/vocab/ChangedWordsNotice";
 
 /** A multiple-choice card after its answer: the card as shown and the server's verdict. */
 interface Feedback {
   card: VocabCard;
   result: VocabAnswerResponse;
+}
+
+/** Coverage of the course in the summary: the value now and how much it grew (null when it did not). */
+interface CoverageGrowth {
+  title: string;
+  value: number;
+  delta: number | null;
+}
+
+/** The growth in percentage points, one decimal; null when the coverage did not grow. */
+function pointsGrown(before: number, after: number): number | null {
+  const delta = Math.round((after - before) * 10) / 10;
+  return delta > 0 ? delta : null;
 }
 
 /**
@@ -90,6 +104,38 @@ function StudySession() {
   const progress: VocabSessionProgress | undefined =
     feedback?.result.progress ?? next.data?.progress ?? start.data?.progress;
   const nothingDue = start.data?.finished === true && start.data.sessionId === 0;
+  // Flagged words of the learner: the notice shows them at the start and never blocks the session.
+  const changedCount = start.data?.changedCount ?? 0;
+
+  // Coverage of the course (roadmap 0022.12f): the value fetched when the page opens is the one before
+  // any answer; the summary refetches the courses and compares.
+  const courses = useQuery({
+    queryKey: ["vocab", "courses"],
+    queryFn: ({ signal }) => getCourses(signal),
+    refetchOnMount: "always",
+  });
+  const courseEntry = courses.data?.courses.find((item) => item.code === course);
+  const coverageNow = courseEntry?.coverage ?? null;
+  const [coverageBefore, setCoverageBefore] = useState<number | null>(null);
+  useEffect(() => {
+    if (coverageBefore === null && courses.isFetchedAfterMount && coverageNow !== null) {
+      setCoverageBefore(coverageNow);
+    }
+  }, [coverageBefore, courses.isFetchedAfterMount, coverageNow]);
+  const summary = next.data?.finished && feedback === null ? (next.data.summary ?? null) : null;
+  const summaryShown = summary !== null;
+  const refetchCourses = courses.refetch;
+  useEffect(() => {
+    if (summaryShown) void refetchCourses();
+  }, [summaryShown, refetchCourses]);
+  const growth: CoverageGrowth | null =
+    courseEntry && coverageNow !== null
+      ? {
+          title: t(`learn.summary.coverageTitle.${courseEntry.track}`),
+          value: coverageNow,
+          delta: coverageBefore === null ? null : pointsGrown(coverageBefore, coverageNow),
+        }
+      : null;
 
   useEffect(() => {
     shown.current = { seq: cardSeq ?? 0, at: performance.now() };
@@ -290,8 +336,8 @@ function StudySession() {
   } else if (nothingDue) {
     body = <NothingDue />;
   } else if (next.data?.finished && feedback === null) {
-    body = next.data.summary ? (
-      <SessionSummary summary={next.data.summary} onAgain={startAgain} />
+    body = summary ? (
+      <SessionSummary summary={summary} coverage={growth} onAgain={startAgain} />
     ) : (
       <NothingDue />
     );
@@ -336,6 +382,7 @@ function StudySession() {
           </div>
         ) : null}
       </div>
+      {changedCount > 0 ? <ChangedWordsNotice changedCount={changedCount} /> : null}
       {body}
     </section>
   );
@@ -359,23 +406,38 @@ function NothingDue() {
 /** The summary at the end of a session: what was learned and repeated, and the strength of each word. */
 function SessionSummary({
   summary,
+  coverage,
   onAgain,
 }: {
   summary: VocabSessionSummary;
+  coverage: CoverageGrowth | null;
   onAgain: () => void;
 }) {
   const { t, i18n } = useTranslation();
   const number = (value: number) => value.toLocaleString(i18n.language);
+  const percent = (value: number) =>
+    value.toLocaleString(i18n.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   return (
     <StudyCard kindLabel={t("learn.summary.kind")}>
       <h2 className="text-2xl font-semibold">{t("learn.summary.title")}</h2>
-      <div className="grid grid-cols-3 gap-2">
+      <div className={`grid gap-2 ${coverage ? "grid-cols-2 md:grid-cols-4" : "grid-cols-3"}`}>
         <StatTile title={t("learn.summary.newWords")} value={number(summary.newWords)} />
         <StatTile title={t("learn.summary.reviewedWords")} value={number(summary.reviewedWords)} />
         <StatTile
           title={t("learn.summary.correct")}
           value={`${number(summary.correctAnswers)} / ${number(summary.answers)}`}
         />
+        {coverage ? (
+          <StatTile
+            title={coverage.title}
+            value={t("learn.summary.coverageValue", { value: percent(coverage.value) })}
+            delta={
+              coverage.delta === null
+                ? undefined
+                : t("learn.summary.coverageDelta", { value: percent(coverage.delta) })
+            }
+          />
+        ) : null}
       </div>
       <ul className="grid gap-2">
         {summary.words.map((word) => (
