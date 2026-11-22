@@ -1,0 +1,19 @@
+meta {
+  name: DeleteNote
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{url}}notes/{{noteId}}
+  body: none
+  auth: inherit
+}
+
+docs {
+  Deletes an own note (204). 404 when the note is not the caller's.
+}
+
+settings {
+  encodeUrl: true
+}

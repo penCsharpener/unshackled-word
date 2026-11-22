@@ -1,0 +1,26 @@
+meta {
+  name: CreateRangeAcrossChapters
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}notes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "anchor": { "kind": "verses", "bookId": 45, "chapter": 8, "startHebRefId": 45008039, "endHebRefId": 45009001 },
+    "bodyMarkdown": "x"
+  }
+}
+
+docs {
+  Röm 8,39–9,1: always 400 (a verse range stays within one chapter; until row 0023.2 verse ranges are refused altogether).
+}
+
+settings {
+  encodeUrl: true
+}

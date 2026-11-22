@@ -1,0 +1,33 @@
+meta {
+  name: CreateVerseNote
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}notes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "anchor": { "kind": "verse", "bookId": 45, "chapter": 8, "startHebRefId": 45008028 },
+    "bodyMarkdown": "**Alles** dient zum Guten."
+  }
+}
+
+script:post-response {
+  // Keep the note id for UpdateNote and DeleteNote.
+  if (res.status === 201) {
+    bru.setEnvVar("noteId", res.body.id);
+  }
+}
+
+docs {
+  Creates a private note on Röm 8,28 (roadmap 0023.1). Login required (run Auth/Login first). 201 with the note; 400 for an anchor of kind verses/words (row 0023.2) or a verse missing in Elb1871.
+}
+
+settings {
+  encodeUrl: true
+}

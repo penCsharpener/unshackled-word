@@ -1,0 +1,23 @@
+meta {
+  name: GetChapterNotes
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}notes/chapter/45/8?others=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  others: true
+}
+
+docs {
+  Notes of Röm 8 the caller may see. Anonymous: approved public notes only; signed in: own notes plus others' internal/public ones. `others=false`: own notes only.
+}
+
+settings {
+  encodeUrl: true
+}

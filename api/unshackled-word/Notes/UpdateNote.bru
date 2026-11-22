@@ -1,0 +1,25 @@
+meta {
+  name: UpdateNote
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{url}}notes/{{noteId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "bodyMarkdown": "Geänderter Text."
+  }
+}
+
+docs {
+  Updates the body of an own note (add `anchor` to move it). 404 when the note is not the caller's.
+}
+
+settings {
+  encodeUrl: true
+}

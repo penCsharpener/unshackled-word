@@ -1,0 +1,26 @@
+meta {
+  name: CreateChapterNote
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}notes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "anchor": { "kind": "chapter", "bookId": 45, "chapter": 8 },
+    "bodyMarkdown": "Das Kapitel der Hoffnung."
+  }
+}
+
+docs {
+  Creates a private note on Röm 8. Login required.
+}
+
+settings {
+  encodeUrl: true
+}

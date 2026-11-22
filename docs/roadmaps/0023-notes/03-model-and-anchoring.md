@@ -46,6 +46,8 @@ CREATE INDEX IF NOT EXISTS "Notes_User_idx"    ON "unshackled-word"."Notes" ("Us
 CREATE INDEX IF NOT EXISTS "Notes_Pending_idx" ON "unshackled-word"."Notes" ("UpdatedAt") WHERE "PublicState" = 'pending';
 ```
 
+As implemented (0023.1), `Notes_Anchor_CK` also spells out `IS NOT NULL` for the refs/positions of each kind (a CHECK that evaluates to NULL passes, so `NULL = NULL` would let a verse note without a verse in) and requires `EndPosition`/`QuotedText` to be NULL outside words notes; `Notes_AnchorChapter_CK` ties `StartHebRefId` to `BibleBookId`/`Chapter`; `ApprovedByUserId`/`HiddenByUserId` reference `Users`.
+
 `HebRefId` is `book * 1,000,000 + chapter * 1,000 + verse` (as everywhere in the schema), so "same chapter" is `/ 1000`. No `ON DELETE CASCADE` on `Users`: users are deactivated, not deleted (0020). Exact formatting follows the SQL-formatting skill.
 
 ## Who sees what (one SQL predicate, `NoteVisibilityFilter`)
