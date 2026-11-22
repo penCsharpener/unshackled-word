@@ -63,6 +63,15 @@ public static partial class BookAliasCatalog
         "Man", "PSS", "Pss", "3Ki", "4Ki", "Weish", "1Makk", "2Makk",
     ];
 
+    /// <summary>
+    /// German aliases that are ordinary words or common abbreviations (am, ob, mal, Mi = Mittwoch ...). In running text they only count
+    /// as a reference with chapter and verse ("Am 3,7"), never with a chapter alone ("am 3. Tag").
+    /// </summary>
+    private static readonly string[] RequiresVerseInProseAliases =
+        ["Am", "Ri", "Hi", "Ob", "Mi", "Mal", "Hab", "Hag", "Nah", "Ex", "Hl", "Rt", "Gen", "Dan", "Sach"];
+
+    private static readonly HashSet<string> RequiresVerseInProseKeys = RequiresVerseInProseAliases.Select(Normalize).ToHashSet();
+
     private static readonly Dictionary<AliasProfile, Dictionary<string, int>> Indexes;
     private static readonly HashSet<string> NonCanonicalKeys;
 
@@ -113,6 +122,12 @@ public static partial class BookAliasCatalog
             yield return extra;
         }
     }
+
+    /// <summary>True when the alias is a common German word and only counts as a reference together with chapter and verse.</summary>
+    public static bool RequiresVerseInProse(string alias) => RequiresVerseInProseKeys.Contains(Normalize(alias));
+
+    /// <summary>The aliases of the German profile as written (names, abbreviations, extras), for building a text-scan pattern.</summary>
+    public static IReadOnlyList<string> GermanSurfaceAliases() => GermanEntries().Select(e => e.Alias).Distinct().ToList();
 
     /// <summary>Builds a normalised alias index; the same alias for two different books throws.</summary>
     public static Dictionary<string, int> BuildIndex(IEnumerable<(string Alias, int BookId)> entries)

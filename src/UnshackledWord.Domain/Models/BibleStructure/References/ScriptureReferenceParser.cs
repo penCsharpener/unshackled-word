@@ -25,14 +25,15 @@ public readonly record struct VerseSpan(int StartChapter, int StartVerse, int En
         (bookId * 1_000_000 + StartChapter * 1_000 + StartVerse, bookId * 1_000_000 + EndChapter * 1_000 + EndVerse);
 }
 
-/// <summary>One book with its verse spans. <see cref="BookId"/> is null for non-canonical books (<see cref="NonCanonical"/> holds the text).</summary>
+/// <summary>One book with its verse spans. <see cref="BookLength"/> is the length of the typed book name at <see cref="Start"/>. <see cref="BookId"/> is null for non-canonical books (<see cref="NonCanonical"/> holds the text).</summary>
 public sealed record ScriptureReference(
     int? BookId,
     string? NonCanonical,
     IReadOnlyList<VerseSpan> Spans,
     int Start,
     int Length,
-    bool BookOnly);
+    bool BookOnly,
+    int BookLength = 0);
 
 public sealed record ScriptureParseError(string Code, int Position, IReadOnlyDictionary<string, string> Args);
 
@@ -245,7 +246,7 @@ public static class ScriptureReferenceParser
             }
 
             var start = _tokens[firstToken].Start;
-            return new ScriptureReference(match.BookId, match.NonCanonical, spans, start, _lastEnd - start, bookOnly);
+            return new ScriptureReference(match.BookId, match.NonCanonical, spans, start, _lastEnd - start, bookOnly, EndOf(bookEnd - 1) - start);
         }
 
         private int EndOf(int tokenIndex) => _tokens[tokenIndex].Start + _tokens[tokenIndex].Length;

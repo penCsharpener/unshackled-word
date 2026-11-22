@@ -170,7 +170,7 @@ public sealed class NoteService
         },
         AnchorState = NoteAnchorStates.Ok,
         BodyMarkdown = row.BodyMarkdown,
-        BodyLinked = row.BodyMarkdown,
+        BodyLinked = NoteBodyLinker.Link(row.BodyMarkdown),
         Visibility = row.Visibility,
         PublicState = row.PublicState,
         IsOwn = viewerId is not null && row.UserId == viewerId,
