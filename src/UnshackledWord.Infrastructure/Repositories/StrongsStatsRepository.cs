@@ -559,11 +559,21 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                      , (page."ElbRefId" / 1000 % 1000)::int "Chapter"
                                      , (page."ElbRefId" % 1000)::int "Verse"
                                      , page."Original"
+                                     , page."PositionInVerse" "OriginalPosition"
+                                     , ow."OriginalPositions"
+                                     , ow."OriginalWords"
                                      , elb."MatchedPositions"
                                      , vw."VersePositions"
                                      , vw."VerseWords"
                                 FROM page
                                     LEFT JOIN elb ON elb."StepWordId" = page."Id"
+                                    LEFT JOIN LATERAL (
+                                        SELECT array_agg(o."PositionInVerse" ORDER BY o."PositionInVerse", o."Id") "OriginalPositions"
+                                             , array_agg(o."Greek" ORDER BY o."PositionInVerse", o."Id") "OriginalWords"
+                                        FROM "unshackled-word"."StepGreekWords" o
+                                        WHERE 1=1
+                                            AND o."LxxRefId" = page."LxxRefId"
+                                    ) ow ON TRUE
                                     LEFT JOIN LATERAL (
                                         SELECT array_agg(w."PositionInVerse" ORDER BY w."PositionInVerse") "VersePositions"
                                              , array_agg(w."WordInContext" ORDER BY w."PositionInVerse") "VerseWords"
@@ -615,11 +625,21 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                       , (page."ElbRefId" / 1000 % 1000)::int "Chapter"
                                       , (page."ElbRefId" % 1000)::int "Verse"
                                       , page."Original"
+                                      , page."PositionInVerse" "OriginalPosition"
+                                      , ow."OriginalPositions"
+                                      , ow."OriginalWords"
                                       , elb."MatchedPositions"
                                       , vw."VersePositions"
                                       , vw."VerseWords"
                                  FROM page
                                      LEFT JOIN elb ON elb."StepWordId" = page."Id"
+                                     LEFT JOIN LATERAL (
+                                         SELECT array_agg(o."PositionInVerse" ORDER BY o."PositionInVerse", o."Id") "OriginalPositions"
+                                              , array_agg(o."Hebrew" ORDER BY o."PositionInVerse", o."Id") "OriginalWords"
+                                         FROM "unshackled-word"."StepHebrewWords" o
+                                         WHERE 1=1
+                                             AND o."LxxRefId" = page."LxxRefId"
+                                     ) ow ON TRUE
                                      LEFT JOIN LATERAL (
                                          SELECT array_agg(w."PositionInVerse" ORDER BY w."PositionInVerse") "VersePositions"
                                               , array_agg(w."WordInContext" ORDER BY w."PositionInVerse") "VerseWords"

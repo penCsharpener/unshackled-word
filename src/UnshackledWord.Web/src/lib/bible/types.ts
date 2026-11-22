@@ -331,6 +331,8 @@ export interface StrongsOccurrence {
   chapter: number;
   verse: number;
   original?: string;
+  /** The whole original verse in verse order; the word of this row is `matched`. */
+  originalVerse?: StrongsOccurrenceToken[];
   before: StrongsOccurrenceToken[];
   keyword: StrongsOccurrenceToken[];
   /** Punctuation that trailed the keyword; drawn outside the keyword box. */

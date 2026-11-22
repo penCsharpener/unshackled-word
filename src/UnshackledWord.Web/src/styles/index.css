@@ -370,8 +370,9 @@
   /*
     Concordance keyword-in-context row (StrongsPage). One occurrence is one grid
     [left 1fr] [keyword auto] [right 1fr], so the keyword is always centred on the page.
-    Rows: [overflow up auto] [original] [German keyword] [overflow down auto]. The text before the
-    keyword is bottom-aligned (grows upward), the text after is top-aligned (grows downward).
+    Rows: [original context] [overflow up auto] [German keyword] [overflow down auto]. The original
+    words left and right of the keyword's original word stand above the German context; the German text
+    before the keyword is bottom-aligned (grows upward), the text after is top-aligned (grows downward).
   */
   .kwic {
     --kwic-line: calc(var(--spacing) * 7);
@@ -383,14 +384,32 @@
   .kwic-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    grid-template-rows: auto var(--kwic-line) var(--kwic-line) auto;
+    grid-template-rows: auto auto var(--kwic-line) auto;
     column-gap: var(--kwic-gap);
     line-height: var(--kwic-line);
   }
 
+  .kwic-orig-left,
+  .kwic-orig-right {
+    grid-row: 1;
+    align-self: end;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .kwic-orig-left {
+    grid-column: 1;
+    text-align: right;
+  }
+
+  .kwic-orig-right {
+    grid-column: 3;
+    text-align: left;
+  }
+
   .kwic-left {
     grid-column: 1;
-    grid-row: 1 / 4;
+    grid-row: 2 / 4;
     align-self: end;
     display: grid;
     grid-template-columns: var(--kwic-ref-w) minmax(0, 1fr);
@@ -431,7 +450,8 @@
 
   .kwic-original {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 1;
+    align-self: end;
     justify-self: center;
     white-space: nowrap;
   }
@@ -490,6 +510,13 @@
 
     .kwic-original {
       grid-row: 3;
+      align-self: auto;
+    }
+
+    /* The narrow screen keeps only the original word itself. */
+    .kwic-orig-left,
+    .kwic-orig-right {
+      display: none;
     }
 
     .kwic-key {

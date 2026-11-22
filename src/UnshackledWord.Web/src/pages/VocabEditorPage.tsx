@@ -211,6 +211,10 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
       .map((row) => meaningText(row).trim().toLowerCase()),
   );
   const renderings: RankedItem[] = data.renderings.map((rendering) => {
+    const label = (strongsKey: string) =>
+      data.strongsKeys.length > 1
+        ? t("vocab.editor.renderings.versesKey", { word: rendering.germanDisplay, key: strongsKey })
+        : t("vocab.editor.renderings.verses", { word: rendering.germanDisplay });
     const notAccepted = !acceptedGermans.has(rendering.germanDisplay.trim().toLowerCase());
     return {
       key: rendering.germanKey,
@@ -231,6 +235,33 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
           ]
         : [],
       muted: notAccepted,
+      action: data.strongsKeys.map((strongs) => (
+        <a
+          key={strongs.strongsKey}
+          href={`/bible/strongs/${strongs.strongsKey}?rendering=${encodeURIComponent(rendering.germanKey)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={label(strongs.strongsKey)}
+          aria-label={label(strongs.strongsKey)}
+          className="inline-flex items-center gap-1 rounded-sm text-accent"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            className="size-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" />
+          </svg>
+          {data.strongsKeys.length > 1 ? (
+            <span className="text-xs">{strongs.strongsKey}</span>
+          ) : null}
+        </a>
+      )),
     };
   });
 

@@ -8,6 +8,15 @@ public sealed class StrongsOccurrenceRow
     public int Verse { get; set; }
     public string? Original { get; set; }
 
+    /// <summary>Position of <see cref="Original"/> among the original words of its verse.</summary>
+    public int OriginalPosition { get; set; }
+
+    /// <summary>Positions of all original words of the verse, in verse order; null when none are stored. Same length as <see cref="OriginalWords"/>.</summary>
+    public int[]? OriginalPositions { get; set; }
+
+    /// <summary>The original words of the verse as written, in verse order.</summary>
+    public string[]? OriginalWords { get; set; }
+
     /// <summary>Positions in the verse of the Elberfelder words mapped to this original word (added words excluded); null when unmapped.</summary>
     public int[]? MatchedPositions { get; set; }
 

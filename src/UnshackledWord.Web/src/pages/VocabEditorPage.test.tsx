@@ -145,6 +145,14 @@ describe("VocabEditorPage", () => {
     );
   });
 
+  it("links each rendering to the verses of the Strong's key in a new tab", async () => {
+    stubEditor();
+    renderAt();
+    const link = await screen.findByRole("link", { name: /Show verses with “Mitte”/ });
+    expect(link).toHaveAttribute("href", "/bible/strongs/G3319?rendering=mitte");
+    expect(link).toHaveAttribute("target", "_blank");
+  });
+
   it("saves a changed form with a PUT that sends all three fields", async () => {
     const fetchMock = stubEditor();
     renderAt();

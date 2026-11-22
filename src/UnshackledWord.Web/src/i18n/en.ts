@@ -519,6 +519,8 @@ export const en: Translation = {
         title: "Renderings (click to take over)",
         sub: "{{count}} of them from 2027",
         notAccepted: "not accepted",
+        verses: "Show verses with “{{word}}” (new tab)",
+        versesKey: "Show verses with “{{word}}” for {{key}} (new tab)",
       },
       keyMove: {
         title: "Move {{key}}",

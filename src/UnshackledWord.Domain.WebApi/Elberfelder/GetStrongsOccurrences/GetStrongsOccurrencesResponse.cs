@@ -24,6 +24,12 @@ public sealed class StrongsOccurrenceResponse
     /// <summary>The Greek or Hebrew word as written in the verse.</summary>
     public string? Original { get; set; }
 
+    /// <summary>
+    /// The whole original verse in verse order; the word of this row has <c>Matched</c> true. Hebrew is in logical order (the page sets right-to-left).
+    /// Empty when the verse has no stored original words.
+    /// </summary>
+    public List<StrongsOccurrenceTokenResponse> OriginalVerse { get; set; } = [];
+
     /// <summary>Elberfelder words of the verse before the keyword, in verse order.</summary>
     public List<StrongsOccurrenceTokenResponse> Before { get; set; } = [];
 

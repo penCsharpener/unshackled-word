@@ -24,6 +24,23 @@ public class StrongsOccurrenceServiceTests
     }
 
     [Fact]
+    public void ToResponse_ReturnsTheWholeOriginalVerseWithTheRowsWordMarked()
+    {
+        var row = new StrongsOccurrenceRow
+        {
+            Original = "καὶ",
+            OriginalPosition = 3,
+            OriginalPositions = [1, 2, 3, 4],
+            OriginalWords = ["ἐν", "ἀρχῇ", "καὶ", "ὁ"]
+        };
+
+        var item = StrongsOccurrenceService.ToResponse(row);
+
+        item.OriginalVerse.Select(t => t.Text).ShouldBe(["ἐν", "ἀρχῇ", "καὶ", "ὁ"]);
+        item.OriginalVerse.Where(t => t.Matched).Select(t => t.Text).ShouldBe(["καὶ"]);
+    }
+
+    [Fact]
     public async Task GetAsync_Greek_NormalizesAndPages()
     {
         _stats.CountOccurrencesAsync(Arg.Is<IReadOnlyList<string>>(k => Same(k, "G0026")), false, None, Arg.Any<CancellationToken>()).Returns(116);

@@ -124,6 +124,59 @@ describe("StrongsPage", () => {
     expect(screen.getByText("Die")).toHaveAttribute("lang", "de");
   });
 
+  it("puts the original words before and after the row's word left and right above the German", async () => {
+    stubFetch(
+      new Response(
+        JSON.stringify({
+          ...page1,
+          items: [
+            {
+              ...page1.items[0],
+              originalVerse: [
+                { text: "καὶ", matched: false },
+                { text: "ἀγάπη", matched: true },
+                { text: "πολλῶν", matched: false },
+              ],
+            },
+          ],
+        }),
+      ),
+    );
+    renderAt("/bible/strongs/G26");
+
+    const list = await screen.findByRole("list", { name: "Vorkommen" });
+    expect(within(list).getByText("καὶ")).toHaveClass("kwic-orig-left");
+    expect(within(list).getByText("πολλῶν")).toHaveClass("kwic-orig-right");
+    expect(within(list).getByText("καὶ")).toHaveAttribute("lang", "el");
+  });
+
+  it("swaps the sides for a right-to-left original", async () => {
+    stubFetch(
+      new Response(
+        JSON.stringify({
+          ...page1,
+          language: "hebrew",
+          items: [
+            {
+              ...page1.items[0],
+              original: "בָּרָא",
+              originalVerse: [
+                { text: "בְּרֵאשִׁית", matched: false },
+                { text: "בָּרָא", matched: true },
+                { text: "אֱלֹהִים", matched: false },
+              ],
+            },
+          ],
+        }),
+      ),
+    );
+    renderAt("/bible/strongs/H1254");
+
+    const list = await screen.findByRole("list", { name: "Vorkommen" });
+    expect(within(list).getByText("אֱלֹהִים")).toHaveClass("kwic-orig-left");
+    expect(within(list).getByText("בְּרֵאשִׁית")).toHaveClass("kwic-orig-right");
+  });
+
   it("reads the page from the query string", async () => {
     const fetchMock = stubFetch(new Response(JSON.stringify({ ...page1, page: 2 })));
     renderAt("/bible/strongs/G26?page=2");

@@ -55,6 +55,29 @@ function KwicContext({
   );
 }
 
+/**
+ * The original words left or right of the row's word, above the German context. The sides are visual:
+ * for Hebrew (right-to-left) the words that come later in the text stand on the left.
+ */
+function OriginalContext({
+  side,
+  tokens,
+  lang,
+  dir,
+}: {
+  side: "left" | "right";
+  tokens: StrongsOccurrenceToken[];
+  lang: string;
+  dir: string;
+}) {
+  if (tokens.length === 0) return <div className={`kwic-orig-${side}`} />;
+  return (
+    <p lang={lang} dir={dir} className={`kwic-orig-${side} font-original text-lg text-fg-muted`}>
+      {words(tokens)}
+    </p>
+  );
+}
+
 function KwicRow({
   item,
   reference,
@@ -66,6 +89,10 @@ function KwicRow({
   lang: string;
   dir: string;
 }) {
+  const verse = item.originalVerse ?? [];
+  const at = verse.findIndex((token) => token.matched);
+  const earlier = at < 0 ? [] : verse.slice(0, at);
+  const later = at < 0 ? [] : verse.slice(at + 1);
   return (
     <li className="kwic-row border-b border-border py-2 hover:bg-surface-muted">
       <div className="kwic-left">
@@ -77,6 +104,13 @@ function KwicRow({
         </Link>
         <KwicContext side="before" tokens={item.before} />
       </div>
+      <OriginalContext side="left" tokens={dir === "rtl" ? later : earlier} lang={lang} dir={dir} />
+      <OriginalContext
+        side="right"
+        tokens={dir === "rtl" ? earlier : later}
+        lang={lang}
+        dir={dir}
+      />
       {item.original && (
         <span lang={lang} dir={dir} className="kwic-original font-original text-lg text-accent">
           {item.original}

@@ -54,6 +54,13 @@ public sealed class StrongsOccurrenceService : IStrongsOccurrenceService
             Original = row.Original
         };
 
+        var originalWords = row.OriginalWords ?? [];
+        var originalPositions = row.OriginalPositions ?? [];
+        for (var i = 0; i < Math.Min(originalWords.Length, originalPositions.Length); i++)
+        {
+            item.OriginalVerse.Add(Token(originalWords[i], originalPositions[i] == row.OriginalPosition));
+        }
+
         var positions = row.VersePositions ?? [];
         var words = row.VerseWords ?? [];
         var count = Math.Min(positions.Length, words.Length);

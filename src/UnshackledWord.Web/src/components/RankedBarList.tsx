@@ -21,6 +21,8 @@ export interface RankedItem {
   muted?: boolean;
   /** `false` keeps the label plain text although the list has `onSelect` */
   selectable?: boolean;
+  /** Extra control after the share (e.g. a link to the verses behind the row). */
+  action?: ReactNode;
 }
 
 export interface RankedBarListProps {
@@ -116,6 +118,7 @@ export function RankedBarList({
                   <span className="w-12 text-right text-fg-muted">
                     {formatPercent(share, 1, i18n.language)}
                   </span>
+                  {item.action}
                   {renderExpanded ? (
                     <Button
                       size="sm"

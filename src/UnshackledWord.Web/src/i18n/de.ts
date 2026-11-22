@@ -521,6 +521,8 @@ export const de = {
         title: "Wiedergaben (anklicken = übernehmen)",
         sub: "davon {{count}} aus 2027",
         notAccepted: "nicht angenommen",
+        verses: "Verse mit „{{word}}“ ansehen (neuer Tab)",
+        versesKey: "Verse mit „{{word}}“ bei {{key}} ansehen (neuer Tab)",
       },
       keyMove: {
         title: "{{key}} verschieben",
