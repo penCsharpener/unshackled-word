@@ -47,6 +47,9 @@ public sealed class VocabCardEntryResponse
     public string? Transliteration { get; set; }
     public string? Pos { get; set; }
     public string Lang { get; set; } = string.Empty;
+
+    /// <summary>Presigned URL of the pronunciation; null without audio or without configured object storage.</summary>
+    public string? AudioUrl { get; set; }
 }
 
 public sealed class VocabCardOptionResponse

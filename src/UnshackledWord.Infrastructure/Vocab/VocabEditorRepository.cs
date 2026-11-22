@@ -24,6 +24,7 @@ public sealed class VocabEditorRepository
              , e."IsProperName"
              , e."IsMorpheme"
              , (e."AudioObjectKey" IS NOT NULL)    AS "HasAudio"
+             , e."AudioObjectKey"
              , e."ReviewedAt"
              , e."ReviewedByUserId"
              , e."RetiredAt"
@@ -119,6 +120,7 @@ public sealed class VocabEditorRepository
              , e."DictionaryFormOrigin"
              , e."Occurrences"
              , (e."AudioObjectKey" IS NOT NULL)    AS "HasAudio"
+             , e."AudioObjectKey"
              , (e."ReviewedAt" IS NOT NULL)        AS "Reviewed"
              , (e."RetiredAt" IS NOT NULL)         AS "Retired"
              , e."ContentVersion"
@@ -154,10 +156,13 @@ public sealed class VocabEditorRepository
     private readonly IDbReader _dbReader;
     private readonly VocabEntryRepository _entries;
 
-    public VocabEditorRepository(IDbReader dbReader, VocabEntryRepository entries)
+    private readonly IObjectStorage? _storage;
+
+    public VocabEditorRepository(IDbReader dbReader, VocabEntryRepository entries, IObjectStorage? storage = null)
     {
         _dbReader = dbReader;
         _entries = entries;
+        _storage = storage;
     }
 
     /// <summary>Null when the entry does not exist. Retired entries are returned too.</summary>
@@ -169,6 +174,8 @@ public sealed class VocabEditorRepository
         {
             return null;
         }
+
+        entry.AudioUrl = VocabAudio.UrlFor(_storage, entry.AudioObjectKey);
 
         var response = new GetVocabEditorEntryResponse
         {
@@ -247,6 +254,7 @@ public sealed class VocabEditorRepository
 
             foreach (var item in response.Items)
             {
+                item.AudioUrl = VocabAudio.UrlFor(_storage, item.AudioObjectKey);
                 item.Meanings = meanings[item.Id].Select(m => new VocabMeaningResponse { German = m.German, Rank = m.Rank, Count = m.Count, Share = m.Share }).ToList();
                 item.StrongsKeys = keys[item.Id].Select(k => k.StrongsKey).ToList();
             }

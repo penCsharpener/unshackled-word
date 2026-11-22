@@ -36,15 +36,17 @@ public sealed class VocabSessionService
     private readonly VocabScheduler _scheduler;
     private readonly TimeProvider _time;
     private readonly VocabEntryRepository? _entries;
+    private readonly IObjectStorage? _storage;
     private readonly Random _random;
 
     /// <summary><paramref name="entries"/> supplies the sample verse; tests pass null for none. <paramref name="random"/> is for tests, null = shared.</summary>
-    public VocabSessionService(IDbConnectionFactory connectionFactory, VocabScheduler scheduler, TimeProvider time, VocabEntryRepository? entries, Random? random = null)
+    public VocabSessionService(IDbConnectionFactory connectionFactory, VocabScheduler scheduler, TimeProvider time, VocabEntryRepository? entries, Random? random = null, IObjectStorage? storage = null)
     {
         _connectionFactory = connectionFactory;
         _scheduler = scheduler;
         _time = time;
         _entries = entries;
+        _storage = storage;
         _random = random ?? Random.Shared;
     }
 
@@ -399,7 +401,7 @@ public sealed class VocabSessionService
     private async Task<VocabSampleVerseResponse?> VerseAsync(int entryId) =>
         _entries is null ? null : await _entries.GetSampleVerseAsync(entryId);
 
-    private static VocabCardEntryResponse ToEntry(VocabSessionRepository.EntryRow e) => new()
+    private VocabCardEntryResponse ToEntry(VocabSessionRepository.EntryRow e) => new()
     {
         Id = e.Id,
         Lemma = e.Lemma,
@@ -407,6 +409,7 @@ public sealed class VocabSessionService
         Transliteration = e.Transliteration,
         Pos = e.Pos,
         Lang = Lang(e.Track),
+        AudioUrl = VocabAudio.UrlFor(_storage, e.AudioObjectKey)
     };
 
     private static string Lang(string track) => track == "G" ? "grc" : "he";

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace UnshackledWord.Domain.WebApi.Vocab;
 
 /// <summary>One vocab course of <c>GET api/vocab/courses</c> (roadmap 0022.1). No per-user numbers yet.</summary>
@@ -63,6 +65,13 @@ public sealed class VocabCourseEntryResponse
 
     public int Occurrences { get; set; }
     public bool HasAudio { get; set; }
+
+    /// <summary>Presigned read URL of the pronunciation; null without audio or without configured object storage.</summary>
+    public string? AudioUrl { get; set; }
+
+    /// <summary>Internal: the object key behind <see cref="AudioUrl"/>.</summary>
+    [JsonIgnore]
+    public string? AudioObjectKey { get; set; }
 
     /// <summary>The maintainer checked the meanings.</summary>
     public bool Reviewed { get; set; }

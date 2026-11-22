@@ -46,6 +46,7 @@ public static class VocabSessionRepository
         public string? Pos { get; init; }
         public int? Rank { get; init; }
         public int ContentVersion { get; init; }
+        public string? AudioObjectKey { get; init; }
         public bool Retired { get; init; }
     }
 
@@ -206,6 +207,7 @@ public static class VocabSessionRepository
              , e."Pos"
              , e."FrequencyRank" AS "Rank"
              , e."ContentVersion"
+             , e."AudioObjectKey"
              , (e."RetiredAt" IS NOT NULL) AS "Retired"
         FROM "unshackled-word"."VocabEntries" e
         WHERE e."Id" = ANY(@Ids)

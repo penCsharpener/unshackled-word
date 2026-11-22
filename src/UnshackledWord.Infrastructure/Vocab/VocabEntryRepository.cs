@@ -24,6 +24,7 @@ public sealed class VocabEntryRepository
              , e."IsProperName"
              , (e."ReviewedAt" IS NOT NULL)        AS "Reviewed"
              , (e."AudioObjectKey" IS NOT NULL)    AS "HasAudio"
+             , e."AudioObjectKey"
         FROM "unshackled-word"."VocabEntries" e
         WHERE 1=1
             AND e."Id" = @Id
@@ -255,9 +256,12 @@ public sealed class VocabEntryRepository
 
     private readonly IDbReader _dbReader;
 
-    public VocabEntryRepository(IDbReader dbReader)
+    private readonly IObjectStorage? _storage;
+
+    public VocabEntryRepository(IDbReader dbReader, IObjectStorage? storage = null)
     {
         _dbReader = dbReader;
+        _storage = storage;
     }
 
     public async Task<DateTime?> GetRenderingsRefreshedAtAsync() =>
@@ -272,6 +276,8 @@ public sealed class VocabEntryRepository
         {
             return null;
         }
+
+        entry.AudioUrl = VocabAudio.UrlFor(_storage, entry.AudioObjectKey);
 
         var keys = (await _dbReader.ReadAsListAsync<VocabEntryKeyResponse>(SelectKeys, new { Id = id })).ToList();
         var meanings = (await _dbReader.ReadAsListAsync<VocabMeaningResponse>(SelectMeanings, new { Id = id })).ToList();

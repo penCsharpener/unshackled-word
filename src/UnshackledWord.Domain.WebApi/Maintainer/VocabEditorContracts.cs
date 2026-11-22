@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using UnshackledWord.Domain.WebApi.Vocab;
 
 namespace UnshackledWord.Domain.WebApi.Maintainer;
@@ -55,6 +56,13 @@ public sealed class VocabEditorListItemResponse
 
     public int Occurrences { get; set; }
     public bool HasAudio { get; set; }
+
+    /// <summary>Presigned read URL of the pronunciation; null without audio or without configured object storage.</summary>
+    public string? AudioUrl { get; set; }
+
+    /// <summary>Internal: the object key behind <see cref="AudioUrl"/>.</summary>
+    [JsonIgnore]
+    public string? AudioObjectKey { get; set; }
     public bool Reviewed { get; set; }
     public bool Retired { get; set; }
     public int ContentVersion { get; set; }
@@ -99,6 +107,13 @@ public sealed class VocabEditorEntryResponse
     public bool IsProperName { get; set; }
     public bool IsMorpheme { get; set; }
     public bool HasAudio { get; set; }
+
+    /// <summary>Presigned read URL of the pronunciation; null without audio or without configured object storage.</summary>
+    public string? AudioUrl { get; set; }
+
+    /// <summary>Internal: the object key behind <see cref="AudioUrl"/>.</summary>
+    [JsonIgnore]
+    public string? AudioObjectKey { get; set; }
     public DateTime? ReviewedAt { get; set; }
     public int? ReviewedByUserId { get; set; }
     public DateTime? RetiredAt { get; set; }

@@ -49,6 +49,7 @@ public sealed class VocabCourseRepository
              , e."DictionaryForm"
              , e."Occurrences"
              , (e."AudioObjectKey" IS NOT NULL)    AS "HasAudio"
+             , e."AudioObjectKey"
              , (e."ReviewedAt" IS NOT NULL)        AS "Reviewed"
         """ + "\n" + Filter + """
 
@@ -79,9 +80,12 @@ public sealed class VocabCourseRepository
 
     private readonly IDbReader _dbReader;
 
-    public VocabCourseRepository(IDbReader dbReader)
+    private readonly IObjectStorage? _storage;
+
+    public VocabCourseRepository(IDbReader dbReader, IObjectStorage? storage = null)
     {
         _dbReader = dbReader;
+        _storage = storage;
     }
 
     public async Task<List<VocabCourseResponse>> GetCoursesAsync()
@@ -121,6 +125,7 @@ public sealed class VocabCourseRepository
 
             foreach (var item in items)
             {
+                item.AudioUrl = VocabAudio.UrlFor(_storage, item.AudioObjectKey);
                 item.Meanings = meanings[item.Id].Select(m => new VocabMeaningResponse { German = m.German, Rank = m.Rank, Count = m.Count, Share = m.Share }).ToList();
                 item.StrongsKeys = keys[item.Id].Select(k => k.StrongsKey).ToList();
             }

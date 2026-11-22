@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace UnshackledWord.Domain.WebApi.Vocab;
 
 /// <summary>Route of <c>GET api/vocab/entries/{id}</c>.</summary>
@@ -28,6 +30,13 @@ public sealed class VocabEntryDetailResponse
     public bool Reviewed { get; set; }
 
     public bool HasAudio { get; set; }
+
+    /// <summary>Presigned read URL of the pronunciation; null without audio or without configured object storage.</summary>
+    public string? AudioUrl { get; set; }
+
+    /// <summary>Internal: the object key behind <see cref="AudioUrl"/>.</summary>
+    [JsonIgnore]
+    public string? AudioObjectKey { get; set; }
 }
 
 /// <summary>One Strong's key of an entry with its occurrences in the original text.</summary>
