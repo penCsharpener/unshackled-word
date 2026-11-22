@@ -38,6 +38,9 @@ public sealed partial class AgentPromptProvider : IAgentPromptProvider
     /// <summary>Prefix of the lemma-mode prompt languages (<c>lemma-greek</c>, <c>lemma-hebrew</c>; files <c>lemma-greek-v1.md</c> …, roadmap 0018.9).</summary>
     public const string LemmaPrefix = "lemma-";
 
+    /// <summary>Prefix of the vocab dictionary-form prompt languages (<c>vocab-form-greek</c>, <c>vocab-form-hebrew</c>; roadmap 0022.13).</summary>
+    public const string VocabFormPrefix = "vocab-form-";
+
     /// <summary>The prompt language of a run: <c>greek</c>/<c>hebrew</c> for the mapping modes, <c>lemma-greek</c>/<c>lemma-hebrew</c> for mode <c>lemma</c>.</summary>
     public static string LanguageFor(int bibleBookId, AgentMode mode) =>
         (mode == AgentMode.Lemma ? LemmaPrefix : string.Empty) + (bibleBookId <= 39 ? "hebrew" : "greek");
@@ -100,7 +103,9 @@ public sealed partial class AgentPromptProvider : IAgentPromptProvider
             throw new FileNotFoundException($"No prompt file for '{language}' in {_directory} (expected {language}-v1.md).");
         }
 
-        var schema = language.StartsWith(LemmaPrefix, StringComparison.Ordinal) ? AgentAnswerSchema.LemmaJson : AgentAnswerSchema.Json;
+        var schema = language.StartsWith(VocabFormPrefix, StringComparison.Ordinal)
+            ? AgentAnswerSchema.VocabFormJson
+            : language.StartsWith(LemmaPrefix, StringComparison.Ordinal) ? AgentAnswerSchema.LemmaJson : AgentAnswerSchema.Json;
         var text = File.ReadAllText(file).Replace("\r\n", "\n").Replace(AgentAnswerSchema.Placeholder, schema).TrimEnd() + "\n";
 
         return new AgentPrompt(Path.GetFileNameWithoutExtension(file), language, text);

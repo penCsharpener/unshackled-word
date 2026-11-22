@@ -269,6 +269,9 @@ public sealed class AgentRunHarness
             }
         }
 
+        public Task AddRunUsageAsync(int runId, long inputTokens, long cachedInputTokens, long outputTokens, decimal costUsd, CancellationToken token = default) =>
+            AddUsageAsync(runId, Guid.Empty, inputTokens, cachedInputTokens, outputTokens, costUsd, token);
+
         public Task AddUsageAsync(int runId, Guid packageId, long inputTokens, long cachedInputTokens, long outputTokens, decimal costUsd, CancellationToken token = default)
         {
             lock (_gate)

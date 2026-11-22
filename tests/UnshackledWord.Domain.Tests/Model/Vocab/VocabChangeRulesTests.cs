@@ -94,4 +94,31 @@ public class VocabChangeRulesTests
     [InlineData("H9050", false)]
     [InlineData("G9001", false)]
     public void IsMorphemeKey_OnlyHebrewPrefixRange(string key, bool expected) => VocabChangeRules.IsMorphemeKey(key).ShouldBe(expected);
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData("λόγος", "generated")]
+    public void PlanAgentForm_FillsMissingOrGeneratedForms(string? form, string? origin)
+    {
+        var plan = VocabChangeRules.PlanAgentForm(form, origin, " λόγος, -ου, ὁ ");
+
+        plan.ShouldBe(new VocabFormPlan("λόγος, -ου, ὁ", "agent", true));
+    }
+
+    [Fact]
+    public void PlanAgentForm_SameTextAsGeneratedOnlyChangesTheOrigin() =>
+        VocabChangeRules.PlanAgentForm("λόγος, -ου, ὁ", "generated", "λόγος, -ου, ὁ").ShouldBe(new VocabFormPlan("λόγος, -ου, ὁ", "agent", false));
+
+    [Theory]
+    [InlineData("agent")]
+    [InlineData("manual")]
+    public void PlanAgentForm_NeverOverwritesAgentOrManual(string origin) =>
+        VocabChangeRules.PlanAgentForm("λόγος", origin, "λόγος, -ου, ὁ").ShouldBeNull();
+
+    [Fact]
+    public void PlanAcceptForm_KeepsTextSetsManualAndRefusesWithoutForm()
+    {
+        VocabChangeRules.PlanAcceptForm("λόγος, -ου, ὁ").ShouldBe(new VocabFormPlan("λόγος, -ου, ὁ", "manual", false));
+        VocabChangeRules.PlanAcceptForm(null).ShouldBeNull();
+    }
 }

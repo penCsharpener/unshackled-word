@@ -73,6 +73,9 @@ public static class AgentModes
     public const string Redo = "redo";
     public const string Lemma = "lemma";
 
+    /// <summary>Run mode of the vocab dictionary-form fill (roadmap 0022.13); it has no <see cref="AgentMode"/> value, the vocab executor runs it.</summary>
+    public const string VocabForm = "vocab-form";
+
     public static string ToDb(this AgentMode mode) => mode switch
     {
         AgentMode.Redo => Redo,

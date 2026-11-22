@@ -40,7 +40,17 @@ public sealed class AgentRunManager : IHostedService
             try
             {
                 using var scope = _scopes.CreateScope();
-                await scope.ServiceProvider.GetRequiredService<AgentRunExecutor>().RunAsync(runId, _shutdown.Token);
+                var run = await scope.ServiceProvider.GetRequiredService<IAgentRunRepository>().GetRunAsync(runId, CancellationToken.None);
+
+                if (run?.Mode == AgentModes.VocabForm)
+                {
+                    // Roadmap 0022.13: dictionary forms of vocab entries; start, cancel, resume and status are the ones of every run.
+                    await scope.ServiceProvider.GetRequiredService<UnshackledWord.Infrastructure.Vocab.VocabFormRunExecutor>().RunAsync(runId, _shutdown.Token);
+                }
+                else
+                {
+                    await scope.ServiceProvider.GetRequiredService<AgentRunExecutor>().RunAsync(runId, _shutdown.Token);
+                }
             }
             catch (Exception e)
             {

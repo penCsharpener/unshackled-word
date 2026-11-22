@@ -75,6 +75,9 @@ public interface IAgentRunRepository
     /// <summary>Adds the usage of one call to the run totals and to the package.</summary>
     Task AddUsageAsync(int runId, Guid packageId, long inputTokens, long cachedInputTokens, long outputTokens, decimal costUsd, CancellationToken token = default);
 
+    /// <summary>Adds the usage of one call to the run totals only (runs without packages, mode <c>vocab-form</c>).</summary>
+    Task AddRunUsageAsync(int runId, long inputTokens, long cachedInputTokens, long outputTokens, decimal costUsd, CancellationToken token = default);
+
     Task SetCapsAsync(int runId, long? maxTokens, decimal? maxCostUsd, CancellationToken token = default);
 
     /// <summary>Verses (BBCCCVVV) the run already has a proposal for (any status): resume does not ask for them again.</summary>

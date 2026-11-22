@@ -22,6 +22,13 @@ public static class AgentAnswerSchema
         {"type":"object","properties":{"packageId":{"type":"string"},"verses":{"type":"array","items":{"type":"object","properties":{"v":{"type":"string"},"lemmas":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"roles":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"added":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"partLemmas":{"type":"array","items":{"type":"array","items":{"anyOf":[{"type":"string"},{"type":"integer"}]}}},"note":{"type":"string"}},"required":["v"]}}},"required":["packageId","verses"]}
         """;
 
+    /// <summary>
+    /// Run mode <c>vocab-form</c> (roadmap 0022.13): <c>forms</c> rows <c>[entryId, form]</c>; an entry the model cannot form is left out.
+    /// </summary>
+    public const string VocabFormJson = """
+        {"type":"object","properties":{"forms":{"type":"array","items":{"type":"array","items":{"type":"string"}}}},"required":["forms"]}
+        """;
+
     /// <summary>The schema of a run mode.</summary>
     public static string For(AgentMode mode) => mode == AgentMode.Lemma ? LemmaJson : Json;
 }

@@ -60,6 +60,30 @@ public static class VocabChangeRules
     }
 
     /// <summary>
+    /// An agent-written form (roadmap 0022.13) against the stored one. Null when the stored form is protected: only a missing or
+    /// <c>generated</c> form is overwritten, <c>agent</c> and <c>manual</c> forms never. The origin is always <c>agent</c>; only a
+    /// changed text is learning-relevant.
+    /// </summary>
+    public static VocabFormPlan? PlanAgentForm(string? currentForm, string? currentOrigin, string requestedForm)
+    {
+        if (currentForm is not null && currentOrigin != VocabFormOrigins.Generated)
+        {
+            return null;
+        }
+
+        var requested = requestedForm.Trim();
+
+        return new VocabFormPlan(requested, VocabFormOrigins.Agent, FormChanged(currentForm, requested));
+    }
+
+    /// <summary>
+    /// The maintainer accepts the stored form as it is: the origin becomes <c>manual</c>, the text and the version stay. Null when there
+    /// is no form to accept.
+    /// </summary>
+    public static VocabFormPlan? PlanAcceptForm(string? currentForm) =>
+        currentForm is null ? null : new VocabFormPlan(currentForm, VocabFormOrigins.Manual, false);
+
+    /// <summary>
     /// The new rank of every meaning for a requested order: 1..n in the requested order. Null when the requested ids are not exactly the
     /// current ids (missing, extra or duplicated).
     /// </summary>

@@ -54,6 +54,12 @@ public sealed class AgentRunRepository : IAgentRunRepository
         transaction.Commit();
     }
 
+    public async Task AddRunUsageAsync(int runId, long inputTokens, long cachedInputTokens, long outputTokens, decimal costUsd, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        await connection.ExecuteAsync(new CommandDefinition(AgentRunSql.AddRunUsage, new { RunId = runId, InputTokens = inputTokens, CachedInputTokens = cachedInputTokens, OutputTokens = outputTokens, CostUsd = costUsd }, cancellationToken: token));
+    }
+
     public async Task SetCapsAsync(int runId, long? maxTokens, decimal? maxCostUsd, CancellationToken token = default)
     {
         using var connection = await _factory.CreateDbConnectionAsync(token);

@@ -79,6 +79,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentReferenceStore>(sp => UnshackledWord.Application.Features.AgentMapping.Scoring.AgentReferenceStore.FromConfiguration(sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()));
         services.AddScoped<IAgentRunService, AgentRunService>();
         services.AddScoped<AgentRunExecutor>();
+        // Dictionary forms by agent (roadmap 0022.13); the executor writes through VocabEntryEditor (registered by the API host).
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabFormRepository>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabFormRunService>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabFormRunExecutor>();
         services.AddSingleton<IAgentModelClientFactory, UnshackledWord.Infrastructure.AgentModels.AgentModelClientFactory>();
         services.AddSingleton<IAgentPromptProvider>(sp => AgentPromptProvider.FromConfiguration(sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()));
         services.TryAddSingleton(TimeProvider.System);

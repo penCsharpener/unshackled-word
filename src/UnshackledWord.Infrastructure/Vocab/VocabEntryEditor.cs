@@ -418,6 +418,76 @@ public sealed class VocabEntryEditor
         return VocabEditOutcome.Ok(new VocabEditResponse { EntryId = id, ContentVersion = version, Bumped = plan.Changed, Learners = await CountLearnersAsync(c, t, id) });
     }
 
+    /// <summary>
+    /// The agent run writes a form (roadmap 0022.13). Same path as the editor: a changed text bumps once and writes a <c>form</c> row, the
+    /// origin becomes <c>agent</c>. A form that is not missing or <c>generated</c> is refused (conflict), the entry stays untouched.
+    /// </summary>
+    public static async Task<VocabEditOutcome> ApplyAgentFormAsync(IDbConnection c, IDbTransaction t, int id, string form, int? aiUserId)
+    {
+        var entry = await LockAsync(c, t, id);
+
+        if (entry is null)
+        {
+            return NoEntry(id);
+        }
+
+        if (entry.RetiredAt is not null)
+        {
+            return VocabEditOutcome.Conflict($"Entry {id} is retired.");
+        }
+
+        var plan = VocabChangeRules.PlanAgentForm(entry.DictionaryForm, entry.DictionaryFormOrigin, form);
+
+        return plan is null
+            ? VocabEditOutcome.Conflict($"Entry {id} has a {entry.DictionaryFormOrigin} form; an agent only fills missing or generated forms.")
+            : await WriteFormAsync(c, t, entry, plan, aiUserId);
+    }
+
+    /// <summary>The maintainer accepts the stored form as written: origin <c>manual</c>, no version bump, no change row.</summary>
+    public static async Task<VocabEditOutcome> AcceptFormAsync(IDbConnection c, IDbTransaction t, int id, int? userId)
+    {
+        var entry = await LockAsync(c, t, id);
+
+        if (entry is null)
+        {
+            return NoEntry(id);
+        }
+
+        var plan = VocabChangeRules.PlanAcceptForm(entry.DictionaryForm);
+
+        return plan is null
+            ? VocabEditOutcome.Conflict($"Entry {id} has no dictionary form to accept.")
+            : await WriteFormAsync(c, t, entry, plan, userId);
+    }
+
+    public Task<VocabEditOutcome> AcceptFormAsync(int id, int? userId, CancellationToken token) =>
+        RunAsync((c, t) => AcceptFormAsync(c, t, id, userId), token);
+
+    public Task<VocabEditOutcome> ApplyAgentFormAsync(int id, string form, int? aiUserId, CancellationToken token) =>
+        RunAsync((c, t) => ApplyAgentFormAsync(c, t, id, form, aiUserId), token);
+
+    private static async Task<VocabEditOutcome> WriteFormAsync(IDbConnection c, IDbTransaction t, EntryRow entry, VocabFormPlan plan, int? userId)
+    {
+        var version = await c.QuerySingleAsync<int>(UpdateEntry, new
+        {
+            entry.Id,
+            plan.DictionaryForm,
+            DictionaryFormOrigin = plan.Origin,
+            entry.Transliteration,
+            entry.ReviewedAt,
+            ReviewedByUserId = entry.ReviewedAt is null ? null : await GetReviewerAsync(c, t, entry.Id),
+            Bump = plan.Changed ? 1 : 0,
+            UserId = userId
+        }, t);
+
+        if (plan.Changed)
+        {
+            await WriteChangeAsync(c, t, entry.Id, version, VocabChangeKinds.Form, new { form = entry.DictionaryForm }, new { form = plan.DictionaryForm }, null, userId);
+        }
+
+        return VocabEditOutcome.Ok(new VocabEditResponse { EntryId = entry.Id, ContentVersion = version, Bumped = plan.Changed, Learners = await CountLearnersAsync(c, t, entry.Id) });
+    }
+
     // ---- meanings -----------------------------------------------------------------------------------------------------------------
 
     /// <summary>Adds a manual, accepted meaning at the end. The accepted set grows, so this bumps.</summary>
