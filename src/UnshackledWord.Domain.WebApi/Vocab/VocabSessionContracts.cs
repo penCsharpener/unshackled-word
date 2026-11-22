@@ -66,13 +66,26 @@ public sealed class VocabCardOptionResponse
     public string? Lang { get; set; }
 }
 
+/// <summary>One piece of the typing layout: a <c>group</c> (<c>length</c> boxes, never the letters) or a fixed <c>separator</c> (<c>text</c>).</summary>
+public sealed class VocabTypingPartResponse
+{
+    /// <summary><c>group</c> or <c>separator</c>.</summary>
+    public string Kind { get; set; } = string.Empty;
+
+    /// <summary>Group only: number of base letters (accents and breathings do not count).</summary>
+    public int? Length { get; set; }
+
+    /// <summary>Separator only: the fixed text between groups, e.g. <c>, -</c>.</summary>
+    public string? Text { get; set; }
+}
+
 /// <summary>The card to show. It never says which MC option is correct.</summary>
 public sealed class VocabCardResponse
 {
     /// <summary>Position on the session's timeline; <c>answers</c> must send it back.</summary>
     public int Seq { get; set; }
 
-    /// <summary><c>introduction</c>, <c>multiple_choice</c> or <c>reverse_multiple_choice</c>.</summary>
+    /// <summary><c>introduction</c>, <c>multiple_choice</c>, <c>reverse_multiple_choice</c> or <c>typing</c>.</summary>
     public string Kind { get; set; } = string.Empty;
 
     public VocabCardEntryResponse Entry { get; set; } = new();
@@ -85,6 +98,12 @@ public sealed class VocabCardResponse
 
     /// <summary>Multiple choice and reverse multiple choice: the options in display order (German for MC, lemmas with <c>lang</c> for reverse MC).</summary>
     public List<VocabCardOptionResponse>? Options { get; set; }
+
+    /// <summary>Typing only: the German meaning(s) to type the lemma form for (top accepted meaning first). <c>entry</c> then carries only <c>lang</c> and <c>pos</c>.</summary>
+    public List<string>? TypingPrompt { get; set; }
+
+    /// <summary>Typing only: the groups and separators of the target form; <c>answers</c> must send one string per <c>group</c> part, in order.</summary>
+    public List<VocabTypingPartResponse>? Layout { get; set; }
 
     /// <summary>Introduction only: one sample verse with the word highlighted (<c>isHit</c> marks the highlighted words of <c>original</c> and <c>german</c>); null without one.</summary>
     public VocabSampleVerseResponse? Verse { get; set; }
@@ -143,6 +162,9 @@ public sealed class SubmitVocabAnswerRequest
     /// <summary>The chosen option of a multiple-choice card; omitted for an introduction (the acknowledgment "verstanden").</summary>
     public int? OptionId { get; set; }
 
+    /// <summary>Typing only: one string per letter group of the card's <c>layout</c>, in order (separators are not sent).</summary>
+    public List<string>? Answers { get; set; }
+
     /// <summary>Time from showing the card to the answer, for the review log.</summary>
     public int? ResponseMs { get; set; }
 }
@@ -169,7 +191,10 @@ public sealed class VocabAnswerResponse
     /// <summary>Every accepted meaning of the entry (any of them is right); in reverse MC the entry's lemma form (dictionary form, else lemma).</summary>
     public List<string> CorrectAnswers { get; set; } = [];
 
-    /// <summary>The text of the option the learner picked.</summary>
+    /// <summary>Typing only: per letter group of the layout, whether the typed text matched (accents, breathings and case ignored).</summary>
+    public List<bool>? GroupResults { get; set; }
+
+    /// <summary>The text of the option the learner picked; for typing the groups joined with the separators.</summary>
     public string? Given { get; set; }
 
     public VocabCardEntryResponse Entry { get; set; } = new();

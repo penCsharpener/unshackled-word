@@ -17,8 +17,8 @@ public static class VocabQuizTypes
     public const string VerseContext = "verse_context";
     public const string Typing = "typing";
 
-    /// <summary>What the learner may turn off (typing always works, the introduction is no quiz).</summary>
-    public static readonly IReadOnlyList<string> Toggleable = [MultipleChoice, ReverseMultipleChoice, Listening, VerseContext];
+    /// <summary>What the learner may turn off (the introduction is no quiz).</summary>
+    public static readonly IReadOnlyList<string> Toggleable = [MultipleChoice, ReverseMultipleChoice, Typing, Listening, VerseContext];
 
     /// <summary>The two multiple-choice types; at least one of them stays on.</summary>
     public static readonly IReadOnlyList<string> MultipleChoiceTypes = [MultipleChoice, ReverseMultipleChoice];
@@ -33,7 +33,7 @@ public static class VocabQuizTypes
     ];
 
     /// <summary>The types the engine can build at the moment. Extend when a later row implements one.</summary>
-    public static readonly IReadOnlyList<string> Implemented = [MultipleChoice, ReverseMultipleChoice];
+    public static readonly IReadOnlyList<string> Implemented = [MultipleChoice, ReverseMultipleChoice, Typing];
 
     /// <summary>Whole days between the card's creation and now (never negative).</summary>
     public static int AgeDays(DateTime createdAtUtc, DateTime nowUtc) => Math.Max(0, (int)Math.Floor((nowUtc - createdAtUtc).TotalDays));

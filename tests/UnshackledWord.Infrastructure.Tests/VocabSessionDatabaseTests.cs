@@ -63,6 +63,11 @@ public class VocabSessionDatabaseTests
         return outcome.Response!;
     }
 
+    /// <summary>Answers any card without caring for the verdict: option 0, empty typing groups, nothing for an introduction.</summary>
+    private static Task<VocabSessionOutcome<VocabAnswerResponse>> AnswerAnyAsync(VocabSessionService service, IDbConnection c, IDbTransaction t, int userId, int sessionId, VocabCardResponse card) =>
+        service.AnswerAsync(c, t, userId, sessionId, card.Seq, card.Kind is "introduction" or "typing" ? null : 0, null,
+            card.Kind == "typing" ? card.Layout!.Where(x => x.Kind == "group").Select(_ => string.Empty).ToList() : null);
+
     private static async Task<List<string>> LemmasByRankAsync(IDbConnection c, IDbTransaction t, int count) =>
         (await c.QueryAsync<string>("""
             SELECT e."Lemma" FROM "unshackled-word"."VocabEntries" e WHERE e."Track" = 'G' AND e."FrequencyRank" BETWEEN 1 AND @Count ORDER BY e."FrequencyRank"
@@ -248,7 +253,7 @@ public class VocabSessionDatabaseTests
                 break;
             }
 
-            Ok(await service.AnswerAsync(c, t, userId, start.SessionId, next.Card!.Seq, next.Card.Kind != "introduction" ? 0 : null, null));
+            Ok(await AnswerAnyAsync(service, c, t, userId, start.SessionId, next.Card!));
         }
 
         time.Now = T0.AddDays(3);
@@ -265,13 +270,13 @@ public class VocabSessionDatabaseTests
         {
             var card = Ok(await service.NextAsync(c, t, userId, second.SessionId)).Card!;
             kinds.Add((card.Kind, card.Entry.Id));
-            Ok(await service.AnswerAsync(c, t, userId, second.SessionId, card.Seq, card.Kind != "introduction" ? 0 : null, null));
+            Ok(await AnswerAnyAsync(service, c, t, userId, second.SessionId, card));
         }
 
         // a due repeat may slip in before the last review word, but no introduction comes before each review word was asked once
         var firstIntro = kinds.FindIndex(k => k.Kind == "introduction");
         firstIntro.ShouldBeGreaterThanOrEqualTo(second.ReviewWords);
-        kinds.Take(firstIntro).ShouldAllBe(k => k.Kind == "multiple_choice" || k.Kind == "reverse_multiple_choice");
+        kinds.Take(firstIntro).ShouldAllBe(k => k.Kind == "multiple_choice" || k.Kind == "reverse_multiple_choice" || k.Kind == "typing");
         kinds.Take(firstIntro).Select(k => k.EntryId).Distinct().Count().ShouldBe(second.ReviewWords);
     });
 
@@ -381,12 +386,86 @@ public class VocabSessionDatabaseTests
             }
 
             cards.Add(next.Card!);
-            var answer = await service.AnswerAsync(c, t, userId, start.SessionId, next.Card!.Seq, next.Card.Kind != "introduction" ? 0 : null, null);
+            var answer = await AnswerAnyAsync(service, c, t, userId, start.SessionId, next.Card!);
             Ok(answer);
         }
 
         return cards;
     }
+
+    /// <summary>Plays a review session with cards aged two days until a typing card shows up, gives its entry the form μέσος, -η, -ον and returns the card as served afterwards.</summary>
+    private static async Task<(VocabSessionService Service, int UserId, int SessionId, VocabCardResponse Card)> TypingCardWithFormAsync(IDbConnection c, IDbTransaction t)
+    {
+        var (service, time, userId) = await UserWithFinishedFirstSessionAsync(c, t, 5);
+
+        time.Now = T0.AddDays(3);
+        await c.ExecuteAsync("""UPDATE "unshackled-word"."VocabCards" SET "CreatedAt" = @CreatedAt WHERE "UserId" = @UserId""",
+            new { CreatedAt = time.Now.UtcDateTime.AddHours(-49), UserId = userId }, t);
+        var start = Ok(await service.StartAsync(c, t, userId, Course));
+
+        for (var i = 0; i < 300; i++)
+        {
+            var card = Ok(await service.NextAsync(c, t, userId, start.SessionId)).Card!;
+
+            if (card.Kind == "typing")
+            {
+                await c.ExecuteAsync("""UPDATE "unshackled-word"."VocabEntries" SET "DictionaryForm" = 'μέσος, -η, -ον', "DictionaryFormOrigin" = 'manual' WHERE "Id" = @Id""", new { card.Entry.Id }, t);
+
+                return (service, userId, start.SessionId, Ok(await service.NextAsync(c, t, userId, start.SessionId)).Card!);
+            }
+
+            Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, card.Kind != "introduction" ? 0 : null, null));
+        }
+
+        throw new InvalidOperationException("No typing card was served.");
+    }
+
+    [Fact]
+    public async Task ACardAgedTwoDays_CanGetTyping_AndTheLayoutNeverSendsLetters() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (_, _, _, card) = await TypingCardWithFormAsync(c, t);
+
+        card.Kind.ShouldBe("typing");
+        card.TypingPrompt.ShouldNotBeNull().ShouldNotBeEmpty();
+        card.Options.ShouldBeNull();
+        card.Entry.Lemma.ShouldBeEmpty();
+        card.Entry.Lang.ShouldBe("grc");
+        card.Layout!.Select(x => (x.Kind, x.Length, x.Text)).ShouldBe(
+            [("group", 5, null), ("separator", null, ", -"), ("group", 1, null), ("separator", null, ", -"), ("group", 2, null)]);
+
+        var json = JsonSerializer.Serialize(card, Web);
+        json.ShouldNotContain("μ");
+        json.ShouldNotContain("ο");
+    });
+
+    [Fact]
+    public async Task TypingMesosEtaOn_WithoutAccentsAndInCapitals_IsCorrect() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, userId, sessionId, card) = await TypingCardWithFormAsync(c, t);
+
+        var answer = Ok(await service.AnswerAsync(c, t, userId, sessionId, card.Seq, null, 900, ["ΜΕΣΟΣ", "η", " ον "]));
+
+        answer.Kind.ShouldBe("typing");
+        answer.Correct.ShouldBeTrue();
+        answer.GroupResults.ShouldBe([true, true, true]);
+        answer.CorrectAnswers.ShouldBe(["μέσος, -η, -ον"]);
+        answer.Given.ShouldBe("ΜΕΣΟΣ, -η, -ον");
+        (await c.QuerySingleAsync<int>("""SELECT count(*)::int FROM "unshackled-word"."VocabReviewLog" WHERE "UserId" = @UserId AND "QuizType" = 'typing' AND "IsCorrect" """, new { UserId = userId }, t)).ShouldBe(1);
+    });
+
+    [Fact]
+    public async Task TypingAWrongEnding_FailsOnlyThatGroup_AndAWrongGroupCountIsInvalid() => await WithTransactionAsync(async (c, t) =>
+    {
+        var (service, userId, sessionId, card) = await TypingCardWithFormAsync(c, t);
+
+        (await service.AnswerAsync(c, t, userId, sessionId, card.Seq, null, null, ["μεσος", "η"])).Status.ShouldBe(VocabSessionStatus.Invalid);
+        (await service.AnswerAsync(c, t, userId, sessionId, card.Seq, null, null, null)).Status.ShouldBe(VocabSessionStatus.Invalid);
+
+        var answer = Ok(await service.AnswerAsync(c, t, userId, sessionId, card.Seq, null, null, ["μεσος", "ος", "ον"]));
+
+        answer.Correct.ShouldBeFalse();
+        answer.GroupResults.ShouldBe([true, false, true]);
+    });
 
     [Fact]
     public async Task ACardCreatedYesterday_CanGetReverseMultipleChoice_AndTheCardNeverRevealsTheAnswer() => await WithTransactionAsync(async (c, t) =>
@@ -445,7 +524,7 @@ public class VocabSessionDatabaseTests
             }
             else
             {
-                Ok(await service.AnswerAsync(c, t, userId, start.SessionId, card.Seq, card.Kind != "introduction" ? 0 : null, null));
+                Ok(await AnswerAnyAsync(service, c, t, userId, start.SessionId, card));
             }
         }
 
@@ -468,7 +547,7 @@ public class VocabSessionDatabaseTests
         var saved = await VocabSettingsService.SetAsync(c, t, userId, ["reverse_multiple_choice", "reverse_multiple_choice"]);
 
         saved.DisabledQuizTypes.ShouldBe(["reverse_multiple_choice"]);
-        saved.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice"]);
+        saved.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice", "typing"]);
         (await VocabSettingsService.GetAsync(c, t, userId)).DisabledQuizTypes.ShouldBe(["reverse_multiple_choice"]);
 
         var cards = await PlayReviewSessionAsync(c, t, service, time, userId, cardAgeHours: 80);
@@ -498,7 +577,7 @@ public class VocabSessionDatabaseTests
 
         var initial = await VocabSettingsService.GetAsync(c, t, userId);
         initial.DisabledQuizTypes.ShouldBeEmpty();
-        initial.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice"]);
+        initial.AvailableQuizTypes.ShouldBe(["multiple_choice", "reverse_multiple_choice", "typing"]);
 
         await VocabSettingsService.SetAsync(c, t, userId, ["listening", "reverse_multiple_choice"]);
         (await VocabSettingsService.GetAsync(c, t, userId)).DisabledQuizTypes.ShouldBe(["reverse_multiple_choice", "listening"]);

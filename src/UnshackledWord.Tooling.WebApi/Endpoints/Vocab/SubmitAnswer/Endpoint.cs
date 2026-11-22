@@ -21,12 +21,12 @@ public sealed class Endpoint : VocabSessionEndpoint<SubmitVocabAnswerRequest, Vo
     {
         Post("sessions/{id}/answers");
         Group<RouteGroupConfig>();
-        Summary(s => s.Summary = "Answers the open card: `seq` of the card plus `optionId` for multiple choice (omitted for an introduction). Returns the verdict, the correct answers, the strength before and after and, at the end, the summary. 409 for a stale seq, 400 for an unknown option.");
+        Summary(s => s.Summary = "Answers the open card: `seq` of the card plus `optionId` for multiple choice or `answers` (one string per letter group of the layout) for typing (both omitted for an introduction). Returns the verdict, the correct answers, the strength before and after and, at the end, the summary. 409 for a stale seq, 400 for an unknown option.");
     }
 
     public override async Task HandleAsync(SubmitVocabAnswerRequest req, CancellationToken ct)
     {
-        await SendOutcomeAsync(await _service.AnswerAsync(UserId, req.Id, req.Seq, req.OptionId, req.ResponseMs, ct), ct);
+        await SendOutcomeAsync(await _service.AnswerAsync(UserId, req.Id, req.Seq, req.OptionId, req.ResponseMs, ct, req.Answers), ct);
     }
 }
 
@@ -37,6 +37,7 @@ public sealed class Validator : Validator<SubmitVocabAnswerRequest>
         RuleFor(x => x.Id).GreaterThan(0);
         RuleFor(x => x.Seq).GreaterThanOrEqualTo(0);
         RuleFor(x => x.OptionId).GreaterThanOrEqualTo(0).When(x => x.OptionId is not null);
+        RuleFor(x => x.Answers).Must(a => a!.Count <= 20 && a.All(x => x is not null && x.Length <= 100)).When(x => x.Answers is not null);
         RuleFor(x => x.ResponseMs).InclusiveBetween(0, 3_600_000).When(x => x.ResponseMs is not null);
     }
 }

@@ -30,7 +30,7 @@ public class VocabQuizTypesTests
     {
         for (var seed = 0; seed < 30; seed++)
         {
-            VocabQuizTypes.Candidates(5, Off("reverse_multiple_choice"), new Random(seed)).ShouldBe(["multiple_choice"]);
+            VocabQuizTypes.Candidates(5, Off("reverse_multiple_choice"), new Random(seed)).ShouldBe(["multiple_choice", "typing"], ignoreOrder: true);
         }
     }
 
@@ -38,13 +38,21 @@ public class VocabQuizTypesTests
     public void When_the_age_leaves_nothing_the_age_is_ignored()
     {
         // day 0 with multiple choice off: only reverse multiple choice is left, and it is allowed from day 1 only
-        VocabQuizTypes.Candidates(0, Off("multiple_choice"), new Random(1)).ShouldBe(["reverse_multiple_choice"]);
+        VocabQuizTypes.Candidates(0, Off("multiple_choice"), new Random(1)).ShouldBe(["reverse_multiple_choice", "typing"]);
     }
 
     [Fact]
     public void Fallback_lists_the_age_blocked_types_after_the_allowed_ones()
     {
-        VocabQuizTypes.Candidates(0, None, new Random(1)).ShouldBe(["multiple_choice", "reverse_multiple_choice"]);
+        VocabQuizTypes.Candidates(0, None, new Random(1)).ShouldBe(["multiple_choice", "reverse_multiple_choice", "typing"]);
+    }
+
+    [Fact]
+    public void Typing_is_allowed_from_day_two_and_can_be_turned_off()
+    {
+        VocabQuizTypes.Candidates(1, None, new Random(1)).Take(2).ShouldNotContain("typing");
+        Enumerable.Range(0, 60).Select(seed => VocabQuizTypes.Candidates(2, None, new Random(seed)).First()).ShouldContain("typing");
+        VocabQuizTypes.Candidates(5, Off("typing"), new Random(1)).ShouldNotContain("typing");
     }
 
     [Fact]

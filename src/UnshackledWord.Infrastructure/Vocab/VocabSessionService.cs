@@ -3,6 +3,7 @@ using System.Text.Json;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Vocab;
 using UnshackledWord.Application.Features.Vocab.Session;
+using UnshackledWord.Domain.Models.Vocab;
 using UnshackledWord.Domain.WebApi.Vocab;
 
 namespace UnshackledWord.Infrastructure.Vocab;
@@ -56,8 +57,8 @@ public sealed class VocabSessionService
     public Task<VocabSessionOutcome<VocabNextResponse>> NextAsync(int userId, int sessionId, CancellationToken token) =>
         RunAsync((c, t) => NextAsync(c, t, userId, sessionId), token);
 
-    public Task<VocabSessionOutcome<VocabAnswerResponse>> AnswerAsync(int userId, int sessionId, int seq, int? optionId, int? responseMs, CancellationToken token) =>
-        RunAsync((c, t) => AnswerAsync(c, t, userId, sessionId, seq, optionId, responseMs), token);
+    public Task<VocabSessionOutcome<VocabAnswerResponse>> AnswerAsync(int userId, int sessionId, int seq, int? optionId, int? responseMs, CancellationToken token, IReadOnlyList<string>? answers = null) =>
+        RunAsync((c, t) => AnswerAsync(c, t, userId, sessionId, seq, optionId, responseMs, answers), token);
 
     private async Task<VocabSessionOutcome<T>> RunAsync<T>(Func<IDbConnection, IDbTransaction, Task<VocabSessionOutcome<T>>> operation, CancellationToken token)
         where T : class
@@ -244,6 +245,7 @@ public sealed class VocabSessionService
             var options = type switch
             {
                 VocabQuizTypes.ReverseMultipleChoice => await BuildReverseOptionsAsync(c, t, plan, entry, meanings),
+                VocabQuizTypes.Typing => VocabText.Segment(FormOf(entry)).Any(x => x.IsGroup) ? [] : null,
                 _ => await BuildOptionsAsync(c, t, plan, entry, meanings),
             };
 
@@ -303,7 +305,8 @@ public sealed class VocabSessionService
     {
         var entry = (await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId]))[pending.EntryId];
         var reverse = pending.Kind == VocabQuizTypes.ReverseMultipleChoice;
-        var card = new VocabCardResponse { Seq = pending.Seq, Kind = pending.Kind, Entry = reverse ? ToHiddenEntry(entry) : ToEntry(entry) };
+        var typing = pending.Kind == VocabQuizTypes.Typing;
+        var card = new VocabCardResponse { Seq = pending.Seq, Kind = pending.Kind, Entry = reverse || typing ? ToHiddenEntry(entry) : ToEntry(entry) };
 
         if (pending.Kind == "introduction")
         {
@@ -311,6 +314,13 @@ public sealed class VocabSessionService
                 .Select(m => new VocabMeaningResponse { German = m.German, Rank = m.Rank, Count = m.Count, Share = m.Share })
                 .ToList();
             card.Verse = await VerseAsync(pending.EntryId);
+        }
+        else if (typing)
+        {
+            card.TypingPrompt = (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].Take(3).Select(m => m.German).ToList();
+            card.Layout = VocabText.Segment(FormOf(entry)).Select(x => x.IsGroup
+                ? new VocabTypingPartResponse { Kind = "group", Length = x.Length }
+                : new VocabTypingPartResponse { Kind = "separator", Text = x.Text }).ToList();
         }
         else if (reverse)
         {
@@ -335,7 +345,7 @@ public sealed class VocabSessionService
 
     // ---- answers -------------------------------------------------------------------------------------------------------------------
 
-    public async Task<VocabSessionOutcome<VocabAnswerResponse>> AnswerAsync(IDbConnection c, IDbTransaction t, int userId, int sessionId, int seq, int? optionId, int? responseMs)
+    public async Task<VocabSessionOutcome<VocabAnswerResponse>> AnswerAsync(IDbConnection c, IDbTransaction t, int userId, int sessionId, int seq, int? optionId, int? responseMs, IReadOnlyList<string>? answers = null)
     {
         var session = await VocabSessionRepository.GetSessionAsync(c, t, userId, sessionId);
 
@@ -355,7 +365,7 @@ public sealed class VocabSessionService
         var now = _time.GetUtcNow();
         var entries = await VocabSessionRepository.GetEntriesAsync(c, t, [pending.EntryId]);
         var entry = entries[pending.EntryId];
-        var accepted = pending.Kind == VocabQuizTypes.ReverseMultipleChoice
+        var accepted = pending.Kind is VocabQuizTypes.ReverseMultipleChoice or VocabQuizTypes.Typing
             ? new List<string> { FormOf(entry) }
             : (await VocabSessionRepository.GetAcceptedMeaningsAsync(c, t, [pending.EntryId]))[pending.EntryId].Select(m => m.German).ToList();
         var response = new VocabAnswerResponse { Seq = seq, Kind = pending.Kind, Entry = ToEntry(entry), CorrectAnswers = accepted };
@@ -372,14 +382,37 @@ public sealed class VocabSessionService
         }
         else
         {
-            if (optionId is null || optionId < 0 || optionId >= pending.Options.Count)
+            int? correctIndex = null;
+            string givenText;
+            bool correct;
+
+            if (pending.Kind == VocabQuizTypes.Typing)
             {
-                return VocabSessionOutcome<VocabAnswerResponse>.Fail(VocabSessionStatus.Invalid, "optionId is not an option of this card.");
+                var segments = VocabText.Segment(FormOf(entry));
+                var groups = segments.Where(x => x.IsGroup).ToList();
+
+                if (answers is null || answers.Count != groups.Count)
+                {
+                    return VocabSessionOutcome<VocabAnswerResponse>.Fail(VocabSessionStatus.Invalid, $"answers must hold one string per letter group ({groups.Count}).");
+                }
+
+                response.GroupResults = groups.Select((g, i) => VocabText.Normalize(answers[i]) == VocabText.Normalize(g.Text)).ToList();
+                correct = response.GroupResults.All(x => x);
+                var next = 0;
+                givenText = string.Concat(segments.Select(x => x.IsGroup ? answers[next++].Trim() : x.Text));
+            }
+            else
+            {
+                if (optionId is null || optionId < 0 || optionId >= pending.Options.Count)
+                {
+                    return VocabSessionOutcome<VocabAnswerResponse>.Fail(VocabSessionStatus.Invalid, "optionId is not an option of this card.");
+                }
+
+                correctIndex = pending.Options.FindIndex(o => o.EntryId == pending.EntryId);
+                givenText = pending.Options[optionId.Value].Text;
+                correct = optionId.Value == correctIndex;
             }
 
-            var correctIndex = pending.Options.FindIndex(o => o.EntryId == pending.EntryId);
-            var given = pending.Options[optionId.Value];
-            var correct = optionId.Value == correctIndex;
             var result = _scheduler.Review(before, correct, now);
 
             if (dueRow is null)
@@ -389,7 +422,7 @@ public sealed class VocabSessionService
 
             await VocabSessionRepository.UpdateCardAsync(c, t, userId, pending.EntryId, result.Card);
             await VocabSessionRepository.InsertReviewLogAsync(c, t, new VocabSessionRepository.ReviewLogEntry(
-                userId, pending.EntryId, sessionId, pending.Kind, correct, Truncate(given.Text, 120), responseMs, correct ? 3 : 1,
+                userId, pending.EntryId, sessionId, pending.Kind, correct, Truncate(givenText, 120), responseMs, correct ? 3 : 1,
                 result.StateBefore.ToString().ToLowerInvariant(), result.StabilityBefore, result.DifficultyBefore, result.StabilityAfter, result.DifficultyAfter, now.UtcDateTime));
 
             var strengthBefore = VocabScheduler.Strength(before);
@@ -398,7 +431,7 @@ public sealed class VocabSessionService
 
             response.Correct = correct;
             response.CorrectOptionId = correctIndex;
-            response.Given = given.Text;
+            response.Given = givenText;
             response.Due = result.Card.Due;
             response.Strength = new VocabStrengthResponse { Before = strengthBefore, After = strengthAfter, Change = Change(strengthBefore, strengthAfter) };
         }
