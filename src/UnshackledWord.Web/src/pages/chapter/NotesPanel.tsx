@@ -250,7 +250,7 @@ export function NotesPanel({
                   {t("notes.driftHint", { quote: note.anchor.quotedText })}
                 </p>
               )}
-              {!open && <p className="mt-1 px-2 text-fg-muted">{noteExcerpt(note.bodyMarkdown)}</p>}
+              {!open && <p className="mt-1 px-2 text-fg-muted">{noteExcerpt(note.bodyLinked)}</p>}
               {open && (
                 <div className="mt-1 px-2">
                   <Suspense fallback={fallback}>
@@ -284,7 +284,7 @@ export function NotesPanel({
                       />
                     ) : (
                       <NoteView
-                        markdown={note.bodyMarkdown}
+                        markdown={note.bodyLinked}
                         authorDisplayName={note.authorDisplayName}
                         createdAt={note.createdAt}
                         updatedAt={note.updatedAt}
