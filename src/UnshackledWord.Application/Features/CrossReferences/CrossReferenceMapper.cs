@@ -6,7 +6,9 @@ namespace UnshackledWord.Application.Features.CrossReferences;
 
 public static class CrossReferenceMapper
 {
-    /// <summary>A few TSK ranges run backwards (Heb 9:21-15) and some collapse to one verse; both are normalised, ranges across chapters are cut to their first verse.</summary>
+    /// <summary>A few TSK ranges run backwards (Heb 9:21-15) and some collapse to one verse; both are normalised, ranges across chapters are cut to their first verse.
+    /// Since migration 0044 (roadmap 0024.2) the stored keys are already normalised this way (<c>TskKeySql</c>), so this is a no-op on them;
+    /// it stays the C# reference the SQL is tested against.</summary>
     public static CrossReferenceResponse Build(TskCrossReference row)
     {
         var start = BibleReference.FromRefId(row.TargetStartHebRefId);

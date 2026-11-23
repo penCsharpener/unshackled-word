@@ -24,7 +24,9 @@ ALTER TABLE "unshackled-word"."Tsk"
 CREATE INDEX IF NOT EXISTS "Tsk_Source_idx" ON "unshackled-word"."Tsk" ("SourceHebRefId", "Sort", "Id");
 ```
 
-The backfill reproduces today's read path in SQL: source via `BibleVerseCountingMapping` (`INNER JOIN`, unmapped sources stay NULL and are not shown, as today), targets via `MIN`/`MAX(HebRefId)` with `LxxRefId` fallback, then the `CrossReferenceMapper` normalisation. `Sort` stays NULL for existing rows (the order is `Id`, as today); `TskStrategy` writes `Sort` and the Heb keys on new seeds. `TskRepository` reads the columns, ordered by `SourceHebRefId, Sort NULLS LAST, Id`.
+The backfill reproduces today's read path in SQL: source via `BibleVerseCountingMapping` (`INNER JOIN`, unmapped sources stay NULL and are not shown, as today), targets via `MIN`/`MAX(HebRefId)` with `LxxRefId` fallback, then the `CrossReferenceMapper` normalisation. `Sort` stays NULL for existing rows (the order is `Id`, as today); `TskStrategy` writes `Sort` and runs the same SQL (`TskKeySql`, one source of truth with the migration) on new seeds. `TskRepository` reads the columns, ordered by `SourceHebRefId, LxxRefId, Sort NULLS LAST, Id` (`LxxRefId` keeps the entries of two KJV verses that land on one Hebrew verse apart: Ps 13,6, Ps 34,22, Jes 63,19, Apg 13,12).
+
+As implemented: five source `LxxRefId`s map to two Hebrew verses each (1Sam 20,42 → 20,42 + 21,1; 1Kön 22,43; 1Chr 12,4; Ps 20,2; Hld 6,11). The old join showed their 61 rows under both verses, so the backfill copies each such row once per further Hebrew verse; every row now has exactly one source key and the lists are unchanged.
 
 ## `TskCurations` (migration `0045_TskCurations.sql`)
 

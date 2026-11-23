@@ -35,6 +35,7 @@ public class TskStrategy : IFileParserStrategy
             Scope = new List<string>(),
             RelatedStartLxxRefId = new List<int>(),
             RelatedEndLxxRefId = new List<int?>(),
+            Sort = new List<int>(),
         };
 
         foreach (var tskReference in tskReferences)
@@ -43,6 +44,7 @@ public class TskStrategy : IFileParserStrategy
             {
                 parameters.LxxRefId.Add(tskReference.Reference.RefId);
                 parameters.Scope.Add(tskReference.Words);
+                parameters.Sort.Add(tskReference.Sort);
 
                 if (crossRef is BibleReference bibleRef)
                 {
@@ -70,5 +72,8 @@ public class TskStrategy : IFileParserStrategy
                    """;
 
         await _dbWriter.WriteAsync(sql, parameters);
+
+        // Roadmap 0024.2: Elberfelder keys for the new rows (same SQL as the 0044 backfill); BibleVerseCountingMapping is seeded before (ElberfelderTextRunner).
+        await _dbWriter.WriteAsync(TskKeySql.All);
     }
 }

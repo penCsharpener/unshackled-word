@@ -10,6 +10,7 @@ public static class MappingExtensions
         return new TskReference
         {
             Reference = new BibleReference(row.Book, row.Chapter, row.Verse),
+            Sort = row.Sort,
             Words = row.Words,
             CrossReferences = new TskCrossReferenceList(row.Refs).ToBibleReferences()
         };
