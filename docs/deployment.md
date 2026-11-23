@@ -295,6 +295,10 @@ The official repo ships a rolling seed for mappings and the Elb1871 revision. Af
 
 These are background jobs inside the API process; their state is lost if the API restarts. Self-hosters who keep their own data simply never import the repo seed over it.
 
+### TSK curation seed
+
+`assets/seed/tsk/curations.csv` is the change file of the curated TSK cross references (highlight/hide, comments, word links, added links; no user data). The first start applies it only to an empty `TskCurations`; later it moves only via the maintainer menus ("Wartung" export, "Importe" import, option "Exakt wie Datei" to also delete). Migrations 0044–0046 (stored TSK keys, curations and audit, proposals) must run before the API reports healthy; back up before updating.
+
 ### Vocab seed
 
 `assets/seed/vocab` (`entries.csv`, `keys.csv`, `meanings.csv`) holds the vocab lexicon content: entries, Strong's keys, German meanings (derived/manual, accepted, pinned, ranks), dictionary forms and the audio object *keys*. It never holds progress (cards, sessions, review log, settings, change rows) and no ids. The first start imports it; "Import" and "Update" on the maintainer page run the same sync: entries are matched by `(Track, Lemma)` (fallback: a Strong's key they hold), matched entries take the seed, unknown ones are created, entries missing from the seed are left alone. A learning-relevant difference (accepted meanings, dictionary form, keys, lemma) bumps the entry's content version and writes a change row, so learners see it in their change list; anything else is updated silently. The audio key is only set from the seed, never cleared by it. Export fails if `(Track, Lemma)` exists twice among live entries: merge or retire the duplicate first.

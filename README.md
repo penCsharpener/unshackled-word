@@ -146,6 +146,7 @@ into this repo as CSV and imported again on fresh installs. A new `docker compos
 | `assets/seed/revision/verses/NN-Book.csv` | the active revision variants: `Ref,Level,BasedOnLevel,BaseHash,Text,Note,Reviewed` (the text itself is the data) |
 | `assets/seed/revision/mapping/NN-Book.csv` | their mapping: format 2 plus `Level` and `Origin` (`Ref,Level,Pos,Form,Part,SrcRef,SrcPos,SrcHash,Added,ParentPos,ParentForm,Origin`) |
 | `assets/seed/vocab/{entries,keys,meanings}.csv` | the vocab lexicon content (identity `(Track, Lemma)`, audio keys only, never progress), roadmap 0022.14 |
+| `assets/seed/tsk/curations.csv` | the TSK curation change file (roadmap 0024: highlight/hide, comments, word links, added links; no personal data), applied only on a fresh database, later via export and import in the maintainer menus |
 
 Migrations create schema only. All seed data is CSV and is imported after all migrations have run.
 
