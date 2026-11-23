@@ -106,6 +106,9 @@ public enum NoteStatus
     Ok,
     NotFound,
     Invalid,
+
+    /// <summary>The note changed after the maintainer looked at it (approve with a stale <c>ReviewedVersion</c>).</summary>
+    Conflict,
 }
 
 public sealed class NoteOutcome<T> where T : class

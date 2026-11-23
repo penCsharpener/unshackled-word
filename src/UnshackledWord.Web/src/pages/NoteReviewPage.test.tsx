@@ -60,7 +60,7 @@ const queue: ReviewNotesResponse = {
 
 type Call = { url: string; method: string; body?: unknown };
 
-function stubFetch(roles: string[], calls: Call[] = []) {
+function stubFetch(roles: string[], calls: Call[] = [], approveStatus = 204) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     const method = init?.method ?? "GET";
@@ -70,6 +70,11 @@ function stubFetch(roles: string[], calls: Call[] = []) {
       return new Response(JSON.stringify({ userId: 9, email: "m@b.c", displayName: "Max", roles }));
     }
     if (url.includes("/maintainer/notes/review")) return new Response(JSON.stringify(queue));
+    if (url.endsWith("/approve") && approveStatus !== 204) {
+      return new Response(JSON.stringify({ errors: { generalErrors: ["changed"] } }), {
+        status: approveStatus,
+      });
+    }
     if (url.includes("/maintainer/notes/") && method === "POST") {
       return new Response("", { status: 204 });
     }
@@ -153,8 +158,21 @@ describe("NoteReviewPage", () => {
     await userEvent.click(within(item).getByRole("button", { name: "Freigeben" }));
     await waitFor(() => expect(posts(calls)).toHaveLength(1));
     expect(posts(calls)[0]?.url).toMatch(/\/maintainer\/notes\/edited\/approve$/);
+    expect(posts(calls)[0]?.body).toEqual({ reviewedVersion: "2026-11-23T09:00:00Z" });
     expect(await screen.findByText("Notiz freigegeben.")).toBeInTheDocument();
     await waitFor(() => expect(loads()).toBeGreaterThan(before));
+  });
+
+  it("explains and reloads the queue when the note changed after the review (409)", async () => {
+    const calls = stubFetch(["Maintainer"], [], 409);
+    renderPage();
+    const item = await pendingItem("edited");
+    const loads = () => calls.filter((c) => c.url.includes("/maintainer/notes/review")).length;
+    const before = loads();
+    await userEvent.click(within(item).getByRole("button", { name: "Freigeben" }));
+    expect(await screen.findByText(/wurde inzwischen geändert/)).toBeInTheDocument();
+    await waitFor(() => expect(loads()).toBeGreaterThan(before));
+    expect(screen.queryByText("Notiz freigegeben.")).toBeNull();
   });
 
   it("rejects a note with a reason", async () => {

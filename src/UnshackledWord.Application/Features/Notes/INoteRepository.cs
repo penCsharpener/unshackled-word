@@ -50,9 +50,10 @@ public interface INoteRepository
 
     /// <summary>
     /// Applies a maintainer action if the note is in the right state (approve/reject: public and pending; hide: not private and not hidden; unhide: hidden)
-    /// and returns the author's user id; null when nothing changed.
+    /// and returns the author's user id; null when nothing changed. Approve with <paramref name="expectedVersion"/> applies only while
+    /// <c>COALESCE(UpdatedAt, CreatedAt)</c> still equals it.
     /// </summary>
-    Task<int?> ReviewAsync(Guid id, NoteReviewAction action, int actorUserId, string? reason, CancellationToken token = default);
+    Task<int?> ReviewAsync(Guid id, NoteReviewAction action, int actorUserId, string? reason, DateTime? expectedVersion = null, CancellationToken token = default);
 
     /// <summary>The review queue; notes carry the current and the approved text. Oldest change first.</summary>
     Task<NoteReviewQueue> ListReviewAsync(int viewerId, CancellationToken token = default);

@@ -206,10 +206,13 @@ export const notesApi = {
   /** Maintainer: pending and hidden notes. */
   review: (signal?: AbortSignal) =>
     api.get<ReviewNotesResponse>("/maintainer/notes/review", signal),
-  /** Maintainer action; `reason` only for reject and hide. */
-  reviewAction: (id: string, action: ReviewAction, reason?: string) =>
-    api.post<void>(
-      `/maintainer/notes/${encodeURIComponent(id)}/${action}`,
-      reason ? { reason } : {},
-    ),
+  /**
+   * Maintainer action; `reason` only for reject and hide. `reviewedVersion` (approve: the note's `updatedAt ?? createdAt`
+   * as shown in the queue) makes the server answer 409 instead of approving an edit made after the review.
+   */
+  reviewAction: (id: string, action: ReviewAction, reason?: string, reviewedVersion?: string) =>
+    api.post<void>(`/maintainer/notes/${encodeURIComponent(id)}/${action}`, {
+      ...(reason && { reason }),
+      ...(reviewedVersion && { reviewedVersion }),
+    }),
 };

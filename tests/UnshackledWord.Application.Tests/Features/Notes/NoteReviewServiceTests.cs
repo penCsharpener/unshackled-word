@@ -17,7 +17,7 @@ public class NoteReviewServiceTests
     public async Task RejectAsync_ShouldAppendAnAdminLogEntryForTheAuthor_WhenTheNoteWasPending()
     {
         var id = Guid.NewGuid();
-        _repository.ReviewAsync(id, NoteReviewAction.Reject, Actor, "zu persönlich", Arg.Any<CancellationToken>()).Returns(Author);
+        _repository.ReviewAsync(id, NoteReviewAction.Reject, Actor, "zu persönlich", Arg.Any<DateTime?>(), Arg.Any<CancellationToken>()).Returns(Author);
 
         var result = await Service().RejectAsync(Actor, id, "  zu persönlich ");
 
@@ -40,6 +40,17 @@ public class NoteReviewServiceTests
     }
 
     [Fact]
+    public async Task ApproveAsync_ShouldBeAConflictAndWriteNoLog_WhenThePendingNoteChangedAfterTheReview()
+    {
+        var id = Guid.NewGuid();
+        _repository.ExistsAsync(id, Arg.Any<CancellationToken>()).Returns(true);
+        _repository.GetAsync(id, Actor, Arg.Any<CancellationToken>()).Returns(new NoteRecord { Id = id, Visibility = NoteVisibilities.Public, PublicState = NotePublicStates.Pending });
+
+        (await Service().ApproveAsync(Actor, id, new DateTime(2026, 11, 23, 8, 0, 0, DateTimeKind.Utc))).Status.ShouldBe(NoteStatus.Conflict);
+        await _adminLog.DidNotReceiveWithAnyArgs().AppendAsync(default!, default, default);
+    }
+
+    [Fact]
     public async Task HideAsync_ShouldBeNotFound_WhenNoSuchNoteExists()
     {
         (await Service().HideAsync(Actor, Guid.NewGuid(), null)).Status.ShouldBe(NoteStatus.NotFound);
@@ -53,7 +64,7 @@ public class NoteReviewServiceTests
     public async Task Actions_ShouldLogTheirOwnAction_WhenTheyApply(NoteReviewAction action, string logAction)
     {
         var id = Guid.NewGuid();
-        _repository.ReviewAsync(id, action, Actor, Arg.Any<string?>(), Arg.Any<CancellationToken>()).Returns(Author);
+        _repository.ReviewAsync(id, action, Actor, Arg.Any<string?>(), Arg.Any<DateTime?>(), Arg.Any<CancellationToken>()).Returns(Author);
         var service = Service();
 
         var result = action switch

@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
   type ChapterNotesResponse,
@@ -126,12 +127,27 @@ export function useReviewNotes(enabled: boolean) {
   });
 }
 
-/** Maintainer: approve, reject (reason), hide (reason) or unhide; reloads the queue and the readers' lists. */
+/**
+ * Maintainer: approve (with the reviewed version), reject (reason), hide (reason) or unhide; reloads the queue and the
+ * readers' lists, also after a 409 (the note changed since it was reviewed) so the new text shows up.
+ */
 export function useReviewAction() {
   const invalidate = useInvalidateNotes();
   return useMutation({
-    mutationFn: ({ id, action, reason }: { id: string; action: ReviewAction; reason?: string }) =>
-      notesApi.reviewAction(id, action, reason),
+    mutationFn: ({
+      id,
+      action,
+      reason,
+      reviewedVersion,
+    }: {
+      id: string;
+      action: ReviewAction;
+      reason?: string;
+      reviewedVersion?: string;
+    }) => notesApi.reviewAction(id, action, reason, reviewedVersion),
     onSuccess: invalidate,
+    onError: (error) => {
+      if (error instanceof ApiError && error.status === 409) invalidate();
+    },
   });
 }

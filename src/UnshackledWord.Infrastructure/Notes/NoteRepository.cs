@@ -113,11 +113,11 @@ public sealed class NoteRepository : INoteRepository
     public static Task<bool> ExistsAsync(IDbConnection c, IDbTransaction? t, Guid id, CancellationToken token = default) =>
         c.ExecuteScalarAsync<bool>(new CommandDefinition(NoteSql.Exists, new { Id = id }, t, cancellationToken: token));
 
-    public async Task<int?> ReviewAsync(Guid id, NoteReviewAction action, int actorUserId, string? reason, CancellationToken token = default)
+    public async Task<int?> ReviewAsync(Guid id, NoteReviewAction action, int actorUserId, string? reason, DateTime? expectedVersion = null, CancellationToken token = default)
     {
         using var connection = await _factory.CreateDbConnectionAsync(token);
 
-        return await ReviewAsync(connection, null, id, action, actorUserId, reason, token);
+        return await ReviewAsync(connection, null, id, action, actorUserId, reason, expectedVersion, token);
     }
 
     public async Task<NoteReviewQueue> ListReviewAsync(int viewerId, CancellationToken token = default)
@@ -130,7 +130,8 @@ public sealed class NoteRepository : INoteRepository
     public static async Task<bool> SetVisibilityAsync(IDbConnection c, IDbTransaction? t, Guid id, int userId, string visibility, CancellationToken token = default) =>
         await c.ExecuteAsync(new CommandDefinition(NoteSql.SetVisibility, new { Id = id, UserId = userId, Visibility = visibility }, t, cancellationToken: token)) == 1;
 
-    public static Task<int?> ReviewAsync(IDbConnection c, IDbTransaction? t, Guid id, NoteReviewAction action, int actorUserId, string? reason, CancellationToken token = default)
+    public static Task<int?> ReviewAsync(IDbConnection c, IDbTransaction? t, Guid id, NoteReviewAction action, int actorUserId, string? reason, DateTime? expectedVersion = null,
+        CancellationToken token = default)
     {
         var sql = action switch
         {
@@ -141,7 +142,13 @@ public sealed class NoteRepository : INoteRepository
             _ => throw new ArgumentOutOfRangeException(nameof(action)),
         };
 
-        return c.QuerySingleOrDefaultAsync<int?>(new CommandDefinition(sql, new { Id = id, ActorId = actorUserId, Reason = reason }, t, cancellationToken: token));
+        return c.QuerySingleOrDefaultAsync<int?>(new CommandDefinition(sql, new
+        {
+            Id = id,
+            ActorId = actorUserId,
+            Reason = reason,
+            ExpectedVersion = expectedVersion?.ToUniversalTime(),
+        }, t, cancellationToken: token));
     }
 
     public static async Task<NoteReviewQueue> ListReviewAsync(IDbConnection c, IDbTransaction? t, int viewerId, CancellationToken token = default)
@@ -407,7 +414,10 @@ internal static class NoteSql
           AND "UserId" = @UserId
         """;
 
-    /// <summary>The maintainer approves the text as it is now; anonymous readers see exactly this snapshot from here on.</summary>
+    /// <summary>
+    /// The maintainer approves the text as it is now; anonymous readers see exactly this snapshot from here on. With @ExpectedVersion only while the
+    /// note is still the version the maintainer reviewed.
+    /// </summary>
     internal const string Approve = """
         UPDATE "unshackled-word"."Notes"
         SET "PublicState" = 'approved',
@@ -418,6 +428,7 @@ internal static class NoteSql
         WHERE "Id" = @Id
           AND "Visibility" = 'public'
           AND "PublicState" = 'pending'
+          AND (@ExpectedVersion::timestamptz IS NULL OR COALESCE("UpdatedAt", "CreatedAt") = @ExpectedVersion::timestamptz)
         RETURNING "UserId"
         """;
 

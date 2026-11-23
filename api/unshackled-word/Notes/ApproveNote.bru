@@ -6,12 +6,19 @@ meta {
 
 post {
   url: {{url}}maintainer/notes/{{noteId}}/approve
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "reviewedVersion": null
+  }
 }
 
 docs {
   Maintainer: approves a pending public note (the current text becomes the approved snapshot). 204; 400 when not pending; admin log entry note_approved.
+  `reviewedVersion`: the note's `updatedAt ?? createdAt` from the review queue; when the author changed the note since, 409 and nothing is approved (null skips the check).
 }
 
 settings {

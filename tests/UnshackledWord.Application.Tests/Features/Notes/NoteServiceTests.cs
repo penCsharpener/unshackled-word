@@ -34,6 +34,20 @@ public class NoteServiceTests
     };
 
     [Fact]
+    public async Task GetAsync_ShouldBeNotFoundForOthers_AndTheNoteForTheViewerItIsVisibleTo()
+    {
+        var id = Guid.NewGuid();
+        _repository.GetAsync(id, UserId, Arg.Any<CancellationToken>()).Returns(Row(id));
+
+        var own = await Service().GetAsync(UserId, id, TestContext.Current.CancellationToken);
+        var anonymous = await Service().GetAsync(null, id, TestContext.Current.CancellationToken);
+
+        own.Status.ShouldBe(NoteStatus.Ok);
+        own.Response!.IsOwn.ShouldBeTrue();
+        anonymous.Status.ShouldBe(NoteStatus.NotFound);
+    }
+
+    [Fact]
     public async Task CreateAsync_ShouldStoreANormalisedVerseAnchorForTheCaller_WhenTheVerseExists()
     {
         var id = Guid.NewGuid();

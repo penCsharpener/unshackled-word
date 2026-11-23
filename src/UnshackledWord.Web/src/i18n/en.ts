@@ -2871,6 +2871,8 @@ export const en: Translation = {
       reasonLabel: "Reason (optional, shown to the author)",
       cancel: "Cancel",
       actionError: "The action failed.",
+      changedSinceReview:
+        "The note was changed in the meantime and was not approved. The list now shows the new text; please review it again.",
       done: {
         approve: "Note approved.",
         reject: "Note rejected.",

@@ -23,19 +23,20 @@ public sealed class Endpoint : Endpoint<NoteReviewActionRequest>
         Post("notes/{id}/approve");
         Group<RouteGroupConfig>();
         Roles(AppRoles.Admin, AppRoles.Maintainer);
-        Description(b => b.Produces(204).ProducesProblem(400).ProducesProblem(404));
+        Description(b => b.Produces(204).ProducesProblem(400).ProducesProblem(404).ProducesProblem(409));
         Summary(s =>
         {
-            s.Summary = "Maintainer: approves a pending public note. The current text becomes the approved snapshot that anonymous readers see.";
+            s.Summary = "Maintainer: approves a pending public note. The current text becomes the approved snapshot that anonymous readers see. Send `reviewedVersion` (the note's `updatedAt ?? createdAt` from the queue) so an edit made after the review is not approved unseen.";
             s[400] = "The note is not waiting for approval.";
             s[404] = "No such note.";
+            s[409] = "The author changed the note after the given reviewedVersion; nothing was approved.";
         });
     }
 
     public override async Task HandleAsync(NoteReviewActionRequest req, CancellationToken ct)
     {
         var actorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var result = await _service.ApproveAsync(actorId, req.Id, ct);
+        var result = await _service.ApproveAsync(actorId, req.Id, req.ReviewedVersion, ct);
 
         if (result.Status == NoteStatus.Ok)
         {
@@ -44,6 +45,11 @@ public sealed class Endpoint : Endpoint<NoteReviewActionRequest>
         }
 
         AddError(result.Message ?? "The request was refused.");
-        await Send.ErrorsAsync(result.Status == NoteStatus.NotFound ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest, ct);
+        await Send.ErrorsAsync(result.Status switch
+        {
+            NoteStatus.NotFound => StatusCodes.Status404NotFound,
+            NoteStatus.Conflict => StatusCodes.Status409Conflict,
+            _ => StatusCodes.Status400BadRequest,
+        }, ct);
     }
 }

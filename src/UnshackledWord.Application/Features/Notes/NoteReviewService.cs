@@ -20,8 +20,25 @@ public sealed class NoteReviewService
         _adminLog = adminLog;
     }
 
-    public Task<NoteReviewResult> ApproveAsync(int actorId, Guid id, CancellationToken token = default) =>
-        RunAsync(NoteReviewAction.Approve, AdminLogActions.NoteApproved, actorId, id, null, "The note is not waiting for approval.", token);
+    /// <summary>
+    /// Approves the current text. With <paramref name="reviewedVersion"/> (<c>updatedAt ?? createdAt</c> of the text the maintainer looked at) an edit made in
+    /// between is never approved unseen: the result is <see cref="NoteStatus.Conflict"/> and nothing changes.
+    /// </summary>
+    public async Task<NoteReviewResult> ApproveAsync(int actorId, Guid id, DateTime? reviewedVersion = null, CancellationToken token = default)
+    {
+        var result = await RunAsync(NoteReviewAction.Approve, AdminLogActions.NoteApproved, actorId, id, null, "The note is not waiting for approval.", token, reviewedVersion);
+
+        if (result.Status != NoteStatus.Invalid || reviewedVersion is null)
+        {
+            return result;
+        }
+
+        var current = await _repository.GetAsync(id, actorId, token);
+
+        return current is { Visibility: NoteVisibilities.Public, PublicState: NotePublicStates.Pending }
+            ? new NoteReviewResult(NoteStatus.Conflict, "The author changed the note after you opened it; reload the queue and review the new text.")
+            : result;
+    }
 
     public Task<NoteReviewResult> RejectAsync(int actorId, Guid id, string? reason, CancellationToken token = default) =>
         RunAsync(NoteReviewAction.Reject, AdminLogActions.NoteRejected, actorId, id, reason, "The note is not waiting for approval.", token);
@@ -32,10 +49,11 @@ public sealed class NoteReviewService
     public Task<NoteReviewResult> UnhideAsync(int actorId, Guid id, CancellationToken token = default) =>
         RunAsync(NoteReviewAction.Unhide, AdminLogActions.NoteUnhidden, actorId, id, null, "The note is not hidden.", token);
 
-    private async Task<NoteReviewResult> RunAsync(NoteReviewAction action, string logAction, int actorId, Guid id, string? reason, string wrongState, CancellationToken token)
+    private async Task<NoteReviewResult> RunAsync(NoteReviewAction action, string logAction, int actorId, Guid id, string? reason, string wrongState, CancellationToken token,
+        DateTime? expectedVersion = null)
     {
         var cleanReason = string.IsNullOrWhiteSpace(reason) ? null : reason.Trim();
-        var author = await _repository.ReviewAsync(id, action, actorId, cleanReason, token);
+        var author = await _repository.ReviewAsync(id, action, actorId, cleanReason, expectedVersion, token);
 
         if (author is null)
         {

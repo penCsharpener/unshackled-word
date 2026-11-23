@@ -6,7 +6,7 @@ import { Dialog } from "@/components/Dialog";
 import { EmptyState } from "@/components/EmptyState";
 import { FormError } from "@/components/FormError";
 import { TextField } from "@/components/TextField";
-import { describeApiError } from "@/lib/api";
+import { ApiError, describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { useBibleStructure } from "@/lib/bible/queries";
@@ -93,10 +93,10 @@ export function NoteReviewPage() {
   const books = structure.data;
   const stamp = (value: string | undefined) => (value ? formatStamp(value, i18n.language) : "");
 
-  function run(id: string, action: ReviewAction, why?: string) {
+  function run(id: string, action: ReviewAction, why?: string, reviewedVersion?: string) {
     setDone(undefined);
     act.mutate(
-      { id, action, reason: why?.trim() || undefined },
+      { id, action, reason: why?.trim() || undefined, reviewedVersion },
       {
         onSuccess: () => {
           setDone(t(`notes.review.done.${action}`));
@@ -130,7 +130,13 @@ export function NoteReviewPage() {
       <p className="text-sm text-fg-muted">{t("notes.review.intro")}</p>
       {review.isError && <FormError message={t("notes.review.loadError")} />}
       {act.isError && !dialog && (
-        <FormError message={describeApiError(act.error, t("notes.review.actionError"))} />
+        <FormError
+          message={
+            act.error instanceof ApiError && act.error.status === 409
+              ? t("notes.review.changedSinceReview")
+              : describeApiError(act.error, t("notes.review.actionError"))
+          }
+        />
       )}
       {done && (
         <p role="status" className="text-sm text-fg-muted">
@@ -180,7 +186,14 @@ export function NoteReviewPage() {
                       variant="primary"
                       size="sm"
                       disabled={act.isPending}
-                      onClick={() => run(item.note.id, "approve")}
+                      onClick={() =>
+                        run(
+                          item.note.id,
+                          "approve",
+                          undefined,
+                          item.note.updatedAt ?? item.note.createdAt,
+                        )
+                      }
                     >
                       {t("notes.review.approve")}
                     </Button>

@@ -85,6 +85,16 @@ public sealed class NoteService
         }).ToList();
     }
 
+    /// <summary>One note as the viewer may see it (anonymous: the approved snapshot); 404 when the visibility filter hides it.</summary>
+    public async Task<NoteOutcome<NoteResponse>> GetAsync(int? viewerId, Guid id, CancellationToken token = default)
+    {
+        var row = await _repository.GetAsync(id, viewerId, token);
+
+        return row is null
+            ? NoteOutcome<NoteResponse>.NotFound("No such note.")
+            : NoteOutcome<NoteResponse>.Ok((await ToResponsesAsync([row], viewerId, null, token)).Single());
+    }
+
     /// <summary>True when the caller's own note was deleted.</summary>
     public Task<bool> DeleteAsync(int userId, Guid id, CancellationToken token = default) => _repository.DeleteAsync(id, userId, token);
 

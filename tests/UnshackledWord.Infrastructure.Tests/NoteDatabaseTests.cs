@@ -482,6 +482,11 @@ public class NoteDatabaseTests
         var pending = (await NoteRepository.ListReviewAsync(c, t, maintainer)).Pending.Single(n => n.Id == id);
         (pending.BodyMarkdown, pending.ApprovedBodyMarkdown, pending.PublicState).ShouldBe(("zweite Fassung", "erste Fassung", NotePublicStates.Pending));
 
+        // approve with a version older than the current text (the author edited after the maintainer opened the diff): nothing is approved
+        var reviewed = pending.UpdatedAt ?? pending.CreatedAt;
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Approve, maintainer, null, reviewed.AddSeconds(-1))).ShouldBeNull();
+        (await ViewAsync(null)).ShouldNotBeNull().BodyMarkdown.ShouldBe("erste Fassung");
+
         // requesting public again while pending changes nothing
         await NoteRepository.SetVisibilityAsync(c, t, id, author, NoteVisibilities.Public);
         (await ViewAsync(null)).ShouldNotBeNull().BodyMarkdown.ShouldBe("erste Fassung");
@@ -495,8 +500,9 @@ public class NoteDatabaseTests
         var again = (await ViewAsync(author)).ShouldNotBeNull();
         (again.PublicState, again.ReviewNote, again.ApprovedBodyMarkdown).ShouldBe((NotePublicStates.Pending, null, null));
 
-        // withdrawing to private clears state and snapshot
-        await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Approve, maintainer, null);
+        // withdrawing to private clears state and snapshot (approved with the version the maintainer saw)
+        var current = (await NoteRepository.ListReviewAsync(c, t, maintainer)).Pending.Single(n => n.Id == id);
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Approve, maintainer, null, current.UpdatedAt ?? current.CreatedAt)).ShouldBe(author);
         await NoteRepository.SetVisibilityAsync(c, t, id, author, NoteVisibilities.Private);
         var back = (await ViewAsync(author)).ShouldNotBeNull();
         (back.Visibility, back.PublicState, back.ApprovedBodyMarkdown, back.ApprovedAt).ShouldBe((NoteVisibilities.Private, NotePublicStates.None, null, null));

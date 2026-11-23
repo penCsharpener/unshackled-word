@@ -55,6 +55,12 @@ public sealed class UpdateNoteRequest
     public string BodyMarkdown { get; set; } = string.Empty;
 }
 
+/// <summary><c>GET api/notes/{id}</c>. Public; 404 when the caller may not see the note.</summary>
+public sealed class GetNoteRequest
+{
+    public Guid Id { get; set; }
+}
+
 /// <summary><c>DELETE api/notes/{id}</c>. Owner only.</summary>
 public sealed class DeleteNoteRequest
 {
@@ -158,6 +164,12 @@ public sealed class NoteReviewActionRequest
 
     /// <summary>Optional reason (max 500 characters) for reject and hide; ignored by approve and unhide.</summary>
     public string? Reason { get; set; }
+
+    /// <summary>
+    /// Approve only: the <c>updatedAt ?? createdAt</c> of the text the maintainer reviewed. When set and the author changed the note since,
+    /// approve answers 409 and nothing is approved, so an unseen edit never becomes the public snapshot.
+    /// </summary>
+    public DateTime? ReviewedVersion { get; set; }
 }
 
 /// <summary>One note in the review queue: the current text, the approved text for a diff and the review facts.</summary>

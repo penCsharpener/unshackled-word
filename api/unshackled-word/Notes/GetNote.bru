@@ -1,0 +1,19 @@
+meta {
+  name: GetNote
+  type: http
+  seq: 33
+}
+
+get {
+  url: {{url}}notes/{{noteId}}
+  body: none
+  auth: inherit
+}
+
+docs {
+  One note with the visibility filter of the chapter list (anonymous: approved public notes, approved text). 404 when the caller may not see it.
+}
+
+settings {
+  encodeUrl: true
+}

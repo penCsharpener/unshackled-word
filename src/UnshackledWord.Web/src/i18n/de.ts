@@ -2906,6 +2906,8 @@ export const de = {
       reasonLabel: "Grund (optional, für die Autorin oder den Autor sichtbar)",
       cancel: "Abbrechen",
       actionError: "Die Aktion ist fehlgeschlagen.",
+      changedSinceReview:
+        "Die Notiz wurde inzwischen geändert und nicht freigegeben. Die Liste zeigt jetzt den neuen Text, bitte erneut prüfen.",
       done: {
         approve: "Notiz freigegeben.",
         reject: "Notiz abgelehnt.",
