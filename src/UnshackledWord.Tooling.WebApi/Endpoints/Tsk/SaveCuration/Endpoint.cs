@@ -11,7 +11,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.Tsk.SaveCuration;
 /// <see cref="TskCurationService"/> because suggestions by other users take this route from 0024.6 on.
 /// </summary>
 [RequiresLogin]
-public sealed class Endpoint : Endpoint<SaveTskCurationRequest, TskCurationResponse>
+public sealed class Endpoint : Endpoint<SaveTskCurationRequest, object>
 {
     private readonly TskCurationService _service;
 
@@ -24,13 +24,13 @@ public sealed class Endpoint : Endpoint<SaveTskCurationRequest, TskCurationRespo
     {
         Put("curation");
         Group<RouteGroupConfig>();
-        Description(b => b.Produces<TskCurationResponse>(200).ProducesProblem(400).ProducesProblem(403).ProducesProblem(404));
+        Description(b => b.Produces<TskCurationResponse>(200).ProducesProblem(400).Produces<TskProposalCreatedResponse>(202).ProducesProblem(404));
         Summary(s =>
         {
-            s.Summary = "Maintainer: sets `rating` (`highlight`, `hide` or null) and `comment` (plain text, max 500, empty removes it) of one TSK or added link, "
+            s.Summary = "Logged-in user (maintainers write directly, others propose): sets `rating` (`highlight`, `hide` or null) and `comment` (plain text, max 500, empty removes it) of one TSK or added link, "
                         + "keyed by source verse and target verse/range in Elberfelder numbering (`targetEndHebRefId` omitted for one verse). "
                         + "A TSK link back at neutral without comment loses its curation row; an added link keeps it. Returns the resulting state.";
-            s[403] = "The caller is not Admin or Maintainer.";
+            s[202] = "Caller without Admin/Maintainer: stored as a pending proposal (full desired state of the link), nothing curated yet (roadmap 0024.6).";
             s[404] = "Neither TSK nor the added links have a link with this key.";
         });
     }
@@ -40,6 +40,12 @@ public sealed class Endpoint : Endpoint<SaveTskCurationRequest, TskCurationRespo
         HttpContext.Response.Headers.CacheControl = "no-store";
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var outcome = await _service.SaveAsync(userId, User.HasWriteRole(), req, ct);
+
+        if (outcome.Status == TskCurationStatus.Proposed)
+        {
+            await Send.ResponseAsync(new TskProposalCreatedResponse { Proposal = outcome.Proposal! }, StatusCodes.Status202Accepted, ct);
+            return;
+        }
 
         if (outcome.Status == TskCurationStatus.Ok)
         {

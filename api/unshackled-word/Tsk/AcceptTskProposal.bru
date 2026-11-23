@@ -1,0 +1,24 @@
+meta {
+  name: AcceptTskProposal
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{url}}maintainer/tsk/proposals/1/accept
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "force": false
+  }
+}
+docs {
+  Maintainer: accepts proposal 1 (adjust the id). 400 when stale unless force is true, 400 when not pending, 404 unknown.
+}
+
+settings {
+  encodeUrl: true
+}

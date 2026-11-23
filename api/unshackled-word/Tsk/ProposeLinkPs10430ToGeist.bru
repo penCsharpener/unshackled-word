@@ -1,0 +1,27 @@
+meta {
+  name: ProposeLinkPs10430ToGeist
+  type: http
+  seq: 21
+}
+
+put {
+  url: {{url}}tsk/curation/word
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001002,
+    "keys": [{ "targetStartHebRefId": 19104030 }],
+    "startPosition": 16,
+    "endPosition": 16
+  }
+}
+docs {
+  Non-maintainer: proposes linking Ps 104,30 under 1Mo 1,2 to „Geist“ (position 16). Builds on the own pending proposal (hide stays); answers 202 { proposals: [...] }.
+}
+
+settings {
+  encodeUrl: true
+}

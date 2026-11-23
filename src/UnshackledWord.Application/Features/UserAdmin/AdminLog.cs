@@ -2,7 +2,7 @@ using System.Data;
 
 namespace UnshackledWord.Application.Features.UserAdmin;
 
-/// <summary>The allowed values of <c>AdminLog.Action</c> (check constraint <c>AdminLog_Action_CK</c>, migrations 0035 and 0043).</summary>
+/// <summary>The allowed values of <c>AdminLog.Action</c> (check constraint <c>AdminLog_Action_CK</c>, migrations 0035, 0043 and 0046).</summary>
 public static class AdminLogActions
 {
     public const string UserCreated = "user_created";
@@ -20,12 +20,15 @@ public static class AdminLogActions
     public const string NoteRejected = "note_rejected";
     public const string NoteHidden = "note_hidden";
     public const string NoteUnhidden = "note_unhidden";
+    public const string TskProposalAccepted = "tsk_proposal_accepted";
+    public const string TskProposalRejected = "tsk_proposal_rejected";
 
     public static readonly string[] All =
     [
         UserCreated, UserUpdated, RoleGranted, RoleRevoked, UserDeactivated, UserReactivated,
         PasswordResetSent, WelcomeSent, InviteCreated, InviteRevoked, InviteEmailed,
         NoteApproved, NoteRejected, NoteHidden, NoteUnhidden,
+        TskProposalAccepted, TskProposalRejected,
     ];
 }
 

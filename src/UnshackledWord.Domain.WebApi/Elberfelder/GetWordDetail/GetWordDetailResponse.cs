@@ -40,6 +40,11 @@ public sealed class CrossReferenceResponse
     public string? Origin { get; set; }
     /// <summary>Word link in the source verse (roadmap 0024.5); omitted when the link is not attached to a word.</summary>
     public UnshackledWord.Domain.WebApi.Tsk.TskWordResponse? Word { get; set; }
+    /// <summary>
+    /// Only in the chapter cross references, only for the logged-in author (roadmap 0024.6): their own pending proposal for this link (full desired
+    /// state). A proposed new link appears as a ref with <c>origin</c> <c>added</c>, no current rating/comment/word and this property, last in its verse.
+    /// </summary>
+    public UnshackledWord.Domain.WebApi.Tsk.TskPendingProposalResponse? PendingProposal { get; set; }
 }
 
 public sealed class OriginalReadingResponse

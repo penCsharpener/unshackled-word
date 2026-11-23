@@ -1,0 +1,19 @@
+meta {
+  name: MyTskProposals
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{url}}tsk/proposals/mine
+  body: none
+  auth: inherit
+}
+
+docs {
+  Logged-in user: own TSK proposals, newest first, all states, with rejection reason.
+}
+
+settings {
+  encodeUrl: true
+}

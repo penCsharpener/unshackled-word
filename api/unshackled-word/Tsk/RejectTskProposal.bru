@@ -1,0 +1,24 @@
+meta {
+  name: RejectTskProposal
+  type: http
+  seq: 25
+}
+
+post {
+  url: {{url}}maintainer/tsk/proposals/1/reject
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "reason": "zu schwach"
+  }
+}
+docs {
+  Maintainer: rejects proposal 1 (adjust the id) with a reason the author sees in tsk/proposals/mine.
+}
+
+settings {
+  encodeUrl: true
+}

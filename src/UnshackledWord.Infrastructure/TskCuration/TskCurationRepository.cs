@@ -1,5 +1,6 @@
 using System.Data;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Dapper;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Notes;
@@ -15,7 +16,7 @@ namespace UnshackledWord.Infrastructure.TskCuration;
 public sealed class TskCurationRepository : ITskCurationRepository
 {
     /// <summary>First key of the advisory lock that serialises writes per source verse (second key: <c>SourceHebRefId</c>).</summary>
-    private const int LockClass = 240_003;
+    public const int LockClass = 240_003;
 
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
@@ -193,8 +194,10 @@ public sealed class TskCurationRepository : ITskCurationRepository
         return row?.ToRecord();
     }
 
+    /// <param name="proposalId">Accepted proposal (roadmap 0024.6): written into <c>After</c> as <c>proposalId</c> (a deletion then has
+    /// <c>After</c> = <c>{"proposalId": n}</c> without state keys instead of NULL).</param>
     public static async Task<TskCurationRecord?> ApplyAsync(IDbConnection connection, IDbTransaction transaction, TskLinkKey key,
-        Func<TskCurationState, TskCurationState> change, int? userId, string source, CancellationToken token = default)
+        Func<TskCurationState, TskCurationState> change, int? userId, string source, CancellationToken token = default, int? proposalId = null)
     {
         // Two writers of one link would both read "no row" and the second insert would fail on the unique key: serialise per source verse.
         await connection.ExecuteAsync(new CommandDefinition("SELECT pg_advisory_xact_lock(@LockClass, @SourceHebRefId)",
@@ -254,7 +257,7 @@ public sealed class TskCurationRepository : ITskCurationRepository
                              """;
         await connection.ExecuteAsync(new CommandDefinition(audit, new
         {
-            key.SourceHebRefId, key.TargetStartHebRefId, key.TargetEndHebRefId, Before = ToJson(beforeState), After = ToJson(afterState), UserId = userId,
+            key.SourceHebRefId, key.TargetStartHebRefId, key.TargetEndHebRefId, Before = ToJson(beforeState), After = ToJson(afterState, proposalId), UserId = userId,
             Source = source,
         }, transaction, cancellationToken: token));
 
@@ -264,6 +267,19 @@ public sealed class TskCurationRepository : ITskCurationRepository
     /// <summary>The audit shape: <c>{"origin", "rating", "comment", "startPosition", "endPosition", "quotedText"}</c>, null for "no row".</summary>
     public static string? ToJson(TskCurationState? state) => state is null ? null : JsonSerializer.Serialize(state, Json);
 
+    /// <summary><see cref="ToJson(TskCurationState?)"/> plus <c>proposalId</c> when the change comes from an accepted proposal.</summary>
+    public static string? ToJson(TskCurationState? state, int? proposalId)
+    {
+        if (proposalId is null)
+        {
+            return ToJson(state);
+        }
+
+        var json = state is null ? new JsonObject() : JsonSerializer.SerializeToNode(state, Json)!.AsObject();
+        json["proposalId"] = proposalId.Value;
+        return json.ToJsonString(Json);
+    }
+
     private sealed class KeyRow
     {
         public int SourceHebRefId { get; init; }
@@ -272,7 +288,7 @@ public sealed class TskCurationRepository : ITskCurationRepository
         public bool InTsk { get; init; }
     }
 
-    private sealed class CurationRow
+    internal sealed class CurationRow
     {
         public int SourceHebRefId { get; init; }
         public int TargetStartHebRefId { get; init; }

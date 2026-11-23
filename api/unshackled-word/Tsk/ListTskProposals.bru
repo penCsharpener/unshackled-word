@@ -1,0 +1,19 @@
+meta {
+  name: ListTskProposals
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{url}}maintainer/tsk/proposals
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: pending proposals with current state, proposed state, author, createdAt and stale.
+}
+
+settings {
+  encodeUrl: true
+}

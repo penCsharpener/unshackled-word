@@ -1,0 +1,26 @@
+meta {
+  name: ProposeHidePs10430UnderGen12
+  type: http
+  seq: 20
+}
+
+put {
+  url: {{url}}tsk/curation
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001002,
+    "targetStartHebRefId": 19104030,
+    "rating": "hide"
+  }
+}
+docs {
+  Non-maintainer (logged in): proposes hiding Ps 104,30 under 1Mo 1,2. Answers 202 { proposal: { id, state: pending, proposed, ... } }; a maintainer gets 200 and writes directly.
+}
+
+settings {
+  encodeUrl: true
+}

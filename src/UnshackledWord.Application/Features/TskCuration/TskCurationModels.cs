@@ -41,15 +41,24 @@ public enum TskCurationStatus
 
     /// <summary>The added link already exists, in TSK or as an earlier added link (roadmap 0024.4).</summary>
     Conflict,
+
+    /// <summary>A non-maintainer's request was stored as a pending proposal (roadmap 0024.6): HTTP 202, nothing curated yet.</summary>
+    Proposed,
 }
 
 public sealed class TskCurationOutcome
 {
     public TskCurationStatus Status { get; private init; }
     public TskCurationResponse? Response { get; private init; }
+
+    /// <summary>Set with <see cref="TskCurationStatus.Proposed"/>.</summary>
+    public TskProposalResponse? Proposal { get; private init; }
+
     public string? Message { get; private init; }
 
     public static TskCurationOutcome Ok(TskCurationResponse response) => new() { Status = TskCurationStatus.Ok, Response = response };
+
+    public static TskCurationOutcome Proposed(TskProposalResponse proposal) => new() { Status = TskCurationStatus.Proposed, Proposal = proposal };
 
     public static TskCurationOutcome NotFound(string message) => new() { Status = TskCurationStatus.NotFound, Message = message };
 
@@ -65,7 +74,14 @@ public sealed class TskWordLinkOutcome
 {
     public TskCurationStatus Status { get; private init; }
     public TskWordLinkResponse? Response { get; private init; }
+
+    /// <summary>Set with <see cref="TskCurationStatus.Proposed"/>: one proposal per key that changes (keys already in the requested state are omitted).</summary>
+    public TskProposalsCreatedResponse? Proposals { get; private init; }
+
     public string? Message { get; private init; }
+
+    public static TskWordLinkOutcome Proposed(List<TskProposalResponse> proposals) =>
+        new() { Status = TskCurationStatus.Proposed, Proposals = new TskProposalsCreatedResponse { Proposals = proposals } };
 
     public static TskWordLinkOutcome Ok(List<TskCurationResponse> links) => new() { Status = TskCurationStatus.Ok, Response = new TskWordLinkResponse { Links = links } };
 

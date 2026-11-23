@@ -21,13 +21,13 @@ public sealed class Endpoint : Endpoint<DeleteTskCurationRequest>
     {
         Delete("curation/added");
         Group<RouteGroupConfig>();
-        Description(b => b.Produces(204).ProducesProblem(400).ProducesProblem(403).ProducesProblem(404));
+        Description(b => b.Produces(204).ProducesProblem(400).Produces<TskProposalCreatedResponse>(202).ProducesProblem(404));
         Summary(s =>
         {
-            s.Summary = "Maintainer: deletes an added cross reference (`origin` `added`), keyed by `sourceHebRefId`, `targetStartHebRefId` and "
+            s.Summary = "Logged-in user (maintainers write directly, others propose): deletes an added cross reference (`origin` `added`), keyed by `sourceHebRefId`, `targetStartHebRefId` and "
                         + "`targetEndHebRefId` (omitted for one verse) in the JSON body. Answers 204.";
             s[400] = "Malformed key, or the key is a TSK link (hide it instead).";
-            s[403] = "The caller is not Admin or Maintainer.";
+            s[202] = "Caller without Admin/Maintainer: stored as a pending proposal (full desired state of the link), nothing curated yet (roadmap 0024.6).";
             s[404] = "No added link with this key.";
         });
     }
@@ -37,6 +37,12 @@ public sealed class Endpoint : Endpoint<DeleteTskCurationRequest>
         HttpContext.Response.Headers.CacheControl = "no-store";
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var outcome = await _service.DeleteAddedAsync(userId, User.HasWriteRole(), req, ct);
+
+        if (outcome.Status == TskCurationStatus.Proposed)
+        {
+            await Send.ResponseAsync(new TskProposalCreatedResponse { Proposal = outcome.Proposal! }, StatusCodes.Status202Accepted, ct);
+            return;
+        }
 
         if (outcome.Status == TskCurationStatus.Ok)
         {

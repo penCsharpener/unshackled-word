@@ -75,6 +75,8 @@ public static class ServiceCollectionExtensions
         // TSK curation (roadmap 0024)
         services.AddScoped<UnshackledWord.Application.Features.TskCuration.ITskCurationRepository, UnshackledWord.Infrastructure.TskCuration.TskCurationRepository>();
         services.AddScoped<UnshackledWord.Application.Features.TskCuration.TskCurationService>();
+        services.AddScoped<UnshackledWord.Application.Features.TskCuration.ITskCurationProposalRepository, UnshackledWord.Infrastructure.TskCuration.TskCurationProposalRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.TskCuration.TskProposalReviewService>();
 
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();

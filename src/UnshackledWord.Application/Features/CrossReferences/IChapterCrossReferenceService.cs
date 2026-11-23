@@ -6,5 +6,7 @@ public interface IChapterCrossReferenceService
 {
     /// <param name="includeHidden">Curators only (the endpoint checks the role): hidden links come back with rating <c>hide</c>.</param>
     /// <param name="level">Literalness level (roadmap 0024.5): 0 = Elb1871; otherwise ok word links on verses with a variant at that level carry <c>mappedWords</c>.</param>
-    Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, bool includeHidden = false, int level = 0, CancellationToken token = default);
+    /// <param name="proposalsOfUserId">Logged-in caller (roadmap 0024.6): their own pending proposals are attached as <c>pendingProposal</c>; null = anonymous.</param>
+    Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, bool includeHidden = false, int level = 0, int? proposalsOfUserId = null,
+        CancellationToken token = default);
 }

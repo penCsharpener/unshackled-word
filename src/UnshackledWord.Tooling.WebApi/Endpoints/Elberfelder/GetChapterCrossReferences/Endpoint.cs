@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FastEndpoints;
 using FluentValidation;
 using UnshackledWord.Application.Features.CrossReferences;
@@ -26,7 +27,14 @@ public class Endpoint : Ep.Req<GetChapterCrossReferencesRequest>.Res<GetChapterC
     public override Task<GetChapterCrossReferencesResponse> ExecuteAsync(GetChapterCrossReferencesRequest req, CancellationToken ct)
     {
         // Hidden links (roadmap 0024.3) only for curators; everyone else gets the reader list whatever the query says.
-        return _service.GetAsync(req.BibleBookId, req.ChapterId, req.IncludeHidden && User.HasWriteRole(), req.Level ?? 0, ct);
+        // Pending proposals (roadmap 0024.6) only for their author: the list then differs per user, so it must not be cached shared.
+        var userId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : (int?)null;
+        if (userId is not null)
+        {
+            HttpContext.Response.Headers.CacheControl = "private, no-cache";
+        }
+
+        return _service.GetAsync(req.BibleBookId, req.ChapterId, req.IncludeHidden && User.HasWriteRole(), req.Level ?? 0, userId, ct);
     }
 }
 
