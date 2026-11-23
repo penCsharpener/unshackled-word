@@ -32,6 +32,8 @@ export interface Note {
   publicState: "none" | "pending" | "approved" | "rejected";
   isOwn: boolean;
   isHidden?: boolean;
+  /** Rejection or hide reason; only on the caller's own notes. */
+  reviewNote?: string;
   authorDisplayName: string;
   createdAt: string;
   updatedAt?: string;
@@ -49,6 +51,29 @@ export interface ChapterNotesResponse {
 }
 
 export type NoteVisibility = Note["visibility"];
+
+export const NOTE_VISIBILITIES: readonly NoteVisibility[] = ["private", "internal", "public"];
+
+/** One note of the maintainer's review queue (`GET /maintainer/notes/review`). */
+export interface ReviewNote {
+  /** current state; `bodyMarkdown` is the author's latest text */
+  note: Note;
+  /** what anonymous readers see; absent if never approved */
+  approvedBodyMarkdown?: string;
+  approvedAt?: string;
+  hiddenAt?: string;
+  /** rejection or hide reason */
+  reviewNote?: string;
+}
+
+export interface ReviewNotesResponse {
+  /** public notes waiting for approval, oldest change first */
+  pending: ReviewNote[];
+  /** hidden notes, oldest hide first */
+  hidden: ReviewNote[];
+}
+
+export type ReviewAction = "approve" | "reject" | "hide" | "unhide";
 
 /** Filters and paging of `GET /notes/mine`; every field is optional. */
 export interface MyNotesQuery {
@@ -141,11 +166,20 @@ export function noteHref(note: Note): string {
 }
 
 export const notesApi = {
-  chapter: (bookId: number, chapter: number, level: number, signal?: AbortSignal) =>
-    api.get<ChapterNotesResponse>(
-      `/notes/chapter/${bookId}/${chapter}${level > 0 ? `?level=${level}` : ""}`,
-      signal,
-    ),
+  /** `others = false`: only the caller's own notes. */
+  chapter: (
+    bookId: number,
+    chapter: number,
+    level: number,
+    others = true,
+    signal?: AbortSignal,
+  ) => {
+    const params = new URLSearchParams();
+    if (level > 0) params.set("level", String(level));
+    if (!others) params.set("others", "false");
+    const query = params.size > 0 ? `?${params}` : "";
+    return api.get<ChapterNotesResponse>(`/notes/chapter/${bookId}/${chapter}${query}`, signal);
+  },
   mine: (query: MyNotesQuery, signal?: AbortSignal) => {
     const params = new URLSearchParams();
     if (query.book) params.set("book", String(query.book));
@@ -166,4 +200,16 @@ export const notesApi = {
       ...(anchor && { anchor }),
     }),
   remove: (id: string) => api.delete<void>(`/notes/${encodeURIComponent(id)}`),
+  /** `public` is a request: the note waits for a maintainer's approval. */
+  setVisibility: (id: string, visibility: NoteVisibility) =>
+    api.put<Note>(`/notes/${encodeURIComponent(id)}/visibility`, { visibility }),
+  /** Maintainer: pending and hidden notes. */
+  review: (signal?: AbortSignal) =>
+    api.get<ReviewNotesResponse>("/maintainer/notes/review", signal),
+  /** Maintainer action; `reason` only for reject and hide. */
+  reviewAction: (id: string, action: ReviewAction, reason?: string) =>
+    api.post<void>(
+      `/maintainer/notes/${encodeURIComponent(id)}/${action}`,
+      reason ? { reason } : {},
+    ),
 };

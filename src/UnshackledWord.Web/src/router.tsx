@@ -17,6 +17,7 @@ import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
 import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
 import { MaintainerPage } from "@/pages/MaintainerPage";
 import { MyNotesPage } from "@/pages/MyNotesPage";
+import { NoteReviewPage } from "@/pages/NoteReviewPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PasskeysPage } from "@/pages/PasskeysPage";
 import { PrivacyPage } from "@/pages/PrivacyPage";
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
       { path: "edit/vocab", element: <VocabEditorListPage /> },
       { path: "edit/vocab/:id", element: <VocabEditorPage /> },
       { path: "edit/imports", element: <SeedImportsPage /> },
+      { path: "edit/notes", element: <NoteReviewPage /> },
       { path: "edit/quality", element: <DataQualityPage /> },
       { path: "edit/maintainer", element: <MaintainerPage /> },
       { path: "edit/proposals/:runId?/:proposalId?", element: <AgentProposalsPage /> },

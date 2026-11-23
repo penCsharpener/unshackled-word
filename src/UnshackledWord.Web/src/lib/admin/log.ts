@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 
-/** Actions written to the admin log; mirrors `Application.Features.UserAdmin.AdminActions.All` (roadmap 0020, 05-api.md). */
+/** Actions written to the admin log; mirrors `Application.Features.UserAdmin.AdminActions.All` (roadmap 0020, 05-api.md; note review actions from roadmap 0023.5). */
 export const ADMIN_ACTIONS = [
   "user_created",
   "user_updated",
@@ -13,6 +13,10 @@ export const ADMIN_ACTIONS = [
   "invite_created",
   "invite_revoked",
   "invite_emailed",
+  "note_approved",
+  "note_rejected",
+  "note_hidden",
+  "note_unhidden",
 ] as const;
 
 export type AdminAction = (typeof ADMIN_ACTIONS)[number];

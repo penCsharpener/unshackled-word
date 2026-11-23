@@ -156,6 +156,61 @@ describe("NotesPanel", () => {
     await waitFor(() => expect(screen.queryByLabelText("Notiztext")).toBeNull());
   });
 
+  it("creates a public note: the body first, then the visibility request", async () => {
+    const fetchMock = stubFetch();
+    const { props } = renderPanel({ draft: { kind: "verse", verse: 28 } });
+    await userEvent.type(await screen.findByLabelText("Notiztext"), "Für alle");
+    const select = screen.getByLabelText("Sichtbarkeit:");
+    expect(select).toHaveValue("private");
+    await userEvent.selectOptions(select, "public");
+    expect(screen.getByText(/erst, wenn ein Maintainer sie freigegeben hat/)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Speichern" }));
+    await waitFor(() => expect(calls(fetchMock, "PUT")).toHaveLength(1));
+    expect(calls(fetchMock, "POST")).toHaveLength(1);
+    const [url, init] = calls(fetchMock, "PUT")[0] ?? [];
+    expect(String(url)).toMatch(/\/notes\/new\/visibility$/);
+    expect(JSON.parse(String(init?.body))).toEqual({ visibility: "public" });
+    expect(props.onFocus).toHaveBeenCalledWith("new");
+  });
+
+  it("changes only the visibility when the body is unchanged", async () => {
+    const fetchMock = stubFetch();
+    renderPanel({ focus: { id: "v28", token: 1 } });
+    await userEvent.click(await screen.findByRole("button", { name: "Bearbeiten" }));
+    await userEvent.selectOptions(await screen.findByLabelText("Sichtbarkeit:"), "internal");
+    await userEvent.click(screen.getByRole("button", { name: "Speichern" }));
+    await waitFor(() => expect(calls(fetchMock, "PUT")).toHaveLength(1));
+    const [url, init] = calls(fetchMock, "PUT")[0] ?? [];
+    expect(String(url)).toMatch(/\/notes\/v28\/visibility$/);
+    expect(JSON.parse(String(init?.body))).toEqual({ visibility: "internal" });
+    await waitFor(() => expect(screen.queryByLabelText("Notiztext")).toBeNull());
+  });
+
+  it("shows the review state and the rejection reason of an own note", async () => {
+    stubFetch();
+    const rejected: Note = {
+      ...note("r", 5, "Abgelehnt"),
+      visibility: "public",
+      publicState: "rejected",
+      reviewNote: "Bitte Quelle angeben",
+    };
+    renderPanel({ notes: [rejected], focus: { id: "r", token: 1 } });
+    expect(await screen.findByText("Öffentlich · abgelehnt")).toBeInTheDocument();
+    expect(screen.getByText("Abgelehnt: Bitte Quelle angeben")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Bearbeiten" }));
+    expect(await screen.findByLabelText("Sichtbarkeit:")).toHaveValue("public");
+    expect(screen.getByText("Abgelehnt: Bitte Quelle angeben")).toBeInTheDocument();
+  });
+
+  it("shows no state badge on others' notes", async () => {
+    stubFetch();
+    const other: Note = { ...note("o", 3, "Fremd", false), visibility: "internal" };
+    renderPanel({ notes: [other], focus: { id: "o", token: 1 } });
+    expect(await screen.findByTestId("note-body")).toHaveTextContent("Fremd");
+    expect(screen.getByText(/^Bert · /)).toBeInTheDocument();
+    expect(screen.queryByText("Angemeldete Nutzer")).toBeNull();
+  });
+
   it("deletes an own note after the confirm", async () => {
     const fetchMock = stubFetch();
     renderPanel({ focus: { id: "v28", token: 1 } });

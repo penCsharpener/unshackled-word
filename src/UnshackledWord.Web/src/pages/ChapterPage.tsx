@@ -25,6 +25,7 @@ import { MarginStack } from "@/components/MarginStack";
 import { NoteMarker } from "@/components/NoteMarker";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { RevisionEditor } from "@/components/RevisionEditor";
+import { Switch } from "@/components/Switch";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
 import { track, trackRevisionLevel } from "@/lib/analytics";
 import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
@@ -61,6 +62,7 @@ import {
   type WordPoint,
   type WordSelection,
 } from "@/lib/notes/selection";
+import { useShowOthersNotes } from "@/lib/notes/showOthers";
 import { reviewMarkers, toMappingData } from "@/lib/revision/mapping";
 import { useRevisionMapping, useSaveRevisionMapping } from "@/lib/revision/queries";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
@@ -308,7 +310,8 @@ export function ChapterPage() {
 
   // Notes (roadmap 0023): markers at verse numbers and the heading open the notes panel (left margin from 120rem,
   // a sheet below). MDXEditor is only fetched once a note is shown or written (see NotesPanel).
-  const notes = useChapterNotes(books ? ref : null, reader.level);
+  const { showOthers, setShowOthers } = useShowOthersNotes();
+  const notes = useChapterNotes(books ? ref : null, reader.level, showOthers);
   /** Words notes sit on their last shown word; verse, range, drifted and unmapped notes at the verse number. */
   const noteMarkers = useMemo(() => {
     const byVerse = new Map<number | "chapter", Note[]>();
@@ -918,6 +921,13 @@ export function ChapterPage() {
           <Button variant="ghost" size="sm" onClick={() => startNote({ kind: "chapter" })}>
             {t("notes.addChapter")}
           </Button>
+          <Switch
+            checked={showOthers}
+            onCheckedChange={setShowOthers}
+            className="font-sans text-sm text-fg-muted"
+          >
+            {t("notes.showOthers")}
+          </Switch>
         </div>
         {aiRange && (
           <AgentRunDialog
@@ -1010,7 +1020,7 @@ export function ChapterPage() {
                             ? "end"
                             : "mid"
                       }
-                      className={`pointer-events-none absolute -left-6 hidden w-1.5 border-l-2 laptop:block ${bracket.own ? "border-accent" : "border-fg-muted"} ${v.verse === bracket.start ? "top-1 rounded-tl-sm border-t-2" : "top-0"} ${v.verse === bracket.end ? "bottom-1 rounded-bl-sm border-b-2" : "-bottom-2"}`}
+                      className={`pointer-events-none absolute -left-6 hidden w-1.5 border-l-2 laptop:block ${bracket.own ? "border-accent" : "border-note-other"} ${v.verse === bracket.start ? "top-1 rounded-tl-sm border-t-2" : "top-0"} ${v.verse === bracket.end ? "bottom-1 rounded-bl-sm border-b-2" : "-bottom-2"}`}
                     />
                   )}
                   <div className="verse-main">

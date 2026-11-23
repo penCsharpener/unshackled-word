@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -7,6 +7,7 @@ import i18n from "@/i18n";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import type { BibleStructureBook } from "@/lib/bible/types";
 import type { Note } from "@/lib/notes/api";
+import { SHOW_OTHERS_KEY } from "@/lib/notes/showOthers";
 import { fixtureBooks, fixtureChapterWords } from "@/test/fixtures/bibleStructure";
 import { ChapterPage } from "./ChapterPage";
 
@@ -55,7 +56,10 @@ function stubFetch(signedIn: boolean, notes: Note[]) {
         : new Response("", { status: 401 });
     }
     if (url.includes("/revision/levels")) return new Response(JSON.stringify([]));
-    if (url.includes("/notes/chapter/43/3")) return new Response(JSON.stringify({ notes }));
+    if (url.includes("/notes/chapter/43/3")) {
+      const others = new URL(url, "http://x").searchParams.get("others") !== "false";
+      return new Response(JSON.stringify({ notes: others ? notes : notes.filter((n) => n.isOwn) }));
+    }
     return new Response(JSON.stringify(fixtureChapterWords));
   });
   vi.stubGlobal("fetch", fetchMock);
@@ -83,7 +87,10 @@ beforeEach(async () => {
   window.HTMLElement.prototype.scrollIntoView = vi.fn();
   await i18n.changeLanguage("de");
 });
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  localStorage.removeItem(SHOW_OTHERS_KEY);
+});
 
 describe("ChapterPage notes", () => {
   it("shows markers at the heading and the verse numbers with notes", async () => {
@@ -160,5 +167,44 @@ describe("ChapterPage notes", () => {
     renderAt("/bible/43/3?note=gone");
     await screen.findByRole("button", { name: "Notiz zu Vers 2 öffnen" });
     expect(screen.queryByRole("region", { name: "Notizen zu Johannes 3" })).toBeNull();
+  });
+
+  it("hides other people's notes with the toggle and remembers the choice", async () => {
+    const fetchMock = stubFetch(true, [
+      note("a", 2, "Eigene", true),
+      note("b", 3, "Fremde", false),
+    ]);
+    const { container, unmount } = renderAt("/bible/43/3");
+    const verse3 = () => container.querySelector("#v3") as HTMLElement;
+    const other = await screen.findByRole("button", { name: "Notiz zu Vers 3 öffnen" });
+    expect(verse3()).toContainElement(other);
+    expect(other.className).toContain("text-note-other");
+    const toggle = screen.getByRole("switch", { name: "Notizen anderer anzeigen" });
+    expect(toggle).toHaveAttribute("aria-checked", "true");
+
+    await userEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-checked", "false");
+    await waitFor(() =>
+      expect(within(verse3()).queryByRole("button", { name: /Notiz.*öffnen/ })).toBeNull(),
+    );
+    expect(screen.getByRole("button", { name: "Notiz zu Vers 2 öffnen" })).toBeInTheDocument();
+    const chapterUrls = () =>
+      fetchMock.mock.calls
+        .map(([url]) => String(url))
+        .filter((url) => url.includes("/notes/chapter/"));
+    expect(chapterUrls().at(-1)).toContain("others=false");
+    expect(localStorage.getItem(SHOW_OTHERS_KEY)).toBe("false");
+
+    unmount();
+    fetchMock.mockClear();
+    renderAt("/bible/43/3");
+    expect(
+      await screen.findByRole("button", { name: "Notiz zu Vers 2 öffnen" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("switch", { name: "Notizen anderer anzeigen" })).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
+    expect(chapterUrls().every((url) => url.includes("others=false"))).toBe(true);
   });
 });

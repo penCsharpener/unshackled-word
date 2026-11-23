@@ -22,9 +22,13 @@ import {
 } from "@mdxeditor/editor";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { NOTE_VISIBILITIES, type NoteVisibility } from "@/lib/notes/api";
+import { type NoteStatus, noteStatusBadges, noteStatusReason } from "@/lib/notes/display";
 import { mdxTranslation } from "@/lib/notes/mdxTranslation";
 import { Button } from "./Button";
 import { Dialog } from "./Dialog";
+import { Select } from "./Select";
+import { StatusBadge } from "./StatusBadge";
 
 /** Same limit as the API (`NoteBody.MaxLength`). */
 export const NOTE_MAX_LENGTH = 20_000;
@@ -34,10 +38,15 @@ export interface NoteEditorProps {
   label: string;
   /** body of an existing note; empty for a new one */
   initialMarkdown?: string;
+  /** visibility the select starts with (the saved one, `private` for a new note) */
+  initialVisibility?: NoteVisibility;
+  /** review state of the saved note: badge next to the select, rejection or hide reason; omitted for a new note */
+  status?: NoteStatus;
   saving?: boolean;
   /** message of a failed save or delete */
   error?: string | null;
-  onSave: (markdown: string) => void;
+  /** the body and the chosen visibility */
+  onSave: (markdown: string, visibility: NoteVisibility) => void;
   onCancel: () => void;
   /** existing notes only: deletes after a confirm dialog */
   onDelete?: () => void;
@@ -66,6 +75,8 @@ function Toolbar() {
 export function NoteEditor({
   label,
   initialMarkdown = "",
+  initialVisibility = "private",
+  status,
   saving = false,
   error,
   onSave,
@@ -77,9 +88,13 @@ export function NoteEditor({
   const labelId = useId();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [markdown, setMarkdown] = useState(initialMarkdown);
+  const [visibility, setVisibility] = useState<NoteVisibility>(initialVisibility);
+  const visibilityRef = useRef(visibility);
+  visibilityRef.current = visibility;
   const [confirmDelete, setConfirmDelete] = useState(false);
   const empty = markdown.trim().length === 0;
   const busy = saving || deleting;
+  const reason = status ? noteStatusReason(status) : undefined;
 
   const plugins = useMemo(
     () => [
@@ -100,7 +115,7 @@ export function NoteEditor({
   const saveRef = useRef<() => void>(() => {});
   saveRef.current = () => {
     const current = editorRef.current?.getMarkdown() ?? markdown;
-    if (current.trim().length > 0 && !busy) onSave(current);
+    if (current.trim().length > 0 && !busy) onSave(current, visibilityRef.current);
   };
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -130,6 +145,31 @@ export function NoteEditor({
         className="note-md note-md-edit"
         contentEditableClassName="note-md-content"
       />
+      <div className="flex flex-wrap items-center gap-2">
+        <Select
+          label={t("notes.visibility.label")}
+          value={visibility}
+          onChange={(value) => {
+            const next = NOTE_VISIBILITIES.find((item) => item === value);
+            if (next) setVisibility(next);
+          }}
+          options={NOTE_VISIBILITIES.map((value) => ({
+            value,
+            label: t(`notes.visibility.${value}`),
+          }))}
+          disabled={busy}
+        />
+        {status &&
+          noteStatusBadges(status).map((badge) => (
+            <StatusBadge key={badge.key} tone={badge.tone}>
+              {t(badge.key)}
+            </StatusBadge>
+          ))}
+      </div>
+      {reason && <p className="text-xs text-fg-muted">{t(reason.key, { reason: reason.text })}</p>}
+      {visibility === "public" && status?.visibility !== "public" && (
+        <p className="text-xs text-fg-muted">{t("notes.visibility.publicHint")}</p>
+      )}
       {error && (
         <p role="alert" className="text-sev-error">
           {error}

@@ -7,11 +7,17 @@ import {
   anchorFor,
   type Note,
   type NoteTarget,
+  type NoteVisibility,
   noteEndVerse,
   noteExcerpt,
   noteVerse,
 } from "@/lib/notes/api";
-import { useCreateNote, useDeleteNote, useUpdateNote } from "@/lib/notes/queries";
+import {
+  useCreateNote,
+  useDeleteNote,
+  useSetNoteVisibility,
+  useUpdateNote,
+} from "@/lib/notes/queries";
 
 // MDXEditor is heavy: both components are separate chunks, loaded only once a note is shown or written.
 const loadEditor = () => import("@/components/NoteEditor");
@@ -94,6 +100,48 @@ export function NotesPanel({
   const create = useCreateNote();
   const update = useUpdateNote();
   const remove = useDeleteNote();
+  const setVisibility = useSetNoteVisibility();
+
+  const resetMutations = () => {
+    create.reset();
+    update.reset();
+    remove.reset();
+    setVisibility.reset();
+  };
+
+  /** A new note is created private; another visibility is a second call. If that fails, the note's editor opens with the error. */
+  async function saveDraft(target: NoteTarget, bodyMarkdown: string, visibility: NoteVisibility) {
+    let note: Note | undefined;
+    try {
+      note = await create.mutateAsync({ anchor: anchorFor(bookId, chapter, target), bodyMarkdown });
+    } catch {
+      return; // shown in the editor
+    }
+    onDraftDone();
+    if (!note?.id) return;
+    onFocus(note.id);
+    if (visibility === "private") return;
+    try {
+      await setVisibility.mutateAsync({ id: note.id, visibility });
+    } catch {
+      setEditingId(note.id);
+    }
+  }
+
+  /** Only what changed is sent: an unchanged body must not send an approved note back to the review. */
+  async function saveExisting(note: Note, bodyMarkdown: string, visibility: NoteVisibility) {
+    try {
+      if (bodyMarkdown !== note.bodyMarkdown) {
+        await update.mutateAsync({ id: note.id, bodyMarkdown });
+      }
+      if (visibility !== note.visibility) {
+        await setVisibility.mutateAsync({ id: note.id, visibility });
+      }
+      setEditingId(undefined);
+    } catch {
+      // shown in the editor
+    }
+  }
 
   const anchorLabel = (target: NoteTarget) => {
     if (target.kind === "chapter") return t("notes.anchorChapter", { reference: chapterLabel });
@@ -173,25 +221,14 @@ export function NotesPanel({
                 label={t("notes.newNote", {
                   anchor: anchorLabel(draft),
                 })}
-                saving={create.isPending}
+                saving={create.isPending || setVisibility.isPending}
                 error={create.isError ? describeApiError(create.error, t("notes.saveError")) : null}
                 onCancel={() => {
                   create.reset();
                   onDraftDone();
                 }}
-                onSave={(bodyMarkdown) =>
-                  create.mutate(
-                    {
-                      anchor: anchorFor(bookId, chapter, draft),
-                      bodyMarkdown,
-                    },
-                    {
-                      onSuccess: (note) => {
-                        onDraftDone();
-                        if (note?.id) onFocus(note.id);
-                      },
-                    },
-                  )
+                onSave={(bodyMarkdown, visibility) =>
+                  void saveDraft(draft, bodyMarkdown, visibility)
                 }
               />
             </Suspense>
@@ -258,25 +295,28 @@ export function NotesPanel({
                       <NoteEditor
                         label={t("notes.editNote", { anchor: label })}
                         initialMarkdown={note.bodyMarkdown}
-                        saving={update.isPending}
+                        initialVisibility={note.visibility}
+                        status={note}
+                        saving={update.isPending || setVisibility.isPending}
                         deleting={remove.isPending}
                         error={
                           update.isError
                             ? describeApiError(update.error, t("notes.saveError"))
-                            : remove.isError
-                              ? describeApiError(remove.error, t("notes.deleteError"))
-                              : null
+                            : setVisibility.isError
+                              ? describeApiError(
+                                  setVisibility.error,
+                                  t("notes.visibility.saveError"),
+                                )
+                              : remove.isError
+                                ? describeApiError(remove.error, t("notes.deleteError"))
+                                : null
                         }
                         onCancel={() => {
-                          update.reset();
-                          remove.reset();
+                          resetMutations();
                           setEditingId(undefined);
                         }}
-                        onSave={(bodyMarkdown) =>
-                          update.mutate(
-                            { id: note.id, bodyMarkdown },
-                            { onSuccess: () => setEditingId(undefined) },
-                          )
+                        onSave={(bodyMarkdown, visibility) =>
+                          void saveExisting(note, bodyMarkdown, visibility)
                         }
                         onDelete={() =>
                           remove.mutate(note.id, { onSuccess: () => setEditingId(undefined) })
@@ -288,6 +328,7 @@ export function NotesPanel({
                         authorDisplayName={note.authorDisplayName}
                         createdAt={note.createdAt}
                         updatedAt={note.updatedAt}
+                        status={note.isOwn ? note : undefined}
                       />
                     )}
                   </Suspense>
@@ -307,8 +348,7 @@ export function NotesPanel({
                       size="sm"
                       className="mt-1"
                       onClick={() => {
-                        update.reset();
-                        remove.reset();
+                        resetMutations();
                         onDraftDone();
                         setEditingId(note.id);
                       }}

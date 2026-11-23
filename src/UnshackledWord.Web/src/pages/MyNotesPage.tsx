@@ -6,26 +6,23 @@ import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
 import { FormError } from "@/components/FormError";
 import { Select } from "@/components/Select";
-import { StatusBadge, type StatusTone } from "@/components/StatusBadge";
+import { StatusBadge } from "@/components/StatusBadge";
 import { TextField } from "@/components/TextField";
 import { describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { bookName } from "@/lib/bible/books";
 import { useBibleStructure } from "@/lib/bible/queries";
-import type { BibleStructureBook } from "@/lib/bible/types";
 import { saveBlob } from "@/lib/download";
 import { formatStamp } from "@/lib/format";
 import {
   MY_NOTES_PAGE_SIZE,
   type MyNotesQuery,
-  type Note,
   type NoteVisibility,
-  noteEndVerse,
   noteExcerpt,
   noteHref,
   notesApi,
-  noteVerse,
 } from "@/lib/notes/api";
+import { noteReference, visibilityBadge } from "@/lib/notes/display";
 import { useMyNotes } from "@/lib/notes/queries";
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
 
@@ -43,30 +40,6 @@ function parseVisibility(value: string | null): NoteVisibility | undefined {
 function parseBook(value: string | null): number | undefined {
   const book = Number(value);
   return Number.isInteger(book) && book >= 1 && book <= 66 ? book : undefined;
-}
-
-/** "Römer 8", "Römer 8,28" or "Römer 8,28–30" in the UI language; the book id until the Bible structure has loaded. */
-function referenceOf(
-  note: Note,
-  books: readonly BibleStructureBook[] | undefined,
-  language: string,
-): string {
-  const { bookId, chapter } = note.anchor;
-  const book = books?.find((item) => item.id === bookId);
-  const name = book ? bookName(book, language) : String(bookId);
-  const verse = noteVerse(note);
-  if (verse === undefined) return `${name} ${chapter}`;
-  const end = noteEndVerse(note) ?? verse;
-  return end > verse ? `${name} ${chapter},${verse}–${end}` : `${name} ${chapter},${verse}`;
-}
-
-/** Visibility of a note as a badge; a public note also says where it is in the review. */
-function visibilityBadge(note: Note): { tone: StatusTone; key: string } {
-  if (note.visibility === "private") return { tone: "neutral", key: "notes.mine.private" };
-  if (note.visibility === "internal") return { tone: "info", key: "notes.mine.internal" };
-  if (note.publicState === "approved") return { tone: "ok", key: "notes.mine.publicApproved" };
-  if (note.publicState === "rejected") return { tone: "error", key: "notes.mine.publicRejected" };
-  return { tone: "warning", key: "notes.mine.publicPending" };
 }
 
 /**
@@ -198,7 +171,7 @@ export function MyNotesPage() {
           <ul className="grid gap-2">
             {data.notes.map((note) => {
               const badge = visibilityBadge(note);
-              const reference = referenceOf(note, books, i18n.language);
+              const reference = noteReference(note, books, i18n.language);
               return (
                 <li
                   key={note.id}

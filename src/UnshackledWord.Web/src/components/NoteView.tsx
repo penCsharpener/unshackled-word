@@ -8,9 +8,11 @@ import { useNavigate } from "react-router";
 import { passageTextQuery } from "@/lib/bible/queries";
 import { formatStamp } from "@/lib/format";
 import { classifyHref, dropUnsafeLinks, passageSpansOfPath } from "@/lib/notes/bibleLink";
+import { type NoteStatus, noteStatusBadges, noteStatusReason } from "@/lib/notes/display";
 import { mdxTranslation } from "@/lib/notes/mdxTranslation";
 import { useCoarsePointer } from "@/lib/useCoarsePointer";
 import { PassagePreviewCard } from "./PassagePreviewCard";
+import { StatusBadge } from "./StatusBadge";
 
 export interface NoteViewProps {
   /** the body with scripture references already turned into `/bible/…` links (`bodyLinked` of the API) */
@@ -19,6 +21,8 @@ export interface NoteViewProps {
   /** ISO timestamps */
   createdAt: string;
   updatedAt?: string;
+  /** own notes: visibility badge (public with its review state), "ausgeblendet" and the maintainer's reason */
+  status?: NoteStatus;
 }
 
 interface Hover {
@@ -64,7 +68,13 @@ function decorateLinks(root: HTMLElement) {
  * `/bible/…` links navigate inside the SPA and show a passage preview on hover (not on touch devices),
  * http(s) links open in a new tab, links with any other scheme are shown as plain text.
  */
-export function NoteView({ markdown, authorDisplayName, createdAt, updatedAt }: NoteViewProps) {
+export function NoteView({
+  markdown,
+  authorDisplayName,
+  createdAt,
+  updatedAt,
+  status,
+}: NoteViewProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const coarse = useCoarsePointer();
@@ -73,6 +83,7 @@ export function NoteView({ markdown, authorDisplayName, createdAt, updatedAt }: 
   const stamp = formatStamp(updatedAt ?? createdAt, i18n.language);
   const body = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<Hover | null>(null);
+  const reason = status ? noteStatusReason(status) : undefined;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: the observer must restart when the body is replaced
   useEffect(() => {
@@ -169,6 +180,16 @@ export function NoteView({ markdown, authorDisplayName, createdAt, updatedAt }: 
         />
       </div>
       {hover && <LinkPreview hover={hover} />}
+      {status && (
+        <div className="flex flex-wrap items-center gap-1">
+          {noteStatusBadges(status).map((badge) => (
+            <StatusBadge key={badge.key} tone={badge.tone}>
+              {t(badge.key)}
+            </StatusBadge>
+          ))}
+        </div>
+      )}
+      {reason && <p className="text-xs text-fg-muted">{t(reason.key, { reason: reason.text })}</p>}
       <p className="text-xs text-fg-muted">
         {t(updatedAt ? "notes.authorEdited" : "notes.author", {
           author: authorDisplayName,

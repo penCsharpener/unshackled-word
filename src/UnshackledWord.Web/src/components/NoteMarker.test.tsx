@@ -9,7 +9,7 @@ describe("NoteMarker", () => {
     render(<NoteMarker label="Notiz zu Vers 28 öffnen" onClick={onClick} />);
     const marker = screen.getByRole("button", { name: "Notiz zu Vers 28 öffnen" });
     expect(marker).toHaveTextContent("");
-    expect(marker.className).toContain("text-fg-muted");
+    expect(marker.className).toContain("text-note-other");
     await userEvent.click(marker);
     expect(onClick).toHaveBeenCalledOnce();
   });

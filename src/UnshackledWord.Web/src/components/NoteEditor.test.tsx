@@ -27,6 +27,29 @@ describe("NoteEditor (real MDXEditor)", () => {
     expect(screen.getByLabelText("Aufzählung")).toBeInTheDocument();
 
     fireEvent.keyDown(window, { key: "s", ctrlKey: true });
-    expect(onSave).toHaveBeenCalledWith(expect.stringContaining("**fett**"));
+    expect(onSave).toHaveBeenCalledWith(expect.stringContaining("**fett**"), "private");
+  });
+
+  it("passes the chosen visibility to onSave and shows the saved state", async () => {
+    const module = await import("./NoteEditor");
+    const onSave = vi.fn();
+    const { container } = render(
+      <module.NoteEditor
+        label="Notiz zu Römer 8,28 bearbeiten"
+        initialMarkdown="Text"
+        initialVisibility="public"
+        status={{ visibility: "public", publicState: "pending" }}
+        onSave={onSave}
+        onCancel={() => {}}
+      />,
+    );
+    await waitFor(() => expect(container.querySelector(".note-md-content p")).not.toBeNull());
+    const select = screen.getByLabelText("Sichtbarkeit:");
+    expect(select).toHaveValue("public");
+    expect(screen.getByText("Öffentlich · wartet auf Freigabe")).toBeInTheDocument();
+    expect(screen.queryByText(/erst, wenn ein Maintainer/)).toBeNull();
+    fireEvent.change(select, { target: { value: "internal" } });
+    fireEvent.keyDown(window, { key: "s", ctrlKey: true });
+    expect(onSave).toHaveBeenCalledWith(expect.stringContaining("Text"), "internal");
   });
 });
