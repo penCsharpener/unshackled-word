@@ -47,11 +47,3 @@ public sealed class Endpoint : Endpoint<NoteReviewActionRequest>
         await Send.ErrorsAsync(result.Status == NoteStatus.NotFound ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest, ct);
     }
 }
-
-public sealed class Validator : Validator<NoteReviewActionRequest>
-{
-    public Validator()
-    {
-        Include(new NoteReviewActionRequestValidator());
-    }
-}
