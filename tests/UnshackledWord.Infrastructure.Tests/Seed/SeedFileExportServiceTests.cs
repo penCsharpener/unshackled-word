@@ -65,6 +65,7 @@ public class SeedFileExportServiceTests : IDisposable
         Write("seed/revision/verses/43-John.csv", "Ref\n");
         Write("seed/morphology/01-Genesis.csv", "m");
         Write("seed/anchors/01-Genesis.csv", "a");
+        Write("seed/tsk/curations.csv", "source\n");
         Write("Elb1871Mappings/01-Genesis.csv", "g");
         Write("Elb1871Mappings/notes.txt", "not a seed file");
         var service = Create();
@@ -76,7 +77,8 @@ public class SeedFileExportServiceTests : IDisposable
 
         revision.Keys.Order().ShouldBe(["manifest.json", "revision/levels.csv", "revision/verses/43-John.csv"]);
         mappings.Keys.Order().ShouldBe(["Elb1871Mappings/01-Genesis.csv", "manifest.json"]);
-        all.Keys.Count.ShouldBe(6);
+        all.Keys.Count.ShouldBe(7);
+        all.Keys.ShouldContain("tsk/curations.csv");
     }
 
     [Fact]

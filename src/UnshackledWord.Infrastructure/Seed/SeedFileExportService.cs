@@ -7,7 +7,7 @@ namespace UnshackledWord.Infrastructure.Seed;
 
 /// <summary>
 /// Export to the repo seed folders and the byte-identity check of the export, shared by the maintainer page and the CLI. Files of a kind are
-/// the seed-relative paths <c>morphology/</c>, <c>anchors/</c>, <c>revision/</c>, <c>Elb1871Mappings/</c> plus <c>manifest.json</c>.
+/// the seed-relative paths <c>morphology/</c>, <c>anchors/</c>, <c>revision/</c>, <c>vocab/</c>, <c>tsk/</c> (kind all), <c>Elb1871Mappings/</c> plus <c>manifest.json</c>.
 /// </summary>
 public sealed class SeedFileExportService
 {
@@ -135,6 +135,11 @@ public sealed class SeedFileExportService
         if (kind is SeedExportKind.All or SeedExportKind.Vocab)
         {
             folders.Add(SeedLayout.VocabFolder);
+        }
+
+        if (kind is SeedExportKind.All)
+        {
+            folders.Add(SeedLayout.TskFolder);
         }
 
         foreach (var folder in folders)

@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
 import { Dialog } from "@/components/Dialog";
 import { FormError } from "@/components/FormError";
 import { ApiError, describeApiError } from "@/lib/api";
+import { invalidateTskViews } from "@/lib/bible/tskCuration";
+import { useSeedStatus } from "@/lib/maintainer/seedJobs";
 import { fetchTskImportPreview, useStartTskJob } from "@/lib/maintainer/tskSeedJobs";
 
 /**
@@ -13,10 +16,18 @@ import { fetchTskImportPreview, useStartTskJob } from "@/lib/maintainer/tskSeedJ
 export function TskCurationJobsSection({ blocked }: { blocked: boolean }) {
   const { t } = useTranslation();
   const start = useStartTskJob();
+  const queryClient = useQueryClient();
+  const job = useSeedStatus(true).data?.job;
   const [mirror, setMirror] = useState(false);
   const [checking, setChecking] = useState(false);
   const [previewError, setPreviewError] = useState<unknown>(null);
   const [confirmCount, setConfirmCount] = useState<number | null>(null);
+
+  // The chapter lists, hover texts and word boxes are cached without expiry: a finished import must refetch them.
+  const importDone = job?.operation === "tskImport" && job.status === "succeeded" ? job.id : null;
+  useEffect(() => {
+    if (importDone) void invalidateTskViews(queryClient);
+  }, [importDone, queryClient]);
 
   async function run() {
     setPreviewError(null);

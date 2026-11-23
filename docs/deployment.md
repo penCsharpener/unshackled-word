@@ -297,7 +297,7 @@ These are background jobs inside the API process; their state is lost if the API
 
 ### TSK curation seed
 
-`assets/seed/tsk/curations.csv` is the change file of the curated TSK cross references (highlight/hide, comments, word links, added links; no user data). The first start applies it only to an empty `TskCurations`; later it moves only via the maintainer menus ("Wartung" export, "Importe" import, option "Exakt wie Datei" to also delete). Migrations 0044–0046 (stored TSK keys, curations and audit, proposals) must run before the API reports healthy; back up before updating.
+`assets/seed/tsk/curations.csv` is the change file of the curated TSK cross references (highlight/hide, comments, word links, added links; no user data). The first start applies it only to an empty `TskCurations`; later it moves only via the maintainer menus ("Wartung": own export button, also written by the "Alles" seed export/round trip and zip; "Importe" import, option "Exakt wie Datei" to also delete). Migrations 0044–0046 (stored TSK keys, curations and audit, proposals) must run before the API reports healthy; back up before updating.
 
 ### Vocab seed
 

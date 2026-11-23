@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { type QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { bibleApi } from "./api";
 import { sidePanelKeys } from "./sidePanel";
 import type {
@@ -167,15 +167,18 @@ export function latestRejection(
  * After any curation write the chapter lists (both with and without hidden links, every level), the hover texts and
  * the word boxes are refetched, since all of them carry rating, comment, origin, word link and order.
  */
+export function invalidateTskViews(queryClient: QueryClient) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: sidePanelKeys.crossReferencesAll }),
+    queryClient.invalidateQueries({ queryKey: crossReferenceTextsAll }),
+    queryClient.invalidateQueries({ queryKey: wordDetailKeys.all }),
+    queryClient.invalidateQueries({ queryKey: ["tsk", "proposals"] }),
+  ]);
+}
+
 function useInvalidateTsk() {
   const queryClient = useQueryClient();
-  return () =>
-    Promise.all([
-      queryClient.invalidateQueries({ queryKey: sidePanelKeys.crossReferencesAll }),
-      queryClient.invalidateQueries({ queryKey: crossReferenceTextsAll }),
-      queryClient.invalidateQueries({ queryKey: wordDetailKeys.all }),
-      queryClient.invalidateQueries({ queryKey: ["tsk", "proposals"] }),
-    ]);
+  return () => invalidateTskViews(queryClient);
 }
 
 /** Maintainer review (`/edit/tsk`): the pending suggestions. */
