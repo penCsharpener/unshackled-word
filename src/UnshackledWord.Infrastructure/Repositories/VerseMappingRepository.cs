@@ -43,6 +43,18 @@ public sealed class VerseMappingRepository : IVerseMappingRepository
         return rows.ToList();
     }
 
+    public async Task<IReadOnlyList<ChapterOriginalWordRow>> GetOriginalWordsOfVersesAsync(bool hebrew, IReadOnlyCollection<int> hebRefIds, CancellationToken token = default)
+    {
+        if (hebRefIds.Count == 0)
+        {
+            return [];
+        }
+
+        var sql = hebrew ? VerseMappingSql.HebrewWordsOfVerses : VerseMappingSql.GreekWordsOfVerses;
+        var rows = await _dbReader.ReadAsListAsync<ChapterOriginalWordRow>(sql, new { HebRefIds = hebRefIds.ToArray() });
+        return rows.ToList();
+    }
+
     public async Task<IReadOnlyList<ChapterMappingRow>> GetChapterMappingRowsAsync(bool hebrew, int bibleBookId, int chapter, CancellationToken token = default)
     {
         var sql = hebrew ? VerseMappingSql.HebrewMappingRowsOfChapter : VerseMappingSql.GreekMappingRowsOfChapter;
@@ -186,6 +198,34 @@ public static class VerseMappingSql
                                             ORDER BY ew."PositionInVerse"
                                                    , ehm."Id"
                                             """;
+
+    public const string GreekWordsOfVerses = """
+                                             SELECT sgw."Id"
+                                                  , sgw."LxxRefId" "HebRefId"
+                                                  , sgw."PositionInVerse" "Position"
+                                                  , sgw."Greek" "Original"
+                                                  , sgw."Morphology" "MorphologyCode"
+                                             FROM "unshackled-word"."StepGreekWords" sgw
+                                             WHERE 1=1
+                                                 AND sgw."LxxRefId" = ANY(@HebRefIds)
+                                             ORDER BY sgw."LxxRefId"
+                                                    , sgw."PositionInVerse"
+                                                    , sgw."Id"
+                                             """;
+
+    public const string HebrewWordsOfVerses = """
+                                              SELECT shw."Id"
+                                                   , shw."LxxRefId" "HebRefId"
+                                                   , shw."PositionInVerse" "Position"
+                                                   , shw."Hebrew" "Original"
+                                                   , shw."Grammar" "MorphologyCode"
+                                              FROM "unshackled-word"."StepHebrewWords" shw
+                                              WHERE 1=1
+                                                  AND shw."LxxRefId" = ANY(@HebRefIds)
+                                              ORDER BY shw."LxxRefId"
+                                                     , shw."PositionInVerse"
+                                                     , shw."Id"
+                                              """;
 
     public const string GreekWordsOfChapter = """
                                               SELECT sgw."Id"

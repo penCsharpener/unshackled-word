@@ -16,6 +16,9 @@ public interface IVerseMappingRepository
     /// <summary>STEP Hebrew or Greek words of all verses of the chapter (HebRefId ordering). Read only, for the side panel.</summary>
     Task<IReadOnlyList<ChapterOriginalWordRow>> GetChapterOriginalWordsAsync(bool hebrew, int bibleBookId, int chapter, CancellationToken token = default);
 
+    /// <summary>STEP words of the given verses (Elberfelder HebRefIds, which equal the STEP LxxRefId) in one query, HebRefId/position ordering. Only Id, HebRefId, Position, Original and MorphologyCode are filled.</summary>
+    Task<IReadOnlyList<ChapterOriginalWordRow>> GetOriginalWordsOfVersesAsync(bool hebrew, IReadOnlyCollection<int> hebRefIds, CancellationToken token = default);
+
     /// <summary>Stored non-added links of the chapter's German words, with the verse of the German word.</summary>
     Task<IReadOnlyList<ChapterMappingRow>> GetChapterMappingRowsAsync(bool hebrew, int bibleBookId, int chapter, CancellationToken token = default);
 

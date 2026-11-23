@@ -18,11 +18,13 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
 
     private readonly ITskRepository _tsk;
     private readonly IElb1871VerseRepository _verses;
+    private readonly IVerseMappingRepository _originals;
 
-    public Endpoint(ITskRepository tsk, IElb1871VerseRepository verses)
+    public Endpoint(ITskRepository tsk, IElb1871VerseRepository verses, IVerseMappingRepository originals)
     {
         _tsk = tsk;
         _verses = verses;
+        _originals = originals;
     }
 
     public override void Configure()
@@ -42,6 +44,7 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
             .ToList();
 
         var result = new List<CrossReferenceTextResponse>(references.Count);
+        var verseIds = new HashSet<int>();
         foreach (var reference in references)
         {
             var from = reference.BibleBookId * 1_000_000 + reference.Chapter * 1_000 + reference.Verse;
@@ -50,6 +53,7 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
                 ? (await _verses.GetByHebRefIdRangeAsync(from, to, 1000, ct)).Select(r => new EffectiveElbVerse { HebRefId = r.HebRefId, VerseText = r.VerseText }).ToList()
                 : (await _verses.GetEffectiveByHebRefIdRangeAsync(from, to, req.Level, ct)).ToList();
 
+            verseIds.UnionWith(rowsOfRange.Select(r => r.HebRefId));
             result.Add(new CrossReferenceTextResponse
             {
                 BibleBookId = reference.BibleBookId,
@@ -58,6 +62,27 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
                 EndVerse = reference.EndVerse,
                 Verses = rowsOfRange.Select(r => new ChapterVerseResponse { Verse = r.HebRefId % 1000, Text = r.VerseText }).ToList(),
             });
+        }
+
+        // Originals of all target verses: one query per testament (same source and verse numbering as GetChapterOriginals: Elberfelder HebRefId = STEP LxxRefId).
+        var originals = new Dictionary<int, VerseOriginalTextResponse>();
+        foreach (var hebrew in new[] { true, false })
+        {
+            var ids = verseIds.Where(id => CrossReferenceOriginals.IsHebrewBook(id) == hebrew).ToList();
+            var words = await _originals.GetOriginalWordsOfVersesAsync(hebrew, ids, ct);
+            foreach (var (id, original) in CrossReferenceOriginals.Build(words, hebrew))
+            {
+                originals[id] = original;
+            }
+        }
+
+        foreach (var reference in result)
+        {
+            var book = reference.BibleBookId * 1_000_000 + reference.Chapter * 1_000;
+            foreach (var verse in reference.Verses)
+            {
+                verse.Original = originals.GetValueOrDefault(book + verse.Verse);
+            }
         }
 
         return new GetVerseCrossReferenceTextsResponse { References = result };
