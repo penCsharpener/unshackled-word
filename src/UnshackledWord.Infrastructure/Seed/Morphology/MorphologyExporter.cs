@@ -110,7 +110,9 @@ public sealed class MorphologyExporter
             Format = SeedLayout.FormatVersion,
             BaseText = await DescribeBaseTextAsync(layout, token),
             Morphology = kind,
-            Mappings = existing?.Mappings
+            Mappings = existing?.Mappings,
+            Revision = existing?.Revision,
+            Tsk = existing?.Tsk
         };
 
         await _manifestStore.WriteKeepingExportTimeAsync(layout.ManifestPath, manifest, token);

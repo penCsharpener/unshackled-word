@@ -1323,6 +1323,7 @@ export const de = {
         revision: "Revision",
         vocab: "Vokabeln",
         notes: "Notizen",
+        tsk: "TSK-Kuratierung",
       },
       export: "Seed exportieren",
       exporting: "wird erstellt …",
@@ -1415,6 +1416,8 @@ export const de = {
         rebase: "Rebase …",
         notesExport: "Notizen exportieren",
         notesImport: "Notizen importieren",
+        tskExport: "TSK-Kuratierung exportieren",
+        tskImport: "TSK-Kuratierung importieren",
       },
       hints: {
         export:
@@ -1427,6 +1430,8 @@ export const de = {
           "Exportiert zweimal in temporäre Ordner und vergleicht die Ausgaben miteinander und mit den Dateien in assets/seed. Schreibt nichts.",
         rebase:
           "Exportiert, baut Wörter und Verse aus dem Basistext neu auf und importiert Morphologie und Zuordnungen wieder. Braucht eine Bestätigung.",
+        tskExport:
+          "Schreibt alle TSK-Kuratierungen (Bewertungen, Kommentare, Wortverknüpfungen, ergänzte Verweise) nach assets/seed/tsk/curations.csv, ohne Nutzerdaten.",
       },
       actions: { import: "Import", update: "Aktualisierung", export: "Export" },
       skipped: "Übersprungen: {{reason}}",
@@ -1459,6 +1464,7 @@ export const de = {
         notes: "Notizen",
         inserted: "neu",
         updated: "geändert",
+        deleted: "gelöscht",
         skipped: "übersprungen",
         alignedChapters: "Kapitel ausgerichtet",
       },
@@ -1469,6 +1475,8 @@ export const de = {
         new: "Neu",
         removed: "Entfernt",
         skipped: "Übersprungen (Autor unbekannt)",
+        skippedRows: "Übersprungen",
+        newerInDatabase: "In der Datenbank neuer, behalten",
       },
       severity: { check: "Prüfen" },
       more: "… und {{count}} weitere (siehe Berichtsdatei)",
@@ -1592,6 +1600,22 @@ export const de = {
       fileOption: "{{name}} ({{size}} KB, {{date}})",
       noFiles: "Noch keine Exportdatei vorhanden.",
       filesFailed: "Die Dateiliste konnte nicht geladen werden.",
+      startFailed: "Der Auftrag konnte nicht gestartet werden.",
+    },
+    tsk: {
+      title: "TSK-Kuratierung",
+      what: "Spielt die Änderungsdatei assets/seed/tsk/curations.csv ein: Bewertungen, Kommentare, Wortverknüpfungen und ergänzte Querverweise. Exportiert wird sie unter „Wartung“.",
+      rules:
+        "Ist der Stand in der Datei neuer, gewinnt die Datei; Einträge nur in der Datei kommen neu dazu; TSK-Verweise, die es nicht mehr gibt, werden übersprungen und gelistet. Einträge nur in der Datenbank bleiben erhalten.",
+      mirror: "Exakt wie Datei",
+      mirrorHint:
+        "Löscht Einträge, die nur in der Datenbank stehen. Vor dem Start wird die Anzahl angezeigt.",
+      import: "TSK-Kuratierung importieren",
+      confirmTitle: "Exakt wie Datei importieren?",
+      wouldDelete_one: "{{count}} Eintrag wird gelöscht.",
+      wouldDelete_other: "{{count}} Einträge werden gelöscht.",
+      confirmRun: "Importieren",
+      cancel: "Abbrechen",
       startFailed: "Der Auftrag konnte nicht gestartet werden.",
     },
     run: "{{kind}} importieren",

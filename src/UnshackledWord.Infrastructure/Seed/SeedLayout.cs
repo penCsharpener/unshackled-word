@@ -25,6 +25,11 @@ public sealed class SeedLayout
     /// <summary>Vocab seed (roadmap 0022.14), below the seed root: <c>vocab/entries.csv</c>, <c>vocab/keys.csv</c>, <c>vocab/meanings.csv</c>.</summary>
     public const string VocabFolder = "vocab";
 
+    /// <summary>TSK curation change file (roadmap 0024.7), below the seed root: <c>tsk/curations.csv</c>.</summary>
+    public const string TskFolder = "tsk";
+    public const string TskCurationsFile = "curations.csv";
+    public const string TskCurationsPath = TskFolder + "/" + TskCurationsFile;
+
     public static readonly UTF8Encoding Utf8NoBom = new(false);
 
     private readonly IFileService _fileService;

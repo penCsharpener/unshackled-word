@@ -9,7 +9,9 @@ export type SeedOperation =
   | "rebase"
   | "roundTrip"
   | "notesExport"
-  | "notesImport";
+  | "notesImport"
+  | "tskExport"
+  | "tskImport";
 export type SeedJobState = "running" | "succeeded" | "failed";
 
 export interface SeedReportList {
@@ -78,7 +80,7 @@ export interface SeedJobResult {
 export interface SeedJob {
   id: string;
   operation: SeedOperation;
-  kind: SeedKind | "notes";
+  kind: SeedKind | "notes" | "tsk";
   status: SeedJobState;
   startedAt: string;
   finishedAt?: string;

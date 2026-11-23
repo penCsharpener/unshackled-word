@@ -3,6 +3,7 @@ using UnshackledWord.Infrastructure.Seed.BaseText;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Infrastructure.Seed.Morphology;
 using UnshackledWord.Infrastructure.Seed.Revision;
+using UnshackledWord.Infrastructure.Seed.Tsk;
 using UnshackledWord.Infrastructure.Seed.Vocab;
 using UnshackledWord.Infrastructure.Vocab;
 
@@ -23,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<VocabSeedExporter>();
         services.AddScoped<SeedExportRunner>();
         services.AddScoped<SeedFileExportService>();
+        services.AddScoped<TskCurationSeedService>();
 
         return services;
     }

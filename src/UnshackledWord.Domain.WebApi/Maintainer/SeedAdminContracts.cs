@@ -228,3 +228,19 @@ public sealed class ImportNotesRequest
 {
     public string? FileName { get; set; }
 }
+
+/// <summary>Body of <c>POST api/maintainer/tsk/import</c> (roadmap 0024.7): <c>mirror</c> = "Exakt wie Datei" (rows only in the database are deleted).</summary>
+public sealed class ImportTskCurationsRequest
+{
+    public bool Mirror { get; set; }
+}
+
+/// <summary>Answer of <c>GET api/maintainer/tsk/import/preview</c>: what "Exakt wie Datei" would delete, before the maintainer confirms.</summary>
+public sealed class TskCurationImportPreviewResponse
+{
+    /// <summary>Rows in <c>TskCurations</c> whose key the file does not have.</summary>
+    public int WouldDelete { get; set; }
+
+    /// <summary>Lines of <c>assets/seed/tsk/curations.csv</c>; omitted when the file does not exist.</summary>
+    public int? FileRows { get; set; }
+}

@@ -1,0 +1,19 @@
+meta {
+  name: ExportTskCurations
+  type: http
+  seq: 26
+}
+
+post {
+  url: {{url}}maintainer/tsk/export
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: writes every TskCurations row to assets/seed/tsk/curations.csv plus the tsk part of assets/seed/manifest.json as a background job (202, SeedJobResponse, operation tskExport); poll maintainer/seed/status. No user ids, e-mails or names in the file. 409 while another seed job runs, 422 without a reachable assets folder.
+}
+
+settings {
+  encodeUrl: true
+}

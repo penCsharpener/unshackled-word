@@ -19,6 +19,7 @@ const COUNT_ORDER = [
   "modified",
   "inserted",
   "updated",
+  "deleted",
   "skipped",
   "orphaned",
   "replaced",

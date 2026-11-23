@@ -1308,6 +1308,7 @@ export const en: Translation = {
         revision: "Revision",
         vocab: "Vocabulary",
         notes: "Notes",
+        tsk: "TSK curation",
       },
       export: "Export seed",
       exporting: "Building …",
@@ -1399,6 +1400,8 @@ export const en: Translation = {
         rebase: "Rebase …",
         notesExport: "Export notes",
         notesImport: "Import notes",
+        tskExport: "Export TSK curation",
+        tskImport: "Import TSK curation",
       },
       hints: {
         export:
@@ -1411,6 +1414,8 @@ export const en: Translation = {
           "Exports twice into temporary folders and compares the outputs with each other and with the files in assets/seed. Writes nothing.",
         rebase:
           "Exports, rebuilds words and verses from the base text and imports morphology and mappings again. Needs a confirmation.",
+        tskExport:
+          "Writes every TSK curation (ratings, comments, word links, added references) to assets/seed/tsk/curations.csv, without user data.",
       },
       actions: { import: "Import", update: "Update", export: "Export" },
       skipped: "Skipped: {{reason}}",
@@ -1442,6 +1447,7 @@ export const en: Translation = {
         unchanged: "unchanged",
         notes: "Notes",
         inserted: "new",
+        deleted: "deleted",
         updated: "changed",
         skipped: "skipped",
         alignedChapters: "chapters aligned",
@@ -1453,6 +1459,8 @@ export const en: Translation = {
         new: "New",
         removed: "Removed",
         skipped: "Skipped (unknown author)",
+        skippedRows: "Skipped",
+        newerInDatabase: "Newer in the database, kept",
       },
       severity: { check: "Check" },
       more: "… and {{count}} more (see the report file)",
@@ -1575,6 +1583,22 @@ export const en: Translation = {
       fileOption: "{{name}} ({{size}} KB, {{date}})",
       noFiles: "No export file yet.",
       filesFailed: "The file list could not be loaded.",
+      startFailed: "The job could not be started.",
+    },
+    tsk: {
+      title: "TSK curation",
+      what: "Imports the change file assets/seed/tsk/curations.csv: ratings, comments, word links and added cross references. It is exported under “Maintenance”.",
+      rules:
+        "When the file's version is newer, the file wins; entries only in the file are added; TSK references that no longer exist are skipped and listed. Entries only in the database are kept.",
+      mirror: "Exactly as the file",
+      mirrorHint:
+        "Deletes entries that exist only in the database. The number is shown before the import starts.",
+      import: "Import TSK curation",
+      confirmTitle: "Import exactly as the file?",
+      wouldDelete_one: "{{count}} entry will be deleted.",
+      wouldDelete_other: "{{count}} entries will be deleted.",
+      confirmRun: "Import",
+      cancel: "Cancel",
       startFailed: "The job could not be started.",
     },
     run: "Import {{kind}}",

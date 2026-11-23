@@ -9,6 +9,7 @@ import type { SeedKind } from "@/lib/maintainer/api";
 import { useSeedStatus, useStartSeedJob } from "@/lib/maintainer/seedJobs";
 import { NotesJobsSection } from "./NotesJobsSection";
 import { SeedJobResultView } from "./SeedJobResultView";
+import { TskCurationJobsSection } from "./TskCurationJobsSection";
 
 type ImportKind = Exclude<SeedKind, "all">;
 
@@ -148,6 +149,9 @@ export function SeedImportsPage() {
         ))}
         <li>
           <NotesJobsSection job={job} blocked={blocked} />
+        </li>
+        <li>
+          <TskCurationJobsSection blocked={blocked} />
         </li>
       </ul>
 

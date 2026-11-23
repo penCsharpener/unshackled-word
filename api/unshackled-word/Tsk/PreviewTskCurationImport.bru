@@ -1,0 +1,19 @@
+meta {
+  name: PreviewTskCurationImport
+  type: http
+  seq: 27
+}
+
+get {
+  url: {{url}}maintainer/tsk/import/preview
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: dry run of the import with "Exakt wie Datei": { wouldDelete, fileRows } (fileRows omitted without a file). Writes nothing.
+}
+
+settings {
+  encodeUrl: true
+}

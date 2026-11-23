@@ -15,6 +15,7 @@ public sealed partial class SeedingService
         typeof(ElberfelderParser.Elb1871VerseRunner),
         typeof(RepoSeed.Morphology.MorphologySeedRunner),
         typeof(Tsk.TskRunner),
+        typeof(Tsk.TskCurationSeedRunner),
         typeof(StatisticalRestorationGnt.SrRunner),
         typeof(SBL.SblRunner),
         typeof(StepBible.StepDataBibleTextImporter),

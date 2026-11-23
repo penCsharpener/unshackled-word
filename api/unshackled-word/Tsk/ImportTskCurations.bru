@@ -1,0 +1,25 @@
+meta {
+  name: ImportTskCurations
+  type: http
+  seq: 28
+}
+
+post {
+  url: {{url}}maintainer/tsk/import
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "mirror": false
+  }
+}
+
+docs {
+  Maintainer: imports assets/seed/tsk/curations.csv as a background job (operation tskImport). Newer updatedAt wins, keys only in the file inserted, origin tsk without a Tsk row skipped and listed, keys only in the database kept unless mirror is true (then deleted). Audit source import, no user. Result: result.steps[0].counts inserted/updated/unchanged/deleted/skipped, lists.skipped.
+}
+
+settings {
+  encodeUrl: true
+}

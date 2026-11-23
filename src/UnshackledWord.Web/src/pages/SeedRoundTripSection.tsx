@@ -13,6 +13,7 @@ import {
   useSeedStatus,
   useStartSeedJob,
 } from "@/lib/maintainer/seedJobs";
+import { useStartTskJob } from "@/lib/maintainer/tskSeedJobs";
 import { SeedJobResultView } from "./SeedJobResultView";
 
 const KINDS: SeedKind[] = ["revision", "vocab", "mappings", "morphology", "all"];
@@ -70,8 +71,9 @@ export function SeedRoundTripSection() {
   const [backupConfirmed, setBackupConfirmed] = useState(false);
   const status = useSeedStatus(true);
   const start = useStartSeedJob();
+  const tskStart = useStartTskJob();
   const job = status.data?.job;
-  const running = job?.status === "running" || start.isPending;
+  const running = job?.status === "running" || start.isPending || tskStart.isPending;
   const assetsProblem = status.data?.assetsProblem;
   const blocked = running || Boolean(assetsProblem);
 
@@ -93,7 +95,7 @@ export function SeedRoundTripSection() {
     setBackupConfirmed(false);
   }
 
-  const startError = start.error;
+  const startError = start.error ?? tskStart.error;
   const startMessage = !startError
     ? ""
     : startError instanceof ApiError && startError.status === 409
@@ -135,6 +137,14 @@ export function SeedRoundTripSection() {
           onClick={() => setRebaseOpen(true)}
         >
           {t("maintainer.seedJobs.operations.rebase")}
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={blocked}
+          title={t("maintainer.seedJobs.hints.tskExport")}
+          onClick={() => tskStart.mutate({ operation: "export" })}
+        >
+          {t("maintainer.seedJobs.operations.tskExport")}
         </Button>
       </div>
       <FormError message={startMessage} />

@@ -24,6 +24,9 @@ public sealed class SeedManifest
     /// <summary>The revision seed in <c>assets/seed/revision</c> (levels, verses, mapping; roadmap 0011.11); absent until a revision export ran.</summary>
     public SeedKind? Revision { get; set; }
 
+    /// <summary>The TSK curation change file <c>assets/seed/tsk/curations.csv</c> (roadmap 0024.7); absent until a TSK export ran.</summary>
+    public SeedKind? Tsk { get; set; }
+
     public static readonly JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true,
