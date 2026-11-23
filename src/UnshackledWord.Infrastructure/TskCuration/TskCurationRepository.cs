@@ -2,7 +2,9 @@ using System.Data;
 using System.Text.Json;
 using Dapper;
 using UnshackledWord.Application.Abstractions;
+using UnshackledWord.Application.Features.Notes;
 using UnshackledWord.Application.Features.TskCuration;
+using UnshackledWord.Infrastructure.Notes;
 
 namespace UnshackledWord.Infrastructure.TskCuration;
 
@@ -53,6 +55,84 @@ public sealed class TskCurationRepository : ITskCurationRepository
         var result = await ApplyAsync(connection, transaction, key, change, userId, source, token);
 
         transaction.Commit();
+        return result;
+    }
+
+    public async Task<IReadOnlyList<TskSourceLink>> GetLinksOfSourceAsync(int sourceHebRefId, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await GetLinksOfSourceAsync(connection, null, sourceHebRefId, token);
+    }
+
+    public async Task<IReadOnlyList<NoteWordRow>> GetElbWordsAsync(int hebRefId, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await GetElbWordsAsync(connection, null, hebRefId, token);
+    }
+
+    public async Task<IReadOnlyList<TskCurationRecord?>> ApplyManyAsync(IReadOnlyList<TskLinkKey> keys, Func<TskLinkKey, TskCurationState, TskCurationState> change,
+        int? userId, string source, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        using var transaction = connection.BeginTransaction();
+
+        var result = await ApplyManyAsync(connection, transaction, keys, change, userId, source, token);
+
+        transaction.Commit();
+        return result;
+    }
+
+    public static async Task<IReadOnlyList<TskSourceLink>> GetLinksOfSourceAsync(IDbConnection connection, IDbTransaction? transaction, int sourceHebRefId,
+        CancellationToken token = default)
+    {
+        // An added key that TSK also has counts as the TSK link (as on read).
+        const string sql = """
+                           SELECT DISTINCT t."SourceHebRefId"
+                                , t."TargetStartHebRefId"
+                                , t."TargetEndHebRefId"
+                                , true AS "InTsk"
+                           FROM "unshackled-word"."Tsk" t
+                           WHERE 1=1
+                               AND t."SourceHebRefId" = @SourceHebRefId
+                           UNION ALL
+                           SELECT c."SourceHebRefId"
+                                , c."TargetStartHebRefId"
+                                , c."TargetEndHebRefId"
+                                , false
+                           FROM "unshackled-word"."TskCurations" c
+                           WHERE 1=1
+                               AND c."SourceHebRefId" = @SourceHebRefId
+                               AND c."Origin" = 'added'
+                               AND NOT EXISTS (
+                                   SELECT 1
+                                   FROM "unshackled-word"."Tsk" t
+                                   WHERE 1=1
+                                       AND t."SourceHebRefId" = c."SourceHebRefId"
+                                       AND t."TargetStartHebRefId" = c."TargetStartHebRefId"
+                                       AND t."TargetEndHebRefId" IS NOT DISTINCT FROM c."TargetEndHebRefId"
+                               )
+                           """;
+
+        var rows = await connection.QueryAsync<KeyRow>(new CommandDefinition(sql, new { SourceHebRefId = sourceHebRefId }, transaction, cancellationToken: token));
+        return rows.Select(r => new TskSourceLink(new TskLinkKey(r.SourceHebRefId, r.TargetStartHebRefId, r.TargetEndHebRefId), r.InTsk)).ToList();
+    }
+
+    /// <summary>The notes' query (roadmap 0023.2) for one verse.</summary>
+    public static async Task<IReadOnlyList<NoteWordRow>> GetElbWordsAsync(IDbConnection connection, IDbTransaction? transaction, int hebRefId,
+        CancellationToken token = default) =>
+        await NoteRepository.GetElbWordsAsync(connection, transaction, [hebRefId], token);
+
+    public static async Task<IReadOnlyList<TskCurationRecord?>> ApplyManyAsync(IDbConnection connection, IDbTransaction transaction, IReadOnlyList<TskLinkKey> keys,
+        Func<TskLinkKey, TskCurationState, TskCurationState> change, int? userId, string source, CancellationToken token = default)
+    {
+        var result = new List<TskCurationRecord?>(keys.Count);
+        foreach (var key in keys)
+        {
+            result.Add(await ApplyAsync(connection, transaction, key, state => change(key, state), userId, source, token));
+        }
+
         return result;
     }
 
@@ -183,6 +263,14 @@ public sealed class TskCurationRepository : ITskCurationRepository
 
     /// <summary>The audit shape: <c>{"origin", "rating", "comment", "startPosition", "endPosition", "quotedText"}</c>, null for "no row".</summary>
     public static string? ToJson(TskCurationState? state) => state is null ? null : JsonSerializer.Serialize(state, Json);
+
+    private sealed class KeyRow
+    {
+        public int SourceHebRefId { get; init; }
+        public int TargetStartHebRefId { get; init; }
+        public int? TargetEndHebRefId { get; init; }
+        public bool InTsk { get; init; }
+    }
 
     private sealed class CurationRow
     {

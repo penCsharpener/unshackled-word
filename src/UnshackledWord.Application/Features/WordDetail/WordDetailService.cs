@@ -163,9 +163,13 @@ public sealed class WordDetailService : IWordDetailService
         if (word.HebRefId > 0)
         {
             // All rows of the verse (the busiest has ~110): hidden links are dropped and highlighted ones move first before the list is cut (roadmap 0024.3).
-            // TSK is verse level, so every word of a verse gets the same list.
-            var tsk = CrossReferenceCuration.Arrange(await _tsk.GetOutgoingAsync(word.HebRefId, word.HebRefId, MaxCrossReferenceRows, token));
-            var crossReferences = tsk.Take(MaxCrossReferences).Select(CrossReferenceMapper.Build).ToList();
+            // Links attached to this word (roadmap 0024.5, state ok, the word's position inside the link's range) come first, the rest keep the
+            // curated order (the sort is stable).
+            var tsk = CrossReferenceCuration.Arrange(await _tsk.GetOutgoingAsync(word.HebRefId, word.HebRefId, MaxCrossReferenceRows, token))
+                .Select(CrossReferenceMapper.Build)
+                .OrderBy(r => CrossReferenceWordLink.IsOnWord(r.Word, word.PositionInVerse) ? 0 : 1)
+                .ToList();
+            var crossReferences = tsk.Take(MaxCrossReferences).ToList();
             if (crossReferences.Count > 0)
             {
                 response.CrossReferences = crossReferences;

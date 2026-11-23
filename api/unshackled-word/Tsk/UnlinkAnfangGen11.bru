@@ -1,0 +1,30 @@
+meta {
+  name: UnlinkAnfangGen11
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{url}}tsk/curation/word
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001001,
+    "keys": [
+      { "targetStartHebRefId": 20008022, "targetEndHebRefId": 20008024 },
+      { "targetStartHebRefId": 43001001, "targetEndHebRefId": 43001003 },
+      { "targetStartHebRefId": 58001010 }
+    ]
+  }
+}
+
+docs {
+  Maintainer: removes the word links of the three links again; plain TSK links lose their curation row. Answers `{ links: [...] }`.
+}
+
+settings {
+  encodeUrl: true
+}

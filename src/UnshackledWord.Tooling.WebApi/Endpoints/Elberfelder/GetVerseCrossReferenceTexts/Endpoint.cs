@@ -64,6 +64,7 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
                 Rating = reference.Rating,
                 Comment = reference.Comment,
                 Origin = reference.Origin,
+                Word = reference.Word,
                 Verses = rowsOfRange.Select(r => new ChapterVerseResponse { Verse = r.HebRefId % 1000, Text = r.VerseText }).ToList(),
             });
         }

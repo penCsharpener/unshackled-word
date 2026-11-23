@@ -1,6 +1,8 @@
+using UnshackledWord.Application.Features.Notes;
 using UnshackledWord.Application.Features.Revision;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetChapterCrossReferences;
+using UnshackledWord.Domain.WebApi.Tsk;
 
 namespace UnshackledWord.Application.Features.CrossReferences;
 
@@ -16,13 +18,30 @@ public sealed class ChapterCrossReferenceService : IChapterCrossReferenceService
         _tsk = tsk;
     }
 
-    public async Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, bool includeHidden = false, CancellationToken token = default)
+    public async Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, bool includeHidden = false, int level = 0, CancellationToken token = default)
     {
         var (from, to) = RevisionSql.ChapterRange(bibleBookId, chapter);
         var rows = await _tsk.GetOutgoingAsync(from, to, MaxRows, token);
 
         // Curation (roadmap 0024.3): hidden links dropped, highlighted first. Duplicates share the key and so the curation; the first in TSK order wins.
-        var verses = CrossReferenceCuration.Arrange(rows, includeHidden)
+        var arranged = CrossReferenceCuration.Arrange(rows, includeHidden);
+
+        // Word links on revision levels (roadmap 0024.5): one query for the variants of the verses that have an ok word link.
+        var variantWords = new Dictionary<int, List<NoteVariantWordRow>>();
+        if (level > 0)
+        {
+            var linked = arranged
+                .Where(r => CrossReferenceWordLink.Build(r)?.State == TskWordLinkStates.Ok)
+                .Select(r => r.SourceHebRefId)
+                .Distinct()
+                .ToList();
+            if (linked.Count > 0)
+            {
+                variantWords = (await _tsk.GetVariantWordsAsync(linked, level, token)).GroupBy(w => w.HebRefId).ToDictionary(g => g.Key, g => g.ToList());
+            }
+        }
+
+        var verses = arranged
             .GroupBy(r => r.SourceHebRefId % 1000)
             .OrderBy(g => g.Key)
             .Select(g => new VerseCrossReferencesResponse
@@ -33,6 +52,11 @@ public sealed class ChapterCrossReferenceService : IChapterCrossReferenceService
                     {
                         var reference = CrossReferenceMapper.Build(r);
                         reference.Keyword = string.IsNullOrWhiteSpace(r.Scope) ? null : r.Scope;
+                        if (reference.Word is not null)
+                        {
+                            reference.Word.MappedWords = CrossReferenceWordLink.MapToVariant(reference.Word, variantWords.GetValueOrDefault(r.SourceHebRefId));
+                        }
+
                         return reference;
                     })
                     .DistinctBy(r => (r.BibleBookId, r.Chapter, r.Verse, r.EndVerse))

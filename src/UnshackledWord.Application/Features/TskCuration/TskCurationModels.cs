@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Features.Notes;
 using UnshackledWord.Domain.WebApi.Tsk;
 
 namespace UnshackledWord.Application.Features.TskCuration;
@@ -14,6 +15,9 @@ public sealed record TskCurationState(string Origin, string? Rating, string? Com
     /// <summary>Neutral, uncommented, unlinked TSK link: the row is deleted so the table stays a true diff.</summary>
     public bool IsDefault => Origin == TskOrigins.Tsk && Rating is null && Comment is null && StartPosition is null && EndPosition is null && QuotedText is null;
 }
+
+/// <summary>A link of a source verse: a <c>Tsk</c> row (<paramref name="InTsk"/>) or only an added link.</summary>
+public sealed record TskSourceLink(TskLinkKey Key, bool InTsk);
 
 /// <summary>A <c>TskCurations</c> row.</summary>
 public sealed record TskCurationRecord(TskLinkKey Key, TskCurationState State, DateTimeOffset UpdatedAt, int? UpdatedByUserId);
@@ -56,6 +60,18 @@ public sealed class TskCurationOutcome
     public static TskCurationOutcome Conflict(string message) => new() { Status = TskCurationStatus.Conflict, Message = message };
 }
 
+/// <summary>Result of the word-link endpoints (roadmap 0024.5): the states of all requested links, or why nothing was written.</summary>
+public sealed class TskWordLinkOutcome
+{
+    public TskCurationStatus Status { get; private init; }
+    public TskWordLinkResponse? Response { get; private init; }
+    public string? Message { get; private init; }
+
+    public static TskWordLinkOutcome Ok(List<TskCurationResponse> links) => new() { Status = TskCurationStatus.Ok, Response = new TskWordLinkResponse { Links = links } };
+
+    public static TskWordLinkOutcome Refused(TskCurationStatus status, string message) => new() { Status = status, Message = message };
+}
+
 public interface ITskCurationRepository
 {
     /// <summary>True when <c>Tsk</c> has a row with exactly this stored key.</summary>
@@ -72,4 +88,17 @@ public interface ITskCurationRepository
     /// Returns the row after the change, null when there is none.
     /// </summary>
     Task<TskCurationRecord?> ApplyAsync(TskLinkKey key, Func<TskCurationState, TskCurationState> change, int? userId, string source, CancellationToken token = default);
+
+    /// <summary>Every link of one source verse (roadmap 0024.5): the stored keys of its <c>Tsk</c> rows and its added links (<c>TskCurations</c> origin <c>added</c>, <c>InTsk</c> false).</summary>
+    Task<IReadOnlyList<TskSourceLink>> GetLinksOfSourceAsync(int sourceHebRefId, CancellationToken token = default);
+
+    /// <summary>The Elb1871 words of one verse, ordered by position (roadmap 0024.5: the quote of a word link).</summary>
+    Task<IReadOnlyList<NoteWordRow>> GetElbWordsAsync(int hebRefId, CancellationToken token = default);
+
+    /// <summary>
+    /// <see cref="ApplyAsync(TskLinkKey, Func{TskCurationState, TskCurationState}, int?, string, CancellationToken)"/> for several links in ONE transaction
+    /// (one audit row per changed link). Returns the row after the change per key, in the order of <paramref name="keys"/> (null = no row).
+    /// </summary>
+    Task<IReadOnlyList<TskCurationRecord?>> ApplyManyAsync(IReadOnlyList<TskLinkKey> keys, Func<TskLinkKey, TskCurationState, TskCurationState> change, int? userId,
+        string source, CancellationToken token = default);
 }

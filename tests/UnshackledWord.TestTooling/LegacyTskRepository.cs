@@ -46,4 +46,9 @@ public sealed class LegacyTskRepository : ITskRepository
         var rows = await _dbReader.ReadAsListAsync<TskCrossReference>(sql, new { StartRefId = startHebRefId, EndRefId = endHebRefId, Limit = limit });
         return rows.ToList();
     }
+
+    /// <summary>Not part of the legacy read path (word links are roadmap 0024.5).</summary>
+    public Task<IReadOnlyList<UnshackledWord.Application.Features.Notes.NoteVariantWordRow>> GetVariantWordsAsync(IReadOnlyCollection<int> hebRefIds, int level,
+        CancellationToken token = default) =>
+        Task.FromResult<IReadOnlyList<UnshackledWord.Application.Features.Notes.NoteVariantWordRow>>([]);
 }

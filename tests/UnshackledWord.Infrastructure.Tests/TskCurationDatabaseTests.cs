@@ -62,7 +62,7 @@ public class TskCurationDatabaseTests
     }
 
     private static Task<GetChapterCrossReferencesResponse> ChapterAsync(IDbConnection c, IDbTransaction t, bool includeHidden = false) =>
-        new ChapterCrossReferenceService(new TskRepository(new TransactionDbReader(c, t))).GetAsync(1, 1, includeHidden, TestContext.Current.CancellationToken);
+        new ChapterCrossReferenceService(new TskRepository(new TransactionDbReader(c, t))).GetAsync(1, 1, includeHidden, token: TestContext.Current.CancellationToken);
 
     private static List<CrossReferenceKey> Keys(GetChapterCrossReferencesResponse response, int verse) =>
         response.Verses.Single(v => v.Verse == verse).References.Select(r => new CrossReferenceKey(r.BibleBookId, r.Chapter, r.Verse, r.EndVerse)).ToList();
@@ -229,7 +229,7 @@ public class TskCurationDatabaseTests
         new() { SourceHebRefId = source, Reference = reference, Comment = comment };
 
     private static Task<GetChapterCrossReferencesResponse> Chapter50Async(IDbConnection c, IDbTransaction t) =>
-        new ChapterCrossReferenceService(new TskRepository(new TransactionDbReader(c, t))).GetAsync(1, 50, false, TestContext.Current.CancellationToken);
+        new ChapterCrossReferenceService(new TskRepository(new TransactionDbReader(c, t))).GetAsync(1, 50, false, token: TestContext.Current.CancellationToken);
 
     [Fact]
     public async Task AddedLink_Roemer828_UnderGen5020_IsListedWithOrigin_DuplicateIs409_DeleteWritesAudit() => await WithTransactionAsync(async (c, t) =>
@@ -324,7 +324,7 @@ public class TskCurationDatabaseTests
         new() { SourceHebRefId = key.SourceHebRefId, TargetStartHebRefId = key.TargetStartHebRefId, TargetEndHebRefId = key.TargetEndHebRefId };
 
     /// <summary>The repository's statics on the test's transaction.</summary>
-    private sealed class TransactionRepository(IDbConnection connection, IDbTransaction transaction) : ITskCurationRepository
+    internal sealed class TransactionRepository(IDbConnection connection, IDbTransaction transaction) : ITskCurationRepository
     {
         public Task<bool> TskLinkExistsAsync(TskLinkKey key, CancellationToken token = default) =>
             TskCurationRepository.TskLinkExistsAsync(connection, transaction, key, token);
@@ -338,9 +338,19 @@ public class TskCurationDatabaseTests
         public Task<TskCurationRecord?> ApplyAsync(TskLinkKey key, Func<TskCurationState, TskCurationState> change, int? userId, string source,
             CancellationToken token = default) =>
             TskCurationRepository.ApplyAsync(connection, transaction, key, change, userId, source, token);
+
+        public Task<IReadOnlyList<TskSourceLink>> GetLinksOfSourceAsync(int sourceHebRefId, CancellationToken token = default) =>
+            TskCurationRepository.GetLinksOfSourceAsync(connection, transaction, sourceHebRefId, token);
+
+        public Task<IReadOnlyList<UnshackledWord.Application.Features.Notes.NoteWordRow>> GetElbWordsAsync(int hebRefId, CancellationToken token = default) =>
+            TskCurationRepository.GetElbWordsAsync(connection, transaction, hebRefId, token);
+
+        public Task<IReadOnlyList<TskCurationRecord?>> ApplyManyAsync(IReadOnlyList<TskLinkKey> keys, Func<TskLinkKey, TskCurationState, TskCurationState> change,
+            int? userId, string source, CancellationToken token = default) =>
+            TskCurationRepository.ApplyManyAsync(connection, transaction, keys, change, userId, source, token);
     }
 
-    private sealed class TransactionDbReader(IDbConnection connection, IDbTransaction transaction) : IDbReader
+    internal sealed class TransactionDbReader(IDbConnection connection, IDbTransaction transaction) : IDbReader
     {
         public Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object? param = null) => connection.QueryFirstOrDefaultAsync<T>(sql, param, transaction);
 

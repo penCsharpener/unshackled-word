@@ -16,7 +16,7 @@ public static class CrossReferenceMapper
         var reference = new CrossReferenceResponse
         {
             BibleBookId = start.BookId, Chapter = start.Chapter, Verse = start.Verse, Rating = row.Rating, Comment = row.Comment,
-            Origin = row.Origin == TskOrigins.Added ? TskOrigins.Added : null,
+            Origin = row.Origin == TskOrigins.Added ? TskOrigins.Added : null, Word = CrossReferenceWordLink.Build(row),
         };
         if (row.TargetEndHebRefId is not { } endRefId || endRefId == row.TargetStartHebRefId)
         {

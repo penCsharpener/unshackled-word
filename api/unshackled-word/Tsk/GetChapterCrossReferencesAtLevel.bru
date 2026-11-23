@@ -1,0 +1,23 @@
+meta {
+  name: GetChapterCrossReferencesAtLevel
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{url}}elberfelder/chapterCrossReferences/bookId/1/chapterId/1?level=200
+  body: none
+  auth: inherit
+}
+
+params:query {
+  level: 200
+}
+
+docs {
+  Chapter cross references at a literalness level (roadmap 0024.5): word links (`word`) on verses with a revision variant at that level carry `word.mappedWords` [{ positionInVerse, basePositionInVerse }]. 0 or omitted = Elb1871 (no `mappedWords`).
+}
+
+settings {
+  encodeUrl: true
+}

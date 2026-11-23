@@ -26,7 +26,7 @@ public class Endpoint : Ep.Req<GetChapterCrossReferencesRequest>.Res<GetChapterC
     public override Task<GetChapterCrossReferencesResponse> ExecuteAsync(GetChapterCrossReferencesRequest req, CancellationToken ct)
     {
         // Hidden links (roadmap 0024.3) only for curators; everyone else gets the reader list whatever the query says.
-        return _service.GetAsync(req.BibleBookId, req.ChapterId, req.IncludeHidden && User.HasWriteRole(), ct);
+        return _service.GetAsync(req.BibleBookId, req.ChapterId, req.IncludeHidden && User.HasWriteRole(), req.Level ?? 0, ct);
     }
 }
 
@@ -42,5 +42,6 @@ public class GetChapterCrossReferencesRequestValidator : Validator<GetChapterCro
                                     && chapter >= 1
                                     && chapter <= book.VersesPerChapterHeb.Length)
             .WithMessage("Chapter does not exist in this book.");
+        RuleFor(x => x.Level).InclusiveBetween(0, 1000).When(x => x.Level is not null);
     }
 }

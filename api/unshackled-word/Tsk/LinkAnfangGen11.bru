@@ -1,0 +1,32 @@
+meta {
+  name: LinkAnfangGen11
+  type: http
+  seq: 11
+}
+
+put {
+  url: {{url}}tsk/curation/word
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001001,
+    "keys": [
+      { "targetStartHebRefId": 20008022, "targetEndHebRefId": 20008024 },
+      { "targetStartHebRefId": 43001001, "targetEndHebRefId": 43001003 },
+      { "targetStartHebRefId": 58001010 }
+    ],
+    "startPosition": 2,
+    "endPosition": 2
+  }
+}
+
+docs {
+  Maintainer: links Spr 8,22-24, Joh 1,1-3 and Heb 1,10 under 1Mo 1,1 to „Anfang“ (Elb1871 position 2) in one transaction. Answers `{ links: [...] }` with `word { startPosition, endPosition, quotedText, state }`. 404 when a key is no TSK/added link of the source, 400 for positions the verse lacks.
+}
+
+settings {
+  encodeUrl: true
+}

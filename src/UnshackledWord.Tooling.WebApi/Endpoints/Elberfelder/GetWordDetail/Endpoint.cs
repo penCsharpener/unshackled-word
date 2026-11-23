@@ -31,8 +31,11 @@ public class Endpoint : Endpoint<GetWordDetailRequest, GetWordDetailResponse>
             return;
         }
 
-        // Mappings change only through tagging or a mapping-seed update.
-        HttpContext.Response.Headers.CacheControl = "public, max-age=3600";
+        // The word box carries the curated cross references (roadmap 0024.3/0024.5): a maintainer's highlight, hide or word link must show on the
+        // next request, not after an hour. "no-cache" lets the browser keep the response but makes it ask again every time; without a validator
+        // that is a plain refetch (one word per click, cheap enough). "private": the answer is the same for everyone today, but shared caches
+        // gain nothing from a response they must revalidate anyway.
+        HttpContext.Response.Headers.CacheControl = "private, no-cache";
         await Send.OkAsync(detail, ct);
     }
 }

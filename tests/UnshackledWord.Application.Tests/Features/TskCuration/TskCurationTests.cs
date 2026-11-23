@@ -171,7 +171,7 @@ public class TskCurationTests
         var service = new ChapterCrossReferenceService(tsk);
 
         var reader = await service.GetAsync(1, 1, token: TestContext.Current.CancellationToken);
-        var curator = await service.GetAsync(1, 1, includeHidden: true, TestContext.Current.CancellationToken);
+        var curator = await service.GetAsync(1, 1, includeHidden: true, token: TestContext.Current.CancellationToken);
 
         var verse1 = reader.Verses[0].References;
         verse1.Count.ShouldBe(2);

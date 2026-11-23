@@ -38,6 +38,8 @@ public sealed class CrossReferenceResponse
     public string? Comment { get; set; }
     /// <summary><c>added</c> for a link a curator added (roadmap 0024.4, listed after the TSK links of its verse); omitted for TSK links.</summary>
     public string? Origin { get; set; }
+    /// <summary>Word link in the source verse (roadmap 0024.5); omitted when the link is not attached to a word.</summary>
+    public UnshackledWord.Domain.WebApi.Tsk.TskWordResponse? Word { get; set; }
 }
 
 public sealed class OriginalReadingResponse
