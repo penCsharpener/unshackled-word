@@ -1,0 +1,19 @@
+meta {
+  name: ListMyNotes
+  type: http
+  seq: 31
+}
+
+get {
+  url: {{url}}notes/mine?book=45&visibility=&q=&skip=0&take=50
+  body: none
+  auth: inherit
+}
+
+docs {
+  Login: the caller's own notes (all visibilities, incl. hidden) as { total, notes[] }. Filters: book, visibility, q (max 200 characters), skip, take (1..50).
+}
+
+settings {
+  encodeUrl: true
+}

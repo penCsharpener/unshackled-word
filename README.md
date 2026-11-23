@@ -28,7 +28,10 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
 4. Vocab trainers for Greek and Hebrew (done, roadmap 0022: `docs/roadmaps/0022-vocab-trainer/`)
    * flash card vocab training of the original languages (baseline is cerego.com-like UX)
    * unlike Anki, the user should not need to grade his own learning success but an algorithm is doing that automatically
-5. Enhancements to the Bible data akin to Logos Bible software
+5. Notes on chapters, verses and words (done, roadmap 0023: `docs/roadmaps/0023-notes/`)
+   * private, internal (all logged-in users) or public after maintainer approval; anchored to the Elb1871 text, drift is detected
+   * maintainer review at `/edit/notes`; backup and restore through the maintainer export to `temp/notes` (see `docs/deployment.md`)
+6. Enhancements to the Bible data akin to Logos Bible software
    * [ ] tagging for which person spoke which words of the biblical text
    * [ ] tagging for theologically themes
    * [ ] tagging for biblical concepts, metaphors and symbols

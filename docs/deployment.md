@@ -317,6 +317,23 @@ The Umami database (`umami`) is **not** backed up on purpose: losing the analyti
 
 Also keep: `.env` (in a password manager, not in git), the `dataprotection` volume (optional, only preserves sessions) and `assets/seed` (it is in git once you commit exports). `temp/` is a download cache and can be rebuilt. Test a restore at least once. Do not back up by copying the live Postgres data directory.
 
+### Notes backup and restore
+
+Notes (roadmap 0023) live in the app database, so the `pg_dump` above already covers them. The file export is a second, portable copy that does not depend on the database: it survives a fresh database and can move notes to another instance. `temp/notes/` is the one folder under `temp/` that is **not** a rebuildable cache.
+
+**Export.** On `/edit/imports` (maintainer menu "Importe"), card "Notizen", press the export button. The same via API: `POST api/maintainer/notes/export` (a background job, 202; poll `GET api/maintainer/seed/status`). It writes every user's notes to `temp/notes/notes-YYYYMMDD-HHmmss.json` on the host, because compose mounts `./temp` into the API container. Back up that folder with the same schedule as the database dump, e.g.:
+
+```bash
+rsync -a temp/notes/ /backups/notes/
+```
+
+**Restore.** On a fresh database (schema migrations as in §6; the seed is not needed for notes):
+
+1. Users register again with the same e-mail address. Import matches authors by normalised e-mail, so a note whose author does not exist yet is skipped and listed in the report.
+2. Put the file into `temp/notes/` (or keep it there from the backup) and open `/edit/imports`, card "Notizen": choose the file (newest preselected) and press import. The same via API: `POST api/maintainer/notes/import` with `{ "fileName": "notes-….json" }`.
+
+Import rules: a missing note is inserted; an existing note is updated only if the file's `updatedAt` is newer, so re-running the same file changes nothing. Approver unknown: the approval is kept with no approver. Nothing is deleted: a note that is missing from the file stays. On a database that already holds the notes, a re-import does not carry later maintainer approve/hide actions (they do not change `updatedAt`); a fresh database gets everything. Check the report (inserted, updated, unchanged, skipped with reasons) after each run.
+
 ### Object storage (Garage, optional, vocab audio)
 
 Only needed for vocab audio. Without `ObjectStorage` config the API does not register storage and `api/health/ready` stays green; with it, a `storage` check (bucket reachable) is added.

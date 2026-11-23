@@ -1,0 +1,19 @@
+meta {
+  name: ExportMyNotes
+  type: http
+  seq: 32
+}
+
+get {
+  url: {{url}}notes/mine/export
+  body: none
+  auth: inherit
+}
+
+docs {
+  Login: downloads the caller's notes as notes-YYYYMMDD-HHmmss.json (format of docs/roadmaps/0023-notes/06-export-import.md).
+}
+
+settings {
+  encodeUrl: true
+}
