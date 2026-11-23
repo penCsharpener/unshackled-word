@@ -51,6 +51,8 @@ export interface NoteEditorProps {
   /** existing notes only: deletes after a confirm dialog */
   onDelete?: () => void;
   deleting?: boolean;
+  /** element the editor's popups (link dialog, menus) render into; needed inside a modal `Dialog`, whose page behind is inert */
+  overlayContainer?: HTMLElement | null;
 }
 
 function Toolbar() {
@@ -83,6 +85,7 @@ export function NoteEditor({
   onCancel,
   onDelete,
   deleting = false,
+  overlayContainer,
 }: NoteEditorProps) {
   const { t } = useTranslation();
   const labelId = useId();
@@ -144,6 +147,7 @@ export function NoteEditor({
         placeholder={t("notes.placeholder")}
         className="note-md note-md-edit"
         contentEditableClassName="note-md-content"
+        overlayContainer={overlayContainer}
       />
       <div className="flex flex-wrap items-center gap-2">
         <Select
@@ -175,7 +179,7 @@ export function NoteEditor({
           {error}
         </p>
       )}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="sticky bottom-0 flex flex-wrap items-center gap-2 border-t border-border bg-surface py-2">
         <Button
           variant="primary"
           size="sm"

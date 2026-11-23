@@ -62,6 +62,9 @@ export function Dialog({
     initialFocusRef?.current?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
+      // a dialog opened inside this one (e.g. a delete confirm) handles its own Esc
+      const inner = event.target instanceof Element ? event.target.closest("dialog") : null;
+      if (inner && inner !== dialog && dialog.contains(inner)) return;
       event.preventDefault();
       if (canDismiss.current) close.current();
     };

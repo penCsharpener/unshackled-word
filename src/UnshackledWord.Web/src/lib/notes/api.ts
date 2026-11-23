@@ -154,7 +154,7 @@ export function noteExcerpt(markdown: string, max = 140): string {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
-/** Reader link of a note: the passage with its verses marked, the note opened in the notes panel and the first verse in view. */
+/** Reader link of a note: the passage with its verses marked, the note opened in the notes overlay and the first verse in view. */
 export function noteHref(note: Note): string {
   const { bookId, chapter, kind } = note.anchor;
   const base = `/bible/${bookId}/${chapter}`;

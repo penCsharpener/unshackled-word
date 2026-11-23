@@ -23,9 +23,9 @@ import { LevelSlider } from "@/components/LevelSlider";
 import { MappingEditor, type MappingSaveError } from "@/components/MappingEditor";
 import { MarginStack } from "@/components/MarginStack";
 import { NoteMarker } from "@/components/NoteMarker";
+import { NotesOverlay, type NotesOverlayRequest, noteTarget } from "@/components/NotesOverlay";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { RevisionEditor } from "@/components/RevisionEditor";
-import { Switch } from "@/components/Switch";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
 import { track, trackRevisionLevel } from "@/lib/analytics";
 import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
@@ -67,7 +67,6 @@ import { reviewMarkers, toMappingData } from "@/lib/revision/mapping";
 import { useRevisionMapping, useSaveRevisionMapping } from "@/lib/revision/queries";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
 import { useMediaQuery } from "@/lib/useMediaQuery";
-import { NotesPanel } from "./chapter/NotesPanel";
 import { SidePanelRail } from "./chapter/SidePanelRail";
 import { VerseSide } from "./chapter/VerseSide";
 
@@ -308,8 +307,8 @@ export function ChapterPage() {
             : "idle"
         : "idle";
 
-  // Notes (roadmap 0023): markers at verse numbers and the heading open the notes panel (left margin from 120rem,
-  // a sheet below). MDXEditor is only fetched once a note is shown or written (see NotesPanel).
+  // Notes (roadmap 0023): markers at verse numbers, words and the heading open the notes overlay (`NotesOverlay`,
+  // also `N`). MDXEditor is only fetched once a note is shown or written (lazy chunks inside the overlay).
   const { showOthers, setShowOthers } = useShowOthersNotes();
   const notes = useChapterNotes(books ? ref : null, reader.level, showOthers);
   /** Words notes sit on their last shown word; verse, range, drifted and unmapped notes at the verse number. */
@@ -334,29 +333,28 @@ export function ChapterPage() {
     }
     return { byVerse, byWord, ranges };
   }, [notes.data, verses.data]);
-  const [notesSheet, setNotesSheet] = useState(false);
-  const [noteFocus, setNoteFocus] = useState<{ id: string; token: number }>();
-  const [noteDraft, setNoteDraft] = useState<NoteTarget>();
-  const focusToken = useRef(0);
-  const notesVisible = wide ? sideMode === "notes" : notesSheet;
-  function showNotes() {
-    if (wide) changeSideMode("notes");
-    else setNotesSheet(true);
+  const [notesRequest, setNotesRequest] = useState<NotesOverlayRequest>();
+  /** last verse note action, so a shift-click on a second verse's action makes it a range */
+  const lastVerseDraft = useRef<number>(undefined);
+  /** The overlay at a note: its passage is the marker's anchor (verse markers: the verse). */
+  function openNote(id: string, passage?: NoteTarget) {
+    const note = notes.data?.find((n) => n.id === id);
+    setNotesRequest({
+      passage: passage ?? (note ? noteTarget(note) : { kind: "chapter" }),
+      noteId: id,
+    });
   }
-  function focusNote(id: string) {
-    focusToken.current += 1;
-    setNoteFocus({ id, token: focusToken.current });
-  }
-  function openNote(id: string) {
-    focusNote(id);
-    showNotes();
-  }
+  /** The overlay in write mode for a new note at `target`. */
   function startNote(target: NoteTarget) {
-    setNoteDraft(target);
-    showNotes();
+    setNotesRequest({
+      passage: target,
+      write: true,
+      filter: target.kind === "chapter" ? "chapter" : "passage",
+    });
   }
   const renderMarker = (
     list: Note[] | undefined,
+    passage: NoteTarget | undefined,
     label: (count: number, first: Note) => string,
   ) => {
     const first = list?.[0];
@@ -366,17 +364,21 @@ export function ChapterPage() {
         label={label(list.length, first)}
         count={list.length}
         own={list.some((n) => n.isOwn)}
-        onClick={() => openNote(first.id)}
+        onClick={() => openNote(first.id, passage)}
       />
     );
   };
   const markerFor = (key: number | "chapter", label: (count: number) => string) =>
-    renderMarker(noteMarkers.byVerse.get(key), label);
+    renderMarker(
+      noteMarkers.byVerse.get(key),
+      key === "chapter" ? { kind: "chapter" } : { kind: "verse", verse: key },
+      label,
+    );
 
   function startVerseNote(verse: number, extend: boolean) {
-    // shift-click on a second verse's note action turns the open verse draft into a range
-    const from =
-      noteDraft?.kind === "verse" || noteDraft?.kind === "verses" ? noteDraft.verse : undefined;
+    // shift-click on a second verse's note action turns the last verse note action into a range
+    const from = lastVerseDraft.current;
+    lastVerseDraft.current = verse;
     if (extend && from !== undefined && from !== verse) {
       startNote({ kind: "verses", verse: Math.min(from, verse), endVerse: Math.max(from, verse) });
       return;
@@ -537,7 +539,7 @@ export function ChapterPage() {
     updateNote.reset();
     setSelection(undefined);
     setReanchor(note);
-    setNotesSheet(false);
+    setNotesRequest(undefined);
   }
 
   function openEditor(verse: number, trigger: HTMLElement | null) {
@@ -639,6 +641,8 @@ export function ChapterPage() {
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (isTypingTarget(event.target)) return;
       if (event.target instanceof Element && event.target.closest("[data-mapping-editor]")) return;
+      // a modal (notes overlay, search, dialogs) owns the keyboard
+      if (document.querySelector("dialog[open]")) return;
       if (event.key === "Escape" && (selection || reanchor)) {
         if (selection) setSelection(undefined);
         else setReanchor(undefined);
@@ -646,6 +650,15 @@ export function ChapterPage() {
       }
       if (event.key === "g" && wide) {
         changeSideMode(nextSidePanelMode(sideMode));
+        return;
+      }
+      // N: notes of the selected words, else of the chapter
+      if (event.key === "n") {
+        event.preventDefault();
+        const target = selected?.target;
+        setNotesRequest(
+          target ? { passage: target } : { passage: { kind: "chapter" }, filter: "chapter" },
+        );
         return;
       }
       if (selectedKey !== undefined) return;
@@ -663,6 +676,7 @@ export function ChapterPage() {
     sideMode,
     changeSideMode,
     selection,
+    selected,
     reanchor,
   ]);
 
@@ -673,9 +687,8 @@ export function ChapterPage() {
     setSelectedKey(undefined);
     setEditingVerse(undefined);
     setReviseVerse(undefined);
-    setNoteDraft(undefined);
-    setNoteFocus(undefined);
-    setNotesSheet(false);
+    setNotesRequest(undefined);
+    lastVerseDraft.current = undefined;
     setSelection(undefined);
     setReanchor(undefined);
     lastClicked.current = undefined;
@@ -707,7 +720,7 @@ export function ChapterPage() {
     [location.search],
   );
 
-  // `?note=<id>` (link from "Meine Notizen") opens the notes panel at that note once per chapter visit; the hash scrolls to its verse
+  // `?note=<id>` (link from "Meine Notizen") opens the notes overlay at that note once per chapter visit; the hash scrolls to its verse
   const noteParam = new URLSearchParams(location.search).get("note");
   const openedNoteKey = useRef<string | undefined>(undefined);
   const noteLoaded = notes.isSuccess;
@@ -831,28 +844,6 @@ export function ChapterPage() {
     );
   }
 
-  function renderNotesPanel(variant: "rail" | "sheet") {
-    if (!ref) return null;
-    return (
-      <NotesPanel
-        variant={variant}
-        bookId={ref.bookId}
-        chapter={ref.chapter}
-        chapterLabel={reference(ref)}
-        notes={notes.data ?? []}
-        status={notes.status}
-        onRetry={() => void notes.refetch()}
-        focus={noteFocus}
-        onFocus={focusNote}
-        draft={noteDraft}
-        onDraftDone={() => setNoteDraft(undefined)}
-        signedIn={signedIn}
-        onClose={variant === "sheet" ? () => setNotesSheet(false) : undefined}
-        onReanchor={signedIn ? startReanchor : undefined}
-      />
-    );
-  }
-
   const pinnedPopover = selectedWord && (
     <WordDetailPopover
       id={popoverId}
@@ -921,13 +912,6 @@ export function ChapterPage() {
           <Button variant="ghost" size="sm" onClick={() => startNote({ kind: "chapter" })}>
             {t("notes.addChapter")}
           </Button>
-          <Switch
-            checked={showOthers}
-            onCheckedChange={setShowOthers}
-            className="font-sans text-sm text-fg-muted"
-          >
-            {t("notes.showOthers")}
-          </Switch>
         </div>
         {aiRange && (
           <AgentRunDialog
@@ -951,9 +935,7 @@ export function ChapterPage() {
             onRetry={() =>
               void (sideMode === "tsk" ? crossReferences.refetch() : originals.refetch())
             }
-          >
-            {notesVisible && renderNotesPanel("rail")}
-          </SidePanelRail>
+          />
         )}
         {reanchor && (
           <div
@@ -1079,7 +1061,7 @@ export function ChapterPage() {
                             >
                               {word.text}
                             </Button>
-                            {renderMarker(noteMarkers.byWord.get(key), (count, first) =>
+                            {renderMarker(noteMarkers.byWord.get(key), undefined, (count, first) =>
                               t("notes.markerWords", {
                                 count,
                                 quote: first.anchor.quotedText ?? word.text,
@@ -1349,7 +1331,21 @@ export function ChapterPage() {
         )}
       </div>
       {!margin && pinnedPopover}
-      {!wide && notesVisible && renderNotesPanel("sheet")}
+      <NotesOverlay
+        request={notesRequest}
+        onClose={() => setNotesRequest(undefined)}
+        bookId={ref.bookId}
+        chapter={ref.chapter}
+        chapterLabel={reference(ref)}
+        verses={verses.data}
+        notes={notes.data ?? []}
+        status={notes.status}
+        onRetry={() => void notes.refetch()}
+        signedIn={signedIn}
+        showOthers={showOthers}
+        onShowOthersChange={setShowOthers}
+        onReanchor={signedIn ? startReanchor : undefined}
+      />
       <footer className="reader-col mt-8 flex justify-between">
         {renderLink(prev, "previous", true)}
         {renderLink(next, "next", true)}

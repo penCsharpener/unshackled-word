@@ -1459,48 +1459,12 @@
   margin-right: var(--spacing);
 }
 
-/*
- * Notes (roadmap 0023). The list lives in the sticky head of the left margin from 120rem (`.side-rail-body`); below it
- * is a bottom sheet on phones and a drawer at the right edge from 48rem.
- */
-.side-rail-body {
-  width: 100%;
-  max-height: calc(100dvh - var(--app-header-h) - var(--spacing) * 24);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
 /* Word selection for notes (roadmap 0023.2f): a long press marks the first word, so no system callout or text selection on touch. */
 @media (pointer: coarse) {
   .verse-main [data-word-trigger] {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-  }
-}
-
-.notes-sheet {
-  position: fixed;
-  inset: auto 0 0 0;
-  z-index: 30;
-  max-height: 70dvh;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
-  border-top: 1px solid var(--color-border);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  background: var(--color-bg);
-  box-shadow: var(--shadow-lg);
-}
-
-@media (min-width: 48rem) {
-  .notes-sheet {
-    inset: var(--app-header-h) 0 0 auto;
-    width: min(var(--container-md), 100vw);
-    max-height: none;
-    border-top: 0;
-    border-inline-start: 1px solid var(--color-border);
-    border-radius: 0;
   }
 }
 

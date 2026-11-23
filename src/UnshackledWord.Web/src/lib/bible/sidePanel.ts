@@ -3,18 +3,18 @@ import { useCallback, useState } from "react";
 import { bibleApi } from "./api";
 import type { ChapterRef } from "./types";
 
-export type SidePanelMode = "tsk" | "original" | "notes" | "off";
+export type SidePanelMode = "tsk" | "original" | "off";
 
 export const SIDE_PANEL_KEY = "uw.sidePanel";
-export const SIDE_PANEL_MODES: readonly SidePanelMode[] = ["tsk", "original", "notes", "off"];
+export const SIDE_PANEL_MODES: readonly SidePanelMode[] = ["tsk", "original", "off"];
 const MODES = SIDE_PANEL_MODES;
 
-/** Next state of the `G` shortcut: TSK → Grundtext → Notizen → off → TSK. */
+/** Next state of the `G` shortcut: TSK → Grundtext → off → TSK (notes have their own overlay, `N`). */
 export function nextSidePanelMode(mode: SidePanelMode): SidePanelMode {
   return MODES[(MODES.indexOf(mode) + 1) % MODES.length] ?? "tsk";
 }
 
-/** Stored mode; anything unknown (or no storage) falls back to TSK. */
+/** Stored mode; anything unknown (or no storage, or the former `notes` mode) falls back to TSK. */
 export function readSidePanelMode(): SidePanelMode {
   try {
     const raw = localStorage.getItem(SIDE_PANEL_KEY);

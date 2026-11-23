@@ -145,9 +145,16 @@ describe("ChapterPage note selection", () => {
     // the drag does not open the word detail
     expect(screen.queryByRole("dialog")).toBeNull();
     await user.click(within(verse2).getByRole("button", { name: "Notiz" }));
+    // the overlay opens in write mode with the selection as anchor, its words marked in the excerpt
+    const overlay = await screen.findByRole("dialog", { name: "Johannes 3,2" });
     expect(
-      await screen.findByText("Neue Notiz zu „kam zu Jesu“ · Johannes 3,2"),
+      await within(overlay).findByText("Neue Notiz zu „kam zu Jesu“ · Johannes 3,2"),
     ).toBeInTheDocument();
+    expect(
+      Array.from(
+        within(overlay).getByTestId("notes-excerpt").querySelectorAll(".bg-mark-note"),
+      ).map((m) => m.textContent),
+    ).toEqual(["kam", "zu", "Jesu"]);
     await user.type(await screen.findByLabelText("Notiztext"), "Gedanke");
     await user.click(screen.getByRole("button", { name: "Speichern" }));
     await waitFor(() =>
@@ -191,11 +198,15 @@ describe("ChapterPage note selection", () => {
     });
   });
 
-  it("turns a verse draft into a range on shift-click of a second verse's note action", async () => {
+  it("turns the last verse note action into a range on shift-click of a second verse's action", async () => {
     stubFetch();
     renderAt("/bible/43/3");
     const user = userEvent.setup();
     await user.click(await screen.findByRole("button", { name: "Notiz zum Vers 1" }));
+    expect(await screen.findByText("Neue Notiz zu Johannes 3,1")).toBeInTheDocument();
+    // the overlay is modal: close it, then shift-click the second verse's action
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
     await user.keyboard("{Shift>}");
     await user.click(screen.getByRole("button", { name: "Notiz zum Vers 3" }));
     await user.keyboard("{/Shift}");
@@ -261,18 +272,21 @@ describe("ChapterPage note selection", () => {
     expect(verse2.querySelector('[data-note-bracket="mid"]')).not.toBeNull();
     const verse3 = container.querySelector("#v3") as HTMLElement;
     expect(verse3.querySelector('[data-note-bracket="end"]')).not.toBeNull();
-    // drifted: at the verse number, with the old words as hint in the panel
+    // drifted: at the verse number, with the old words as hint in the overlay
     await userEvent.click(within(verse3).getByRole("button", { name: "Notiz zu Vers 3 öffnen" }));
-    const panel = screen.getByRole("region", { name: "Notizen zu Johannes 3" });
+    const overlay = await screen.findByRole("dialog", { name: "Johannes 3,3" });
     expect(
-      within(panel).getByText("Die markierten Wörter haben sich geändert: „Jesu“"),
+      within(overlay).getByText("Die markierten Wörter haben sich geändert: „Jesu“"),
     ).toBeInTheDocument();
+    // "Diese Stelle": every note touching verse 3, i.e. also the range 1–3
+    expect(within(overlay).getByRole("button", { name: /Johannes 3,1–3/ })).toBeInTheDocument();
+    expect(within(overlay).queryByRole("button", { name: /„kam zu“ · Johannes 3,2/ })).toBeNull();
+    await userEvent.click(within(overlay).getByRole("button", { name: /^Kapitel\d/ }));
     expect(
-      within(panel).getByRole("button", { name: /„kam zu“ · Johannes 3,2/ }),
+      within(overlay).getByRole("button", { name: /„kam zu“ · Johannes 3,2/ }),
     ).toBeInTheDocument();
-    expect(within(panel).getByRole("button", { name: /Johannes 3,1–3/ })).toBeInTheDocument();
     // a foreign drifted note has no re-anchor action
-    expect(within(panel).queryByRole("button", { name: "Neu verankern" })).toBeNull();
+    expect(within(overlay).queryByRole("button", { name: "Neu verankern" })).toBeNull();
   });
 
   it("keeps the marker on the mapped variant words at a revision level", async () => {
@@ -369,12 +383,12 @@ describe("ChapterPage note selection", () => {
     await waitFor(() => expect(screen.queryByText(/Markiere die neue Stelle/)).toBeNull());
   });
 
-  it("closes the notes sheet on Escape", async () => {
+  it("closes the notes overlay on Escape", async () => {
     stubFetch({ notes: [note("v", { kind: "verse", startHebRefId: 43003002, startVerse: 2 })] });
     renderAt("/bible/43/3");
     await userEvent.click(await screen.findByRole("button", { name: "Notiz zu Vers 2 öffnen" }));
-    expect(screen.getByRole("region", { name: "Notizen zu Johannes 3" })).toBeInTheDocument();
+    expect(await screen.findByRole("dialog", { name: "Johannes 3,2" })).toBeInTheDocument();
     await userEvent.keyboard("{Escape}");
-    expect(screen.queryByRole("region", { name: "Notizen zu Johannes 3" })).toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 });
