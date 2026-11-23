@@ -1036,6 +1036,27 @@ export const de = {
         failed: "Die Zuordnung konnte nicht gespeichert werden.",
       },
     },
+    tskLink: {
+      toggle: "Verknüpfen",
+      select: "{{reference}} auswählen",
+      selectionHint_one:
+        "Auf Wort legen: 1 Querverweis ausgewählt. Wort in Vers {{verse}} antippen oder mit Enter wählen.",
+      selectionHint_other:
+        "Auf Wort legen: {{count}} Querverweise ausgewählt. Wort in Vers {{verse}} antippen oder mit Enter wählen.",
+      cancel: "Abbrechen",
+      linking: "Wird verknüpft …",
+      linkError: "Die Wortverknüpfung konnte nicht gespeichert werden.",
+      noWord: "Ohne Wort",
+      group: "„{{quote}}“",
+      groupLabel: "Querverweise zu „{{quote}}“",
+      noWordLabel: "Querverweise ohne Wort",
+      drifted: "Text geändert, auf Versebene",
+      driftedTitle:
+        "Der Text an der verknüpften Stelle hat sich geändert; der Querverweis steht wieder beim Vers.",
+      wordLabel: "Wort: „{{quote}}“",
+      unlink: "Wortverknüpfung lösen",
+      unlinkError: "Die Wortverknüpfung konnte nicht gelöst werden.",
+    },
     tskCuration: {
       onlyHighlighted: "Nur hervorgehobene",
       showHidden: "Ausgeblendete zeigen",

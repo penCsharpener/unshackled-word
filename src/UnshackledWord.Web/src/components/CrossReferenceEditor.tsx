@@ -12,6 +12,8 @@ import {
   useAddTskCuration,
   useDeleteAddedTskCuration,
   useSaveTskCuration,
+  useUnlinkTskWord,
+  wordUnlinkRequest,
 } from "@/lib/bible/tskCuration";
 import type {
   CrossReference,
@@ -166,6 +168,7 @@ function EditForm({
   const { t } = useTranslation();
   const save = useSaveTskCuration();
   const remove = useDeleteAddedTskCuration();
+  const unlink = useUnlinkTskWord();
   const initialChoice: Choice = reference.rating ?? "neutral";
   const [choice, setChoice] = useState<Choice>(initialChoice);
   const [comment, setComment] = useState(reference.comment ?? "");
@@ -185,6 +188,8 @@ function EditForm({
     });
   };
   const confirmRemove = () => remove.mutate(addedKey(source, reference), { onSuccess: onClose });
+  const removeWordLink = () =>
+    unlink.mutate(wordUnlinkRequest(source, [reference]), { onSuccess: onClose });
 
   const removeError = remove.isError
     ? remove.error instanceof ApiError && remove.error.status === 404
@@ -207,6 +212,28 @@ function EditForm({
             </span>
           )}
         </p>
+        {reference.word && (
+          <div className="flex flex-wrap items-center gap-2" data-testid="editor-word-link">
+            <span className="text-fg-muted">
+              {t("bible.tskLink.wordLabel", { quote: reference.word.quotedText })}
+              {reference.word.state === "drifted" && ` (${t("bible.tskLink.drifted")})`}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ms-auto"
+              disabled={unlink.isPending}
+              onClick={removeWordLink}
+            >
+              {t("bible.tskLink.unlink")}
+            </Button>
+            <FormError
+              message={
+                unlink.isError ? describeApiError(unlink.error, t("bible.tskLink.unlinkError")) : ""
+              }
+            />
+          </div>
+        )}
         <fieldset className="flex gap-1">
           <legend className="sr-only">{t("bible.tskCuration.rating")}</legend>
           {CHOICES.map((value) => (

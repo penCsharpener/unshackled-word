@@ -56,6 +56,8 @@ export interface SidePanelRailProps {
     onOnlyHighlightedChange: (value: boolean) => void;
     /** Curate mode "Ausgeblendete zeigen"; only passed for Admin/Maintainer. */
     curate?: { checked: boolean; onChange: (value: boolean) => void };
+    /** Link mode "Verknüpfen" (roadmap 0024.5f); only passed for Admin/Maintainer. */
+    link?: { checked: boolean; onChange: (value: boolean) => void };
   };
 }
 
@@ -102,6 +104,11 @@ export function SidePanelRail({ mode, onModeChange, status, onRetry, tsk }: Side
             {tsk.curate && (
               <Switch checked={tsk.curate.checked} onCheckedChange={tsk.curate.onChange}>
                 {t("bible.tskCuration.showHidden")}
+              </Switch>
+            )}
+            {tsk.link && (
+              <Switch checked={tsk.link.checked} onCheckedChange={tsk.link.onChange}>
+                {t("bible.tskLink.toggle")}
               </Switch>
             )}
           </div>

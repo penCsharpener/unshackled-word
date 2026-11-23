@@ -34,6 +34,8 @@
   --uw-mark-linked: oklch(0.9 0.14 95);
   --uw-mark-passage: oklch(0.95 0.03 75);
   --uw-mark-note: oklch(0.9 0.07 320);
+  /* TSK word links: drop target in link mode and the marker under linked words (roadmap 0024.5f). */
+  --uw-mark-link: oklch(0.89 0.08 190);
   /* Note markers of other people's notes (own notes use the accent). */
   --uw-note-other: oklch(0.5 0.09 200);
   /* Categorical chart slots (BookBarChart sections, DonutChart slices) and the empty track. */
@@ -251,6 +253,7 @@
   --uw-mark-linked: oklch(0.5 0.1 90);
   --uw-mark-passage: oklch(0.3 0.035 75);
   --uw-mark-note: oklch(0.42 0.1 320);
+  --uw-mark-link: oklch(0.45 0.08 190);
   --uw-note-other: oklch(0.76 0.08 200);
   --uw-chart-1: #3987e5;
   --uw-chart-2: #d95926;
@@ -289,6 +292,7 @@
   --color-mark-linked: var(--uw-mark-linked);
   --color-mark-passage: var(--uw-mark-passage);
   --color-mark-note: var(--uw-mark-note);
+  --color-mark-link: var(--uw-mark-link);
   --color-note-other: var(--uw-note-other);
   --color-chart-1: var(--uw-chart-1);
   --color-chart-2: var(--uw-chart-2);

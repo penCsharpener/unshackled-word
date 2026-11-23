@@ -288,6 +288,49 @@ export interface CrossReference {
   comment?: string;
   /** `added`: a link curators added (roadmap 0024.4), listed after the TSK links; omitted for TSK links. */
   origin?: "added";
+  /** Word link (roadmap 0024.5): the source-verse word(s) this link belongs to; omitted for verse-level links. */
+  word?: CrossReferenceWordLink;
+}
+
+/**
+ * Word link of a TSK link (roadmap 0024.5). Positions are Elb1871 `PositionInVerse` of the source verse; `drifted`
+ * (the words there changed since linking) omits them and keeps the quote, the link then sits at verse level.
+ */
+export interface CrossReferenceWordLink {
+  startPosition?: number;
+  endPosition?: number;
+  quotedText: string;
+  state: "ok" | "drifted";
+  /**
+   * Chapter list with `?level=` only, ok links on a verse with a variant at that level: the variant words whose
+   * base position is in the range; an empty list = the variant has no such word (show at verse level).
+   */
+  mappedWords?: { positionInVerse: number; basePositionInVerse: number }[];
+}
+
+/** Key of one link of a source verse (Elberfelder HebRefIds; end only for a range). */
+export interface TskLinkKey {
+  targetStartHebRefId: number;
+  targetEndHebRefId?: number;
+}
+
+/** `PUT tsk/curation/word`: links 1..100 links of one source verse to the words `startPosition..endPosition`. */
+export interface SaveTskWordLinkRequest {
+  sourceHebRefId: number;
+  keys: TskLinkKey[];
+  startPosition: number;
+  endPosition: number;
+}
+
+/** `DELETE tsk/curation/word`: removes the word link of these links (body). */
+export interface DeleteTskWordLinkRequest {
+  sourceHebRefId: number;
+  keys: TskLinkKey[];
+}
+
+/** Answer of `PUT`/`DELETE tsk/curation/word`: the state of every link, in request order. */
+export interface TskWordLinkResponse {
+  links: TskCurationResponse[];
 }
 
 /** Curation rating of one TSK link; neutral is `null` in a request and omitted in a response. */
@@ -328,6 +371,8 @@ export interface TskCurationResponse {
   origin: "tsk" | "added";
   rating?: TskRating;
   comment?: string;
+  /** Word link as stored (no drift check on write answers). */
+  word?: { startPosition: number; endPosition: number; quotedText: string; state: "ok" };
   updatedAt?: string;
 }
 

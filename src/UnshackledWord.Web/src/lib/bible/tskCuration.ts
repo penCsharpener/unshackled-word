@@ -5,7 +5,10 @@ import type {
   AddTskCurationRequest,
   CrossReference,
   DeleteAddedTskCurationRequest,
+  DeleteTskWordLinkRequest,
   SaveTskCurationRequest,
+  SaveTskWordLinkRequest,
+  TskLinkKey,
   TskRating,
 } from "./types";
 import { wordDetailKeys } from "./wordDetail";
@@ -53,6 +56,45 @@ export function addedKey(
   };
 }
 
+/** Key of a target within its source verse (end only for ranges), as the word link endpoints take it. */
+export function linkKey(target: CrossReference): TskLinkKey {
+  return {
+    targetStartHebRefId: hebRefId(target.bibleBookId, target.chapter, target.verse),
+    ...(target.endVerse
+      ? { targetEndHebRefId: hebRefId(target.bibleBookId, target.chapter, target.endVerse) }
+      : {}),
+  };
+}
+
+/**
+ * `PUT tsk/curation/word` (roadmap 0024.5): the targets linked to the Elb1871 words `from..to` of the source verse
+ * (positions in either order).
+ */
+export function wordLinkRequest(
+  source: { bookId: number; chapter: number; verse: number },
+  targets: CrossReference[],
+  from: number,
+  to: number,
+): SaveTskWordLinkRequest {
+  return {
+    sourceHebRefId: hebRefId(source.bookId, source.chapter, source.verse),
+    keys: targets.map(linkKey),
+    startPosition: Math.min(from, to),
+    endPosition: Math.max(from, to),
+  };
+}
+
+/** `DELETE tsk/curation/word`: the word link of these targets is removed. */
+export function wordUnlinkRequest(
+  source: { bookId: number; chapter: number; verse: number },
+  targets: CrossReference[],
+): DeleteTskWordLinkRequest {
+  return {
+    sourceHebRefId: hebRefId(source.bookId, source.chapter, source.verse),
+    keys: targets.map(linkKey),
+  };
+}
+
 /** The body of `POST tsk/curation/added`: reference and comment trimmed, empty comment → `null`. */
 export function addRequest(
   source: { bookId: number; chapter: number; verse: number },
@@ -68,8 +110,8 @@ export function addRequest(
 }
 
 /**
- * After any curation write the chapter lists (both with and without hidden links), the hover texts and the word
- * boxes are refetched, since all of them carry rating, comment, origin and order.
+ * After any curation write the chapter lists (both with and without hidden links, every level), the hover texts and
+ * the word boxes are refetched, since all of them carry rating, comment, origin, word link and order.
  */
 function useInvalidateTsk() {
   const queryClient = useQueryClient();
@@ -104,6 +146,24 @@ export function useDeleteAddedTskCuration() {
   const invalidate = useInvalidateTsk();
   return useMutation({
     mutationFn: (body: DeleteAddedTskCurationRequest) => bibleApi.deleteAddedTskCuration(body),
+    onSuccess: invalidate,
+  });
+}
+
+/** Maintainer: links refs to a word range of their source verse (`PUT tsk/curation/word`); same invalidations. */
+export function useLinkTskWord() {
+  const invalidate = useInvalidateTsk();
+  return useMutation({
+    mutationFn: (body: SaveTskWordLinkRequest) => bibleApi.saveTskWordLink(body),
+    onSuccess: invalidate,
+  });
+}
+
+/** Maintainer: removes the word link of refs (`DELETE tsk/curation/word`); same invalidations. */
+export function useUnlinkTskWord() {
+  const invalidate = useInvalidateTsk();
+  return useMutation({
+    mutationFn: (body: DeleteTskWordLinkRequest) => bibleApi.deleteTskWordLink(body),
     onSuccess: invalidate,
   });
 }

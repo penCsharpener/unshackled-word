@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { type KeyboardEvent, useRef, useState } from "react";
+import {
+  type DragEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { bookAbbreviation, bookName, chapterPath } from "@/lib/bible/books";
@@ -43,6 +50,25 @@ export interface CrossReferenceListProps {
    * for now; suggestions by other users follow in 0024.6f.
    */
   editable?: boolean;
+  /**
+   * Link mode (roadmap 0024.5f, `inline` only): a checkbox per link (click / Ctrl/Cmd-click toggles, Shift-click
+   * selects a run), every link is draggable (native HTML5 drag and drop) onto a word of the source verse; the hover
+   * card stays, but is suppressed while a drag is in progress. Also groups the links by word.
+   */
+  link?: CrossReferenceLinkMode;
+}
+
+/** Link mode state, owned by the reader (selection and drag span the panel and the verse text). */
+export interface CrossReferenceLinkMode {
+  /** Keys (`crossReferenceKey`) of the selected links of this verse. */
+  selected: ReadonlySet<string>;
+  /** New selection of this verse, in list order. */
+  onSelectedChange: (keys: string[]) => void;
+  /** A drag starts: the dragged link, or the whole selection when the dragged link is part of it. */
+  onDragStart: (references: CrossReference[]) => void;
+  onDragEnd: () => void;
+  /** Some drag is in progress (no hover card meanwhile). */
+  dragging: boolean;
 }
 
 const CARD_GAP = 8;
@@ -60,6 +86,47 @@ const OPEN_MAX = 5;
 const KEYS = ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"];
 
 const keyOf = (r: CrossReference) => `${r.bibleBookId}-${r.chapter}-${r.verse}-${r.endVerse ?? 0}`;
+/** Stable key of a link within its verse (selection state of the link mode). */
+export const crossReferenceKey = keyOf;
+
+/** One word group of the panel: links attached to the same words (`quote`), or the verse-level rest (`quote` absent). */
+export interface CrossReferenceGroup {
+  key: string;
+  quote?: string;
+  references: CrossReference[];
+}
+
+/**
+ * Links grouped by their word (roadmap 0024.5f): one group per linked word range (ordered by position, API order
+ * within), then the verse-level rest ("Ohne Wort"), which includes drifted links.
+ */
+export function groupByWord(references: CrossReference[]): CrossReferenceGroup[] {
+  const groups = new Map<string, CrossReferenceGroup & { start: number; end: number }>();
+  const rest: CrossReference[] = [];
+  for (const r of references) {
+    const w = r.word;
+    if (w?.state !== "ok" || w.startPosition === undefined) {
+      rest.push(r);
+      continue;
+    }
+    const end = w.endPosition ?? w.startPosition;
+    const key = `${w.startPosition}-${end}`;
+    const group = groups.get(key);
+    if (group) group.references.push(r);
+    else
+      groups.set(key, {
+        key,
+        quote: w.quotedText,
+        references: [r],
+        start: w.startPosition,
+        end,
+      });
+  }
+  const sorted = [...groups.values()]
+    .sort((a, b) => a.start - b.start || a.end - b.end)
+    .map(({ key, quote, references: refs }) => ({ key, quote, references: refs }));
+  return rest.length > 0 ? [...sorted, { key: "none", references: rest }] : sorted;
+}
 
 /** Marker of a highlighted link (roadmap 0024.3f): a filled star in the current colour. */
 function StarIcon() {
@@ -149,10 +216,11 @@ export function CrossReferenceList({
   preview,
   showHidden = false,
   editable = false,
+  link,
 }: CrossReferenceListProps) {
   const { t, i18n } = useTranslation();
   const [active, setActive] = useState(0);
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLUListElement & HTMLDivElement>(null);
   const [hover, setHover] = useState<Hover | null>(null);
   /** Open editor: one link (`reference`) or the add form (`reference` null); `anchor` gets the focus back. */
   const [editing, setEditing] = useState<{
@@ -160,11 +228,19 @@ export function CrossReferenceList({
     position: Hover;
     anchor: HTMLElement;
   } | null>(null);
-  const references = showHidden ? all : all.filter((r) => r.rating !== "hide");
+  const visible = showHidden ? all : all.filter((r) => r.rating !== "hide");
+  /** Word groups (inline): in link mode, and whenever a link of the verse has a word (decision 0024.5f). */
+  const groups =
+    variant === "inline" && (link || visible.some((r) => r.word))
+      ? groupByWord(visible)
+      : undefined;
+  const references = groups ? groups.flatMap((g) => g.references) : visible;
   const hovered = hover && references.find((r) => keyOf(r) === hover.key);
+  /** Last plainly clicked checkbox: the other end of a Shift-click run. */
+  const selectAnchor = useRef<string>(undefined);
   const show = (r: CrossReference, element: HTMLElement) => {
-    // the texts endpoint leaves hidden links out, so they have nothing to preview
-    if (!preview || r.rating === "hide") return;
+    // the texts endpoint leaves hidden links out, so they have nothing to preview; no card while dragging
+    if (!preview || r.rating === "hide" || link?.dragging) return;
     const rect = element.getClientRects()[0] ?? element.getBoundingClientRect();
     const above = rect.bottom + 160 > window.innerHeight && rect.top > window.innerHeight / 2;
     setHover({
@@ -253,66 +329,124 @@ export function CrossReferenceList({
               : Math.max(0, index - 1);
       links[next]?.focus();
     };
-    return (
-      <ul
-        ref={listRef}
-        onKeyDown={move}
-        className="flex flex-wrap gap-x-2 gap-y-1 font-sans text-sm"
-      >
-        {references.map((r, index) => (
-          <li key={keyOf(r)}>
-            <Link
-              to={to(r)}
-              aria-label={`${label(r, true)}${state(r)}`}
-              tabIndex={index === active ? 0 : -1}
-              onFocus={(event) => {
-                setActive(index);
-                show(r, event.currentTarget);
-              }}
-              onBlur={hide}
-              onMouseEnter={(event) => show(r, event.currentTarget)}
-              onMouseLeave={hide}
-              onKeyDown={(event) => event.key === "Escape" && hide()}
-              className={linkClass(r)}
+    const select = (r: CrossReference, event: MouseEvent<HTMLInputElement>) => {
+      if (!link) return;
+      const order = references.map(keyOf);
+      const key = keyOf(r);
+      const next = new Set(link.selected);
+      const from = selectAnchor.current ? order.indexOf(selectAnchor.current) : -1;
+      if (event.shiftKey && from >= 0) {
+        const to = order.indexOf(key);
+        for (let i = Math.min(from, to); i <= Math.max(from, to); i++) next.add(order[i] as string);
+      } else {
+        // plain and Ctrl/Cmd-click toggle one link
+        if (next.has(key)) next.delete(key);
+        else next.add(key);
+        selectAnchor.current = key;
+      }
+      link.onSelectedChange(order.filter((k) => next.has(k)));
+    };
+    const item = (r: CrossReference, index: number, last: boolean) => {
+      const key = keyOf(r);
+      return (
+        <li
+          key={key}
+          {...(link && {
+            draggable: true,
+            "data-link-draggable": "",
+            onDragStart: (event: DragEvent<HTMLLIElement>) => {
+              const dragged = link.selected.has(key)
+                ? references.filter((x) => link.selected.has(keyOf(x)))
+                : [r];
+              try {
+                event.dataTransfer.effectAllowed = "link";
+                event.dataTransfer.setData(
+                  "text/plain",
+                  dragged.map((x) => label(x, false)).join("; "),
+                );
+              } catch {
+                // no data transfer (tests): the reader keeps the dragged links in its own state
+              }
+              hide();
+              link.onDragStart(dragged);
+            },
+            onDragEnd: () => link.onDragEnd(),
+          })}
+        >
+          {link && (
+            <input
+              type="checkbox"
+              checked={link.selected.has(key)}
+              readOnly
+              onClick={(event) => select(r, event)}
+              aria-label={t("bible.tskLink.select", { reference: label(r, true) })}
+              className="me-1 size-3.5 align-middle accent-accent"
+            />
+          )}
+          <Link
+            to={to(r)}
+            draggable={link ? false : undefined}
+            aria-label={`${label(r, true)}${state(r)}`}
+            tabIndex={index === active ? 0 : -1}
+            onFocus={(event) => {
+              setActive(index);
+              show(r, event.currentTarget);
+            }}
+            onBlur={hide}
+            onMouseEnter={(event) => show(r, event.currentTarget)}
+            onMouseLeave={hide}
+            onKeyDown={(event) => event.key === "Escape" && hide()}
+            className={linkClass(r)}
+          >
+            {content(r)}
+          </Link>
+          {r.word?.state === "drifted" && (
+            <span
+              className="ms-1 text-xs text-fg-muted"
+              title={t("bible.tskLink.driftedTitle")}
+              data-testid="drifted-word"
             >
-              {content(r)}
-            </Link>
-            {editable && preview && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="ms-0.5 inline-flex px-1 py-0 align-middle text-fg-muted"
-                aria-label={t("bible.tskCuration.edit", { reference: label(r, true) })}
-                title={t("bible.tskCuration.edit", { reference: label(r, true) })}
-                aria-haspopup="dialog"
-                aria-expanded={editing?.reference != null && keyOf(editing.reference) === keyOf(r)}
-                onClick={(event) => openEditor(r, event.currentTarget)}
-              >
-                <PencilIcon />
-              </Button>
-            )}
-            {index < references.length - 1 && (
-              <span aria-hidden="true" className="ms-2 text-fg-muted">
-                ·
-              </span>
-            )}
-          </li>
-        ))}
-        {editable && preview && (
-          <li>
+              {t("bible.tskLink.group", { quote: r.word.quotedText })} ({t("bible.tskLink.drifted")}
+              )
+            </span>
+          )}
+          {editable && preview && (
             <Button
               variant="ghost"
               size="sm"
-              className="px-1 py-0 text-xs text-fg-muted"
+              className="ms-0.5 inline-flex px-1 py-0 align-middle text-fg-muted"
+              aria-label={t("bible.tskCuration.edit", { reference: label(r, true) })}
+              title={t("bible.tskCuration.edit", { reference: label(r, true) })}
               aria-haspopup="dialog"
-              aria-expanded={editing !== null && editing.reference === null}
-              onClick={(event) => openEditor(null, event.currentTarget)}
+              aria-expanded={editing?.reference != null && keyOf(editing.reference) === key}
+              onClick={(event) => openEditor(r, event.currentTarget)}
             >
-              {t("bible.tskCuration.add.action")}
+              <PencilIcon />
             </Button>
-          </li>
-        )}
-        {hover && preview && (
+          )}
+          {!last && (
+            <span aria-hidden="true" className="ms-2 text-fg-muted">
+              ·
+            </span>
+          )}
+        </li>
+      );
+    };
+    const addButton = editable && preview && (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="px-1 py-0 text-xs text-fg-muted"
+        aria-haspopup="dialog"
+        aria-expanded={editing !== null && editing.reference === null}
+        onClick={(event) => openEditor(null, event.currentTarget)}
+      >
+        {t("bible.tskCuration.add.action")}
+      </Button>
+    );
+    const overlays: ReactNode = (
+      <>
+        {hover && preview && !link?.dragging && (
           <PreviewCard hover={hover} preview={preview} comment={hovered?.comment} />
         )}
         {editing && preview && (
@@ -344,6 +478,62 @@ export function CrossReferenceList({
             )}
           </li>
         )}
+      </>
+    );
+
+    if (groups) {
+      let offset = 0;
+      return (
+        // biome-ignore lint/a11y/noStaticElementInteractions: delegated arrow-key navigation between the links of the groups
+        <div
+          ref={listRef}
+          onKeyDown={move}
+          className="flex flex-col gap-1 font-sans text-sm"
+          data-testid="cross-reference-groups"
+        >
+          {groups.map((group) => {
+            const start = offset;
+            offset += group.references.length;
+            const heading = group.quote
+              ? t("bible.tskLink.group", { quote: group.quote })
+              : t("bible.tskLink.noWord");
+            return (
+              <fieldset
+                key={group.key}
+                className="m-0 min-w-0 border-0 p-0"
+                aria-label={
+                  group.quote
+                    ? t("bible.tskLink.groupLabel", { quote: group.quote })
+                    : t("bible.tskLink.noWordLabel")
+                }
+                data-word-group={group.quote ?? ""}
+              >
+                <legend aria-hidden="true" className="p-0 text-xs text-fg-muted">
+                  {heading}
+                </legend>
+                <ul className="flex flex-wrap gap-x-2 gap-y-1">
+                  {group.references.map((r, i) =>
+                    item(r, start + i, i === group.references.length - 1),
+                  )}
+                </ul>
+              </fieldset>
+            );
+          })}
+          {addButton && <div>{addButton}</div>}
+          <ul className="contents">{overlays}</ul>
+        </div>
+      );
+    }
+
+    return (
+      <ul
+        ref={listRef}
+        onKeyDown={move}
+        className="flex flex-wrap gap-x-2 gap-y-1 font-sans text-sm"
+      >
+        {references.map((r, index) => item(r, index, index === references.length - 1))}
+        {addButton && <li>{addButton}</li>}
+        {overlays}
       </ul>
     );
   }

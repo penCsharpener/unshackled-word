@@ -1021,6 +1021,27 @@ export const en: Translation = {
         failed: "The mapping could not be saved.",
       },
     },
+    tskLink: {
+      toggle: "Link to words",
+      select: "Select {{reference}}",
+      selectionHint_one:
+        "Drop on a word: 1 cross reference selected. Tap a word in verse {{verse}} or choose it with Enter.",
+      selectionHint_other:
+        "Drop on a word: {{count}} cross references selected. Tap a word in verse {{verse}} or choose it with Enter.",
+      cancel: "Cancel",
+      linking: "Linking …",
+      linkError: "The word link could not be saved.",
+      noWord: "No word",
+      group: "“{{quote}}”",
+      groupLabel: "Cross references for “{{quote}}”",
+      noWordLabel: "Cross references without a word",
+      drifted: "text changed, at verse level",
+      driftedTitle:
+        "The text at the linked place has changed; the cross reference is back at the verse.",
+      wordLabel: "Word: “{{quote}}”",
+      unlink: "Remove word link",
+      unlinkError: "The word link could not be removed.",
+    },
     tskCuration: {
       onlyHighlighted: "Highlighted only",
       showHidden: "Show hidden",

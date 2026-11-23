@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
-import { bibleApi } from "./api";
+import { BASE_LEVEL, bibleApi } from "./api";
 import type { ChapterRef } from "./types";
 
 export type SidePanelMode = "tsk" | "original" | "off";
@@ -66,8 +66,8 @@ export function useTskOnlyHighlighted() {
 
 export const sidePanelKeys = {
   /** `includeHidden` (curators' curate mode) is a separate cache entry. */
-  crossReferences: (bookId: number, chapter: number, includeHidden = false) =>
-    ["bible", "chapterCrossReferences", bookId, chapter, includeHidden] as const,
+  crossReferences: (bookId: number, chapter: number, includeHidden = false, level = BASE_LEVEL) =>
+    ["bible", "chapterCrossReferences", bookId, chapter, includeHidden, level] as const,
   /** Prefix of every cached chapter of cross references, for invalidation after a curation save. */
   crossReferencesAll: ["bible", "chapterCrossReferences"] as const,
   originals: (bookId: number, chapter: number) =>
@@ -85,14 +85,15 @@ export function useChapterCrossReferences(
   ref: ChapterRef | null,
   enabled: boolean,
   includeHidden = false,
+  level = BASE_LEVEL,
 ) {
   const bookId = ref?.bookId ?? 0;
   const chapter = ref?.chapter ?? 0;
   return useQuery({
     ...queryOptions({
-      queryKey: sidePanelKeys.crossReferences(bookId, chapter, includeHidden),
+      queryKey: sidePanelKeys.crossReferences(bookId, chapter, includeHidden, level),
       queryFn: ({ signal }) =>
-        bibleApi.chapterCrossReferences(bookId, chapter, signal, includeHidden),
+        bibleApi.chapterCrossReferences(bookId, chapter, signal, includeHidden, level),
       staleTime: Number.POSITIVE_INFINITY,
     }),
     placeholderData: (previous, previousQuery) =>

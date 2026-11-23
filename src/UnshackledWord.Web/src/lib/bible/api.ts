@@ -2,6 +2,7 @@ import { api } from "@/lib/api";
 import type {
   AddTskCurationRequest,
   DeleteAddedTskCurationRequest,
+  DeleteTskWordLinkRequest,
   GetBibleStructureResponse,
   GetChapterCrossReferencesResponse,
   GetChapterOriginalsResponse,
@@ -18,11 +19,13 @@ import type {
   OriginalsLookupResponse,
   ParseReferenceResponse,
   SaveTskCurationRequest,
+  SaveTskWordLinkRequest,
   SearchVersesOptions,
   SearchVersesResponse,
   SourceWordsResponse,
   StrongsOccurrenceFilters,
   TskCurationResponse,
+  TskWordLinkResponse,
   VerseMappingLink,
   WordStatsTestament,
 } from "./types";
@@ -61,17 +64,26 @@ export const bibleApi = {
       `/elberfelder/crossReferenceTexts/bookId/${bookId}/chapterId/${chapter}/verseId/${verse}${levelQuery(level)}`,
       signal,
     ),
-  /** `includeHidden` (curate mode) is honoured by the server for Admin/Maintainer only: hidden links come with `rating` `hide`. */
+  /**
+   * `includeHidden` (curate mode) is honoured by the server for Admin/Maintainer only: hidden links come with `rating`
+   * `hide`. `level` (reader level, omitted for the default) adds `word.mappedWords` on revised verses (roadmap 0024.5).
+   */
   chapterCrossReferences: (
     bookId: number,
     chapter: number,
     signal?: AbortSignal,
     includeHidden = false,
-  ) =>
-    api.get<GetChapterCrossReferencesResponse>(
-      `/elberfelder/chapterCrossReferences/bookId/${bookId}/chapterId/${chapter}${includeHidden ? "?includeHidden=true" : ""}`,
+    level = BASE_LEVEL,
+  ) => {
+    const query = new URLSearchParams();
+    if (includeHidden) query.set("includeHidden", "true");
+    if (level !== BASE_LEVEL) query.set("level", String(level));
+    const search = query.size > 0 ? `?${query}` : "";
+    return api.get<GetChapterCrossReferencesResponse>(
+      `/elberfelder/chapterCrossReferences/bookId/${bookId}/chapterId/${chapter}${search}`,
       signal,
-    ),
+    );
+  },
   /** Maintainer: rating and comment of one TSK link (roadmap 0024.3). */
   saveTskCuration: (body: SaveTskCurationRequest) =>
     api.put<TskCurationResponse>("/tsk/curation", body),
@@ -81,6 +93,12 @@ export const bibleApi = {
   /** Maintainer: removes an added link (204); the key goes in the body. */
   deleteAddedTskCuration: (body: DeleteAddedTskCurationRequest) =>
     api.delete<void>("/tsk/curation/added", undefined, body),
+  /** Maintainer: links refs of one source verse to a word range of it (roadmap 0024.5). */
+  saveTskWordLink: (body: SaveTskWordLinkRequest) =>
+    api.put<TskWordLinkResponse>("/tsk/curation/word", body),
+  /** Maintainer: removes the word link of refs (key list in the body); answers the states like the PUT. */
+  deleteTskWordLink: (body: DeleteTskWordLinkRequest) =>
+    api.delete<TskWordLinkResponse>("/tsk/curation/word", undefined, body),
   chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetChapterOriginalsResponse>(
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,

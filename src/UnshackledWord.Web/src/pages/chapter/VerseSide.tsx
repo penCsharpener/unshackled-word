@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CrossReferenceList } from "@/components/CrossReferenceList";
+import { type CrossReferenceLinkMode, CrossReferenceList } from "@/components/CrossReferenceList";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { VerseSidePanel } from "@/components/VerseSidePanel";
 import type {
@@ -9,6 +9,15 @@ import type {
   CrossReference,
   GetChapterOriginalsResponse,
 } from "@/lib/bible/types";
+
+const NO_KEYS: ReadonlySet<string> = new Set();
+
+export interface VerseLinkMode {
+  dragging: boolean;
+  onSelectedChange: (verse: number, keys: string[]) => void;
+  onDragStart: (verse: number, references: CrossReference[]) => void;
+  onDragEnd: () => void;
+}
 
 export interface VerseSideProps {
   mode: "tsk" | "original";
@@ -31,6 +40,13 @@ export interface VerseSideProps {
    * (Admin/Maintainer); with `showHidden` also verses without links get a panel.
    */
   editable?: boolean;
+  /**
+   * `tsk`, link mode (roadmap 0024.5f, Admin/Maintainer): checkboxes and drag per link; one object for all verses,
+   * the callbacks get the verse.
+   */
+  link?: VerseLinkMode;
+  /** Link mode: selected keys of this verse (a shared empty set for the other verses, so the memo holds). */
+  linkSelected?: ReadonlySet<string>;
   expanded: boolean;
   onExpandedChange: (verse: number, expanded: boolean) => void;
   /** `original`: words and language of the verse (absent = none) */
@@ -55,6 +71,8 @@ export const VerseSide = memo(function VerseSide({
   onlyHighlighted = false,
   showHidden = false,
   editable = false,
+  link,
+  linkSelected,
   expanded,
   onExpandedChange,
   original,
@@ -67,6 +85,18 @@ export const VerseSide = memo(function VerseSide({
   const preview = useMemo(
     () => ({ bookId, chapter, verse, level }),
     [bookId, chapter, verse, level],
+  );
+
+  const listLink = useMemo<CrossReferenceLinkMode | undefined>(
+    () =>
+      link && {
+        selected: linkSelected ?? NO_KEYS,
+        dragging: link.dragging,
+        onSelectedChange: (keys) => link.onSelectedChange(verse, keys),
+        onDragStart: (references) => link.onDragStart(verse, references),
+        onDragEnd: link.onDragEnd,
+      },
+    [link, linkSelected, verse],
   );
 
   const shown = useMemo(
@@ -94,6 +124,7 @@ export const VerseSide = memo(function VerseSide({
           preview={preview}
           showHidden={showHidden}
           editable={editable}
+          link={listLink}
         />
       </VerseSidePanel>
     );
