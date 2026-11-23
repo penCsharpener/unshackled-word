@@ -38,24 +38,67 @@ export function useSidePanelMode() {
   return [mode, update] as const;
 }
 
+/** "Nur hervorgehobene" in the TSK panel header (roadmap 0024.3f), remembered per browser. */
+export const TSK_ONLY_HIGHLIGHTED_KEY = "uw.tsk.onlyHighlighted";
+
+/** Stored "only highlighted" choice; off when nothing (or no storage) is there. */
+export function readTskOnlyHighlighted(): boolean {
+  try {
+    return localStorage.getItem(TSK_ONLY_HIGHLIGHTED_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+/** The reader's "only highlighted cross references" choice, global for all chapters. */
+export function useTskOnlyHighlighted() {
+  const [value, setValue] = useState(readTskOnlyHighlighted);
+  const update = useCallback((next: boolean) => {
+    try {
+      localStorage.setItem(TSK_ONLY_HIGHLIGHTED_KEY, String(next));
+    } catch {
+      // storage unavailable: the choice only lasts for this page view
+    }
+    setValue(next);
+  }, []);
+  return [value, update] as const;
+}
+
 export const sidePanelKeys = {
-  crossReferences: (bookId: number, chapter: number) =>
-    ["bible", "chapterCrossReferences", bookId, chapter] as const,
+  /** `includeHidden` (curators' curate mode) is a separate cache entry. */
+  crossReferences: (bookId: number, chapter: number, includeHidden = false) =>
+    ["bible", "chapterCrossReferences", bookId, chapter, includeHidden] as const,
+  /** Prefix of every cached chapter of cross references, for invalidation after a curation save. */
+  crossReferencesAll: ["bible", "chapterCrossReferences"] as const,
   originals: (bookId: number, chapter: number) =>
     ["bible", "chapterOriginals", bookId, chapter] as const,
   /** Prefix of every cached chapter of the originals, for invalidation after a mapping save. */
   originalsAll: ["bible", "chapterOriginals"] as const,
 };
 
-/** TSK is static data: fetched once per chapter, one request for all verses. */
-export function useChapterCrossReferences(ref: ChapterRef | null, enabled: boolean) {
+/**
+ * TSK of a chapter: one request for all verses, changed only by a curation save (which invalidates it). With
+ * `includeHidden` (curate mode, Admin/Maintainer) hidden links come back too; switching keeps the other list of the
+ * same chapter on screen until the new one arrives.
+ */
+export function useChapterCrossReferences(
+  ref: ChapterRef | null,
+  enabled: boolean,
+  includeHidden = false,
+) {
+  const bookId = ref?.bookId ?? 0;
+  const chapter = ref?.chapter ?? 0;
   return useQuery({
     ...queryOptions({
-      queryKey: sidePanelKeys.crossReferences(ref?.bookId ?? 0, ref?.chapter ?? 0),
+      queryKey: sidePanelKeys.crossReferences(bookId, chapter, includeHidden),
       queryFn: ({ signal }) =>
-        bibleApi.chapterCrossReferences(ref?.bookId ?? 0, ref?.chapter ?? 0, signal),
+        bibleApi.chapterCrossReferences(bookId, chapter, signal, includeHidden),
       staleTime: Number.POSITIVE_INFINITY,
     }),
+    placeholderData: (previous, previousQuery) =>
+      previousQuery?.queryKey[2] === bookId && previousQuery.queryKey[3] === chapter
+        ? previous
+        : undefined,
     enabled: enabled && ref !== null,
   });
 }

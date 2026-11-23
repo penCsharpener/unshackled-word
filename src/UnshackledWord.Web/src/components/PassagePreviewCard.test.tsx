@@ -28,6 +28,26 @@ describe("PassagePreviewCard", () => {
     expect(document.querySelectorAll("sup")).toHaveLength(2);
   });
 
+  it("shows a curator comment as a muted line under the texts", () => {
+    const { rerender } = render(
+      <PassagePreviewCard
+        position={{ x: 4, y: 8 }}
+        verses={[{ verse: 6, text: "Durch des HERRN Wort" }]}
+        comment="Schöpfung durch das Wort"
+      />,
+    );
+    const comment = screen.getByTestId("preview-comment");
+    expect(comment).toHaveTextContent("Schöpfung durch das Wort");
+    expect(comment.className).toContain("text-fg-muted");
+    expect(screen.getByText("Durch des HERRN Wort").compareDocumentPosition(comment)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    rerender(
+      <PassagePreviewCard position={{ x: 4, y: 8 }} verses={[{ verse: 6, text: "Durch" }]} />,
+    );
+    expect(screen.queryByTestId("preview-comment")).toBeNull();
+  });
+
   it("shows loading and error states and applies the position", () => {
     const { rerender } = render(<PassagePreviewCard position={{ x: 4, y: 8 }} loading />);
     expect(screen.getByRole("tooltip")).toHaveTextContent(i18n.t("bible.sidePanel.previewLoading"));

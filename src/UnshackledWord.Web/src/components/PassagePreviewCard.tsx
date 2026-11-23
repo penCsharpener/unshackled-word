@@ -17,6 +17,8 @@ export interface PassagePreviewCardProps {
   verses?: PassagePreviewVerse[];
   loading?: boolean;
   error?: boolean;
+  /** Curator comment of a TSK link (roadmap 0024.3f), a muted line under the texts. */
+  comment?: string;
 }
 
 /** Card width in px: `w-80`, with originals `md:w-160` from the md breakpoint (48rem). */
@@ -50,6 +52,7 @@ export function PassagePreviewCard({
   verses,
   loading,
   error,
+  comment,
 }: PassagePreviewCardProps) {
   const { t } = useTranslation();
   const range = (verses?.length ?? 0) > 1;
@@ -110,6 +113,14 @@ export function PassagePreviewCard({
         <p className="text-fg-muted">{t("bible.sidePanel.previewError")}</p>
       ) : loading ? (
         <p className="text-fg-muted">{t("bible.sidePanel.previewLoading")}</p>
+      ) : null}
+      {comment ? (
+        <p
+          data-testid="preview-comment"
+          className="mt-2 border-t border-border pt-2 font-sans text-sm text-fg-muted"
+        >
+          {comment}
+        </p>
       ) : null}
     </div>
   );

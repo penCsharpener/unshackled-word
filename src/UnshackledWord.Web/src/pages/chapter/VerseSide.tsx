@@ -22,6 +22,12 @@ export interface VerseSideProps {
   books?: BibleStructureBook[];
   /** `tsk`: references of the verse (absent = none) */
   references?: CrossReference[];
+  /** `tsk`: "Nur hervorgehobene" — list only highlighted links; a verse without any shows nothing. */
+  onlyHighlighted?: boolean;
+  /** `tsk`, curate mode (Admin/Maintainer): hidden links are listed greyed. */
+  showHidden?: boolean;
+  /** `tsk`: pen per link opening the `CrossReferenceEditor` (Admin/Maintainer). */
+  editable?: boolean;
   expanded: boolean;
   onExpandedChange: (verse: number, expanded: boolean) => void;
   /** `original`: words and language of the verse (absent = none) */
@@ -43,6 +49,9 @@ export const VerseSide = memo(function VerseSide({
   reference,
   books,
   references,
+  onlyHighlighted = false,
+  showHidden = false,
+  editable = false,
   expanded,
   onExpandedChange,
   original,
@@ -57,8 +66,16 @@ export const VerseSide = memo(function VerseSide({
     [bookId, chapter, verse, level],
   );
 
+  const shown = useMemo(
+    () =>
+      references?.filter((r) =>
+        onlyHighlighted ? r.rating === "highlight" : showHidden || r.rating !== "hide",
+      ),
+    [references, onlyHighlighted, showHidden],
+  );
+
   if (mode === "tsk") {
-    if (!references || references.length === 0) return null;
+    if (!shown || shown.length === 0) return null;
     return (
       <VerseSidePanel
         mode="tsk"
@@ -68,9 +85,11 @@ export const VerseSide = memo(function VerseSide({
       >
         <CrossReferenceList
           variant="inline"
-          references={references}
+          references={shown}
           books={books}
           preview={preview}
+          showHidden={showHidden}
+          editable={editable}
         />
       </VerseSidePanel>
     );

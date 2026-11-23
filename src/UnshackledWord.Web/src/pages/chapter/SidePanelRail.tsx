@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
+import { Switch } from "@/components/Switch";
 import { SIDE_PANEL_MODES, type SidePanelMode } from "@/lib/bible/sidePanel";
 
 function ModeIcon({ mode }: { mode: SidePanelMode }) {
@@ -46,13 +47,20 @@ function ModeIcon({ mode }: { mode: SidePanelMode }) {
 export interface SidePanelRailProps {
   mode: SidePanelMode;
   onModeChange: (mode: SidePanelMode) => void;
-  /** state of the data behind the current mode */
-  status: "idle" | "loading" | "error" | "empty";
+  /** state of the data behind the current mode; `emptyHighlighted`: "Nur hervorgehobene" is on and none are in the chapter */
+  status: "idle" | "loading" | "error" | "empty" | "emptyHighlighted";
   onRetry: () => void;
+  /** TSK header switches (roadmap 0024.3f), shown in `tsk` mode. */
+  tsk?: {
+    onlyHighlighted: boolean;
+    onOnlyHighlightedChange: (value: boolean) => void;
+    /** Curate mode "Ausgeblendete zeigen"; only passed for Admin/Maintainer. */
+    curate?: { checked: boolean; onChange: (value: boolean) => void };
+  };
 }
 
 /** Sticky head of the left margin: heading of the shown content and the TSK / Grundtext / off control. */
-export function SidePanelRail({ mode, onModeChange, status, onRetry }: SidePanelRailProps) {
+export function SidePanelRail({ mode, onModeChange, status, onRetry, tsk }: SidePanelRailProps) {
   const { t } = useTranslation();
   const heading =
     mode === "tsk"
@@ -86,9 +94,24 @@ export function SidePanelRail({ mode, onModeChange, status, onRetry }: SidePanel
             ))}
           </fieldset>
         </div>
+        {mode === "tsk" && tsk && (
+          <div className="flex flex-col items-end gap-1 text-xs">
+            <Switch checked={tsk.onlyHighlighted} onCheckedChange={tsk.onOnlyHighlightedChange}>
+              {t("bible.tskCuration.onlyHighlighted")}
+            </Switch>
+            {tsk.curate && (
+              <Switch checked={tsk.curate.checked} onCheckedChange={tsk.curate.onChange}>
+                {t("bible.tskCuration.showHidden")}
+              </Switch>
+            )}
+          </div>
+        )}
         <div role="status" className="text-end text-xs text-fg-muted">
           {mode !== "off" && status === "loading" && t(`bible.sidePanel.loading${kind}`)}
           {mode !== "off" && status === "empty" && t("bible.sidePanel.emptyChapter")}
+          {mode === "tsk" &&
+            status === "emptyHighlighted" &&
+            t("bible.tskCuration.emptyHighlighted")}
         </div>
         {mode !== "off" && status === "error" && (
           <div role="alert" className="flex items-center gap-2 text-xs">

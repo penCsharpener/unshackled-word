@@ -15,10 +15,12 @@ import type {
   OriginalsLookupOptions,
   OriginalsLookupResponse,
   ParseReferenceResponse,
+  SaveTskCurationRequest,
   SearchVersesOptions,
   SearchVersesResponse,
   SourceWordsResponse,
   StrongsOccurrenceFilters,
+  TskCurationResponse,
   VerseMappingLink,
   WordStatsTestament,
 } from "./types";
@@ -57,11 +59,20 @@ export const bibleApi = {
       `/elberfelder/crossReferenceTexts/bookId/${bookId}/chapterId/${chapter}/verseId/${verse}${levelQuery(level)}`,
       signal,
     ),
-  chapterCrossReferences: (bookId: number, chapter: number, signal?: AbortSignal) =>
+  /** `includeHidden` (curate mode) is honoured by the server for Admin/Maintainer only: hidden links come with `rating` `hide`. */
+  chapterCrossReferences: (
+    bookId: number,
+    chapter: number,
+    signal?: AbortSignal,
+    includeHidden = false,
+  ) =>
     api.get<GetChapterCrossReferencesResponse>(
-      `/elberfelder/chapterCrossReferences/bookId/${bookId}/chapterId/${chapter}`,
+      `/elberfelder/chapterCrossReferences/bookId/${bookId}/chapterId/${chapter}${includeHidden ? "?includeHidden=true" : ""}`,
       signal,
     ),
+  /** Maintainer: rating and comment of one TSK link (roadmap 0024.3). */
+  saveTskCuration: (body: SaveTskCurationRequest) =>
+    api.put<TskCurationResponse>("/tsk/curation", body),
   chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetChapterOriginalsResponse>(
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,

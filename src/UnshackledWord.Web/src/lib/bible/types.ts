@@ -279,6 +279,38 @@ export interface CrossReference {
   endVerse?: number;
   /** English KJV keyword of the TSK entry; only in the chapter response, not shown. */
   keyword?: string;
+  /**
+   * Curation (roadmap 0024.3): `highlight` (listed first) or `hide` (only in the curators' chapter view with
+   * `includeHidden`); omitted when neutral.
+   */
+  rating?: TskRating;
+  /** Curator comment, plain text (max 500 characters); omitted when there is none. */
+  comment?: string;
+}
+
+/** Curation rating of one TSK link; neutral is `null` in a request and omitted in a response. */
+export type TskRating = "highlight" | "hide";
+
+/** `PUT tsk/curation`: the full rating/comment state of one link, keyed in Elberfelder numbering (HebRefIds). */
+export interface SaveTskCurationRequest {
+  sourceHebRefId: number;
+  targetStartHebRefId: number;
+  /** Omitted for a single target verse. */
+  targetEndHebRefId?: number;
+  rating: TskRating | null;
+  /** Trimmed; `null` removes the comment. */
+  comment: string | null;
+}
+
+/** State of the link after a save; a link back at plain TSK has no row (only key and `origin`). */
+export interface TskCurationResponse {
+  sourceHebRefId: number;
+  targetStartHebRefId: number;
+  targetEndHebRefId?: number;
+  origin: "tsk" | "added";
+  rating?: TskRating;
+  comment?: string;
+  updatedAt?: string;
 }
 
 /** `GET elberfelder/crossReferenceTexts/...`: the texts of all TSK targets of one verse, in TSK order. */

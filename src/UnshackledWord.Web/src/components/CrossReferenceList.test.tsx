@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
-import { describe, expect, it, vi } from "vitest";
-import type { BibleStructureBook } from "@/lib/bible/types";
-import "@/i18n";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import i18n from "@/i18n";
+import type { BibleStructureBook, CrossReference } from "@/lib/bible/types";
 import { CrossReferenceList, cardLeft } from "./CrossReferenceList";
 
 const books = [
@@ -174,5 +174,188 @@ describe("cardLeft", () => {
     expect(cardLeft(2, true, 1000)).toBe(8);
     // phone narrower than the card: the left gap wins
     expect(cardLeft(200, false, 300)).toBe(8);
+  });
+});
+
+describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
+  const curated: CrossReference[] = [
+    { bibleBookId: 19, chapter: 33, verse: 6, rating: "highlight", comment: "Schöpfung" },
+    { bibleBookId: 1, chapter: 1, verse: 10 },
+    { bibleBookId: 1, chapter: 2, verse: 4, rating: "hide" },
+  ];
+  const source = { bookId: 1, chapter: 1, verse: 1, level: 200 };
+
+  function renderList(
+    props: Partial<Parameters<typeof CrossReferenceList>[0]> = {},
+    client = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+  ) {
+    render(
+      <QueryClientProvider client={client}>
+        <MemoryRouter>
+          <CrossReferenceList variant="inline" references={curated} books={books} {...props} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    return client;
+  }
+
+  beforeEach(async () => {
+    await i18n.changeLanguage("de");
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("marks highlighted links with a star and font-medium, in the order the API sends", () => {
+    renderList();
+    const links = screen.getAllByRole("link");
+    expect(links.map((l) => l.textContent)).toEqual(["Ps 33,6 (hervorgehoben)", "1Mo 1,10"]);
+    expect(links[0]).toHaveAccessibleName("Psalm 33,6 (hervorgehoben)");
+    expect(links[0]?.className).toContain("font-medium");
+    expect(links[0]?.querySelector("svg")).not.toBeNull();
+    expect(links[1]?.className).not.toContain("font-medium");
+    expect(links[1]?.querySelector("svg")).toBeNull();
+  });
+
+  it("never lists hidden links for readers, also in the details variant", () => {
+    renderList();
+    expect(screen.queryByRole("link", { name: /1\. Mose 2,4/ })).toBeNull();
+    cleanup();
+    renderList({ variant: "details" });
+    expect(screen.getAllByRole("link")).toHaveLength(2);
+    expect(screen.getByText("Querverweise zu diesem Vers (2)")).toBeInTheDocument();
+  });
+
+  it("lists hidden links greyed and struck through in curate mode", () => {
+    renderList({ showHidden: true });
+    const hidden = screen.getByRole("link", { name: /1\. Mose 2,4/ });
+    expect(hidden.className).toContain("text-fg-muted");
+    expect(hidden.className).toContain("line-through");
+    expect(hidden).toHaveTextContent("(ausgeblendet)");
+  });
+
+  it("shows the comment of a link in its hover card", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        Response.json({
+          references: [
+            {
+              bibleBookId: 19,
+              chapter: 33,
+              verse: 6,
+              rating: "highlight",
+              comment: "Schöpfung",
+              verses: [{ verse: 6, text: "Durch des HERRN Wort" }],
+            },
+          ],
+        }),
+      ),
+    );
+    const user = userEvent.setup();
+    renderList({ preview: source });
+    await user.hover(screen.getAllByRole("link")[0] as HTMLElement);
+    expect(await screen.findByText("Durch des HERRN Wort")).toBeInTheDocument();
+    expect(screen.getByTestId("preview-comment")).toHaveTextContent("Schöpfung");
+  });
+
+  it("has no pen without `editable`", () => {
+    renderList({ preview: source });
+    expect(screen.queryByRole("button", { name: /bearbeiten/ })).toBeNull();
+  });
+
+  it("pen opens the editor, saves rating and comment and invalidates the TSK queries", async () => {
+    const fetchMock = vi.fn(async (_url: string, init?: RequestInit) =>
+      Response.json(
+        init?.method === "PUT"
+          ? { sourceHebRefId: 1001001, targetStartHebRefId: 1001010, origin: "tsk" }
+          : { references: [] },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    const client = new QueryClient();
+    const invalidate = vi.spyOn(client, "invalidateQueries");
+    renderList({ preview: source, editable: true }, client);
+
+    await user.click(screen.getByRole("button", { name: "Querverweis 1. Mose 1,10 bearbeiten" }));
+    const editor = screen.getByRole("dialog", { name: "Querverweis 1. Mose 1,10 bearbeiten" });
+    expect(within(editor).getByRole("button", { name: "Neutral" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    const save = within(editor).getByRole("button", { name: "Speichern" });
+    expect(save).toBeDisabled();
+    await user.click(within(editor).getByRole("button", { name: "Hervorheben" }));
+    await user.type(within(editor).getByLabelText("Kommentar"), "  Licht  ");
+    expect(within(editor).getByText("9/500")).toBeInTheDocument();
+    await user.click(save);
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    const put = fetchMock.mock.calls.find(([, init]) => init?.method === "PUT");
+    expect(put?.[0]).toMatch(/\/tsk\/curation$/);
+    expect(JSON.parse(String(put?.[1]?.body))).toEqual({
+      sourceHebRefId: 1001001,
+      targetStartHebRefId: 1001010,
+      rating: "highlight",
+      comment: "Licht",
+    });
+    const keys = invalidate.mock.calls.map(([filters]) => filters?.queryKey);
+    expect(keys).toEqual(
+      expect.arrayContaining([
+        ["bible", "chapterCrossReferences"],
+        ["bible", "crossReferenceTexts"],
+        ["bible", "wordDetail"],
+      ]),
+    );
+    // focus goes back to the pen
+    expect(
+      screen.getByRole("button", { name: "Querverweis 1. Mose 1,10 bearbeiten" }),
+    ).toHaveFocus();
+  });
+
+  it("un-hides a hidden link with an empty comment as null and keeps a range key", async () => {
+    const fetchMock = vi.fn(async () => Response.json({ origin: "tsk" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    renderList({
+      preview: source,
+      editable: true,
+      showHidden: true,
+      references: [
+        { bibleBookId: 20, chapter: 8, verse: 22, endVerse: 24, rating: "hide", comment: "alt" },
+      ],
+    });
+    await user.click(screen.getByRole("button", { name: /bearbeiten/ }));
+    const editor = screen.getByRole("dialog");
+    expect(within(editor).getByRole("button", { name: "Ausblenden" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await user.click(within(editor).getByRole("button", { name: "Neutral" }));
+    await user.clear(within(editor).getByLabelText("Kommentar"));
+    await user.click(within(editor).getByRole("button", { name: "Speichern" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const [, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({
+      sourceHebRefId: 1001001,
+      targetStartHebRefId: 20008022,
+      targetEndHebRefId: 20008024,
+      rating: null,
+      comment: null,
+    });
+  });
+
+  it("closes the editor on Abbrechen and Escape without saving", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    renderList({ preview: source, editable: true });
+    const pen = screen.getByRole("button", { name: "Querverweis 1. Mose 1,10 bearbeiten" });
+    await user.click(pen);
+    await user.click(screen.getByRole("button", { name: "Abbrechen" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await user.click(pen);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

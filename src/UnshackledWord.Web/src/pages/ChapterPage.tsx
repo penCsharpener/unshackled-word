@@ -39,6 +39,7 @@ import {
   useChapterCrossReferences,
   useChapterOriginals,
   useSidePanelMode,
+  useTskOnlyHighlighted,
 } from "@/lib/bible/sidePanel";
 import type {
   BibleStructureBook,
@@ -226,7 +227,11 @@ export function ChapterPage() {
   const showOriginal = wide && sideMode === "original";
   // The eye panel gets its own TSK list wherever the side panel does not show it.
   const eyeOriginalOpen = editingVerse !== undefined && verseView === "original";
-  const crossReferences = useChapterCrossReferences(ref, showTsk || eyeOriginalOpen);
+  // TSK curation (roadmap 0024.3f): "Nur hervorgehobene" for everyone, curate mode with hidden links for curators.
+  const [onlyHighlighted, setOnlyHighlighted] = useTskOnlyHighlighted();
+  const [curateTsk, setCurateTsk] = useState(false);
+  const tskCurate = canRevise && curateTsk && showTsk;
+  const crossReferences = useChapterCrossReferences(ref, showTsk || eyeOriginalOpen, tskCurate);
   const originals = useChapterOriginals(ref, showOriginal);
   const referencesByVerse = useMemo(
     () => new Map(crossReferences.data?.verses.map((v) => [v.verse, v.references])),
@@ -298,7 +303,12 @@ export function ChapterPage() {
           ? "loading"
           : crossReferences.data.verses.length === 0
             ? "empty"
-            : "idle"
+            : onlyHighlighted &&
+                !crossReferences.data.verses.some((v) =>
+                  v.references.some((r) => r.rating === "highlight"),
+                )
+              ? "emptyHighlighted"
+              : "idle"
       : sideMode === "original"
         ? originals.isError
           ? "error"
@@ -935,6 +945,11 @@ export function ChapterPage() {
             onRetry={() =>
               void (sideMode === "tsk" ? crossReferences.refetch() : originals.refetch())
             }
+            tsk={{
+              onlyHighlighted,
+              onOnlyHighlightedChange: setOnlyHighlighted,
+              curate: canRevise ? { checked: curateTsk, onChange: setCurateTsk } : undefined,
+            }}
           />
         )}
         {reanchor && (
@@ -1291,6 +1306,9 @@ export function ChapterPage() {
                       reference={`${reference(ref)},${v.verse}`}
                       books={books}
                       references={referencesByVerse.get(v.verse)}
+                      onlyHighlighted={onlyHighlighted}
+                      showHidden={tskCurate}
+                      editable={canRevise}
                       expanded={expandedVerse === v.verse}
                       onExpandedChange={onExpandedChange}
                       original={originalsByVerse.get(v.verse)}
