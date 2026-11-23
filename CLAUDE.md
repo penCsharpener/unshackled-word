@@ -18,13 +18,13 @@ Free (no copyright/licence strings) Bible study data in German, Greek and Hebrew
 - **Versioning:** one version for API and frontend, `<Version>` in `Directory.Build.props` and `version` in `src/UnshackledWord.Web/package.json` (`VersionSyncTests` fails if they differ; the frontend shows it as hover tip on the title, API at `api/version`). Starting at 0.5.0. Every roadmap bumps the minor version (and resets the build number); every other change bumps the build number (0.5.1, 0.5.2, …).
 - **Notes (roadmap 0023):** logged-in users write notes on chapters, verses, verse ranges and words, anchored to Elb1871 positions with a quote; a changed text shows as drifted (verse level). Visibility: `private`, `internal` (all logged-in users), `public` (maintainer approval; anonymous readers see the approved snapshot). Maintainer review at `/edit/notes`. Notes are NOT part of the seed: backup is the maintainer export to `temp/notes/`, import on `/edit/imports` (inserts/updates newer rows, deletes nothing).
 - **Scale:** expected to stay small.
-- **Backend:** .NET 10 (upgrade to 11 later is simple), FastEndpoints, Serilog, FluentValidation, Postgres 18+, Dapper only. EF Core (old BibleTagger) is obsolete. Raw SQL follows the project's SQL-formatting skill for raw string literals.
+- **Backend:** .NET 11, FastEndpoints, Serilog, FluentValidation, Postgres 18+, Dapper only. EF Core (old BibleTagger) is obsolete. Raw SQL follows the project's SQL-formatting skill for raw string literals.
 - **Frontend (new, replaces Astro/Svelte/Next.js/Blazor experiments, which are reference for functionality only; the Bible chapter picker design is worth porting):** React 19+ SPA, TypeScript 7+, Vite 8 (Rolldown), Tailwind v4, Bun 1.4+, Biome. Clean modern layout, light/dark mode, mobile through 4k. UI in German and English via i18n.
 - **Frontend conventions:** develop only inside Docker containers (no host `node_modules`). Use design tokens only, no hardcoded colors/spacing/font sizes. Check `Components.md` (repo root) before building and register every new component there. Propose new components in chat first; prefer a prop/variant over a new component. Never add a dependency without asking. Run type check and lint before finishing. Planned: Biome rules against arbitrary Tailwind values, inline styles and raw `<button>`, plus a CI script scanning for banned patterns and duplicate component names.
 
 ## Commands
 
-.NET 10 solution (`UnshackledWord.slnx`); the `.ps1` scripts in the root are thin `dotnet run/watch` wrappers.
+.NET 11 solution (`UnshackledWord.slnx`); the `.ps1` scripts in the root are thin `dotnet run/watch` wrappers.
 
 ```sh
 docker run --name unshackledword.database -e POSTGRES_PASSWORD=test -p 5432:5432 -d postgres:18   # or: docker compose up -d (full stack; needs .env, see README)
@@ -67,6 +67,6 @@ Tests in `tests/` mirror the layers (Application, Domain, Infrastructure, Persis
 
 ## Configuration conventions
 
-- Package versions are centralized in `Directory.Packages.props`; shared build settings (net10.0, nullable, implicit usings) in `Directory.Build.props`, which optionally imports a git-ignored `Directory.Build.local.props`.
+- Package versions are centralized in `Directory.Packages.props`; shared build settings (net11.0, nullable, implicit usings) in `Directory.Build.props`, which optionally imports a git-ignored `Directory.Build.local.props`.
 - Every executable project has a `partial class Program` with `static partial void AddLocalSecrets(...)`. Implement it in a git-ignored `Program.local.cs` (any `*.local.cs` is ignored) to load an out-of-repo secrets JSON (connection string `ConnectionStrings:PostgresConnection`, and for SeedDb absolute `AppSettings:DatabaseSeeding:SolutionTempPath` / `SolutionAssetsPath`). In Docker, config comes from env vars prefixed `UNSHACKLEDWORD_` (double underscore for nesting).
 - `.editorconfig`: LF line endings, 4-space C#.
