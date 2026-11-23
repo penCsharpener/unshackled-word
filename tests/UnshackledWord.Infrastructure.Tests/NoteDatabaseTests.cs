@@ -443,4 +443,96 @@ public class NoteDatabaseTests
         verseRow.ApprovedBodyMarkdown.ShouldBe("Vers");
         rows.Single(r => r.Id == chapter).StartHebRefId.ShouldBeNull();
     });
+
+    [Fact]
+    public async Task VisibilityFlow_ShouldFollowTheApprovalSnapshotRules_WhenTheAuthorRequestsPublicAndEditsLater() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var other = await NewUserAsync(c, t);
+        var maintainer = await NewUserAsync(c, t, "maintainer");
+        var id = await NoteRepository.InsertAsync(c, t, author, ChapterAnchor, "erste Fassung");
+
+        async Task<NoteRecord?> ViewAsync(int? viewer) => (await NoteRepository.ListChapterAsync(c, t, 45, 8, viewer, true)).SingleOrDefault(n => n.Id == id);
+
+        // internal: logged-in users see it with the author's name, anonymous does not
+        (await NoteRepository.SetVisibilityAsync(c, t, id, other, NoteVisibilities.Internal)).ShouldBeFalse();
+        (await NoteRepository.SetVisibilityAsync(c, t, id, author, NoteVisibilities.Internal)).ShouldBeTrue();
+        (await ViewAsync(other)).ShouldNotBeNull().AuthorDisplayName.ShouldStartWith("notes-");
+        (await ViewAsync(null)).ShouldBeNull();
+
+        // public is a request: pending, still no anonymous reader
+        await NoteRepository.SetVisibilityAsync(c, t, id, author, NoteVisibilities.Public);
+        (await ViewAsync(other)).ShouldNotBeNull().PublicState.ShouldBe(NotePublicStates.Pending);
+        (await ViewAsync(null)).ShouldBeNull();
+        var queue = await NoteRepository.ListReviewAsync(c, t, maintainer);
+        queue.Pending.Single(n => n.Id == id).BodyMarkdown.ShouldBe("erste Fassung");
+
+        // approve: anonymous sees the approved text with the author's name
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Approve, maintainer, null)).ShouldBe(author);
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Approve, maintainer, null)).ShouldBeNull(); // no longer pending
+        var anonymous = (await ViewAsync(null)).ShouldNotBeNull();
+        anonymous.BodyMarkdown.ShouldBe("erste Fassung");
+        anonymous.AuthorDisplayName.ShouldStartWith("notes-");
+        (await NoteRepository.ListReviewAsync(c, t, maintainer)).Pending.ShouldNotContain(n => n.Id == id);
+
+        // the author edits: anonymous keeps the approved text, others see the new text, the note is back in the queue with both texts
+        await NoteRepository.UpdateAsync(c, t, id, author, null, "zweite Fassung");
+        (await ViewAsync(null)).ShouldNotBeNull().BodyMarkdown.ShouldBe("erste Fassung");
+        (await ViewAsync(other)).ShouldNotBeNull().BodyMarkdown.ShouldBe("zweite Fassung");
+        var pending = (await NoteRepository.ListReviewAsync(c, t, maintainer)).Pending.Single(n => n.Id == id);
+        (pending.BodyMarkdown, pending.ApprovedBodyMarkdown, pending.PublicState).ShouldBe(("zweite Fassung", "erste Fassung", NotePublicStates.Pending));
+
+        // requesting public again while pending changes nothing
+        await NoteRepository.SetVisibilityAsync(c, t, id, author, NoteVisibilities.Public);
+        (await ViewAsync(null)).ShouldNotBeNull().BodyMarkdown.ShouldBe("erste Fassung");
+
+        // reject: nobody anonymous any more, reason for the author only, the author may request again
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Reject, maintainer, "zu persönlich")).ShouldBe(author);
+        (await ViewAsync(null)).ShouldBeNull();
+        (await ViewAsync(other)).ShouldNotBeNull().PublicState.ShouldBe(NotePublicStates.Rejected);
+        (await ViewAsync(author)).ShouldNotBeNull().ReviewNote.ShouldBe("zu persönlich");
+        await NoteRepository.SetVisibilityAsync(c, t, id, author, NoteVisibilities.Public);
+        var again = (await ViewAsync(author)).ShouldNotBeNull();
+        (again.PublicState, again.ReviewNote, again.ApprovedBodyMarkdown).ShouldBe((NotePublicStates.Pending, null, null));
+
+        // withdrawing to private clears state and snapshot
+        await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Approve, maintainer, null);
+        await NoteRepository.SetVisibilityAsync(c, t, id, author, NoteVisibilities.Private);
+        var back = (await ViewAsync(author)).ShouldNotBeNull();
+        (back.Visibility, back.PublicState, back.ApprovedBodyMarkdown, back.ApprovedAt).ShouldBe((NoteVisibilities.Private, NotePublicStates.None, null, null));
+        (await ViewAsync(other)).ShouldBeNull();
+        (await ViewAsync(null)).ShouldBeNull();
+    });
+
+    [Fact]
+    public async Task HideAsync_ShouldMakeTheNoteInvisibleToEveryoneButTheAuthor_WhenAMaintainerHidesIt() => await WithTransactionAsync(async (c, t) =>
+    {
+        var author = await NewUserAsync(c, t);
+        var other = await NewUserAsync(c, t);
+        var maintainer = await NewUserAsync(c, t, "maintainer");
+        var id = await InsertRawAsync(c, t, author, NoteKinds.Chapter, 45, 8, null, null, visibility: NoteVisibilities.Public,
+            publicState: NotePublicStates.Approved, body: "Text", approvedBody: "Text");
+        var @private = await InsertRawAsync(c, t, author, NoteKinds.Chapter, 45, 8, null, null);
+
+        (await NoteRepository.ReviewAsync(c, t, @private, NoteReviewAction.Hide, maintainer, "x")).ShouldBeNull(); // private notes are not hidden
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Unhide, maintainer, null)).ShouldBeNull();
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Hide, maintainer, "beleidigend")).ShouldBe(author);
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Hide, maintainer, "noch mal")).ShouldBeNull();
+
+        async Task<bool> SeenBy(int? viewer) => (await NoteRepository.ListChapterAsync(c, t, 45, 8, viewer, true)).Any(n => n.Id == id);
+
+        (await SeenBy(author)).ShouldBeTrue();
+        (await SeenBy(other)).ShouldBeFalse();
+        (await SeenBy(maintainer)).ShouldBeFalse();
+        (await SeenBy(null)).ShouldBeFalse();
+        (await NoteRepository.GetAsync(c, t, id, null)).ShouldBeNull();
+        var own = (await NoteRepository.GetAsync(c, t, id, author)).ShouldNotBeNull();
+        (own.IsHidden, own.ReviewNote).ShouldBe((true, "beleidigend"));
+        (await NoteRepository.ListReviewAsync(c, t, maintainer)).Hidden.ShouldContain(n => n.Id == id);
+
+        (await NoteRepository.ReviewAsync(c, t, id, NoteReviewAction.Unhide, maintainer, null)).ShouldBe(author);
+        (await SeenBy(null)).ShouldBeTrue();
+        (await NoteRepository.ListReviewAsync(c, t, maintainer)).Hidden.ShouldNotContain(n => n.Id == id);
+        (await NoteRepository.ExistsAsync(c, t, Guid.NewGuid())).ShouldBeFalse();
+    });
 }

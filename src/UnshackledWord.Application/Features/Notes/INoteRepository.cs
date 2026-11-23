@@ -38,4 +38,22 @@ public interface INoteRepository
 
     /// <summary>Every note of the user (<paramref name="userId"/>) or of everybody (null) with author and approver emails, ordered by id; for the export file.</summary>
     Task<IReadOnlyList<NoteExportRow>> ListForExportAsync(int? userId, CancellationToken token = default);
+
+    /// <summary>
+    /// Sets the visibility of the user's own note: <c>private</c>/<c>internal</c> clear state and approval snapshot, <c>public</c> requests review
+    /// (<c>pending</c>; an already pending or approved note keeps its state). False when there is no such note of this user.
+    /// </summary>
+    Task<bool> SetVisibilityAsync(Guid id, int userId, string visibility, CancellationToken token = default);
+
+    /// <summary>Whether a note with this id exists, whoever owns it and whatever its visibility (maintainer actions).</summary>
+    Task<bool> ExistsAsync(Guid id, CancellationToken token = default);
+
+    /// <summary>
+    /// Applies a maintainer action if the note is in the right state (approve/reject: public and pending; hide: not private and not hidden; unhide: hidden)
+    /// and returns the author's user id; null when nothing changed.
+    /// </summary>
+    Task<int?> ReviewAsync(Guid id, NoteReviewAction action, int actorUserId, string? reason, CancellationToken token = default);
+
+    /// <summary>The review queue; notes carry the current and the approved text. Oldest change first.</summary>
+    Task<NoteReviewQueue> ListReviewAsync(int viewerId, CancellationToken token = default);
 }

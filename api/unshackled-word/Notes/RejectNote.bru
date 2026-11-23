@@ -1,0 +1,25 @@
+meta {
+  name: RejectNote
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{url}}maintainer/notes/{{noteId}}/reject
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "reason": "Zu persönlich für die Öffentlichkeit."
+  }
+}
+
+docs {
+  Maintainer: rejects a pending public note with an optional reason; the note stays internal. 204; admin log entry note_rejected.
+}
+
+settings {
+  encodeUrl: true
+}

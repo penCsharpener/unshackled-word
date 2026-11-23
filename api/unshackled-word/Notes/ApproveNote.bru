@@ -1,0 +1,19 @@
+meta {
+  name: ApproveNote
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{url}}maintainer/notes/{{noteId}}/approve
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: approves a pending public note (the current text becomes the approved snapshot). 204; 400 when not pending; admin log entry note_approved.
+}
+
+settings {
+  encodeUrl: true
+}

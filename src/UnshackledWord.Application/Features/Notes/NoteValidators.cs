@@ -128,3 +128,23 @@ public sealed class ListMyNotesRequestValidator : AbstractValidator<ListMyNotesR
         RuleFor(x => x.Take).InclusiveBetween(1, MaxTake);
     }
 }
+
+public sealed class SetNoteVisibilityRequestValidator : AbstractValidator<SetNoteVisibilityRequest>
+{
+    public SetNoteVisibilityRequestValidator()
+    {
+        RuleFor(x => x.Visibility)
+            .Must(v => v is NoteVisibilities.Private or NoteVisibilities.Internal or NoteVisibilities.Public)
+            .WithMessage("'{PropertyValue}' is not a visibility (private, internal, public).");
+    }
+}
+
+public sealed class NoteReviewActionRequestValidator : AbstractValidator<NoteReviewActionRequest>
+{
+    public const int MaxReasonLength = 500;
+
+    public NoteReviewActionRequestValidator()
+    {
+        RuleFor(x => x.Reason).MaximumLength(MaxReasonLength);
+    }
+}

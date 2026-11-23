@@ -124,10 +124,66 @@ public sealed class NoteResponse
     public string PublicState { get; set; } = string.Empty;
 
     public bool IsOwn { get; set; }
+
+    /// <summary>A maintainer hid the note: only the author (and the review page) still sees it.</summary>
     public bool IsHidden { get; set; }
+
+    /// <summary>Maintainer's rejection reason (<c>publicState = rejected</c>) or hide reason; only on the caller's own notes.</summary>
+    public string? ReviewNote { get; set; }
+
+    /// <summary>Always set, also on others' notes (display name of the author).</summary>
     public string AuthorDisplayName { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+}
+
+/// <summary><c>PUT api/notes/{id}/visibility</c>. Owner only; the answer is the updated <see cref="NoteResponse"/>.</summary>
+public sealed class SetNoteVisibilityRequest
+{
+    /// <summary>Route parameter.</summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// <c>private</c> | <c>internal</c> (every signed-in user) | <c>public</c> (a request: state <c>pending</c> until a maintainer approves; until then the
+    /// note is internal, anonymous readers see only an earlier approved text).
+    /// </summary>
+    public string Visibility { get; set; } = string.Empty;
+}
+
+/// <summary>Body/route of the maintainer actions <c>POST api/maintainer/notes/{id}/approve|reject|hide|unhide</c>.</summary>
+public sealed class NoteReviewActionRequest
+{
+    /// <summary>Route parameter.</summary>
+    public Guid Id { get; set; }
+
+    /// <summary>Optional reason (max 500 characters) for reject and hide; ignored by approve and unhide.</summary>
+    public string? Reason { get; set; }
+}
+
+/// <summary>One note in the review queue: the current text, the approved text for a diff and the review facts.</summary>
+public sealed class ReviewNoteDto
+{
+    /// <summary>Current state as the maintainer sees it (<c>bodyMarkdown</c> is the author's latest text).</summary>
+    public NoteResponse Note { get; set; } = new();
+
+    /// <summary>The text the maintainer approved earlier, i.e. what anonymous readers see; null if never approved (or withdrawn).</summary>
+    public string? ApprovedBodyMarkdown { get; set; }
+
+    public DateTime? ApprovedAt { get; set; }
+    public DateTime? HiddenAt { get; set; }
+
+    /// <summary>Rejection or hide reason.</summary>
+    public string? ReviewNote { get; set; }
+}
+
+/// <summary><c>GET api/maintainer/notes/review</c>.</summary>
+public sealed class ReviewNotesResponse
+{
+    /// <summary>Public notes waiting for approval (not hidden), oldest change first.</summary>
+    public List<ReviewNoteDto> Pending { get; set; } = [];
+
+    /// <summary>Hidden notes, oldest hide first.</summary>
+    public List<ReviewNoteDto> Hidden { get; set; } = [];
 }
 
 /// <summary><c>GET api/notes/mine?book=&amp;visibility=&amp;q=&amp;skip=&amp;take=</c>: the caller's own notes, newest change first.</summary>

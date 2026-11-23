@@ -48,6 +48,43 @@ public sealed class NoteService
         return await ReadBackAsync(request.Id, userId, token);
     }
 
+    /// <summary>The owner changes the visibility; <c>public</c> only requests review. 404 for notes of others.</summary>
+    public async Task<NoteOutcome<NoteResponse>> SetVisibilityAsync(int userId, SetNoteVisibilityRequest request, CancellationToken token = default)
+    {
+        if (!await _repository.SetVisibilityAsync(request.Id, userId, request.Visibility, token))
+        {
+            return NoteOutcome<NoteResponse>.NotFound(NotFoundMessage);
+        }
+
+        return await ReadBackAsync(request.Id, userId, token);
+    }
+
+    /// <summary>The maintainer's queue with current and approved text.</summary>
+    public async Task<ReviewNotesResponse> ListReviewAsync(int maintainerId, CancellationToken token = default)
+    {
+        var queue = await _repository.ListReviewAsync(maintainerId, token);
+
+        return new ReviewNotesResponse
+        {
+            Pending = await ToReviewDtosAsync(queue.Pending, maintainerId, token),
+            Hidden = await ToReviewDtosAsync(queue.Hidden, maintainerId, token),
+        };
+    }
+
+    private async Task<List<ReviewNoteDto>> ToReviewDtosAsync(IReadOnlyList<NoteRecord> rows, int viewerId, CancellationToken token)
+    {
+        var responses = await ToResponsesAsync(rows, viewerId, null, token);
+
+        return rows.Select((row, i) => new ReviewNoteDto
+        {
+            Note = responses[i],
+            ApprovedBodyMarkdown = row.ApprovedBodyMarkdown,
+            ApprovedAt = row.ApprovedAt,
+            HiddenAt = row.HiddenAt,
+            ReviewNote = row.ReviewNote,
+        }).ToList();
+    }
+
     /// <summary>True when the caller's own note was deleted.</summary>
     public Task<bool> DeleteAsync(int userId, Guid id, CancellationToken token = default) => _repository.DeleteAsync(id, userId, token);
 
@@ -183,6 +220,7 @@ public sealed class NoteService
         PublicState = row.PublicState,
         IsOwn = viewerId is not null && row.UserId == viewerId,
         IsHidden = row.IsHidden,
+        ReviewNote = viewerId is not null && row.UserId == viewerId ? row.ReviewNote : null,
         AuthorDisplayName = row.AuthorDisplayName,
         CreatedAt = row.CreatedAt,
         UpdatedAt = row.UpdatedAt,

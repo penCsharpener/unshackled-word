@@ -12,8 +12,8 @@ public class AdminLogTests
     [Fact]
     public void AllActions_AreDistinct_AndCoverEveryConstant()
     {
-        AdminLogActions.All.Length.ShouldBe(11);
-        AdminLogActions.All.Distinct().Count().ShouldBe(11);
+        AdminLogActions.All.Length.ShouldBe(15);
+        AdminLogActions.All.Distinct().Count().ShouldBe(15);
     }
 
     private static InviteAdminRepository NewInvites(Db.TestFactory factory) => new(factory, new AdminLogRepository(factory));

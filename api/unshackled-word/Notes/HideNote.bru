@@ -1,0 +1,25 @@
+meta {
+  name: HideNote
+  type: http
+  seq: 25
+}
+
+post {
+  url: {{url}}maintainer/notes/{{noteId}}/hide
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "reason": "Unangemessen."
+  }
+}
+
+docs {
+  Maintainer: hides an internal or public note (optional reason); visible only to its author afterwards. 204; admin log entry note_hidden.
+}
+
+settings {
+  encodeUrl: true
+}

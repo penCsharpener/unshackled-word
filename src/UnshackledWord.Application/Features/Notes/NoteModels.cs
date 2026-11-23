@@ -65,12 +65,39 @@ public sealed class NoteRecord
     public string Visibility { get; init; } = NoteVisibilities.Private;
     public string PublicState { get; init; } = NotePublicStates.None;
     public bool IsHidden { get; init; }
+
+    /// <summary>The text the maintainer approved; null until a public note was approved. Not the text anonymous readers get unless <see cref="BodyMarkdown"/> is that.</summary>
+    public string? ApprovedBodyMarkdown { get; init; }
+
+    public DateTime? ApprovedAt { get; init; }
+    public DateTime? HiddenAt { get; init; }
+
+    /// <summary>Rejection or hide reason of the maintainer.</summary>
+    public string? ReviewNote { get; init; }
+
     public DateTime CreatedAt { get; init; }
     public DateTime? UpdatedAt { get; init; }
 }
 
 /// <summary>Filters of "my notes"; <see cref="Query"/> is plain text (the repository escapes the LIKE wildcards).</summary>
 public sealed record NoteListFilter(int? BookId, string? Visibility, string? Query, int Skip, int Take);
+
+/// <summary>The maintainer's review queue: public notes waiting for approval (not hidden) and all hidden notes.</summary>
+public sealed record NoteReviewQueue(IReadOnlyList<NoteRecord> Pending, IReadOnlyList<NoteRecord> Hidden);
+
+/// <summary>The maintainer actions on a note; the values are the suffix of the admin log actions (<c>note_approved</c> ...).</summary>
+public enum NoteReviewAction
+{
+    Approve,
+    Reject,
+    Hide,
+    Unhide,
+}
+
+public sealed record NoteReviewResult(NoteStatus Status, string? Message = null)
+{
+    public static NoteReviewResult Done { get; } = new(NoteStatus.Ok);
+}
 
 public sealed record NotePage(int Total, IReadOnlyList<NoteRecord> Rows);
 

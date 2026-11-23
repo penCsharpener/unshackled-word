@@ -1,0 +1,19 @@
+meta {
+  name: UnhideNote
+  type: http
+  seq: 26
+}
+
+post {
+  url: {{url}}maintainer/notes/{{noteId}}/unhide
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: shows a hidden note again. 204; admin log entry note_unhidden.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -96,6 +96,63 @@ public sealed class NoteRepository : INoteRepository
         return await ListForExportAsync(connection, null, userId, token);
     }
 
+    public async Task<bool> SetVisibilityAsync(Guid id, int userId, string visibility, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await SetVisibilityAsync(connection, null, id, userId, visibility, token);
+    }
+
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await ExistsAsync(connection, null, id, token);
+    }
+
+    public static Task<bool> ExistsAsync(IDbConnection c, IDbTransaction? t, Guid id, CancellationToken token = default) =>
+        c.ExecuteScalarAsync<bool>(new CommandDefinition(NoteSql.Exists, new { Id = id }, t, cancellationToken: token));
+
+    public async Task<int?> ReviewAsync(Guid id, NoteReviewAction action, int actorUserId, string? reason, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await ReviewAsync(connection, null, id, action, actorUserId, reason, token);
+    }
+
+    public async Task<NoteReviewQueue> ListReviewAsync(int viewerId, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await ListReviewAsync(connection, null, viewerId, token);
+    }
+
+    public static async Task<bool> SetVisibilityAsync(IDbConnection c, IDbTransaction? t, Guid id, int userId, string visibility, CancellationToken token = default) =>
+        await c.ExecuteAsync(new CommandDefinition(NoteSql.SetVisibility, new { Id = id, UserId = userId, Visibility = visibility }, t, cancellationToken: token)) == 1;
+
+    public static Task<int?> ReviewAsync(IDbConnection c, IDbTransaction? t, Guid id, NoteReviewAction action, int actorUserId, string? reason, CancellationToken token = default)
+    {
+        var sql = action switch
+        {
+            NoteReviewAction.Approve => NoteSql.Approve,
+            NoteReviewAction.Reject => NoteSql.Reject,
+            NoteReviewAction.Hide => NoteSql.Hide,
+            NoteReviewAction.Unhide => NoteSql.Unhide,
+            _ => throw new ArgumentOutOfRangeException(nameof(action)),
+        };
+
+        return c.QuerySingleOrDefaultAsync<int?>(new CommandDefinition(sql, new { Id = id, ActorId = actorUserId, Reason = reason }, t, cancellationToken: token));
+    }
+
+    public static async Task<NoteReviewQueue> ListReviewAsync(IDbConnection c, IDbTransaction? t, int viewerId, CancellationToken token = default)
+    {
+        using var multi = await c.QueryMultipleAsync(new CommandDefinition(NoteSql.ListReview, new { ViewerId = viewerId }, t, cancellationToken: token));
+        var pending = (await multi.ReadAsync<NoteRecord>()).ToList();
+        var hidden = (await multi.ReadAsync<NoteRecord>()).ToList();
+
+        return new NoteReviewQueue(pending, hidden);
+    }
+
     public static async Task<NotePage> ListMineAsync(IDbConnection c, IDbTransaction? t, int userId, NoteListFilter filter, CancellationToken token = default)
     {
         var parameters = new
@@ -235,6 +292,10 @@ internal static class NoteSql
                n."Visibility"                                                                AS "Visibility",
                n."PublicState"                                                               AS "PublicState",
                n."HiddenAt" IS NOT NULL                                                      AS "IsHidden",
+               n."ApprovedBodyMarkdown"                                                      AS "ApprovedBodyMarkdown",
+               n."ApprovedAt"                                                                AS "ApprovedAt",
+               n."HiddenAt"                                                                  AS "HiddenAt",
+               n."ReviewNote"                                                                AS "ReviewNote",
                n."CreatedAt"                                                                 AS "CreatedAt",
                n."UpdatedAt"                                                                 AS "UpdatedAt"
         """;
@@ -318,6 +379,99 @@ internal static class NoteSql
         DELETE FROM "unshackled-word"."Notes"
         WHERE "Id" = @Id
           AND "UserId" = @UserId
+        """;
+
+    internal const string Exists = """
+        SELECT EXISTS (SELECT 1
+                       FROM "unshackled-word"."Notes" n
+                       WHERE n."Id" = @Id)
+        """;
+
+    /// <summary>
+    /// private/internal: back to no review state and no approval snapshot. public: requests review; a pending or approved note keeps its state.
+    /// A reason (rejection or hide) stays while the note is hidden. All expressions see the old row.
+    /// </summary>
+    internal const string SetVisibility = """
+        UPDATE "unshackled-word"."Notes"
+        SET "Visibility" = @Visibility,
+            "PublicState" = CASE
+                                WHEN @Visibility <> 'public' THEN 'none'
+                                WHEN "PublicState" IN ('none', 'rejected') THEN 'pending'
+                                ELSE "PublicState"
+                            END,
+            "ApprovedBodyMarkdown" = CASE WHEN @Visibility <> 'public' THEN NULL ELSE "ApprovedBodyMarkdown" END,
+            "ApprovedAt" = CASE WHEN @Visibility <> 'public' THEN NULL ELSE "ApprovedAt" END,
+            "ApprovedByUserId" = CASE WHEN @Visibility <> 'public' THEN NULL ELSE "ApprovedByUserId" END,
+            "ReviewNote" = CASE WHEN "HiddenAt" IS NULL AND (@Visibility <> 'public' OR "PublicState" IN ('none', 'rejected')) THEN NULL ELSE "ReviewNote" END
+        WHERE "Id" = @Id
+          AND "UserId" = @UserId
+        """;
+
+    /// <summary>The maintainer approves the text as it is now; anonymous readers see exactly this snapshot from here on.</summary>
+    internal const string Approve = """
+        UPDATE "unshackled-word"."Notes"
+        SET "PublicState" = 'approved',
+            "ApprovedBodyMarkdown" = "BodyMarkdown",
+            "ApprovedAt" = now(),
+            "ApprovedByUserId" = @ActorId,
+            "ReviewNote" = CASE WHEN "HiddenAt" IS NULL THEN NULL ELSE "ReviewNote" END
+        WHERE "Id" = @Id
+          AND "Visibility" = 'public'
+          AND "PublicState" = 'pending'
+        RETURNING "UserId"
+        """;
+
+    /// <summary>A rejection also withdraws an older approval: the note is internal for everybody until the author requests public again.</summary>
+    internal const string Reject = """
+        UPDATE "unshackled-word"."Notes"
+        SET "PublicState" = 'rejected',
+            "ApprovedBodyMarkdown" = NULL,
+            "ApprovedAt" = NULL,
+            "ApprovedByUserId" = NULL,
+            "ReviewNote" = @Reason
+        WHERE "Id" = @Id
+          AND "Visibility" = 'public'
+          AND "PublicState" = 'pending'
+        RETURNING "UserId"
+        """;
+
+    internal const string Hide = """
+        UPDATE "unshackled-word"."Notes"
+        SET "HiddenAt" = now(),
+            "HiddenByUserId" = @ActorId,
+            "ReviewNote" = @Reason
+        WHERE "Id" = @Id
+          AND "Visibility" <> 'private'
+          AND "HiddenAt" IS NULL
+        RETURNING "UserId"
+        """;
+
+    /// <summary>A rejection reason survives the hide/unhide round trip only if it was not overwritten by the hide reason.</summary>
+    internal const string Unhide = """
+        UPDATE "unshackled-word"."Notes"
+        SET "HiddenAt" = NULL,
+            "HiddenByUserId" = NULL,
+            "ReviewNote" = CASE WHEN "PublicState" = 'rejected' THEN "ReviewNote" ELSE NULL END
+        WHERE "Id" = @Id
+          AND "HiddenAt" IS NOT NULL
+        RETURNING "UserId"
+        """;
+
+    /// <summary>Two result sets: pending public notes that are not hidden, then every hidden note; oldest change first.</summary>
+    internal const string ListReview = $"""
+        SELECT {Columns}
+        FROM "unshackled-word"."Notes" n
+        JOIN "unshackled-word"."Users" u ON u."Id" = n."UserId"
+        WHERE n."Visibility" = 'public'
+          AND n."PublicState" = 'pending'
+          AND n."HiddenAt" IS NULL
+        ORDER BY COALESCE(n."UpdatedAt", n."CreatedAt"), n."Id";
+
+        SELECT {Columns}
+        FROM "unshackled-word"."Notes" n
+        JOIN "unshackled-word"."Users" u ON u."Id" = n."UserId"
+        WHERE n."HiddenAt" IS NOT NULL
+        ORDER BY n."HiddenAt", n."Id";
         """;
 
     internal const string Get = $"""

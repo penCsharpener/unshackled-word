@@ -1,0 +1,19 @@
+meta {
+  name: ReviewQueue
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{url}}maintainer/notes/review
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: pending public notes and hidden notes, each with the current text (`note.bodyMarkdown`) and the approved text (`approvedBodyMarkdown`) for a diff.
+}
+
+settings {
+  encodeUrl: true
+}

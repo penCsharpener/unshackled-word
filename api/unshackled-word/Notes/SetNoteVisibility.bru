@@ -1,0 +1,25 @@
+meta {
+  name: SetNoteVisibility
+  type: http
+  seq: 20
+}
+
+put {
+  url: {{url}}notes/{{noteId}}/visibility
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "visibility": "internal"
+  }
+}
+
+docs {
+  Owner only. `private` | `internal` (all signed-in users) | `public` (request: publicState pending until a maintainer approves). 404 when the note is not the caller's.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,19 @@
+meta {
+  name: GetChapterNotesOwnOnly
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{url}}notes/chapter/45/8?others=false
+  body: none
+  auth: inherit
+}
+
+docs {
+  Only the caller's own notes of Röm 8 (`others=false`).
+}
+
+settings {
+  encodeUrl: true
+}
