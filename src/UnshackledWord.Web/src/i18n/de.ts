@@ -1246,6 +1246,7 @@ export const de = {
         mappings: "Zuordnungen",
         revision: "Revision",
         vocab: "Vokabeln",
+        notes: "Notizen",
       },
       export: "Seed exportieren",
       exporting: "wird erstellt …",
@@ -1336,6 +1337,8 @@ export const de = {
         update: "Aktualisieren",
         roundTrip: "Rundlauf prüfen",
         rebase: "Rebase …",
+        notesExport: "Notizen exportieren",
+        notesImport: "Notizen importieren",
       },
       hints: {
         export:
@@ -1349,7 +1352,7 @@ export const de = {
         rebase:
           "Exportiert, baut Wörter und Verse aus dem Basistext neu auf und importiert Morphologie und Zuordnungen wieder. Braucht eine Bestätigung.",
       },
-      actions: { import: "Import", update: "Aktualisierung" },
+      actions: { import: "Import", update: "Aktualisierung", export: "Export" },
       skipped: "Übersprungen: {{reason}}",
       skip: {
         "no-seed": "Im Seed-Ordner liegt kein Seed dieser Art.",
@@ -1362,6 +1365,7 @@ export const de = {
         "no-words": "Die deutschen Wörter fehlen, der Seed hat nichts, worauf er passt.",
         "unsupported-format": "Das Seed-Format wird hier nicht unterstützt.",
         "update-unsupported": "Die Morphologie wird nach dem ersten Import nie aktualisiert.",
+        "no-file": "In temp/notes liegt keine Exportdatei.",
       },
       counts: {
         variants: "Varianten",
@@ -1376,6 +1380,10 @@ export const de = {
         removed: "entfernt",
         kept: "lokal behalten",
         unchanged: "unverändert",
+        notes: "Notizen",
+        inserted: "neu",
+        updated: "geändert",
+        skipped: "übersprungen",
         alignedChapters: "Kapitel ausgerichtet",
       },
       lists: {
@@ -1384,6 +1392,7 @@ export const de = {
         kept: "Lokal geändert, behalten",
         new: "Neu",
         removed: "Entfernt",
+        skipped: "Übersprungen (Autor unbekannt)",
       },
       severity: { check: "Prüfen" },
       more: "… und {{count}} weitere (siehe Berichtsdatei)",
@@ -1494,6 +1503,21 @@ export const de = {
     tables: "Betroffene Tabellen:",
     importLabel: "Import:",
     updateLabel: "Aktualisieren:",
+    notes: {
+      title: "Notizen",
+      what: "Exportiert die Notizen aller Nutzer als JSON-Datei nach temp/notes oder spielt eine solche Datei wieder ein (zum Beispiel nach einer frischen Datenbank, wenn dieselben Nutzer wieder angelegt sind). Die Datei ist ein Backup und gehört nicht ins Repository.",
+      where:
+        "Ordner: temp/notes, Dateien notes-JJJJMMTT-HHmmss.json. Neu ist eine Notiz, die es nicht gibt; geändert eine, deren Datei-Stand neuer ist; Notizen unbekannter Autoren werden übersprungen und gelistet.",
+      noDelete:
+        "Der Import löscht nichts: Eine in der Datenbank gelöschte Notiz, die in der Datei steht, kommt zurück.",
+      export: "Notizen exportieren",
+      import: "Notizen importieren",
+      file: "Exportdatei",
+      fileOption: "{{name}} ({{size}} KB, {{date}})",
+      noFiles: "Noch keine Exportdatei vorhanden.",
+      filesFailed: "Die Dateiliste konnte nicht geladen werden.",
+      startFailed: "Der Auftrag konnte nicht gestartet werden.",
+    },
     run: "{{kind}} importieren",
     runUpdate: "{{kind}} aktualisieren",
     kinds: {

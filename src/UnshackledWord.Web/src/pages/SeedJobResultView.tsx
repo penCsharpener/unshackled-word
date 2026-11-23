@@ -10,12 +10,16 @@ import type {
 } from "@/lib/maintainer/seedJobs";
 
 const COUNT_ORDER = [
+  "notes",
   "variants",
   "verses",
   "rows",
   "exact",
   "shifted",
   "modified",
+  "inserted",
+  "updated",
+  "skipped",
   "orphaned",
   "replaced",
   "new",

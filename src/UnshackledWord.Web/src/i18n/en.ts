@@ -1231,6 +1231,7 @@ export const en: Translation = {
         mappings: "Mappings",
         revision: "Revision",
         vocab: "Vocabulary",
+        notes: "Notes",
       },
       export: "Export seed",
       exporting: "Building …",
@@ -1320,6 +1321,8 @@ export const en: Translation = {
         update: "Update",
         roundTrip: "Check round trip",
         rebase: "Rebase …",
+        notesExport: "Export notes",
+        notesImport: "Import notes",
       },
       hints: {
         export:
@@ -1333,7 +1336,7 @@ export const en: Translation = {
         rebase:
           "Exports, rebuilds words and verses from the base text and imports morphology and mappings again. Needs a confirmation.",
       },
-      actions: { import: "Import", update: "Update" },
+      actions: { import: "Import", update: "Update", export: "Export" },
       skipped: "Skipped: {{reason}}",
       skip: {
         "no-seed": "The seed folder holds no seed of this kind.",
@@ -1346,6 +1349,7 @@ export const en: Translation = {
         "no-words": "The German words are missing, so the seed has nothing to be placed on.",
         "unsupported-format": "This seed format is not supported here.",
         "update-unsupported": "Morphology is never updated after the first import.",
+        "no-file": "There is no export file in temp/notes.",
       },
       counts: {
         variants: "Variants",
@@ -1360,6 +1364,10 @@ export const en: Translation = {
         removed: "removed",
         kept: "kept local",
         unchanged: "unchanged",
+        notes: "Notes",
+        inserted: "new",
+        updated: "changed",
+        skipped: "skipped",
         alignedChapters: "chapters aligned",
       },
       lists: {
@@ -1368,6 +1376,7 @@ export const en: Translation = {
         kept: "Changed locally, kept",
         new: "New",
         removed: "Removed",
+        skipped: "Skipped (unknown author)",
       },
       severity: { check: "Check" },
       more: "… and {{count}} more (see the report file)",
@@ -1477,6 +1486,21 @@ export const en: Translation = {
     tables: "Tables affected:",
     importLabel: "Import:",
     updateLabel: "Update:",
+    notes: {
+      title: "Notes",
+      what: "Exports the notes of all users as a JSON file to temp/notes or restores such a file (for example after a fresh database once the same users are registered again). The file is a backup and does not belong in the repository.",
+      where:
+        "Folder: temp/notes, files notes-YYYYMMDD-HHmmss.json. New means a note that does not exist; changed one whose file version is newer; notes of unknown authors are skipped and listed.",
+      noDelete:
+        "The import deletes nothing: a note deleted in the database that is in the file comes back.",
+      export: "Export notes",
+      import: "Import notes",
+      file: "Export file",
+      fileOption: "{{name}} ({{size}} KB, {{date}})",
+      noFiles: "No export file yet.",
+      filesFailed: "The file list could not be loaded.",
+      startFailed: "The job could not be started.",
+    },
     run: "Import {{kind}}",
     runUpdate: "Update {{kind}}",
     kinds: {

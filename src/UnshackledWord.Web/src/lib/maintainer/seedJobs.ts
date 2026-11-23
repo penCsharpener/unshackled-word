@@ -2,7 +2,14 @@ import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/r
 import { api } from "@/lib/api";
 import type { SeedKind } from "./api";
 
-export type SeedOperation = "export" | "import" | "update" | "rebase" | "roundTrip";
+export type SeedOperation =
+  | "export"
+  | "import"
+  | "update"
+  | "rebase"
+  | "roundTrip"
+  | "notesExport"
+  | "notesImport";
 export type SeedJobState = "running" | "succeeded" | "failed";
 
 export interface SeedReportList {
@@ -71,7 +78,7 @@ export interface SeedJobResult {
 export interface SeedJob {
   id: string;
   operation: SeedOperation;
-  kind: SeedKind;
+  kind: SeedKind | "notes";
   status: SeedJobState;
   startedAt: string;
   finishedAt?: string;

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import type { SeedKind } from "@/lib/maintainer/api";
 import { useSeedStatus, useStartSeedJob } from "@/lib/maintainer/seedJobs";
+import { NotesJobsSection } from "./NotesJobsSection";
 import { SeedJobResultView } from "./SeedJobResultView";
 
 type ImportKind = Exclude<SeedKind, "all">;
@@ -145,6 +146,9 @@ export function SeedImportsPage() {
             </div>
           </li>
         ))}
+        <li>
+          <NotesJobsSection job={job} blocked={blocked} />
+        </li>
       </ul>
 
       {job ? (
