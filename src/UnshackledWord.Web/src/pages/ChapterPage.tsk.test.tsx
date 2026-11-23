@@ -118,6 +118,7 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     expect(links[0]?.className).toContain("font-medium");
     expect(links[1]).toHaveAccessibleName("Psalmen 33,9");
     expect(screen.queryByRole("button", { name: /^Querverweis .* bearbeiten$/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Querverweis hinzufügen" })).toBeNull();
     expect(screen.getByRole("switch", { name: "Nur hervorgehobene" })).toBeInTheDocument();
     expect(screen.queryByRole("switch", { name: "Ausgeblendete zeigen" })).toBeNull();
   });
@@ -158,6 +159,11 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     expect(
       screen.getAllByRole("button", { name: "Querverweis Psalmen 33,9 bearbeiten" }).length,
     ).toBeGreaterThan(0);
+    // and "Querverweis hinzufügen" after the list of each verse (roadmap 0024.4f)
+    const verse1 = screen.getByRole("group", { name: "Querverweise zu Vers 1" });
+    expect(
+      within(verse1).getByRole("button", { name: "Querverweis hinzufügen" }),
+    ).toBeInTheDocument();
 
     await user.click(curate);
     const hiddenLink = await screen.findByRole("link", { name: "Psalmen 104,30 (ausgeblendet)" });
@@ -192,6 +198,7 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     );
     expect(screen.queryByRole("switch", { name: "Ausgeblendete zeigen" })).toBeNull();
     expect(screen.queryByRole("button", { name: /^Querverweis .* bearbeiten$/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Querverweis hinzufügen" })).toBeNull();
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes("includeHidden"))).toBe(false);
   });
 });

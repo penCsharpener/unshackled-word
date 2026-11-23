@@ -286,6 +286,8 @@ export interface CrossReference {
   rating?: TskRating;
   /** Curator comment, plain text (max 500 characters); omitted when there is none. */
   comment?: string;
+  /** `added`: a link curators added (roadmap 0024.4), listed after the TSK links; omitted for TSK links. */
+  origin?: "added";
 }
 
 /** Curation rating of one TSK link; neutral is `null` in a request and omitted in a response. */
@@ -300,6 +302,22 @@ export interface SaveTskCurationRequest {
   rating: TskRating | null;
   /** Trimmed; `null` removes the comment. */
   comment: string | null;
+}
+
+/** `POST tsk/curation/added`: a new link from a source verse to a German reference (e.g. "Röm 8,28-30"). */
+export interface AddTskCurationRequest {
+  sourceHebRefId: number;
+  reference: string;
+  /** Trimmed; `null` for none (max 500). */
+  comment: string | null;
+}
+
+/** `DELETE tsk/curation/added`: the key of an added link (body, like the PUT). */
+export interface DeleteAddedTskCurationRequest {
+  sourceHebRefId: number;
+  targetStartHebRefId: number;
+  /** Omitted for a single target verse. */
+  targetEndHebRefId?: number;
 }
 
 /** State of the link after a save; a link back at plain TSK has no row (only key and `origin`). */

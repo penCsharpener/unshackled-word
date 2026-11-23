@@ -82,7 +82,9 @@ export const api = {
     request<T>("PUT", path, form, signal),
   patch: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("PATCH", path, body, signal),
-  delete: <T>(path: string, signal?: AbortSignal) => request<T>("DELETE", path, undefined, signal),
+  /** `body` only where the endpoint takes its key as JSON (e.g. `DELETE tsk/curation/added`). */
+  delete: <T>(path: string, signal?: AbortSignal, body?: unknown) =>
+    request<T>("DELETE", path, body, signal),
   /** GET a file: the blob plus the file name the server suggested (Content-Disposition), else `fallbackName`. */
   download: async (path: string, fallbackName: string, signal?: AbortSignal) => {
     const response = await fetch(`${baseUrl}${path}`, { signal, credentials: "include" });

@@ -39,7 +39,8 @@ export interface CrossReferenceListProps {
   showHidden?: boolean;
   /**
    * `inline` with `preview` only: a pen button after every link opens `CrossReferenceEditor` for it (source verse =
-   * `preview`). Maintainers only for now; suggestions by other users follow in 0024.6f.
+   * `preview`), and "Querverweis hinzufügen" after the list opens it in `add` mode (roadmap 0024.4f). Maintainers only
+   * for now; suggestions by other users follow in 0024.6f.
    */
   editable?: boolean;
 }
@@ -153,10 +154,11 @@ export function CrossReferenceList({
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
   const [hover, setHover] = useState<Hover | null>(null);
+  /** Open editor: one link (`reference`) or the add form (`reference` null); `anchor` gets the focus back. */
   const [editing, setEditing] = useState<{
-    reference: CrossReference;
+    reference: CrossReference | null;
     position: Hover;
-    pen: HTMLElement;
+    anchor: HTMLElement;
   } | null>(null);
   const references = showHidden ? all : all.filter((r) => r.rating !== "hide");
   const hovered = hover && references.find((r) => keyOf(r) === hover.key);
@@ -188,31 +190,36 @@ export function CrossReferenceList({
   const to = (r: CrossReference) =>
     `${chapterPath({ bookId: r.bibleBookId, chapter: r.chapter })}#v${r.verse}`;
 
-  /** Rating for screen readers (the star and the grey are visual only). */
+  /** Rating and origin for screen readers (the star, the "+" and the grey are visual only). */
   const state = (r: CrossReference) =>
-    r.rating === "highlight"
+    (r.rating === "highlight"
       ? ` (${t("bible.tskCuration.highlighted")})`
       : r.rating === "hide"
         ? ` (${t("bible.tskCuration.hidden")})`
-        : "";
-  /** Visible label: a star in front of a highlighted link. */
+        : "") + (r.origin === "added" ? ` (${t("bible.tskCuration.added")})` : "");
+  /** Visible label: a star in front of a highlighted link, a "+" in front of an added one. */
   const content = (r: CrossReference) => (
     <>
       {r.rating === "highlight" && <StarIcon />}
+      {r.origin === "added" && (
+        <span aria-hidden="true" data-testid="added-marker" className="me-0.5 font-medium">
+          +
+        </span>
+      )}
       {label(r, false)}
       {state(r) && <span className="sr-only">{state(r)}</span>}
     </>
   );
 
-  const openEditor = (r: CrossReference, pen: HTMLElement) => {
+  const openEditor = (r: CrossReference | null, anchor: HTMLElement) => {
     setHover(null);
-    const rect = pen.getBoundingClientRect();
+    const rect = anchor.getBoundingClientRect();
     const above = rect.bottom + 320 > window.innerHeight && rect.top > window.innerHeight / 2;
     setEditing({
       reference: r,
-      pen,
+      anchor,
       position: {
-        key: keyOf(r),
+        key: r ? keyOf(r) : "add",
         left: Math.max(
           CARD_GAP,
           Math.min(rect.left, window.innerWidth - CROSS_REFERENCE_EDITOR_WIDTH - CARD_GAP),
@@ -223,9 +230,9 @@ export function CrossReferenceList({
     });
   };
   const closeEditor = () => {
-    const pen = editing?.pen;
+    const anchor = editing?.anchor;
     setEditing(null);
-    if (pen?.isConnected) pen.focus();
+    if (anchor?.isConnected) anchor.focus();
   };
 
   if (variant === "inline") {
@@ -278,7 +285,7 @@ export function CrossReferenceList({
                 aria-label={t("bible.tskCuration.edit", { reference: label(r, true) })}
                 title={t("bible.tskCuration.edit", { reference: label(r, true) })}
                 aria-haspopup="dialog"
-                aria-expanded={editing !== null && keyOf(editing.reference) === keyOf(r)}
+                aria-expanded={editing?.reference != null && keyOf(editing.reference) === keyOf(r)}
                 onClick={(event) => openEditor(r, event.currentTarget)}
               >
                 <PencilIcon />
@@ -291,22 +298,50 @@ export function CrossReferenceList({
             )}
           </li>
         ))}
+        {editable && preview && (
+          <li>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-1 py-0 text-xs text-fg-muted"
+              aria-haspopup="dialog"
+              aria-expanded={editing !== null && editing.reference === null}
+              onClick={(event) => openEditor(null, event.currentTarget)}
+            >
+              {t("bible.tskCuration.add.action")}
+            </Button>
+          </li>
+        )}
         {hover && preview && (
           <PreviewCard hover={hover} preview={preview} comment={hovered?.comment} />
         )}
         {editing && preview && (
           <li className="contents">
-            <CrossReferenceEditor
-              source={preview}
-              reference={editing.reference}
-              label={label(editing.reference, true)}
-              position={{
-                x: editing.position.left,
-                y: editing.position.y,
-                above: editing.position.above,
-              }}
-              onClose={closeEditor}
-            />
+            {editing.reference ? (
+              <CrossReferenceEditor
+                source={preview}
+                reference={editing.reference}
+                label={label(editing.reference, true)}
+                position={{
+                  x: editing.position.left,
+                  y: editing.position.y,
+                  above: editing.position.above,
+                }}
+                onClose={closeEditor}
+              />
+            ) : (
+              <CrossReferenceEditor
+                mode="add"
+                source={preview}
+                level={preview.level}
+                position={{
+                  x: editing.position.left,
+                  y: editing.position.y,
+                  above: editing.position.above,
+                }}
+                onClose={closeEditor}
+              />
+            )}
           </li>
         )}
       </ul>

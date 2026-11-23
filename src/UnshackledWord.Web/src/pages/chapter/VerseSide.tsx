@@ -26,7 +26,10 @@ export interface VerseSideProps {
   onlyHighlighted?: boolean;
   /** `tsk`, curate mode (Admin/Maintainer): hidden links are listed greyed. */
   showHidden?: boolean;
-  /** `tsk`: pen per link opening the `CrossReferenceEditor` (Admin/Maintainer). */
+  /**
+   * `tsk`: pen per link opening the `CrossReferenceEditor` and "Querverweis hinzufügen" after the list
+   * (Admin/Maintainer); with `showHidden` also verses without links get a panel.
+   */
   editable?: boolean;
   expanded: boolean;
   onExpandedChange: (verse: number, expanded: boolean) => void;
@@ -75,7 +78,8 @@ export const VerseSide = memo(function VerseSide({
   );
 
   if (mode === "tsk") {
-    if (!shown || shown.length === 0) return null;
+    // curators in curate mode get the panel on every verse, so a link can be added where TSK has none
+    if ((!shown || shown.length === 0) && !(editable && showHidden)) return null;
     return (
       <VerseSidePanel
         mode="tsk"
@@ -85,7 +89,7 @@ export const VerseSide = memo(function VerseSide({
       >
         <CrossReferenceList
           variant="inline"
-          references={shown}
+          references={shown ?? []}
           books={books}
           preview={preview}
           showHidden={showHidden}

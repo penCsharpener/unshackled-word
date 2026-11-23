@@ -1,5 +1,7 @@
 import { api } from "@/lib/api";
 import type {
+  AddTskCurationRequest,
+  DeleteAddedTskCurationRequest,
   GetBibleStructureResponse,
   GetChapterCrossReferencesResponse,
   GetChapterOriginalsResponse,
@@ -73,6 +75,12 @@ export const bibleApi = {
   /** Maintainer: rating and comment of one TSK link (roadmap 0024.3). */
   saveTskCuration: (body: SaveTskCurationRequest) =>
     api.put<TskCurationResponse>("/tsk/curation", body),
+  /** Maintainer: a new link from a verse to a parsed German reference (roadmap 0024.4). */
+  addTskCuration: (body: AddTskCurationRequest) =>
+    api.post<TskCurationResponse>("/tsk/curation/added", body),
+  /** Maintainer: removes an added link (204); the key goes in the body. */
+  deleteAddedTskCuration: (body: DeleteAddedTskCurationRequest) =>
+    api.delete<void>("/tsk/curation/added", undefined, body),
   chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetChapterOriginalsResponse>(
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,

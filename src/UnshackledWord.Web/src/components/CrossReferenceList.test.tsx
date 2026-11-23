@@ -1,9 +1,11 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
+import { bibleApi } from "@/lib/bible/api";
+import { sidePanelKeys } from "@/lib/bible/sidePanel";
 import type { BibleStructureBook, CrossReference } from "@/lib/bible/types";
 import { CrossReferenceList, cardLeft } from "./CrossReferenceList";
 
@@ -357,5 +359,245 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+const addBooks = [
+  ...books,
+  { id: 45, nameDe: "Römer", nameEn: "Romans", abbreviationDe: "Röm", abbreviationEn: "Rom" },
+] as BibleStructureBook[];
+
+/** The side panel list of 1Mo 50,20 fed from the chapter query, so invalidation refetches it. */
+function Harness({ editable = true }: { editable?: boolean }) {
+  const query = useQuery({
+    queryKey: sidePanelKeys.crossReferences(1, 50, false),
+    queryFn: ({ signal }) => bibleApi.chapterCrossReferences(1, 50, signal),
+  });
+  const references = query.data?.verses.find((v) => v.verse === 20)?.references;
+  if (!references) return null;
+  return (
+    <CrossReferenceList
+      variant="inline"
+      references={references}
+      books={addBooks}
+      preview={{ bookId: 1, chapter: 50, verse: 20, level: 200 }}
+      editable={editable}
+    />
+  );
+}
+
+describe("CrossReferenceList add (roadmap 0024.4f)", () => {
+  const tsk: CrossReference = { bibleBookId: 1, chapter: 45, verse: 5 };
+  const romans: CrossReference = {
+    bibleBookId: 45,
+    chapter: 8,
+    verse: 28,
+    endVerse: 30,
+    origin: "added",
+  };
+
+  /** The API of 1Mo 50,20: parse, passage text, chapter list (with Röm 8,28-30 once added) and the writes. */
+  function stubApi({ addStatus = 200, startAdded = false } = {}) {
+    let added = startAdded;
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.includes("/references/parse")) {
+        const q = new URL(url, "http://x").searchParams.get("q");
+        return Response.json(
+          q === "Röm 8,28-30"
+            ? {
+                references: [
+                  {
+                    bookId: 45,
+                    bookOnly: false,
+                    display: "Römer 8,28–30",
+                    spans: [{ startChapter: 8, startVerse: 28, endChapter: 8, endVerse: 30 }],
+                    groups: [],
+                  },
+                ],
+                bookCandidates: [],
+              }
+            : {
+                references: [],
+                error: { code: "unknownBook", position: 0, args: {} },
+                bookCandidates: [],
+              },
+        );
+      }
+      if (url.includes("/passageText")) {
+        return Response.json({
+          passages: [
+            {
+              bookId: 45,
+              chapter: 8,
+              verse: 28,
+              endVerse: 30,
+              verses: [
+                { verse: 28, text: "Wir wissen aber, dass denen, die Gott lieben" },
+                { verse: 29, text: "Denn welche er zuvorerkannt hat" },
+                { verse: 30, text: "Welche er aber zuvorbestimmt hat" },
+              ],
+            },
+          ],
+          truncated: false,
+        });
+      }
+      if (url.includes("/tsk/curation/added")) {
+        if (init?.method === "DELETE") {
+          added = false;
+          return new Response(null, { status: 204 });
+        }
+        if (addStatus !== 200) {
+          return Response.json(
+            { statusCode: addStatus, errors: { generalErrors: ["The link already exists."] } },
+            { status: addStatus },
+          );
+        }
+        added = true;
+        return Response.json({
+          sourceHebRefId: 1050020,
+          targetStartHebRefId: 45008028,
+          targetEndHebRefId: 45008030,
+          origin: "added",
+          updatedAt: "2026-11-23T10:00:00Z",
+        });
+      }
+      if (url.includes("/chapterCrossReferences/")) {
+        return Response.json({
+          bibleBookId: 1,
+          chapter: 50,
+          verses: [{ verse: 20, references: added ? [tsk, romans] : [tsk] }],
+        });
+      }
+      return Response.json({ references: [] });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    return fetchMock;
+  }
+
+  function renderHarness(editable = true) {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={client}>
+        <MemoryRouter>
+          <Harness editable={editable} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  }
+
+  const posts = (fetchMock: ReturnType<typeof stubApi>) =>
+    fetchMock.mock.calls.filter(([, init]) => init?.method === "POST");
+
+  beforeEach(async () => {
+    await i18n.changeLanguage("de");
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("adds Röm 8,28-30 under 1Mo 50,20: parse, preview, POST, listed with a + after the refetch", async () => {
+    const fetchMock = stubApi();
+    const user = userEvent.setup();
+    renderHarness();
+    await user.click(await screen.findByRole("button", { name: "Querverweis hinzufügen" }));
+    const editor = screen.getByRole("dialog", { name: "Querverweis hinzufügen" });
+    const save = within(editor).getByRole("button", { name: "Speichern" });
+    expect(save).toBeDisabled();
+
+    await user.type(within(editor).getByLabelText("Bibelstelle"), "Röm 8,28-30");
+    expect(await within(editor).findByText("Römer 8,28–30")).toBeInTheDocument();
+    expect(
+      await within(editor).findByText("Wir wissen aber, dass denen, die Gott lieben"),
+    ).toBeInTheDocument();
+    await user.type(within(editor).getByLabelText("Kommentar"), " Gottes Absicht ");
+    expect(save).toBeEnabled();
+    await user.click(save);
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    const [post] = posts(fetchMock);
+    expect(post?.[0]).toMatch(/\/tsk\/curation\/added$/);
+    expect(JSON.parse(String(post?.[1]?.body))).toEqual({
+      sourceHebRefId: 1050020,
+      reference: "Röm 8,28-30",
+      comment: "Gottes Absicht",
+    });
+    const link = await screen.findByRole("link", { name: "Römer 8,28–30 (hinzugefügt)" });
+    expect(link).toHaveAttribute("href", "/bible/45/8#v28");
+    expect(within(link).getByTestId("added-marker")).toHaveTextContent("+");
+    expect(screen.getByRole("link", { name: "1. Mose 45,5" })).toBeInTheDocument();
+  });
+
+  it("shows the parser's error for „Xyz 1,1“, keeps Speichern disabled and sends nothing", async () => {
+    const fetchMock = stubApi();
+    const user = userEvent.setup();
+    renderHarness();
+    await user.click(await screen.findByRole("button", { name: "Querverweis hinzufügen" }));
+    const editor = screen.getByRole("dialog");
+    await user.type(within(editor).getByLabelText("Bibelstelle"), "Xyz 1,1");
+    expect(await within(editor).findByText("Dieses Buch ist nicht bekannt.")).toBeInTheDocument();
+    expect(within(editor).getByLabelText("Bibelstelle")).toHaveAttribute("aria-invalid", "true");
+    const save = within(editor).getByRole("button", { name: "Speichern" });
+    expect(save).toBeDisabled();
+    await user.type(within(editor).getByLabelText("Bibelstelle"), "{Enter}");
+    expect(posts(fetchMock)).toHaveLength(0);
+    expect(screen.queryByTestId("cross-reference-add-preview")).toBeNull();
+  });
+
+  it("shows a 409 as a readable message and keeps the form open", async () => {
+    stubApi({ addStatus: 409 });
+    const user = userEvent.setup();
+    renderHarness();
+    await user.click(await screen.findByRole("button", { name: "Querverweis hinzufügen" }));
+    const editor = screen.getByRole("dialog");
+    await user.type(within(editor).getByLabelText("Bibelstelle"), "Röm 8,28-30");
+    await within(editor).findByText("Römer 8,28–30");
+    await user.click(within(editor).getByRole("button", { name: "Speichern" }));
+    expect(
+      await within(editor).findByText("Diesen Querverweis gibt es für diesen Vers schon."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("removes an added link from its editor after a confirm step (DELETE with the key in the body)", async () => {
+    const fetchMock = stubApi({ startAdded: true });
+    const user = userEvent.setup();
+    renderHarness();
+    await user.click(
+      await screen.findByRole("button", { name: "Querverweis Römer 8,28–30 bearbeiten" }),
+    );
+    const editor = screen.getByRole("dialog");
+    await user.click(within(editor).getByRole("button", { name: "Querverweis entfernen" }));
+    expect(
+      within(editor).getByText("Diesen hinzugefügten Querverweis wirklich entfernen?"),
+    ).toBeInTheDocument();
+    // back without a request
+    await user.click(within(editor).getByRole("button", { name: "Abbrechen" }));
+    expect(within(editor).queryByText(/wirklich entfernen/)).toBeNull();
+    await user.click(within(editor).getByRole("button", { name: "Querverweis entfernen" }));
+    await user.click(within(editor).getByRole("button", { name: "Entfernen" }));
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    const deletes = fetchMock.mock.calls.filter(([, init]) => init?.method === "DELETE");
+    expect(deletes).toHaveLength(1);
+    expect(deletes[0]?.[0]).toMatch(/\/tsk\/curation\/added$/);
+    expect(JSON.parse(String(deletes[0]?.[1]?.body))).toEqual({
+      sourceHebRefId: 1050020,
+      targetStartHebRefId: 45008028,
+      targetEndHebRefId: 45008030,
+    });
+    await waitFor(() => expect(screen.queryByRole("link", { name: /Römer 8/ })).toBeNull());
+  });
+
+  it("offers no remove action for a TSK link and no add action without `editable`", async () => {
+    stubApi();
+    const user = userEvent.setup();
+    renderHarness();
+    await user.click(
+      await screen.findByRole("button", { name: "Querverweis 1. Mose 45,5 bearbeiten" }),
+    );
+    expect(screen.queryByRole("button", { name: "Querverweis entfernen" })).toBeNull();
+    cleanup();
+    renderHarness(false);
+    await screen.findByRole("link", { name: "1. Mose 45,5" });
+    expect(screen.queryByRole("button", { name: "Querverweis hinzufügen" })).toBeNull();
   });
 });

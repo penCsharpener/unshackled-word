@@ -1,7 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { bibleApi } from "./api";
 import { sidePanelKeys } from "./sidePanel";
-import type { CrossReference, SaveTskCurationRequest, TskRating } from "./types";
+import type {
+  AddTskCurationRequest,
+  CrossReference,
+  DeleteAddedTskCurationRequest,
+  SaveTskCurationRequest,
+  TskRating,
+} from "./types";
 import { wordDetailKeys } from "./wordDetail";
 
 /** Maximum length of a curator comment (server validation: 500 after trimming). */
@@ -33,19 +39,71 @@ export function curationRequest(
   };
 }
 
+/** The key of an added link for `DELETE tsk/curation/added` (end only for ranges). */
+export function addedKey(
+  source: { bookId: number; chapter: number; verse: number },
+  target: CrossReference,
+): DeleteAddedTskCurationRequest {
+  return {
+    sourceHebRefId: hebRefId(source.bookId, source.chapter, source.verse),
+    targetStartHebRefId: hebRefId(target.bibleBookId, target.chapter, target.verse),
+    ...(target.endVerse
+      ? { targetEndHebRefId: hebRefId(target.bibleBookId, target.chapter, target.endVerse) }
+      : {}),
+  };
+}
+
+/** The body of `POST tsk/curation/added`: reference and comment trimmed, empty comment → `null`. */
+export function addRequest(
+  source: { bookId: number; chapter: number; verse: number },
+  reference: string,
+  comment: string,
+): AddTskCurationRequest {
+  const trimmed = comment.trim();
+  return {
+    sourceHebRefId: hebRefId(source.bookId, source.chapter, source.verse),
+    reference: reference.trim(),
+    comment: trimmed === "" ? null : trimmed,
+  };
+}
+
 /**
- * Maintainer save of one link's rating and comment. Afterwards the chapter lists (both with and without hidden
- * links), the hover texts and the word boxes are refetched, since all of them carry rating, comment and order.
+ * After any curation write the chapter lists (both with and without hidden links), the hover texts and the word
+ * boxes are refetched, since all of them carry rating, comment, origin and order.
  */
-export function useSaveTskCuration() {
+function useInvalidateTsk() {
   const queryClient = useQueryClient();
+  return () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: sidePanelKeys.crossReferencesAll }),
+      queryClient.invalidateQueries({ queryKey: crossReferenceTextsAll }),
+      queryClient.invalidateQueries({ queryKey: wordDetailKeys.all }),
+    ]);
+}
+
+/** Maintainer save of one link's rating and comment (`PUT tsk/curation`). */
+export function useSaveTskCuration() {
+  const invalidate = useInvalidateTsk();
   return useMutation({
     mutationFn: (body: SaveTskCurationRequest) => bibleApi.saveTskCuration(body),
-    onSuccess: () =>
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: sidePanelKeys.crossReferencesAll }),
-        queryClient.invalidateQueries({ queryKey: crossReferenceTextsAll }),
-        queryClient.invalidateQueries({ queryKey: wordDetailKeys.all }),
-      ]),
+    onSuccess: invalidate,
+  });
+}
+
+/** Maintainer: adds a link (`POST tsk/curation/added`, roadmap 0024.4f); same invalidations as a save. */
+export function useAddTskCuration() {
+  const invalidate = useInvalidateTsk();
+  return useMutation({
+    mutationFn: (body: AddTskCurationRequest) => bibleApi.addTskCuration(body),
+    onSuccess: invalidate,
+  });
+}
+
+/** Maintainer: removes an added link (`DELETE tsk/curation/added`); same invalidations as a save. */
+export function useDeleteAddedTskCuration() {
+  const invalidate = useInvalidateTsk();
+  return useMutation({
+    mutationFn: (body: DeleteAddedTskCurationRequest) => bibleApi.deleteAddedTskCuration(body),
+    onSuccess: invalidate,
   });
 }
