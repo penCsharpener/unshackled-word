@@ -1,13 +1,35 @@
+using UnshackledWord.Application.Features.CrossReferences;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Study;
+using UnshackledWord.Domain.WebApi.Tsk;
 using UnshackledWord.Tooling.McpServer.Tools;
 
 namespace UnshackledWord.Tooling.McpServer.Tests;
 
 public class CrossReferenceToolsTests
 {
-    private static TskCrossReference Ref(int source, string scope, int start, int? end = null) =>
-        new() { SourceHebRefId = source, Scope = scope, TargetStartHebRefId = start, TargetEndHebRefId = end };
+    private static TskCrossReference Ref(int source, string scope, int start, int? end = null, string? rating = null, string? comment = null) =>
+        new() { SourceHebRefId = source, Scope = scope, TargetStartHebRefId = start, TargetEndHebRefId = end, Rating = rating, Comment = comment };
+
+    [Fact]
+    public async Task GetCrossReferences_Curated_DropsHiddenAndListsHighlightedFirstWithComment()
+    {
+        var tsk = Substitute.For<ITskRepository>();
+        var verses = Substitute.For<IElb1871VerseRepository>();
+        tsk.GetOutgoingAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(new List<TskCrossReference>
+        {
+            Ref(1001001, "God", 2020011),
+            Ref(1001001, "God", 19033006, rating: TskRatings.Highlight, comment: "Schöpfung durch das Wort"),
+            Ref(1001001, "God", 34002011, rating: TskRatings.Hide),
+        });
+
+        var text = await CrossReferenceTools.GetCrossReferences(tsk, verses, "1Mo 1,1", limit: 2, cancellationToken: TestContext.Current.CancellationToken);
+
+        text.ShouldContain("  - Ps 33,6 [highlighted] (comment: Schöpfung durch das Wort)");
+        text.IndexOf("Ps 33,6", StringComparison.Ordinal).ShouldBeLessThan(text.IndexOf("2Mo 20,11", StringComparison.Ordinal));
+        text.ShouldNotContain(UnshackledWord.Domain.Models.BibleStructure.GermanReferenceFormatter.Format(34002011));
+        text.ShouldNotContain("Truncated");
+    }
 
     [Fact]
     public async Task GetCrossReferences_GroupsBySourceAndScope()
@@ -54,7 +76,7 @@ public class CrossReferenceToolsTests
 
         var text = await CrossReferenceTools.GetCrossReferences(tsk, verses, "Joh 3,16", limit: 2);
 
-        await tsk.Received().GetOutgoingAsync(43003016, 43003016, 3, Arg.Any<CancellationToken>());
+        await tsk.Received().GetOutgoingAsync(43003016, 43003016, ChapterCrossReferenceService.MaxRows, Arg.Any<CancellationToken>());
         text.ShouldContain("Röm 5,2");
         text.ShouldNotContain("Röm 5,3");
         text.ShouldContain("Truncated");

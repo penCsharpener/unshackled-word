@@ -16,7 +16,7 @@ public sealed class GetWordDetailResponse
     public MappingProvenanceResponse? Mapping { get; set; }
     public List<CoMappedWordResponse>? CoMappedWords { get; set; }
     public List<string>? Hints { get; set; }
-    /// <summary>TSK (Treasury of Scripture Knowledge, public domain) cross references of the word's verse, TSK order. Verse level, not word level. Omitted when empty.</summary>
+    /// <summary>TSK (Treasury of Scripture Knowledge, public domain) cross references of the word's verse: hidden ones dropped, highlighted first, then TSK order. Verse level, not word level. Omitted when empty.</summary>
     public List<CrossReferenceResponse>? CrossReferences { get; set; }
     /// <summary>true or null (never false): the verse has more cross references than <see cref="CrossReferences"/> lists.</summary>
     public bool? CrossReferencesTruncated { get; set; }
@@ -32,6 +32,10 @@ public sealed class CrossReferenceResponse
     public int? EndVerse { get; set; }
     /// <summary>English KJV keyword of the TSK entry; only set by the chapter endpoint, not shown in the UI yet.</summary>
     public string? Keyword { get; set; }
+    /// <summary>Curation (roadmap 0024.3): <c>highlight</c> (sorted first) or <c>hide</c> (only in the curators' chapter view with <c>includeHidden</c>); omitted when neutral.</summary>
+    public string? Rating { get; set; }
+    /// <summary>Curator comment, plain text (max 500 characters); omitted when there is none.</summary>
+    public string? Comment { get; set; }
 }
 
 public sealed class OriginalReadingResponse

@@ -16,12 +16,13 @@ public sealed class ChapterCrossReferenceService : IChapterCrossReferenceService
         _tsk = tsk;
     }
 
-    public async Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, CancellationToken token = default)
+    public async Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, bool includeHidden = false, CancellationToken token = default)
     {
         var (from, to) = RevisionSql.ChapterRange(bibleBookId, chapter);
         var rows = await _tsk.GetOutgoingAsync(from, to, MaxRows, token);
 
-        var verses = rows
+        // Curation (roadmap 0024.3): hidden links dropped, highlighted first. Duplicates share the key and so the curation; the first in TSK order wins.
+        var verses = CrossReferenceCuration.Arrange(rows, includeHidden)
             .GroupBy(r => r.SourceHebRefId % 1000)
             .OrderBy(g => g.Key)
             .Select(g => new VerseCrossReferencesResponse

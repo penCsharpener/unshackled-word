@@ -1,0 +1,19 @@
+meta {
+  name: GetVerseCrossReferenceTexts
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}elberfelder/crossReferenceTexts/bookId/1/chapterId/1/verseId/1
+  body: none
+  auth: inherit
+}
+
+docs {
+  Texts (German + original) of all TSK targets of 1Mo 1,1 in the order of the chapter list, with `rating`/`comment`; hidden links are left out.
+}
+
+settings {
+  encodeUrl: true
+}

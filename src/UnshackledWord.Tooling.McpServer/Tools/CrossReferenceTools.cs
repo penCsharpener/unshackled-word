@@ -1,8 +1,11 @@
 using System.ComponentModel;
 using System.Text;
 using ModelContextProtocol.Server;
+using UnshackledWord.Application.Features.CrossReferences;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.BibleStructure;
+using UnshackledWord.Domain.Models.Study;
+using UnshackledWord.Domain.WebApi.Tsk;
 
 namespace UnshackledWord.Tooling.McpServer.Tools;
 
@@ -14,7 +17,7 @@ public static class CrossReferenceTools
     private const int MaxTextVersesPerTarget = 3;
 
     [McpServerTool(Name = "get_cross_references", ReadOnly = true)]
-    [Description("Returns Treasury of Scripture Knowledge (TSK) cross-references for a verse or a range of verses, grouped by source verse and TSK keyword. Optionally includes the Elberfelder 1871 text of the targets.")]
+    [Description("Returns Treasury of Scripture Knowledge (TSK) cross-references for a verse or a range of verses, grouped by source verse and TSK keyword. Curated: links a maintainer hid are left out, highlighted links come first and are marked [highlighted], curator comments follow in parentheses. Optionally includes the Elberfelder 1871 text of the targets.")]
     public static async Task<string> GetCrossReferences(
         ITskRepository tsk,
         IElb1871VerseRepository verses,
@@ -31,7 +34,8 @@ public static class CrossReferenceTools
 
         limit = Math.Clamp(limit, 1, MaxLimit);
         var range = parsed.Range;
-        var rows = await tsk.GetOutgoingAsync(range.StartRefId, range.EndRefId, limit + 1, cancellationToken);
+        // All rows of the range (capped like the chapter list): hidden links are dropped and highlighted ones move first before the limit cuts (roadmap 0024.3).
+        var rows = CrossReferenceCuration.Arrange(await tsk.GetOutgoingAsync(range.StartRefId, range.EndRefId, ChapterCrossReferenceService.MaxRows, cancellationToken));
         if (rows.Count == 0)
         {
             return $"No cross-references found for '{reference}'.";
@@ -49,7 +53,7 @@ public static class CrossReferenceTools
                 sb.AppendLine($"[{GermanReferenceFormatter.Format(source.Key)}] {scope.Key}");
                 foreach (var target in scope)
                 {
-                    var label = GermanReferenceFormatter.Format(target.TargetStartHebRefId, target.TargetEndHebRefId);
+                    var label = GermanReferenceFormatter.Format(target.TargetStartHebRefId, target.TargetEndHebRefId) + Curation(target);
                     if (!includeText)
                     {
                         sb.AppendLine($"  - {label}");
@@ -70,5 +74,12 @@ public static class CrossReferenceTools
         }
 
         return sb.ToString().TrimEnd();
+    }
+
+    /// <summary>" [highlighted]" and/or " (comment: …)" behind a curated link; empty for plain TSK.</summary>
+    private static string Curation(TskCrossReference target)
+    {
+        var mark = target.Rating == TskRatings.Highlight ? " [highlighted]" : string.Empty;
+        return string.IsNullOrWhiteSpace(target.Comment) ? mark : $"{mark} (comment: {target.Comment})";
     }
 }

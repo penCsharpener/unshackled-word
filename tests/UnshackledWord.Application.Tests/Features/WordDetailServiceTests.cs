@@ -254,7 +254,7 @@ public class WordDetailServiceTests
     {
         GivenWord(26001, 43, "Wort");
         GivenGreek(26001, Logos());
-        _tsk.GetOutgoingAsync(43001001, 43001001, 21, Arg.Any<CancellationToken>()).Returns(
+        _tsk.GetOutgoingAsync(43001001, 43001001, Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(
         [
             new TskCrossReference { SourceHebRefId = 43001001, Scope = "Word", TargetStartHebRefId = 1001001 },
             new TskCrossReference { SourceHebRefId = 43001001, Scope = "Word", TargetStartHebRefId = 20008022, TargetEndHebRefId = 20008024 },
@@ -281,7 +281,7 @@ public class WordDetailServiceTests
     {
         GivenWord(26001, 43, "Wort");
         GivenGreek(26001, Logos());
-        _tsk.GetOutgoingAsync(43001001, 43001001, 21, Arg.Any<CancellationToken>()).Returns(
+        _tsk.GetOutgoingAsync(43001001, 43001001, Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(
             Enumerable.Range(1, 21).Select(i => new TskCrossReference { SourceHebRefId = 43001001, Scope = "x", TargetStartHebRefId = 1001000 + i }).ToList());
 
         var result = (await _sut.GetAsync(26001))!;
@@ -292,11 +292,29 @@ public class WordDetailServiceTests
     }
 
     [Fact]
+    public async Task GetAsync_CuratedTsk_HighlightedBeyondTwentyMovesFirst_HiddenDropped()
+    {
+        GivenWord(26001, 43, "Wort");
+        GivenGreek(26001, Logos());
+        var rows = Enumerable.Range(1, 21).Select(i => new TskCrossReference { SourceHebRefId = 43001001, Scope = "x", TargetStartHebRefId = 1001000 + i }).ToList();
+        rows[0] = new TskCrossReference { SourceHebRefId = 43001001, Scope = "x", TargetStartHebRefId = 1001001, Rating = "hide" };
+        rows.Add(new TskCrossReference { SourceHebRefId = 43001001, Scope = "x", TargetStartHebRefId = 19033006, Rating = "highlight", Comment = "Schöpfung durch das Wort" });
+        _tsk.GetOutgoingAsync(43001001, 43001001, Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(rows);
+
+        var result = (await _sut.GetAsync(26001, TestContext.Current.CancellationToken))!;
+
+        result.CrossReferences!.Count.ShouldBe(20);
+        (result.CrossReferences[0].BibleBookId, result.CrossReferences[0].Rating, result.CrossReferences[0].Comment).ShouldBe((19, "highlight", "Schöpfung durch das Wort"));
+        result.CrossReferences.ShouldNotContain(r => r.BibleBookId == 1 && r.Verse == 1);
+        result.CrossReferencesTruncated.ShouldBe(true);
+    }
+
+    [Fact]
     public async Task GetAsync_WordWithoutMapping_StillGetsVerseCrossReferences()
     {
         GivenWord(26001, 43, "Es");
         GivenGreek(26001);
-        _tsk.GetOutgoingAsync(43001001, 43001001, 21, Arg.Any<CancellationToken>()).Returns(
+        _tsk.GetOutgoingAsync(43001001, 43001001, Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(
             [new TskCrossReference { SourceHebRefId = 43001001, Scope = "x", TargetStartHebRefId = 1001001 }]);
 
         (await _sut.GetAsync(26001))!.CrossReferences!.Count.ShouldBe(1);

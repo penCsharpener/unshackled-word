@@ -4,5 +4,6 @@ namespace UnshackledWord.Application.Features.CrossReferences;
 
 public interface IChapterCrossReferenceService
 {
-    Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, CancellationToken token = default);
+    /// <param name="includeHidden">Curators only (the endpoint checks the role): hidden links come back with rating <c>hide</c>.</param>
+    Task<GetChapterCrossReferencesResponse> GetAsync(int bibleBookId, int chapter, bool includeHidden = false, CancellationToken token = default);
 }

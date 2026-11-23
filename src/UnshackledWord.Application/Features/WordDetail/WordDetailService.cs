@@ -17,6 +17,7 @@ public sealed class WordDetailService : IWordDetailService
     private const int ManyOriginalsThreshold = 3;
     private const int MaxRenderings = 5;
     private const int MaxCrossReferences = 20;
+    private const int MaxCrossReferenceRows = 500;
 
     private readonly IWordDetailRepository _words;
     private readonly IHebrewMorphemeRepository _morphemes;
@@ -161,8 +162,9 @@ public sealed class WordDetailService : IWordDetailService
 
         if (word.HebRefId > 0)
         {
-            // One extra row tells whether the list was cut; TSK is verse level, so every word of a verse gets the same list.
-            var tsk = await _tsk.GetOutgoingAsync(word.HebRefId, word.HebRefId, MaxCrossReferences + 1, token);
+            // All rows of the verse (the busiest has ~110): hidden links are dropped and highlighted ones move first before the list is cut (roadmap 0024.3).
+            // TSK is verse level, so every word of a verse gets the same list.
+            var tsk = CrossReferenceCuration.Arrange(await _tsk.GetOutgoingAsync(word.HebRefId, word.HebRefId, MaxCrossReferenceRows, token));
             var crossReferences = tsk.Take(MaxCrossReferences).Select(CrossReferenceMapper.Build).ToList();
             if (crossReferences.Count > 0)
             {

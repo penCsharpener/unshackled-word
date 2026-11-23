@@ -1,0 +1,28 @@
+meta {
+  name: HighlightRange
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{url}}tsk/curation
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001001,
+    "targetStartHebRefId": 20008022,
+    "targetEndHebRefId": 20008030,
+    "rating": "highlight"
+  }
+}
+
+docs {
+  A range target: `targetEndHebRefId` is the last verse (same chapter). Omit it for a single verse.
+}
+
+settings {
+  encodeUrl: true
+}

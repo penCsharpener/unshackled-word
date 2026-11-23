@@ -72,6 +72,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.UserAdmin.IAdminLogRepository, AdminLogRepository>();
         services.AddScoped<UnshackledWord.Application.Features.UserAdmin.IUserAdminRepository, UserAdminRepository>();
         services.AddScoped<IApiTokenService, ApiTokenService>();
+        // TSK curation (roadmap 0024)
+        services.AddScoped<UnshackledWord.Application.Features.TskCuration.ITskCurationRepository, UnshackledWord.Infrastructure.TskCuration.TskCurationRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.TskCuration.TskCurationService>();
+
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteService>();

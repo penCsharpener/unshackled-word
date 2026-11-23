@@ -38,7 +38,8 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
     {
         var source = req.BibleBookId * 1_000_000 + req.ChapterId * 1_000 + req.VerseId;
         var rows = await _tsk.GetOutgoingAsync(source, source, MaxReferences, ct);
-        var references = rows
+        // Same order, hiding and de-duplication as the chapter cross references (roadmap 0024.3).
+        var references = CrossReferenceCuration.Arrange(rows)
             .Select(CrossReferenceMapper.Build)
             .DistinctBy(r => (r.BibleBookId, r.Chapter, r.Verse, r.EndVerse))
             .ToList();
@@ -60,6 +61,8 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
                 Chapter = reference.Chapter,
                 Verse = reference.Verse,
                 EndVerse = reference.EndVerse,
+                Rating = reference.Rating,
+                Comment = reference.Comment,
                 Verses = rowsOfRange.Select(r => new ChapterVerseResponse { Verse = r.HebRefId % 1000, Text = r.VerseText }).ToList(),
             });
         }

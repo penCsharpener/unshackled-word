@@ -1,0 +1,23 @@
+meta {
+  name: GetChapterCrossReferencesIncludeHidden
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}elberfelder/chapterCrossReferences/bookId/1/chapterId/1?includeHidden=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  includeHidden: true
+}
+
+docs {
+  Curator view: with Admin/Maintainer login hidden links come back at their TSK place with `rating` `hide`. Ignored for everyone else.
+}
+
+settings {
+  encodeUrl: true
+}

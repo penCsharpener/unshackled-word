@@ -3,6 +3,7 @@ using FluentValidation;
 using UnshackledWord.Application.Features.CrossReferences;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetChapterCrossReferences;
+using UnshackledWord.Tooling.WebApi.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetChapterCrossReferences;
 
@@ -24,7 +25,8 @@ public class Endpoint : Ep.Req<GetChapterCrossReferencesRequest>.Res<GetChapterC
 
     public override Task<GetChapterCrossReferencesResponse> ExecuteAsync(GetChapterCrossReferencesRequest req, CancellationToken ct)
     {
-        return _service.GetAsync(req.BibleBookId, req.ChapterId, ct);
+        // Hidden links (roadmap 0024.3) only for curators; everyone else gets the reader list whatever the query says.
+        return _service.GetAsync(req.BibleBookId, req.ChapterId, req.IncludeHidden && User.HasWriteRole(), ct);
     }
 }
 

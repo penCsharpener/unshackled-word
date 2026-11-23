@@ -1,0 +1,29 @@
+meta {
+  name: HighlightPs336UnderGen11
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{url}}tsk/curation
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001001,
+    "targetStartHebRefId": 19033006,
+    "rating": "highlight",
+    "comment": "Schöpfung durch das Wort"
+  }
+}
+
+docs {
+  Maintainer: highlights Ps 33,6 under 1Mo 1,1 with a comment. Returns the resulting state { sourceHebRefId, targetStartHebRefId, targetEndHebRefId?, origin, rating?, comment?, updatedAt? }.
+  403 for non-maintainers, 404 when TSK has no such link, 400 for a bad rating, a comment over 500 characters or a malformed key.
+}
+
+settings {
+  encodeUrl: true
+}

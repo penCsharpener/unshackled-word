@@ -1,0 +1,19 @@
+meta {
+  name: GetChapterCrossReferences
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}elberfelder/chapterCrossReferences/bookId/1/chapterId/1
+  body: none
+  auth: inherit
+}
+
+docs {
+  TSK cross references of 1Mo 1 per verse. Each reference may carry `rating` (`highlight`) and `comment` (roadmap 0024.3); highlighted first, then TSK order; hidden links are left out.
+}
+
+settings {
+  encodeUrl: true
+}

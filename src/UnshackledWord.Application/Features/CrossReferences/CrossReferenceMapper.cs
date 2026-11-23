@@ -12,7 +12,10 @@ public static class CrossReferenceMapper
     public static CrossReferenceResponse Build(TskCrossReference row)
     {
         var start = BibleReference.FromRefId(row.TargetStartHebRefId);
-        var reference = new CrossReferenceResponse { BibleBookId = start.BookId, Chapter = start.Chapter, Verse = start.Verse };
+        var reference = new CrossReferenceResponse
+        {
+            BibleBookId = start.BookId, Chapter = start.Chapter, Verse = start.Verse, Rating = row.Rating, Comment = row.Comment,
+        };
         if (row.TargetEndHebRefId is not { } endRefId || endRefId == row.TargetStartHebRefId)
         {
             return reference;

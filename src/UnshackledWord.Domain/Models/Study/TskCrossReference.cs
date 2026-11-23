@@ -7,4 +7,10 @@ public sealed class TskCrossReference
     public string Scope { get; init; } = default!;
     public int TargetStartHebRefId { get; init; }
     public int? TargetEndHebRefId { get; init; }
+
+    /// <summary>Curation of the link (roadmap 0024.3, <c>TskCurations</c>): <c>highlight</c>, <c>hide</c> or null (neutral, no row).</summary>
+    public string? Rating { get; init; }
+
+    /// <summary>Curator comment of the link, plain text, max 500 characters; null when there is none.</summary>
+    public string? Comment { get; init; }
 }

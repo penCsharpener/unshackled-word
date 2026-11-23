@@ -1,0 +1,27 @@
+meta {
+  name: HideNahUnderGen12
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{url}}tsk/curation
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001002,
+    "targetStartHebRefId": 34002011,
+    "rating": "hide"
+  }
+}
+
+docs {
+  Maintainer: hides Nah 2,11 (KJV 2,10) under 1Mo 1,2; anonymous readers no longer get it.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,28 @@
+meta {
+  name: ResetPs336UnderGen11
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{url}}tsk/curation
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1001001,
+    "targetStartHebRefId": 19033006,
+    "rating": null,
+    "comment": ""
+  }
+}
+
+docs {
+  Back to neutral without comment: the curation row is deleted (audit row with after = null); the response has only the key and `origin`.
+}
+
+settings {
+  encodeUrl: true
+}
