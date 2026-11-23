@@ -1,0 +1,27 @@
+meta {
+  name: AddRoemer828UnderGen5020
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{url}}tsk/curation/added
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1050020,
+    "reference": "Röm 8,28-30",
+    "comment": "Gott wendet es zum Guten"
+  }
+}
+
+docs {
+  Maintainer: adds a cross reference TSK lacks (origin added). Answers 400 for an unparsable or cross-chapter target, 404 for an unknown source verse, 409 when TSK already has the link or it was added before.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -27,11 +27,11 @@ public sealed class Endpoint : Endpoint<SaveTskCurationRequest, TskCurationRespo
         Description(b => b.Produces<TskCurationResponse>(200).ProducesProblem(400).ProducesProblem(403).ProducesProblem(404));
         Summary(s =>
         {
-            s.Summary = "Maintainer: sets `rating` (`highlight`, `hide` or null) and `comment` (plain text, max 500, empty removes it) of one TSK link, "
+            s.Summary = "Maintainer: sets `rating` (`highlight`, `hide` or null) and `comment` (plain text, max 500, empty removes it) of one TSK or added link, "
                         + "keyed by source verse and target verse/range in Elberfelder numbering (`targetEndHebRefId` omitted for one verse). "
-                        + "A link back at neutral without comment loses its curation row. Returns the resulting state.";
+                        + "A TSK link back at neutral without comment loses its curation row; an added link keeps it. Returns the resulting state.";
             s[403] = "The caller is not Admin or Maintainer.";
-            s[404] = "TSK has no link with this key.";
+            s[404] = "Neither TSK nor the added links have a link with this key.";
         });
     }
 
@@ -48,7 +48,7 @@ public sealed class Endpoint : Endpoint<SaveTskCurationRequest, TskCurationRespo
         }
 
         AddError(outcome.Message ?? "The request was refused.");
-        await Send.ErrorsAsync(outcome.Status == TskCurationStatus.Forbidden ? StatusCodes.Status403Forbidden : StatusCodes.Status404NotFound, ct);
+        await Send.ErrorsAsync(TskCurationHttp.StatusCode(outcome.Status), ct);
     }
 }
 

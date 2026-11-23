@@ -5,7 +5,8 @@ namespace UnshackledWord.Application.Features.CrossReferences;
 
 /// <summary>
 /// Display order of curated TSK links (roadmap 0024.3), shared by the chapter list, the verse texts, the word box and the MCP tool:
-/// hidden links dropped (unless a curator asks for them), then per source verse the highlighted links first and the rest after, each in TSK order.
+/// hidden links dropped (unless a curator asks for them), then per source verse the highlighted links first and the rest after, each in TSK order
+/// with added links (roadmap 0024.4) last, as the repository delivers them (the sort is stable).
 /// </summary>
 public static class CrossReferenceCuration
 {

@@ -38,6 +38,13 @@ public sealed class TskCurationRepository : ITskCurationRepository
         return await GetAsync(connection, null, key, token);
     }
 
+    public async Task<bool> VerseExistsAsync(int hebRefId, CancellationToken token = default)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+
+        return await VerseExistsAsync(connection, null, hebRefId, token);
+    }
+
     public async Task<TskCurationRecord?> ApplyAsync(TskLinkKey key, Func<TskCurationState, TskCurationState> change, int? userId, string source, CancellationToken token = default)
     {
         using var connection = await _factory.CreateDbConnectionAsync(token);
@@ -63,6 +70,20 @@ public sealed class TskCurationRepository : ITskCurationRepository
                            """;
 
         return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, key, transaction, cancellationToken: token));
+    }
+
+    public static async Task<bool> VerseExistsAsync(IDbConnection connection, IDbTransaction? transaction, int hebRefId, CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT EXISTS (
+                               SELECT 1
+                               FROM "unshackled-word"."Elb1871Verses" ev
+                               WHERE 1=1
+                                   AND ev."HebRefId" = @HebRefId
+                           )
+                           """;
+
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new { HebRefId = hebRefId }, transaction, cancellationToken: token));
     }
 
     public static async Task<TskCurationRecord?> GetAsync(IDbConnection connection, IDbTransaction? transaction, TskLinkKey key, CancellationToken token = default,

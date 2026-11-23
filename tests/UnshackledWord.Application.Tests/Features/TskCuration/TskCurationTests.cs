@@ -182,4 +182,95 @@ public class TskCurationTests
         reader.Verses[1].References.ShouldHaveSingleItem().BibleBookId.ShouldBe(18);
         curator.Verses[1].References.Select(r => (r.BibleBookId, r.Rating)).ShouldBe([(18, (string?)null), (34, TskRatings.Hide)]);
     }
+
+    // --- added links (0024.4) ---
+
+    private static AddTskCurationRequest AddRequest(string reference = "Röm 8,28-30", int source = 1_050_020, string? comment = null) =>
+        new() { SourceHebRefId = source, Reference = reference, Comment = comment };
+
+    [Theory]
+    [InlineData("Röm 8,28-30", 45_008_028, 45_008_030)]
+    [InlineData("Röm 8,28", 45_008_028, null)]
+    [InlineData("Spr 8,22-24", 20_008_022, 20_008_024)]
+    [InlineData("Ps 33,6-6", 19_033_006, null)]
+    public void AddedTarget_NormalisesToTheKey(string reference, int start, int? end)
+    {
+        var result = TskAddedTarget.Parse(reference);
+
+        result.Error.ShouldBeNull();
+        (result.Start, result.End).ShouldBe((start, end));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("Xyz 1,1")]
+    [InlineData("Röm 8")]
+    [InlineData("Röm")]
+    [InlineData("Röm 8,28-9,2")]
+    [InlineData("Röm 8,28; Joh 3,16")]
+    [InlineData("Röm 8,28-30; 31")]
+    [InlineData("Röm 99,1")]
+    public void AddedTarget_RefusesWhatIsNotOneVerseOrRangeInOneChapter(string reference)
+    {
+        TskAddedTarget.Parse(reference).Error.ShouldNotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public void AddValidator_AcceptsAValidRequest_AndRefusesBadOnes()
+    {
+        var validator = new AddTskCurationRequestValidator();
+
+        validator.Validate(AddRequest(comment: "  " + new string('a', 500) + "  ")).IsValid.ShouldBeTrue();
+        validator.Validate(AddRequest(source: 1_001_000)).Errors.ShouldContain(e => e.PropertyName == "SourceHebRefId");
+        validator.Validate(AddRequest(reference: "Xyz 1,1")).Errors.ShouldContain(e => e.PropertyName == "Reference");
+        validator.Validate(AddRequest(reference: "Röm 8,28-9,2")).Errors.ShouldContain(e => e.PropertyName == "Reference");
+        validator.Validate(AddRequest(reference: new string('a', 101))).Errors.ShouldContain(e => e.PropertyName == "Reference");
+        validator.Validate(AddRequest(comment: new string('a', 501))).Errors.ShouldContain(e => e.PropertyName == "Comment");
+    }
+
+    [Fact]
+    public void DeleteValidator_UsesTheKeyRules()
+    {
+        var validator = new DeleteTskCurationRequestValidator();
+
+        validator.Validate(new DeleteTskCurationRequest { SourceHebRefId = Gen11, TargetStartHebRefId = 20_008_022, TargetEndHebRefId = 20_008_024 }).IsValid.ShouldBeTrue();
+        validator.Validate(new DeleteTskCurationRequest { SourceHebRefId = Gen11, TargetStartHebRefId = 20_008_022, TargetEndHebRefId = 20_009_001 }).IsValid.ShouldBeFalse();
+        validator.Validate(new DeleteTskCurationRequest { SourceHebRefId = 0, TargetStartHebRefId = 20_008_022 }).IsValid.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task Add_NonMaintainer_IsForbidden_CrossChapterTarget_IsBadRequest_UnknownSource_IsNotFound()
+    {
+        var repository = Substitute.For<ITskCurationRepository>();
+        var service = new TskCurationService(repository);
+
+        (await service.AddAsync(7, false, AddRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(TskCurationStatus.Forbidden);
+        (await service.AddAsync(7, true, AddRequest("Röm 8,28-9,2"), TestContext.Current.CancellationToken)).Status.ShouldBe(TskCurationStatus.BadRequest);
+        repository.VerseExistsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(false);
+        (await service.AddAsync(7, true, AddRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(TskCurationStatus.NotFound);
+        await repository.DidNotReceive().ApplyAsync(Arg.Any<TskLinkKey>(), Arg.Any<Func<TskCurationState, TskCurationState>>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Add_KeyAlreadyInTsk_IsConflict()
+    {
+        var repository = Substitute.For<ITskCurationRepository>();
+        repository.VerseExistsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(true);
+        repository.TskLinkExistsAsync(Arg.Any<TskLinkKey>(), Arg.Any<CancellationToken>()).Returns(true);
+
+        var outcome = await new TskCurationService(repository).AddAsync(7, true, AddRequest("Spr 8,22-24", Gen11), TestContext.Current.CancellationToken);
+
+        outcome.Status.ShouldBe(TskCurationStatus.Conflict);
+    }
+
+    [Fact]
+    public void Arrange_AddedLinksStayLast_AfterHighlightedAndTskOrder()
+    {
+        TskCrossReference Added(int target) => new() { SourceHebRefId = Gen11, Scope = "", TargetStartHebRefId = target, Origin = TskOrigins.Added };
+
+        var arranged = CrossReferenceCuration.Arrange([Row(Gen11, 1), Row(Gen11, 2, rating: TskRatings.Highlight), Row(Gen11, 3), Added(9), Added(8)]);
+
+        arranged.Select(r => r.TargetStartHebRefId).ShouldBe([2, 1, 3, 9, 8]);
+    }
 }

@@ -1,0 +1,27 @@
+meta {
+  name: DeleteAddedRoemer828UnderGen5020
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{url}}tsk/curation/added
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sourceHebRefId": 1050020,
+    "targetStartHebRefId": 45008028,
+    "targetEndHebRefId": 45008030
+  }
+}
+
+docs {
+  Maintainer: deletes an added link (204). 404 when no added link has this key, 400 for a TSK link (hide it instead).
+}
+
+settings {
+  encodeUrl: true
+}

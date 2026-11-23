@@ -12,7 +12,7 @@ public sealed class GetVerseCrossReferenceTextsRequest
     public int Level { get; set; } = 200;
 }
 
-/// <summary>The texts of all TSK targets of one verse, in the same order, de-duplication and hiding as the chapter cross references (highlighted first, then TSK order).</summary>
+/// <summary>The texts of all TSK targets of one verse, in the same order, de-duplication and hiding as the chapter cross references (highlighted first, then TSK order, added links last).</summary>
 public sealed class GetVerseCrossReferenceTextsResponse
 {
     public List<CrossReferenceTextResponse> References { get; set; } = [];
@@ -30,6 +30,9 @@ public sealed class CrossReferenceTextResponse
 
     /// <summary>Curator comment, omitted when there is none.</summary>
     public string? Comment { get; set; }
+
+    /// <summary><c>added</c> for a link a curator added (roadmap 0024.4); omitted for TSK links.</summary>
+    public string? Origin { get; set; }
 
     /// <summary>The verse, or all verses of the range.</summary>
     public List<ChapterVerseResponse> Verses { get; set; } = [];

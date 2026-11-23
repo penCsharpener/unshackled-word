@@ -17,7 +17,7 @@ public static class CrossReferenceTools
     private const int MaxTextVersesPerTarget = 3;
 
     [McpServerTool(Name = "get_cross_references", ReadOnly = true)]
-    [Description("Returns Treasury of Scripture Knowledge (TSK) cross-references for a verse or a range of verses, grouped by source verse and TSK keyword. Curated: links a maintainer hid are left out, highlighted links come first and are marked [highlighted], curator comments follow in parentheses. Optionally includes the Elberfelder 1871 text of the targets.")]
+    [Description("Returns Treasury of Scripture Knowledge (TSK) cross-references for a verse or a range of verses, grouped by source verse and TSK keyword. Curated: links a maintainer hid are left out, highlighted links come first and are marked [highlighted], links curators added (not in TSK) come last and are marked [added], curator comments follow in parentheses. Optionally includes the Elberfelder 1871 text of the targets.")]
     public static async Task<string> GetCrossReferences(
         ITskRepository tsk,
         IElb1871VerseRepository verses,
@@ -50,7 +50,8 @@ public static class CrossReferenceTools
         {
             foreach (var scope in source.GroupBy(r => r.Scope))
             {
-                sb.AppendLine($"[{GermanReferenceFormatter.Format(source.Key)}] {scope.Key}");
+                // Added links (roadmap 0024.4) have no TSK keyword.
+                sb.AppendLine($"[{GermanReferenceFormatter.Format(source.Key)}] {(string.IsNullOrEmpty(scope.Key) ? "(added by curators)" : scope.Key)}");
                 foreach (var target in scope)
                 {
                     var label = GermanReferenceFormatter.Format(target.TargetStartHebRefId, target.TargetEndHebRefId) + Curation(target);
@@ -76,10 +77,11 @@ public static class CrossReferenceTools
         return sb.ToString().TrimEnd();
     }
 
-    /// <summary>" [highlighted]" and/or " (comment: …)" behind a curated link; empty for plain TSK.</summary>
+    /// <summary>" [highlighted]", " [added]" and/or " (comment: …)" behind a curated link; empty for plain TSK.</summary>
     private static string Curation(TskCrossReference target)
     {
-        var mark = target.Rating == TskRatings.Highlight ? " [highlighted]" : string.Empty;
+        var mark = (target.Rating == TskRatings.Highlight ? " [highlighted]" : string.Empty)
+                   + (target.Origin == TskOrigins.Added ? " [added]" : string.Empty);
         return string.IsNullOrWhiteSpace(target.Comment) ? mark : $"{mark} (comment: {target.Comment})";
     }
 }

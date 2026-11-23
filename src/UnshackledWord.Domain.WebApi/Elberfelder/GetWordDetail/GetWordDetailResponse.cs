@@ -36,6 +36,8 @@ public sealed class CrossReferenceResponse
     public string? Rating { get; set; }
     /// <summary>Curator comment, plain text (max 500 characters); omitted when there is none.</summary>
     public string? Comment { get; set; }
+    /// <summary><c>added</c> for a link a curator added (roadmap 0024.4, listed after the TSK links of its verse); omitted for TSK links.</summary>
+    public string? Origin { get; set; }
 }
 
 public sealed class OriginalReadingResponse

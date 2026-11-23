@@ -23,6 +23,6 @@ public sealed class VerseCrossReferencesResponse
 {
     public int Verse { get; set; }
 
-    /// <summary>Highlighted links first (TSK order among them), then the rest in TSK order; duplicates removed (first wins), hidden links dropped.</summary>
+    /// <summary>Highlighted links first, then the rest; within each group TSK order with added links (<c>origin</c> <c>added</c>) last in creation order. Duplicates removed (first wins), hidden links dropped.</summary>
     public List<CrossReferenceResponse> References { get; set; } = [];
 }

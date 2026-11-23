@@ -31,6 +31,12 @@ public enum TskCurationStatus
     Ok,
     NotFound,
     Forbidden,
+
+    /// <summary>Malformed target or a request that does not apply to this key (roadmap 0024.4: deleting a TSK link).</summary>
+    BadRequest,
+
+    /// <summary>The added link already exists, in TSK or as an earlier added link (roadmap 0024.4).</summary>
+    Conflict,
 }
 
 public sealed class TskCurationOutcome
@@ -44,6 +50,10 @@ public sealed class TskCurationOutcome
     public static TskCurationOutcome NotFound(string message) => new() { Status = TskCurationStatus.NotFound, Message = message };
 
     public static TskCurationOutcome Forbidden(string message) => new() { Status = TskCurationStatus.Forbidden, Message = message };
+
+    public static TskCurationOutcome BadRequest(string message) => new() { Status = TskCurationStatus.BadRequest, Message = message };
+
+    public static TskCurationOutcome Conflict(string message) => new() { Status = TskCurationStatus.Conflict, Message = message };
 }
 
 public interface ITskCurationRepository
@@ -52,6 +62,9 @@ public interface ITskCurationRepository
     Task<bool> TskLinkExistsAsync(TskLinkKey key, CancellationToken token = default);
 
     Task<TskCurationRecord?> GetAsync(TskLinkKey key, CancellationToken token = default);
+
+    /// <summary>True when <c>Elb1871Verses</c> has this verse (Elberfelder ref id).</summary>
+    Task<bool> VerseExistsAsync(int hebRefId, CancellationToken token = default);
 
     /// <summary>
     /// In one transaction: reads the current state (null = no row), applies <paramref name="change"/>, writes the row (deletes it when the result is

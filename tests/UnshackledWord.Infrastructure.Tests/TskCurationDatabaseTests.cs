@@ -221,6 +221,108 @@ public class TskCurationDatabaseTests
         duplicate.SqlState.ShouldBe(PostgresErrorCodes.UniqueViolation);
     });
 
+    // --- added links (roadmap 0024.4) ---
+
+    private const int Gen5020 = 1_050_020;
+
+    private static AddTskCurationRequest Add(int source, string reference, string? comment = null) =>
+        new() { SourceHebRefId = source, Reference = reference, Comment = comment };
+
+    private static Task<GetChapterCrossReferencesResponse> Chapter50Async(IDbConnection c, IDbTransaction t) =>
+        new ChapterCrossReferenceService(new TskRepository(new TransactionDbReader(c, t))).GetAsync(1, 50, false, TestContext.Current.CancellationToken);
+
+    [Fact]
+    public async Task AddedLink_Roemer828_UnderGen5020_IsListedWithOrigin_DuplicateIs409_DeleteWritesAudit() => await WithTransactionAsync(async (c, t) =>
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await c.ExecuteAsync("""DELETE FROM "unshackled-word"."TskCurations" WHERE "SourceHebRefId" = @Gen5020""", new { Gen5020 }, t);
+        var maintainer = await NewUserAsync(c, t);
+        var service = new TskCurationService(new TransactionRepository(c, t));
+        var key = new TskLinkKey(Gen5020, 45_008_028, 45_008_030);
+
+        (await service.AddAsync(maintainer, false, Add(Gen5020, "Röm 8,28-30"), ct)).Status.ShouldBe(TskCurationStatus.Forbidden);
+        var added = await service.AddAsync(maintainer, true, Add(Gen5020, "Röm 8,28-30", " Gott wendet es zum Guten "), ct);
+
+        added.Status.ShouldBe(TskCurationStatus.Ok);
+        added.Response!.Origin.ShouldBe(TskOrigins.Added);
+        added.Response.Comment.ShouldBe("Gott wendet es zum Guten");
+        added.Response.TargetEndHebRefId.ShouldBe(45_008_030);
+        added.Response.UpdatedAt.ShouldNotBeNull();
+
+        var verse20 = (await Chapter50Async(c, t)).Verses.Single(v => v.Verse == 20).References;
+        var link = verse20.Last();
+        (link.BibleBookId, link.Chapter, link.Verse, link.EndVerse, link.Origin, link.Comment).ShouldBe((45, 8, 28, 30, TskOrigins.Added, "Gott wendet es zum Guten"));
+        verse20.Take(verse20.Count - 1).ShouldAllBe(r => r.Origin == null);
+
+        // the same again: 409 and nothing more written
+        (await service.AddAsync(maintainer, true, Add(Gen5020, "Röm 8,28-30"), ct)).Status.ShouldBe(TskCurationStatus.Conflict);
+
+        // PUT on the added key keeps the row, even at neutral without comment
+        var neutral = await service.SaveAsync(maintainer, true, Request(key, null, null), ct);
+        neutral.Status.ShouldBe(TskCurationStatus.Ok);
+        neutral.Response!.Origin.ShouldBe(TskOrigins.Added);
+        (await CurationRowsAsync(c, t, key)).ShouldBe(1);
+
+        // a TSK key cannot be deleted
+        (await service.DeleteAddedAsync(maintainer, true, Delete(Ps336UnderGen11), ct)).Status.ShouldBe(TskCurationStatus.BadRequest);
+        (await service.DeleteAddedAsync(maintainer, true, Delete(new TskLinkKey(Gen5020, 45_001_001, null)), ct)).Status.ShouldBe(TskCurationStatus.NotFound);
+        (await service.DeleteAddedAsync(maintainer, false, Delete(key), ct)).Status.ShouldBe(TskCurationStatus.Forbidden);
+
+        (await service.DeleteAddedAsync(maintainer, true, Delete(key), ct)).Status.ShouldBe(TskCurationStatus.Ok);
+        (await CurationRowsAsync(c, t, key)).ShouldBe(0);
+        (await Chapter50Async(c, t)).Verses.Single(v => v.Verse == 20).References.ShouldNotContain(r => r.Origin == TskOrigins.Added);
+        (await service.DeleteAddedAsync(maintainer, true, Delete(key), ct)).Status.ShouldBe(TskCurationStatus.NotFound);
+
+        var audit = await AuditAsync(c, t, maintainer);
+        audit.Count.ShouldBe(3); // add, PUT (comment removed), delete
+        audit.ShouldAllBe(a => a.Source == TskCurationSources.Edit);
+        audit[0].Before.ShouldBeNull();
+        JsonSerializer.Deserialize<JsonElement>(audit[0].After!).GetProperty("origin").GetString().ShouldBe(TskOrigins.Added);
+        audit[2].Before.ShouldNotBeNull();
+        audit[2].After.ShouldBeNull();
+    });
+
+    [Fact]
+    public async Task AddedLink_TskKeyIs409_CrossChapterIs400_UnknownSourceIs404_NothingWritten() => await WithTransactionAsync(async (c, t) =>
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var maintainer = await NewUserAsync(c, t);
+        var service = new TskCurationService(new TransactionRepository(c, t));
+
+        // Spr 8,22-24 is a TSK target of 1Mo 1,1
+        (await service.AddAsync(maintainer, true, Add(Gen11, "Spr 8,22-24"), ct)).Status.ShouldBe(TskCurationStatus.Conflict);
+        (await service.AddAsync(maintainer, true, Add(Gen5020, "Röm 8,28-9,2"), ct)).Status.ShouldBe(TskCurationStatus.BadRequest);
+        (await service.AddAsync(maintainer, true, Add(Gen5020, "Röm 8"), ct)).Status.ShouldBe(TskCurationStatus.BadRequest);
+        (await service.AddAsync(maintainer, true, Add(Gen5020, "Xyz 1,1"), ct)).Status.ShouldBe(TskCurationStatus.BadRequest);
+        (await service.AddAsync(maintainer, true, Add(Gen5020, "Offb 22,21"), ct)).Status.ShouldBe(TskCurationStatus.Ok);
+        // 1Mo 99,1 does not exist
+        (await service.AddAsync(maintainer, true, Add(1_099_001, "Offb 22,21"), ct)).Status.ShouldBe(TskCurationStatus.NotFound);
+
+        (await AuditAsync(c, t, maintainer)).Count.ShouldBe(1);
+        (await CurationRowsAsync(c, t, new TskLinkKey(Gen11, 20_008_022, 20_008_024))).ShouldBe(0);
+    });
+
+    [Fact]
+    public async Task AddedLink_OrderIsHighlightedFirst_ThenTsk_ThenAddedInCreationOrder() => await WithTransactionAsync(async (c, t) =>
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var maintainer = await NewUserAsync(c, t);
+        var service = new TskCurationService(new TransactionRepository(c, t));
+        var plain = Keys(await ChapterAsync(c, t), 1);
+
+        await service.AddAsync(maintainer, true, Add(Gen11, "Röm 8,28-30"), ct);
+        await service.AddAsync(maintainer, true, Add(Gen11, "Joh 1,1"), ct);
+        var withAdded = Keys(await ChapterAsync(c, t), 1);
+        withAdded.ShouldBe([.. plain, new CrossReferenceKey(45, 8, 28, 30), new CrossReferenceKey(43, 1, 1, null)]);
+
+        // highlighting an added link brings it to the front; the TSK links keep their order behind it
+        await service.SaveAsync(maintainer, true, Request(new TskLinkKey(Gen11, 45_008_028, 45_008_030), TskRatings.Highlight), ct);
+        Keys(await ChapterAsync(c, t), 1).ShouldBe([new CrossReferenceKey(45, 8, 28, 30), .. plain, new CrossReferenceKey(43, 1, 1, null)]);
+    });
+
+    private static DeleteTskCurationRequest Delete(TskLinkKey key) =>
+        new() { SourceHebRefId = key.SourceHebRefId, TargetStartHebRefId = key.TargetStartHebRefId, TargetEndHebRefId = key.TargetEndHebRefId };
+
     /// <summary>The repository's statics on the test's transaction.</summary>
     private sealed class TransactionRepository(IDbConnection connection, IDbTransaction transaction) : ITskCurationRepository
     {
@@ -229,6 +331,9 @@ public class TskCurationDatabaseTests
 
         public Task<TskCurationRecord?> GetAsync(TskLinkKey key, CancellationToken token = default) =>
             TskCurationRepository.GetAsync(connection, transaction, key, token);
+
+        public Task<bool> VerseExistsAsync(int hebRefId, CancellationToken token = default) =>
+            TskCurationRepository.VerseExistsAsync(connection, transaction, hebRefId, token);
 
         public Task<TskCurationRecord?> ApplyAsync(TskLinkKey key, Func<TskCurationState, TskCurationState> change, int? userId, string source,
             CancellationToken token = default) =>

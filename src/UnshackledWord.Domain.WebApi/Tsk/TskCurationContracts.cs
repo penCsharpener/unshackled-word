@@ -46,3 +46,26 @@ public sealed class TskCurationResponse
     /// <summary>Omitted when the link has no curation row (plain TSK).</summary>
     public DateTimeOffset? UpdatedAt { get; set; }
 }
+
+/// <summary>
+/// <c>POST api/tsk/curation/added</c> (roadmap 0024.4): a link TSK lacks. The target is a German reference in Elberfelder numbering
+/// ("Röm 8,28-30"): one verse or a range within one chapter.
+/// </summary>
+public sealed class AddTskCurationRequest
+{
+    public int SourceHebRefId { get; set; }
+
+    /// <summary>German reference of the target, e.g. "Röm 8,28-30" (same parser as <c>api/references/parse</c>, Elberfelder numbering).</summary>
+    public string Reference { get; set; } = string.Empty;
+
+    /// <summary>Plain text, max 500 characters after trimming; empty or whitespace is no comment.</summary>
+    public string? Comment { get; set; }
+}
+
+/// <summary><c>DELETE api/tsk/curation/added</c> (roadmap 0024.4): the key of an added link, in the body like <c>PUT api/tsk/curation</c>.</summary>
+public sealed class DeleteTskCurationRequest
+{
+    public int SourceHebRefId { get; set; }
+    public int TargetStartHebRefId { get; set; }
+    public int? TargetEndHebRefId { get; set; }
+}
