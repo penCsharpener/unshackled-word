@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { bibleApi } from "./api";
 import { sidePanelKeys } from "./sidePanel";
 import type {
@@ -9,6 +9,9 @@ import type {
   SaveTskCurationRequest,
   SaveTskWordLinkRequest,
   TskLinkKey,
+  TskProposal,
+  TskProposalSubmitted,
+  TskProposalsSubmitted,
   TskRating,
 } from "./types";
 import { wordDetailKeys } from "./wordDetail";
@@ -109,6 +112,57 @@ export function addRequest(
   };
 }
 
+/** Query keys of the suggestion lists (roadmap 0024.6f). */
+export const tskProposalKeys = {
+  mine: ["tsk", "proposals", "mine"] as const,
+  review: ["tsk", "proposals", "review"] as const,
+};
+
+/**
+ * True when a write answered 202 with a suggestion (`{ proposal }` or `{ proposals }`): the caller is no maintainer,
+ * nothing changed yet.
+ */
+export function isProposal(
+  result: unknown,
+): result is TskProposalSubmitted | TskProposalsSubmitted {
+  return (
+    typeof result === "object" && result !== null && ("proposal" in result || "proposals" in result)
+  );
+}
+
+/** Same key as `curationRequest` / `addedKey` builds: source and target HebRefIds (end only for ranges). */
+export function sameKey(
+  a: { sourceHebRefId: number; targetStartHebRefId: number; targetEndHebRefId?: number },
+  b: { sourceHebRefId: number; targetStartHebRefId: number; targetEndHebRefId?: number },
+) {
+  return (
+    a.sourceHebRefId === b.sourceHebRefId &&
+    a.targetStartHebRefId === b.targetStartHebRefId &&
+    (a.targetEndHebRefId ?? 0) === (b.targetEndHebRefId ?? 0)
+  );
+}
+
+/** The caller's suggestions (`GET tsk/proposals/mine`), newest first; only fetched when `enabled`. */
+export function useMyTskProposals(enabled: boolean) {
+  return useQuery({
+    queryKey: tskProposalKeys.mine,
+    queryFn: ({ signal }) => bibleApi.myTskProposals(signal),
+    enabled,
+  });
+}
+
+/**
+ * The newest decision on a link when it is a rejection (the editor shows "Abgelehnt: …"): the caller's newest
+ * suggestion for that key, if it was rejected; a later pending or accepted one hides the old reason.
+ */
+export function latestRejection(
+  proposals: TskProposal[] | undefined,
+  key: { sourceHebRefId: number; targetStartHebRefId: number; targetEndHebRefId?: number },
+): TskProposal | undefined {
+  const latest = proposals?.find((p) => sameKey(p, key) && p.state !== "superseded");
+  return latest?.state === "rejected" ? latest : undefined;
+}
+
 /**
  * After any curation write the chapter lists (both with and without hidden links, every level), the hover texts and
  * the word boxes are refetched, since all of them carry rating, comment, origin, word link and order.
@@ -120,7 +174,37 @@ function useInvalidateTsk() {
       queryClient.invalidateQueries({ queryKey: sidePanelKeys.crossReferencesAll }),
       queryClient.invalidateQueries({ queryKey: crossReferenceTextsAll }),
       queryClient.invalidateQueries({ queryKey: wordDetailKeys.all }),
+      queryClient.invalidateQueries({ queryKey: ["tsk", "proposals"] }),
     ]);
+}
+
+/** Maintainer review (`/edit/tsk`): the pending suggestions. */
+export function useTskReviewProposals(enabled: boolean) {
+  return useQuery({
+    queryKey: tskProposalKeys.review,
+    queryFn: ({ signal }) => bibleApi.tskReviewProposals(signal),
+    enabled,
+  });
+}
+
+/** Maintainer: accept (optionally `force` over a stale base); reloads the list and every TSK view. */
+export function useAcceptTskProposal() {
+  const invalidate = useInvalidateTsk();
+  return useMutation({
+    mutationFn: ({ id, force }: { id: number; force: boolean }) =>
+      bibleApi.acceptTskProposal(id, force),
+    onSuccess: invalidate,
+  });
+}
+
+/** Maintainer: reject with an optional reason; reloads the list and every TSK view. */
+export function useRejectTskProposal() {
+  const invalidate = useInvalidateTsk();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: number; reason?: string }) =>
+      bibleApi.rejectTskProposal(id, reason),
+    onSuccess: invalidate,
+  });
 }
 
 /** Maintainer save of one link's rating and comment (`PUT tsk/curation`). */

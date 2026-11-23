@@ -22,6 +22,7 @@ import {
   PREVIEW_CARD_WIDTH,
   PREVIEW_CARD_WIDTH_WIDE,
 } from "./PassagePreviewCard";
+import { StatusBadge } from "./StatusBadge";
 
 export interface CrossReferenceListProps {
   references: CrossReference[];
@@ -46,10 +47,15 @@ export interface CrossReferenceListProps {
   showHidden?: boolean;
   /**
    * `inline` with `preview` only: a pen button after every link opens `CrossReferenceEditor` for it (source verse =
-   * `preview`), and "Querverweis hinzufügen" after the list opens it in `add` mode (roadmap 0024.4f). Maintainers only
-   * for now; suggestions by other users follow in 0024.6f.
+   * `preview`), and "Querverweis hinzufügen" after the list opens it in `add` mode (roadmap 0024.4f). Every logged-in
+   * user; see `suggest`.
    */
   editable?: boolean;
+  /**
+   * With `editable`, logged-in non-maintainers (roadmap 0024.6f): the editor sends suggestions ("Vorschlag senden").
+   * Independent of it, links with the caller's `pendingProposal` get the badge "Vorschlag offen".
+   */
+  suggest?: boolean;
   /**
    * Link mode (roadmap 0024.5f, `inline` only): a checkbox per link (click / Ctrl/Cmd-click toggles, Shift-click
    * selects a run), every link is draggable (native HTML5 drag and drop) onto a word of the source verse; the hover
@@ -216,6 +222,7 @@ export function CrossReferenceList({
   preview,
   showHidden = false,
   editable = false,
+  suggest = false,
   link,
 }: CrossReferenceListProps) {
   const { t, i18n } = useTranslation();
@@ -400,6 +407,11 @@ export function CrossReferenceList({
           >
             {content(r)}
           </Link>
+          {r.pendingProposal && (
+            <span className="ms-1 align-middle" data-testid="pending-proposal">
+              <StatusBadge tone="info">{t("bible.tskCuration.proposal.pending")}</StatusBadge>
+            </span>
+          )}
           {r.word?.state === "drifted" && (
             <span
               className="ms-1 text-xs text-fg-muted"
@@ -456,6 +468,7 @@ export function CrossReferenceList({
                 source={preview}
                 reference={editing.reference}
                 label={label(editing.reference, true)}
+                suggest={suggest}
                 position={{
                   x: editing.position.left,
                   y: editing.position.y,
@@ -467,6 +480,7 @@ export function CrossReferenceList({
               <CrossReferenceEditor
                 mode="add"
                 source={preview}
+                suggest={suggest}
                 level={preview.level}
                 position={{
                   x: editing.position.left,

@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 
-/** Actions written to the admin log; mirrors `Application.Features.UserAdmin.AdminActions.All` (roadmap 0020, 05-api.md; note review actions from roadmap 0023.5). */
+/** Actions written to the admin log; mirrors `Application.Features.UserAdmin.AdminActions.All` (roadmap 0020, 05-api.md; note review actions from roadmap 0023.5, TSK suggestion actions from 0024.6). */
 export const ADMIN_ACTIONS = [
   "user_created",
   "user_updated",
@@ -17,6 +17,8 @@ export const ADMIN_ACTIONS = [
   "note_rejected",
   "note_hidden",
   "note_unhidden",
+  "tsk_proposal_accepted",
+  "tsk_proposal_rejected",
 ] as const;
 
 export type AdminAction = (typeof ADMIN_ACTIONS)[number];

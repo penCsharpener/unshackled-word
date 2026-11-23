@@ -189,7 +189,7 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     await waitFor(() => expect(screen.queryByRole("link", { name: /Psalmen 104,30/ })).toBeNull());
   });
 
-  it("does not send includeHidden for a signed-in non-maintainer", async () => {
+  it("gives a signed-in non-maintainer the pen, the add action and link mode, but no curate mode", async () => {
     const fetchMock = stubFetch(["User"]);
     renderAt("/bible/43/3");
     await screen.findByRole("group", { name: "Querverweise zu Vers 1" });
@@ -197,8 +197,14 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
       expect(screen.getByRole("switch", { name: "Nur hervorgehobene" })).toBeInTheDocument(),
     );
     expect(screen.queryByRole("switch", { name: "Ausgeblendete zeigen" })).toBeNull();
-    expect(screen.queryByRole("button", { name: /^Querverweis .* bearbeiten$/ })).toBeNull();
-    expect(screen.queryByRole("button", { name: "Querverweis hinzufügen" })).toBeNull();
+    // roadmap 0024.6f: every write path is open to logged-in users (as suggestions)
+    expect(
+      screen.getAllByRole("button", { name: "Querverweis Psalmen 33,9 bearbeiten" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("button", { name: "Querverweis hinzufügen" }).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getByRole("switch", { name: "Verknüpfen" })).toBeInTheDocument();
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes("includeHidden"))).toBe(false);
   });
 });

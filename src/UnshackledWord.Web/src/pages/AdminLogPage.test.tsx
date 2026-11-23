@@ -119,6 +119,40 @@ describe("AdminLogPage", () => {
     );
   });
 
+  it("labels the TSK suggestion actions (roadmap 0024.6f) and offers them in the filter, de and en", async () => {
+    const items = [
+      entry({ id: 5, action: "tsk_proposal_accepted", details: { proposalId: 12 } }),
+      entry({ id: 6, action: "tsk_proposal_rejected", details: { proposalId: 13 } }),
+    ];
+    const fetchMock = stubApi({
+      "GET /auth/me": () => json(admin),
+      "GET /admin/users?page=1&pageSize=200": () => json(userList),
+      "GET /admin/log?page=1&pageSize=50": () => json(log(items)),
+      "GET /admin/log?action=tsk_proposal_rejected&page=1&pageSize=50": () =>
+        json(log([items[1] as AdminLogItem])),
+    });
+    renderWithAuth(<AdminLogPage />);
+    const table = await screen.findByRole("table");
+    expect(table).toHaveTextContent("TSK suggestion accepted");
+    expect(table).toHaveTextContent("TSK suggestion rejected");
+    const filter = screen.getByRole("combobox", { name: /^Action/ });
+    expect(screen.getByRole("option", { name: "TSK suggestion accepted" })).toHaveValue(
+      "tsk_proposal_accepted",
+    );
+    await userEvent.selectOptions(filter, "tsk_proposal_rejected");
+    await vi.waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "/api/admin/log?action=tsk_proposal_rejected&page=1&pageSize=50",
+        expect.anything(),
+      ),
+    );
+    await i18n.changeLanguage("de");
+    await vi.waitFor(() =>
+      expect(screen.getByRole("table")).toHaveTextContent("TSK-Vorschlag abgelehnt"),
+    );
+    expect(screen.getByRole("option", { name: "TSK-Vorschlag angenommen" })).toBeInTheDocument();
+  });
+
   it("shows the forbidden note to non-admins without calling the log API", async () => {
     const fetchMock = stubApi({
       "GET /auth/me": () => json({ ...me, roles: ["user", "maintainer"] }),

@@ -1,5 +1,6 @@
 import { api } from "@/lib/api";
 import type {
+  AcceptTskProposalResponse,
   AddTskCurationRequest,
   DeleteAddedTskCurationRequest,
   DeleteTskWordLinkRequest,
@@ -15,6 +16,7 @@ import type {
   GetWordDetailResponse,
   GetWordStatsResponse,
   GetWordsOfChapterResponse,
+  MyTskProposalsResponse,
   OriginalsLookupOptions,
   OriginalsLookupResponse,
   ParseReferenceResponse,
@@ -25,6 +27,10 @@ import type {
   SourceWordsResponse,
   StrongsOccurrenceFilters,
   TskCurationResponse,
+  TskProposal,
+  TskProposalSubmitted,
+  TskProposalsSubmitted,
+  TskReviewProposalsResponse,
   TskWordLinkResponse,
   VerseMappingLink,
   WordStatsTestament,
@@ -86,19 +92,34 @@ export const bibleApi = {
   },
   /** Maintainer: rating and comment of one TSK link (roadmap 0024.3). */
   saveTskCuration: (body: SaveTskCurationRequest) =>
-    api.put<TskCurationResponse>("/tsk/curation", body),
+    api.put<TskCurationResponse | TskProposalSubmitted>("/tsk/curation", body),
   /** Maintainer: a new link from a verse to a parsed German reference (roadmap 0024.4). */
   addTskCuration: (body: AddTskCurationRequest) =>
-    api.post<TskCurationResponse>("/tsk/curation/added", body),
+    api.post<TskCurationResponse | TskProposalSubmitted>("/tsk/curation/added", body),
   /** Maintainer: removes an added link (204); the key goes in the body. */
   deleteAddedTskCuration: (body: DeleteAddedTskCurationRequest) =>
-    api.delete<void>("/tsk/curation/added", undefined, body),
+    api.delete<TskProposalSubmitted | undefined>("/tsk/curation/added", undefined, body),
   /** Maintainer: links refs of one source verse to a word range of it (roadmap 0024.5). */
   saveTskWordLink: (body: SaveTskWordLinkRequest) =>
-    api.put<TskWordLinkResponse>("/tsk/curation/word", body),
+    api.put<TskWordLinkResponse | TskProposalsSubmitted>("/tsk/curation/word", body),
   /** Maintainer: removes the word link of refs (key list in the body); answers the states like the PUT. */
   deleteTskWordLink: (body: DeleteTskWordLinkRequest) =>
-    api.delete<TskWordLinkResponse>("/tsk/curation/word", undefined, body),
+    api.delete<TskWordLinkResponse | TskProposalsSubmitted>("/tsk/curation/word", undefined, body),
+  /** Logged in: the caller's own TSK suggestions, newest first (roadmap 0024.6). */
+  myTskProposals: (signal?: AbortSignal) =>
+    api.get<MyTskProposalsResponse>("/tsk/proposals/mine", signal),
+  /** Admin/Maintainer: pending TSK suggestions in source verse order. */
+  tskReviewProposals: (signal?: AbortSignal) =>
+    api.get<TskReviewProposalsResponse>("/maintainer/tsk/proposals", signal),
+  /** Admin/Maintainer: applies a suggestion; 400 when stale unless `force`. */
+  acceptTskProposal: (id: number, force: boolean) =>
+    api.post<AcceptTskProposalResponse>(
+      `/maintainer/tsk/proposals/${id}/accept`,
+      force ? { force: true } : {},
+    ),
+  /** Admin/Maintainer: rejects a suggestion with an optional reason (max 500). */
+  rejectTskProposal: (id: number, reason?: string) =>
+    api.post<TskProposal>(`/maintainer/tsk/proposals/${id}/reject`, reason ? { reason } : {}),
   chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetChapterOriginalsResponse>(
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,

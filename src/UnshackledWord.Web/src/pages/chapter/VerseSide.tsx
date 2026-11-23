@@ -37,11 +37,13 @@ export interface VerseSideProps {
   showHidden?: boolean;
   /**
    * `tsk`: pen per link opening the `CrossReferenceEditor` and "Querverweis hinzufügen" after the list
-   * (Admin/Maintainer); with `showHidden` also verses without links get a panel.
+   * (every logged-in user); with `showHidden` also verses without links get a panel.
    */
   editable?: boolean;
+  /** `tsk`, logged-in non-maintainers (roadmap 0024.6f): the editor sends suggestions. */
+  suggest?: boolean;
   /**
-   * `tsk`, link mode (roadmap 0024.5f, Admin/Maintainer): checkboxes and drag per link; one object for all verses,
+   * `tsk`, link mode (roadmap 0024.5f, every logged-in user since 0024.6f): checkboxes and drag per link; one object for all verses,
    * the callbacks get the verse.
    */
   link?: VerseLinkMode;
@@ -71,6 +73,7 @@ export const VerseSide = memo(function VerseSide({
   onlyHighlighted = false,
   showHidden = false,
   editable = false,
+  suggest = false,
   link,
   linkSelected,
   expanded,
@@ -124,6 +127,7 @@ export const VerseSide = memo(function VerseSide({
           preview={preview}
           showHidden={showHidden}
           editable={editable}
+          suggest={suggest}
           link={listLink}
         />
       </VerseSidePanel>

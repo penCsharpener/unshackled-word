@@ -27,6 +27,7 @@ import { SeedImportsPage } from "@/pages/SeedImportsPage";
 import { SignInPage } from "@/pages/SignInPage";
 import { StrongsPage } from "@/pages/StrongsPage";
 import { StudySessionPage } from "@/pages/StudySessionPage";
+import { TskReviewPage } from "@/pages/TskReviewPage";
 import { VerifyEmailPage } from "@/pages/VerifyEmailPage";
 import { VocabDetailPage } from "@/pages/VocabDetailPage";
 import { VocabEditorListPage } from "@/pages/VocabEditorListPage";
@@ -67,6 +68,7 @@ export const router = createBrowserRouter([
       { path: "edit/vocab/:id", element: <VocabEditorPage /> },
       { path: "edit/imports", element: <SeedImportsPage /> },
       { path: "edit/notes", element: <NoteReviewPage /> },
+      { path: "edit/tsk", element: <TskReviewPage /> },
       { path: "edit/quality", element: <DataQualityPage /> },
       { path: "edit/maintainer", element: <MaintainerPage /> },
       { path: "edit/proposals/:runId?/:proposalId?", element: <AgentProposalsPage /> },

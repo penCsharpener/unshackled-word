@@ -8,9 +8,12 @@ import {
   addedKey,
   addRequest,
   curationRequest,
+  isProposal,
+  latestRejection,
   TSK_COMMENT_MAX,
   useAddTskCuration,
   useDeleteAddedTskCuration,
+  useMyTskProposals,
   useSaveTskCuration,
   useUnlinkTskWord,
   wordUnlinkRequest,
@@ -24,6 +27,7 @@ import type {
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import { Button } from "./Button";
 import { FormError } from "./FormError";
+import { StatusBadge } from "./StatusBadge";
 import { TextField } from "./TextField";
 
 type Source = { bookId: number; chapter: number; verse: number };
@@ -35,6 +39,11 @@ interface CommonProps {
   position: { x: number; y: number; above?: boolean };
   /** Called on cancel, Escape, a click outside and after a successful save or removal. */
   onClose: () => void;
+  /**
+   * Logged-in non-maintainer (roadmap 0024.6f): saving sends a suggestion ("Vorschlag senden"); a 202 shows a
+   * confirmation in the card, and a rejected earlier suggestion of the link shows its reason.
+   */
+  suggest?: boolean;
 }
 
 export type CrossReferenceEditorProps = CommonProps &
@@ -63,6 +72,36 @@ export const CROSS_REFERENCE_EDITOR_WIDTH = 320;
 type Choice = TskRating | "neutral";
 const CHOICES: readonly Choice[] = ["highlight", "neutral", "hide"];
 const PREVIEW_VERSES = 5;
+
+/** Shown after a 202: the suggestion is stored, a maintainer decides. */
+function SentConfirmation({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation();
+  const close = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    close.current?.focus();
+  }, []);
+  return (
+    <>
+      <p role="status" data-testid="proposal-sent">
+        {t("bible.tskCuration.proposal.sent")}
+      </p>
+      <div className="flex justify-end">
+        <Button ref={close} variant="primary" size="sm" onClick={onClose}>
+          {t("bible.tskCuration.proposal.close")}
+        </Button>
+      </div>
+    </>
+  );
+}
+
+/** Readable rating and comment of one state ("Neutral · „Kommentar“"). */
+function describeState(
+  state: { rating?: TskRating; comment?: string },
+  t: ReturnType<typeof useTranslation>["t"],
+) {
+  const rating = t(`bible.tskCuration.choice.${state.rating ?? "neutral"}`);
+  return state.comment ? `${rating} · „${state.comment}“` : rating;
+}
 
 /** The popover shell: top layer, measured position, Escape and a click outside close it. */
 function EditorCard({
@@ -149,7 +188,7 @@ function CommentField({
 /**
  * Popover editor of one TSK link (roadmap 0024.3f): Hervorheben / Neutral / Ausblenden and a comment (max 500).
  * `mode="add"` (0024.4f) adds a link to a typed reference; an added link can be removed in edit mode.
- * Maintainers save directly; suggestions by other users follow in 0024.6f.
+ * Maintainers save directly; with `suggest` (other logged-in users, 0024.6f) the same writes become suggestions.
  */
 export function CrossReferenceEditor(props: CrossReferenceEditorProps) {
   if (props.mode === "add") {
@@ -164,32 +203,56 @@ function EditForm({
   label,
   position,
   onClose,
+  suggest = false,
 }: CommonProps & { reference: CrossReference; label: string }) {
   const { t } = useTranslation();
   const save = useSaveTskCuration();
   const remove = useDeleteAddedTskCuration();
   const unlink = useUnlinkTskWord();
-  const initialChoice: Choice = reference.rating ?? "neutral";
+  const mine = useMyTskProposals(suggest);
+  const pending = reference.pendingProposal;
+  // with an open suggestion the form starts at the proposed state; the current one is shown above it
+  const start = pending ?? reference;
+  const initialChoice: Choice = start.rating ?? "neutral";
   const [choice, setChoice] = useState<Choice>(initialChoice);
-  const [comment, setComment] = useState(reference.comment ?? "");
+  const [comment, setComment] = useState(start.comment ?? "");
   const [confirming, setConfirming] = useState(false);
+  const [sent, setSent] = useState(false);
   const body = useRef<HTMLDivElement>(null);
-  const changed = choice !== initialChoice || comment.trim() !== (reference.comment ?? "");
+  const changed = choice !== initialChoice || comment.trim() !== (start.comment ?? "");
   const added = reference.origin === "added";
+  const key = addedKey(source, reference);
+  const rejected = suggest && !pending ? latestRejection(mine.data?.proposals, key) : undefined;
+  const word = pending ? pending.word : reference.word;
 
   useEffect(() => {
     body.current?.querySelector<HTMLElement>("[aria-pressed='true']")?.focus();
   }, []);
 
+  /** A 202 keeps the card open with the confirmation; a direct write closes it. */
+  const done = (result: unknown) => (isProposal(result) ? setSent(true) : onClose());
   const submit = () => {
     if (!changed || save.isPending) return;
     save.mutate(curationRequest(source, reference, choice === "neutral" ? null : choice, comment), {
-      onSuccess: onClose,
+      onSuccess: done,
     });
   };
-  const confirmRemove = () => remove.mutate(addedKey(source, reference), { onSuccess: onClose });
+  const confirmRemove = () => remove.mutate(addedKey(source, reference), { onSuccess: done });
   const removeWordLink = () =>
-    unlink.mutate(wordUnlinkRequest(source, [reference]), { onSuccess: onClose });
+    unlink.mutate(wordUnlinkRequest(source, [reference]), { onSuccess: done });
+
+  if (sent) {
+    return (
+      <EditorCard
+        position={position}
+        onClose={onClose}
+        label={t("bible.tskCuration.editorLabel", { reference: label })}
+      >
+        <p className="font-medium">{label}</p>
+        <SentConfirmation onClose={onClose} />
+      </EditorCard>
+    );
+  }
 
   const removeError = remove.isError
     ? remove.error instanceof ApiError && remove.error.status === 404
@@ -212,11 +275,41 @@ function EditForm({
             </span>
           )}
         </p>
-        {reference.word && (
+        {pending && (
+          <div
+            className="flex flex-col gap-1 rounded-md bg-surface-muted p-2"
+            data-testid="editor-pending-proposal"
+          >
+            <span>
+              <StatusBadge tone="info">{t("bible.tskCuration.proposal.pending")}</StatusBadge>
+            </span>
+            <p className="text-fg-muted">
+              {t("bible.tskCuration.proposal.current", { state: describeState(reference, t) })}
+              {reference.word &&
+                ` · ${t("bible.tskLink.wordLabel", { quote: reference.word.quotedText })}`}
+            </p>
+            <p>
+              {pending.delete
+                ? t("bible.tskCuration.proposal.proposedDelete")
+                : t("bible.tskCuration.proposal.proposed", { state: describeState(pending, t) })}
+              {!pending.delete &&
+                pending.word &&
+                ` · ${t("bible.tskLink.wordLabel", { quote: pending.word.quotedText })}`}
+            </p>
+          </div>
+        )}
+        {rejected && (
+          <p className="text-fg-muted" data-testid="editor-rejected">
+            {rejected.reason
+              ? t("bible.tskCuration.proposal.rejected", { reason: rejected.reason })
+              : t("bible.tskCuration.proposal.rejectedNoReason")}
+          </p>
+        )}
+        {word && (
           <div className="flex flex-wrap items-center gap-2" data-testid="editor-word-link">
             <span className="text-fg-muted">
-              {t("bible.tskLink.wordLabel", { quote: reference.word.quotedText })}
-              {reference.word.state === "drifted" && ` (${t("bible.tskLink.drifted")})`}
+              {t("bible.tskLink.wordLabel", { quote: word.quotedText })}
+              {word.state === "drifted" && ` (${t("bible.tskLink.drifted")})`}
             </span>
             <Button
               variant="ghost"
@@ -293,7 +386,9 @@ function EditForm({
               disabled={!changed || save.isPending}
               onClick={submit}
             >
-              {save.isPending ? t("bible.tskCuration.saving") : t("bible.tskCuration.save")}
+              {save.isPending
+                ? t(suggest ? "bible.tskCuration.proposal.sending" : "bible.tskCuration.saving")
+                : t(suggest ? "bible.tskCuration.proposal.send" : "bible.tskCuration.save")}
             </Button>
           </div>
         )}
@@ -381,9 +476,16 @@ function TargetPreview({ spans, level }: { spans: string; level?: number }) {
   );
 }
 
-function AddForm({ source, level, position, onClose }: CommonProps & { level?: number }) {
+function AddForm({
+  source,
+  level,
+  position,
+  onClose,
+  suggest = false,
+}: CommonProps & { level?: number }) {
   const { t } = useTranslation();
   const add = useAddTskCuration();
+  const [sent, setSent] = useState(false);
   const [input, setInput] = useState("");
   const [comment, setComment] = useState("");
   const debounced = useDebouncedValue(input, 300);
@@ -397,7 +499,9 @@ function AddForm({ source, level, position, onClose }: CommonProps & { level?: n
 
   const submit = () => {
     if (!canSave) return;
-    add.mutate(addRequest(source, input, comment), { onSuccess: onClose });
+    add.mutate(addRequest(source, input, comment), {
+      onSuccess: (result) => (isProposal(result) ? setSent(true) : onClose()),
+    });
   };
 
   const saveError = add.isError
@@ -407,6 +511,15 @@ function AddForm({ source, level, position, onClose }: CommonProps & { level?: n
         ? t("bible.tskCuration.add.notFound")
         : describeApiError(add.error, t("bible.tskCuration.add.error"))
     : "";
+
+  if (sent) {
+    return (
+      <EditorCard position={position} onClose={onClose} label={t("bible.tskCuration.add.title")}>
+        <p className="font-medium">{t("bible.tskCuration.add.title")}</p>
+        <SentConfirmation onClose={onClose} />
+      </EditorCard>
+    );
+  }
 
   return (
     <EditorCard position={position} onClose={onClose} label={t("bible.tskCuration.add.title")}>
@@ -449,7 +562,9 @@ function AddForm({ source, level, position, onClose }: CommonProps & { level?: n
           {t("bible.tskCuration.cancel")}
         </Button>
         <Button variant="primary" size="sm" disabled={!canSave} onClick={submit}>
-          {add.isPending ? t("bible.tskCuration.saving") : t("bible.tskCuration.save")}
+          {add.isPending
+            ? t(suggest ? "bible.tskCuration.proposal.sending" : "bible.tskCuration.saving")
+            : t(suggest ? "bible.tskCuration.proposal.send" : "bible.tskCuration.save")}
         </Button>
       </div>
     </EditorCard>

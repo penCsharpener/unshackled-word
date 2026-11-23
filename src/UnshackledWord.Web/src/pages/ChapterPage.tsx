@@ -42,7 +42,7 @@ import {
   useSidePanelMode,
   useTskOnlyHighlighted,
 } from "@/lib/bible/sidePanel";
-import { useLinkTskWord, wordLinkRequest } from "@/lib/bible/tskCuration";
+import { isProposal, useLinkTskWord, wordLinkRequest } from "@/lib/bible/tskCuration";
 import type {
   BibleStructureBook,
   ChapterRef,
@@ -488,28 +488,32 @@ export function ChapterPage() {
     return () => window.removeEventListener("pointerdown", onDown);
   }, [selection]);
 
-  // Link mode (roadmap 0024.5f, Admin/Maintainer, TSK side panel): refs of one verse are selected in the panel and
+  // Link mode (roadmap 0024.5f, every logged-in user since 0024.6f, TSK side panel): refs of one verse are selected in the panel and
   // dropped (drag) or placed (tap / Enter) on a word of that verse. The notes selection is off meanwhile.
   const [linkModeOn, setLinkModeOn] = useState(false);
-  const linkMode = canRevise && linkModeOn && showTsk;
+  const linkMode = signedIn && linkModeOn && showTsk;
   const [linkSelection, setLinkSelection] = useState<{ verse: number; keys: string[] }>();
   const [linkDrag, setLinkDrag] = useState<{ verse: number; references: CrossReference[] }>();
   const [dropHover, setDropHover] = useState<WordPoint>();
   /** Last word a link was placed on: Shift on the next drop extends to a range from it. */
   const lastDrop = useRef<{ verse: number; position: number }>(undefined);
   const linkWord = useLinkTskWord();
+  /** The last placement was sent as a suggestion (202, non-maintainers): the hint bar confirms it. */
+  const [linkProposed, setLinkProposed] = useState(false);
   useEffect(() => {
     if (linkMode) {
       setSelection(undefined);
       return;
     }
     setLinkSelection(undefined);
+    setLinkProposed(false);
     setLinkDrag(undefined);
     setDropHover(undefined);
   }, [linkMode]);
   const linkSelected = useMemo(() => new Set(linkSelection?.keys), [linkSelection]);
   const onLinkSelectedChange = useCallback((verse: number, keys: string[]) => {
     setLinkSelection(keys.length > 0 ? { verse, keys } : undefined);
+    setLinkProposed(false);
   }, []);
   const onLinkDragStart = useCallback((verse: number, references: CrossReference[]) => {
     setLinkDrag({ verse, references });
@@ -541,7 +545,12 @@ export function ChapterPage() {
         from,
         position,
       ),
-      { onSuccess: () => setLinkSelection(undefined) },
+      {
+        onSuccess: (result) => {
+          setLinkSelection(undefined);
+          setLinkProposed(isProposal(result));
+        },
+      },
     );
   }
   /** The selected refs of the selection verse, in list order. */
@@ -1072,11 +1081,11 @@ export function ChapterPage() {
               onlyHighlighted,
               onOnlyHighlightedChange: setOnlyHighlighted,
               curate: canRevise ? { checked: curateTsk, onChange: setCurateTsk } : undefined,
-              link: canRevise ? { checked: linkModeOn, onChange: setLinkModeOn } : undefined,
+              link: signedIn ? { checked: linkModeOn, onChange: setLinkModeOn } : undefined,
             }}
           />
         )}
-        {linkMode && (linkSelection || linkWord.isPending || linkWord.isError) && (
+        {linkMode && (linkSelection || linkWord.isPending || linkWord.isError || linkProposed) && (
           <div
             role="status"
             data-testid="tsk-link-hint"
@@ -1089,6 +1098,9 @@ export function ChapterPage() {
                   verse: linkSelection.verse,
                 })}
               </span>
+            )}
+            {linkProposed && !linkSelection && !linkWord.isPending && (
+              <span data-testid="tsk-link-proposed">{t("bible.tskCuration.proposal.sent")}</span>
             )}
             {linkWord.isPending && (
               <span className="text-fg-muted">{t("bible.tskLink.linking")}</span>
@@ -1103,10 +1115,13 @@ export function ChapterPage() {
               size="sm"
               onClick={() => {
                 setLinkSelection(undefined);
+                setLinkProposed(false);
                 linkWord.reset();
               }}
             >
-              {t("bible.tskLink.cancel")}
+              {linkProposed && !linkSelection
+                ? t("bible.tskCuration.proposal.close")
+                : t("bible.tskLink.cancel")}
             </Button>
           </div>
         )}
@@ -1506,7 +1521,8 @@ export function ChapterPage() {
                       references={referencesByVerse.get(v.verse)}
                       onlyHighlighted={onlyHighlighted}
                       showHidden={tskCurate}
-                      editable={canRevise}
+                      editable={signedIn}
+                      suggest={signedIn && !canRevise}
                       link={linkMode ? verseLink : undefined}
                       linkSelected={linkSelection?.verse === v.verse ? linkSelected : undefined}
                       expanded={expandedVerse === v.verse}

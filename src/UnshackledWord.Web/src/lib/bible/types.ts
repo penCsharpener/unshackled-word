@@ -290,6 +290,87 @@ export interface CrossReference {
   origin?: "added";
   /** Word link (roadmap 0024.5): the source-verse word(s) this link belongs to; omitted for verse-level links. */
   word?: CrossReferenceWordLink;
+  /**
+   * Chapter list only, roadmap 0024.6: the caller's own pending suggestion for this link (full proposed state; no
+   * `rating` = neutral proposed). Only the author sees it; a proposed added link comes with `origin: "added"`.
+   */
+  pendingProposal?: TskPendingProposal;
+}
+
+/** The caller's pending suggestion on a chapter cross reference (`TskPendingProposalResponse`). */
+export interface TskPendingProposal {
+  id: number;
+  rating?: TskRating;
+  comment?: string;
+  word?: CrossReferenceWordLink;
+  /** The added link is proposed for removal. */
+  delete?: true;
+}
+
+/** Proposed or current state of one link in a suggestion (nulls omitted: no `rating` = neutral). */
+export interface TskProposedState {
+  origin: "tsk" | "added";
+  rating?: TskRating;
+  comment?: string;
+  word?: CrossReferenceWordLink;
+  delete?: true;
+}
+
+export type TskProposalState = "pending" | "accepted" | "rejected" | "superseded";
+
+/** A user's suggestion (`TskProposal`, roadmap 0024.6). */
+export interface TskProposal {
+  id: number;
+  sourceHebRefId: number;
+  targetStartHebRefId: number;
+  targetEndHebRefId?: number;
+  state: TskProposalState;
+  proposed: TskProposedState;
+  createdAt: string;
+  decidedAt?: string;
+  reason?: string;
+}
+
+/** 202 answer of `PUT tsk/curation`, `POST`/`DELETE tsk/curation/added` for non-maintainers. */
+export interface TskProposalSubmitted {
+  proposal: TskProposal;
+}
+
+/** 202 answer of `PUT`/`DELETE tsk/curation/word` for non-maintainers (keys already in that state left out). */
+export interface TskProposalsSubmitted {
+  proposals: TskProposal[];
+}
+
+/** `GET tsk/proposals/mine`: the caller's suggestions, newest first, all states. */
+export interface MyTskProposalsResponse {
+  proposals: TskProposal[];
+}
+
+/** One pending suggestion on `GET maintainer/tsk/proposals`. */
+export interface TskReviewProposal {
+  id: number;
+  sourceHebRefId: number;
+  targetStartHebRefId: number;
+  targetEndHebRefId?: number;
+  inTsk: boolean;
+  /** No curation row yet: omitted. */
+  current?: TskProposedState & { updatedAt: string };
+  proposed: TskProposedState;
+  authorUserId: string;
+  authorDisplayName: string;
+  createdAt: string;
+  /** The link changed since the suggestion was made. */
+  stale: boolean;
+}
+
+export interface TskReviewProposalsResponse {
+  proposals: TskReviewProposal[];
+}
+
+/** `POST maintainer/tsk/proposals/{id}/accept`. */
+export interface AcceptTskProposalResponse {
+  proposal: TskProposal;
+  curation: TskCurationResponse;
 }
 
 /**
