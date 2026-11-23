@@ -283,7 +283,20 @@ export interface CrossReference {
 
 /** `GET elberfelder/crossReferenceTexts/...`: the texts of all TSK targets of one verse, in TSK order. */
 export interface GetVerseCrossReferenceTextsResponse {
-  references: (CrossReference & { verses: { verse: number; text: string }[] })[];
+  references: (CrossReference & { verses: CrossReferenceVerseText[] })[];
+}
+
+/** Original text of one verse: plain surface words joined (roadmap 0024.1). */
+export interface VerseOriginalText {
+  language: "hebrew" | "aramaic" | "greek";
+  text: string;
+}
+
+/** German text of one target verse; `original` is omitted where the verse has no original words. */
+export interface CrossReferenceVerseText {
+  verse: number;
+  text: string;
+  original?: VerseOriginalText;
 }
 
 /** `GET elberfelder/chapterCrossReferences/...`: verses without TSK references are omitted. */

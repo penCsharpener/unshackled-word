@@ -5,7 +5,14 @@ import { Link } from "react-router";
 import { bookAbbreviation, bookName, chapterPath } from "@/lib/bible/books";
 import { verseCrossReferenceTextsQuery } from "@/lib/bible/queries";
 import type { BibleStructureBook, CrossReference } from "@/lib/bible/types";
-import { PassagePreviewCard } from "./PassagePreviewCard";
+import { useMediaQuery } from "@/lib/useMediaQuery";
+import {
+  hasOriginals,
+  PassagePreviewCard,
+  PREVIEW_CARD_WIDE_QUERY,
+  PREVIEW_CARD_WIDTH,
+  PREVIEW_CARD_WIDTH_WIDE,
+} from "./PassagePreviewCard";
 
 export interface CrossReferenceListProps {
   references: CrossReference[];
@@ -25,8 +32,16 @@ export interface CrossReferenceListProps {
   preview?: { bookId: number; chapter: number; verse: number; level: number };
 }
 
-const CARD_WIDTH = 320; // keep in sync with `w-80`
 const CARD_GAP = 8;
+
+/**
+ * Left edge of the card: at the link, but inside the viewport at the right edge. The width follows the card:
+ * 320 px (`w-80`), 640 px (`md:w-160`) when the passage has originals and the viewport is md or wider.
+ */
+export function cardLeft(linkLeft: number, wide: boolean, viewportWidth = window.innerWidth) {
+  const width = wide ? PREVIEW_CARD_WIDTH_WIDE : PREVIEW_CARD_WIDTH;
+  return Math.max(CARD_GAP, Math.min(linkLeft, viewportWidth - width - CARD_GAP));
+}
 
 const OPEN_MAX = 5;
 const KEYS = ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"];
@@ -35,7 +50,8 @@ const keyOf = (r: CrossReference) => `${r.bibleBookId}-${r.chapter}-${r.verse}-$
 
 interface Hover {
   key: string;
-  x: number;
+  /** left edge of the hovered link; the card position is clamped once its width is known */
+  left: number;
   y: number;
   above: boolean;
 }
@@ -53,9 +69,11 @@ function PreviewCard({
     verseCrossReferenceTextsQuery(preview.bookId, preview.chapter, preview.verse, preview.level),
   );
   const entry = texts.data?.references.find((r) => keyOf(r) === hover.key);
+  const md = useMediaQuery(PREVIEW_CARD_WIDE_QUERY);
+  const x = cardLeft(hover.left, md && hasOriginals(entry?.verses));
   return (
     <PassagePreviewCard
-      position={hover}
+      position={{ x, y: hover.y, above: hover.above }}
       verses={entry?.verses}
       error={texts.isError}
       loading={!texts.isError}
@@ -81,7 +99,7 @@ export function CrossReferenceList({
     const above = rect.bottom + 160 > window.innerHeight && rect.top > window.innerHeight / 2;
     setHover({
       key: keyOf(r),
-      x: Math.max(CARD_GAP, Math.min(rect.left, window.innerWidth - CARD_WIDTH - CARD_GAP)),
+      left: rect.left,
       y: above ? rect.top - CARD_GAP : rect.bottom + CARD_GAP,
       above,
     });
