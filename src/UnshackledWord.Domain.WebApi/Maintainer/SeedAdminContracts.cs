@@ -214,3 +214,17 @@ public sealed class SeedStatusResponse
 
     public List<SeedImportRowResponse> Imports { get; set; } = [];
 }
+
+/// <summary>One notes export file in <c>temp/notes</c> (roadmap 0023.6), listed by <c>GET api/maintainer/notes/files</c>.</summary>
+public sealed class NoteFileInfo
+{
+    public string Name { get; set; } = string.Empty;
+    public long SizeBytes { get; set; }
+    public DateTimeOffset ModifiedAt { get; set; }
+}
+
+/// <summary>Body of <c>POST api/maintainer/notes/import</c>; without a file name the newest export file is imported.</summary>
+public sealed class ImportNotesRequest
+{
+    public string? FileName { get; set; }
+}

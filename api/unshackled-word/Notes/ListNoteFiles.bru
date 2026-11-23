@@ -1,0 +1,19 @@
+meta {
+  name: ListNoteFiles
+  type: http
+  seq: 28
+}
+
+get {
+  url: {{url}}maintainer/notes/files
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: export files in temp/notes, newest first (name, sizeBytes, modifiedAt).
+}
+
+settings {
+  encodeUrl: true
+}

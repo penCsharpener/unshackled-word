@@ -77,6 +77,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteService>();
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteReviewService>();
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteExportService>();
+        services.AddScoped<UnshackledWord.Infrastructure.Notes.NoteFileService>();
         services.AddScoped<IAgentRunRepository, AgentRunRepository>();
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentScoreRepository, AgentScoreRepository>();
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Scoring.IAgentScoreService, UnshackledWord.Application.Features.AgentMapping.Scoring.AgentScoreService>();

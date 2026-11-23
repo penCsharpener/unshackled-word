@@ -1,0 +1,25 @@
+meta {
+  name: ImportNotes
+  type: http
+  seq: 29
+}
+
+post {
+  url: {{url}}maintainer/notes/import
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "fileName": "notes-20261123-120000.json"
+  }
+}
+
+docs {
+  Maintainer: imports temp/notes/{fileName} (newest file when fileName is omitted) as a background job. Upsert by id, newer updatedAt wins, unknown author skipped, deletes nothing. Result: result.steps[0].counts inserted/updated/unchanged/skipped.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,19 @@
+meta {
+  name: ExportNotes
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{url}}maintainer/notes/export
+  body: none
+  auth: inherit
+}
+
+docs {
+  Maintainer: writes every note to temp/notes/notes-YYYYMMDD-HHmmss.json as a background job (202, SeedJobResponse); poll maintainer/seed/status. 409 while another seed or notes job runs.
+}
+
+settings {
+  encodeUrl: true
+}
