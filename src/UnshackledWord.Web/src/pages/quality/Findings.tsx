@@ -16,6 +16,7 @@ import { useJumps } from "./useJumps";
 
 const COUNT_SCALE = [1, 10, 100, 1000, 10000] as const;
 const STTS_COLUMNS: FindingColumn[] = ["ref", "german", "stts", "pos", "detail", "severity"];
+const TSK_COLUMNS: FindingColumn[] = ["ref", "german", "detail", "severity"];
 
 function matrixRows(matrix: CheckMatrix) {
   return matrix.rows.map((row) => ({
@@ -229,7 +230,13 @@ export function Findings({
               onPage={(page) => update({ page })}
               onPageSize={(size) => update({ size: size as 50 | 100 | 250 })}
               books={books}
-              columns={code === "L6" || code === "L7" ? STTS_COLUMNS : undefined}
+              columns={
+                code === "L6" || code === "L7"
+                  ? STTS_COLUMNS
+                  : code === "T1" || code === "T2"
+                    ? TSK_COLUMNS
+                    : undefined
+              }
               jumps={jumps}
               loading={query.isFetching}
               error={query.isError}

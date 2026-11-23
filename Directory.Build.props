@@ -2,7 +2,7 @@
   <Import Project="Directory.Build.local.props" Condition="Exists('Directory.Build.local.props')" />
   <PropertyGroup>
     <!-- App version, shared with src/UnshackledWord.Web/package.json (a test keeps both in sync). -->
-    <Version>0.10.13</Version>
+    <Version>0.10.14</Version>
     <TargetFramework>net11.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

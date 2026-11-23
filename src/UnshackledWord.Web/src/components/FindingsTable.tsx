@@ -51,6 +51,13 @@ function refLabel(finding: Finding, books: BibleStructureBook[], language: strin
   return `${name} ${finding.chapter},${finding.verse}`;
 }
 
+function targetLabel(finding: Finding, books: BibleStructureBook[], language: string) {
+  const book = books.find((b) => b.id === finding.targetBibleBookId);
+  const name = book ? bookName(book, language) : String(finding.targetBibleBookId);
+  const end = finding.targetEndVerse === undefined ? "" : `–${finding.targetEndVerse}`;
+  return `${name} ${finding.targetChapter},${finding.targetVerse}${end}`;
+}
+
 function Word({ finding }: { finding: Finding }) {
   const word = finding.german ?? finding.lemma ?? "";
   const parts = splitContext(finding.context, word);
@@ -144,7 +151,16 @@ export function FindingsTable({
     );
   };
 
-  const detail = (finding: Finding) => <span>{finding.detail}</span>;
+  const detail = (finding: Finding) => (
+    <span>
+      {finding.detail}
+      {finding.targetBibleBookId !== undefined ? (
+        <span className="block text-fg-muted">
+          {t("quality.findings.target")}: {targetLabel(finding, books, language)}
+        </span>
+      ) : null}
+    </span>
+  );
 
   if (error) {
     return (

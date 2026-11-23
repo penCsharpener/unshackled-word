@@ -2,7 +2,7 @@ import type { CheckSummary, Finding } from "./types";
 import { normalizeOriginalQ, type TrailEntry } from "./url";
 
 export type TileSeverity = "error" | "warning" | "info" | "ok";
-export type CheckGroupKey = "mapping" | "lemma" | "roles";
+export type CheckGroupKey = "mapping" | "lemma" | "roles" | "tsk";
 
 /** No findings = ok, any error finding = error, otherwise worth a look. */
 export function tileSeverity(check: Pick<CheckSummary, "count" | "errorCount">): TileSeverity {
@@ -10,9 +10,10 @@ export function tileSeverity(check: Pick<CheckSummary, "count" | "errorCount">):
   return check.errorCount > 0 ? "error" : "warning";
 }
 
-/** L* checks are about the German lemma / morphology, R* about link roles, everything else about the mapping. */
+/** L* checks are about the German lemma / morphology, R* about link roles, T* about TSK curations, everything else about the mapping. */
 export function checkGroup(code: string): CheckGroupKey {
   if (code.startsWith("R")) return "roles";
+  if (code.startsWith("T")) return "tsk";
   return code.startsWith("L") ? "lemma" : "mapping";
 }
 
@@ -68,7 +69,7 @@ export function splitContext(
 
 // ---- jump targets ---------------------------------------------------------------------------
 
-export type JumpKind = "mapping" | "lemma" | "bulk" | "strongs";
+export type JumpKind = "mapping" | "lemma" | "bulk" | "strongs" | "verse" | "target";
 
 export interface JumpTarget {
   kind: JumpKind;
@@ -81,6 +82,14 @@ const enc = encodeURIComponent;
 export function jumpTargets(finding: Finding): JumpTarget[] {
   const { bibleBookId: book, chapter, verse } = finding;
   const targets: JumpTarget[] = [];
+  if (finding.targetBibleBookId !== undefined && finding.targetChapter !== undefined) {
+    // TSK curation findings: open the source verse and the target verse of the link
+    targets.push({ kind: "verse", href: `/bible/${book}/${chapter}#v${verse}` });
+    targets.push({
+      kind: "target",
+      href: `/bible/${finding.targetBibleBookId}/${finding.targetChapter}#v${finding.targetVerse}`,
+    });
+  }
   if (finding.elbWordId !== undefined) {
     const stepPart = finding.stepWordId !== undefined ? `&s=${finding.stepWordId}` : "";
     targets.push({

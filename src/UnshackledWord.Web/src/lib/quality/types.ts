@@ -108,6 +108,17 @@ export interface Finding {
   groupKey?: string;
   /** About 5 words of the verse on either side of `german`, as one string (see `splitContext`). */
   context?: string;
+  /** T1/T2 (TSK curations): target verse (range) of the link; the source verse is bibleBookId/chapter/verse. */
+  targetBibleBookId?: number;
+  targetChapter?: number;
+  targetVerse?: number;
+  targetEndVerse?: number;
+  /** T1/T2: stored word-link quote with its Elb1871 positions */
+  quotedText?: string;
+  startPosition?: number;
+  endPosition?: number;
+  /** T2: the Elb1871 words now at the positions (absent when the positions are gone) */
+  currentText?: string;
 }
 
 export interface CheckGroup {

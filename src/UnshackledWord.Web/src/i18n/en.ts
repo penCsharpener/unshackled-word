@@ -2123,13 +2123,14 @@ export const en: Translation = {
       explorer: "Explore",
       findings: "Findings",
     },
-    groups: { mapping: "Mapping", lemma: "Lemma", roles: "Roles" },
+    groups: { mapping: "Mapping", lemma: "Lemma", roles: "Roles", tsk: "TSK curation" },
     severity: { error: "Error", warning: "Check", info: "Note", ok: "Clean" },
     delta: "{{sign}}{{count}} since last run",
     sub: {
       content: "{{count, number}} content words",
       ot: "{{count, number}} in the OT",
       nt: "{{count, number}} in the NT",
+      added: "{{count, number}} of them added links",
     },
     checks: {
       U1: { title: "German without original" },
@@ -2153,6 +2154,8 @@ export const en: Translation = {
       R4: { title: "Lemma twice on one morpheme" },
       R5: { title: "Verb particle without finite verb" },
       R6: { title: "Old spelling in lemma" },
+      T1: { title: "TSK curation without TSK row" },
+      T2: { title: "Word link drifted" },
     },
     help: {
       toggle: "What does this area check?",
@@ -2165,6 +2168,7 @@ export const en: Translation = {
           "Mapping – checks the link between Elberfelder words and the original words (Greek/Hebrew).",
         lemma: "Lemma – checks base form, part of speech and morphology of the German words.",
         roles: "Roles – checks head words, auxiliary words (unit) and part lemmas of the links.",
+        tsk: "TSK curation – checks the curated cross references (roadmap 0024) for orphaned keys and drifted word links.",
       },
       checks: {
         U1: {
@@ -2251,6 +2255,14 @@ export const en: Translation = {
           what: "A lemma or part lemma is in the list of old spellings (e.g. “Thal” instead of “Tal”). The value should be 0.",
           fix: "Change the lemma to the modern spelling.",
         },
+        T1: {
+          what: "A curation (rating, comment, word link) of a TSK reference has no matching TSK row any more, e.g. after a change of the verse counting, or an added reference has lost its source verse. The value should be 0; check again after every counting change.",
+          fix: "Check the verse counting, or re-attach the curation to the right reference on the TSK review page (/edit/tsk) or remove it.",
+        },
+        T2: {
+          what: "The Elb1871 words at the positions of a word link no longer match the stored quote (punctuation ignored) or the positions are gone. The reference then falls back to verse level.",
+          fix: "Open the verse in the reader and set the word link of the reference again.",
+        },
       },
       unmapped: {
         text: "Three cards show where words stay without a counterpart: German without original (U1), Greek without German (U2), Hebrew without German (U3). The ring splits the words by class (German part of speech or original class); classes marked “usually fine” are expected gaps. Clicking a segment lists those words under “Findings”.",
@@ -2331,6 +2343,7 @@ export const en: Translation = {
       title: "Findings",
       selectCheck: "Pick a check above to see its findings.",
       ref: "Reference",
+      target: "Target",
       german: "German",
       original: "Original",
       stts: "STTS",
@@ -2355,6 +2368,8 @@ export const en: Translation = {
       bulk: "Replace",
       strongs: "Strong's",
       filter: "Filter",
+      verse: "Source verse",
+      target: "Target verse",
     },
     states: {
       loading: "Loading …",

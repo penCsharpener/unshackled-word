@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
@@ -260,5 +261,87 @@ describe("DataQualityPage", () => {
     expect(await screen.findByRole("columnheader", { name: "STTS" })).toBeInTheDocument();
     expect(screen.getByRole("columnheader", { name: "Wortart" })).toBeInTheDocument();
     expect(await screen.findAllByText("STTS „NN“ passt nicht zur Wortart ADV")).not.toHaveLength(0);
+  });
+  it("shows the TSK curation tiles and the T1/T2 findings with target and quote", async () => {
+    stubApi({
+      ...handlers,
+      "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
+      "GET /dataQuality/overview": () =>
+        json({
+          ...overview,
+          checks: [
+            ...overview.checks,
+            { code: "T1", tier: 1, count: 3, errorCount: 3, sub: { key: "added", count: 1 } },
+            { code: "T2", tier: 1, count: 2, errorCount: 0 },
+          ],
+        }),
+      "GET /dataQuality/checks/T1?page=1&pageSize=50": () =>
+        json({
+          code: "T1",
+          total: 1,
+          page: 1,
+          pageSize: 50,
+          items: [
+            {
+              check: "T1",
+              severity: "error",
+              bibleBookId: 1,
+              chapter: 1,
+              verse: 1,
+              detail: "Kuratierter TSK-Verweis ohne TSK-Zeile (Schlüssel passt zu keinem Eintrag)",
+              targetBibleBookId: 1,
+              targetChapter: 2,
+              targetVerse: 4,
+              targetEndVerse: 6,
+            },
+          ],
+        }),
+      "GET /dataQuality/checks/T2?page=1&pageSize=50": () =>
+        json({
+          code: "T2",
+          total: 1,
+          page: 1,
+          pageSize: 50,
+          items: [
+            {
+              check: "T2",
+              severity: "warning",
+              bibleBookId: 1,
+              chapter: 1,
+              verse: 1,
+              german: "Anfang",
+              quotedText: "Anfang",
+              startPosition: 2,
+              endPosition: 2,
+              currentText: "Beginn",
+              detail: "Wort 2: jetzt „Beginn“",
+              targetBibleBookId: 43,
+              targetChapter: 1,
+              targetVerse: 1,
+            },
+          ],
+        }),
+    });
+    Element.prototype.scrollIntoView = vi.fn();
+    renderPage("/edit/quality?check=T1");
+    expect(
+      await screen.findByRole("button", { name: /T1 TSK-Kuratierung ohne TSK-Zeile.*Fehler/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /T2 Wort-Verknüpfung verschoben.*Prüfen/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("davon 1 hinzugefügte Verweise")).toBeInTheDocument();
+    expect(
+      (await screen.findAllByText(/Kuratierter TSK-Verweis ohne TSK-Zeile/)).length,
+    ).toBeGreaterThan(0);
+    expect((await screen.findAllByText(/Ziel: 1. Mose 2,4–6/)).length).toBeGreaterThan(0);
+    const verse = (await screen.findAllByRole("link", { name: /Zielvers/ }))[0];
+    expect(verse).toHaveAttribute("href", "/bible/1/2#v4");
+
+    await userEvent
+      .setup()
+      .click(screen.getByRole("button", { name: /T2 Wort-Verknüpfung verschoben/ }));
+    expect((await screen.findAllByText("Wort 2: jetzt „Beginn“")).length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Anfang").length).toBeGreaterThan(0);
   });
 });

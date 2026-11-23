@@ -54,6 +54,23 @@ describe("checks", () => {
     ).toEqual([]);
   });
 
+  it("groups T checks as TSK curation and links source and target verse", () => {
+    expect(checkGroup("T1")).toBe("tsk");
+    const hrefs = Object.fromEntries(
+      jumpTargets({
+        ...finding,
+        elbWordId: undefined,
+        lemma: undefined,
+        strongs: undefined,
+        targetBibleBookId: 1,
+        targetChapter: 2,
+        targetVerse: 7,
+      }).map((j) => [j.kind, j.href]),
+    );
+    expect(hrefs.verse).toBe("/bible/43/3#v16");
+    expect(hrefs.target).toBe("/bible/1/2#v7");
+  });
+
   it("filters by Strong's first, then by lemma", () => {
     expect(filterForFinding(finding)).toEqual({ side: "o", q: "G2316" });
     expect(filterForFinding({ ...finding, strongs: undefined })).toEqual({

@@ -2151,13 +2151,14 @@ export const de = {
       explorer: "Erkunden",
       findings: "Befunde",
     },
-    groups: { mapping: "Zuordnung", lemma: "Lemma", roles: "Rollen" },
+    groups: { mapping: "Zuordnung", lemma: "Lemma", roles: "Rollen", tsk: "TSK-Kuratierung" },
     severity: { error: "Fehler", warning: "Prüfen", info: "Hinweis", ok: "Unauffällig" },
     delta: "{{sign}}{{count}} seit letzter Berechnung",
     sub: {
       content: "davon {{count, number}} Inhaltswörter",
       ot: "davon {{count, number}} im AT",
       nt: "davon {{count, number}} im NT",
+      added: "davon {{count, number}} hinzugefügte Verweise",
     },
     checks: {
       U1: { title: "Deutsch ohne Grundtext" },
@@ -2181,6 +2182,8 @@ export const de = {
       R4: { title: "Lemma doppelt auf einem Morphem" },
       R5: { title: "Verbpartikel ohne finites Verb" },
       R6: { title: "Alte Schreibweise im Lemma" },
+      T1: { title: "TSK-Kuratierung ohne TSK-Zeile" },
+      T2: { title: "Wort-Verknüpfung verschoben" },
     },
     help: {
       toggle: "Was prüft dieser Bereich?",
@@ -2193,6 +2196,7 @@ export const de = {
           "Zuordnung – prüft die Verknüpfung der Elberfelder Wörter mit den Grundtextwörtern (Griechisch/Hebräisch).",
         lemma: "Lemma – prüft Grundform, Wortart und Morphologie der deutschen Wörter.",
         roles: "Rollen – prüft Kopfwörter, Hilfswörter (unit) und Teillemmata der Verknüpfungen.",
+        tsk: "TSK-Kuratierung – prüft die kuratierten Querverweise (Roadmap 0024) auf verwaiste Schlüssel und verschobene Wort-Verknüpfungen.",
       },
       checks: {
         U1: {
@@ -2279,6 +2283,14 @@ export const de = {
           what: "Ein Lemma oder Teillemma steht in der Liste alter Schreibweisen (z. B. „Thal“ statt „Tal“). Der Wert sollte 0 sein.",
           fix: "Lemma auf die neue Schreibweise ändern.",
         },
+        T1: {
+          what: "Eine Kuratierung (Bewertung, Kommentar, Wort-Verknüpfung) eines TSK-Verweises hat keine passende TSK-Zeile mehr, etwa nach einer Änderung der Zählung, oder ein hinzugefügter Verweis hat keinen Quellvers mehr. Der Wert sollte 0 sein; nach jeder Änderung der Zählung neu prüfen.",
+          fix: "Die Zählung prüfen oder die Kuratierung in der TSK-Prüfung (/edit/tsk) neu auf den passenden Verweis setzen bzw. entfernen.",
+        },
+        T2: {
+          what: "Die Elb1871-Wörter an den Positionen einer Wort-Verknüpfung stimmen nicht mehr mit dem gespeicherten Zitat überein (Satzzeichen zählen nicht) oder die Positionen gibt es nicht mehr. Der Verweis fällt dann auf Versebene zurück.",
+          fix: "Den Vers im Leser öffnen und die Wort-Verknüpfung des Verweises neu setzen.",
+        },
       },
       unmapped: {
         text: "Drei Karten zeigen, wo Wörter ohne Gegenstück bleiben: Deutsch ohne Grundtext (U1), Griechisch ohne Deutsch (U2), Hebräisch ohne Deutsch (U3). Der Ring teilt die Wörter nach Klasse auf (deutsche Wortart bzw. Grundtext-Klasse); Klassen mit „meist korrekt“ sind erwartbare Lücken. Ein Klick auf ein Segment listet diese Wörter unter „Befunde“.",
@@ -2359,6 +2371,7 @@ export const de = {
       title: "Befunde",
       selectCheck: "Wähle oben einen Check, um seine Befunde zu sehen.",
       ref: "Stelle",
+      target: "Ziel",
       german: "Deutsch",
       original: "Grundtext",
       stts: "STTS",
@@ -2383,6 +2396,8 @@ export const de = {
       bulk: "Ersetzen",
       strongs: "Strong's",
       filter: "Filtern",
+      verse: "Quellvers",
+      target: "Zielvers",
     },
     states: {
       loading: "Lädt …",

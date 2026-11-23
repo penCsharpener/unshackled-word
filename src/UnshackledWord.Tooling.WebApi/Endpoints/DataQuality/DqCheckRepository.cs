@@ -9,7 +9,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality;
 public static class DqChecks
 {
     /// <summary>Must-tier checks served by checks/{code} and listed in the overview, in tile order.</summary>
-    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5", "L6", "L7", .. DqRoleChecks.Codes];
+    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5", "L6", "L7", .. DqTskChecks.Codes, .. DqRoleChecks.Codes];
 
     public static bool IsKnown(string code) => Codes.Contains(code);
 }
@@ -792,6 +792,9 @@ public sealed class DqCheckRepository : IDqCheckRepository
                 var count = await connection.ExecuteScalarAsync<int>(new CommandDefinition(DqSql.CountFindings(spec.Ctes, spec.ItemsWhere, spec.Join), p, commandTimeout: GroupTimeoutSeconds, cancellationToken: ct));
                 return new CheckCount(count, DqRoleChecks.IsError(code) ? count : 0, null);
             }
+            case "T1":
+            case "T2":
+                return await DqTskChecks.CountAsync(connection, null, code, facets, ct);
             case "L5":
             {
                 var violating = await GetL5CombosAsync(connection, facets, ct);

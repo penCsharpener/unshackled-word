@@ -147,7 +147,7 @@ public sealed class CoverageChapter
 
 public sealed class CheckRequest : DqFacetsRequest
 {
-    /// <summary>Check code (route): U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5 L6 L7.</summary>
+    /// <summary>Check code (route): U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5 L6 L7 R1-R6 T1 T2.</summary>
     public string Code { get; set; } = string.Empty;
 
     public int Page { get; set; } = 1;
@@ -229,6 +229,22 @@ public sealed class Finding
 
     /// <summary>added: about five words of verse text left and right of the German word.</summary>
     public string? Context { get; set; }
+
+    /// <summary>T1/T2 (TSK curations): the target verse (range) of the link; the source verse is <c>BibleBookId</c>/<c>Chapter</c>/<c>Verse</c>.</summary>
+    public int? TargetBibleBookId { get; set; }
+    public int? TargetChapter { get; set; }
+    public int? TargetVerse { get; set; }
+
+    /// <summary>Last verse of a target range in the same chapter; absent = single verse.</summary>
+    public int? TargetEndVerse { get; set; }
+
+    /// <summary>T1/T2: the stored word-link quote and its Elb1871 positions (absent when the curation has no word link).</summary>
+    public string? QuotedText { get; set; }
+    public int? StartPosition { get; set; }
+    public int? EndPosition { get; set; }
+
+    /// <summary>T2: the Elb1871 words now at the positions (absent when the positions are gone).</summary>
+    public string? CurrentText { get; set; }
 }
 
 public sealed class OriginalSearchRequest
