@@ -342,22 +342,56 @@ Import rules: a missing note is inserted; an existing note is updated only if th
 
 Only needed for vocab audio. Without `ObjectStorage` config the API does not register storage and `api/health/ready` stays green; with it, a `storage` check (bucket reachable) is added.
 
-1. Start Garage (single node, `dxflrs/garage:v2.4.1`, config `deploy/garage/garage.toml`, bind mounts `deploy/garage/volumes/meta` and `/data`, overridable with `GARAGE_META_DIR`/`GARAGE_DATA_DIR`; existing named volumes `garage_meta`/`garage_data` must be copied there once):
-   `docker compose --env-file deployment/.env -f compose.yml -f deployment/compose.prod.yml up -d unshackledword.garage`
-2. Bootstrap once (idempotent: layout, bucket `unshackledword-media`, key `unshackledword-api`; prints the values for `.env`):
-   `COMPOSE="docker compose --env-file deployment/.env -f compose.yml -f deployment/compose.prod.yml" deploy/garage/bootstrap.sh`
-3. Put the printed values into `.env` (never in git) and set the public URL to your own origin plus `/media`:
+Step by step (dev: plain `docker compose`; prod: add `--env-file deployment/.env -f compose.yml -f deployment/compose.prod.yml` to every `docker compose` call and run `docker compose` the same way in `COMPOSE=...` below):
+
+1. Generate the Garage secrets yourself and put them into `.env` (never in git). Garage rejects placeholders and all zeros; the RPC secret must be exactly 64 hex characters:
 
 ```bash
-GARAGE_RPC_SECRET=<64 hex chars, openssl rand -hex 32>   # set before the first start; dev default is all zeros
-GARAGE_ADMIN_TOKEN=<random>
+openssl rand -hex 32   # -> GARAGE_RPC_SECRET
+openssl rand -hex 24   # -> GARAGE_ADMIN_TOKEN
+```
+
+2. Create the data directories (bind mounts `deploy/garage/volumes/meta` and `/data`, overridable with `GARAGE_META_DIR`/`GARAGE_DATA_DIR`; data from the old named volumes `garage_meta`/`garage_data` must be copied there once) and start Garage (single node, `dxflrs/garage:v2.4.1`, config `deploy/garage/garage.toml`):
+
+```bash
+mkdir -p deploy/garage/volumes/meta deploy/garage/volumes/data
+docker compose up -d unshackledword.garage
+```
+
+3. Set up the cluster once: capacity, bucket and access key (a one-node cluster; the capacity is the disk space Garage may use, adjust `10G`). `G` runs the Garage CLI in the container; in prod use the long compose command from the note above instead of `docker compose`:
+
+```bash
+G="docker compose exec -T unshackledword.garage /garage"
+
+# capacity: assign this node to zone dc1 with 10G, then apply the layout (version 1 on a fresh cluster)
+NODE_ID=$($G node id -q | cut -d@ -f1 | cut -c1-16)
+$G layout assign -z dc1 -c 10G "$NODE_ID"
+$G layout show                       # review the staged change
+$G layout apply --version 1
+
+# bucket and key
+$G bucket create unshackledword-media
+$G key create unshackledword-api
+$G bucket allow --read --write --owner unshackledword-media --key unshackledword-api
+
+# the values for step 4 ("Key ID" = access key, "Secret key" = secret key)
+$G key info --show-secret unshackledword-api
+```
+
+Changing the capacity later: `$G layout assign -z dc1 -c 20G "$NODE_ID"`, then `$G layout apply --version <current version + 1>` (`$G layout show` prints it).
+
+4. Put the values from `key info` into `.env` and set the public URL to your own origin plus `/media`:
+
+```bash
+GARAGE_RPC_SECRET=<openssl rand -hex 32>
+GARAGE_ADMIN_TOKEN=<openssl rand -hex 24>
 OBJECT_STORAGE_SERVICE_URL=http://unshackledword.garage:3900
 OBJECT_STORAGE_PUBLIC_URL=https://example.org/media      # dev: http://localhost:5173/media
 UNSHACKLEDWORD_OBJECT_STORAGE_ACCESS_KEY=GK...
 UNSHACKLEDWORD_OBJECT_STORAGE_SECRET_KEY=...
 ```
 
-4. Recreate the API: `up -d unshackledword.tooling.webapi`.
+5. Recreate the API: `docker compose up -d unshackledword.tooling.webapi`.
 
 Reads are presigned GET URLs on `OBJECT_STORAGE_PUBLIC_URL`. The signature covers the public host, so the proxy in front must strip only `/media` and forward the `Host` header unchanged (`nginx.prod.conf` uses `$http_host`; Nginx Proxy Manager must keep the Host header too). `ObjectStorage:Region` and `s3_region` in `garage.toml` must both be `garage`; a mismatch is answered with a bare 400. Uploads go through the API, so Garage's S3 port is not published in production.
 
@@ -369,7 +403,7 @@ docker run --rm -v "$PWD/deploy/garage/volumes/data:/data:ro" -v /backups:/backu
 docker run --rm -v "$PWD/deploy/garage/volumes/meta:/meta:ro" -v /backups:/backups rclone/rclone copy /meta /backups/garage-$(date +%F)/meta
 ```
 
-The volume prefix is your compose project name (`docker volume ls | grep garage`). Restoring means copying both folders back into empty volumes before the first start. Without audio nothing is lost if Garage is gone: the audio is re-recorded.
+Restoring means copying both folders back into empty directories before the first start. Without audio nothing is lost if Garage is gone: the audio is re-recorded.
 
 ### Logs and health
 

@@ -1,6 +1,6 @@
 # Garage node configuration (roadmap 0022.5), bind-mounted to /etc/garage.toml by compose.yml.
 # No secrets here: rpc_secret and admin_token come from GARAGE_RPC_SECRET / GARAGE_ADMIN_TOKEN (compose, .env).
-# One node, no replication; the cluster layout, bucket and key are created by deploy/garage/bootstrap.sh.
+# One node, no replication; the cluster layout, bucket and key are created by hand, see docs/deployment.md (Object storage).
 
 metadata_dir = "/var/lib/garage/meta"
 data_dir     = "/var/lib/garage/data"

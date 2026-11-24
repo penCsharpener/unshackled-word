@@ -4,7 +4,7 @@
 
 Port Lexio roadmap 0048 (`../lexio/docs/Roadmaps/0048 Garage replaces MinIO.md`, `../lexio/garage/`). There is no MinIO migration here: this is a fresh store.
 
-- Compose service `unshackledword.garage` (`dxflrs/garage:v2.4.1`, the version Lexio verified), data and meta volumes, `deploy/garage/garage.toml` with `s3_region = "garage"`. A one-shot bootstrap script (`deploy/garage/bootstrap.sh`) assigns the layout, creates the bucket `unshackledword-media` and a key, and prints the key for `.env`. Idempotent.
+- Compose service `unshackledword.garage` (`dxflrs/garage:v2.4.1`, the version Lexio verified), data and meta volumes, `deploy/garage/garage.toml` with `s3_region = "garage"`. The layout, the bucket `unshackledword-media` and a key are created once by hand with the commands in `docs/deployment.md` (originally a bootstrap script, replaced by documented commands).
 - `ObjectStorageOptions` (`ObjectStorage:ServiceUrl`, `PublicServiceUrl`, `Region`, `Bucket`, `AccessKey`, `SecretKey`) with FluentValidation. Env vars use `UNSHACKLEDWORD_OBJECTSTORAGE__*`.
 - `Application/Abstractions/IObjectStorage` (`PutAsync`, `DeleteAsync`, `GetReadUrl`) and `Infrastructure/ObjectStorage/S3ObjectStorage` over `AWSSDK.S3` with an explicit `AuthenticationRegion`. Lexio's lesson: Garage answers a region mismatch with a bare `400`.
 - Reads use a presigned GET against `PublicServiceUrl`. The web nginx (prod) and Vite (dev) proxy `/media/` to Garage byte-for-byte, so SigV4 survives the hop. Uploads go through the API (small files, one maintainer), so there is no presigned PUT.

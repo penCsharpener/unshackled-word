@@ -6,7 +6,7 @@ using UnshackledWord.Infrastructure.ObjectStorage;
 namespace UnshackledWord.Infrastructure.Tests;
 
 /// <summary>
-/// Runs against the compose Garage after deploy/garage/bootstrap.sh. Set UNSHACKLEDWORD_TEST_GARAGE=1 plus the
+/// Runs against the compose Garage after the Garage setup in docs/deployment.md. Set UNSHACKLEDWORD_TEST_GARAGE=1 plus the
 /// OBJECT_STORAGE_* values (UNSHACKLEDWORD_OBJECT_STORAGE_ACCESS_KEY / _SECRET_KEY); service URL defaults to http://localhost:3900.
 /// </summary>
 public sealed class ObjectStorageGarageTests
