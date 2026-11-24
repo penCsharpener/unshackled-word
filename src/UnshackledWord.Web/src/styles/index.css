@@ -19,6 +19,11 @@
 :root {
   /* Mobile: menu row (14) + word-info row (12); from md the info sits in the menu row. */
   --app-header-h: calc(var(--spacing) * 26);
+  /*
+    Top of sticky rows in the page (chapter header, side rail head): below the app header and, under 1200px,
+    below the in-page sticky picker bar, whose measured height HeaderPickerBar sets as --picker-bar-h.
+  */
+  --reader-sticky-top: calc(var(--app-header-h) + var(--picker-bar-h, 0px));
   color-scheme: light;
   --uw-bg: oklch(0.99 0.004 85);
   --uw-surface: oklch(1 0 0);
@@ -129,8 +134,8 @@
 /*
  * Verse side panel (TSK / Grundtext) in the left margin, from 120rem where the column has margins on both sides.
  * The verse row becomes a one-cell grid: `.verse-main` (text, eye and pen panels) and `.verse-side` share the cell, so
- * the panel lines up with its verse. TSK is out of flow (clipped to the verse height, "+N" opens an overlay); Grundtext
- * stays in flow, so the row is as tall as the taller of the German text and the original and nothing is cut off.
+ * the panel lines up with its verse. TSK and Grundtext both stay in flow, so the row is as tall as the taller of the
+ * German text and the panel and nothing is cut off or hidden.
  */
 :root {
   --side-panel-w: 32rem;
@@ -163,48 +168,8 @@
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     color: var(--color-fg);
-  }
-
-  .verse-side[data-mode="original"] {
     margin-inline-start: calc(-1 * (var(--side-panel-w) + var(--spacing) * 8));
-  }
-
-  .verse-side[data-mode="tsk"] {
-    position: absolute;
-    inset-block: 0;
-    right: calc(100% + var(--spacing) * 8);
-    display: flex;
-    flex-direction: column;
-    align-self: stretch;
-    overflow: clip;
-  }
-
-  .verse-side-clip {
-    position: relative;
-    overflow: clip;
-  }
-
-  .verse-side-more {
-    align-self: flex-end;
-    flex: none;
-  }
-
-  /* "+N" opened: the whole list as an overlay over the following verses' panels; the text column does not move. */
-  .verse-side[data-expanded] {
-    inset-block-end: auto;
-    align-self: start;
-    z-index: 20;
-    max-height: min(60dvh, 40rem);
-    overflow-y: auto;
-    padding: var(--spacing) calc(var(--spacing) * 2);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .verse-side[data-expanded] .verse-side-clip {
-    overflow: visible;
+    padding-bottom: calc(var(--spacing) * 3);
   }
 }
 
@@ -219,7 +184,8 @@
 
 .side-rail-head {
   position: sticky;
-  top: calc(var(--app-header-h) + var(--spacing) * 4);
+  top: var(--reader-sticky-top);
+  padding-top: calc(var(--spacing) * 4);
   z-index: 15;
   pointer-events: auto;
 }

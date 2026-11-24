@@ -49,8 +49,10 @@ export interface VerseSideProps {
   link?: VerseLinkMode;
   /** Link mode: selected keys of this verse (a shared empty set for the other verses, so the memo holds). */
   linkSelected?: ReadonlySet<string>;
-  expanded: boolean;
-  onExpandedChange: (verse: number, expanded: boolean) => void;
+  /** `tsk`: keys of links that flash because their word is hovered in the verse text. */
+  flashKeys?: ReadonlySet<string>;
+  /** `tsk`: a link of the verse is hovered (`undefined` = none); the reader marks its word. */
+  onHoverReference?: (verse: number, reference: CrossReference | undefined) => void;
   /** `original`: words and language of the verse (absent = none) */
   original?: ChapterOriginalVerse;
   language: "greek" | "hebrew";
@@ -76,8 +78,8 @@ export const VerseSide = memo(function VerseSide({
   suggest = false,
   link,
   linkSelected,
-  expanded,
-  onExpandedChange,
+  flashKeys,
+  onHoverReference,
   original,
   language,
   lexicon,
@@ -102,6 +104,11 @@ export const VerseSide = memo(function VerseSide({
     [link, linkSelected, verse],
   );
 
+  const hoverReference = useMemo(
+    () => onHoverReference && ((r: CrossReference | undefined) => onHoverReference(verse, r)),
+    [onHoverReference, verse],
+  );
+
   const shown = useMemo(
     () =>
       references?.filter((r) =>
@@ -114,12 +121,7 @@ export const VerseSide = memo(function VerseSide({
     // curators in curate mode get the panel on every verse, so a link can be added where TSK has none
     if ((!shown || shown.length === 0) && !(editable && showHidden)) return null;
     return (
-      <VerseSidePanel
-        mode="tsk"
-        label={t("bible.sidePanel.verseTsk", { verse })}
-        expanded={expanded}
-        onExpandedChange={(next) => onExpandedChange(verse, next)}
-      >
+      <VerseSidePanel mode="tsk" label={t("bible.sidePanel.verseTsk", { verse })}>
         <CrossReferenceList
           variant="inline"
           references={shown ?? []}
@@ -129,6 +131,8 @@ export const VerseSide = memo(function VerseSide({
           editable={editable}
           suggest={suggest}
           link={listLink}
+          flashKeys={flashKeys}
+          onHoverReference={hoverReference}
         />
       </VerseSidePanel>
     );

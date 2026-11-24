@@ -109,7 +109,7 @@ afterEach(() => {
 });
 
 describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
-  it("shows readers the highlighted link starred and first, no pen and no curate switch", async () => {
+  it("shows readers the highlighted link starred and first, no add action and no curate switch", async () => {
     stubFetch();
     renderAt("/bible/43/3");
     const verse1 = await screen.findByRole("group", { name: "Querverweise zu Vers 1" });
@@ -119,16 +119,16 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     expect(links[1]).toHaveAccessibleName("Psalmen 33,9");
     expect(screen.queryByRole("button", { name: /^Querverweis .* bearbeiten$/ })).toBeNull();
     expect(screen.queryByRole("button", { name: "Querverweis hinzufügen" })).toBeNull();
-    expect(screen.getByRole("switch", { name: "Nur hervorgehobene" })).toBeInTheDocument();
-    expect(screen.queryByRole("switch", { name: "Ausgeblendete zeigen" })).toBeNull();
+    expect(screen.getByRole("switch", { name: "Wichtige" })).toBeInTheDocument();
+    expect(screen.queryByRole("switch", { name: "Ausgeblendet" })).toBeNull();
   });
 
-  it("'Nur hervorgehobene' lists only highlighted links and survives a remount", async () => {
+  it("'Wichtige' lists only highlighted links and survives a remount", async () => {
     stubFetch();
     const user = userEvent.setup();
     const first = renderAt("/bible/43/3");
     await screen.findByRole("group", { name: "Querverweise zu Vers 2" });
-    const toggle = screen.getByRole("switch", { name: "Nur hervorgehobene" });
+    const toggle = screen.getByRole("switch", { name: "Wichtige" });
     expect(toggle).toHaveAttribute("aria-checked", "false");
     await user.click(toggle);
     expect(toggle).toHaveAttribute("aria-checked", "true");
@@ -140,7 +140,7 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     first.unmount();
     renderAt("/bible/43/3");
     const verse1 = await screen.findByRole("group", { name: "Querverweise zu Vers 1" });
-    expect(screen.getByRole("switch", { name: "Nur hervorgehobene" })).toHaveAttribute(
+    expect(screen.getByRole("switch", { name: "Wichtige" })).toHaveAttribute(
       "aria-checked",
       "true",
     );
@@ -148,17 +148,15 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     expect(panel(2)).toBeNull();
   });
 
-  it("curate mode refetches with includeHidden=true and shows the hidden link greyed with a pen", async () => {
+  it("curate mode refetches with includeHidden=true and shows the hidden link greyed and editable", async () => {
     const fetchMock = stubFetch(["Maintainer"]);
     const user = userEvent.setup();
     renderAt("/bible/43/3");
-    const curate = await screen.findByRole("switch", { name: "Ausgeblendete zeigen" });
+    const curate = await screen.findByRole("switch", { name: "Ausgeblendet" });
     await screen.findByRole("group", { name: "Querverweise zu Vers 2" });
     expect(screen.queryByRole("link", { name: /Psalmen 104,30/ })).toBeNull();
-    // maintainers get a pen per link
-    expect(
-      screen.getAllByRole("button", { name: "Querverweis Psalmen 33,9 bearbeiten" }).length,
-    ).toBeGreaterThan(0);
+    // maintainers switch the edit mode on: a click on a link opens its editor
+    await user.click(await screen.findByRole("switch", { name: "Bearbeiten" }));
     // and "Querverweis hinzufügen" after the list of each verse (roadmap 0024.4f)
     const verse1 = screen.getByRole("group", { name: "Querverweise zu Vers 1" });
     expect(
@@ -176,7 +174,7 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     ).toBe(true);
 
     // the editor of the hidden link starts at "Ausblenden"
-    await user.click(screen.getByRole("button", { name: "Querverweis Psalmen 104,30 bearbeiten" }));
+    await user.click(screen.getByRole("link", { name: "Psalmen 104,30 (ausgeblendet)" }));
     const editor = screen.getByRole("dialog", { name: "Querverweis Psalmen 104,30 bearbeiten" });
     expect(within(editor).getByRole("button", { name: "Ausblenden" })).toHaveAttribute(
       "aria-pressed",
@@ -189,18 +187,17 @@ describe("ChapterPage TSK curation (roadmap 0024.3f)", () => {
     await waitFor(() => expect(screen.queryByRole("link", { name: /Psalmen 104,30/ })).toBeNull());
   });
 
-  it("gives a signed-in non-maintainer the pen, the add action and link mode, but no curate mode", async () => {
+  it("gives a signed-in non-maintainer the edit mode, the add action and link mode, but no curate mode", async () => {
     const fetchMock = stubFetch(["User"]);
+    const user = userEvent.setup();
     renderAt("/bible/43/3");
     await screen.findByRole("group", { name: "Querverweise zu Vers 1" });
     await waitFor(() =>
-      expect(screen.getByRole("switch", { name: "Nur hervorgehobene" })).toBeInTheDocument(),
+      expect(screen.getByRole("switch", { name: "Wichtige" })).toBeInTheDocument(),
     );
-    expect(screen.queryByRole("switch", { name: "Ausgeblendete zeigen" })).toBeNull();
+    expect(screen.queryByRole("switch", { name: "Ausgeblendet" })).toBeNull();
     // roadmap 0024.6f: every write path is open to logged-in users (as suggestions)
-    expect(
-      screen.getAllByRole("button", { name: "Querverweis Psalmen 33,9 bearbeiten" }).length,
-    ).toBeGreaterThan(0);
+    await user.click(screen.getByRole("switch", { name: "Bearbeiten" }));
     expect(
       screen.getAllByRole("button", { name: "Querverweis hinzufügen" }).length,
     ).toBeGreaterThan(0);

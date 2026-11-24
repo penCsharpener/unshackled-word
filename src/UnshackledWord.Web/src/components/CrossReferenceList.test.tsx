@@ -206,6 +206,31 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
   });
   afterEach(() => vi.unstubAllGlobals());
 
+  it("tints pills linked to a word and flashes the ones in `flashKeys`", () => {
+    const linked: CrossReference = {
+      bibleBookId: 19,
+      chapter: 33,
+      verse: 6,
+      word: { startPosition: 2, endPosition: 2, quotedText: "Wort", state: "ok" },
+    };
+    renderList({ references: [linked], flashKeys: new Set(["19-33-6-0"]) });
+    expect(screen.getByRole("link").className).toContain("ring-mark-linked");
+    cleanup();
+    renderList({ references: [linked] });
+    expect(screen.getByRole("link").className).toContain("bg-mark-link/40");
+  });
+
+  it("reports the hovered link so the reader can mark its word", async () => {
+    const user = userEvent.setup();
+    const onHoverReference = vi.fn();
+    renderList({ references: [curated[1] as CrossReference], onHoverReference });
+    const link = screen.getByRole("link");
+    await user.hover(link);
+    expect(onHoverReference).toHaveBeenLastCalledWith(curated[1]);
+    await user.unhover(link);
+    expect(onHoverReference).toHaveBeenLastCalledWith(undefined);
+  });
+
   it("marks highlighted links with a star and font-medium, in the order the API sends", () => {
     renderList();
     const links = screen.getAllByRole("link");
@@ -264,7 +289,7 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
     expect(screen.queryByRole("button", { name: /bearbeiten/ })).toBeNull();
   });
 
-  it("pen opens the editor, saves rating and comment and invalidates the TSK queries", async () => {
+  it("a click on the link opens the editor, saves rating and comment and invalidates the TSK queries", async () => {
     const fetchMock = vi.fn(async (_url: string, init?: RequestInit) =>
       Response.json(
         init?.method === "PUT"
@@ -278,7 +303,7 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
     const invalidate = vi.spyOn(client, "invalidateQueries");
     renderList({ preview: source, editable: true }, client);
 
-    await user.click(screen.getByRole("button", { name: "Querverweis 1. Mose 1,10 bearbeiten" }));
+    await user.click(screen.getByRole("link", { name: "1. Mose 1,10" }));
     const editor = screen.getByRole("dialog", { name: "Querverweis 1. Mose 1,10 bearbeiten" });
     expect(within(editor).getByRole("button", { name: "Neutral" })).toHaveAttribute(
       "aria-pressed",
@@ -308,10 +333,8 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
         ["bible", "wordDetail"],
       ]),
     );
-    // focus goes back to the pen
-    expect(
-      screen.getByRole("button", { name: "Querverweis 1. Mose 1,10 bearbeiten" }),
-    ).toHaveFocus();
+    // focus goes back to the link
+    expect(screen.getByRole("link", { name: "1. Mose 1,10" })).toHaveFocus();
   });
 
   it("un-hides a hidden link with an empty comment as null and keeps a range key", async () => {
@@ -326,7 +349,7 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
         { bibleBookId: 20, chapter: 8, verse: 22, endVerse: 24, rating: "hide", comment: "alt" },
       ],
     });
-    await user.click(screen.getByRole("button", { name: /bearbeiten/ }));
+    await user.click(screen.getByRole("link"));
     const editor = screen.getByRole("dialog");
     expect(within(editor).getByRole("button", { name: "Ausblenden" })).toHaveAttribute(
       "aria-pressed",
@@ -351,7 +374,7 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
     renderList({ preview: source, editable: true });
-    const pen = screen.getByRole("button", { name: "Querverweis 1. Mose 1,10 bearbeiten" });
+    const pen = screen.getByRole("link", { name: "1. Mose 1,10" });
     await user.click(pen);
     await user.click(screen.getByRole("button", { name: "Abbrechen" }));
     expect(screen.queryByRole("dialog")).toBeNull();
@@ -561,9 +584,7 @@ describe("CrossReferenceList add (roadmap 0024.4f)", () => {
     const fetchMock = stubApi({ startAdded: true });
     const user = userEvent.setup();
     renderHarness();
-    await user.click(
-      await screen.findByRole("button", { name: "Querverweis Römer 8,28–30 bearbeiten" }),
-    );
+    await user.click(await screen.findByRole("link", { name: "Römer 8,28–30" }));
     const editor = screen.getByRole("dialog");
     await user.click(within(editor).getByRole("button", { name: "Querverweis entfernen" }));
     expect(
@@ -591,9 +612,7 @@ describe("CrossReferenceList add (roadmap 0024.4f)", () => {
     stubApi();
     const user = userEvent.setup();
     renderHarness();
-    await user.click(
-      await screen.findByRole("button", { name: "Querverweis 1. Mose 45,5 bearbeiten" }),
-    );
+    await user.click(await screen.findByRole("link", { name: "1. Mose 45,5" }));
     expect(screen.queryByRole("button", { name: "Querverweis entfernen" })).toBeNull();
     cleanup();
     renderHarness(false);

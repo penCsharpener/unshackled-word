@@ -1038,7 +1038,6 @@ export const de = {
     },
     tskLink: {
       toggle: "Verknüpfen",
-      select: "{{reference}} auswählen",
       selectionHint_one:
         "Auf Wort legen: 1 Querverweis ausgewählt. Wort in Vers {{verse}} antippen oder mit Enter wählen.",
       selectionHint_other:
@@ -1046,10 +1045,7 @@ export const de = {
       cancel: "Abbrechen",
       linking: "Wird verknüpft …",
       linkError: "Die Wortverknüpfung konnte nicht gespeichert werden.",
-      noWord: "Ohne Wort",
       group: "„{{quote}}“",
-      groupLabel: "Querverweise zu „{{quote}}“",
-      noWordLabel: "Querverweise ohne Wort",
       drifted: "Text geändert, auf Versebene",
       driftedTitle:
         "Der Text an der verknüpften Stelle hat sich geändert; der Querverweis steht wieder beim Vers.",
@@ -1058,8 +1054,9 @@ export const de = {
       unlinkError: "Die Wortverknüpfung konnte nicht gelöst werden.",
     },
     tskCuration: {
-      onlyHighlighted: "Nur hervorgehobene",
-      showHidden: "Ausgeblendete zeigen",
+      onlyHighlighted: "Wichtige",
+      editMode: "Bearbeiten",
+      showHidden: "Ausgeblendet",
       emptyHighlighted: "Keine hervorgehobenen Querverweise in diesem Kapitel.",
       highlighted: "hervorgehoben",
       hidden: "ausgeblendet",
@@ -1134,9 +1131,6 @@ export const de = {
       },
       verseTsk: "Querverweise zu Vers {{verse}}",
       verseOriginal: "Grundtext von Vers {{verse}}",
-      more: "+{{count}}",
-      moreLabel: "{{count}} weitere Querverweise anzeigen",
-      less: "Weniger",
       eyeSection: "Querverweise (TSK)",
       loadingTsk: "Querverweise werden geladen …",
       loadingOriginal: "Grundtext wird geladen …",

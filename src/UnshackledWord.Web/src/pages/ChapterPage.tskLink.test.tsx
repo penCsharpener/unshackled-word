@@ -210,7 +210,7 @@ const wordButton = (verse: number, word: string) =>
   within(document.querySelector(`#v${verse} .verse-main`) as HTMLElement).getByRole("button", {
     name: `Grundtext zu „${word}“ anzeigen`,
   });
-const checkbox = (name: string) => screen.getByRole("checkbox", { name: `${name} auswählen` });
+const checkbox = (name: string) => screen.getByRole("link", { name });
 const bodyOf = (fetchMock: ReturnType<typeof stubFetch>, method: string) =>
   JSON.parse(
     String(
@@ -223,7 +223,7 @@ const bodyOf = (fetchMock: ReturnType<typeof stubFetch>, method: string) =>
 async function openLinkMode() {
   const user = userEvent.setup();
   await user.click(await screen.findByRole("switch", { name: "Verknüpfen" }));
-  await screen.findByRole("checkbox", { name: "Sprüche 8,22–24 auswählen" });
+  await screen.findByRole("link", { name: "Sprüche 8,22–24" });
   return user;
 }
 
@@ -239,7 +239,7 @@ afterEach(() => {
 });
 
 describe("ChapterPage TSK link mode (roadmap 0024.5f)", () => {
-  it("drags three selected refs of 1Mo 1,1 onto „Anfang“ and groups them under the word", async () => {
+  it("drags three selected refs of 1Mo 1,1 onto „Anfang“ and tints them as linked", async () => {
     const fetchMock = stubFetch();
     renderAt("/bible/1/1");
     const user = await openLinkMode();
@@ -248,8 +248,8 @@ describe("ChapterPage TSK link mode (roadmap 0024.5f)", () => {
     await user.keyboard("{Shift>}");
     await user.click(checkbox("Hebräer 1,10"));
     await user.keyboard("{/Shift}");
-    expect(checkbox("Johannes 1,1–3")).toBeChecked();
-    expect(checkbox("Psalmen 33,6")).not.toBeChecked();
+    expect(checkbox("Johannes 1,1–3")).toHaveAttribute("aria-current", "true");
+    expect(checkbox("Psalmen 33,6")).not.toHaveAttribute("aria-current");
     expect(screen.getByTestId("tsk-link-hint")).toHaveTextContent("3 Querverweise ausgewählt");
 
     const dragged = checkbox("Johannes 1,1–3").closest("li") as HTMLElement;
@@ -272,23 +272,34 @@ describe("ChapterPage TSK link mode (roadmap 0024.5f)", () => {
         endPosition: 2,
       }),
     );
-    const group = await screen.findByRole("group", { name: "Querverweise zu „Anfang“" });
-    expect(
-      within(group)
-        .getAllByRole("link")
-        .map((l) => l.getAttribute("aria-label")),
-    ).toEqual(["Sprüche 8,22–24", "Johannes 1,1–3", "Hebräer 1,10"]);
-    const rest = within(screen.getByRole("group", { name: "Querverweise zu Vers 1" })).getByRole(
-      "group",
-      { name: "Querverweise ohne Wort" },
-    );
-    expect(within(rest).getAllByRole("link")).toHaveLength(1);
+    // no grouping: one flat list, the linked pills carry the link background
+    await waitFor(() => expect(checkbox("Sprüche 8,22–24").className).toContain("bg-mark-link/40"));
+    expect(checkbox("Johannes 1,1–3").className).toContain("bg-mark-link/40");
+    expect(checkbox("Hebräer 1,10").className).toContain("bg-mark-link/40");
+    expect(checkbox("Psalmen 33,6").className).not.toContain("bg-mark-link/40");
     // the reader marks the linked word; the drop feedback is gone
     expect(wordButton(1, "Anfang")).toHaveAttribute("data-tsk-link");
     expect(wordButton(1, "Anfang").className).not.toContain("bg-mark-link");
     expect(wordButton(1, "Gott")).not.toHaveAttribute("data-tsk-link");
     // the selection is cleared after the link
     expect(screen.queryByTestId("tsk-link-hint")).toBeNull();
+  });
+
+  it("holding Ctrl switches link mode on temporarily and keeps the selection after release", async () => {
+    stubFetch();
+    renderAt("/bible/1/1");
+    const user = userEvent.setup();
+    await screen.findByRole("link", { name: "Sprüche 8,22–24" });
+    expect(screen.queryByTestId("tsk-link-hint")).toBeNull();
+    await user.keyboard("{Control>}");
+    expect(screen.getByRole("switch", { name: "Verknüpfen" })).toBeChecked();
+    await user.click(checkbox("Sprüche 8,22–24"));
+    await user.click(checkbox("Hebräer 1,10"));
+    await user.keyboard("{/Control}");
+    // Ctrl is up, but the selection keeps the link mode (and the switch) on
+    expect(screen.getByRole("switch", { name: "Verknüpfen" })).toBeChecked();
+    expect(checkbox("Sprüche 8,22–24")).toHaveAttribute("aria-current", "true");
+    expect(screen.getByTestId("tsk-link-hint")).toHaveTextContent("2 Querverweise ausgewählt");
   });
 
   it("links the selection with Enter on a word of the source verse (touch / keyboard path)", async () => {
@@ -323,7 +334,7 @@ describe("ChapterPage TSK link mode (roadmap 0024.5f)", () => {
     const user = await openLinkMode();
     await user.click(checkbox("Psalmen 33,6"));
     await user.keyboard("{Escape}");
-    expect(checkbox("Psalmen 33,6")).not.toBeChecked();
+    expect(checkbox("Psalmen 33,6")).not.toHaveAttribute("aria-current");
     await user.click(checkbox("Psalmen 33,6"));
     await user.click(screen.getByRole("button", { name: "Abbrechen" }));
     expect(screen.queryByTestId("tsk-link-hint")).toBeNull();
@@ -387,11 +398,14 @@ describe("ChapterPage TSK link mode (roadmap 0024.5f)", () => {
     const fetchMock = stubFetch({ verse1: [{ ...sprueche, word: anfang }, psalm] });
     renderAt("/bible/1/1");
     const user = userEvent.setup();
-    // outside link mode the panel is grouped as soon as a link has a word
-    await screen.findByRole("group", { name: "Querverweise zu „Anfang“" });
-    await user.click(
-      screen.getByRole("button", { name: "Querverweis Sprüche 8,22–24 bearbeiten" }),
+    // a linked pill carries the link background; in edit mode a click opens its editor
+    await waitFor(() =>
+      expect(screen.getByRole("link", { name: "Sprüche 8,22–24" }).className).toContain(
+        "bg-mark-link/40",
+      ),
     );
+    await user.click(await screen.findByRole("switch", { name: "Bearbeiten" }));
+    await user.click(screen.getByRole("link", { name: "Sprüche 8,22–24" }));
     const editor = screen.getByRole("dialog", { name: "Querverweis Sprüche 8,22–24 bearbeiten" });
     expect(within(editor).getByText("Wort: „Anfang“")).toBeInTheDocument();
     await user.click(within(editor).getByRole("button", { name: "Wortverknüpfung lösen" }));
@@ -402,7 +416,9 @@ describe("ChapterPage TSK link mode (roadmap 0024.5f)", () => {
       }),
     );
     await waitFor(() =>
-      expect(screen.queryByRole("group", { name: "Querverweise zu „Anfang“" })).toBeNull(),
+      expect(screen.getByRole("link", { name: "Sprüche 8,22–24" }).className).not.toContain(
+        "bg-mark-link/40",
+      ),
     );
   });
 
@@ -411,12 +427,11 @@ describe("ChapterPage TSK link mode (roadmap 0024.5f)", () => {
       verse1: [{ ...sprueche, word: { quotedText: "Anfang", state: "drifted" } }, psalm],
     });
     renderAt("/bible/1/1");
-    const rest = await screen.findByRole("group", { name: "Querverweise ohne Wort" });
+    const rest = await screen.findByRole("group", { name: "Querverweise zu Vers 1" });
     expect(within(rest).getAllByRole("link")).toHaveLength(2);
     expect(within(rest).getByTestId("drifted-word")).toHaveTextContent(
       "„Anfang“ (Text geändert, auf Versebene)",
     );
-    expect(screen.queryByRole("group", { name: "Querverweise zu „Anfang“" })).toBeNull();
     expect(wordButton(1, "Anfang")).not.toHaveAttribute("data-tsk-link");
   });
 

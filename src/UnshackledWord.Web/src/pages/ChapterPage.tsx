@@ -47,6 +47,7 @@ import type {
   BibleStructureBook,
   ChapterRef,
   CrossReference,
+  CrossReferenceWordLink,
   HighlightKind,
   WordToken,
 } from "@/lib/bible/types";
@@ -81,6 +82,7 @@ const HIGHLIGHT_CLASSES: Record<HighlightKind, string> = {
 /** Hover/focus must rest this long on a word before its detail is prefetched. */
 const PREFETCH_DELAY_MS = 200;
 const NO_IDS: ReadonlySet<number> = new Set();
+const NO_KEYS: ReadonlySet<string> = new Set();
 const PHRASE_CLASSES = "underline decoration-accent decoration-2 underline-offset-4";
 /** Words with TSK word links (roadmap 0024.5f, everyone): a subtle dotted underline in the link token. */
 const TSK_LINK_CLASSES =
@@ -235,6 +237,7 @@ export function ChapterPage() {
   // TSK curation (roadmap 0024.3f): "Nur hervorgehobene" for everyone, curate mode with hidden links for curators.
   const [onlyHighlighted, setOnlyHighlighted] = useTskOnlyHighlighted();
   const [curateTsk, setCurateTsk] = useState(false);
+  const [tskEditMode, setTskEditMode] = useState(false);
   const tskCurate = canRevise && curateTsk && showTsk;
   const crossReferences = useChapterCrossReferences(
     ref,
@@ -273,14 +276,44 @@ export function ChapterPage() {
     }
     return byVerse;
   }, [crossReferences.data]);
+  /** Hovered TSK pill with a word link: its words are marked in the verse text (and the other way round below). */
+  const [hoveredPill, setHoveredPill] = useState<{ verse: number; word: CrossReferenceWordLink }>();
+  const onHoverReference = useCallback((verse: number, r: CrossReference | undefined) => {
+    setHoveredPill(r?.word?.state === "ok" ? { verse, word: r.word } : undefined);
+  }, []);
+  /** Positions of the words of the hovered pill: shown positions (revised verse) and Elb1871 base positions. */
+  const pillWords = useMemo(() => {
+    const word = hoveredPill?.word;
+    if (!hoveredPill || !word || word.startPosition === undefined) return undefined;
+    const shown = new Set<number>();
+    const base = new Set<number>();
+    if (word.mappedWords) for (const m of word.mappedWords) shown.add(m.positionInVerse);
+    else
+      for (let p = word.startPosition; p <= (word.endPosition ?? word.startPosition); p++)
+        base.add(p);
+    return { verse: hoveredPill.verse, shown, base };
+  }, [hoveredPill]);
+  /** Pills whose word is hovered in the verse text flash. */
+  const wordFlash = useMemo(() => {
+    if (!showTsk || !hoveredVerse || !hoveredWordRaw) return undefined;
+    const keys = new Set<string>();
+    for (const r of referencesByVerse.get(hoveredVerse.verse) ?? []) {
+      const w = r.word;
+      if (r.rating === "hide" || w?.state !== "ok" || w.startPosition === undefined) continue;
+      const hit = w.mappedWords
+        ? hoveredWordRaw.position !== undefined &&
+          w.mappedWords.some((m) => m.positionInVerse === hoveredWordRaw.position)
+        : hoveredWordRaw.basePosition !== undefined &&
+          hoveredWordRaw.basePosition >= w.startPosition &&
+          hoveredWordRaw.basePosition <= (w.endPosition ?? w.startPosition);
+      if (hit) keys.add(crossReferenceKey(r));
+    }
+    return keys.size > 0 ? { verse: hoveredVerse.verse, keys } : undefined;
+  }, [showTsk, hoveredVerse, hoveredWordRaw, referencesByVerse]);
   const originalsByVerse = useMemo(
     () => new Map(originals.data?.verses.map((v) => [v.verse, v])),
     [originals.data],
   );
-  const [expandedVerse, setExpandedVerse] = useState<number>();
-  const onExpandedChange = useCallback((verse: number, expanded: boolean) => {
-    setExpandedVerse((current) => (expanded ? verse : current === verse ? undefined : current));
-  }, []);
   const [hoveredSide, setHoveredSide] = useState<{ verse: number; id: number }>();
   const onHoverOriginal = useCallback((verse: number, id: number | undefined) => {
     setHoveredSide(id === undefined ? undefined : { verse, id });
@@ -316,7 +349,6 @@ export function ChapterPage() {
       const rows = Array.from(colRef.current?.querySelectorAll(".verse-row") ?? []);
       const row = rows.find((r) => r.getBoundingClientRect().bottom > 0);
       scrollAnchor.current = row ? { row, top: row.getBoundingClientRect().top } : undefined;
-      setExpandedVerse(undefined);
       setHoveredSide(undefined);
       setSideMode(next);
     },
@@ -491,15 +523,37 @@ export function ChapterPage() {
   // Link mode (roadmap 0024.5f, every logged-in user since 0024.6f, TSK side panel): refs of one verse are selected in the panel and
   // dropped (drag) or placed (tap / Enter) on a word of that verse. The notes selection is off meanwhile.
   const [linkModeOn, setLinkModeOn] = useState(false);
-  const linkMode = signedIn && linkModeOn && showTsk;
+  /** Ctrl held (desktop): link mode meanwhile, so Ctrl-clicking pills selects several without the switch. */
+  const [ctrlHeld, setCtrlHeld] = useState(false);
   const [linkSelection, setLinkSelection] = useState<{ verse: number; keys: string[] }>();
+  /** The last placement was sent as a suggestion (202, non-maintainers): the hint bar confirms it. */
+  const [linkProposed, setLinkProposed] = useState(false);
+  // A selection (or the confirmation) keeps link mode on after Ctrl is released, until it is placed or cancelled.
+  const linkMode =
+    signedIn && showTsk && (linkModeOn || ctrlHeld || linkSelection !== undefined || linkProposed);
+  const trackCtrl = signedIn && showTsk;
+  useEffect(() => {
+    if (!trackCtrl) {
+      setCtrlHeld(false);
+      return;
+    }
+    const down = (event: KeyboardEvent) => event.key === "Control" && setCtrlHeld(true);
+    const up = (event: KeyboardEvent) => event.key === "Control" && setCtrlHeld(false);
+    const release = () => setCtrlHeld(false);
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    window.addEventListener("blur", release);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+      window.removeEventListener("blur", release);
+    };
+  }, [trackCtrl]);
   const [linkDrag, setLinkDrag] = useState<{ verse: number; references: CrossReference[] }>();
   const [dropHover, setDropHover] = useState<WordPoint>();
   /** Last word a link was placed on: Shift on the next drop extends to a range from it. */
   const lastDrop = useRef<{ verse: number; position: number }>(undefined);
   const linkWord = useLinkTskWord();
-  /** The last placement was sent as a suggestion (202, non-maintainers): the hint bar confirms it. */
-  const [linkProposed, setLinkProposed] = useState(false);
   useEffect(() => {
     if (linkMode) {
       setSelection(undefined);
@@ -1033,27 +1087,76 @@ export function ChapterPage() {
         </div>
       </HeaderPickerBar>
       <div ref={colRef} className="reader-col mt-6">
-        <header className="flex items-center justify-between gap-4">
-          {renderLink(prev, "previous", false)}
-          <div className="flex items-start gap-1">
-            <h1 className="text-center font-scripture text-3xl font-semibold md:text-4xl">
-              {reference(ref)}
-            </h1>
-            {markerFor("chapter", (count) =>
-              t("notes.markerChapter", { count, reference: reference(ref) }),
+        <div
+          className="sticky top-(--reader-sticky-top) z-10 bg-bg pt-2 pb-2"
+          data-testid="reader-sticky-head"
+        >
+          <header className="flex items-center justify-between gap-4">
+            {renderLink(prev, "previous", false)}
+            <div className="flex items-start gap-1">
+              <h1 className="text-center font-scripture text-3xl font-semibold md:text-4xl">
+                {reference(ref)}
+              </h1>
+              {markerFor("chapter", (count) =>
+                t("notes.markerChapter", { count, reference: reference(ref) }),
+              )}
+            </div>
+            {renderLink(next, "next", false)}
+          </header>
+          <div className="mt-2 flex flex-wrap justify-center gap-2">
+            {canRevise && (
+              <Button variant="ghost" size="sm" onClick={() => setAiRange({ fromVerse: 1 })}>
+                {t("agent.chapter.aiRedo")}
+              </Button>
             )}
-          </div>
-          {renderLink(next, "next", false)}
-        </header>
-        <div className="mt-2 flex flex-wrap justify-center gap-2">
-          {canRevise && (
-            <Button variant="ghost" size="sm" onClick={() => setAiRange({ fromVerse: 1 })}>
-              {t("agent.chapter.aiRedo")}
+            <Button variant="ghost" size="sm" onClick={() => startNote({ kind: "chapter" })}>
+              {t("notes.addChapter")}
             </Button>
-          )}
-          <Button variant="ghost" size="sm" onClick={() => startNote({ kind: "chapter" })}>
-            {t("notes.addChapter")}
-          </Button>
+          </div>
+          {linkMode &&
+            (linkSelection || linkWord.isPending || linkWord.isError || linkProposed) && (
+              // overlay under the sticky header: appearing or changing never moves the verses
+              <div
+                role="status"
+                data-testid="tsk-link-hint"
+                className="absolute inset-x-0 top-full mt-1 flex flex-wrap items-center gap-2 rounded-md border border-mark-link bg-surface p-2 font-sans text-sm"
+              >
+                {linkSelection && (
+                  <span>
+                    {t("bible.tskLink.selectionHint", {
+                      count: linkSelection.keys.length,
+                      verse: linkSelection.verse,
+                    })}
+                  </span>
+                )}
+                {linkProposed && !linkSelection && !linkWord.isPending && (
+                  <span data-testid="tsk-link-proposed">
+                    {t("bible.tskCuration.proposal.sent")}
+                  </span>
+                )}
+                {linkWord.isPending && (
+                  <span className="text-fg-muted">{t("bible.tskLink.linking")}</span>
+                )}
+                {linkWord.isError && (
+                  <span role="alert">
+                    {describeApiError(linkWord.error, t("bible.tskLink.linkError"))}
+                  </span>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setLinkSelection(undefined);
+                    setLinkProposed(false);
+                    linkWord.reset();
+                  }}
+                >
+                  {linkProposed && !linkSelection
+                    ? t("bible.tskCuration.proposal.close")
+                    : t("bible.tskLink.cancel")}
+                </Button>
+              </div>
+            )}
         </div>
         {aiRange && (
           <AgentRunDialog
@@ -1080,50 +1183,23 @@ export function ChapterPage() {
             tsk={{
               onlyHighlighted,
               onOnlyHighlightedChange: setOnlyHighlighted,
+              edit: signedIn ? { checked: tskEditMode, onChange: setTskEditMode } : undefined,
               curate: canRevise ? { checked: curateTsk, onChange: setCurateTsk } : undefined,
-              link: signedIn ? { checked: linkModeOn, onChange: setLinkModeOn } : undefined,
+              link: signedIn
+                ? {
+                    // shows the effective state: on while Ctrl is held or a selection is pending
+                    checked: linkMode,
+                    onChange: (on: boolean) => {
+                      setLinkModeOn(on);
+                      if (!on) {
+                        setLinkSelection(undefined);
+                        setLinkProposed(false);
+                      }
+                    },
+                  }
+                : undefined,
             }}
           />
-        )}
-        {linkMode && (linkSelection || linkWord.isPending || linkWord.isError || linkProposed) && (
-          <div
-            role="status"
-            data-testid="tsk-link-hint"
-            className="sticky top-16 z-20 mt-4 flex flex-wrap items-center gap-2 rounded-md border border-mark-link bg-surface p-2 font-sans text-sm"
-          >
-            {linkSelection && (
-              <span>
-                {t("bible.tskLink.selectionHint", {
-                  count: linkSelection.keys.length,
-                  verse: linkSelection.verse,
-                })}
-              </span>
-            )}
-            {linkProposed && !linkSelection && !linkWord.isPending && (
-              <span data-testid="tsk-link-proposed">{t("bible.tskCuration.proposal.sent")}</span>
-            )}
-            {linkWord.isPending && (
-              <span className="text-fg-muted">{t("bible.tskLink.linking")}</span>
-            )}
-            {linkWord.isError && (
-              <span role="alert">
-                {describeApiError(linkWord.error, t("bible.tskLink.linkError"))}
-              </span>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setLinkSelection(undefined);
-                setLinkProposed(false);
-                linkWord.reset();
-              }}
-            >
-              {linkProposed && !linkSelection
-                ? t("bible.tskCuration.proposal.close")
-                : t("bible.tskLink.cancel")}
-            </Button>
-          </div>
         )}
         {reanchor && (
           <div
@@ -1216,11 +1292,17 @@ export function ChapterPage() {
                           ((word.position !== undefined && tskLinked.shown.has(word.position)) ||
                             (word.basePosition !== undefined &&
                               tskLinked.base.has(word.basePosition)));
+                        const pillHover =
+                          pillWords?.verse === v.verse &&
+                          ((word.position !== undefined && pillWords.shown.has(word.position)) ||
+                            (word.basePosition !== undefined &&
+                              pillWords.base.has(word.basePosition)));
                         const background = dropHere
                           ? "bg-mark-link"
                           : marked
                             ? "bg-mark-note"
-                            : (hasDetail && linked.german.has(linkId)) ||
+                            : pillHover ||
+                                (hasDetail && linked.german.has(linkId)) ||
                                 (v.verse === sideLinks.verse &&
                                   word.revisionWordId === undefined &&
                                   sideLinks.german.has(word.id))
@@ -1521,12 +1603,12 @@ export function ChapterPage() {
                       references={referencesByVerse.get(v.verse)}
                       onlyHighlighted={onlyHighlighted}
                       showHidden={tskCurate}
-                      editable={signedIn}
+                      editable={signedIn && tskEditMode}
                       suggest={signedIn && !canRevise}
                       link={linkMode ? verseLink : undefined}
                       linkSelected={linkSelection?.verse === v.verse ? linkSelected : undefined}
-                      expanded={expandedVerse === v.verse}
-                      onExpandedChange={onExpandedChange}
+                      flashKeys={wordFlash?.verse === v.verse ? wordFlash.keys : NO_KEYS}
+                      onHoverReference={onHoverReference}
                       original={originalsByVerse.get(v.verse)}
                       language={originals.data?.language ?? "greek"}
                       lexicon={originals.data?.lexicon}

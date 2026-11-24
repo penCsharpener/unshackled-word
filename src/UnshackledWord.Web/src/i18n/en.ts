@@ -1023,7 +1023,6 @@ export const en: Translation = {
     },
     tskLink: {
       toggle: "Link to words",
-      select: "Select {{reference}}",
       selectionHint_one:
         "Drop on a word: 1 cross reference selected. Tap a word in verse {{verse}} or choose it with Enter.",
       selectionHint_other:
@@ -1031,10 +1030,7 @@ export const en: Translation = {
       cancel: "Cancel",
       linking: "Linking …",
       linkError: "The word link could not be saved.",
-      noWord: "No word",
       group: "“{{quote}}”",
-      groupLabel: "Cross references for “{{quote}}”",
-      noWordLabel: "Cross references without a word",
       drifted: "text changed, at verse level",
       driftedTitle:
         "The text at the linked place has changed; the cross reference is back at the verse.",
@@ -1043,8 +1039,9 @@ export const en: Translation = {
       unlinkError: "The word link could not be removed.",
     },
     tskCuration: {
-      onlyHighlighted: "Highlighted only",
-      showHidden: "Show hidden",
+      onlyHighlighted: "Important",
+      editMode: "Edit mode",
+      showHidden: "Hidden",
       emptyHighlighted: "No highlighted cross references in this chapter.",
       highlighted: "highlighted",
       hidden: "hidden",
@@ -1119,9 +1116,6 @@ export const en: Translation = {
       },
       verseTsk: "Cross references for verse {{verse}}",
       verseOriginal: "Source text of verse {{verse}}",
-      more: "+{{count}}",
-      moreLabel: "Show {{count}} more cross references",
-      less: "Show less",
       eyeSection: "Cross references (TSK)",
       loadingTsk: "Loading cross references …",
       loadingOriginal: "Loading source text …",

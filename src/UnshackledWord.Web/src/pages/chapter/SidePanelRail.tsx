@@ -54,6 +54,8 @@ export interface SidePanelRailProps {
   tsk?: {
     onlyHighlighted: boolean;
     onOnlyHighlightedChange: (value: boolean) => void;
+    /** Edit mode (clicking a link opens its editor); only passed for logged-in users. */
+    edit?: { checked: boolean; onChange: (value: boolean) => void };
     /** Curate mode "Ausgeblendete zeigen"; only passed for Admin/Maintainer. */
     curate?: { checked: boolean; onChange: (value: boolean) => void };
     /** Link mode "Verknüpfen" (roadmap 0024.5f); only passed for Admin/Maintainer. */
@@ -74,7 +76,7 @@ export function SidePanelRail({ mode, onModeChange, status, onRetry, tsk }: Side
 
   return (
     <aside aria-label={t("bible.sidePanel.rail")} className="side-rail">
-      <div className="side-rail-head flex flex-col items-end gap-2 font-sans">
+      <div className="side-rail-head flex flex-col items-end gap-2 bg-bg pb-2 font-sans">
         <div className="flex items-center gap-3">
           <h2 className={`text-sm font-medium text-fg-muted ${mode === "off" ? "sr-only" : ""}`}>
             {heading || t("bible.sidePanel.rail")}
@@ -97,7 +99,12 @@ export function SidePanelRail({ mode, onModeChange, status, onRetry, tsk }: Side
           </fieldset>
         </div>
         {mode === "tsk" && tsk && (
-          <div className="flex flex-col items-end gap-1 text-xs">
+          <div className="flex flex-wrap justify-end gap-x-4 gap-y-1 text-xs">
+            {tsk.edit && (
+              <Switch checked={tsk.edit.checked} onCheckedChange={tsk.edit.onChange}>
+                {t("bible.tskCuration.editMode")}
+              </Switch>
+            )}
             <Switch checked={tsk.onlyHighlighted} onCheckedChange={tsk.onOnlyHighlightedChange}>
               {t("bible.tskCuration.onlyHighlighted")}
             </Switch>
