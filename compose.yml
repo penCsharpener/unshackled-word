@@ -109,8 +109,8 @@ services:
       - "127.0.0.1:3900:3900" # S3 API (tests, curl); prod overlay removes it
     volumes:
       - ./deploy/garage/garage.toml:/etc/garage.toml:ro
-      - garage_meta:/var/lib/garage/meta
-      - garage_data:/var/lib/garage/data
+      - ${GARAGE_META_DIR:-./deploy/garage/volumes/meta}:/var/lib/garage/meta
+      - ${GARAGE_DATA_DIR:-./deploy/garage/volumes/data}:/var/lib/garage/data
 
   unshackledword.tooling.mcpserver:
     #image: unshackledword.tooling.mcpserver
@@ -154,5 +154,3 @@ services:
 
 volumes:
   unshackled_web_node_modules:
-  garage_meta:
-  garage_data:

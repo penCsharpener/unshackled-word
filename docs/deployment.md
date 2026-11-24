@@ -342,7 +342,7 @@ Import rules: a missing note is inserted; an existing note is updated only if th
 
 Only needed for vocab audio. Without `ObjectStorage` config the API does not register storage and `api/health/ready` stays green; with it, a `storage` check (bucket reachable) is added.
 
-1. Start Garage (single node, `dxflrs/garage:v2.4.1`, config `deploy/garage/garage.toml`, volumes `garage_meta`/`garage_data`):
+1. Start Garage (single node, `dxflrs/garage:v2.4.1`, config `deploy/garage/garage.toml`, bind mounts `deploy/garage/volumes/meta` and `/data`, overridable with `GARAGE_META_DIR`/`GARAGE_DATA_DIR`; existing named volumes `garage_meta`/`garage_data` must be copied there once):
    `docker compose --env-file deployment/.env -f compose.yml -f deployment/compose.prod.yml up -d unshackledword.garage`
 2. Bootstrap once (idempotent: layout, bucket `unshackledword-media`, key `unshackledword-api`; prints the values for `.env`):
    `COMPOSE="docker compose --env-file deployment/.env -f compose.yml -f deployment/compose.prod.yml" deploy/garage/bootstrap.sh`
@@ -361,12 +361,12 @@ UNSHACKLEDWORD_OBJECT_STORAGE_SECRET_KEY=...
 
 Reads are presigned GET URLs on `OBJECT_STORAGE_PUBLIC_URL`. The signature covers the public host, so the proxy in front must strip only `/media` and forward the `Host` header unchanged (`nginx.prod.conf` uses `$http_host`; Nginx Proxy Manager must keep the Host header too). `ObjectStorage:Region` and `s3_region` in `garage.toml` must both be `garage`; a mismatch is answered with a bare 400. Uploads go through the API, so Garage's S3 port is not published in production.
 
-The vocab seed stores only the audio *keys*; the audio objects live in Garage and must be backed up separately (neither the Postgres dump nor `assets/seed` contains them). Backup: copy the Garage volumes next to the Postgres dump, e.g. with the container stopped or after `garage meta snapshot`:
+The vocab seed stores only the audio *keys*; the audio objects live in Garage and must be backed up separately (neither the Postgres dump nor `assets/seed` contains them). Backup: copy the Garage directories next to the Postgres dump, e.g. with the container stopped or after `garage meta snapshot`:
 
 ```bash
-docker run --rm -v unshackled-word_garage_data:/data:ro -v unshackled-word_garage_meta:/meta:ro -v /backups:/backups rclone/rclone \
+docker run --rm -v "$PWD/deploy/garage/volumes/data:/data:ro" -v /backups:/backups rclone/rclone \
   copy /data /backups/garage-$(date +%F)/data
-docker run --rm -v unshackled-word_garage_meta:/meta:ro -v /backups:/backups rclone/rclone copy /meta /backups/garage-$(date +%F)/meta
+docker run --rm -v "$PWD/deploy/garage/volumes/meta:/meta:ro" -v /backups:/backups rclone/rclone copy /meta /backups/garage-$(date +%F)/meta
 ```
 
 The volume prefix is your compose project name (`docker volume ls | grep garage`). Restoring means copying both folders back into empty volumes before the first start. Without audio nothing is lost if Garage is gone: the audio is re-recorded.

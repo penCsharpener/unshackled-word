@@ -419,3 +419,6 @@ compose.override.yml
 # Optional self-hosted fonts (licence: not redistributable)
 /fonts/*
 !/fonts/README.md
+
+# Garage bind-mounted data (compose.yml)
+/deploy/garage/volumes/
