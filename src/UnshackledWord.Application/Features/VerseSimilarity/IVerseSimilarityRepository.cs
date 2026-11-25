@@ -5,6 +5,9 @@ namespace UnshackledWord.Application.Features.VerseSimilarity;
 /// <summary>Counts written with a succeeded run (roadmap 0027.2).</summary>
 public sealed record VerseSimilarityRunSuccess(int PairCount, int StopWordCount, int DurationMs);
 
+/// <summary>A run row with the display name of the maintainer who started it (null for SeedDb or a deleted user).</summary>
+public sealed record VerseSimilarityRunListItem(VerseSimilarityRunDbo Run, string? StartedByName);
+
 /// <summary>Run rows and pairs of the verse similarity (tables <c>VerseSimilarityRuns</c>, <c>VerseSimilarities</c>, migration 0049).</summary>
 public interface IVerseSimilarityRepository
 {
@@ -32,6 +35,9 @@ public interface IVerseSimilarityRepository
 
     /// <summary>The most recent run (any status), or null when there is none.</summary>
     Task<VerseSimilarityRunDbo?> GetLatestRunAsync(CancellationToken token = default);
+
+    /// <summary>The newest <paramref name="count"/> runs (any status), newest first, with the display name of <c>StartedBy</c> (roadmap 0027.5).</summary>
+    Task<IReadOnlyList<VerseSimilarityRunListItem>> GetRecentRunsAsync(int count, CancellationToken token = default);
 
     /// <summary>True when <c>VerseSimilarities</c> has no rows (SeedDb gate).</summary>
     Task<bool> PairsMissingAsync(CancellationToken token = default);

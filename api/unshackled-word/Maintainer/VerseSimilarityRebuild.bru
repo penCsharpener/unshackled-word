@@ -1,0 +1,25 @@
+meta {
+  name: VerseSimilarityRebuild
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{url}}maintainer/verse-similarity/rebuild
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "phraseWeight": 0.8
+  }
+}
+
+docs {
+  Starts a rebuild in the background. All parameters are optional (stopDfShare 0..1, topK 1..1000, minScore 0..<100, phraseWeight 0..<100); missing ones take the config defaults. 202 with the job; 409 while a rebuild or another seed job runs; 400 for invalid parameters; 401 anonymous; 403 other roles. Poll VerseSimilarityStatus.
+}
+
+settings {
+  encodeUrl: true
+}

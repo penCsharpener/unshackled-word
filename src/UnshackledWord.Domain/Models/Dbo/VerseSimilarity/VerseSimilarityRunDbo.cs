@@ -1,7 +1,7 @@
 namespace UnshackledWord.Domain.Models.Dbo.VerseSimilarity;
 
 /// <summary>One verse similarity rebuild (table <c>VerseSimilarityRuns</c>, migration 0049, roadmap 0027).</summary>
-public sealed class VerseSimilarityRunDbo
+public class VerseSimilarityRunDbo
 {
     public const string DboName = "\"unshackled-word\".\"VerseSimilarityRuns\"";
 

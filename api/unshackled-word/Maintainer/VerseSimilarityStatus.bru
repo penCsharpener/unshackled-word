@@ -1,0 +1,19 @@
+meta {
+  name: VerseSimilarityStatus
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{url}}maintainer/verse-similarity
+  body: none
+  auth: inherit
+}
+
+docs {
+  Defaults from config, the last five runs (parameters, counts, duration, error, raw evaluation), whether a rebuild runs, and the running or last job with its log. Poll while a rebuild runs.
+}
+
+settings {
+  encodeUrl: true
+}

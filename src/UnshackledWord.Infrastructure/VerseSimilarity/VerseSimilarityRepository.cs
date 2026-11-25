@@ -215,6 +215,41 @@ public sealed class VerseSimilarityRepository : IVerseSimilarityRepository
         return await connection.QueryFirstOrDefaultAsync<VerseSimilarityRunDbo>(new CommandDefinition(sql, cancellationToken: token));
     }
 
+    public async Task<IReadOnlyList<VerseSimilarityRunListItem>> GetRecentRunsAsync(int count, CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT r."Id"
+                                , r."StartedAt"
+                                , r."FinishedAt"
+                                , r."Status"
+                                , r."StartedBy"
+                                , r."StopDfShare"
+                                , r."TopK"
+                                , r."MinScore"
+                                , r."PhraseWeight"
+                                , r."PairCount"
+                                , r."StopWordCount"
+                                , r."DurationMs"
+                                , r."Evaluation"::text "Evaluation"
+                                , r."Error"
+                                , u."DisplayName" "StartedByName"
+                           FROM "unshackled-word"."VerseSimilarityRuns" r
+                                LEFT JOIN "unshackled-word"."Users" u ON u."Id" = r."StartedBy"
+                           ORDER BY r."Id" DESC
+                           LIMIT @Count
+                           """;
+
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        var rows = await connection.QueryAsync<RunWithUser>(new CommandDefinition(sql, new { Count = count }, cancellationToken: token));
+
+        return rows.Select(r => new VerseSimilarityRunListItem(r, r.StartedByName)).ToList();
+    }
+
+    private sealed class RunWithUser : VerseSimilarityRunDbo
+    {
+        public string? StartedByName { get; set; }
+    }
+
     public async Task<bool> PairsMissingAsync(CancellationToken token = default)
     {
         const string sql = """
