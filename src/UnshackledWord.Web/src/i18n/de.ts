@@ -2145,7 +2145,13 @@ export const de = {
       explorer: "Erkunden",
       findings: "Befunde",
     },
-    groups: { mapping: "Zuordnung", lemma: "Lemma", roles: "Rollen", tsk: "TSK-Kuratierung" },
+    groups: {
+      mapping: "Zuordnung",
+      lemma: "Lemma",
+      roles: "Rollen",
+      tsk: "TSK-Kuratierung",
+      editions: "Textausgaben",
+    },
     severity: { error: "Fehler", warning: "Prüfen", info: "Hinweis", ok: "Unauffällig" },
     delta: "{{sign}}{{count}} seit letzter Berechnung",
     sub: {
@@ -2178,6 +2184,8 @@ export const de = {
       R6: { title: "Alte Schreibweise im Lemma" },
       T1: { title: "TSK-Kuratierung ohne TSK-Zeile" },
       T2: { title: "Wort-Verknüpfung verschoben" },
+      G1: { title: "Unbekannte Textausgaben" },
+      G2: { title: "Wörter ohne Textausgaben" },
     },
     help: {
       toggle: "Was prüft dieser Bereich?",
@@ -2191,6 +2199,8 @@ export const de = {
         lemma: "Lemma – prüft Grundform, Wortart und Morphologie der deutschen Wörter.",
         roles: "Rollen – prüft Kopfwörter, Hilfswörter (unit) und Teillemmata der Verknüpfungen.",
         tsk: "TSK-Kuratierung – prüft die kuratierten Querverweise (Roadmap 0024) auf verwaiste Schlüssel und verschobene Wort-Verknüpfungen.",
+        editions:
+          "Textausgaben – prüft die Angaben, in welchen griechischen Ausgaben ein Wort steht (Roadmap 0025).",
       },
       checks: {
         U1: {
@@ -2284,6 +2294,14 @@ export const de = {
         T2: {
           what: "Die Elb1871-Wörter an den Positionen einer Wort-Verknüpfung stimmen nicht mehr mit dem gespeicherten Zitat überein (Satzzeichen zählen nicht) oder die Positionen gibt es nicht mehr. Der Verweis fällt dann auf Versebene zurück.",
           fix: "Den Vers im Leser öffnen und die Wort-Verknüpfung des Verweises neu setzen.",
+        },
+        G1: {
+          what: "In den STEP-Daten steht ein Ausgaben-Kürzel (z. B. „XYZ“), das nicht im Katalog der griechischen Textausgaben (GreekEditions) steht. Es wurde als „unbekannt“ angelegt; gezeigt werden Kürzel, Wortanzahl und die ersten drei Stellen. Der Wert sollte 0 sein.",
+          fix: "Das Kürzel in den STEP-Daten prüfen (Tippfehler?) oder es mit Name und Art in den Katalog aufnehmen (Migrationsskript) und die Zuordnung neu aufbauen (RefreshStepGreekWordEditions).",
+        },
+        G2: {
+          what: "Die Ausgaben-Angabe eines Wortes ist nicht leer, ergab aber keinen Eintrag in der Wort-Ausgaben-Tabelle (z. B. nur Trennzeichen). Der Wert sollte 0 sein.",
+          fix: "Die Angabe in den STEP-Daten prüfen und die Zuordnung neu aufbauen (RefreshStepGreekWordEditions).",
         },
       },
       unmapped: {
@@ -2390,6 +2408,7 @@ export const de = {
       bulk: "Ersetzen",
       strongs: "Strong's",
       filter: "Filtern",
+      ref: "Vers",
       verse: "Quellvers",
       target: "Zielvers",
     },

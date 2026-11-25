@@ -12,7 +12,7 @@ import { SECTION_IDS, scrollToId } from "@/lib/quality/scroll";
 import type { OverviewResponse } from "@/lib/quality/types";
 import { CheckHelp, SectionHelp } from "./SectionHelp";
 
-const GROUPS: CheckGroupKey[] = ["mapping", "lemma", "roles", "tsk"];
+const GROUPS: CheckGroupKey[] = ["mapping", "lemma", "roles", "tsk", "editions"];
 
 export function OverviewSection({
   overview,

@@ -2,7 +2,7 @@ import type { CheckSummary, Finding } from "./types";
 import { normalizeOriginalQ, type TrailEntry } from "./url";
 
 export type TileSeverity = "error" | "warning" | "info" | "ok";
-export type CheckGroupKey = "mapping" | "lemma" | "roles" | "tsk";
+export type CheckGroupKey = "mapping" | "lemma" | "roles" | "tsk" | "editions";
 
 /** No findings = ok, any error finding = error, otherwise worth a look. */
 export function tileSeverity(check: Pick<CheckSummary, "count" | "errorCount">): TileSeverity {
@@ -10,10 +10,11 @@ export function tileSeverity(check: Pick<CheckSummary, "count" | "errorCount">):
   return check.errorCount > 0 ? "error" : "warning";
 }
 
-/** L* checks are about the German lemma / morphology, R* about link roles, T* about TSK curations, everything else about the mapping. */
+/** L* checks are about the German lemma / morphology, R* about link roles, T* about TSK curations, G* about Greek editions, everything else about the mapping. */
 export function checkGroup(code: string): CheckGroupKey {
   if (code.startsWith("R")) return "roles";
   if (code.startsWith("T")) return "tsk";
+  if (code.startsWith("G")) return "editions";
   return code.startsWith("L") ? "lemma" : "mapping";
 }
 
@@ -69,7 +70,7 @@ export function splitContext(
 
 // ---- jump targets ---------------------------------------------------------------------------
 
-export type JumpKind = "mapping" | "lemma" | "bulk" | "strongs" | "verse" | "target";
+export type JumpKind = "mapping" | "lemma" | "bulk" | "strongs" | "verse" | "target" | "ref";
 
 export interface JumpTarget {
   kind: JumpKind;
@@ -89,6 +90,9 @@ export function jumpTargets(finding: Finding): JumpTarget[] {
       kind: "target",
       href: `/bible/${finding.targetBibleBookId}/${finding.targetChapter}#v${finding.targetVerse}`,
     });
+  } else if (finding.check.startsWith("G") && book > 0) {
+    // Greek edition findings: open the verse of the word (G1: the first word with the unknown code)
+    targets.push({ kind: "ref", href: `/bible/${book}/${chapter}#v${verse}` });
   }
   if (finding.elbWordId !== undefined) {
     const stepPart = finding.stepWordId !== undefined ? `&s=${finding.stepWordId}` : "";

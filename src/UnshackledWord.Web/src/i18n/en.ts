@@ -2117,7 +2117,13 @@ export const en: Translation = {
       explorer: "Explore",
       findings: "Findings",
     },
-    groups: { mapping: "Mapping", lemma: "Lemma", roles: "Roles", tsk: "TSK curation" },
+    groups: {
+      mapping: "Mapping",
+      lemma: "Lemma",
+      roles: "Roles",
+      tsk: "TSK curation",
+      editions: "Text editions",
+    },
     severity: { error: "Error", warning: "Check", info: "Note", ok: "Clean" },
     delta: "{{sign}}{{count}} since last run",
     sub: {
@@ -2150,6 +2156,8 @@ export const en: Translation = {
       R6: { title: "Old spelling in lemma" },
       T1: { title: "TSK curation without TSK row" },
       T2: { title: "Word link drifted" },
+      G1: { title: "Unknown Greek editions" },
+      G2: { title: "Words without editions" },
     },
     help: {
       toggle: "What does this area check?",
@@ -2163,6 +2171,7 @@ export const en: Translation = {
         lemma: "Lemma – checks base form, part of speech and morphology of the German words.",
         roles: "Roles – checks head words, auxiliary words (unit) and part lemmas of the links.",
         tsk: "TSK curation – checks the curated cross references (roadmap 0024) for orphaned keys and drifted word links.",
+        editions: "Text editions – checks which Greek editions a word is listed in (roadmap 0025).",
       },
       checks: {
         U1: {
@@ -2256,6 +2265,14 @@ export const en: Translation = {
         T2: {
           what: "The Elb1871 words at the positions of a word link no longer match the stored quote (punctuation ignored) or the positions are gone. The reference then falls back to verse level.",
           fix: "Open the verse in the reader and set the word link of the reference again.",
+        },
+        G1: {
+          what: "The STEP data contains an edition code (e.g. “XYZ”) that is not in the catalog of Greek text editions (GreekEditions). It was added as “unknown”; the check shows the code, the number of words and the first three references. The value should be 0.",
+          fix: "Check the code in the STEP data (typo?) or add it to the catalog with name and kind (migration script) and rebuild the assignment (RefreshStepGreekWordEditions).",
+        },
+        G2: {
+          what: "A word has a non-empty edition string that produced no row in the word-edition table (e.g. only separators). The value should be 0.",
+          fix: "Check the string in the STEP data and rebuild the assignment (RefreshStepGreekWordEditions).",
         },
       },
       unmapped: {
@@ -2362,6 +2379,7 @@ export const en: Translation = {
       bulk: "Replace",
       strongs: "Strong's",
       filter: "Filter",
+      ref: "Verse",
       verse: "Source verse",
       target: "Target verse",
     },

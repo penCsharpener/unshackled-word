@@ -71,6 +71,29 @@ describe("checks", () => {
     expect(hrefs.target).toBe("/bible/1/2#v7");
   });
 
+  it("groups G checks as editions and links the verse of the word", () => {
+    expect(checkGroup("G1")).toBe("editions");
+    expect(
+      jumpTargets({
+        ...finding,
+        check: "G1",
+        elbWordId: undefined,
+        lemma: undefined,
+        strongs: undefined,
+      }).map((j) => [j.kind, j.href]),
+    ).toEqual([["ref", "/bible/43/3#v16"]]);
+    expect(
+      jumpTargets({
+        ...finding,
+        check: "G2",
+        bibleBookId: 0,
+        elbWordId: undefined,
+        lemma: undefined,
+        strongs: undefined,
+      }),
+    ).toEqual([]);
+  });
+
   it("filters by Strong's first, then by lemma", () => {
     expect(filterForFinding(finding)).toEqual({ side: "o", q: "G2316" });
     expect(filterForFinding({ ...finding, strongs: undefined })).toEqual({

@@ -147,7 +147,7 @@ public sealed class CoverageChapter
 
 public sealed class CheckRequest : DqFacetsRequest
 {
-    /// <summary>Check code (route): U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5 L6 L7 R1-R6 T1 T2.</summary>
+    /// <summary>Check code (route): U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5 L6 L7 R1-R6 T1 T2 G1 G2.</summary>
     public string Code { get; set; } = string.Empty;
 
     public int Page { get; set; } = 1;
