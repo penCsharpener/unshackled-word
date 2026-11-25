@@ -35,4 +35,14 @@ public interface IVerseSimilarityRepository
 
     /// <summary>True when <c>VerseSimilarities</c> has no rows (SeedDb gate).</summary>
     Task<bool> PairsMissingAsync(CancellationToken token = default);
+
+    /// <summary>The run row with this id, or null.</summary>
+    Task<VerseSimilarityRunDbo?> GetRunAsync(int runId, CancellationToken token = default);
+
+    /// <summary>
+    /// Read side (roadmap 0027.3): the Elberfelder verses <paramref name="fromHebRefId"/>..<paramref name="toHebRefId"/> with their STEP key, and the
+    /// stored hits of those verses up to rank <paramref name="limit"/>, best first, with the target resolved to the Elberfelder verse and its text
+    /// (<c>TargetHebRefId</c> is null when <c>Elb1871Verses</c> has no verse for the target's <c>LxxRefId</c>).
+    /// </summary>
+    Task<SimilarVersePage> GetPageAsync(int fromHebRefId, int toHebRefId, int limit, CancellationToken token = default);
 }

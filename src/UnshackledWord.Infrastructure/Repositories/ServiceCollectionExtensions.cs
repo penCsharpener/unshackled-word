@@ -85,6 +85,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseTokenRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseTokenRepository>();
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseSimilarityRepository>();
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityRebuildService>();
+        services.AddSingleton<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityExplainerCache>();
+        services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityReadService, UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityReadService>();
 
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();

@@ -1,0 +1,20 @@
+meta {
+  name: GetSimilarVersesOfVerse
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{url}}elberfelder/similarVerses/verse/:hebRefId
+  body: none
+  auth: none
+}
+
+params:path {
+  hebRefId: 58004012
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

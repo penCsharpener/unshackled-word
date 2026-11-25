@@ -1,7 +1,7 @@
 namespace UnshackledWord.Application.Features.VerseSimilarity;
 
 /// <summary>Lemma and gloss of one Strong's number from the STEP lexicon (for explanations).</summary>
-public sealed record StrongsLabel(string Strongs, string Lemma, string Gloss);
+public sealed record StrongsLabel(string Strongs, string Lemma, string Gloss, string Transliteration = "");
 
 /// <summary>Reads the Strong's token sequences per verse from the STEP tables (roadmap 0027, 03-algorithm.md "Tokens").</summary>
 public interface IVerseTokenRepository

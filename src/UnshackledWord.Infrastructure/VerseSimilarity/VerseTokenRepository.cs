@@ -51,6 +51,7 @@ public sealed class VerseTokenRepository : IVerseTokenRepository
                                 , COALESCE(ssl."Extra", '') "Extra"
                                 , ssl."OriginalWord"
                                 , ssl."Gloss"
+                           , ssl."Transliteration"
                            FROM "unshackled-word"."StepStrongsLexicon" ssl
                            WHERE 1=1
                                AND ssl."LanguageId" IN (0, 2)
@@ -69,7 +70,7 @@ public sealed class VerseTokenRepository : IVerseTokenRepository
                 _ => '?',
             };
             var key = string.Create(CultureInfo.InvariantCulture, $"{prefix}{row.Number:D4}{row.Extra.Trim()}");
-            byKey.TryAdd(key, new StrongsLabel(key, row.OriginalWord, row.Gloss));
+            byKey.TryAdd(key, new StrongsLabel(key, row.OriginalWord, row.Gloss, row.Transliteration));
         }
 
         return wanted
@@ -131,5 +132,6 @@ public sealed class VerseTokenRepository : IVerseTokenRepository
         public string Extra { get; init; } = string.Empty;
         public string OriginalWord { get; init; } = string.Empty;
         public string Gloss { get; init; } = string.Empty;
+        public string Transliteration { get; init; } = string.Empty;
     }
 }
