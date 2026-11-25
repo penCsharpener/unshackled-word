@@ -15,4 +15,4 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 Suggestion for evaluation. No interview held, nothing implemented, no version bump. The open questions in [02-decisions.md](02-decisions.md) must be answered before 0026.1 starts. The existing mapping (`Elb1871HebrewMapping`, `RevisionMapping`) is not written by any row of this plan.
 
-Renumbered 2026-11-25: was roadmap 0025 (migrations 0047/0048, version 0.11.0); swapped with Greek editions so that one could go first. Now migrations 0048/0049, version 0.12.0.
+Renumbered 2026-11-25: was roadmap 0025 (migrations 0047/0048, version 0.11.0); swapped with Greek editions so that one could go first. Now migrations 0049/0050 (0048 went to the 0025 review fix), version 0.12.0.
