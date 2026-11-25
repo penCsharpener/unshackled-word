@@ -69,6 +69,32 @@ public sealed class OriginalReadingResponse
     public List<int>? SharedWithWordIds { get; set; }
     /// <summary>STEP person or place behind this proper noun, matched by Strong's number.</summary>
     public NamedEntityResponse? Entity { get; set; }
+
+    /// <summary>Greek readings only (roadmap 0025): which text editions have this word. Omitted when the word is in every main edition without an order shift.</summary>
+    public ReadingEditionsResponse? Editions { get; set; }
+}
+
+public sealed class ReadingEditionsResponse
+{
+    /// <summary>All editions that have the word (main and non-main), in catalog order.</summary>
+    public List<EditionRefResponse> Present { get; set; } = [];
+
+    /// <summary>Main editions without the word, in catalog order.</summary>
+    public List<EditionRefResponse> Missing { get; set; } = [];
+}
+
+public sealed class EditionRefResponse
+{
+    public string Code { get; set; } = default!;
+
+    /// <summary>edition, translation, manuscript, version or unknown.</summary>
+    public string Kind { get; set; } = default!;
+
+    /// <summary>+n = n words later, -n = n words earlier; omitted for the same order.</summary>
+    public int? Shift { get; set; }
+
+    /// <summary>Original suffix when the shift is not a plain number (cross-verse, e.g. «14.24).</summary>
+    public string? ShiftRaw { get; set; }
 }
 
 public sealed class NamedEntityResponse

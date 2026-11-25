@@ -26,4 +26,10 @@ public interface IWordDetailRepository
 
     /// <summary>Whether the SBLGNT apparatus has at least one row for this verse (original verse reference id, NT only).</summary>
     Task<bool> HasTextVariantsAsync(int refId, CancellationToken token = default);
+
+    /// <summary>The editions of the given Greek words (roadmap 0025), joined to the catalog, in one query. Words without rows are absent.</summary>
+    Task<IReadOnlyList<GreekWordEditionRow>> GetGreekWordEditionsAsync(IReadOnlyCollection<int> stepWordIds, CancellationToken token = default);
+
+    /// <summary>The main editions of the catalog (<c>IsMain</c>), by sort.</summary>
+    Task<IReadOnlyList<GreekEditionRow>> GetMainGreekEditionsAsync(CancellationToken token = default);
 }

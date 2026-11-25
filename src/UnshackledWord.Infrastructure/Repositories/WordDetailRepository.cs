@@ -67,6 +67,47 @@ public sealed class WordDetailRepository : IWordDetailRepository
         return rows.ToList();
     }
 
+    public async Task<IReadOnlyList<GreekWordEditionRow>> GetGreekWordEditionsAsync(IReadOnlyCollection<int> stepWordIds, CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT swe."StepWordId"
+                                , ge."Code"
+                                , ge."Kind"
+                                , ge."IsMain"
+                                , ge."Sort"
+                                , swe."Shift"
+                                , swe."ShiftRaw"
+                           FROM "unshackled-word"."StepGreekWordEditions" swe
+                               INNER JOIN "unshackled-word"."GreekEditions" ge ON ge."Id" = swe."EditionId"
+                           WHERE 1=1
+                               AND swe."StepWordId" = ANY(@StepWordIds)
+                           ORDER BY swe."StepWordId", ge."Sort", ge."Code"
+                           """;
+
+        var rows = await _dbReader.ReadAsListAsync<GreekWordEditionRow>(sql, new { StepWordIds = stepWordIds.ToArray() });
+        return rows.ToList();
+    }
+
+    public async Task<IReadOnlyList<GreekEditionRow>> GetMainGreekEditionsAsync(CancellationToken token = default)
+    {
+        const string sql = """
+                           SELECT ge."Id"
+                                , ge."Code"
+                                , ge."Name"
+                                , ge."Year"
+                                , ge."Kind"
+                                , ge."IsMain"
+                                , ge."Sort"
+                           FROM "unshackled-word"."GreekEditions" ge
+                           WHERE 1=1
+                               AND ge."IsMain"
+                           ORDER BY ge."Sort", ge."Code"
+                           """;
+
+        var rows = await _dbReader.ReadAsListAsync<GreekEditionRow>(sql);
+        return rows.ToList();
+    }
+
     public async Task<IReadOnlyList<HebrewReadingRow>> GetHebrewReadingsAsync(int wordId, CancellationToken token = default)
     {
         const string sql = """

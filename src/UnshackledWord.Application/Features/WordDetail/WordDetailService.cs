@@ -74,6 +74,19 @@ public sealed class WordDetailService : IWordDetailService
             }
         }
 
+        // One query for all Greek readings (also the revision path, which builds through here).
+        var editionsByWord = new Dictionary<int, List<GreekWordEditionRow>>();
+        IReadOnlyList<GreekEditionRow> mainEditions = [];
+        if (!isHebrew && readingRows.Count > 0)
+        {
+            var ids = readingRows.Select(r => r.StepWordId!.Value).Distinct().ToArray();
+            mainEditions = await _words.GetMainGreekEditionsAsync(token);
+            foreach (var group in (await _words.GetGreekWordEditionsAsync(ids, token)).GroupBy(e => e.StepWordId))
+            {
+                editionsByWord[group.Key] = group.ToList();
+            }
+        }
+
         var lexiconCache = new Dictionary<string, LexiconEntry?>();
         var statsCache = new Dictionary<string, (int Count, List<RenderingResponse> Renderings)>();
         var entityCache = new Dictionary<string, NamedEntityResponse?>();
@@ -101,6 +114,15 @@ public sealed class WordDetailService : IWordDetailService
 
             var reading = BuildReading(word, row, strongs, entry, morphemesByWord, coRows, map);
             reading.Entity = entity;
+            if (!isHebrew)
+            {
+                // A word without any edition row (not imported yet) is not reported as "missing everywhere".
+                if (editionsByWord.TryGetValue(row.StepWordId!.Value, out var editionRows))
+                {
+                    reading.Editions = ReadingEditionsBuilder.Build(editionRows, mainEditions);
+                }
+            }
+
             if (stats.Count > 0)
             {
                 reading.OccurrenceCount = stats.Count;

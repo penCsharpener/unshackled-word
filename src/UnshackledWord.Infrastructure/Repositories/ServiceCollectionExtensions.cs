@@ -12,6 +12,7 @@ using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Application.Features.VerseCounting;
 using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Application.Features.VerseSearch;
+using UnshackledWord.Application.Features.GreekEditions;
 using UnshackledWord.Application.Features.WordDetail;
 using UnshackledWord.Application.Repositories;
 
@@ -47,6 +48,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRevisionWordDetailService, RevisionWordDetailService>();
         services.AddScoped<IHebrewMorphemeRepository, HebrewMorphemeRepository>();
         services.AddScoped<IWordDetailService, WordDetailService>();
+        services.AddScoped<IGreekEditionRepository, GreekEditionRepository>();
+        services.AddScoped<IGreekEditionService, GreekEditionService>();
         services.AddScoped<IVerseMappingService, VerseMappingService>();
         services.AddScoped<UnshackledWord.Application.Features.LinkRoles.Backfill.ILinkRoleBackfillRepository, LinkRoleBackfillRepository>();
         services.AddScoped<UnshackledWord.Application.Features.LinkRoles.Backfill.LinkRoleBackfillService>();
