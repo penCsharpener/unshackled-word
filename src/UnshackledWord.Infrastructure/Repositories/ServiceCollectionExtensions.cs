@@ -81,6 +81,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.TskCuration.ITskCurationProposalRepository, UnshackledWord.Infrastructure.TskCuration.TskCurationProposalRepository>();
         services.AddScoped<UnshackledWord.Application.Features.TskCuration.TskProposalReviewService>();
 
+        // Verse similarity (roadmap 0027)
+        services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseTokenRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseTokenRepository>();
+
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteService>();

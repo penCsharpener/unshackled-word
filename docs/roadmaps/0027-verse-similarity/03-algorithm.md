@@ -19,11 +19,14 @@ Each testament is its own corpus (own document frequency, own pairs).
 Each verse is a **set** of content tokens (repeats ignored), weighted `idf(s) = ln(N / df(s))`.
 
 ```
-base(a,b)   = Σ idf(s) for s in A∩B  /  sqrt(Σ idf² of A · Σ idf² of B)        cosine on idf-weighted sets
-phrase(a,b) = PhraseWeight × Σ (idf(x)+idf(y)) for each content bigram x→y that occurs in both,
+norm(A)     = sqrt(Σ idf² of A)
+base(a,b)   = Σ idf(s)² for s in A∩B  /  (norm(A) · norm(B))         cosine on idf-weighted sets (a verse scores 1 with itself)
+phrase(a,b) = PhraseWeight × Σ (idf(x)² + idf(y)²) for each content bigram x→y that occurs in both,
               in the same order, in the content-token sequences (stop words removed)
-score       = base + phrase / sqrt(Σ idf² of A · Σ idf² of B)
+score       = base + phrase / (norm(A) · norm(B))
 ```
+
+(Corrected in 0027.1: the first draft divided a sum of idf by idf², which is not a cosine.)
 
 - Cosine keeps long verses (genealogies, lists) from matching everything.
 - Bigrams over the stop-word-free sequence mean an article or particle between two content words does not break "ῥομφαία δίστομος ὀξεῖα". A trigram counts as two bigrams, so longer runs grow naturally.
@@ -38,6 +41,6 @@ For verse `a`, walk the posting lists of its content tokens, accumulate shared i
 After every run, against TSK links within the same testament:
 
 - **recall@30:** share of TSK links (a→b) where b is in a's top 30.
-- **golden pairs:** Heb 4:12 ↔ Rev 1:16 / 2:12; Mk 14:58 ↔ 2 Cor 5:1; Acts 7:48 ↔ Acts 17:24; Ps 149:6 ↔ Prov 5:4. Each gets a rank (or "missing").
+- **golden pairs:** Heb 4:12 ↔ Rev 1:16 / 2:12; Mk 14:58 ↔ 2 Cor 5:1; Acts 7:48 ↔ Acts 17:24; Ps 149:6 ↔ Isa 41:15 (פִּיפִיָּה). Each gets a rank (or "missing"). Ps 149:6 ↔ Prov 5:4 was dropped in 0027.1: Prov 5:4 has פֶּה H6310, not פִּיפִיָּה H6374, so the two share only חֶרֶב and cannot rank high on Strong's.
 
 Both are stored on the run row. They are signals, not goals: a high-scoring pair that TSK lacks may be exactly the new connection this roadmap is for.

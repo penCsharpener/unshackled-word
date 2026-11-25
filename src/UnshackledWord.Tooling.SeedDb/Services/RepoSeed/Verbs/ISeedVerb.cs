@@ -32,4 +32,19 @@ public sealed class VerbArguments
             ? _args[index + 1]
             : null;
     }
+
+    /// <summary>Every value of a repeatable option (<c>--show a --show b</c>), in command line order.</summary>
+    public IReadOnlyList<string> GetAll(string option)
+    {
+        var values = new List<string>();
+        for (var i = 0; i + 1 < _args.Length; i++)
+        {
+            if (_args[i] == option && !_args[i + 1].StartsWith("--", StringComparison.Ordinal))
+            {
+                values.Add(_args[i + 1]);
+            }
+        }
+
+        return values;
+    }
 }

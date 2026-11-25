@@ -20,6 +20,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISeedVerb, VocabDeriveVerb>();
         services.AddScoped<StepLexiconRepairService>();
         services.AddScoped<ISeedVerb, StepLexiconRepairVerb>();
+        services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseTokenRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseTokenRepository>();
+        services.AddScoped<ISeedVerb, VerseSimilarityVerb>();
 
         return services;
     }
