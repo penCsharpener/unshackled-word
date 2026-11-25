@@ -24,9 +24,50 @@ export interface VerseSimilarityRun {
   pairCount?: number;
   stopWordCount?: number;
   durationMs?: number;
-  /** Raw JSON of the evaluation (recall@30, golden pairs); filled from roadmap 0027.6. */
+  /** Raw JSON of the evaluation; `evaluationResult` is the parsed form. */
   evaluation?: string;
+  /** Recall against TSK and golden pair ranks (roadmap 0027.6); missing for older or failed runs. */
+  evaluationResult?: VerseSimilarityEvaluation;
   error?: string;
+}
+
+/** Recall of the raw TSK links of one testament (both ends in it) in the stored top lists. */
+export interface VerseSimilarityTestamentRecall {
+  testament: "old" | "new";
+  links: number;
+  hitsAt10: number;
+  hitsAt30: number;
+  /** Share 0..1. */
+  recallAt10: number;
+  /** Share 0..1. */
+  recallAt30: number;
+}
+
+/** Rank of a golden pair in both directions; absent = not among the stored hits. */
+export interface VerseSimilarityGoldenRank {
+  /** German citation, e.g. "Hebr 4,12". */
+  source: string;
+  sourceVerseId: number;
+  target: string;
+  targetVerseId: number;
+  rank?: number;
+  reverseRank?: number;
+}
+
+/** Evaluation of a run (roadmap 0027.6); `error` is set when the evaluation failed but the run succeeded. */
+export interface VerseSimilarityEvaluation {
+  topK: number;
+  testaments: VerseSimilarityTestamentRecall[];
+  goldenPairs: VerseSimilarityGoldenRank[];
+  error?: string;
+}
+
+/** Recall entry of one testament, if the evaluation has it. */
+export function testamentRecall(
+  evaluation: VerseSimilarityEvaluation | undefined,
+  testament: VerseSimilarityTestamentRecall["testament"],
+): VerseSimilarityTestamentRecall | undefined {
+  return evaluation?.testaments.find((entry) => entry.testament === testament);
 }
 
 /** `GET api/maintainer/verse-similarity`. */

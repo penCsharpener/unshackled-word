@@ -1494,6 +1494,21 @@ export const en: Translation = {
       loadFailed: "The state of the computation could not be loaded.",
       history: "The last five runs",
       status: { running: "running", succeeded: "done", failed: "failed" },
+      evaluation: {
+        title: "Evaluation",
+        intro:
+          "Share of TSK cross references (raw TSK, same testament) whose target is among the verse's first 10 or 30 hits, and the rank of the golden pairs. A signal, not a goal: new connections are missing from TSK.",
+        testament: { old: "Old Testament", new: "New Testament" },
+        recall: "Recall@30 {{at30}}, recall@10 {{at10}}",
+        links: "{{value}} TSK links",
+        goldenPairs: "Golden pairs",
+        rank: "rank {{rank}}",
+        reverse: "back {{rank}}",
+        missing: "missing",
+        pairRank: "{{source}} → {{target}}: rank {{rank}}",
+        failed: "The evaluation failed (the run itself finished): {{error}}",
+        none: "This run has no evaluation.",
+      },
       columns: {
         run: "No.",
         startedAt: "Started",
@@ -1506,6 +1521,9 @@ export const en: Translation = {
         pairs: "Pairs",
         stopWords: "Stop words",
         duration: "Duration",
+        recallOt: "OT R@30",
+        recallNt: "NT R@30",
+        golden: "Golden pairs (rank)",
       },
     },
     seedJobs: {

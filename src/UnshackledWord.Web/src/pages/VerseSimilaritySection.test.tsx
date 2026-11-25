@@ -3,7 +3,11 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
-import type { VerseSimilarityRun, VerseSimilarityStatus } from "@/lib/maintainer/verseSimilarity";
+import type {
+  VerseSimilarityEvaluation,
+  VerseSimilarityRun,
+  VerseSimilarityStatus,
+} from "@/lib/maintainer/verseSimilarity";
 import { json, stubApi } from "@/test/authHelpers";
 import { VerseSimilaritySection } from "./VerseSimilaritySection";
 
@@ -24,6 +28,53 @@ function run(partial: Partial<VerseSimilarityRun> = {}): VerseSimilarityRun {
     stopWordCount: 192,
     durationMs: 12200,
     ...partial,
+  };
+}
+
+function evaluation(ntRecall: number, psalmRank: number | undefined): VerseSimilarityEvaluation {
+  return {
+    topK: 30,
+    testaments: [
+      {
+        testament: "old",
+        links: 198510,
+        hitsAt10: 25771,
+        hitsAt30: 41252,
+        recallAt10: 0.1298,
+        recallAt30: 0.2078,
+      },
+      {
+        testament: "new",
+        links: 91680,
+        hitsAt10: 11820,
+        hitsAt30: 19508,
+        recallAt10: 0.1289,
+        recallAt30: ntRecall,
+      },
+    ],
+    goldenPairs: [
+      {
+        source: "Hebr 4,12",
+        sourceVerseId: 58004012,
+        target: "Offb 1,16",
+        targetVerseId: 66001016,
+      },
+      {
+        source: "Hebr 4,12",
+        sourceVerseId: 58004012,
+        target: "Offb 2,12",
+        targetVerseId: 66002012,
+        rank: 13,
+      },
+      {
+        source: "Ps 149,6",
+        sourceVerseId: 19149006,
+        target: "Jes 41,15",
+        targetVerseId: 23041015,
+        rank: psalmRank,
+        reverseRank: 4,
+      },
+    ],
   };
 }
 
@@ -145,5 +196,88 @@ describe("VerseSimilaritySection", () => {
     });
     renderSection();
     expect(await screen.findByRole("alert")).toHaveTextContent("boom");
+  });
+  it("shows the evaluation of the last run with recall per testament and golden pair ranks", async () => {
+    stubApi({
+      "GET /maintainer/verse-similarity": () =>
+        json(status({ runs: [run({ evaluationResult: evaluation(0.2128, 4) })] })),
+    });
+    renderSection();
+
+    const region = await screen.findByRole("region", { name: "Evaluation" });
+    expect(within(region).getByText("Old Testament")).toBeInTheDocument();
+    expect(within(region).getByText(/Recall@30 21\.3%, recall@10 12\.9%/)).toBeInTheDocument();
+    expect(within(region).getByText(/91,680 TSK links/)).toBeInTheDocument();
+    const missingPair = within(region).getByText("Hebr 4,12 → Offb 1,16").closest("li");
+    expect(missingPair).toHaveTextContent("missing");
+    expect(missingPair).toHaveTextContent("back missing");
+    const psalm = within(region).getByText("Ps 149,6 → Jes 41,15").closest("li");
+    expect(psalm).toHaveTextContent("rank 4");
+    expect(psalm).toHaveTextContent("back 4");
+  });
+
+  it("compares NT recall and the Ps 149:6 rank across runs in the history table", async () => {
+    stubApi({
+      "GET /maintainer/verse-similarity": () =>
+        json(
+          status({
+            runs: [
+              run({ id: 9, evaluationResult: evaluation(0.2128, 4) }),
+              run({ id: 8, evaluationResult: evaluation(0.2066, undefined) }),
+              run({ id: 7 }),
+            ],
+          }),
+        ),
+    });
+    renderSection();
+
+    const table = await screen.findByRole("table");
+    expect(within(table).getByRole("columnheader", { name: "NT R@30" })).toBeInTheDocument();
+    const rows = within(table).getAllByRole("row");
+    const [newest, older, oldest] = [rows[1], rows[2], rows[3]] as [
+      HTMLElement,
+      HTMLElement,
+      HTMLElement,
+    ];
+    expect(newest).toHaveTextContent("21.3%");
+    expect(older).toHaveTextContent("20.7%");
+    expect(within(newest).getByText("Ps 149,6 → Jes 41,15: rank 4")).toBeInTheDocument();
+    expect(within(older).getByText("Ps 149,6 → Jes 41,15: rank missing")).toBeInTheDocument();
+    expect(within(oldest).queryByText(/Ps 149,6/)).toBeNull();
+  });
+
+  it("says when the evaluation of a succeeded run failed", async () => {
+    stubApi({
+      "GET /maintainer/verse-similarity": () =>
+        json(
+          status({
+            runs: [
+              run({
+                evaluationResult: { topK: 30, testaments: [], goldenPairs: [], error: "boom" },
+              }),
+            ],
+          }),
+        ),
+    });
+    renderSection();
+
+    expect(
+      await screen.findByText("The evaluation failed (the run itself finished): boom"),
+    ).toBeInTheDocument();
+  });
+
+  it("names the evaluation in German", async () => {
+    await i18n.changeLanguage("de");
+    stubApi({
+      "GET /maintainer/verse-similarity": () =>
+        json(status({ runs: [run({ evaluationResult: evaluation(0.2128, undefined) })] })),
+    });
+    renderSection();
+
+    const region = await screen.findByRole("region", { name: "Auswertung" });
+    expect(within(region).getByText("Neues Testament")).toBeInTheDocument();
+    expect(within(region).getByText("Ps 149,6 → Jes 41,15").closest("li")).toHaveTextContent(
+      "fehlt",
+    );
   });
 });

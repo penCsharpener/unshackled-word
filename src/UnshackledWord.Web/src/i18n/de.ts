@@ -1510,6 +1510,21 @@ export const de = {
       loadFailed: "Der Stand der Berechnung konnte nicht geladen werden.",
       history: "Die letzten fünf Läufe",
       status: { running: "läuft", succeeded: "fertig", failed: "fehlgeschlagen" },
+      evaluation: {
+        title: "Auswertung",
+        intro:
+          "Anteil der TSK-Querverweise (roher TSK, im selben Testament), deren Ziel unter den ersten 10 bzw. 30 Treffern des Verses steht, und der Rang der Goldpaare. Ein Signal, kein Ziel: neue Verbindungen fehlen im TSK.",
+        testament: { old: "Altes Testament", new: "Neues Testament" },
+        recall: "Recall@30 {{at30}}, Recall@10 {{at10}}",
+        links: "{{value}} TSK-Verweise",
+        goldenPairs: "Goldpaare",
+        rank: "Rang {{rank}}",
+        reverse: "zurück {{rank}}",
+        missing: "fehlt",
+        pairRank: "{{source}} → {{target}}: Rang {{rank}}",
+        failed: "Die Auswertung ist fehlgeschlagen (der Lauf selbst ist fertig): {{error}}",
+        none: "Für diesen Lauf gibt es keine Auswertung.",
+      },
       columns: {
         run: "Nr.",
         startedAt: "Start",
@@ -1522,6 +1537,9 @@ export const de = {
         pairs: "Paare",
         stopWords: "Stoppwörter",
         duration: "Dauer",
+        recallOt: "AT R@30",
+        recallNt: "NT R@30",
+        golden: "Goldpaare (Rang)",
       },
     },
     seedJobs: {

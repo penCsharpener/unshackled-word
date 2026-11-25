@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import type { TFunction } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
@@ -8,6 +9,7 @@ import { TextField } from "@/components/TextField";
 import { ApiError, describeApiError } from "@/lib/api";
 import {
   invalidateReaderSimilarVerses,
+  testamentRecall,
   useStartVerseSimilarityRebuild,
   useVerseSimilarityStatus,
   VERSE_SIMILARITY_BOUNDS,
@@ -49,9 +51,126 @@ function RunStatus({ run }: { run: VerseSimilarityRun }) {
   );
 }
 
-/** Placeholder for the evaluation display of roadmap 0027.6f; shows nothing until a run carries an evaluation. */
-function EvaluationPlaceholder() {
-  return null;
+function usePercent() {
+  const { i18n } = useTranslation();
+  return new Intl.NumberFormat(i18n.language, {
+    style: "percent",
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+}
+
+/** Rank text: the number, or "fehlt" when the pair is not among the stored hits. */
+function rankText(t: TFunction, rank: number | undefined): string {
+  return rank === undefined ? t("maintainer.verseSimilarity.evaluation.missing") : String(rank);
+}
+
+/**
+ * Evaluation of a run (roadmap 0027.6f): recall@30 and @10 against the raw TSK links per testament, and the golden pairs with their rank in
+ * both directions ("fehlt" when missing).
+ */
+function RunEvaluation({ run }: { run: VerseSimilarityRun }) {
+  const { t, i18n } = useTranslation();
+  const percent = usePercent();
+  const number = new Intl.NumberFormat(i18n.language);
+  const evaluation = run.evaluationResult;
+  if (run.status !== "succeeded") return null;
+
+  return (
+    <section
+      aria-labelledby="verse-similarity-evaluation"
+      className="flex flex-col gap-2 rounded-md border border-border p-3 text-sm"
+    >
+      <h3 id="verse-similarity-evaluation" className="font-semibold">
+        {t("maintainer.verseSimilarity.evaluation.title")}
+      </h3>
+      {!evaluation ? (
+        <p className="text-fg-muted">{t("maintainer.verseSimilarity.evaluation.none")}</p>
+      ) : evaluation.error ? (
+        <p role="alert" className="font-medium text-accent">
+          {t("maintainer.verseSimilarity.evaluation.failed", { error: evaluation.error })}
+        </p>
+      ) : (
+        <>
+          <p className="text-fg-muted">{t("maintainer.verseSimilarity.evaluation.intro")}</p>
+          <dl className="flex flex-wrap gap-x-6 gap-y-1">
+            {evaluation.testaments.map((entry) => (
+              <div key={entry.testament} className="flex flex-col">
+                <dt className="text-fg-muted">
+                  {t(`maintainer.verseSimilarity.evaluation.testament.${entry.testament}`)}
+                </dt>
+                <dd className="tabular-nums">
+                  {t("maintainer.verseSimilarity.evaluation.recall", {
+                    at30: percent.format(entry.recallAt30),
+                    at10: percent.format(entry.recallAt10),
+                  })}{" "}
+                  <span className="text-fg-muted">
+                    (
+                    {t("maintainer.verseSimilarity.evaluation.links", {
+                      value: number.format(entry.links),
+                    })}
+                    )
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <h4 className="text-fg-muted">
+            {t("maintainer.verseSimilarity.evaluation.goldenPairs")}
+          </h4>
+          <ul className="flex flex-col gap-1">
+            {evaluation.goldenPairs.map((pair) => (
+              <li
+                key={`${pair.sourceVerseId}-${pair.targetVerseId}`}
+                className="flex flex-wrap gap-x-3"
+              >
+                <span>
+                  {pair.source} → {pair.target}
+                </span>
+                <span className={pair.rank === undefined ? "text-fg-muted" : "tabular-nums"}>
+                  {pair.rank === undefined
+                    ? t("maintainer.verseSimilarity.evaluation.missing")
+                    : t("maintainer.verseSimilarity.evaluation.rank", { rank: pair.rank })}
+                </span>
+                <span className="text-fg-muted tabular-nums">
+                  {t("maintainer.verseSimilarity.evaluation.reverse", {
+                    rank: rankText(t, pair.reverseRank),
+                  })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  );
+}
+
+/** Golden pair ranks of a run as a compact row cell ("– · 13 · 6 · 1 · 4"), each with the pair as accessible name. */
+function GoldenRanksCell({ run }: { run: VerseSimilarityRun }) {
+  const { t } = useTranslation();
+  const pairs = run.evaluationResult?.goldenPairs ?? [];
+  if (pairs.length === 0) return <>–</>;
+  return (
+    <span className="flex gap-1 tabular-nums">
+      {pairs.map((pair, index) => {
+        const label = t("maintainer.verseSimilarity.evaluation.pairRank", {
+          source: pair.source,
+          target: pair.target,
+          rank: rankText(t, pair.rank),
+        });
+        return (
+          <span key={`${pair.sourceVerseId}-${pair.targetVerseId}`} className="flex gap-1">
+            {index > 0 ? <span aria-hidden="true">·</span> : null}
+            <span title={label}>
+              <span aria-hidden="true">{pair.rank ?? "–"}</span>
+              <span className="sr-only">{label}</span>
+            </span>
+          </span>
+        );
+      })}
+    </span>
+  );
 }
 
 /**
@@ -83,6 +202,7 @@ export function VerseSimilaritySection() {
 
   const date = new Intl.DateTimeFormat(i18n.language, { dateStyle: "short", timeStyle: "short" });
   const number = new Intl.NumberFormat(i18n.language);
+  const percent = usePercent();
   const seconds = (ms?: number) =>
     ms === undefined
       ? "–"
@@ -153,7 +273,7 @@ export function VerseSimilaritySection() {
           {t("maintainer.verseSimilarity.failed", { error: last.error })}
         </p>
       ) : null}
-      <EvaluationPlaceholder />
+      {last ? <RunEvaluation run={last} /> : null}
 
       <fieldset className="flex flex-wrap items-end gap-3" disabled={running || !data}>
         <legend className="sr-only">{t("maintainer.verseSimilarity.parameters")}</legend>
@@ -217,6 +337,9 @@ export function VerseSimilaritySection() {
                   "pairs",
                   "stopWords",
                   "duration",
+                  "recallOt",
+                  "recallNt",
+                  "golden",
                 ].map((column) => (
                   <th key={column} scope="col" className="px-2 py-1 font-medium">
                     {t(`maintainer.verseSimilarity.columns.${column}`)}
@@ -242,6 +365,17 @@ export function VerseSimilaritySection() {
                   </td>
                   <td className="px-2 py-1 tabular-nums">{run.stopWordCount ?? "–"}</td>
                   <td className="px-2 py-1 tabular-nums">{seconds(run.durationMs)}</td>
+                  {(["old", "new"] as const).map((testament) => {
+                    const recall = testamentRecall(run.evaluationResult, testament);
+                    return (
+                      <td key={testament} className="px-2 py-1 tabular-nums">
+                        {recall ? percent.format(recall.recallAt30) : "–"}
+                      </td>
+                    );
+                  })}
+                  <td className="px-2 py-1">
+                    <GoldenRanksCell run={run} />
+                  </td>
                 </tr>
               ))}
             </tbody>
