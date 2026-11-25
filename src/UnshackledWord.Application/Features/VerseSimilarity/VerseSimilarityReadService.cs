@@ -91,6 +91,12 @@ public sealed class VerseSimilarityReadService : IVerseSimilarityReadService
             labels = await _cache.GetLabelsAsync(runId, wanted, strongs => _tokens.GetLabelsAsync(strongs, token));
         }
 
+        // One set-based read for the words of every source verse with hits and every kept target.
+        var wordStrongs = kept.Count == 0
+            ? new Dictionary<int, ILookup<string, int>>()
+            : SimilarVerseMapper.GroupWordStrongs(await _repository.GetWordStrongsAsync(
+                kept.Select(k => k.Row.SourceHebRefId).Concat(kept.Select(k => k.TargetHebRefId)).Distinct().ToList(), token));
+
         var hitsBySource = kept.ToLookup(k => k.Row.SourceHebRefId);
         return page.Sources
             .Select(source =>
@@ -104,7 +110,7 @@ public sealed class VerseSimilarityReadService : IVerseSimilarityReadService
                     Verse = reference.Verse,
                     Hits = hitsBySource[source.HebRefId]
                         .Take(MaxLimit)
-                        .Select(k => SimilarVerseMapper.ToHit(k.Row, k.TargetHebRefId, explanations.GetValueOrDefault((k.Row.SourceLxxRefId, k.Row.TargetLxxRefId)), labels))
+                        .Select(k => SimilarVerseMapper.ToHit(k.Row, k.TargetHebRefId, explanations.GetValueOrDefault((k.Row.SourceLxxRefId, k.Row.TargetLxxRefId)), labels, wordStrongs))
                         .ToList(),
                 };
             })

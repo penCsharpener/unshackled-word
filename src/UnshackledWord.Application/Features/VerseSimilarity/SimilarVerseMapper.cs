@@ -15,12 +15,27 @@ public static class SimilarVerseMapper
             ? []
             : explanation.Shared.Select(s => s.Strongs).Concat(explanation.Phrases.SelectMany(p => p));
 
+    /// <summary>The words of one verse grouped by Strong's, built once per request from <see cref="ElbWordStrongs"/> rows.</summary>
+    public static IReadOnlyDictionary<int, ILookup<string, int>> GroupWordStrongs(IEnumerable<ElbWordStrongs> rows) =>
+        rows
+            .GroupBy(r => r.HebRefId)
+            .ToDictionary(g => g.Key, g => g.ToLookup(r => r.Strongs, r => r.PositionInVerse, StringComparer.Ordinal));
+
+    /// <summary>Ascending distinct positions of the verse's words that render any of <paramref name="strongs"/>; empty when the verse is unknown.</summary>
+    public static List<int> PositionsOf(IReadOnlyDictionary<int, ILookup<string, int>> wordStrongs, int hebRefId, IEnumerable<string> strongs) =>
+        wordStrongs.TryGetValue(hebRefId, out var verse)
+            ? strongs.Distinct(StringComparer.Ordinal).SelectMany(s => verse[s]).Distinct().Order().ToList()
+            : [];
+
     /// <param name="explanation">Null when a verse is not in the corpus: the lists stay empty, the stored counts stay.</param>
-    public static SimilarVerseHitResponse ToHit(SimilarHitRow row, int targetHebRefId, VerseSimilarityExplanation? explanation, IReadOnlyDictionary<string, StrongsLabel> labels)
+    public static SimilarVerseHitResponse ToHit(SimilarHitRow row, int targetHebRefId, VerseSimilarityExplanation? explanation, IReadOnlyDictionary<string, StrongsLabel> labels,
+        IReadOnlyDictionary<int, ILookup<string, int>>? wordStrongs = null)
     {
         var target = BibleReference.FromRefId(targetHebRefId);
 
         string Lemma(string strongs) => labels.TryGetValue(strongs, out var label) && label.Lemma.Length > 0 ? label.Lemma : strongs;
+
+        var sharedStrongs = explanation?.Shared.Select(x => x.Strongs).ToList() ?? [];
 
         return new SimilarVerseHitResponse
         {
@@ -51,6 +66,8 @@ public static class SimilarVerseMapper
             Phrases = explanation?.Phrases
                 .Select(p => new SimilarPhraseResponse { Text = string.Join(' ', p.Select(Lemma)), Strongs = p.ToList() })
                 .ToList() ?? [],
+            TargetPositions = wordStrongs is null ? [] : PositionsOf(wordStrongs, targetHebRefId, sharedStrongs),
+            SourcePositions = wordStrongs is null ? [] : PositionsOf(wordStrongs, row.SourceHebRefId, sharedStrongs),
         };
     }
 }

@@ -49,3 +49,19 @@ Planned after interview, implementation started. This roadmap goes before 0026: 
 - **Score bar:** native `<meter>` (`.uw-meter`, tokens only, muted fill) relative to the best hit shown, accessible name "Ähnlichkeit 78 % des besten Treffers"; no raw score.
 - **Empty state** per verse without hits; the rail says "Keine ähnlichen Verse in diesem Kapitel." when no verse has any.
 - **Not verified against real data:** the docker `webapi` container (port 7654) predates 0027.3 and answers 404 for `similarVerses`; checked in the dev server (Heb 4, 2000 px) with a mocked response: list, chips, bars, hover card and the error state with the real 404. Acceptance note: Rev 1:16 is rank 34 for Heb 4:12 (see 0027.1), beyond the 30 hits of "Mehr anzeigen", so the acceptance scenario of 0027.3f cannot be met with the current defaults (Rev 2:12 at rank 11 shows after "Mehr anzeigen"); depends on the parameter decision in 0027.6.
+
+**0027.4 (word positions, backend) done, with these deviations and findings:**
+
+- **Contract:** each hit gets `targetPositions` (positions in the hit's Elb1871 verse) and `sourcePositions` (positions in the source verse for the Strong's shared with *this* hit), both ascending, distinct, 1-based `PositionInVerse`. Computed from the hit's explanation `shared` Strong's (phrase Strong's are a subset).
+- **Query:** `IVerseSimilarityRepository.GetWordStrongsAsync` reads, for all source verses with hits and all kept targets of the request at once, `(HebRefId, PositionInVerse, Strongs)`: one Greek query (`Elb1871GreekMapping` → `StepGreekWords.DisambiguatedStrongs`) and one Hebrew query (`Elb1871HebrewMapping` → `StepHebrewWordsNormalizedToHebrewWords` → `StepHebrewWordsNormalized` with `IsRoot`, `StrongsNumber`, the same tokens as `VerseTokenRepository`), skipped when the page has no hits. Grouping in `SimilarVerseMapper.GroupWordStrongs`/`PositionsOf`.
+- **Added words:** an added word (`IsAddedWord`, no step word of its own) takes the Strong's of its parent word's mapping, so "die mit Händen gemacht sind" is one rendering of χειροποίητος, not just "Händen".
+- **Verified (dev DB, local WebApi):** Acts 7:48 → Acts 17:24 (rank 1, shared G5499 χειροποίητος, G3485 ναός, G2730 κατοικέω): target positions 24, 27–32 = "wohnt Tempeln, die mit Händen gemacht sind,"; source positions 4, 7–12 = "wohnt Wohnungen, die mit Händen gemacht sind,".
+- **Cost (warm, local Kestrel):** Heb 4 21–32 ms (was 4–11), Ps 119 98–158 ms (was 17–30; 1,029 verses, the Hebrew query alone is ~43 ms because the planner scans `Elb1871HebrewMapping`), Gen 1 35–43 ms. Payload +10 to 15 %. Cold corpus build unchanged.
+- **Tests:** `VerseSimilarityReadServiceTests` (positions per hit, one word read per request, empty, no read without hits).
+
+**0027.4f (highlight, frontend) done, with these deviations and findings:**
+
+- **Deviation, no `words` array:** `Elb1871Verses.VerseText` is the words joined by one space for all 31,168 verses with words (checked; positions are 1..n contiguous), so the hit `text` is split on spaces and word n is the n-th piece (`markRuns` in `SimilarVerseList`). No extra payload.
+- **Hit text:** words at `targetPositions` in `<mark class="bg-mark-linked">` (token, like `VerseHitList`), consecutive words one mark.
+- **Source verse:** `SimilarVerseList` reports the hovered or focused row through `onHoverHit`; `VerseSide` forwards it with the verse, `ChapterPage` feeds `sourcePositions` into the existing `pillWords` marking (the TSK word-link mechanism, `bg-mark-linked`, matched by `basePosition`, so it also works in revised verses).
+- **Checked in the browser** (dev server on another port against the local API, dark mode): hovering Acts 17:24 next to Acts 7:48 marks "wohnt", "Wohnungen" and "die mit Händen gemacht sind," in the reader. Vitest in `node:24-slim`: 1,146 passed, the same 8 known failures (CrossReferenceList, ChapterPage.tskProposal, NoteReviewPage).

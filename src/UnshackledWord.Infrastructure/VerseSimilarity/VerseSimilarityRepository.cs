@@ -296,6 +296,65 @@ public sealed class VerseSimilarityRepository : IVerseSimilarityRepository
         return new SimilarVersePage(sources, hits);
     }
 
+    public async Task<IReadOnlyList<ElbWordStrongs>> GetWordStrongsAsync(IReadOnlyCollection<int> hebRefIds, CancellationToken token = default)
+    {
+        var greekIds = hebRefIds.Where(id => id / 1_000_000 > 39).Distinct().ToArray();
+        var hebrewIds = hebRefIds.Where(id => id / 1_000_000 <= 39).Distinct().ToArray();
+        var result = new List<ElbWordStrongs>();
+        if (greekIds.Length == 0 && hebrewIds.Length == 0)
+        {
+            return result;
+        }
+
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        if (greekIds.Length > 0)
+        {
+            result.AddRange(await connection.QueryAsync<ElbWordStrongs>(new CommandDefinition(GreekWordStrongsSql, new { HebRefIds = greekIds }, cancellationToken: token)));
+        }
+
+        if (hebrewIds.Length > 0)
+        {
+            result.AddRange(await connection.QueryAsync<ElbWordStrongs>(new CommandDefinition(HebrewWordStrongsSql, new { HebRefIds = hebrewIds }, cancellationToken: token)));
+        }
+
+        return result;
+    }
+
+    /// <summary>An added word has no step word of its own: it takes the one(s) of its parent word.</summary>
+    private const string GreekWordStrongsSql = """
+                                              SELECT DISTINCT ew."HebRefId"
+                                                   , ew."PositionInVerse"
+                                                   , sgw."DisambiguatedStrongs" "Strongs"
+                                              FROM "unshackled-word"."Elb1871Words" ew
+                                                  JOIN "unshackled-word"."Elb1871GreekMapping" egm ON egm."ElbWordId" = ew."Id"
+                                                  LEFT JOIN "unshackled-word"."Elb1871GreekMapping" pm ON egm."IsAddedWord"
+                                                      AND pm."ElbWordId" = egm."ParentGermanWordId"
+                                                      AND NOT pm."IsAddedWord"
+                                                  JOIN "unshackled-word"."StepGreekWords" sgw ON sgw."Id" = COALESCE(egm."StepWordId", pm."StepWordId")
+                                              WHERE 1=1
+                                                  AND ew."HebRefId" = ANY(@HebRefIds)
+                                                  AND sgw."DisambiguatedStrongs" <> ''
+                                              ORDER BY ew."HebRefId", ew."PositionInVerse"
+                                              """;
+
+    /// <summary>The Hebrew/Aramaic root pieces of the step word, as in <c>VerseTokenRepository.HebrewSql</c>.</summary>
+    private const string HebrewWordStrongsSql = """
+                                               SELECT DISTINCT ew."HebRefId"
+                                                    , ew."PositionInVerse"
+                                                    , shn."StrongsNumber" "Strongs"
+                                               FROM "unshackled-word"."Elb1871Words" ew
+                                                   JOIN "unshackled-word"."Elb1871HebrewMapping" ehm ON ehm."ElbWordId" = ew."Id"
+                                                   LEFT JOIN "unshackled-word"."Elb1871HebrewMapping" pm ON ehm."IsAddedWord"
+                                                       AND pm."ElbWordId" = ehm."ParentGermanWordId"
+                                                       AND NOT pm."IsAddedWord"
+                                                   JOIN "unshackled-word"."StepHebrewWordsNormalizedToHebrewWords" map ON map."StepHebrewWordsId" = COALESCE(ehm."StepWordId", pm."StepWordId")
+                                                   JOIN "unshackled-word"."StepHebrewWordsNormalized" shn ON shn."Id" = map."StepHebrewWordsNormalizedId"
+                                               WHERE 1=1
+                                                   AND ew."HebRefId" = ANY(@HebRefIds)
+                                                   AND shn."IsRoot"
+                                               ORDER BY ew."HebRefId", ew."PositionInVerse"
+                                               """;
+
     private static decimal Round(double value) => Math.Round((decimal)value, 4, MidpointRounding.AwayFromZero);
 
     /// <summary>Holds the connection with the session-level lock; disposing unlocks and closes it.</summary>

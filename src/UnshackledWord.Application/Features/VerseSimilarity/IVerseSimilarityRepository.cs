@@ -45,4 +45,11 @@ public interface IVerseSimilarityRepository
     /// (<c>TargetHebRefId</c> is null when <c>Elb1871Verses</c> has no verse for the target's <c>LxxRefId</c>).
     /// </summary>
     Task<SimilarVersePage> GetPageAsync(int fromHebRefId, int toHebRefId, int limit, CancellationToken token = default);
+
+    /// <summary>
+    /// Roadmap 0027.4: per Elberfelder word of the given verses, the Strong's it renders through the mapping, in the token form of the similarity
+    /// (Greek <c>DisambiguatedStrongs</c>, Hebrew/Aramaic the root pieces). An added word (no original of its own) takes the Strong's of its parent word.
+    /// Two set-based queries (New and Old Testament) for all verses at once.
+    /// </summary>
+    Task<IReadOnlyList<ElbWordStrongs>> GetWordStrongsAsync(IReadOnlyCollection<int> hebRefIds, CancellationToken token = default);
 }

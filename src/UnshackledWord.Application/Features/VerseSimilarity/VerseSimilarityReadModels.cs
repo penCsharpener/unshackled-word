@@ -23,3 +23,11 @@ public sealed class SimilarHitRow
 }
 
 public sealed record SimilarVersePage(IReadOnlyList<SimilarSourceVerse> Sources, IReadOnlyList<SimilarHitRow> Hits);
+
+/// <summary>One Elberfelder word (<c>PositionInVerse</c>) that renders the original word with this Strong's, in the form of the similarity tokens (<c>G1366</c>, <c>H0430G</c>).</summary>
+public sealed class ElbWordStrongs
+{
+    public int HebRefId { get; set; }
+    public int PositionInVerse { get; set; }
+    public string Strongs { get; set; } = string.Empty;
+}

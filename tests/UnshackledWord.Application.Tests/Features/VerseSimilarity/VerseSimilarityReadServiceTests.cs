@@ -16,6 +16,11 @@ public class VerseSimilarityReadServiceTests
     private readonly IVerseTokenRepository _tokens = Substitute.For<IVerseTokenRepository>();
     private readonly VerseSimilarityExplainerCache _cache = new();
 
+    public VerseSimilarityReadServiceTests()
+    {
+        _repository.GetWordStrongsAsync(Arg.Any<IReadOnlyCollection<int>>(), Arg.Any<CancellationToken>()).Returns([]);
+    }
+
     private VerseSimilarityReadService NewService() => new(_repository, _tokens, _cache, NullLogger<VerseSimilarityReadService>.Instance);
 
     private static SimilarHitRow Hit(int source, int target, int? targetHeb, int rank, int runId = 7) => new()
@@ -146,6 +151,69 @@ public class VerseSimilarityReadServiceTests
         _repository.GetPageAsync(1001099, 1001099, 30, Arg.Any<CancellationToken>()).Returns(new SimilarVersePage([], []));
 
         (await NewService().GetVerseAsync(1001099, TestContext.Current.CancellationToken)).ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Positions_AreTheWordsRenderingTheSharedStrongs_PerHit_AndOneWordReadPerRequest()
+    {
+        GivenCorpus();
+        _repository.GetPageAsync(Source, Source, 30, Arg.Any<CancellationToken>()).Returns(new SimilarVersePage(
+            [new SimilarSourceVerse { HebRefId = Source, LxxRefId = Source }],
+            [Hit(Source, RevTarget, 66002012, 1), Hit(Source, OtherTarget, 40001001, 2)]));
+        _repository.GetWordStrongsAsync(Arg.Any<IReadOnlyCollection<int>>(), Arg.Any<CancellationToken>()).Returns(new List<ElbWordStrongs>
+        {
+            // Source: G0001 renders position 3 and (as the parent of an added word) 4, G0002 position 6, G0003 positions 1 and 2, G0099 position 9 (not shared).
+            new() { HebRefId = Source, PositionInVerse = 3, Strongs = "G0001" },
+            new() { HebRefId = Source, PositionInVerse = 4, Strongs = "G0001" },
+            new() { HebRefId = Source, PositionInVerse = 6, Strongs = "G0002" },
+            new() { HebRefId = Source, PositionInVerse = 2, Strongs = "G0003" },
+            new() { HebRefId = Source, PositionInVerse = 1, Strongs = "G0003" },
+            new() { HebRefId = Source, PositionInVerse = 9, Strongs = "G0099" },
+            new() { HebRefId = RevTarget, PositionInVerse = 5, Strongs = "G0001" },
+            new() { HebRefId = RevTarget, PositionInVerse = 5, Strongs = "G0002" },
+            new() { HebRefId = RevTarget, PositionInVerse = 2, Strongs = "G0002" },
+            new() { HebRefId = OtherTarget, PositionInVerse = 7, Strongs = "G0003" },
+        });
+
+        var verse = await NewService().GetVerseAsync(Source, TestContext.Current.CancellationToken);
+
+        verse.ShouldNotBeNull();
+        var first = verse.Hits[0];
+        first.SourcePositions.ShouldBe([1, 2, 3, 4, 6], "ascending, distinct, only shared Strong's");
+        first.TargetPositions.ShouldBe([2, 5], "a word that renders two shared Strong's counts once");
+
+        // The second hit shares only G0003 with the source: its source positions differ from the first hit's.
+        var second = verse.Hits[1];
+        second.Shared.Select(s => s.Strongs).ShouldBe(["G0003"]);
+        second.SourcePositions.ShouldBe([1, 2]);
+        second.TargetPositions.ShouldBe([7]);
+
+        await _repository.Received(1).GetWordStrongsAsync(
+            Arg.Is<IReadOnlyCollection<int>>(ids => ids.Count == 3 && ids.Contains(Source) && ids.Contains(RevTarget) && ids.Contains(OtherTarget)), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Positions_AreEmpty_WhenAVerseHasNoMappedWords()
+    {
+        GivenCorpus();
+        _repository.GetPageAsync(Source, Source, 30, Arg.Any<CancellationToken>()).Returns(new SimilarVersePage(
+            [new SimilarSourceVerse { HebRefId = Source, LxxRefId = Source }], [Hit(Source, RevTarget, 66002012, 1)]));
+
+        var hit = (await NewService().GetVerseAsync(Source, TestContext.Current.CancellationToken))!.Hits.Single();
+
+        hit.SourcePositions.ShouldBeEmpty();
+        hit.TargetPositions.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task Chapter_WithoutHits_DoesNotReadWords()
+    {
+        _repository.GetPageAsync(58004000, 58004999, 10, Arg.Any<CancellationToken>()).Returns(new SimilarVersePage(
+            [new SimilarSourceVerse { HebRefId = 58004011, LxxRefId = 58004011 }], []));
+
+        await NewService().GetChapterAsync(58, 4, 10, TestContext.Current.CancellationToken);
+
+        await _repository.DidNotReceive().GetWordStrongsAsync(Arg.Any<IReadOnlyCollection<int>>(), Arg.Any<CancellationToken>());
     }
 
     [Theory]

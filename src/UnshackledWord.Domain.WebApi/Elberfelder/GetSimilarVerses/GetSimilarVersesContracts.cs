@@ -61,6 +61,15 @@ public sealed class SimilarVerseHitResponse
 
     /// <summary>Matched runs of at least two Strong's in the source verse's order.</summary>
     public List<SimilarPhraseResponse> Phrases { get; set; } = [];
+
+    /// <summary>
+    /// 1-based <c>PositionInVerse</c> of the Elb1871 words of <see cref="Text"/> (its words joined by one space) that render one of the <see cref="Shared"/>
+    /// Strong's, ascending. An added word counts when its parent word does.
+    /// </summary>
+    public List<int> TargetPositions { get; set; } = [];
+
+    /// <summary>Same for the source verse: the Elb1871 words that render the Strong's shared with this hit (differs from hit to hit).</summary>
+    public List<int> SourcePositions { get; set; } = [];
 }
 
 public sealed class SimilarSharedStrongsResponse
