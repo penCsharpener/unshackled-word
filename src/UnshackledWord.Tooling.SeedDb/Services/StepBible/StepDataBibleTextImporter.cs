@@ -54,12 +54,27 @@ public sealed class StepDataBibleTextImporter : IRunner
         }
 
         var greekWords = totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
-        await _stepGreekWordsRepository.BulkInsertAsync(greekWords, token);
-
-        var editionRows = await _stepGreekWordsRepository.RefreshEditionsAsync(token);
-        _logger.LogInformation("Greek editions refreshed: {count} rows", editionRows);
+        var insertedGreekWords = await _stepGreekWordsRepository.BulkInsertAsync(greekWords, token);
+        await RefreshGreekEditionsIfNeededAsync(insertedGreekWords, token);
 
         var hebrewWords = totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
         await _stepHebrewWordsRepository.BulkInsertAsync(hebrewWords, token);
+    }
+
+    /// <summary>
+    /// Rebuilds the word editions (roadmap 0025) only when this run inserted Greek words, or when there are words but no edition rows (self-healing
+    /// after an interrupted run). A skipped STEP import leaves the ~1.1M rows alone: SeedDb runs on every start, and the refresh truncates and
+    /// rebuilds (~20 s, table locked) what the live API reads.
+    /// </summary>
+    public async Task RefreshGreekEditionsIfNeededAsync(int insertedGreekWords, CancellationToken token = default)
+    {
+        if (insertedGreekWords == 0 && !await _stepGreekWordsRepository.EditionsMissingAsync(token))
+        {
+            _logger.LogInformation("Greek editions up to date, no refresh");
+            return;
+        }
+
+        var editionRows = await _stepGreekWordsRepository.RefreshEditionsAsync(token);
+        _logger.LogInformation("Greek editions refreshed: {count} rows", editionRows);
     }
 }

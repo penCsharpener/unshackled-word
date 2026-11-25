@@ -22,6 +22,7 @@ Implemented (all rows committed except 0025.7 docs, version 0.11.8):
 - 0025.5 (0.11.5) edition codes and shift flag on Greek words of the chapter originals; 0025.5f (0.11.6) dotted mark and edition note in the Grundtext panel.
 - 0025.6f (0.11.7) edition filter for the Greek text in the reader side panel.
 - 0025.7 (0.11.8) docs and fresh-database check. Part A on an empty Postgres 18 (throwaway container, migrations 0001-0047, then full SeedDb): `StepGreekWordEditions` = 1,100,328 rows (same as the dev DB), 22 catalog rows, no `Kind='unknown'`, log line "Greek editions refreshed: 1100328 rows", no words without edition rows. SeedDb calls the refresh on every run, also when the STEP import is skipped as "already imported" (about 12 s on a second run).
+- 0025 review (0.11.9): SeedDb refreshes the word editions only when Greek words were inserted in this run or `StepGreekWordEditions` is empty while `StepGreekWords` is not (self-healing); migration 0048 widens `GreekEditions.Code` and `StepGreekWordEditions.ShiftRaw` to varchar(100), so an over-long unknown token becomes an unknown catalog row instead of failing the refresh; the Grundtext note for the 11 words in no main edition says "fehlt in" all eight instead of an empty "nur in".
 
 Deviations from the plan:
 

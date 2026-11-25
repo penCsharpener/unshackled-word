@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { filterWordsByEdition, GREEK_EDITION_KEY, readGreekEdition } from "./greekEditions";
+import {
+  editionVariant,
+  filterWordsByEdition,
+  GREEK_EDITION_KEY,
+  readGreekEdition,
+} from "./greekEditions";
 
 const all = ["NA28", "NA27", "Tyn", "SBL", "WH", "Treg", "TR", "Byz"];
 const words = [
@@ -38,6 +43,26 @@ describe("filterWordsByEdition", () => {
 
   it("does not change the order", () => {
     expect(filterWordsByEdition(words, "Byz").visible.map((w) => w.id)).toEqual([1, 2, 4]);
+  });
+});
+
+describe("editionVariant", () => {
+  it("is undefined for a word in all main editions", () => {
+    expect(editionVariant(undefined, all)).toBeUndefined();
+    expect(editionVariant(all, all)).toBeUndefined();
+  });
+
+  it("names the few editions that have the word", () => {
+    expect(editionVariant(["TR", "Byz"], all)).toEqual({ kind: "only", codes: ["TR", "Byz"] });
+  });
+
+  it("names the few editions that lack the word", () => {
+    const codes = all.filter((c) => c !== "WH" && c !== "Treg");
+    expect(editionVariant(codes, all)).toEqual({ kind: "missing", codes: ["WH", "Treg"] });
+  });
+
+  it("lists all main editions as missing when none has the word (only NIV/KJV or a manuscript)", () => {
+    expect(editionVariant([], all)).toEqual({ kind: "missing", codes: all });
   });
 });
 

@@ -12,7 +12,8 @@ export function mainEditionCodes(catalog: readonly GreekEdition[] | undefined): 
 
 /**
  * The fact behind the Grundtext mark of a word that is not in all main editions (roadmap 0025.5f):
- * `only` with the present editions when it is in fewer than half of them, else `missing` with the absent ones.
+ * `only` with the present editions when it is in fewer than half of them, else `missing` with the absent ones
+ * (also when no main edition has it, e.g. a word only in NIV/KJV or a manuscript: "nur in" would list nothing).
  * Undefined for a word without `editionCodes` (in all main editions).
  */
 export function editionVariant(
@@ -23,7 +24,7 @@ export function editionVariant(
   const present = mainCodes.filter((code) => editionCodes.includes(code));
   const missing = mainCodes.filter((code) => !editionCodes.includes(code));
   if (missing.length === 0) return undefined;
-  return present.length * 2 < mainCodes.length
+  return present.length > 0 && present.length * 2 < mainCodes.length
     ? { kind: "only", codes: present }
     : { kind: "missing", codes: missing };
 }

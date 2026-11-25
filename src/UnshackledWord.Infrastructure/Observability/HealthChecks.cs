@@ -41,7 +41,7 @@ public sealed class PostgresHealthCheck(IDbConnectionFactory connections, ILogge
 public sealed partial class MigrationsHealthCheck(IDbConnectionFactory connections, ILogger<MigrationsHealthCheck> logger) : IHealthCheck
 {
     /// <summary>Highest script number in <c>Tooling.Postgres.Migration/scripts</c> this build needs; a test keeps it in sync.</summary>
-    public const int ExpectedMigration = 47;
+    public const int ExpectedMigration = 48;
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {

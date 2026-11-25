@@ -38,14 +38,14 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         return await _dbReader.ReadAsListAsync<StepGreekWordDbo>(sql, filter);
     }
 
-    public async Task BulkInsertAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default)
+    public async Task<int> BulkInsertAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default)
     {
         if (entries.Count == 0)
         {
-            return;
+            return 0;
         }
 
-        await BulkInsertInternalNewAsync(entries, token);
+        return await BulkInsertInternalNewAsync(entries, token);
     }
 
     public async Task<int> RefreshEditionsAsync(CancellationToken token = default)
@@ -58,12 +58,22 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         return await _dbWriter.ExecuteScalarAsync<int>(sql, commandTimeout: 900);
     }
 
-    private async Task BulkInsertInternalNewAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default)
+    public async Task<bool> EditionsMissingAsync(CancellationToken token = default)
+    {
+        const string sql = """
+                   SELECT EXISTS (SELECT 1 FROM "unshackled-word"."StepGreekWords")
+                       AND NOT EXISTS (SELECT 1 FROM "unshackled-word"."StepGreekWordEditions")
+                   """;
+
+        return await _dbReader.ExecuteScalarAsync<bool>(sql);
+    }
+
+    private async Task<int> BulkInsertInternalNewAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default)
     {
         var count = await CountByFilterAsync(new(), token);
         if ( count > 0)
         {
-            return;
+            return 0;
         }
 
         var dataSize = entries.Count + 1;
@@ -138,6 +148,6 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
                    ON CONFLICT DO NOTHING;
                    """;
 
-        await _dbWriter.WriteAsync(sql, parameters);
+        return await _dbWriter.WriteAsync(sql, parameters);
     }
 }
