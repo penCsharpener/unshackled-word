@@ -9,6 +9,7 @@ import type {
   ChapterOriginalVerse,
   CrossReference,
   GetChapterOriginalsResponse,
+  SimilarVerseHit,
   VerseSimilarVerses,
 } from "@/lib/bible/types";
 
@@ -66,6 +67,8 @@ export interface VerseSideProps {
   edition?: string | null;
   /** `similar`: the verse with its similar verses (absent = not in the response, shown as empty) */
   similar?: VerseSimilarVerses;
+  /** `similar`: a hit is hovered or focused (`undefined` = none); the reader marks its source words in the verse. */
+  onHoverSimilar?: (verse: number, hit: SimilarVerseHit | undefined) => void;
 }
 
 /**
@@ -96,6 +99,7 @@ export const VerseSide = memo(function VerseSide({
   onHoverOriginal,
   edition = null,
   similar,
+  onHoverSimilar,
 }: VerseSideProps) {
   const { t } = useTranslation();
   const preview = useMemo(
@@ -128,6 +132,11 @@ export const VerseSide = memo(function VerseSide({
     [references, onlyHighlighted, showHidden],
   );
 
+  const hoverSimilar = useMemo(
+    () => onHoverSimilar && ((hit: SimilarVerseHit | undefined) => onHoverSimilar(verse, hit)),
+    [onHoverSimilar, verse],
+  );
+
   if (mode === "tsk") {
     // curators in curate mode get the panel on every verse, so a link can be added where TSK has none
     if ((!shown || shown.length === 0) && !(editable && showHidden)) return null;
@@ -155,6 +164,7 @@ export const VerseSide = memo(function VerseSide({
         <SimilarVerseList
           source={similar ?? { hebRefId: 0, bibleBookId: bookId, chapter, verse, hits: [] }}
           books={books}
+          onHoverHit={hoverSimilar}
         />
       </VerseSidePanel>
     );

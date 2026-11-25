@@ -58,6 +58,7 @@ import type {
   CrossReference,
   CrossReferenceWordLink,
   HighlightKind,
+  SimilarVerseHit,
   WordToken,
 } from "@/lib/bible/types";
 import { useSaveVerseMapping, useVerseMapping } from "@/lib/bible/verseMapping";
@@ -304,8 +305,22 @@ export function ChapterPage() {
   const onHoverReference = useCallback((verse: number, r: CrossReference | undefined) => {
     setHoveredPill(r?.word?.state === "ok" ? { verse, word: r.word } : undefined);
   }, []);
-  /** Positions of the words of the hovered pill: shown positions (revised verse) and Elb1871 base positions. */
+  /** Hovered similar-verse hit (roadmap 0027.4f): its Elb1871 source positions are marked in the verse text like a pill's words. */
+  const [hoveredSimilar, setHoveredSimilar] = useState<{ verse: number; positions: number[] }>();
+  const onHoverSimilar = useCallback((verse: number, hit: SimilarVerseHit | undefined) => {
+    setHoveredSimilar(
+      hit?.sourcePositions?.length ? { verse, positions: hit.sourcePositions } : undefined,
+    );
+  }, []);
+  /** Positions of the words of the hovered pill or similar hit: shown positions (revised verse) and Elb1871 base positions. */
   const pillWords = useMemo(() => {
+    if (hoveredSimilar) {
+      return {
+        verse: hoveredSimilar.verse,
+        shown: new Set<number>(),
+        base: new Set(hoveredSimilar.positions),
+      };
+    }
     const word = hoveredPill?.word;
     if (!hoveredPill || !word || word.startPosition === undefined) return undefined;
     const shown = new Set<number>();
@@ -315,7 +330,7 @@ export function ChapterPage() {
       for (let p = word.startPosition; p <= (word.endPosition ?? word.startPosition); p++)
         base.add(p);
     return { verse: hoveredPill.verse, shown, base };
-  }, [hoveredPill]);
+  }, [hoveredPill, hoveredSimilar]);
   // Target texts of the hovered verse (shared with the link hover card): their Strong's keys flash the pills too.
   const hoveredSenseKeys = useMemo(
     () => hoveredWordRaw?.senses.map((s) => s.key) ?? [],
@@ -1676,6 +1691,7 @@ export function ChapterPage() {
                       onHoverOriginal={onHoverOriginal}
                       edition={greekEdition}
                       similar={similarByVerse.get(v.verse)}
+                      onHoverSimilar={onHoverSimilar}
                     />
                   )}
                 </div>

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { bookAbbreviation, bookName, chapterPath } from "@/lib/bible/books";
@@ -22,6 +22,11 @@ export interface SimilarVerseListProps {
   books?: BibleStructureBook[];
   /** Hits per verse in the chapter request: with this many, "Mehr anzeigen" loads up to 30 and replaces the list. */
   limit?: number;
+  /**
+   * A hit is hovered or focused (`undefined` = none anymore): the reader marks the hit's `sourcePositions` in the source verse
+   * (roadmap 0027.4f).
+   */
+  onHoverHit?: (hit: SimilarVerseHit | undefined) => void;
 }
 
 const CARD_GAP = 8;
@@ -36,6 +41,31 @@ interface Hover {
 /** Strong's of all phrases of a hit: these words are shown in their phrase chip, not again as single words. */
 const phraseStrongs = (hit: SimilarVerseHit) => new Set(hit.phrases.flatMap((p) => p.strongs));
 
+/** One run of the hit text: marked runs are consecutive words at `targetPositions`. */
+export interface TextRun {
+  /** 1-based position of the run's first word */
+  start: number;
+  text: string;
+  marked: boolean;
+}
+
+/**
+ * Splits an Elb1871 verse text into runs; word n (1-based `PositionInVerse`) is the n-th word of the text, which the API
+ * builds by joining the words with one space. Consecutive marked words form one run; positions outside the text are ignored.
+ */
+export function markRuns(text: string, positions: readonly number[] = []): TextRun[] {
+  if (positions.length === 0) return [{ start: 1, text, marked: false }];
+  const marked = new Set(positions);
+  const runs: TextRun[] = [];
+  text.split(" ").forEach((word, index) => {
+    const isMarked = marked.has(index + 1);
+    const last = runs[runs.length - 1];
+    if (last && last.marked === isMarked) last.text += ` ${word}`;
+    else runs.push({ start: index + 1, text: word, marked: isMarked });
+  });
+  return runs;
+}
+
 /** Relative score in whole percent of the best hit of the verse (the raw score is never shown). */
 export function relativeScore(score: number, best: number) {
   return best > 0 ? Math.max(0, Math.min(100, Math.round((score / best) * 100))) : 0;
@@ -44,12 +74,14 @@ export function relativeScore(score: number, best: number) {
 /**
  * Similar verses of one verse (roadmap 0027.3f): reference link with a hover card of the Elb1871 text, the clamped
  * text, chips for the shared original words (phrases first) and a quiet bar relative to the best hit. Labelled
- * "ähnlich", never as a cross reference: the chips say why a verse matched.
+ * "ähnlich", never as a cross reference: the chips say why a verse matched. The words of the hit text that render the
+ * shared Strong's are marked (`targetPositions`); hovering or focusing a hit reports it through `onHoverHit`.
  */
 export function SimilarVerseList({
   source,
   books,
   limit = SIMILAR_CHAPTER_LIMIT,
+  onHoverHit,
 }: SimilarVerseListProps) {
   const { t, i18n } = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -83,6 +115,7 @@ export function SimilarVerseList({
     });
   };
   const hide = () => setHover(null);
+  const reportHit = onHoverHit;
   const hovered = hover && hits.find((h) => h.hebRefId === hover.hebRefId);
 
   const wordDetails = (w: SimilarSharedStrongs) =>
@@ -100,7 +133,15 @@ export function SimilarVerseList({
           const words = h.shared.filter((w) => !inPhrase.has(w.strongs));
           const percent = relativeScore(h.score, best);
           return (
-            <li key={h.hebRefId} data-testid="similar-hit" className="flex flex-col gap-1">
+            <li
+              key={h.hebRefId}
+              data-testid="similar-hit"
+              className="flex flex-col gap-1"
+              onMouseEnter={() => reportHit?.(h)}
+              onMouseLeave={() => reportHit?.(undefined)}
+              onFocus={() => reportHit?.(h)}
+              onBlur={() => reportHit?.(undefined)}
+            >
               <div className="flex items-center gap-2">
                 <Link
                   to={`${chapterPath({ bookId: h.bibleBookId, chapter: h.chapter })}#v${h.verse}`}
@@ -123,7 +164,18 @@ export function SimilarVerseList({
                   title={t("bible.sidePanel.similar.score", { percent })}
                 />
               </div>
-              <p className="line-clamp-2 font-serif text-fg-muted">{h.text}</p>
+              <p className="line-clamp-2 font-serif text-fg-muted">
+                {markRuns(h.text, h.targetPositions).map((run, index) => (
+                  <Fragment key={run.start}>
+                    {index > 0 && " "}
+                    {run.marked ? (
+                      <mark className="rounded-sm bg-mark-linked px-0.5 text-fg">{run.text}</mark>
+                    ) : (
+                      run.text
+                    )}
+                  </Fragment>
+                ))}
+              </p>
               {(h.phrases.length > 0 || words.length > 0) && (
                 <ul
                   aria-label={t("bible.sidePanel.similar.shared")}

@@ -550,6 +550,10 @@ export interface SimilarVerseHit {
   /** rarest first */
   shared: SimilarSharedStrongs[];
   phrases: SimilarPhrase[];
+  /** 1-based word positions in `text` (its words joined by one space) that render the shared Strong's, ascending. */
+  targetPositions: number[];
+  /** Elb1871 positions in the source verse that render the Strong's shared with this hit, ascending. */
+  sourcePositions: number[];
 }
 
 /** The similar verses of one source verse, best first (`hits` may be empty). */

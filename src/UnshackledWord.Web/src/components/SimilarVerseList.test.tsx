@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
 import { bibleApi } from "@/lib/bible/api";
 import type { BibleStructureBook, SimilarVerseHit, VerseSimilarVerses } from "@/lib/bible/types";
-import { relativeScore, SimilarVerseList } from "./SimilarVerseList";
+import { markRuns, relativeScore, SimilarVerseList } from "./SimilarVerseList";
 
 const books = [
   { id: 58, nameDe: "Hebräer", nameEn: "Hebrews", abbreviationDe: "Hebr", abbreviationEn: "Heb" },
@@ -35,6 +35,8 @@ const hit = (
   phraseCount: 0,
   shared: [],
   phrases: [],
+  targetPositions: [],
+  sourcePositions: [],
   ...extra,
 });
 
@@ -46,12 +48,16 @@ const source = (hits: SimilarVerseHit[]): VerseSimilarVerses => ({
   hits,
 });
 
-function renderList(verse: VerseSimilarVerses, limit?: number) {
+function renderList(
+  verse: VerseSimilarVerses,
+  limit?: number,
+  onHoverHit?: (hit: SimilarVerseHit | undefined) => void,
+) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
       <MemoryRouter>
-        <SimilarVerseList source={verse} books={books} limit={limit} />
+        <SimilarVerseList source={verse} books={books} limit={limit} onHoverHit={onHoverHit} />
       </MemoryRouter>
     </QueryClientProvider>,
   );
@@ -64,6 +70,65 @@ afterEach(() => {
 });
 
 describe("SimilarVerseList", () => {
+  it("marks the words at the target positions, consecutive ones as one mark", () => {
+    renderList(
+      source([
+        hit(16, 1, {
+          text: "Der wohnt nicht in Tempeln, die mit Händen gemacht sind,",
+          targetPositions: [6, 7, 8, 9, 10],
+        }),
+      ]),
+    );
+    const marks = document.querySelectorAll("mark");
+    expect(marks).toHaveLength(1);
+    expect(marks[0]).toHaveTextContent("die mit Händen gemacht sind,");
+    expect(marks[0]).toHaveClass("bg-mark-linked");
+    expect(screen.getByTestId("similar-hit")).toHaveTextContent(
+      "Der wohnt nicht in Tempeln, die mit Händen gemacht sind,",
+    );
+  });
+
+  it("marks separate words separately and ignores positions beyond the text", () => {
+    renderList(source([hit(16, 1, { text: "a b c d", targetPositions: [1, 3, 9] })]));
+    const marks = [...document.querySelectorAll("mark")].map((m) => m.textContent);
+    expect(marks).toEqual(["a", "c"]);
+  });
+
+  it("shows the plain text without a mark when there are no positions", () => {
+    renderList(source([hit(16, 1)]));
+    expect(document.querySelector("mark")).toBeNull();
+    expect(screen.getByText("Text von Offb 1,16")).toBeInTheDocument();
+  });
+
+  it("reports the hovered or focused hit and clears it again", async () => {
+    const user = userEvent.setup();
+    const onHoverHit = vi.fn();
+    const first = hit(16, 1, { sourcePositions: [4, 7] });
+    renderList(source([first, hit(17, 0.5)]), undefined, onHoverHit);
+    const rows = screen.getAllByTestId("similar-hit");
+
+    const row = rows[0] as HTMLElement;
+    await user.hover(row);
+    expect(onHoverHit).toHaveBeenLastCalledWith(first);
+    await user.unhover(row);
+    expect(onHoverHit).toHaveBeenLastCalledWith(undefined);
+
+    await user.tab();
+    expect(onHoverHit).toHaveBeenLastCalledWith(first);
+    await user.tab();
+    await user.tab();
+    expect(onHoverHit).toHaveBeenCalledWith(undefined);
+  });
+
+  it("markRuns splits by position", () => {
+    expect(markRuns("a b c", [2])).toEqual([
+      { start: 1, text: "a", marked: false },
+      { start: 2, text: "b", marked: true },
+      { start: 3, text: "c", marked: false },
+    ]);
+    expect(markRuns("a b", [])).toEqual([{ start: 1, text: "a b", marked: false }]);
+  });
+
   it("links the reference with the full book name and shows the hit text", () => {
     renderList(source([hit(16, 1.2)]));
     const link = screen.getByRole("link", { name: "Offenbarung 1,16" });
