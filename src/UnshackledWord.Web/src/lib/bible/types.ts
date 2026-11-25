@@ -241,6 +241,41 @@ export interface OriginalReading {
   sharedWithWordIds?: number[];
   /** set when the Strong's number belongs to a STEP person or place */
   entity?: NamedEntity;
+  /** Greek only (roadmap 0025): omitted when the word is in every main edition without an order shift */
+  editions?: ReadingEditions;
+}
+
+/** Kind of a Greek edition token: printed edition, a translation's base text, a manuscript, an ancient version, or not in the catalog. */
+export type EditionKind = "edition" | "translation" | "manuscript" | "version" | "unknown";
+
+/** One edition token of a Greek word. */
+export interface EditionRef {
+  code: string; // as in STEP: NA28, TR, P66*
+  kind: EditionKind;
+  /** +n = n words later, -n = n words earlier in that edition; omitted for the same order */
+  shift?: number;
+  /** original suffix when the shift is not a plain number, e.g. "«14.24" (placed at 14,24) */
+  shiftRaw?: string;
+}
+
+/** Which editions have a Greek word (roadmap 0025). */
+export interface ReadingEditions {
+  present: EditionRef[]; // main and non-main, catalog order
+  missing: EditionRef[]; // main editions only, catalog order
+}
+
+/** One row of the Greek edition catalog (`GET api/greekEditions`). */
+export interface GreekEdition {
+  code: string;
+  name: string; // German
+  year?: number;
+  kind: EditionKind;
+  /** one of the eight printed main editions; only these count for "in all editions" */
+  isMain: boolean;
+}
+
+export interface GetGreekEditionsResponse {
+  editions: GreekEdition[];
 }
 
 /** Who wrote the current version of the word's mapping rows. */

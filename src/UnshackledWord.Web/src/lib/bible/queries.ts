@@ -5,6 +5,7 @@ import { groupWordsByVerse } from "./words";
 
 export const bibleKeys = {
   structure: ["bible", "structure"] as const,
+  greekEditions: ["bible", "greekEditions"] as const,
   chapterText: (bookId: number, chapter: number, level = BASE_LEVEL) =>
     ["bible", "chapterText", bookId, chapter, level] as const,
   chapterWords: (bookId: number, chapter: number, level = BASE_LEVEL) =>
@@ -85,3 +86,17 @@ export const verseCrossReferenceTextsQuery = (
       bibleApi.verseCrossReferenceTexts(bookId, chapter, verse, level, signal),
     staleTime: Number.POSITIVE_INFINITY,
   });
+
+/** Catalog of the Greek text editions (roadmap 0025); changes only with a migration, so it is never refetched. */
+export const greekEditionsQuery = () =>
+  queryOptions({
+    queryKey: bibleKeys.greekEditions,
+    queryFn: ({ signal }) => bibleApi.greekEditions(signal),
+    staleTime: Number.POSITIVE_INFINITY,
+    gcTime: Number.POSITIVE_INFINITY,
+    select: (response) => response.editions,
+  });
+
+export function useGreekEditions(enabled = true) {
+  return useQuery({ ...greekEditionsQuery(), enabled });
+}

@@ -86,6 +86,21 @@ export const MOCK_READINGS: Record<string, MockReading> = {
     gloss: "before",
     contextGloss: "before",
     morphology: { code: "ADV", partOfSpeech: "adverb" },
+    // hand-written sample: lacking in two editions, one order shift
+    editions: {
+      present: [
+        { code: "NA28", kind: "edition" },
+        { code: "NA27", kind: "edition" },
+        { code: "Tyn", kind: "edition" },
+        { code: "SBL", kind: "edition" },
+        { code: "TR", kind: "edition", shift: 1 },
+        { code: "Byz", kind: "edition" },
+      ],
+      missing: [
+        { code: "WH", kind: "edition" },
+        { code: "Treg", kind: "edition" },
+      ],
+    },
   },
   G2228: {
     stepWordId: 140015,
@@ -98,6 +113,18 @@ export const MOCK_READINGS: Record<string, MockReading> = {
     gloss: "or, than",
     contextGloss: "–",
     morphology: { code: "PRT", partOfSpeech: "particle" },
+    // hand-written sample: only in the traditional editions, plus one manuscript token
+    editions: {
+      present: [
+        { code: "TR", kind: "edition" },
+        { code: "Byz", kind: "edition" },
+        { code: "01", kind: "manuscript" },
+      ],
+      missing: ["NA28", "NA27", "Tyn", "SBL", "WH", "Treg"].map((code) => ({
+        code,
+        kind: "edition" as const,
+      })),
+    },
   },
   H7225G: {
     stepWordId: 100001,

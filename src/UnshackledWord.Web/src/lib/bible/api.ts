@@ -8,6 +8,7 @@ import type {
   GetChapterCrossReferencesResponse,
   GetChapterOriginalsResponse,
   GetChapterTextResponse,
+  GetGreekEditionsResponse,
   GetPassageTextResponse,
   GetStrongsOccurrencesResponse,
   GetStrongsSummaryResponse,
@@ -125,6 +126,9 @@ export const bibleApi = {
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,
       signal,
     ),
+  /** Catalog of the Greek text editions (roadmap 0025), public and cached for a day by the server. */
+  greekEditions: (signal?: AbortSignal) =>
+    api.get<GetGreekEditionsResponse>("/greekEditions", signal),
   wordDetail: (wordId: number, signal?: AbortSignal) =>
     api.get<GetWordDetailResponse>(`/elberfelder/wordDetail/wordId/${wordId}`, signal),
   verseMapping: (bookId: number, chapter: number, verse: number, signal?: AbortSignal) =>

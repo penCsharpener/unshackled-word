@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { track } from "@/lib/analytics";
 import { formatMorphology } from "@/lib/bible/morphology";
+import { useGreekEditions } from "@/lib/bible/queries";
 import type {
   BibleStructureBook,
   CoMappedWord,
@@ -12,11 +13,13 @@ import type {
   Morpheme,
   OriginalLanguage,
   OriginalReading,
+  ReadingEditions,
   WordToken,
 } from "@/lib/bible/types";
 import { mappingStatus, normalizeStrongs } from "@/lib/bible/wordDetail";
 import { Button } from "./Button";
 import { CrossReferenceList } from "./CrossReferenceList";
+import { EditionList } from "./EditionList";
 import { ScriptureText } from "./ScriptureText";
 
 export type WordDetailCloseReason = "escape" | "button" | "outside";
@@ -110,6 +113,12 @@ function MappingFooter({
       </div>
     </div>
   );
+}
+
+/** Loads the edition catalog only when a reading has editions, so Hebrew words and Greek words in all editions fetch nothing. */
+function ReadingEditionsSection({ editions }: { editions: ReadingEditions }) {
+  const { data: catalog } = useGreekEditions();
+  return <EditionList editions={editions} catalog={catalog} />;
 }
 
 function ReadingSection({
@@ -215,6 +224,9 @@ function ReadingSection({
           </>
         )}
       </dl>
+      {reading.language === "greek" && reading.editions && (
+        <ReadingEditionsSection editions={reading.editions} />
+      )}
       {reading.renderings && reading.renderings.length > 0 && (
         <p className="mt-2 text-sm">
           {t("bible.wordDetail.renderings", {
