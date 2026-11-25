@@ -14,7 +14,7 @@ MorphemeAlignments (new, shadow)      │ │ │
   55953/1 → unrendered         ◄──────────┘
 ```
 
-## Tables (migration `0049_MorphemeAlignment.sql`)
+## Tables (migration `0050_MorphemeAlignment.sql`)
 
 `MorphemeAlignmentRuns`: `Id`, `Source` (`projection` | `rules` | `ai` | `human`), `UserId`, `AgentRunId` NULL (FK to `AgentRuns` for `ai`), `Scope` jsonb (book/chapter range), `Stats` jsonb, `CreatedAt`, `FinishedAt` NULL.
 

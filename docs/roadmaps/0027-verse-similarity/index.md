@@ -14,4 +14,4 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Planned after interview, nothing implemented. Migration `0051`, version 0.13.0 assume 0026 lands first (0049/0050, 0.12.0); if this roadmap goes first, it takes 0049 and 0.12.0 and 0026 is renumbered.
+Planned after interview, implementation started. This roadmap goes before 0026: migration `0049`, version 0.12.0 (0026 moved to 0050/0051 and 0.13.0).

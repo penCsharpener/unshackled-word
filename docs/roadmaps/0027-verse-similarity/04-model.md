@@ -1,6 +1,6 @@
 # 0027 · Model
 
-Migration `0051_VerseSimilarity.sql` (see [index.md](index.md) for the numbering assumption).
+Migration `0049_VerseSimilarity.sql`.
 
 ```sql
 CREATE TABLE IF NOT EXISTS "unshackled-word"."VerseSimilarityRuns"

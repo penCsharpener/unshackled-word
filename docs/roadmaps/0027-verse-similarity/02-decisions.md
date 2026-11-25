@@ -16,7 +16,7 @@
 - **Explanations are computed at read time**, not stored: the endpoint intersects the Strong's of the two verses (cheap for at most 30 pairs per verse). The table stays slim, and the explanation always matches the current words.
 - **Parameters live on the run row** (`StopDfShare`, `TopK`, `MinScore`, `PhraseWeight`) with defaults in config `VerseSimilarity:*`, so a rebuild with other values is a maintainer action, not a code change.
 - **Public read**, maintainer-only rebuild (`Admin`/`Maintainer`), like every other derived table.
-- **Version:** 0.13.0 with 0027.1, then a build number per row (see [index.md](index.md) status for the numbering assumption).
+- **Version:** 0.12.0 with 0027.1, then a build number per row.
 
 ## Code findings the plan rests on
 
