@@ -14,6 +14,8 @@ export interface HeaderWordInfo {
   gloss?: string;
   definition?: string;
   definitionSegments?: DefinitionSegment[];
+  /** Greek word not in all main editions (roadmap 0025.5f): "nur in TR, Byz" / "fehlt in WH, Treg" */
+  editionNote?: string;
   /** shown in the page margin from 1024px (the reader), so the header leaves it out there */
   inMargin?: boolean;
 }

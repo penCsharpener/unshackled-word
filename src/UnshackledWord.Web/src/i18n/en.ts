@@ -1194,6 +1194,8 @@ export const en: Translation = {
         info: "Text edition = a printed Greek text, not a single manuscript. Each edition is built from many manuscripts.",
         only: "only in:",
         missing: "missing in:",
+        markOnly: "only in {{codes}}",
+        markMissing: "missing in {{codes}}",
         missingSr: "(missing)",
         presentLabel: "Editions with this word",
         missingLabel: "Editions without this word",

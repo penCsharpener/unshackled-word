@@ -76,6 +76,7 @@ function WordInfoBody({
             {morphology}
           </p>
         )}
+        {info.editionNote && <p className="w-full text-base text-fg-muted">{info.editionNote}</p>}
         {info.gloss && (
           <p lang="en" className="w-full text-lg text-fg">
             {info.gloss}
@@ -106,6 +107,9 @@ function WordInfoBody({
         {info.strongs && <span className="ms-2 text-xs text-fg-muted">{info.strongs}</span>}
       </p>
       {morphology && <p className={`max-w-full text-xs text-fg-muted ${truncate}`}>{morphology}</p>}
+      {info.editionNote && (
+        <p className={`max-w-full text-xs text-fg-muted ${truncate}`}>{info.editionNote}</p>
+      )}
     </div>
   );
 }

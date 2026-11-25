@@ -689,6 +689,10 @@ export interface VerseMappingOriginalWord {
   morphology?: Morphology;
   /** Hebrew only (verse mapping): the morphemes of the word in order (וַיֹּאמֶר = H9001 + H0559), punctuation left out. */
   morphemes?: VerseMappingMorpheme[];
+  /** Greek, chapter originals (roadmap 0025): present main edition codes in catalog order; omitted when the word is in all main editions */
+  editionCodes?: string[];
+  /** Greek, chapter originals: the word stands elsewhere in at least one edition; no mark in the Grundtext panel (word box only) */
+  hasShift?: boolean;
 }
 /** One morpheme of a Hebrew word (roadmap 0018); a link picks one with `strongsNumber`. */
 export interface VerseMappingMorpheme {

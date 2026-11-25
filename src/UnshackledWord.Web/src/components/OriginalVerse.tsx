@@ -1,7 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import type { ChapterLexiconEntry, GetVerseMappingResponse } from "@/lib/bible/types";
+import { editionVariant, mainEditionCodes } from "@/lib/bible/greekEditions";
+import { useGreekEditions } from "@/lib/bible/queries";
+import type {
+  ChapterLexiconEntry,
+  GetVerseMappingResponse,
+  VerseMappingOriginalWord,
+} from "@/lib/bible/types";
 import { normalizeStrongs } from "@/lib/bible/wordDetail";
 import { useSetHeaderInfo } from "@/lib/headerInfo";
 import { Button } from "./Button";
@@ -37,6 +43,10 @@ let closeShownTip: (() => void) | undefined;
 
 const TIP_HIDE_DELAY = 500; // ms, long enough to move from the word onto the card
 
+/** Greek word not in all main editions (roadmap 0025.5f): neutral dotted underline, never a warning colour. */
+const VARIANT_MARK =
+  "underline decoration-mark-variant decoration-dotted decoration-2 underline-offset-4";
+
 /** Plain original-language text of one verse for casual readers; Strong's and morphology can be added per word. */
 export function OriginalVerse({
   variant = "panel",
@@ -57,6 +67,23 @@ export function OriginalVerse({
   const isRtl = data.language === "hebrew";
   const lang = isRtl ? "he" : "grc";
   const words = [...data.originalWords].sort((a, b) => a.position - b.position);
+  // edition facts of Greek words (chapter originals); the catalog only loads when a word carries them
+  const hasVariants = data.language === "greek" && words.some((w) => w.editionCodes);
+  const { data: catalog } = useGreekEditions(hasVariants);
+  const mainCodes = mainEditionCodes(catalog);
+  const idBase = useId();
+  /** "nur in TR, Byz" / "fehlt in WH, Treg"; undefined for words in all main editions and shift-only words */
+  const editionNote = (word: VerseMappingOriginalWord): string | undefined => {
+    if (!hasVariants) return undefined;
+    const variant = editionVariant(word.editionCodes, mainCodes);
+    if (!variant) return undefined;
+    return t(
+      variant.kind === "only"
+        ? "bible.wordDetail.editions.markOnly"
+        : "bible.wordDetail.editions.markMissing",
+      { codes: variant.codes.join(", ") },
+    );
+  };
   // margin variant: lemma, Strong's and morphology of the hovered word as a card above it (data is already loaded with the chapter)
   // `top`/`bottom`: viewport edges of the hovered word; the card sits above it, or below when it does not fit above
   const [tip, setTip] = useState<{ id: number; x: number; top: number; bottom: number } | null>(
@@ -108,6 +135,9 @@ export function OriginalVerse({
           {words.map((word) => {
             const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
             const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
+            const note = editionNote(word);
+            const mark = note ? VARIANT_MARK : "";
+            const noteId = note ? `${idBase}-edition-${word.id}` : undefined;
             const enter = (element: HTMLElement) => {
               cancelHide();
               if (closeShownTip && closeShownTip !== closeNow) closeShownTip();
@@ -141,14 +171,24 @@ export function OriginalVerse({
                       original: word.original,
                       strongs,
                     })}
-                    className={`rounded-sm hover:underline ${highlight}`}
+                    aria-describedby={noteId}
+                    className={`rounded-sm hover:underline ${mark} ${highlight}`}
                     {...hover}
                   >
                     {word.original}
                   </Link>
                 ) : (
-                  <span className={`rounded-sm ${highlight}`} {...hover}>
+                  <span
+                    aria-describedby={noteId}
+                    className={`rounded-sm ${mark} ${highlight}`}
+                    {...hover}
+                  >
                     {word.original}
+                  </span>
+                )}
+                {note && (
+                  <span id={noteId} hidden>
+                    {note}
                   </span>
                 )}{" "}
               </span>
@@ -187,6 +227,7 @@ export function OriginalVerse({
                 definitionSegments: tipWord.strongs
                   ? lexicon?.[tipWord.strongs]?.definitionSegments
                   : undefined,
+                editionNote: editionNote(tipWord),
               }}
             />
           </div>
@@ -206,42 +247,54 @@ export function OriginalVerse({
           lang={lang}
           className="flex flex-wrap gap-x-3 gap-y-2 font-original text-2xl leading-tight"
         >
-          {words.map((word) => (
-            // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only hover hint; the same data is in the word popover
-            <span
-              key={word.id}
-              className={`inline-flex flex-col items-center rounded-sm ${linkedIds?.has(word.id) ? "bg-mark-linked" : ""}`}
-              onMouseEnter={() => {
-                onHoverWord?.(word.id);
-                setInfo({
-                  original: word.original,
-                  strongs: word.strongs,
-                  morphology: word.morphology,
-                  morphologyCode: word.morphologyCode,
-                  language: data.language,
-                });
-              }}
-              onMouseLeave={() => {
-                onHoverWord?.(undefined);
-                setInfo(null);
-              }}
-            >
-              <span>{word.original}</span>
-              {showLemma && word.lemma && (
-                <span className="text-base text-fg-muted">{word.lemma}</span>
-              )}
-              {showStrongs && word.strongs && (
-                <code className="font-sans text-xs text-fg-muted" dir="ltr">
-                  {word.strongs}
-                </code>
-              )}
-              {showMorphology && word.morphologyCode && (
-                <code className="font-sans text-xs text-fg-muted" dir="ltr">
-                  {word.morphologyCode}
-                </code>
-              )}
-            </span>
-          ))}
+          {words.map((word) => {
+            const note = editionNote(word);
+            const noteId = note ? `${idBase}-edition-${word.id}` : undefined;
+            return (
+              // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only hover hint; the same data is in the word popover
+              <span
+                key={word.id}
+                className={`inline-flex flex-col items-center rounded-sm ${linkedIds?.has(word.id) ? "bg-mark-linked" : ""}`}
+                onMouseEnter={() => {
+                  onHoverWord?.(word.id);
+                  setInfo({
+                    original: word.original,
+                    strongs: word.strongs,
+                    morphology: word.morphology,
+                    morphologyCode: word.morphologyCode,
+                    language: data.language,
+                    editionNote: note,
+                  });
+                }}
+                onMouseLeave={() => {
+                  onHoverWord?.(undefined);
+                  setInfo(null);
+                }}
+              >
+                <span aria-describedby={noteId} className={note ? VARIANT_MARK : undefined}>
+                  {word.original}
+                </span>
+                {note && (
+                  <span id={noteId} hidden>
+                    {note}
+                  </span>
+                )}
+                {showLemma && word.lemma && (
+                  <span className="text-base text-fg-muted">{word.lemma}</span>
+                )}
+                {showStrongs && word.strongs && (
+                  <code className="font-sans text-xs text-fg-muted" dir="ltr">
+                    {word.strongs}
+                  </code>
+                )}
+                {showMorphology && word.morphologyCode && (
+                  <code className="font-sans text-xs text-fg-muted" dir="ltr">
+                    {word.morphologyCode}
+                  </code>
+                )}
+              </span>
+            );
+          })}
         </p>
         <div className="flex gap-2">
           <Button variant="secondary" size="sm" aria-pressed={showLemma} onClick={onToggleLemma}>

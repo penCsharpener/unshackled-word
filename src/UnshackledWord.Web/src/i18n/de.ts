@@ -1210,6 +1210,8 @@ export const de = {
         info: "Textausgabe = gedruckter Grundtext, keine einzelne Handschrift. Jede Ausgabe ist aus vielen Handschriften erstellt.",
         only: "nur in:",
         missing: "fehlt in:",
+        markOnly: "nur in {{codes}}",
+        markMissing: "fehlt in {{codes}}",
         missingSr: "(fehlt)",
         presentLabel: "Ausgaben mit diesem Wort",
         missingLabel: "Ausgaben ohne dieses Wort",
