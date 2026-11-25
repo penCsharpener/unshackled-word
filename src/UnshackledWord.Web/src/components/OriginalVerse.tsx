@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { editionVariant, mainEditionCodes } from "@/lib/bible/greekEditions";
+import { editionVariant, filterWordsByEdition, mainEditionCodes } from "@/lib/bible/greekEditions";
 import { useGreekEditions } from "@/lib/bible/queries";
 import type {
   ChapterLexiconEntry,
@@ -28,6 +28,11 @@ export interface OriginalVerseProps {
   linkedIds?: ReadonlySet<number>;
   /** Called with the hovered original word id, or undefined when the pointer leaves. */
   onHoverWord?: (id: number | undefined) => void;
+  /**
+   * `margin`, Greek: main edition code of the reader's edition filter (roadmap 0025.6f); words whose `editionCodes` lack it
+   * are hidden and a muted line counts them. Null/absent = all words.
+   */
+  edition?: string | null;
   showLemma?: boolean;
   showStrongs?: boolean;
   showMorphology?: boolean;
@@ -55,6 +60,7 @@ export function OriginalVerse({
   reference,
   linkedIds,
   onHoverWord,
+  edition = null,
   showLemma = false,
   showStrongs = false,
   showMorphology = false,
@@ -66,7 +72,12 @@ export function OriginalVerse({
   const setInfo = useSetHeaderInfo();
   const isRtl = data.language === "hebrew";
   const lang = isRtl ? "he" : "grc";
-  const words = [...data.originalWords].sort((a, b) => a.position - b.position);
+  const sorted = [...data.originalWords].sort((a, b) => a.position - b.position);
+  // the edition filter only applies to the side panel and to Greek (Hebrew words carry no editionCodes)
+  const { visible: words, hidden } = filterWordsByEdition(
+    sorted,
+    variant === "margin" && data.language === "greek" ? edition : null,
+  );
   // edition facts of Greek words (chapter originals); the catalog only loads when a word carries them
   const hasVariants = data.language === "greek" && words.some((w) => w.editionCodes);
   const { data: catalog } = useGreekEditions(hasVariants);
@@ -195,6 +206,14 @@ export function OriginalVerse({
             );
           })}
         </p>
+        {hidden > 0 && edition && (
+          <p
+            title={t("bible.sidePanel.edition.info")}
+            className="mt-1 font-sans text-xs text-fg-muted"
+          >
+            {t("bible.sidePanel.hiddenWords", { count: hidden, edition })}
+          </p>
+        )}
         {tip && tipWord && (
           // biome-ignore lint/a11y/noStaticElementInteractions: keeps the card open while the pointer is on it; the links inside are the interactive parts
           <div

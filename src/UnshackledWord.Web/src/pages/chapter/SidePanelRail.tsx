@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
+import { Select } from "@/components/Select";
 import { Switch } from "@/components/Switch";
 import { SIDE_PANEL_MODES, type SidePanelMode } from "@/lib/bible/sidePanel";
 
@@ -51,6 +52,14 @@ export interface SidePanelRailProps {
   status: "idle" | "loading" | "error" | "empty" | "emptyHighlighted";
   onRetry: () => void;
   /** TSK header switches (roadmap 0024.3f), shown in `tsk` mode. */
+  /** Edition filter (roadmap 0025.6f), shown in `original` mode; `disabled` in OT chapters (Hebrew/Aramaic). */
+  edition?: {
+    value: string | null;
+    /** main edition codes in catalog order */
+    codes: readonly string[];
+    onChange: (value: string | null) => void;
+    disabled: boolean;
+  };
   tsk?: {
     onlyHighlighted: boolean;
     onOnlyHighlightedChange: (value: boolean) => void;
@@ -64,7 +73,14 @@ export interface SidePanelRailProps {
 }
 
 /** Sticky head of the left margin: heading of the shown content and the TSK / Grundtext / off control. */
-export function SidePanelRail({ mode, onModeChange, status, onRetry, tsk }: SidePanelRailProps) {
+export function SidePanelRail({
+  mode,
+  onModeChange,
+  status,
+  onRetry,
+  edition,
+  tsk,
+}: SidePanelRailProps) {
   const { t } = useTranslation();
   const heading =
     mode === "tsk"
@@ -98,6 +114,26 @@ export function SidePanelRail({ mode, onModeChange, status, onRetry, tsk }: Side
             ))}
           </fieldset>
         </div>
+        {mode === "original" && edition && (
+          <div
+            title={
+              edition.disabled
+                ? t("bible.sidePanel.edition.disabledOt")
+                : t("bible.sidePanel.edition.info")
+            }
+          >
+            <Select
+              label={t("bible.sidePanel.edition.label")}
+              value={edition.value ?? ""}
+              disabled={edition.disabled}
+              onChange={(value) => edition.onChange(value || null)}
+              options={[
+                { value: "", label: t("bible.sidePanel.edition.all") },
+                ...edition.codes.map((code) => ({ value: code, label: code })),
+              ]}
+            />
+          </div>
+        )}
         {mode === "tsk" && tsk && (
           <div className="flex flex-wrap justify-end gap-x-4 gap-y-1 text-xs">
             {tsk.edit && (

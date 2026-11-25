@@ -1123,6 +1123,14 @@ export const en: Translation = {
       errorOriginal: "Could not load the source text.",
       emptyChapter: "No cross references in this chapter.",
       noOriginal: "No source text for this verse",
+      edition: {
+        label: "Edition",
+        all: "All",
+        disabledOt: "Edition for the Greek text (New Testament only)",
+        info: "Hides words of other editions. The text of that edition is not rebuilt: word order and spelling stay as in the source data (TAGNT).",
+      },
+      hiddenWords_one: "{{count}} word hidden (not in {{edition}})",
+      hiddenWords_other: "{{count}} words hidden (not in {{edition}})",
       strongsLink: "{{original}}, {{strongs}}: open Strong's page",
     },
     wordDetail: {

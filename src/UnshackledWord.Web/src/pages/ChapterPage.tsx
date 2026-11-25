@@ -33,10 +33,12 @@ import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
+import { mainEditionCodes, useGreekEditionFilter } from "@/lib/bible/greekEditions";
 import {
   chapterWordsQuery,
   useBibleStructure,
   useChapterWords,
+  useGreekEditions,
   verseCrossReferenceTextsQuery,
 } from "@/lib/bible/queries";
 import {
@@ -238,6 +240,13 @@ export function ChapterPage() {
   const [sideMode, setSideMode] = useSidePanelMode();
   const showTsk = wide && sideMode === "tsk";
   const showOriginal = wide && sideMode === "original";
+  const [storedEdition, setGreekEdition] = useGreekEditionFilter();
+  const { data: editionCatalog } = useGreekEditions(showOriginal);
+  const editionCodes = mainEditionCodes(editionCatalog);
+  // a stored code the catalog does not know falls back to "Alle"; the filter never applies to the OT
+  const hebrewChapter = ref !== null && ref.bookId < 40;
+  const greekEdition =
+    !hebrewChapter && storedEdition && editionCodes.includes(storedEdition) ? storedEdition : null;
   // The eye panel gets its own TSK list wherever the side panel does not show it.
   const eyeOriginalOpen = editingVerse !== undefined && verseView === "original";
   // TSK curation (roadmap 0024.3f): "Nur hervorgehobene" for everyone, curate mode with hidden links for curators.
@@ -1202,6 +1211,12 @@ export function ChapterPage() {
             mode={sideMode}
             onModeChange={changeSideMode}
             status={sideStatus}
+            edition={{
+              value: greekEdition,
+              codes: editionCodes,
+              onChange: setGreekEdition,
+              disabled: hebrewChapter,
+            }}
             onRetry={() =>
               void (sideMode === "tsk" ? crossReferences.refetch() : originals.refetch())
             }
@@ -1639,6 +1654,7 @@ export function ChapterPage() {
                       lexicon={originals.data?.lexicon}
                       linkedIds={sideLinks.verse === v.verse ? sideLinks.original : NO_IDS}
                       onHoverOriginal={onHoverOriginal}
+                      edition={greekEdition}
                     />
                   )}
                 </div>

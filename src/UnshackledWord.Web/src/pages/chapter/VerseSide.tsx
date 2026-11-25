@@ -60,6 +60,8 @@ export interface VerseSideProps {
   /** original word ids to highlight (linked to the hovered German word or original word) */
   linkedIds: ReadonlySet<number>;
   onHoverOriginal: (verse: number, id: number | undefined) => void;
+  /** `original`: edition filter of the Grundtext panel (null = all words) */
+  edition?: string | null;
 }
 
 /** The side panel content of one verse: its TSK references or its source text. Memoised, the page re-renders on every hover. */
@@ -85,6 +87,7 @@ export const VerseSide = memo(function VerseSide({
   lexicon,
   linkedIds,
   onHoverOriginal,
+  edition = null,
 }: VerseSideProps) {
   const { t } = useTranslation();
   const preview = useMemo(
@@ -148,6 +151,7 @@ export const VerseSide = memo(function VerseSide({
           reference={reference}
           linkedIds={linkedIds}
           onHoverWord={(id) => onHoverOriginal(verse, id)}
+          edition={edition}
         />
       ) : (
         <p className="text-fg-muted">{t("bible.sidePanel.noOriginal")}</p>

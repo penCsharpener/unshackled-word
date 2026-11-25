@@ -1138,6 +1138,14 @@ export const de = {
       errorOriginal: "Grundtext konnte nicht geladen werden.",
       emptyChapter: "Keine Querverweise in diesem Kapitel.",
       noOriginal: "Kein Grundtext für diesen Vers",
+      edition: {
+        label: "Ausgabe",
+        all: "Alle",
+        disabledOt: "Ausgabe für den Grundtext (nur im Neuen Testament)",
+        info: "Blendet Wörter anderer Ausgaben aus. Der Text dieser Ausgabe wird nicht nachgebaut: Wortstellung und Schreibweise bleiben wie in den Quelldaten (TAGNT).",
+      },
+      hiddenWords_one: "{{count}} Wort ausgeblendet (nicht in {{edition}})",
+      hiddenWords_other: "{{count}} Wörter ausgeblendet (nicht in {{edition}})",
       strongsLink: "{{original}}, {{strongs}}: Strong's-Seite öffnen",
     },
     wordDetail: {
