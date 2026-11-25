@@ -6,5 +6,5 @@ public interface IDbWriter
     Task<int> WriteAsync(string sql);
     Task BulkInsertAsync<T>(string tableName, string[] columns, ICollection<T> dataList,
         Action<IBinaryImporter, T> mapping, CancellationToken token = default);
-    Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null);
+    Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null, int? commandTimeout = null);
 }

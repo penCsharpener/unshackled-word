@@ -106,6 +106,9 @@ public class TskSeedDatabaseTests
 
         public Task<T?> ExecuteScalarAsync<T>(string sql, object? param = null) => connection.ExecuteScalarAsync<T>(sql, param, transaction);
 
+        Task<T?> IDbWriter.ExecuteScalarAsync<T>(string sql, object? param, int? commandTimeout) where T : default =>
+            connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout);
+
         public Task<List<T>> ReadMultipleAsListAsync<T>(string sql, object? param, Func<IMultiDbReader, Task<List<T>>> mappingFunc, CancellationToken token = default) =>
             throw new NotSupportedException();
 

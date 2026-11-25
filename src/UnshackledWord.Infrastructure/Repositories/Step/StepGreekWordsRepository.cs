@@ -48,6 +48,16 @@ public sealed class StepGreekWordsRepository : IStepGreekWordsRepository
         await BulkInsertInternalNewAsync(entries, token);
     }
 
+    public async Task<int> RefreshEditionsAsync(CancellationToken token = default)
+    {
+        const string sql = """
+                   SELECT "unshackled-word"."RefreshStepGreekWordEditions"()
+                   """;
+
+        // TRUNCATE + about 1.1M rows: ~20 s on the dev DB, above the 30 s default on slower hosts.
+        return await _dbWriter.ExecuteScalarAsync<int>(sql, commandTimeout: 900);
+    }
+
     private async Task BulkInsertInternalNewAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default)
     {
         var count = await CountByFilterAsync(new(), token);

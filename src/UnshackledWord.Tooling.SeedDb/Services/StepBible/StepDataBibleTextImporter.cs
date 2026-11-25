@@ -2,6 +2,7 @@ using UnshackledWord.Application.Abstractions.Step;
 using UnshackledWord.Domain.Models.Dbo.Step;
 using UnshackledWord.Domain.Models.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using Microsoft.Extensions.Logging;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
@@ -13,18 +14,21 @@ public sealed class StepDataBibleTextImporter : IRunner
     private readonly StepHebrewFileStrategy _hebrewFileStrategy;
     private readonly IStepGreekWordsRepository _stepGreekWordsRepository;
     private readonly IStepHebrewWordsRepository _stepHebrewWordsRepository;
+    private readonly ILogger<StepDataBibleTextImporter> _logger;
 
     public StepDataBibleTextImporter(StepGithubDownloader githubDownloader,
         StepGreekFileStrategy greekFileStrategy,
         StepHebrewFileStrategy hebrewFileStrategy,
         IStepGreekWordsRepository stepGreekWordsRepository,
-        IStepHebrewWordsRepository stepHebrewWordsRepository)
+        IStepHebrewWordsRepository stepHebrewWordsRepository,
+        ILogger<StepDataBibleTextImporter> logger)
     {
         _githubDownloader = githubDownloader;
         _greekFileStrategy = greekFileStrategy;
         _hebrewFileStrategy = hebrewFileStrategy;
         _stepGreekWordsRepository = stepGreekWordsRepository;
         _stepHebrewWordsRepository = stepHebrewWordsRepository;
+        _logger = logger;
     }
 
     public async Task Run(CancellationToken token = default)
@@ -51,6 +55,9 @@ public sealed class StepDataBibleTextImporter : IRunner
 
         var greekWords = totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
         await _stepGreekWordsRepository.BulkInsertAsync(greekWords, token);
+
+        var editionRows = await _stepGreekWordsRepository.RefreshEditionsAsync(token);
+        _logger.LogInformation("Greek editions refreshed: {count} rows", editionRows);
 
         var hebrewWords = totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
         await _stepHebrewWordsRepository.BulkInsertAsync(hebrewWords, token);

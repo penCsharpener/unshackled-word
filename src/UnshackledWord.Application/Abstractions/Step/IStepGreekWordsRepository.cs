@@ -7,4 +7,5 @@ public interface IStepGreekWordsRepository
     Task<int> CountByFilterAsync(StepGreekWordFilter filter, CancellationToken token = default);
     Task<IEnumerable<StepGreekWordDbo>> GetByFilterAsync(StepGreekWordFilter filter, CancellationToken token = default);
     Task BulkInsertAsync(ICollection<StepGreekWordDbo> entries, CancellationToken token = default);
+    Task<int> RefreshEditionsAsync(CancellationToken token = default);
 }
