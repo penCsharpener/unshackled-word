@@ -519,6 +519,55 @@ export interface GetChapterCrossReferencesResponse {
   verses: { verse: number; references: CrossReference[] }[];
 }
 
+/** A content Strong's shared by a verse and its similar verse (roadmap 0027.3); strings may be empty. */
+export interface SimilarSharedStrongs {
+  /** As stored by STEP: `G1366`, `H0430G`. */
+  strongs: string;
+  lemma: string;
+  transliteration: string;
+  gloss: string;
+}
+
+/** A matched run of at least two Strong's, e.g. "ῥομφαία δίστομος ὀξεῖα". */
+export interface SimilarPhrase {
+  text: string;
+  strongs: string[];
+}
+
+/** One similar verse (Elberfelder numbering) with why it matched. */
+export interface SimilarVerseHit {
+  hebRefId: number;
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  /** Elb1871 text of the hit. */
+  text: string;
+  /** Can exceed 1 (phrase bonus); only meaningful relative to the verse's best hit. */
+  score: number;
+  rank: number;
+  sharedCount: number;
+  phraseCount: number;
+  /** rarest first */
+  shared: SimilarSharedStrongs[];
+  phrases: SimilarPhrase[];
+}
+
+/** The similar verses of one source verse, best first (`hits` may be empty). */
+export interface VerseSimilarVerses {
+  hebRefId: number;
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  hits: SimilarVerseHit[];
+}
+
+/** `GET elberfelder/similarVerses/{book}/{chapter}?limit=`: every Elberfelder verse of the chapter. */
+export interface GetSimilarVersesResponse {
+  bibleBookId: number;
+  chapter: number;
+  verses: VerseSimilarVerses[];
+}
+
 /** `GET elberfelder/chapterOriginals/...`: original words of a whole chapter with the Elb1871 links (read only). */
 export interface ChapterOriginalVerse {
   verse: number;

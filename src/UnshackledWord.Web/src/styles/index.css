@@ -819,6 +819,38 @@
     white-space: nowrap;
   }
 
+  /* SimilarVerseList: quiet relative score on a native <meter> (no number shown), muted fill. */
+  .uw-meter {
+    flex: 1 1 auto;
+    min-width: calc(var(--spacing) * 8);
+    max-width: calc(var(--spacing) * 24);
+    height: calc(var(--spacing) * 1);
+    appearance: none;
+    border: 0;
+    border-radius: calc(infinity * 1px);
+    background: var(--color-surface-muted);
+    overflow: hidden;
+  }
+
+  .uw-meter::-webkit-meter-bar {
+    height: calc(var(--spacing) * 1);
+    border: 0;
+    border-radius: calc(infinity * 1px);
+    background: var(--color-surface-muted);
+  }
+
+  .uw-meter::-webkit-meter-optimum-value,
+  .uw-meter::-webkit-meter-suboptimum-value,
+  .uw-meter::-webkit-meter-even-less-good-value {
+    background: var(--color-fg-muted);
+    border-radius: calc(infinity * 1px);
+  }
+
+  .uw-meter::-moz-meter-bar {
+    background: var(--color-fg-muted);
+    border-radius: calc(infinity * 1px);
+  }
+
   /* ProgressBar: native <progress> drawn with tokens; the tone picks the fill. */
   .uw-progress {
     --uw-progress-fill: var(--color-sev-info);

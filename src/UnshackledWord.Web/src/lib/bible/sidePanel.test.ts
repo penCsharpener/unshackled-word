@@ -20,9 +20,15 @@ describe("side panel mode", () => {
     expect(readSidePanelMode()).toBe("tsk");
   });
 
-  it("cycles TSK → original → off → TSK without a notes step", () => {
+  it("reads the similar verses mode", () => {
+    localStorage.setItem(SIDE_PANEL_KEY, "similar");
+    expect(readSidePanelMode()).toBe("similar");
+  });
+
+  it("cycles TSK → original → similar → off → TSK without a notes step", () => {
     expect(nextSidePanelMode("tsk")).toBe("original");
-    expect(nextSidePanelMode("original")).toBe("off");
+    expect(nextSidePanelMode("original")).toBe("similar");
+    expect(nextSidePanelMode("similar")).toBe("off");
     expect(nextSidePanelMode("off")).toBe("tsk");
   });
 });

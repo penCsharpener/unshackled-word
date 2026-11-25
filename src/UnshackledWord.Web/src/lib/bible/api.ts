@@ -10,6 +10,7 @@ import type {
   GetChapterTextResponse,
   GetGreekEditionsResponse,
   GetPassageTextResponse,
+  GetSimilarVersesResponse,
   GetStrongsOccurrencesResponse,
   GetStrongsSummaryResponse,
   GetVerseCrossReferenceTextsResponse,
@@ -34,6 +35,7 @@ import type {
   TskReviewProposalsResponse,
   TskWordLinkResponse,
   VerseMappingLink,
+  VerseSimilarVerses,
   WordStatsTestament,
 } from "./types";
 
@@ -121,6 +123,15 @@ export const bibleApi = {
   /** Admin/Maintainer: rejects a suggestion with an optional reason (max 500). */
   rejectTskProposal: (id: number, reason?: string) =>
     api.post<TskProposal>(`/maintainer/tsk/proposals/${id}/reject`, reason ? { reason } : {}),
+  /** Similar verses of every verse of a chapter (roadmap 0027.3), `limit` hits per verse (1–30). */
+  similarVerses: (bookId: number, chapter: number, limit: number, signal?: AbortSignal) =>
+    api.get<GetSimilarVersesResponse>(
+      `/elberfelder/similarVerses/${bookId}/${chapter}?limit=${limit}`,
+      signal,
+    ),
+  /** Up to 30 similar verses of one verse ("mehr anzeigen"). */
+  similarVersesOfVerse: (hebRefId: number, signal?: AbortSignal) =>
+    api.get<VerseSimilarVerses>(`/elberfelder/similarVerses/verse/${hebRefId}`, signal),
   chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetChapterOriginalsResponse>(
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,

@@ -46,6 +46,7 @@ import {
   type SidePanelMode,
   useChapterCrossReferences,
   useChapterOriginals,
+  useChapterSimilarVerses,
   useSidePanelMode,
   useTskOnlyHighlighted,
 } from "@/lib/bible/sidePanel";
@@ -240,6 +241,7 @@ export function ChapterPage() {
   const [sideMode, setSideMode] = useSidePanelMode();
   const showTsk = wide && sideMode === "tsk";
   const showOriginal = wide && sideMode === "original";
+  const showSimilar = wide && sideMode === "similar";
   const [storedEdition, setGreekEdition] = useGreekEditionFilter();
   const { data: editionCatalog } = useGreekEditions(showOriginal);
   const editionCodes = mainEditionCodes(editionCatalog);
@@ -261,6 +263,12 @@ export function ChapterPage() {
     reader.level,
   );
   const originals = useChapterOriginals(ref, showOriginal);
+  // similar verses (roadmap 0027.3f): fetched only while that mode is shown
+  const similar = useChapterSimilarVerses(ref, showSimilar);
+  const similarByVerse = useMemo(
+    () => new Map(similar.data?.verses.map((v) => [v.verse, v])),
+    [similar.data],
+  );
   const referencesByVerse = useMemo(
     () => new Map(crossReferences.data?.verses.map((v) => [v.verse, v.references])),
     [crossReferences.data],
@@ -417,7 +425,15 @@ export function ChapterPage() {
           : originals.isPending
             ? "loading"
             : "idle"
-        : "idle";
+        : sideMode === "similar"
+          ? similar.isError
+            ? "error"
+            : similar.isPending
+              ? "loading"
+              : similar.data.verses.every((v) => v.hits.length === 0)
+                ? "empty"
+                : "idle"
+          : "idle";
 
   // Notes (roadmap 0023): markers at verse numbers, words and the heading open the notes overlay (`NotesOverlay`,
   // also `N`). MDXEditor is only fetched once a note is shown or written (lazy chunks inside the overlay).
@@ -1218,7 +1234,11 @@ export function ChapterPage() {
               disabled: hebrewChapter,
             }}
             onRetry={() =>
-              void (sideMode === "tsk" ? crossReferences.refetch() : originals.refetch())
+              void (sideMode === "tsk"
+                ? crossReferences.refetch()
+                : sideMode === "similar"
+                  ? similar.refetch()
+                  : originals.refetch())
             }
             tsk={{
               onlyHighlighted,
@@ -1631,7 +1651,7 @@ export function ChapterPage() {
                       </div>
                     )}
                   </div>
-                  {wide && (sideMode === "tsk" || sideMode === "original") && (
+                  {wide && sideMode !== "off" && (sideMode !== "similar" || similar.data) && (
                     <VerseSide
                       mode={sideMode}
                       verse={v.verse}
@@ -1655,6 +1675,7 @@ export function ChapterPage() {
                       linkedIds={sideLinks.verse === v.verse ? sideLinks.original : NO_IDS}
                       onHoverOriginal={onHoverOriginal}
                       edition={greekEdition}
+                      similar={similarByVerse.get(v.verse)}
                     />
                   )}
                 </div>

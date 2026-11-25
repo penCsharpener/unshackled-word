@@ -1,15 +1,17 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { BASE_LEVEL, bibleApi } from "./api";
-import type { ChapterRef } from "./types";
+import type { ChapterRef, VerseSimilarVerses } from "./types";
 
-export type SidePanelMode = "tsk" | "original" | "off";
+export type SidePanelMode = "tsk" | "original" | "similar" | "off";
 
 export const SIDE_PANEL_KEY = "uw.sidePanel";
-export const SIDE_PANEL_MODES: readonly SidePanelMode[] = ["tsk", "original", "off"];
+export const SIDE_PANEL_MODES: readonly SidePanelMode[] = ["tsk", "original", "similar", "off"];
 const MODES = SIDE_PANEL_MODES;
 
-/** Next state of the `G` shortcut: TSK → Grundtext → off → TSK (notes have their own overlay, `N`). */
+/**
+ * Next state of the `G` shortcut: TSK → Grundtext → Ähnliche Verse → off → TSK (notes have their own overlay, `N`).
+ */
 export function nextSidePanelMode(mode: SidePanelMode): SidePanelMode {
   return MODES[(MODES.indexOf(mode) + 1) % MODES.length] ?? "tsk";
 }
@@ -74,7 +76,15 @@ export const sidePanelKeys = {
     ["bible", "chapterOriginals", bookId, chapter] as const,
   /** Prefix of every cached chapter of the originals, for invalidation after a mapping save. */
   originalsAll: ["bible", "chapterOriginals"] as const,
+  /** Similar verses of a chapter (roadmap 0027.3f), `limit` hits per verse. */
+  similar: (bookId: number, chapter: number, limit = SIMILAR_CHAPTER_LIMIT) =>
+    ["bible", "chapterSimilarVerses", bookId, chapter, limit] as const,
+  /** All (up to 30) similar verses of one verse, for "Mehr anzeigen". */
+  similarOfVerse: (hebRefId: number) => ["bible", "similarVersesOfVerse", hebRefId] as const,
 };
+
+/** Hits per verse in the chapter request; the verse request ("mehr") returns up to 30. */
+export const SIMILAR_CHAPTER_LIMIT = 10;
 
 /**
  * TSK of a chapter: one request for all verses, changed only by a curation save (which invalidates it). With
@@ -116,3 +126,27 @@ export function useChapterOriginals(ref: ChapterRef | null, enabled: boolean) {
     enabled: enabled && ref !== null,
   });
 }
+
+/**
+ * Similar verses of a chapter (roadmap 0027.3f): one request for all verses, fetched only while the mode is shown.
+ * Changes only with a rebuild, so it is never refetched on its own.
+ */
+export function useChapterSimilarVerses(ref: ChapterRef | null, enabled: boolean) {
+  return useQuery({
+    ...queryOptions({
+      queryKey: sidePanelKeys.similar(ref?.bookId ?? 0, ref?.chapter ?? 0),
+      queryFn: ({ signal }) =>
+        bibleApi.similarVerses(ref?.bookId ?? 0, ref?.chapter ?? 0, SIMILAR_CHAPTER_LIMIT, signal),
+      staleTime: Number.POSITIVE_INFINITY,
+    }),
+    enabled: enabled && ref !== null,
+  });
+}
+
+/** Up to 30 similar verses of one verse; the hits repeat the first ten, so the result replaces the list. */
+export const similarVersesOfVerseQuery = (hebRefId: number) =>
+  queryOptions<VerseSimilarVerses>({
+    queryKey: sidePanelKeys.similarOfVerse(hebRefId),
+    queryFn: ({ signal }) => bibleApi.similarVersesOfVerse(hebRefId, signal),
+    staleTime: Number.POSITIVE_INFINITY,
+  });

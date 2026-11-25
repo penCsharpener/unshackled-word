@@ -28,6 +28,24 @@ function ModeIcon({ mode }: { mode: SidePanelMode }) {
       </span>
     );
   }
+  if (mode === "similar") {
+    // two overlapping circles: verses sharing words
+    return (
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        className="size-5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="9" cy="12" r="6" />
+        <circle cx="15" cy="12" r="6" />
+      </svg>
+    );
+  }
   return (
     <svg
       aria-hidden="true"
@@ -72,7 +90,7 @@ export interface SidePanelRailProps {
   };
 }
 
-/** Sticky head of the left margin: heading of the shown content and the TSK / Grundtext / off control. */
+/** Sticky head of the left margin: heading of the shown content and the TSK / Grundtext / Ähnliche Verse / off control. */
 export function SidePanelRail({
   mode,
   onModeChange,
@@ -87,8 +105,10 @@ export function SidePanelRail({
       ? t("bible.sidePanel.headingTsk")
       : mode === "original"
         ? t("bible.sidePanel.headingOriginal")
-        : "";
-  const kind = mode === "original" ? "Original" : "Tsk";
+        : mode === "similar"
+          ? t("bible.sidePanel.headingSimilar")
+          : "";
+  const kind = mode === "original" ? "Original" : mode === "similar" ? "Similar" : "Tsk";
 
   return (
     <aside aria-label={t("bible.sidePanel.rail")} className="side-rail">
@@ -156,9 +176,18 @@ export function SidePanelRail({
             )}
           </div>
         )}
+        {mode === "similar" && (
+          <p className="text-end text-xs text-fg-muted">{t("bible.sidePanel.similar.info")}</p>
+        )}
         <div role="status" className="text-end text-xs text-fg-muted">
           {mode !== "off" && status === "loading" && t(`bible.sidePanel.loading${kind}`)}
-          {mode !== "off" && status === "empty" && t("bible.sidePanel.emptyChapter")}
+          {mode !== "off" &&
+            status === "empty" &&
+            t(
+              mode === "similar"
+                ? "bible.sidePanel.emptyChapterSimilar"
+                : "bible.sidePanel.emptyChapter",
+            )}
           {mode === "tsk" &&
             status === "emptyHighlighted" &&
             t("bible.tskCuration.emptyHighlighted")}

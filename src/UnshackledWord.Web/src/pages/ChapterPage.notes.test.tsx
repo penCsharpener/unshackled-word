@@ -57,7 +57,11 @@ function stubFetch(signedIn: boolean, notes: Note[]) {
         : new Response("", { status: 401 });
     }
     if (url.includes("/revision/levels")) return new Response(JSON.stringify([]));
-    if (url.includes("/chapterCrossReferences/") || url.includes("/chapterOriginals/")) {
+    if (
+      url.includes("/chapterCrossReferences/") ||
+      url.includes("/chapterOriginals/") ||
+      url.includes("/similarVerses/")
+    ) {
       return new Response(JSON.stringify({ verses: [] }));
     }
     if (url.includes("/notes/chapter/43/3")) {
@@ -187,7 +191,7 @@ describe("ChapterPage notes", () => {
     expect(await within(overlay).findByTestId("note-body")).toHaveTextContent("Kapitel");
   });
 
-  it("cycles G through TSK, Grundtext and off without a notes step", async () => {
+  it("cycles G through TSK, Grundtext, similar verses and off without a notes step", async () => {
     stubWideScreen();
     localStorage.setItem(SIDE_PANEL_KEY, "tsk");
     stubFetch(true, []);
@@ -200,10 +204,14 @@ describe("ChapterPage notes", () => {
         .map((b) => b.getAttribute("aria-label"));
     expect(
       within(screen.getByRole("group", { name: "Inhalt der Randspalte" })).getAllByRole("button"),
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(pressed()).toEqual(["Querverweise (TSK) zeigen (G)"]);
     await userEvent.keyboard("g");
     expect(pressed()).toEqual(["Grundtext zeigen (G)"]);
+    await userEvent.keyboard("g");
+    expect(pressed()).toEqual(["Ähnliche Verse zeigen (G)"]);
+    expect(await screen.findByText("Keine ähnlichen Verse in diesem Kapitel.")).toBeInTheDocument();
+    expect(localStorage.getItem(SIDE_PANEL_KEY)).toBe("similar");
     await userEvent.keyboard("g");
     expect(pressed()).toEqual(["Randspalte ausblenden (G)"]);
     await userEvent.keyboard("g");

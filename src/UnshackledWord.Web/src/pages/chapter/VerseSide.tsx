@@ -2,12 +2,14 @@ import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { type CrossReferenceLinkMode, CrossReferenceList } from "@/components/CrossReferenceList";
 import { OriginalVerse } from "@/components/OriginalVerse";
+import { SimilarVerseList } from "@/components/SimilarVerseList";
 import { VerseSidePanel } from "@/components/VerseSidePanel";
 import type {
   BibleStructureBook,
   ChapterOriginalVerse,
   CrossReference,
   GetChapterOriginalsResponse,
+  VerseSimilarVerses,
 } from "@/lib/bible/types";
 
 const NO_KEYS: ReadonlySet<string> = new Set();
@@ -20,7 +22,7 @@ export interface VerseLinkMode {
 }
 
 export interface VerseSideProps {
-  mode: "tsk" | "original";
+  mode: "tsk" | "original" | "similar";
   verse: number;
   /** chapter and reader level, for the hover text of the TSK links */
   bookId: number;
@@ -62,9 +64,14 @@ export interface VerseSideProps {
   onHoverOriginal: (verse: number, id: number | undefined) => void;
   /** `original`: edition filter of the Grundtext panel (null = all words) */
   edition?: string | null;
+  /** `similar`: the verse with its similar verses (absent = not in the response, shown as empty) */
+  similar?: VerseSimilarVerses;
 }
 
-/** The side panel content of one verse: its TSK references or its source text. Memoised, the page re-renders on every hover. */
+/**
+ * The side panel content of one verse: its TSK references, its source text or its similar verses. Memoised, the page
+ * re-renders on every hover.
+ */
 export const VerseSide = memo(function VerseSide({
   mode,
   verse,
@@ -88,6 +95,7 @@ export const VerseSide = memo(function VerseSide({
   linkedIds,
   onHoverOriginal,
   edition = null,
+  similar,
 }: VerseSideProps) {
   const { t } = useTranslation();
   const preview = useMemo(
@@ -136,6 +144,17 @@ export const VerseSide = memo(function VerseSide({
           link={listLink}
           flashKeys={flashKeys}
           onHoverReference={hoverReference}
+        />
+      </VerseSidePanel>
+    );
+  }
+
+  if (mode === "similar") {
+    return (
+      <VerseSidePanel mode="similar" label={t("bible.sidePanel.verseSimilar", { verse })}>
+        <SimilarVerseList
+          source={similar ?? { hebRefId: 0, bibleBookId: bookId, chapter, verse, hits: [] }}
+          books={books}
         />
       </VerseSidePanel>
     );
