@@ -124,6 +124,25 @@ public class CrossReferenceOriginalsTests
         (await repository.GetOriginalWordsOfVersesAsync(false, [])).ShouldBeEmpty();
     });
 
+    [Fact]
+    public async Task ChapterEditionMarks_Mt6_DoxologyIsTrByzOnly_AndVerse9HasNoMark()
+    {
+        var connectionString = Environment.GetEnvironmentVariable(EnvVar);
+        Assert.SkipWhen(string.IsNullOrWhiteSpace(connectionString), $"{EnvVar} is not set.");
+        using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+
+        var marks = await new GreekEditionRepository(new ConnectionDbReader(connection)).GetChapterEditionMarksAsync(40, 6, TestContext.Current.CancellationToken);
+        var words = await new VerseMappingRepository(new ConnectionDbReader(connection), null!).GetChapterOriginalWordsAsync(false, 40, 6, TestContext.Current.CancellationToken);
+        var byId = marks.ToDictionary(m => m.StepWordId);
+        Assert.SkipWhen(marks.Count == 0, "No edition data imported.");
+
+        var doxology = words.Where(w => w.HebRefId % 1000 == 13 && byId.ContainsKey(w.Id)).ToList();
+        doxology.ShouldNotBeEmpty();
+        doxology.ShouldAllBe(w => byId[w.Id].MainCodes.SequenceEqual(new[] { "TR", "Byz" }));
+        words.Where(w => w.HebRefId % 1000 == 9).ShouldAllBe(w => !byId.ContainsKey(w.Id));
+    }
+
     private static async Task WithReaderAsync(Func<VerseMappingRepository, Task> test)
     {
         var connectionString = Environment.GetEnvironmentVariable(EnvVar);

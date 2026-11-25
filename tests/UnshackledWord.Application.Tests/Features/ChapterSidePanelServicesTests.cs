@@ -50,7 +50,22 @@ public class ChapterSidePanelServicesTests
             new ChapterMappingRow { ElbWordId = 200, StepWordId = 20, GermanVerse = 2 },
         ]);
 
-        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>(), new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>([]))).GetAsync(43, 3);
+        var editions = Substitute.For<IGreekEditionRepository>();
+        editions.GetChapterEditionMarksAsync(43, 3, Arg.Any<CancellationToken>()).Returns(
+        [
+            new ChapterWordEditionMarkRow { StepWordId = 10, MainCodes = ["TR", "Byz"], MainCount = 2, MainCatalogCount = 8 },
+            new ChapterWordEditionMarkRow { StepWordId = 11, MainCodes = [.. "A B C D E F G H".Split(' ')], MainCount = 8, MainCatalogCount = 8, HasShift = true },
+        ]);
+
+        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>(), new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>([])), editions).GetAsync(43, 3);
+
+        var w10 = response.Verses[0].Words[0];
+        w10.EditionCodes.ShouldBe(["TR", "Byz"]);
+        w10.HasShift.ShouldBeNull();
+        var w11 = response.Verses[0].Words[1];
+        w11.EditionCodes.ShouldBeNull();
+        w11.HasShift.ShouldBe(true);
+        response.Verses[1].Words[0].EditionCodes.ShouldBeNull();
 
         response.Language.ShouldBe("greek");
         response.Verses.Select(v => v.Verse).ShouldBe([1, 2]);
@@ -66,7 +81,7 @@ public class ChapterSidePanelServicesTests
         repository.GetChapterOriginalWordsAsync(true, 19, 23, Arg.Any<CancellationToken>()).Returns([]);
         repository.GetChapterMappingRowsAsync(true, 19, 23, Arg.Any<CancellationToken>()).Returns([]);
 
-        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>(), new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>([]))).GetAsync(19, 23);
+        var response = await new ChapterOriginalsService(repository, Substitute.For<IStrongsLexiconRepository>(), new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>([])), Substitute.For<IGreekEditionRepository>()).GetAsync(19, 23);
 
         response.Language.ShouldBe("hebrew");
         response.Verses.ShouldBeEmpty();

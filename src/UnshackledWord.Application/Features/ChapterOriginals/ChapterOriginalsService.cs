@@ -17,9 +17,11 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
     private readonly IVerseMappingRepository _repository;
     private readonly IStrongsLexiconRepository _lexicon;
     private readonly IVerseCountingMapProvider _countingMap;
+    private readonly IGreekEditionRepository _editions;
 
-    public ChapterOriginalsService(IVerseMappingRepository repository, IStrongsLexiconRepository lexicon, IVerseCountingMapProvider countingMap)
+    public ChapterOriginalsService(IVerseMappingRepository repository, IStrongsLexiconRepository lexicon, IVerseCountingMapProvider countingMap, IGreekEditionRepository editions)
     {
+        _editions = editions;
         _countingMap = countingMap;
         _repository = repository;
         _lexicon = lexicon;
@@ -30,6 +32,9 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
         var hebrew = bibleBookId <= LastHebrewBookId;
         var words = await _repository.GetChapterOriginalWordsAsync(hebrew, bibleBookId, chapter, token);
         var mapping = await _repository.GetChapterMappingRowsAsync(hebrew, bibleBookId, chapter, token);
+        var marks = hebrew
+            ? new Dictionary<int, ChapterWordEditionMarkRow>()
+            : (await _editions.GetChapterEditionMarksAsync(bibleBookId, chapter, token)).ToDictionary(m => m.StepWordId);
 
         // Same verse numbering as chapterText: HebRefId % 1000.
         var verseOfWord = words.ToDictionary(w => w.Id, w => w.HebRefId % 1000);
@@ -46,16 +51,7 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
             .Select(g => new VerseOriginalsResponse
             {
                 Verse = g.Key,
-                Words = g.Select(w => new VerseMappingOriginalWord
-                {
-                    Id = w.Id,
-                    Position = w.Position,
-                    Original = w.Original,
-                    Lemma = w.Lemma,
-                    Strongs = w.Strongs,
-                    MorphologyCode = w.MorphologyCode,
-                    Morphology = MorphologyResponses.Decode(hebrew, w.MorphologyCode),
-                }).ToList(),
+                Words = g.Select(w => ToOriginalWord(w, hebrew, marks.GetValueOrDefault(w.Id))).ToList(),
                 Links = linksByVerse.GetValueOrDefault(g.Key) ?? [],
             })
             .ToList();
@@ -71,6 +67,19 @@ public sealed class ChapterOriginalsService : IChapterOriginalsService
             Verses = verses,
         };
     }
+
+    private static VerseMappingOriginalWord ToOriginalWord(ChapterOriginalWordRow w, bool hebrew, ChapterWordEditionMarkRow? mark) => new()
+    {
+        Id = w.Id,
+        Position = w.Position,
+        Original = w.Original,
+        Lemma = w.Lemma,
+        Strongs = w.Strongs,
+        MorphologyCode = w.MorphologyCode,
+        Morphology = MorphologyResponses.Decode(hebrew, w.MorphologyCode),
+        EditionCodes = mark is not null && mark.MainCount < mark.MainCatalogCount ? mark.MainCodes.ToList() : null,
+        HasShift = mark is { HasShift: true } ? true : null,
+    };
 
     private async Task<Dictionary<string, ChapterLexiconResponse>> BuildLexiconAsync(IEnumerable<string?> strongsOfWords, CancellationToken token)
     {

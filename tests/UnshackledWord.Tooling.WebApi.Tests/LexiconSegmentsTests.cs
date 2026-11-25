@@ -73,7 +73,7 @@ public class LexiconSegmentsTests
         ]);
         repository.GetChapterMappingRowsAsync(false, 40, 5, Arg.Any<CancellationToken>()).Returns([]);
 
-        var response = await new ChapterOriginalsService(repository, LexiconStub(), Counting).GetAsync(40, 5);
+        var response = await new ChapterOriginalsService(repository, LexiconStub(), Counting, Substitute.For<IGreekEditionRepository>()).GetAsync(40, 5);
 
         var entry = response.Lexicon!["G1188"];
         var segments = entry.DefinitionSegments.ShouldNotBeNull();

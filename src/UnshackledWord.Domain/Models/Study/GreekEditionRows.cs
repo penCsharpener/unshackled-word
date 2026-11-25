@@ -12,6 +12,19 @@ public sealed class GreekEditionRow
     public short Sort { get; init; }
 }
 
+/// <summary>Chapter read of roadmap 0025.5: a Greek word that is not in every main edition and/or has a shift (words of all main editions without shift are not returned).</summary>
+public sealed class ChapterWordEditionMarkRow
+{
+    public int StepWordId { get; init; }
+
+    /// <summary>Codes of the main editions that have the word, by catalog sort (empty when only non-main tokens exist).</summary>
+    public string[] MainCodes { get; init; } = [];
+
+    public int MainCount { get; init; }
+    public int MainCatalogCount { get; init; }
+    public bool HasShift { get; init; }
+}
+
 /// <summary>A <c>StepGreekWordEditions</c> row joined to the catalog: one edition that has the Greek word.</summary>
 public sealed class GreekWordEditionRow
 {

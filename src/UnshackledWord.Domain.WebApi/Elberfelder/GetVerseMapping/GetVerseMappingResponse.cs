@@ -51,6 +51,15 @@ public sealed class VerseMappingOriginalWord
     /// <see cref="VerseMappingLink.StrongsNumber"/>. Null (omitted) for Greek and in the chapter originals read.
     /// </summary>
     public List<VerseMappingMorpheme>? Morphemes { get; set; }
+
+    /// <summary>
+    /// Greek only, chapter originals read only (roadmap 0025.5): codes of the main editions that have this reading (by catalog sort),
+    /// set only when the word is not in every main edition; null (omitted) otherwise.
+    /// </summary>
+    public List<string>? EditionCodes { get; set; }
+
+    /// <summary>Greek only, chapter originals read only: true when a source edition places the word at another position; null (omitted) otherwise.</summary>
+    public bool? HasShift { get; set; }
 }
 
 /// <summary>One morpheme of a Hebrew word (one tag of StepHebrewWords.ExpandedStrongTags).</summary>
