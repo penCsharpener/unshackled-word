@@ -21,7 +21,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<StepLexiconRepairService>();
         services.AddScoped<ISeedVerb, StepLexiconRepairVerb>();
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseTokenRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseTokenRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseSimilarityRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityRebuildService>();
         services.AddScoped<ISeedVerb, VerseSimilarityVerb>();
+        services.AddScoped<UnshackledWord.Tooling.SeedDb.Services.VerseSimilarity.VerseSimilarityRunner>();
 
         return services;
     }

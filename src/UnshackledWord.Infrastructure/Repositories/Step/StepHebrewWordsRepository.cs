@@ -39,17 +39,17 @@ public sealed class StepHebrewWordsRepository : IStepHebrewWordsRepository
         return await _dbReader.ReadAsListAsync<StepHebrewWordDbo>(sql, filter);
     }
 
-    public async Task BulkInsertAsync(ICollection<StepHebrewWordDbo> entries, CancellationToken token = default)
+    public async Task<int> BulkInsertAsync(ICollection<StepHebrewWordDbo> entries, CancellationToken token = default)
     {
         if (entries.Count == 0)
         {
-            return;
+            return 0;
         }
 
         var count = await CountByFilterAsync(new(), token);
         if (count > 0)
         {
-            return;
+            return 0;
         }
 
         var dataSize = entries.Count + 1;
@@ -110,6 +110,6 @@ public sealed class StepHebrewWordsRepository : IStepHebrewWordsRepository
                    ON CONFLICT DO NOTHING;
                    """;
 
-        await _dbWriter.WriteAsync(sql, parameters);
+        return await _dbWriter.WriteAsync(sql, parameters);
     }
 }

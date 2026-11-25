@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         // The seed importers (shared with the SeedDb CLI) read the same section through the domain settings class.
         services.Configure<UnshackledWord.Domain.Models.Settings.AppSettings>(configuration.GetSection(nameof(AppSettings)));
         services.Configure<UnshackledWord.Domain.Models.Settings.VocabOptions>(configuration.GetSection(UnshackledWord.Domain.Models.Settings.VocabOptions.SectionName));
+        services.Configure<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityOptions>(configuration.GetSection(UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityOptions.SectionName));
         services.AddPostgresPersistence();
         services.AddInfrastructureServices();
         services.AddRepositories();

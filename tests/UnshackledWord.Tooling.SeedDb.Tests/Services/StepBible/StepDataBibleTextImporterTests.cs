@@ -22,6 +22,7 @@ public class StepDataBibleTextImporterTests
             new StepHebrewFileStrategy(reader, fileService, Substitute.For<IStepHebrewWordsRepository>(), NullLogger<StepHebrewFileStrategy>.Instance),
             _greek,
             Substitute.For<IStepHebrewWordsRepository>(),
+            new StepImportResult(),
             NullLogger<StepDataBibleTextImporter>.Instance);
     }
 

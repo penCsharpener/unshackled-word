@@ -23,6 +23,8 @@ public sealed partial class SeedingService
         typeof(StepBible.StepDataMorphologyImporter),
         typeof(StepBible.StepDataLexiconImporter),
         typeof(StepBible.StepDataRelationshipImporter),
+        // after the Hebrew normalization above: the Old Testament tokens come from StepHebrewWordsNormalized (roadmap 0027.2)
+        typeof(VerseSimilarity.VerseSimilarityRunner),
         typeof(StepBible.StrongsToText.StepStrongsImport),
         typeof(AiMappingImport.AiMappingImportRunner),
         typeof(RevisionSeed.RevisionSeedRunner),

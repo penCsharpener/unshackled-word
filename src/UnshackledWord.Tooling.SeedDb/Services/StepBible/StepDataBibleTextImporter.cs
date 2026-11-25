@@ -14,6 +14,7 @@ public sealed class StepDataBibleTextImporter : IRunner
     private readonly StepHebrewFileStrategy _hebrewFileStrategy;
     private readonly IStepGreekWordsRepository _stepGreekWordsRepository;
     private readonly IStepHebrewWordsRepository _stepHebrewWordsRepository;
+    private readonly StepImportResult _importResult;
     private readonly ILogger<StepDataBibleTextImporter> _logger;
 
     public StepDataBibleTextImporter(StepGithubDownloader githubDownloader,
@@ -21,6 +22,7 @@ public sealed class StepDataBibleTextImporter : IRunner
         StepHebrewFileStrategy hebrewFileStrategy,
         IStepGreekWordsRepository stepGreekWordsRepository,
         IStepHebrewWordsRepository stepHebrewWordsRepository,
+        StepImportResult importResult,
         ILogger<StepDataBibleTextImporter> logger)
     {
         _githubDownloader = githubDownloader;
@@ -28,6 +30,7 @@ public sealed class StepDataBibleTextImporter : IRunner
         _hebrewFileStrategy = hebrewFileStrategy;
         _stepGreekWordsRepository = stepGreekWordsRepository;
         _stepHebrewWordsRepository = stepHebrewWordsRepository;
+        _importResult = importResult;
         _logger = logger;
     }
 
@@ -55,10 +58,12 @@ public sealed class StepDataBibleTextImporter : IRunner
 
         var greekWords = totalGreekEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
         var insertedGreekWords = await _stepGreekWordsRepository.BulkInsertAsync(greekWords, token);
+        _importResult.InsertedGreekWords = insertedGreekWords;
         await RefreshGreekEditionsIfNeededAsync(insertedGreekWords, token);
 
         var hebrewWords = totalHebrewEntries.ToDbo().SortByBibleOrder().EnumerateWithIds().ToList();
-        await _stepHebrewWordsRepository.BulkInsertAsync(hebrewWords, token);
+        // Read by VerseSimilarityRunner (roadmap 0027.2), which rebuilds after the Hebrew normalization only when words were inserted.
+        _importResult.InsertedHebrewWords = await _stepHebrewWordsRepository.BulkInsertAsync(hebrewWords, token);
     }
 
     /// <summary>

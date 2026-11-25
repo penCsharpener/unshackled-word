@@ -13,7 +13,12 @@ namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 /// and phrases (<c>--show-count n</c> for more than 10, capped by TopK). References: STEP/OSIS (<c>Heb.4.12</c>, <c>Act.7.48</c>; English counting = <c>LxxRefId</c>), the same dotted form with
 /// German or English book names (<c>Mk.14.58</c>, <c>Ps.149.6</c>), or a German citation (<c>Mk 14,58</c>; Elberfelder counting, mapped
 /// through <c>Elb1871Verses</c>). Optional overrides: <c>--stop-df-share</c>, <c>--top-k</c>, <c>--min-score</c>, <c>--phrase-weight</c>.
-/// Writes nothing; without <c>--dry-run</c> it refuses (writing comes in 0027.2).
+/// The dry run writes nothing.
+/// <para>
+/// Without <c>--dry-run</c> (roadmap 0027.2) it rebuilds <c>VerseSimilarities</c> through <see cref="VerseSimilarityRebuildService"/> (advisory lock,
+/// run row, atomic replace) with the configured defaults (section <c>VerseSimilarity</c>) and the same overrides, and logs run id, pair count and
+/// duration. Exit codes: 0 succeeded, 1 failed (old pairs kept), 2 bad arguments, 3 another rebuild is running.
+/// </para>
 /// </summary>
 public sealed partial class VerseSimilarityVerb : ISeedVerb
 {
@@ -25,11 +30,13 @@ public sealed partial class VerseSimilarityVerb : ISeedVerb
     private static readonly ScriptureParseOptions GermanOptions = new(AliasProfile.Legacy, AllowPrefix: false, WholeInput: true, VerseCounting.Hebrew);
 
     private readonly IVerseTokenRepository _repository;
+    private readonly VerseSimilarityRebuildService _rebuild;
     private readonly ILogger<VerseSimilarityVerb> _logger;
 
-    public VerseSimilarityVerb(IVerseTokenRepository repository, ILogger<VerseSimilarityVerb> logger)
+    public VerseSimilarityVerb(IVerseTokenRepository repository, VerseSimilarityRebuildService rebuild, ILogger<VerseSimilarityVerb> logger)
     {
         _repository = repository;
+        _rebuild = rebuild;
         _logger = logger;
     }
 
@@ -37,15 +44,14 @@ public sealed partial class VerseSimilarityVerb : ISeedVerb
 
     public async Task<int> RunAsync(VerbArguments arguments, CancellationToken token)
     {
-        if (!arguments.Has("--dry-run"))
-        {
-            _logger.LogError("verse-similarity only supports --dry-run for now; writing the VerseSimilarities table comes with roadmap 0027.2. Nothing was written");
-            return 2;
-        }
-
         if (!TryReadParameters(arguments, out var parameters))
         {
             return 2;
+        }
+
+        if (!arguments.Has("--dry-run"))
+        {
+            return await RebuildAsync(arguments, parameters, token);
         }
 
         var shows = new List<(string Input, int VerseId)>();
@@ -86,6 +92,33 @@ public sealed partial class VerseSimilarityVerb : ISeedVerb
         }
 
         return 0;
+    }
+
+    private async Task<int> RebuildAsync(VerbArguments arguments, VerseSimilarityParameters parameters, CancellationToken token)
+    {
+        if (arguments.Has("--show") || arguments.Has("--base-strongs"))
+        {
+            _logger.LogWarning("--show and --base-strongs apply only with --dry-run; ignored for the rebuild");
+        }
+
+        var result = await _rebuild.RebuildAsync(parameters, startedBy: null, token);
+        switch (result.Status)
+        {
+            case VerseSimilarityRebuildStatus.Succeeded:
+                _logger.LogInformation("Verse similarity rebuild: run {RunId} succeeded, {Pairs} pairs, {Stops} stop words, {Duration:F1} s",
+                    result.RunId, result.PairCount, result.StopWordCount, result.DurationMs / 1000.0);
+                return 0;
+            case VerseSimilarityRebuildStatus.Busy:
+                _logger.LogError("Verse similarity rebuild: another rebuild is running (advisory lock held). Nothing was written");
+                return 3;
+            case VerseSimilarityRebuildStatus.Invalid:
+                _logger.LogError("Verse similarity rebuild: {Error}. Nothing was written", result.Error);
+                return 2;
+            default:
+                _logger.LogError("Verse similarity rebuild: run {RunId} failed after {Duration:F1} s: {Error}. The previous pairs stay",
+                    result.RunId, result.DurationMs / 1000.0, result.Error);
+                return 1;
+        }
     }
 
     private async Task<(VerseSimilarityCorpus Corpus, ILookup<int, VerseSimilarityHit> Hits)> RunTestamentAsync(Testament testament, VerseSimilarityParameters parameters, bool baseStrongs, CancellationToken token)
@@ -206,7 +239,7 @@ public sealed partial class VerseSimilarityVerb : ISeedVerb
 
     private bool TryReadParameters(VerbArguments arguments, out VerseSimilarityParameters parameters)
     {
-        var defaults = VerseSimilarityParameters.Default;
+        var defaults = _rebuild.DefaultParameters;
         parameters = defaults;
 
         if (!TryRead(arguments, "--stop-df-share", defaults.StopDfShare, out var stopDfShare)

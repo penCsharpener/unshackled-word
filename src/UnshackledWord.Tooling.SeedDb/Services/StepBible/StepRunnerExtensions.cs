@@ -12,6 +12,7 @@ public static class StepRunnerExtensions
     {
         services.AddScoped<StepDataStrongsImporter>();
         services.AddScoped<StepDataBibleTextImporter>();
+        services.AddScoped<StepImportResult>();
         services.AddScoped<StepDataLexiconImporter>();
         services.AddScoped<StepDataMorphologyImporter>();
         services.AddScoped<StepDataRelationshipImporter>();

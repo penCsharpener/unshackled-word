@@ -61,6 +61,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddSingleton<ParseHelper>();
         services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
         services.Configure<UnshackledWord.Domain.Models.Settings.VocabOptions>(configuration.GetSection(UnshackledWord.Domain.Models.Settings.VocabOptions.SectionName));
+        services.Configure<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityOptions>(configuration.GetSection(UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityOptions.SectionName));
 
         services.AddHttpClient<GithubFileDownloader>(client =>
         {
