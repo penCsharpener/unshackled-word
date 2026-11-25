@@ -14,7 +14,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Planned after interview, implementation started. This roadmap goes before 0026: migration `0049`, version 0.12.0 (0026 moved to 0050/0051 and 0.13.0).
+Implemented (0027.1 to 0027.7, version 0.12.9; open points at the end). This roadmap goes before 0026: migration `0049`, version 0.12.0 (0026 moved to 0050/0051 and 0.13.0).
 
 **0027.1 (token loader, scorer, dry run) done, with these deviations and findings:**
 
@@ -85,3 +85,12 @@ Planned after interview, implementation started. This roadmap goes before 0026: 
 - **Final run (dev DB, verb without `--dry-run`):** run 9, `succeeded`, 917,459 pairs, 130 stop words, 12.9 s. Evaluation: OT recall@30 20.8 % (41,252 of 198,510), recall@10 13.0 %; NT recall@30 21.3 % (19,508 of 91,680), recall@10 12.9 %. Golden: Heb 4:12 → Rev 1:16 missing/missing, Heb 4:12 → Rev 2:12 13/missing, Mk 14:58 → 2 Cor 5:1 6/1, Acts 7:48 → Acts 17:24 1/1, Ps 149:6 → Isa 41:15 4/4. Older runs (≤ 8) have no evaluation.
 - **Acceptance of 0027.3f still unmet:** Heb 4:12 → Rev 1:16 is not in any top 30 under any tried parameter set except `MinScore` 0.05 (rank 30); not chosen for that reason alone.
 - **Frontend:** the placeholder is replaced by an "Auswertung" block for the last succeeded run (recall@30 and @10 per testament as percent with the link count, golden pairs with "Rang n" or "fehlt" plus the reverse rank, the error when the evaluation failed, a note when a run has none). The last-five-runs table gains "AT R@30", "NT R@30" and "Goldpaare (Rang)" (ranks in the fixed pair order, each with the pair as hover title and screen-reader text). i18n de/en, tokens only, no new component. Vitest: 4 new cases in `VerseSimilaritySection.test.tsx` (9 pass); full suite 1,155 passed with the same 8 known failures. Not checked in the browser.
+
+**0027.7 (docs and fresh-database check) done.** Part A on an empty Postgres 18 (throwaway container, migrations 0001-0049, then the full SeedDb, no step filter; `SeedingService.local.cs` has its filter commented out and was not touched): run 1 `succeeded`, 917,459 pairs (identical to dev DB run 9 with the same parameters: StopDfShare 0.03, TopK 30, MinScore 0.1, PhraseWeight 0.5), 130 stop words (OT 65, NT 65), all rows with `RunId` 1. Rebuild took 6.5 s (dev DB 12.9 s; scoring about 1.3 s). Evaluation identical to run 9: OT recall@30 20.8 % (41,252 of 198,510), recall@10 13.0 %; NT recall@30 21.3 % (19,508 of 91,680), recall@10 12.9 %; golden pairs Heb 4:12 → Rev 1:16 missing, → Rev 2:12 rank 13, Mk 14:58 → 2 Cor 5:1 6/1, Acts 7:48 → Acts 17:24 1/1, Ps 149:6 → Isa 41:15 4/4. Log order as planned: Greek editions refreshed, StepDataRelationshipImporter, VerseSimilarityRunner, then StepStrongsImport, mapping and revision seed. The whole seed took 3 min 5 s with cached downloads. CLAUDE.md has the architecture bullet and a decision line.
+
+**Open points:**
+
+- Heb 4:12 → Rev 1:16 is not in the top 30 with the tuned defaults, so the literal acceptance of 0027.3f is not met (Rev 2:12 at rank 13 shows after "Mehr anzeigen"); the Done-when in [06-tasks.md](06-tasks.md) was adjusted accordingly.
+- The hover card is German only (no original text).
+- The bun test runner in the web container fails to start workers on a clean HEAD (Vitest was run in `node:24-slim` instead).
+- 8 pre-existing Vitest failures (CrossReferenceList, ChapterPage.tskProposal, NoteReviewPage) and 2 pre-existing AgentPrompt test failures, not related to this roadmap.
