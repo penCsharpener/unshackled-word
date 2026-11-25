@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseSimilarityRepository>();
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityRebuildService>();
         services.AddScoped<ISeedVerb, VerseSimilarityVerb>();
+        services.AddScoped<IOfflineSeedVerb, LxxCheckVerb>();
         services.AddScoped<UnshackledWord.Tooling.SeedDb.Services.VerseSimilarity.VerseSimilarityRunner>();
 
         return services;

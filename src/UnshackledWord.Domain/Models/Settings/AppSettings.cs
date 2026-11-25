@@ -10,7 +10,6 @@ public sealed class DatabaseSeedSettings
     public string[] SRFileUrls { get; set; } = default!;
     public string SolutionTempPath { get; set; } = default!;
     public string SolutionAssetsPath { get; set; } = default!;
-    public string RepoLocationEliranWongLxxRalfs1935 { get; set; } = default!;
     public string Elberfelder1871TextFile { get; set; } = default!;
     public string GlobalBibleToolsWordsCsvFile { get; set; } = default!;
     public string GlobalBibleToolsLemmaCsvFile { get; set; } = default!;
@@ -23,6 +22,7 @@ public sealed class DatabaseSeedSettings
     public ByzantineSettings ByzantineSettings { get; set; } = default!;
     public OpenScripturesGithubSettings OpenScripturesGithub { get; set; } = default!;
     public StepBibleData StepBibleData { get; set; } = default!;
+    public SweteSettings Swete { get; set; } = default!;
 
     /// <summary>
     /// Later starts replace the mapping rows of every verse that was not changed since the last seed import with the repo's newer
@@ -76,4 +76,20 @@ public sealed class StepBibleData
     public string[] MorphologyFiles { get; set; } = default!;
     public string PersonPlaceFile { get; set; } = default!;
     public string VersificationFile { get; set; } = default!;
+}
+
+/// <summary>
+/// Swete's Septuagint (1930) from eliranwong/LXX-Swete-1930 (GPL-3.0, downloaded, never redistributed; roadmap 0028). The files are fetched
+/// from the pinned <see cref="Commit"/> so a rerun always sees the same text.
+/// </summary>
+public sealed class SweteSettings
+{
+    /// <summary>Raw file base of the repository without commit, e.g. <c>https://raw.githubusercontent.com/eliranwong/LXX-Swete-1930</c>.</summary>
+    public string RawBaseUrl { get; set; } = default!;
+
+    /// <summary>Full commit hash the files are read from. Changing it makes the downloader fetch the files again.</summary>
+    public string Commit { get; set; } = default!;
+
+    public string VersificationFile { get; set; } = "00-Swete_versification.csv";
+    public string WordsFile { get; set; } = "01-Swete_word_with_punctuations.csv";
 }

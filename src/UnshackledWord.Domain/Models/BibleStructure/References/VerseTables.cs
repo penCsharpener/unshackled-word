@@ -7,7 +7,7 @@ namespace UnshackledWord.Domain.Models.BibleStructure.References;
 /// so the two arrays are assigned by content: the one with 24 verses in Mal 3 is Hebrew. Trailing 0 entries (Mal 4 in Hebrew,
 /// Joel 4 in English) mean the chapter does not exist and are cut off, so <c>Length</c> is the chapter count.
 /// </summary>
-internal static class VerseTables
+public static class VerseTables
 {
     private const int MalachiId = 39;
     private const int MalachiHebrewChapter3Verses = 24;

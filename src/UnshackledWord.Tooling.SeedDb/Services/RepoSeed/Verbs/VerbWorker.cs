@@ -21,8 +21,14 @@ public sealed class VerbWorker : BackgroundService
         try
         {
             using var scope = _scopeFactory.CreateScope();
-            var verbs = scope.ServiceProvider.GetServices<ISeedVerb>().ToList();
-            var verb = verbs.FirstOrDefault(v => v.Name == _arguments.Verb);
+            var offline = scope.ServiceProvider.GetServices<IOfflineSeedVerb>().ToList();
+            var verbs = new List<ISeedVerb>(offline);
+            var verb = offline.FirstOrDefault(v => v.Name == _arguments.Verb) as ISeedVerb;
+            if (verb is null)
+            {
+                verbs.AddRange(scope.ServiceProvider.GetServices<ISeedVerb>());
+                verb = verbs.FirstOrDefault(v => v.Name == _arguments.Verb);
+            }
 
             if (verb is null)
             {

@@ -10,7 +10,6 @@ using UnshackledWord.Tooling.SeedDb.Services.ByzTxt.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.CsvImports;
 using UnshackledWord.Tooling.SeedDb.Services.Elb1871WordsSrGntWordsMapper;
 using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
-using UnshackledWord.Tooling.SeedDb.Services.EliranWongData;
 using UnshackledWord.Tooling.SeedDb.Services.GlobalBibleTools;
 using UnshackledWord.Tooling.SeedDb.Services.LocalOnly;
 using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
@@ -47,7 +46,6 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();
         services.AddScoped<SrTsvParserStrategy>();
-        services.AddScoped<RalfsLxxParserStrategy>();
         services.AddScoped<TskStrategy>();
         services.AddScoped<OpenScriptureHebrewStrategy>();
         services.AddScoped<GbtCsvStrategy>();
@@ -73,6 +71,7 @@ public static partial class ServiceRegistrationExtensions
                 .DownloadDomain;
             client.BaseAddress = new Uri(url);
         });
+        services.AddHttpClient<UnshackledWord.Tooling.SeedDb.Services.Swete.SweteDownloader>();
         services.RegisterCsvServices();
 
         return services;

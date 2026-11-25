@@ -10,6 +10,12 @@ public interface ISeedVerb
     Task<int> RunAsync(VerbArguments arguments, CancellationToken token);
 }
 
+/// <summary>
+/// A command that needs no database. <see cref="VerbWorker"/> looks these up first and resolves them alone, because resolving the other
+/// verbs opens a database connection (their repositories connect in the constructor). Register as <see cref="IOfflineSeedVerb"/> only.
+/// </summary>
+public interface IOfflineSeedVerb : ISeedVerb;
+
 /// <summary>The command line: the verb is the first argument (when it is not an option), the rest are <c>--name value</c> options and bare flags.</summary>
 public sealed class VerbArguments
 {
