@@ -17,6 +17,12 @@ public sealed class ChapterVerseResponse
 
     /// <summary>Original-language text of the verse; only set by the cross reference texts, omitted otherwise.</summary>
     public VerseOriginalTextResponse? Original { get; set; }
+
+    /// <summary>
+    /// Distinct Strong's keys of the verse's original words, in the format of the chapter words (the reader's sense key), without
+    /// very frequent ones; only set by the cross reference texts, omitted when empty.
+    /// </summary>
+    public List<string>? Strongs { get; set; }
 }
 
 /// <summary>Plain surface words of the original-language verse (no morphology), joined with spaces.</summary>

@@ -33,6 +33,42 @@ public class CrossReferenceOriginalsTests
         result[Joh11].Text.ShouldBe("Ἐν ἦν ὁ");
     }
 
+    private static ChapterOriginalWordRow Keyed(int id, int refId, int position, string? strongs) =>
+        new() { Id = id, HebRefId = refId, Position = position, Original = "x", Strongs = strongs };
+
+    [Theory]
+    [InlineData("G3004G", "G3004")]
+    [InlineData("H1254A", "H1254")]
+    [InlineData("H1254", "H1254")]
+    [InlineData("", null)]
+    [InlineData(null, null)]
+    public void BaseNumber_StripsVariantLetters(string? strongs, string? expected)
+    {
+        CrossReferenceOriginals.BaseNumber(strongs).ShouldBe(expected);
+    }
+
+    [Fact]
+    public void BuildStrongs_ReturnsDistinctKeysInReadingOrder_AndIgnoresWordsWithoutStrongs()
+    {
+        var result = CrossReferenceOriginals.BuildStrongs(
+            [Keyed(3, Joh11, 3, "G2316"), Keyed(1, Joh11, 1, "G0746"), Keyed(2, Joh11, 2, null), Keyed(4, Joh11, 4, "G0746"), Keyed(5, Spr822, 1, null)],
+            new HashSet<string>());
+
+        result[Joh11].ShouldBe(["G0746", "G2316"]);
+        result.ContainsKey(Spr822).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void BuildStrongs_DropsKeysWhoseBaseNumberIsFrequent()
+    {
+        var result = CrossReferenceOriginals.BuildStrongs(
+            [Keyed(1, Joh11, 1, "G2532"), Keyed(2, Joh11, 2, "G3056G"), Keyed(3, Gen11, 1, "H0430A")],
+            new HashSet<string> { "G2532", "H0430" });
+
+        result[Joh11].ShouldBe(["G3056G"]);
+        result.ContainsKey(Gen11).ShouldBeFalse();
+    }
+
     [Fact]
     public void Build_PicksAramaicByMajorityOfGrammarCodes_AndReturnsOneEntryPerVerse()
     {

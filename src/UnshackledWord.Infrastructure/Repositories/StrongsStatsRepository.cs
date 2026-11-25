@@ -293,6 +293,27 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
         return await _dbReader.ExecuteScalarAsync<DateTime?>(sql);
     }
 
+    public async Task<IReadOnlySet<string>> GetSnapshotFrequentBasesAsync(IReadOnlyCollection<string> bases, bool hebrew, int threshold, CancellationToken token = default)
+    {
+        if (bases.Count == 0)
+        {
+            return new HashSet<string>();
+        }
+
+        const string sql = """
+                           SELECT substring(s."StrongsKey" FROM '[GH]\d+')
+                           FROM "unshackled-word"."StatsStrongs" s
+                           WHERE 1=1
+                               AND s."Lang" = @Lang::char(1)
+                               AND substring(s."StrongsKey" FROM '[GH]\d+') = ANY(@Bases)
+                           GROUP BY substring(s."StrongsKey" FROM '[GH]\d+')
+                           HAVING SUM(s."Occurrences") >= @Threshold
+                           """;
+
+        var rows = await _dbReader.ReadAsListAsync<string>(sql, new { Lang = hebrew ? "H" : "G", Bases = bases.ToArray(), Threshold = threshold });
+        return rows.ToHashSet();
+    }
+
     public async Task<IReadOnlyList<SnapshotStrongsRow>> GetSnapshotStrongsAsync(IReadOnlyList<string> keys, bool hebrew, CancellationToken token = default)
     {
         const string sql = """

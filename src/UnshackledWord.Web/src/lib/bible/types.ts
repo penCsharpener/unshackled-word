@@ -473,6 +473,8 @@ export interface CrossReferenceVerseText {
   verse: number;
   text: string;
   original?: VerseOriginalText;
+  /** Distinct Strong's keys of the verse's original words (the sense keys of the reader), very frequent lemmas left out; omitted when empty. */
+  strongs?: string[];
 }
 
 /** `GET elberfelder/chapterCrossReferences/...`: verses without TSK references are omitted. */

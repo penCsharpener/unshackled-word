@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   type DragEvent,
   Fragment,
@@ -33,7 +33,12 @@ import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
-import { chapterWordsQuery, useBibleStructure, useChapterWords } from "@/lib/bible/queries";
+import {
+  chapterWordsQuery,
+  useBibleStructure,
+  useChapterWords,
+  verseCrossReferenceTextsQuery,
+} from "@/lib/bible/queries";
 import {
   nextSidePanelMode,
   type SidePanelMode,
@@ -43,6 +48,7 @@ import {
   useTskOnlyHighlighted,
 } from "@/lib/bible/sidePanel";
 import { isProposal, useLinkTskWord, wordLinkRequest } from "@/lib/bible/tskCuration";
+import { strongsFlashKeys } from "@/lib/bible/tskFlash";
 import type {
   BibleStructureBook,
   ChapterRef,
@@ -293,10 +299,29 @@ export function ChapterPage() {
         base.add(p);
     return { verse: hoveredPill.verse, shown, base };
   }, [hoveredPill]);
-  /** Pills whose word is hovered in the verse text flash. */
+  // Target texts of the hovered verse (shared with the link hover card): their Strong's keys flash the pills too.
+  const hoveredSenseKeys = useMemo(
+    () => hoveredWordRaw?.senses.map((s) => s.key) ?? [],
+    [hoveredWordRaw],
+  );
+  const flashTexts = useQuery({
+    ...verseCrossReferenceTextsQuery(
+      ref?.bookId ?? 0,
+      ref?.chapter ?? 0,
+      hoveredVerse?.verse ?? 0,
+      reader.level,
+    ),
+    enabled:
+      showTsk &&
+      ref !== null &&
+      !!hoveredVerse &&
+      hoveredSenseKeys.length > 0 &&
+      (referencesByVerse.get(hoveredVerse.verse)?.length ?? 0) > 0,
+  });
+  /** Pills whose word is hovered in the verse text, or whose target verses contain the hovered word's original word, flash. */
   const wordFlash = useMemo(() => {
     if (!showTsk || !hoveredVerse || !hoveredWordRaw) return undefined;
-    const keys = new Set<string>();
+    const keys = strongsFlashKeys(hoveredSenseKeys, flashTexts.data?.references, crossReferenceKey);
     for (const r of referencesByVerse.get(hoveredVerse.verse) ?? []) {
       const w = r.word;
       if (r.rating === "hide" || w?.state !== "ok" || w.startPosition === undefined) continue;
@@ -309,7 +334,7 @@ export function ChapterPage() {
       if (hit) keys.add(crossReferenceKey(r));
     }
     return keys.size > 0 ? { verse: hoveredVerse.verse, keys } : undefined;
-  }, [showTsk, hoveredVerse, hoveredWordRaw, referencesByVerse]);
+  }, [showTsk, hoveredVerse, hoveredWordRaw, hoveredSenseKeys, flashTexts.data, referencesByVerse]);
   const originalsByVerse = useMemo(
     () => new Map(originals.data?.verses.map((v) => [v.verse, v])),
     [originals.data],

@@ -19,12 +19,14 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
     private readonly ITskRepository _tsk;
     private readonly IElb1871VerseRepository _verses;
     private readonly IVerseMappingRepository _originals;
+    private readonly IStrongsStatsRepository _stats;
 
-    public Endpoint(ITskRepository tsk, IElb1871VerseRepository verses, IVerseMappingRepository originals)
+    public Endpoint(ITskRepository tsk, IElb1871VerseRepository verses, IVerseMappingRepository originals, IStrongsStatsRepository stats)
     {
         _tsk = tsk;
         _verses = verses;
         _originals = originals;
+        _stats = stats;
     }
 
     public override void Configure()
@@ -71,6 +73,8 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
 
         // Originals of all target verses: one query per testament (same source and verse numbering as GetChapterOriginals: Elberfelder HebRefId = STEP LxxRefId).
         var originals = new Dictionary<int, VerseOriginalTextResponse>();
+        var strongs = new Dictionary<int, List<string>>();
+        var snapshot = await _stats.GetSnapshotRefreshedAtAsync(ct) is not null;
         foreach (var hebrew in new[] { true, false })
         {
             var ids = verseIds.Where(id => CrossReferenceOriginals.IsHebrewBook(id) == hebrew).ToList();
@@ -78,6 +82,19 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
             foreach (var (id, original) in CrossReferenceOriginals.Build(words, hebrew))
             {
                 originals[id] = original;
+            }
+
+            // Very frequent lemmas are left out (stats snapshot); without a snapshot nothing is filtered.
+            var frequent = snapshot
+                ? await _stats.GetSnapshotFrequentBasesAsync(
+                    words.Select(w => CrossReferenceOriginals.BaseNumber(w.Strongs)).OfType<string>().Distinct().ToList(),
+                    hebrew,
+                    StatsRules.OriginalHighFrequencyThreshold,
+                    ct)
+                : new HashSet<string>();
+            foreach (var (id, keys) in CrossReferenceOriginals.BuildStrongs(words, frequent))
+            {
+                strongs[id] = keys;
             }
         }
 
@@ -87,6 +104,7 @@ public class Endpoint : Ep.Req<GetVerseCrossReferenceTextsRequest>.Res<GetVerseC
             foreach (var verse in reference.Verses)
             {
                 verse.Original = originals.GetValueOrDefault(book + verse.Verse);
+                verse.Strongs = strongs.GetValueOrDefault(book + verse.Verse);
             }
         }
 

@@ -40,6 +40,12 @@ public interface IStrongsStatsRepository
     /// <summary>When the link-roles backfill (roadmap 0018.4) was applied (DqRefreshState.LinkRolesAppliedAt); null = roles incomplete.</summary>
     Task<DateTime?> GetLinkRolesAppliedAtAsync(CancellationToken token = default);
 
+    /// <summary>
+    /// Of the base numbers ("G3004", "H1254") those whose occurrences, summed over all lexicon variants, are at least <paramref name="threshold"/>.
+    /// Only meaningful when GetSnapshotRefreshedAtAsync is not null.
+    /// </summary>
+    Task<IReadOnlySet<string>> GetSnapshotFrequentBasesAsync(IReadOnlyCollection<string> bases, bool hebrew, int threshold, CancellationToken token = default);
+
     /// <summary>Per match key: occurrences, mapped count and per-book counts of a Strong's number.</summary>
     Task<IReadOnlyList<SnapshotStrongsRow>> GetSnapshotStrongsAsync(IReadOnlyList<string> keys, bool hebrew, CancellationToken token = default);
 

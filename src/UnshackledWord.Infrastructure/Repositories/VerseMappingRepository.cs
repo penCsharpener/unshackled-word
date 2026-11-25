@@ -204,6 +204,7 @@ public static class VerseMappingSql
                                                   , sgw."LxxRefId" "HebRefId"
                                                   , sgw."PositionInVerse" "Position"
                                                   , sgw."Greek" "Original"
+                                                  , sgw."DisambiguatedStrongs" "Strongs"
                                                   , sgw."Morphology" "MorphologyCode"
                                              FROM "unshackled-word"."StepGreekWords" sgw
                                              WHERE 1=1
@@ -218,6 +219,7 @@ public static class VerseMappingSql
                                                    , shw."LxxRefId" "HebRefId"
                                                    , shw."PositionInVerse" "Position"
                                                    , shw."Hebrew" "Original"
+                                                   , shw."RootDisambiguatedStrongsInstance" "Strongs"
                                                    , shw."Grammar" "MorphologyCode"
                                               FROM "unshackled-word"."StepHebrewWords" shw
                                               WHERE 1=1
