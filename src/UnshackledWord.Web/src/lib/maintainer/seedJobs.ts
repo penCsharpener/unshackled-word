@@ -11,7 +11,8 @@ export type SeedOperation =
   | "notesExport"
   | "notesImport"
   | "tskExport"
-  | "tskImport";
+  | "tskImport"
+  | "verseSimilarity";
 export type SeedJobState = "running" | "succeeded" | "failed";
 
 export interface SeedReportList {
