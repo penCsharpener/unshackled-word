@@ -21,7 +21,7 @@ public class VerseSimilarityRebuildServiceTests
     [Fact]
     public void Options_Defaults_AreTheDocumentedParameters()
     {
-        new VerseSimilarityOptions().ToParameters().ShouldBe(new VerseSimilarityParameters(0.02, 30, 0.1, 0.5));
+        new VerseSimilarityOptions().ToParameters().ShouldBe(new VerseSimilarityParameters(0.03, 30, 0.1, 0.5), "tuned in roadmap 0027.6");
         NewService().DefaultParameters.ShouldBe(VerseSimilarityParameters.Default);
     }
 
@@ -112,5 +112,68 @@ public class VerseSimilarityRebuildServiceTests
         await NewService(options).RebuildAsync(token: TestContext.Current.CancellationToken);
 
         await _repository.Received(1).CreateRunAsync(new VerseSimilarityParameters(0.05, 10, 0.2, 0.8), null, Arg.Any<CancellationToken>());
+    }
+
+    private void GivenSucceedingRun(int runId)
+    {
+        GivenLock();
+        _repository.CreateRunAsync(Arg.Any<VerseSimilarityParameters>(), Arg.Any<int?>(), Arg.Any<CancellationToken>()).Returns(runId);
+        _tokens.LoadAsync(Testament.Old, Arg.Any<CancellationToken>()).Returns([V(1_001_001, "H0001 H0002"), V(1_001_002, "H0001 H0002"), V(1_001_003, "H0003")]);
+        _tokens.LoadAsync(Testament.New, Arg.Any<CancellationToken>()).Returns(new List<VerseTokenSequence>());
+        _repository.ReplacePairsAsync(runId, Arg.Any<IReadOnlyCollection<VerseSimilarityHit>>(), Arg.Any<Func<VerseSimilarityRunSuccess>>(), Arg.Any<CancellationToken>())
+            .Returns(ci =>
+            {
+                ci.ArgAt<Func<VerseSimilarityRunSuccess>>(2)();
+                return Task.CompletedTask;
+            });
+    }
+
+    [Fact]
+    public async Task Success_StoresTheEvaluation_OnTheRunRow()
+    {
+        GivenSucceedingRun(9);
+        _repository.GetTskLinksAsync(Arg.Any<CancellationToken>()).Returns([new TskLink(1_001_001, 1_001_002, null), new TskLink(1_001_001, 1_001_003, null)]);
+        string? stored = null;
+        await _repository.SetEvaluationAsync(9, Arg.Do<string>(json => stored = json), Arg.Any<CancellationToken>());
+
+        var result = await NewService().RebuildAsync(new VerseSimilarityParameters(StopDfShare: 1, TopK: 5, MinScore: 0), token: TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(VerseSimilarityRebuildStatus.Succeeded);
+        var evaluation = VerseSimilarityEvaluation.FromJson(stored).ShouldNotBeNull();
+        evaluation.Error.ShouldBeNull();
+        evaluation.TopK.ShouldBe(5);
+        var old = evaluation.Testaments.Single(t => t.Testament == "old");
+        old.Links.ShouldBe(2);
+        old.HitsAt30.ShouldBe(1, "1:2 is a hit, 1:3 shares nothing");
+        old.RecallAt30.ShouldBe(0.5);
+        result.Evaluation.ShouldNotBeNull().ToJson().ShouldBe(stored, "the result carries what was stored");
+    }
+
+    [Fact]
+    public async Task EvaluationFailure_IsStoredAsError_AndTheRunStillSucceeds()
+    {
+        GivenSucceedingRun(10);
+        _repository.GetTskLinksAsync(Arg.Any<CancellationToken>()).Returns<IReadOnlyList<TskLink>>(_ => throw new InvalidOperationException("no tsk"));
+        string? stored = null;
+        await _repository.SetEvaluationAsync(10, Arg.Do<string>(json => stored = json), Arg.Any<CancellationToken>());
+
+        var result = await NewService().RebuildAsync(new VerseSimilarityParameters(StopDfShare: 1, TopK: 5, MinScore: 0), token: TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(VerseSimilarityRebuildStatus.Succeeded);
+        VerseSimilarityEvaluation.FromJson(stored).ShouldNotBeNull().Error.ShouldBe("InvalidOperationException: no tsk");
+        await _repository.DidNotReceive().MarkFailedAsync(Arg.Any<int>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task StoringTheEvaluationFails_TheRunStillSucceeds()
+    {
+        GivenSucceedingRun(11);
+        _repository.GetTskLinksAsync(Arg.Any<CancellationToken>()).Returns(new List<TskLink>());
+        _repository.SetEvaluationAsync(11, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(_ => throw new InvalidOperationException("db gone"));
+
+        var result = await NewService().RebuildAsync(new VerseSimilarityParameters(StopDfShare: 1, TopK: 5, MinScore: 0), token: TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(VerseSimilarityRebuildStatus.Succeeded);
+        await _repository.DidNotReceive().MarkFailedAsync(Arg.Any<int>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
     }
 }

@@ -37,9 +37,59 @@ public sealed class VerseSimilarityRunResponse
     public int? StopWordCount { get; set; }
     public int? DurationMs { get; set; }
 
-    /// <summary>Raw JSON of the evaluation (recall@30, golden pair ranks); null until roadmap 0027.6 fills it.</summary>
+    /// <summary>Raw JSON of the evaluation (recall@30, golden pair ranks); null for runs before roadmap 0027.6 and for failed runs.</summary>
     public string? Evaluation { get; set; }
 
+    /// <summary><see cref="Evaluation"/> parsed (roadmap 0027.6); null when there is none or it cannot be read.</summary>
+    public VerseSimilarityEvaluationResponse? EvaluationResult { get; set; }
+
+    public string? Error { get; set; }
+}
+
+/// <summary>Recall of the raw TSK links of one testament in the stored top lists (roadmap 0027.6).</summary>
+public sealed class VerseSimilarityTestamentRecallResponse
+{
+    /// <summary><c>old</c> or <c>new</c>.</summary>
+    public string Testament { get; set; } = string.Empty;
+
+    /// <summary>TSK links considered (distinct, both ends in the testament).</summary>
+    public int Links { get; set; }
+
+    public int HitsAt10 { get; set; }
+    public int HitsAt30 { get; set; }
+
+    /// <summary>Share 0..1 of <see cref="Links"/> whose target is among the source's first 10 hits.</summary>
+    public double RecallAt10 { get; set; }
+
+    /// <summary>Share 0..1 of <see cref="Links"/> whose target is among the source's first 30 hits.</summary>
+    public double RecallAt30 { get; set; }
+}
+
+/// <summary>Rank of a golden pair in both directions; null = not among the stored hits ("fehlt").</summary>
+public sealed class VerseSimilarityGoldenRankResponse
+{
+    /// <summary>German citation, e.g. <c>Hebr 4,12</c>.</summary>
+    public string Source { get; set; } = string.Empty;
+
+    public int SourceVerseId { get; set; }
+    public string Target { get; set; } = string.Empty;
+    public int TargetVerseId { get; set; }
+
+    /// <summary>Rank of the target in the source's hits.</summary>
+    public int? Rank { get; set; }
+
+    /// <summary>Rank of the source in the target's hits.</summary>
+    public int? ReverseRank { get; set; }
+}
+
+/// <summary>Evaluation of a run against TSK and the golden pairs (roadmap 0027.6).</summary>
+public sealed class VerseSimilarityEvaluationResponse
+{
+    public int TopK { get; set; }
+    public List<VerseSimilarityTestamentRecallResponse> Testaments { get; set; } = [];
+    public List<VerseSimilarityGoldenRankResponse> GoldenPairs { get; set; } = [];
+
+    /// <summary>Set when the evaluation failed (the run itself succeeded).</summary>
     public string? Error { get; set; }
 }
 

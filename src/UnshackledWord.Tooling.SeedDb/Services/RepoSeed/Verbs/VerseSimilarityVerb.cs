@@ -13,7 +13,8 @@ namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 /// and phrases (<c>--show-count n</c> for more than 10, capped by TopK). References: STEP/OSIS (<c>Heb.4.12</c>, <c>Act.7.48</c>; English counting = <c>LxxRefId</c>), the same dotted form with
 /// German or English book names (<c>Mk.14.58</c>, <c>Ps.149.6</c>), or a German citation (<c>Mk 14,58</c>; Elberfelder counting, mapped
 /// through <c>Elb1871Verses</c>). Optional overrides: <c>--stop-df-share</c>, <c>--top-k</c>, <c>--min-score</c>, <c>--phrase-weight</c>.
-/// The dry run writes nothing.
+/// The dry run writes nothing; it always prints the evaluation a rebuild stores (roadmap 0027.6: recall@10/@30 against the raw TSK links per
+/// testament, golden pair ranks).
 /// <para>
 /// Without <c>--dry-run</c> (roadmap 0027.2) it rebuilds <c>VerseSimilarities</c> through <see cref="VerseSimilarityRebuildService"/> (advisory lock,
 /// run row, atomic replace) with the configured defaults (section <c>VerseSimilarity</c>) and the same overrides, and logs run id, pair count and
@@ -83,6 +84,11 @@ public sealed partial class VerseSimilarityVerb : ISeedVerb
         process.Refresh();
         _logger.LogInformation("Verse similarity dry run done in {Duration:F1} s; managed heap {Heap:F0} MB, peak working set {Peak:F0} MB",
             total.Elapsed.TotalSeconds, GC.GetTotalMemory(false) / 1048576.0, process.PeakWorkingSet64 / 1048576.0);
+
+        // Roadmap 0027.6: the same evaluation a rebuild stores, so parameters can be tuned without writing.
+        var allHits = results.Values.SelectMany(r => r.Hits.SelectMany(g => g)).ToList();
+        var evaluation = await _rebuild.EvaluateAsync(allHits, parameters.TopK, token);
+        _logger.LogInformation("Verse similarity dry run evaluation (raw TSK links, same testament):\n{Evaluation}", evaluation.ToSummary());
 
         foreach (var (input, verseId) in shows)
         {

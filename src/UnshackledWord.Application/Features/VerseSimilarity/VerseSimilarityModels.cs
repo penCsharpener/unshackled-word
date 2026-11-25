@@ -15,7 +15,7 @@ public sealed record VerseTokenSequence(int VerseId, IReadOnlyList<string> Stron
 /// Scoring parameters (roadmap 0027). <see cref="StopDfShare"/>: a Strong's in more than this share of the testament's verses is a stop word.
 /// <see cref="TopK"/>: hits kept per source verse. <see cref="MinScore"/>: lowest score kept. <see cref="PhraseWeight"/>: weight of the bigram bonus.
 /// </summary>
-public sealed record VerseSimilarityParameters(double StopDfShare = 0.02, int TopK = 30, double MinScore = 0.1, double PhraseWeight = 0.5)
+public sealed record VerseSimilarityParameters(double StopDfShare = 0.03, int TopK = 30, double MinScore = 0.1, double PhraseWeight = 0.5)
 {
     public static VerseSimilarityParameters Default { get; } = new();
 }

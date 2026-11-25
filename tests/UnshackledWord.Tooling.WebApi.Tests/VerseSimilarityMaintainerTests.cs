@@ -135,6 +135,32 @@ public class VerseSimilarityMaintainerTests
     }
 
     [Fact]
+    public async Task Status_ParsesTheStoredEvaluation_AndKeepsTheRawJson()
+    {
+        var evaluation = VerseSimilarityEvaluator.Evaluate(
+            [new VerseSimilarityHit(19_149_006, 23_041_015, 4, 0.2, 1, 0)], [new TskLink(19_149_006, 23_041_015, null)], topK: 30);
+        _repository.GetRecentRunsAsync(5, Arg.Any<CancellationToken>()).Returns(
+        [
+            new VerseSimilarityRunListItem(new VerseSimilarityRunDbo { Id = 4, Status = VerseSimilarityRunDbo.StatusSucceeded, Evaluation = evaluation.ToJson() }, null),
+            new VerseSimilarityRunListItem(new VerseSimilarityRunDbo { Id = 3, Status = VerseSimilarityRunDbo.StatusSucceeded, Evaluation = null }, null),
+        ]);
+        _repository.TryAcquireRebuildLockAsync(Arg.Any<CancellationToken>()).Returns(Substitute.For<IAsyncDisposable>());
+        var endpoint = Factory.Create<StatusEndpoint>(_runner, _repository, Service());
+
+        await endpoint.HandleAsync(CancellationToken.None);
+
+        var withEvaluation = endpoint.Response.Runs[0];
+        withEvaluation.Evaluation.ShouldBe(evaluation.ToJson());
+        var result = withEvaluation.EvaluationResult.ShouldNotBeNull();
+        result.Testaments.Single(t => t.Testament == "old").RecallAt30.ShouldBe(1);
+        var psalm = result.GoldenPairs.Single(g => g.SourceVerseId == 19_149_006);
+        psalm.Target.ShouldBe("Jes 41,15");
+        psalm.Rank.ShouldBe(4);
+        psalm.ReverseRank.ShouldBeNull();
+        endpoint.Response.Runs[1].EvaluationResult.ShouldBeNull();
+    }
+
+    [Fact]
     public void Endpoints_RequireLogin()
     {
         foreach (var type in new[] { typeof(StartEndpoint), typeof(StatusEndpoint) })

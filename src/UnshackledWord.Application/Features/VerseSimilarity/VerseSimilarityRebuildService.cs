@@ -23,12 +23,14 @@ public sealed record VerseSimilarityRebuildResult(
     int PairCount = 0,
     int StopWordCount = 0,
     int DurationMs = 0,
-    string? Error = null);
+    string? Error = null,
+    VerseSimilarityEvaluation? Evaluation = null);
 
 /// <summary>
 /// Rebuilds <c>VerseSimilarities</c> (roadmap 0027.2, 04-model.md "Rebuild flow"): advisory lock, run row <c>running</c>, tokens of both
 /// testaments, scoring, atomic replace of all pairs plus run row <c>succeeded</c>. On an exception the run row becomes <c>failed</c> with the
-/// error and the old pairs stay. Used by the SeedDb verb and pipeline, later by the maintainer job (0027.5).
+/// error and the old pairs stay. After a succeeded replace the run is evaluated against TSK and the golden pairs (roadmap 0027.6, stored in
+/// <c>Evaluation</c>; a failing evaluation never fails the run). Used by the SeedDb verb and pipeline and the maintainer job (0027.5).
 /// </summary>
 public sealed class VerseSimilarityRebuildService
 {
@@ -111,7 +113,10 @@ public sealed class VerseSimilarityRebuildService
 
             _logger.LogInformation("Verse similarity run {RunId} succeeded: {Pairs} pairs, {Stops} stop words, {Duration:F1} s",
                 runId, success!.PairCount, success.StopWordCount, success.DurationMs / 1000.0);
-            return new VerseSimilarityRebuildResult(VerseSimilarityRebuildStatus.Succeeded, runId, success.PairCount, success.StopWordCount, success.DurationMs);
+
+            var evaluation = await StoreEvaluationAsync(runId, hits, parameters.TopK, token);
+            return new VerseSimilarityRebuildResult(VerseSimilarityRebuildStatus.Succeeded, runId, success.PairCount, success.StopWordCount, success.DurationMs,
+                Evaluation: evaluation);
         }
         catch (Exception e)
         {
@@ -131,5 +136,41 @@ public sealed class VerseSimilarityRebuildService
 
             return new VerseSimilarityRebuildResult(VerseSimilarityRebuildStatus.Failed, runId, DurationMs: durationMs, Error: error);
         }
+    }
+
+    /// <summary>
+    /// Roadmap 0027.6: recall of the raw TSK links and the golden pair ranks for <paramref name="hits"/>. Never throws: a failure (also a
+    /// cancellation) becomes <see cref="VerseSimilarityEvaluation.Error"/>. Used after a rebuild and by the dry run of the SeedDb verb.
+    /// </summary>
+    public async Task<VerseSimilarityEvaluation> EvaluateAsync(IReadOnlyCollection<VerseSimilarityHit> hits, int topK, CancellationToken token = default)
+    {
+        try
+        {
+            var links = await _repository.GetTskLinksAsync(token);
+            return VerseSimilarityEvaluator.Evaluate(hits, links, topK);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Verse similarity evaluation failed");
+            return VerseSimilarityEvaluation.Failed(topK, e is OperationCanceledException ? "cancelled" : $"{e.GetType().Name}: {e.Message}");
+        }
+    }
+
+    /// <summary>Evaluates and stores the JSON on the (already succeeded) run row; a failure here never fails the run.</summary>
+    private async Task<VerseSimilarityEvaluation> StoreEvaluationAsync(int runId, IReadOnlyCollection<VerseSimilarityHit> hits, int topK, CancellationToken token)
+    {
+        var evaluation = await EvaluateAsync(hits, topK, token);
+        try
+        {
+            // Not the caller's token: the pairs are written, the evaluation belongs to them.
+            await _repository.SetEvaluationAsync(runId, evaluation.ToJson(), CancellationToken.None);
+            _logger.LogInformation("Verse similarity run {RunId} evaluation:\n{Evaluation}", runId, evaluation.ToSummary());
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Verse similarity run {RunId}: could not store the evaluation", runId);
+        }
+
+        return evaluation;
     }
 }

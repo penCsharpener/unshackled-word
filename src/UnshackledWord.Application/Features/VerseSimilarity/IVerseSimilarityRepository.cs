@@ -33,6 +33,15 @@ public interface IVerseSimilarityRepository
     /// <summary>Marks the run <c>failed</c> with the error and the duration so far; the pairs are not touched.</summary>
     Task MarkFailedAsync(int runId, string error, int durationMs, CancellationToken token = default);
 
+    /// <summary>Stores the evaluation JSON (roadmap 0027.6) on the run row; status and counts stay as they are.</summary>
+    Task SetEvaluationAsync(int runId, string evaluationJson, CancellationToken token = default);
+
+    /// <summary>
+    /// The raw TSK links (table <c>Tsk</c>, distinct by source and target range) in STEP numbering, for the evaluation (roadmap 0027.6). The
+    /// curation layer is ignored: added links do not count, hidden ones still do.
+    /// </summary>
+    Task<IReadOnlyList<TskLink>> GetTskLinksAsync(CancellationToken token = default);
+
     /// <summary>The most recent run (any status), or null when there is none.</summary>
     Task<VerseSimilarityRunDbo?> GetLatestRunAsync(CancellationToken token = default);
 

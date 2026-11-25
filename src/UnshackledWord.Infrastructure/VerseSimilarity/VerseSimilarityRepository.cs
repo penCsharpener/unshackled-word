@@ -189,6 +189,37 @@ public sealed class VerseSimilarityRepository : IVerseSimilarityRepository
             new { Status = VerseSimilarityRunDbo.StatusFailed, DurationMs = durationMs, Error = error, RunId = runId }, cancellationToken: token));
     }
 
+    public async Task SetEvaluationAsync(int runId, string evaluationJson, CancellationToken token = default)
+    {
+        const string sql = """
+                           UPDATE "unshackled-word"."VerseSimilarityRuns" r
+                           SET "Evaluation" = CAST(@Evaluation AS jsonb)
+                           WHERE 1=1
+                               AND r."Id" = @RunId
+                           """;
+
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        await connection.ExecuteAsync(new CommandDefinition(sql, new { Evaluation = evaluationJson, RunId = runId }, cancellationToken: token));
+    }
+
+    public async Task<IReadOnlyList<TskLink>> GetTskLinksAsync(CancellationToken token = default)
+    {
+        // Raw TSK keys ("LxxRefId", "RelatedStartLxxRefId", "RelatedEndLxxRefId", English counting like the STEP keys of the pairs); the
+        // copies made for multi-mapped sources (migration 0044) collapse under DISTINCT.
+        const string sql = """
+                           SELECT DISTINCT t."LxxRefId" "SourceVerseId"
+                                         , t."RelatedStartLxxRefId" "TargetStartVerseId"
+                                         , t."RelatedEndLxxRefId" "TargetEndVerseId"
+                           FROM "unshackled-word"."Tsk" t
+                           """;
+
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        var rows = await connection.QueryAsync<(int SourceVerseId, int TargetStartVerseId, int? TargetEndVerseId)>(
+            new CommandDefinition(sql, commandTimeout: CommandTimeout, cancellationToken: token));
+
+        return rows.Select(r => new TskLink(r.SourceVerseId, r.TargetStartVerseId, r.TargetEndVerseId)).ToList();
+    }
+
     public async Task<VerseSimilarityRunDbo?> GetLatestRunAsync(CancellationToken token = default)
     {
         const string sql = """
