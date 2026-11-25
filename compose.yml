@@ -10,11 +10,18 @@ services:
       - "5432:5432"
     volumes:
       - ./temp/postgres-data:/var/lib/postgresql
+    # The migration waits for this before it runs.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-postgres}"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
 
   unshackledword.tooling.db-migration:
     #image: unshackledword.migration.postgres
     depends_on:
-      - unshackledword.tooling.database
+      unshackledword.tooling.database:
+        condition: service_healthy
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.Postgres.Migration/Dockerfile
@@ -25,8 +32,10 @@ services:
   unshackledword.tooling.seed-db:
     #image: unshackledword.tooling.seeddb
     depends_on:
-      - unshackledword.tooling.database
-      - unshackledword.tooling.db-migration
+      unshackledword.tooling.database:
+        condition: service_started
+      unshackledword.tooling.db-migration:
+        condition: service_completed_successfully
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.SeedDb/Dockerfile
@@ -44,10 +53,14 @@ services:
   unshackledword.tooling.webapi:
     #image: unshackledword.tooling.webapi
     depends_on:
-      - unshackledword.tooling.database
-      - unshackledword.tooling.seed-db
-      - unshackledword.tooling.db-migration
-      - mailpit
+      unshackledword.tooling.database:
+        condition: service_started
+      unshackledword.tooling.seed-db:
+        condition: service_started
+      unshackledword.tooling.db-migration:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_started
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.WebApi/Dockerfile
@@ -117,8 +130,10 @@ services:
   unshackledword.tooling.mcpserver:
     #image: unshackledword.tooling.mcpserver
     depends_on:
-      - unshackledword.tooling.database
-      - unshackledword.tooling.db-migration
+      unshackledword.tooling.database:
+        condition: service_started
+      unshackledword.tooling.db-migration:
+        condition: service_completed_successfully
     build:
       context: .
       dockerfile: src/UnshackledWord.Tooling.McpServer/Dockerfile

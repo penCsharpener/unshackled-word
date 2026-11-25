@@ -28,6 +28,8 @@ public class Worker : BackgroundService
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
                 // Each script is atomic: a failure halfway through a destructive script (e.g. 0024) leaves the database untouched.
                 .WithTransactionPerScript()
+                // Default would be Npgsql's 30 s: data backfills such as 0047 (Greek editions, ~20 s on dev) must not be cut off on slower hosts.
+                .WithExecutionTimeout(TimeSpan.FromMinutes(15))
                 .LogTo(loggerFactory)
                 .Build();
 
@@ -35,6 +37,9 @@ public class Worker : BackgroundService
 
         if (!result.Successful)
         {
+            // Non-zero exit: compose starts SeedDb, WebApi and McpServer only after a successful migration.
+            loggerFactory.CreateLogger<Worker>().LogCritical(result.Error, "Migration failed at script {Script}", result.ErrorScript?.Name);
+            Environment.ExitCode = 1;
         }
 
         _applicationLifetime.StopApplication();
