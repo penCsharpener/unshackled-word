@@ -41,23 +41,8 @@ public sealed class Endpoint : EndpointWithoutRequest<VerseSimilarityStatusRespo
         {
             Defaults = VerseSimilarityMapper.ToResponse(_service.DefaultParameters),
             Runs = runs.Select(VerseSimilarityMapper.ToResponse).ToList(),
-            Running = jobOfOurs?.Status == SeedJobResponse.Running || await IsLockHeldAsync(ct),
+            Running = jobOfOurs?.Status == SeedJobResponse.Running || await _repository.IsRebuildLockHeldAsync(ct),
             Job = jobOfOurs
         }, ct);
-    }
-
-    /// <summary>A rebuild of another process (SeedDb verb) holds the advisory lock.</summary>
-    private async Task<bool> IsLockHeldAsync(CancellationToken ct)
-    {
-        var rebuildLock = await _repository.TryAcquireRebuildLockAsync(ct);
-
-        if (rebuildLock is null)
-        {
-            return true;
-        }
-
-        await rebuildLock.DisposeAsync();
-
-        return false;
     }
 }

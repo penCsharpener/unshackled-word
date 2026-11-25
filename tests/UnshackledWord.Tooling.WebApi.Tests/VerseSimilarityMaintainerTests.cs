@@ -67,7 +67,7 @@ public class VerseSimilarityMaintainerTests
     [Fact]
     public async Task Start_WhenLockHeldElsewhere_Answers409AndStartsNoJob()
     {
-        _repository.TryAcquireRebuildLockAsync(Arg.Any<CancellationToken>()).Returns((IAsyncDisposable?)null);
+        _repository.IsRebuildLockHeldAsync(Arg.Any<CancellationToken>()).Returns(true);
         var endpoint = StartEndpointFor(7);
 
         await endpoint.HandleAsync(new StartVerseSimilarityRebuildRequest(), CancellationToken.None);
@@ -79,7 +79,7 @@ public class VerseSimilarityMaintainerTests
     [Fact]
     public async Task Start_WhileAJobRuns_Answers409()
     {
-        _repository.TryAcquireRebuildLockAsync(Arg.Any<CancellationToken>()).Returns(Substitute.For<IAsyncDisposable>());
+        _repository.IsRebuildLockHeldAsync(Arg.Any<CancellationToken>()).Returns(false);
         var gate = new TaskCompletionSource();
         _runner.TryStart("other", "all", async (_, _) => { await gate.Task; return new SeedJobResult(); }).ShouldNotBeNull();
         var endpoint = StartEndpointFor(7);
@@ -121,7 +121,7 @@ public class VerseSimilarityMaintainerTests
                 PairCount = 10, StopWordCount = 2, DurationMs = 1500
             }, "Maria")
         ]);
-        _repository.TryAcquireRebuildLockAsync(Arg.Any<CancellationToken>()).Returns((IAsyncDisposable?)null);
+        _repository.IsRebuildLockHeldAsync(Arg.Any<CancellationToken>()).Returns(true);
         var endpoint = Factory.Create<StatusEndpoint>(_runner, _repository, Service());
 
         await endpoint.HandleAsync(CancellationToken.None);
@@ -144,7 +144,7 @@ public class VerseSimilarityMaintainerTests
             new VerseSimilarityRunListItem(new VerseSimilarityRunDbo { Id = 4, Status = VerseSimilarityRunDbo.StatusSucceeded, Evaluation = evaluation.ToJson() }, null),
             new VerseSimilarityRunListItem(new VerseSimilarityRunDbo { Id = 3, Status = VerseSimilarityRunDbo.StatusSucceeded, Evaluation = null }, null),
         ]);
-        _repository.TryAcquireRebuildLockAsync(Arg.Any<CancellationToken>()).Returns(Substitute.For<IAsyncDisposable>());
+        _repository.IsRebuildLockHeldAsync(Arg.Any<CancellationToken>()).Returns(false);
         var endpoint = Factory.Create<StatusEndpoint>(_runner, _repository, Service());
 
         await endpoint.HandleAsync(CancellationToken.None);

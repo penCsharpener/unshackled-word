@@ -60,6 +60,25 @@ public sealed class VerseSimilarityRepository : IVerseSimilarityRepository
         return null;
     }
 
+    public async Task<bool> IsRebuildLockHeldAsync(CancellationToken token = default)
+    {
+        // pg_advisory_lock(int4, int4) shows as classid = key 1, objid = key 2, objsubid = 2, scoped to the current database.
+        const string sql = """
+                           SELECT EXISTS (SELECT 1
+                                          FROM pg_locks l
+                                          WHERE 1=1
+                                              AND l.locktype = 'advisory'
+                                              AND l.granted
+                                              AND l.database = (SELECT d.oid FROM pg_database d WHERE d.datname = current_database())
+                                              AND l.classid = @LockClass
+                                              AND l.objid = @RebuildLockKey
+                                              AND l.objsubid = 2)
+                           """;
+
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new { LockClass, RebuildLockKey }, cancellationToken: token));
+    }
+
     public async Task<int> FailInterruptedRunsAsync(CancellationToken token = default)
     {
         const string sql = """

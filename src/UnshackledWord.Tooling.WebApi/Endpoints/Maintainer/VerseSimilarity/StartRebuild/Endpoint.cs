@@ -44,16 +44,13 @@ public sealed class Endpoint : Endpoint<StartVerseSimilarityRebuildRequest, Star
             req.PhraseWeight ?? defaults.PhraseWeight);
 
         // A rebuild of another process (SeedDb) holds the advisory lock: answer 409 now instead of a failed job later.
-        var held = await _repository.TryAcquireRebuildLockAsync(ct);
-
-        if (held is null)
+        // Only looks at pg_locks: taking the lock for a moment could make a SeedDb rebuild starting at that moment skip as busy.
+        if (await _repository.IsRebuildLockHeldAsync(ct))
         {
             await ConflictAsync("A verse similarity rebuild is already running.", ct);
 
             return;
         }
-
-        await held.DisposeAsync();
 
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 

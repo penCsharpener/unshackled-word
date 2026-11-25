@@ -17,6 +17,12 @@ public interface IVerseSimilarityRepository
     /// </summary>
     Task<IAsyncDisposable?> TryAcquireRebuildLockAsync(CancellationToken token = default);
 
+    /// <summary>
+    /// Whether any session holds the rebuild lock, read from <c>pg_locks</c> without taking it (a probe that took the lock for a moment could
+    /// make a rebuild starting at that moment answer busy).
+    /// </summary>
+    Task<bool> IsRebuildLockHeldAsync(CancellationToken token = default);
+
     /// <summary>Marks runs left <c>running</c> by a crashed process as failed. Call only while holding the rebuild lock. Returns the count.</summary>
     Task<int> FailInterruptedRunsAsync(CancellationToken token = default);
 

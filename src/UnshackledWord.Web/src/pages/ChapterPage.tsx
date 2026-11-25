@@ -305,13 +305,29 @@ export function ChapterPage() {
   const onHoverReference = useCallback((verse: number, r: CrossReference | undefined) => {
     setHoveredPill(r?.word?.state === "ok" ? { verse, word: r.word } : undefined);
   }, []);
-  /** Hovered similar-verse hit (roadmap 0027.4f): its Elb1871 source positions are marked in the verse text like a pill's words. */
-  const [hoveredSimilar, setHoveredSimilar] = useState<{ verse: number; positions: number[] }>();
-  const onHoverSimilar = useCallback((verse: number, hit: SimilarVerseHit | undefined) => {
-    setHoveredSimilar(
-      hit?.sourcePositions?.length ? { verse, positions: hit.sourcePositions } : undefined,
-    );
-  }, []);
+  /**
+   * Hovered similar-verse hit (roadmap 0027.4f): its Elb1871 source positions are marked in the verse text like a pill's
+   * words. Tied to the chapter and mode it was hovered in: clicking a hit or pressing `G` unmounts the row without a
+   * mouseleave, and a stale hit must neither mark a verse of the next chapter nor hide the TSK pill marking.
+   */
+  const similarKey = showSimilar && ref ? `${ref.bookId}:${ref.chapter}` : null;
+  const [hoveredSimilarRaw, setHoveredSimilar] = useState<{
+    key: string | null;
+    verse: number;
+    positions: number[];
+  }>();
+  const onHoverSimilar = useCallback(
+    (verse: number, hit: SimilarVerseHit | undefined) => {
+      setHoveredSimilar(
+        hit?.sourcePositions?.length
+          ? { key: similarKey, verse, positions: hit.sourcePositions }
+          : undefined,
+      );
+    },
+    [similarKey],
+  );
+  const hoveredSimilar =
+    similarKey !== null && hoveredSimilarRaw?.key === similarKey ? hoveredSimilarRaw : undefined;
   /** Positions of the words of the hovered pill or similar hit: shown positions (revised verse) and Elb1871 base positions. */
   const pillWords = useMemo(() => {
     if (hoveredSimilar) {

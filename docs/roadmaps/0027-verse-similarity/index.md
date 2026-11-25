@@ -14,7 +14,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Implemented (0027.1 to 0027.7, version 0.12.9; open points at the end). This roadmap goes before 0026: migration `0049`, version 0.12.0 (0026 moved to 0050/0051 and 0.13.0).
+Implemented (0027.1 to 0027.7, version 0.12.10; end-of-roadmap review 0.12.11; open points at the end). This roadmap goes before 0026: migration `0049`, version 0.12.0 (0026 moved to 0050/0051 and 0.13.0).
 
 **0027.1 (token loader, scorer, dry run) done, with these deviations and findings:**
 
@@ -87,6 +87,14 @@ Implemented (0027.1 to 0027.7, version 0.12.9; open points at the end). This roa
 - **Frontend:** the placeholder is replaced by an "Auswertung" block for the last succeeded run (recall@30 and @10 per testament as percent with the link count, golden pairs with "Rang n" or "fehlt" plus the reverse rank, the error when the evaluation failed, a note when a run has none). The last-five-runs table gains "AT R@30", "NT R@30" and "Goldpaare (Rang)" (ranks in the fixed pair order, each with the pair as hover title and screen-reader text). i18n de/en, tokens only, no new component. Vitest: 4 new cases in `VerseSimilaritySection.test.tsx` (9 pass); full suite 1,155 passed with the same 8 known failures. Not checked in the browser.
 
 **0027.7 (docs and fresh-database check) done.** Part A on an empty Postgres 18 (throwaway container, migrations 0001-0049, then the full SeedDb, no step filter; `SeedingService.local.cs` has its filter commented out and was not touched): run 1 `succeeded`, 917,459 pairs (identical to dev DB run 9 with the same parameters: StopDfShare 0.03, TopK 30, MinScore 0.1, PhraseWeight 0.5), 130 stop words (OT 65, NT 65), all rows with `RunId` 1. Rebuild took 6.5 s (dev DB 12.9 s; scoring about 1.3 s). Evaluation identical to run 9: OT recall@30 20.8 % (41,252 of 198,510), recall@10 13.0 %; NT recall@30 21.3 % (19,508 of 91,680), recall@10 12.9 %; golden pairs Heb 4:12 → Rev 1:16 missing, → Rev 2:12 rank 13, Mk 14:58 → 2 Cor 5:1 6/1, Acts 7:48 → Acts 17:24 1/1, Ps 149:6 → Isa 41:15 4/4. Log order as planned: Greek editions refreshed, StepDataRelationshipImporter, VerseSimilarityRunner, then StepStrongsImport, mapping and revision seed. The whole seed took 3 min 5 s with cached downloads. CLAUDE.md has the architecture bullet and a decision line.
+
+**0027 review (0.12.11), spec-conformance review of 0027.1 to 0027.7:**
+
+- **Fixed, stale source-verse marking:** `ChapterPage` kept the hovered similar hit when its row unmounted without a mouseleave (clicking the hit link to another chapter, which keeps the page mounted, or pressing `G`). The stale positions then marked the verse with the same number in the next chapter and, taking precedence, blocked the TSK pill marking. The hover is now tied to the chapter and the "similar" mode it was set in.
+- **Fixed, lock probe:** the maintainer GET and the pre-check of the POST took the rebuild lock for a moment to see whether it is free; a SeedDb rebuild starting in that moment would have been skipped as busy. Both now read `pg_locks` without taking it (`IVerseSimilarityRepository.IsRebuildLockHeldAsync`); the job itself still takes the lock.
+- **Recorded, risk "run during a STEP re-import" ([07-risks.md](07-risks.md)):** the STEP import takes no advisory lock, so a maintainer rebuild started from "Wartung" while SeedDb imports STEP words can read half-imported words, and if that job still holds the lock when `VerseSimilarityRunner` runs, the SeedDb rebuild answers busy and is skipped (logged). Deferred: SeedDb imports STEP words only on a fresh database, before which no maintainer has a reason to rebuild; the remedy is another "Neu berechnen" after the seed.
+- **Checked, no change:** `markRuns` against the dev DB (all 31,168 `VerseText` equal the words joined by one space, positions 1..n without gaps, no word with a space), scorer and evaluation against [03-algorithm.md](03-algorithm.md) plus the recorded deviations, atomic replace and failed-run handling, SeedDb gate, read endpoint validation and anonymous rate limit, maintainer auth/409/400/`StartedBy`, explainer cache (gated corpus build, concurrent label map, replaced per `RunId`), i18n keys (identical in de/en), tokens only, Bruno requests, `Components.md`.
+- **Verified:** `dotnet build` 0 errors; MTP `*VerseSimilarity*` WebApi.Tests 16, Application.Tests 37, SeedDb.Tests 5 passed; web container typecheck, lint, `check:components` ok; Vitest in `node:24-slim` 1,152 passed, the 8 known failures plus 3 load-dependent ones (NoteEditor, RevisionOverviewSection) that pass when run alone.
 
 **Open points:**
 
