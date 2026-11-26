@@ -44,6 +44,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<Endpoints.Elberfelder.Search.SourceWords.SourceFormIndex>();
         services.AddScoped<Endpoints.Elberfelder.Search.SourceWords.ISourceWordRefs, Endpoints.Elberfelder.Search.SourceWords.SourceWordRefs>();
         services.AddScoped<Endpoints.Elberfelder.Search.SourceWords.ISourceWordSearchService, Endpoints.Elberfelder.Search.SourceWords.SourceWordSearchService>();
+        services.AddScoped<UnshackledWord.Application.Features.GrammarSearch.IGrammarWordReader, Endpoints.Elberfelder.Search.Grammar.GrammarWordReader>();
         services.AddSingleton<Endpoints.DataQuality.DqRefreshCoordinator>();
         services.AddSingleton<UnshackledWord.Application.Features.StrongsStats.IStatsRefreshStatus>(sp => sp.GetRequiredService<Endpoints.DataQuality.DqRefreshCoordinator>());
         services.AddScoped<Endpoints.DataQuality.IDqFactsRepository, Endpoints.DataQuality.DqFactsRepository>();

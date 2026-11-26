@@ -2,7 +2,7 @@
 
 ## What is missing
 
-The search overlay (`F`) finds German verses (tab "Verse") and Greek/Hebrew lemmas by script, Strong's number, transliteration or gloss (tab "Grundtext", `api/search/sourcewords`). It cannot answer a grammar question: "where does ἀγάπη stand in the nominative?", "all aorist passives in the NT", "Qal of ברא".
+The search overlay (`F`) finds German verses (tab "Verse") and Greek/Hebrew lemmas by script, Strong's number, transliteration or gloss (tab "Grundtext", `api/elberfelder/search/sourcewords`). It cannot answer a grammar question: "where does ἀγάπη stand in the nominative?", "all aorist passives in the NT", "Qal of ברא".
 
 The data is there, as codes nobody types:
 

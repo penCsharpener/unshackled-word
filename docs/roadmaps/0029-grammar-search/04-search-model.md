@@ -32,12 +32,12 @@ All SQL follows the project's SQL-formatting skill; user text never reaches SQL 
 
 All public, rate-limit group `Search`, `Cache-Control: public, max-age=60` (vocabulary: one day).
 
-- `GET api/search/grammar?q=&page=&book=` →
+- `GET api/elberfelder/search/grammar?q=&page=&book=` →
   `{ slots: [{ text, readAs: "lemma"|"german"|"any", lemmas: [{ strongs, lemma, transliteration, gloss }], filters: [{ key, values, negated, german }] }], totalWords, totalVerses, books: [{ bibleBookId, count }], hits: [{ bibleBookId, chapter, verse, words: [{ text, position }], matches: [{ slot, germanPositions: [], original: { form, lemma, strongs, code, keys } }] }] }`.
   400 with the error codes of [03-query-language.md](03-query-language.md#errors).
-- `GET api/search/grammar/chapter/{bibleBookId}/{chapter}?q=` → `{ verses: [{ verse, germanPositions: [], originalWordIds: [] }], total }` for one chapter: the slot CTEs restricted to the chapter's `HebRefId`s (cheap, so it runs on every chapter change while marking is on). Accepts word-only queries.
-- `GET api/search/grammar/neighbours?q=&bibleBookId=&chapter=` → `{ previous?: { bibleBookId, chapter }, next?: {...} }`, the nearest chapters with a hit (canonical order, one row each way).
-- `GET api/search/verses/chapter/{bibleBookId}/{chapter}?q=&level=` and `.../neighbours` → the same for the verse search: positions whose stem or lemma is in `BuiltVerseQuery.MatchStems` / `MatchLemmas`, in verses that match the whole query, at the reader level of the search.
-- `GET api/search/grammar/vocabulary` → keys (name, aliases, german prefix allowed, languages), values (key, label de, label en, aliases). Static per deployment.
-- `GET api/search/grammar/facets?q=&slot=&key=` → for one slot, the values of one key (or of all keys) with their word counts given the slot's other filters: `agape Kasus:` → Nominativ 36, Akkusativ 33, Dativ 29, Genitiv 18.
+- `GET api/elberfelder/search/grammar/chapter/{bibleBookId}/{chapter}?q=` → `{ verses: [{ verse, germanPositions: [], originalWordIds: [] }], total }` for one chapter: the slot CTEs restricted to the chapter's `HebRefId`s (cheap, so it runs on every chapter change while marking is on). Accepts word-only queries.
+- `GET api/elberfelder/search/grammar/neighbours?q=&bibleBookId=&chapter=` → `{ previous?: { bibleBookId, chapter }, next?: {...} }`, the nearest chapters with a hit (canonical order, one row each way).
+- `GET api/elberfelder/search/verses/chapter/{bibleBookId}/{chapter}?q=&level=` and `.../neighbours` → the same for the verse search: positions whose stem or lemma is in `BuiltVerseQuery.MatchStems` / `MatchLemmas`, in verses that match the whole query, at the reader level of the search.
+- `GET api/elberfelder/search/grammar/vocabulary` → keys (name, aliases, german prefix allowed, languages), values (key, label de, label en, aliases). Static per deployment.
+- `GET api/elberfelder/search/grammar/facets?q=&slot=&key=` → for one slot, the values of one key (or of all keys) with their word counts given the slot's other filters: `agape Kasus:` → Nominativ 36, Akkusativ 33, Dativ 29, Genitiv 18.
 - `GET api/elberfelder/strongsOccurrences/strongs/{Strongs}?grammar=` (existing endpoint, new optional parameter): filter tokens of the same language, parsed by `GrammarQueryParser` as one slot bound to that Strong's.

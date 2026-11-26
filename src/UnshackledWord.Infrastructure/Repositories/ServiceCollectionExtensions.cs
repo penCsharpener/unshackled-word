@@ -88,6 +88,13 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityExplainerCache>();
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityReadService, UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityReadService>();
 
+        // Grammar search (roadmap 0029)
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddSingleton<UnshackledWord.Application.Features.GrammarSearch.IMorphologyCodeIndex, UnshackledWord.Infrastructure.GrammarSearch.MorphologyCodeIndex>();
+        services.AddScoped<UnshackledWord.Application.Features.GrammarSearch.IGrammarSearchRepository, UnshackledWord.Infrastructure.GrammarSearch.GrammarSearchRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.GrammarSearch.GrammarFilterResolver>();
+        services.AddScoped<UnshackledWord.Application.Features.GrammarSearch.IGrammarSearchService, UnshackledWord.Application.Features.GrammarSearch.GrammarSearchService>();
+
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteService>();

@@ -8,7 +8,7 @@
 - **German grammar uses a prefix in the same box:** `dt.Kasus:akk` constrains the German word, `Kasus:akk` the original word.
 - **German labels first.** Users type the grammatical terms in German; English is low priority.
 - **The query stays in the box until it is cleared** (2026-11-26), and a switch marks the hits of the current query in the chapter being read, also after navigating. The reader can type a query, ignore the result list and read with marks instead.
-- **No version or migration numbers in this roadmap.** They are fixed when the maintainer says to start implementing (another branch has to land first).
+- **Numbering (2026-11-26):** continue from `feature/lxx` (0.13.18, migrations to 0053): version 0.14.0, migrations 0054 (Greek index) and 0055 (Hebrew index).
 
 ## Plan decisions
 
