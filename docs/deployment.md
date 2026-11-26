@@ -303,6 +303,12 @@ These are background jobs inside the API process; their state is lost if the API
 
 `assets/seed/vocab` (`entries.csv`, `keys.csv`, `meanings.csv`) holds the vocab lexicon content: entries, Strong's keys, German meanings (derived/manual, accepted, pinned, ranks), dictionary forms and the audio object *keys*. It never holds progress (cards, sessions, review log, settings, change rows) and no ids. The first start imports it; "Import" and "Update" on the maintainer page run the same sync: entries are matched by `(Track, Lemma)` (fallback: a Strong's key they hold), matched entries take the seed, unknown ones are created, entries missing from the seed are left alone. A learning-relevant difference (accepted meanings, dictionary form, keys, lemma) bumps the entry's content version and writes a change row, so learners see it in their change list; anything else is updated silently. The audio key is only set from the seed, never cleared by it. Export fails if `(Track, Lemma)` exists twice among live entries: merge or retire the duplicate first.
 
+### LXX (roadmap 0028)
+
+SeedDb downloads the Swete files (about 12 MB, pinned commit `AppSettings:DatabaseSeeding:Swete:Commit`) into `temp/SeedData/Swete/` on first run and imports the text only into an empty `LxxVerses`. The confirmed LXX tags in `assets/seed/lxx/` are applied only while no tag is confirmed; afterwards use the maintainer export ("Wartung") and import ("Importe").
+
+AI tagging runs (mode `lxx-tag`) need a model profile under `AgentMapping:Profiles` and cost money, so estimate first. Set `MaxOutputTokens` to at least 16384, or `MaxVersesPerPackage` to about 10, for this mode.
+
 ### Backups
 
 Back up Postgres, plus the seed folders if you export from this instance.

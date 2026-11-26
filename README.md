@@ -14,7 +14,7 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
      * [x] Statistical Restoration Greek New Testament (SR)
      * [x] SBL Greek New Testament and Apparatus
      * [x] Elberfelder 1871 translation exported from TheWord BibleSoftware
-     * [ ] LXX data
+     * [x] LXX data (Swete text in Rahlfs numbering, roadmap 0028: `docs/roadmaps/0028-lxx-rahlfs/`)
    * the `UnshackledWord.Tooling.WebApi` provides a way to query data imported data for studying and further enhancements
 2. A fully AI tagged Elberfelder 1871
    * [x] with the help of Google Gemini AI the Elb 1871 was fully tagged with the Step Bible Data

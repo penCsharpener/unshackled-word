@@ -16,7 +16,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3, 0028.4 and 0028.4f done; 0028.5 and 0028.5f done; 0028.6 and 0028.6f done; 0028.7 done (backend); 0028.7f done; the rest is open.
+Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). All rows 0028.1 to 0028.11 are done (versions 0.13.0 to 0.13.16, one patch bump per step; 0028.7f was committed in three parts). Open: the end-of-roadmap review, and the first real (paid) `lxx-tag` run, which needs the maintainer's approval.
 
 **0028.1 (download, parsers, `lxx-check`) done, with these findings and deviations:**
 
@@ -255,3 +255,7 @@ Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051
 - **Code:** `ChapterPage` (`hoveredLxx`, tied to the `book:chapter` key like the 0027 similar hit, so a chapter change drops it; also cleared on a mode switch), `VerseSide` prop `onHoverLxxWord`, `lib/bible/lxx.ts` `lxxHebrewWordIds`, `LxxWord.hebrewWordIds`; `OriginalVerse` untagged LXX words now report hover/focus too. `Components.md` updated.
 - **Deviation:** the chapter originals (`useChapterOriginals`, which hold the Hebrew-to-German links) are now also loaded in LXX mode (one cached request per chapter on entering the mode). A revised verse (revision words) is not marked, like the Grundtext hover.
 - **Tests:** 4 Vitest tests (`ChapterPage.lxxHover.test.tsx`: marks and clears on leave, no marks without links or with an empty list, keyboard focus, cleared on chapter change). Browser check with one temporary confirmed tag and link on Gen 1:1: hovering ΑΡΧΗ marks "Anfang"; leaving clears it; Ps 10 shows no marks. The test rows were deleted afterwards (0 confirmed tags, 0 links).
+
+**0028.11 (docs) done:** CLAUDE.md (decision and architecture), README (LXX data checked), docs/deployment.md (LXX section). Fresh-database check: see below.
+
+**Fresh-database check (2026-11-26):** scratch database `uw_0028_fresh`, all migrations (to 0053) plus a full SeedDb run in 5 min 14 s with no errors. The LXX text import gave 23,620 verses and 486,313 words in 10.4 s, the same as the dev DB, and Jer 32:1 has `HebRefId` 24025015. `LxxTagSeedRunner` applied the empty seed (0 tags, 0 links). The scratch database was dropped afterwards. The confirmed Ruth tags from the original "Done when" could not be checked, because no tag is confirmed yet.
