@@ -5,6 +5,7 @@ import {
   formatGrammarFilter,
   formatGrammarWords,
   isGrammarQuery,
+  languageOfOriginal,
   parseGrammarProblem,
   replaceGrammarToken,
   toVerseHit,
@@ -126,6 +127,31 @@ describe("grammar in words", () => {
         t,
       ),
     ).toBe("Verb, Aorist Aktiv Indikativ 3. Person Singular");
+  });
+
+  it("formats Hebrew with stem, form and state", () => {
+    expect(
+      formatGrammarWords(
+        {
+          partOfSpeech: "verb",
+          stem: "qal",
+          hebrewForm: "perfect",
+          person: "third",
+          number: "singular",
+          gender: "masculine",
+        },
+        t,
+      ),
+    ).toBe("Verb, Qal, Perfekt (Qatal) 3. Person Singular maskulin");
+    expect(
+      formatGrammarWords({ partOfSpeech: "noun", number: "singular", state: "construct" }, t),
+    ).toBe("Substantiv, Singular, Status constructus");
+  });
+
+  it("takes the language from the server, else from the Strong's prefix", () => {
+    expect(languageOfOriginal({ language: "aramaic", strongs: "H1836" })).toBe("aramaic");
+    expect(languageOfOriginal({ strongs: "H1254" })).toBe("hebrew");
+    expect(languageOfOriginal({ strongs: "G26" })).toBe("greek");
   });
 
   it("falls back to the code", () => {

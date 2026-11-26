@@ -59,6 +59,7 @@ import {
   type GrammarProblem,
   type GrammarSlot,
   isGrammarQuery,
+  languageOfOriginal,
   languageOfStrongs,
   parseGrammarProblem,
   replaceGrammarToken,
@@ -530,7 +531,7 @@ function GrammarMatchLines({ hit }: { hit: GrammarHit }) {
   return (
     <span className="grid gap-0.5 text-sm text-fg-muted">
       {hit.matches.map((match, i) => {
-        const language = languageOfStrongs(match.original.strongs);
+        const language = languageOfOriginal(match.original);
         return (
           // Matches keep the server order; the index is the identity.
           // biome-ignore lint/suspicious/noArrayIndexKey: see above
@@ -629,7 +630,7 @@ function GrammarPanel({
             <BookBarChart
               books={books}
               counts={first.books}
-              testaments={["nt"]}
+              testaments={["ot", "nt"]}
               title={t("search.books.title")}
               summary={t("search.books.summary", {
                 count: first.totalVerses,

@@ -37,6 +37,8 @@ export interface GrammarOriginalWord {
   lemma: string;
   strongs: string;
   code: string;
+  /** Language of the word; absent in answers of older servers (then the Strong's prefix decides). */
+  language?: OriginalLanguage;
   /** Decoded parts by group (`partOfSpeech`, `tense`, `case` …), values are `bible.grammar.*` keys. */
   keys: Record<string, string>;
 }
@@ -245,6 +247,7 @@ export function replaceGrammarToken(
 
 /** Group order of the decoded grammar in words. */
 const GRAMMAR_PART_ORDER = [
+  "hebrewForm",
   "tense",
   "voice",
   "mood",
@@ -255,13 +258,13 @@ const GRAMMAR_PART_ORDER = [
   "degree",
 ] as const;
 
-/** "Substantiv, Nominativ Singular feminin": part of speech, then the other parts; the raw code when nothing is decoded. */
+/** "Substantiv, Nominativ Singular feminin", "Verb, Qal, Perfekt (Qatal) 3. Person Singular maskulin": part of speech, then the other parts; the raw code when nothing is decoded. */
 export function formatGrammarWords(keys: Record<string, string>, t: TFunction, code = ""): string {
-  const rest = GRAMMAR_PART_ORDER.filter((part) => keys[part]).map((part) =>
-    t(`bible.grammar.${part}.${keys[part]}`),
-  );
-  const head = keys.partOfSpeech ? t(`bible.grammar.partOfSpeech.${keys.partOfSpeech}`) : "";
-  const text = [head, rest.join(" ")].filter(Boolean).join(", ");
+  const label = (part: string) => (keys[part] ? t(`bible.grammar.${part}.${keys[part]}`) : "");
+  const rest = GRAMMAR_PART_ORDER.map(label).filter(Boolean).join(" ");
+  const text = [label("partOfSpeech"), label("stem"), rest, label("state")]
+    .filter(Boolean)
+    .join(", ");
   return text || code;
 }
 
@@ -273,9 +276,13 @@ export function formatGrammarFilter(filter: GrammarFilter, t: TFunction): string
   return filter.negated ? t("search.grammar.not", { text: german }) : german;
 }
 
-/** Language of an original word by its Strong's prefix (`G26` → Greek). */
+/** Language of an original word by its Strong's prefix (`G26` → Greek); Aramaic shares the `H` prefix and needs the server's `language`. */
 export const languageOfStrongs = (strongs: string): OriginalLanguage =>
   strongs.startsWith("H") ? "hebrew" : "greek";
+
+/** Language of a matched word: the server's `language`, else by Strong's prefix. */
+export const languageOfOriginal = (word: Pick<GrammarOriginalWord, "language" | "strongs">) =>
+  word.language ?? languageOfStrongs(word.strongs);
 
 /** A grammar hit as a verse hit: the German words of the matches are marked. */
 export function toVerseHit(hit: GrammarHit): VerseSearchHit {
@@ -296,7 +303,7 @@ export const grammarSearchKeys = {
     ["search", "grammar", "neighbours", q, bookId, chapter] as const,
 };
 
-/** Matched words of one verse: Elb1871 positions and `StepGreekWords` ids. */
+/** Matched words of one verse: Elb1871 positions and `StepGreekWords` / `StepHebrewWords` ids (OT). */
 export interface GrammarChapterVerse {
   verse: number;
   germanPositions: number[];
