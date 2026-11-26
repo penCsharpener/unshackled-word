@@ -115,6 +115,8 @@ public sealed class AgentRunExecutor
             ExistingRunId = run.Id,
             SkipRefIds = skip,
             PromptVersion = run.PromptVersion,
+            IncludeConfirmed = run.IncludeConfirmed,
+            TextForm = run.TextForm,
         }, stop);
 
         var queue = new LinkedList<PackageWork>((built?.Packages ?? []).Select(p => new PackageWork(p)));
@@ -429,6 +431,8 @@ public sealed class AgentRunExecutor
             ExistingRunId = run.Id,
             SkipRefIds = skip,
             PromptVersion = run.PromptVersion,
+            IncludeConfirmed = run.IncludeConfirmed,
+            TextForm = run.TextForm,
         }, token);
 
         return (built?.Packages ?? []).Select(p => new PackageWork(p)).ToList();

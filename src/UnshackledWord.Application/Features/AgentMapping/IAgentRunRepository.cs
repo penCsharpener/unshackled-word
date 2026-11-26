@@ -33,6 +33,13 @@ public sealed class AgentRunRecord
     public int FromRefId { get; set; }
     public int ToRefId { get; set; }
     public string Mode { get; set; } = string.Empty;
+
+    /// <summary>Mode <c>lxx-tag</c>: units with only confirmed tags are packaged too.</summary>
+    public bool IncludeConfirmed { get; set; }
+
+    /// <summary>Mode <c>lxx-tag</c>: <c>og</c>/<c>th</c> or null (both text forms).</summary>
+    public string? TextForm { get; set; }
+
     public string Status { get; set; } = string.Empty;
     public string? StatusNote { get; set; }
     public long InputTokens { get; set; }

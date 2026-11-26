@@ -101,7 +101,7 @@ public class LxxAgentDatabaseTests
         var runId = await c.ExecuteScalarAsync<int>(AgentStoreSql.InsertRun, new
         {
             CreatedByUserId = userId, AiUserId = userId, Profile = "test", Model = "test", PromptVersion = "0", BibleBookId = 1, FromHebRefId = 1_001_001, ToHebRefId = 1_001_001,
-            Mode = "redo", Status = "completed", StatusNote = (string?)null, EstimatedTokens = (long?)null, EstimatedCostUsd = (decimal?)null, MaxTokens = (long?)null, MaxCostUsd = (decimal?)null, ApiTokenId = (int?)null,
+            Mode = "redo", Status = "completed", StatusNote = (string?)null, EstimatedTokens = (long?)null, EstimatedCostUsd = (decimal?)null, MaxTokens = (long?)null, MaxCostUsd = (decimal?)null, ApiTokenId = (int?)null, IncludeConfirmed = false, TextForm = (string?)null,
         }, t);
         var packageId = Guid.NewGuid();
         await c.ExecuteAsync(AgentStoreSql.InsertPackage, new { Id = packageId, RunId = runId, FromHebRefId = 1_001_001, ToHebRefId = 1_001_001, WordIdsHash = "x", LocalIdMap = "{}", ExpiresAt = DateTime.UtcNow.AddHours(1) }, t);

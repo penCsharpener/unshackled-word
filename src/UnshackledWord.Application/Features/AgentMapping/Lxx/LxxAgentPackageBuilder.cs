@@ -53,7 +53,7 @@ public sealed class LxxAgentPackageBuilder : ILxxAgentPackageBuilder
         var index = _index ??= new LxxCandidateIndex(LxxLexicon.Build(await _data.GetLexiconAsync(token)), await _data.GetNtFormsAsync(token));
         var skip = request.ExistingRunId is { } runId && !request.DryRun ? await _data.GetProposedUnitIdsAsync(runId, token) : new HashSet<int>();
         var drafts = BuildDrafts(range.BibleBookId, data, index)
-            .Where(d => !skip.Contains(d.Unit.Id) && (request.IncludeConfirmed || !AllConfirmed(d)))
+            .Where(d => !skip.Contains(d.Unit.Id) && (request.IncludeConfirmed || !AllConfirmed(d)) && (request.TextForm is null || d.Unit.TextForm == request.TextForm))
             .ToList();
         if (drafts.Count == 0)
         {

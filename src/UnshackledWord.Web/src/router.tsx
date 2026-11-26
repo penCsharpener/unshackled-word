@@ -14,6 +14,7 @@ import { DataQualityPage } from "@/pages/DataQualityPage";
 import { ForgotPasswordPage, MagicLinkRequestPage } from "@/pages/EmailRequestPage";
 import { LearnPage } from "@/pages/LearnPage";
 import { LemmaEditorPage } from "@/pages/LemmaEditorPage";
+import { LxxReviewPage } from "@/pages/LxxReviewPage";
 import { MagicLinkLoginPage } from "@/pages/MagicLinkLoginPage";
 import { MaintainerPage } from "@/pages/MaintainerPage";
 import { MyNotesPage } from "@/pages/MyNotesPage";
@@ -69,6 +70,11 @@ export const router = createBrowserRouter([
       { path: "edit/imports", element: <SeedImportsPage /> },
       { path: "edit/notes", element: <NoteReviewPage /> },
       { path: "edit/tsk", element: <TskReviewPage /> },
+      {
+        path: "edit/lxx/:bookId?/:chapter?",
+        element: <LxxReviewPage />,
+        handle: { layout: "fill" },
+      },
       { path: "edit/quality", element: <DataQualityPage /> },
       { path: "edit/maintainer", element: <MaintainerPage /> },
       { path: "edit/proposals/:runId?/:proposalId?", element: <AgentProposalsPage /> },

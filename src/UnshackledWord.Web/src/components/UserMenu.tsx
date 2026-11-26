@@ -36,6 +36,7 @@ export function UserMenu() {
       { key: "replace", to: "/edit/revision/replace", label: t("bulkReplace.nav") },
       { key: "noteReview", to: "/edit/notes", label: t("notes.review.nav") },
       { key: "tskReview", to: "/edit/tsk", label: t("tskReview.nav") },
+      { key: "lxxReview", to: "/edit/lxx", label: t("lxxReview.nav") },
       { key: "imports", to: "/edit/imports", label: t("imports.nav") },
     );
   }

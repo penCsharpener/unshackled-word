@@ -7,7 +7,8 @@ import type {
 /** Contracts of the agent endpoints (`api/maintainer/agent-runs`, `api/maintainer/api-tokens`), roadmap 0016. Money is USD. */
 
 /** `lemma` (roadmap 0018): links stay fixed, the model decides lemmas, STTS, roles, Hebrew morphemes and pronoun -> added word. */
-export type AgentMode = "redo" | "fill-open" | "lemma";
+/** `lxx-tag` (roadmap 0028.7): LXX units (book 1..39, Rahlfs chapters), offered only by the review page `/edit/lxx`. */
+export type AgentMode = "redo" | "fill-open" | "lemma" | "lxx-tag";
 
 export type AgentRunStatus =
   | "queued"
@@ -49,6 +50,18 @@ export interface AgentRunRangeRequest {
   /** Overrides the profile's model. */
   model?: string;
   mode?: AgentMode;
+  /** Mode `lxx-tag` only: also tag units whose words are all confirmed (default false). */
+  includeConfirmed?: boolean;
+  /** Mode `lxx-tag` only (Daniel): run only this text form. */
+  textForm?: "og" | "th";
+}
+
+/** One contiguous verse block of a multi-block run (`AgentRunDialog` prop `blocks`), same chapter/verse numbering as the request. */
+export interface AgentRunBlock {
+  fromChapter: number;
+  fromVerse: number;
+  toChapter: number;
+  toVerse: number;
 }
 
 export interface StartAgentRunRequest extends AgentRunRangeRequest {

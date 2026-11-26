@@ -2662,7 +2662,12 @@ export const en: Translation = {
       cancelled: "Cancelled",
       "budget-exceeded": "Budget exceeded",
     },
-    mode: { redo: "Decide again", "fill-open": "Fill open words only", lemma: "Lemmas & roles" },
+    mode: {
+      redo: "Decide again",
+      "fill-open": "Fill open words only",
+      lemma: "Lemmas & roles",
+      "lxx-tag": "Tag LXX",
+    },
     chapter: { aiRedo: "Let AI redo this …" },
     dialog: {
       title: "Let AI redo this",
@@ -2683,8 +2688,17 @@ export const en: Translation = {
       modeHint: {
         redo: "Every mapping of the range is decided again. Existing mappings serve as hints; only human-confirmed ones stay fixed.",
         "fill-open": "Only words without a mapping are asked. Everything else stays as it is.",
+        "lxx-tag":
+          "The AI proposes lemma, Strong's, parsing and Hebrew links for the LXX words. Nothing is stored before you confirm on /edit/lxx.",
         lemma:
           "Links stay fixed; the AI only checks lemmas, STTS tags, roles (head/unit), Hebrew morphemes and subject pronouns. Verses without work are skipped.",
+      },
+      includeConfirmed: "also re-tag confirmed verses",
+      blocks: {
+        intro: "{{count}} contiguous verse blocks, one run each, started one after the other:",
+        waiting: "{{done}} of {{count}} runs started, the next follows when the current one ends.",
+        stopped:
+          "Stopped after run {{done}} of {{count}} because that run did not end normally. The remaining blocks were not started.",
       },
       advanced: "Advanced",
       model: "Model (overrides the profile)",
@@ -3144,6 +3158,131 @@ export const en: Translation = {
     done: {
       accept: "Suggestion accepted.",
       reject: "Suggestion rejected.",
+    },
+  },
+  lxxReview: {
+    nav: "Review LXX",
+    title: "Review LXX",
+    intro:
+      "Open proposals for the Septuagint: NT-form prefills and AI proposals. Confirming stores lemma, Strong's, parsing and the links to the Hebrew text.",
+    list: {
+      label: "Books and chapters",
+      rahlfs: "Chapters as in Rahlfs",
+      book: "Book",
+      chapter: "Chapter",
+      open: "{{count}} open",
+      low: "{{count}} uncertain",
+    },
+    filter: {
+      label: "Show",
+      open: "Open verses",
+      low: "Verses with uncertain words",
+      all: "All verses",
+    },
+    form: { label: "Text form", both: "Both", og: "Old Greek", th: "Theodotion" },
+    col: {
+      position: "No.",
+      greek: "Greek",
+      lemma: "Lemma",
+      strongs: "Strong's",
+      morphology: "Parsing",
+      hebrew: "Hebrew",
+      confidence: "Confidence",
+      source: "Source",
+    },
+    badge: {
+      open: "open",
+      confirmed: "confirmed",
+      saved: "saved",
+      addition: "addition",
+      hasConfirmed: "has confirmed words",
+      run: "AI · run {{runId}}",
+      high: "certain",
+      low: "uncertain",
+      prefilled: "same as prefill",
+      changed: "changed",
+      invalid: "invalid",
+    },
+    source: { "nt-form": "NT form", ai: "AI", human: "Human" },
+    status: { proposed: "proposed", confirmed: "confirmed" },
+    hebrew: {
+      addition: "Addition without a Hebrew source",
+      linked: "linked",
+    },
+    edit: {
+      query: "Search lemma or Strong's",
+      entry: "Entry",
+      noEntry: "No TBESG entry",
+      noEntryHint:
+        "Words without an entry (e.g. names like Μωάβ) stay untagged and get links only.",
+      code: "Parsing",
+      clearTag: "Remove tag",
+      reset: "Reset",
+    },
+    action: {
+      confirm: "Confirm verse",
+      discard: "Discard verse",
+      confirmSafe: "Confirm chapter (certain)",
+      aiRedo: "AI redo for selection ({{count}})",
+      saving: "Saving …",
+      reload: "Reload",
+      showAll: "Show all verses",
+      retry: "Try again",
+    },
+    discard: {
+      title: "Discard the AI proposal for {{ref}}?",
+      text: "The AI proposal is discarded. The NT-form prefills are kept.",
+      confirm: "Discard",
+      cancel: "Cancel",
+    },
+    safe: {
+      title: "Confirm certain words",
+      text: "Confirm {{words}} certain words in {{units}} verses.",
+      low: "{{count}} uncertain words stay open.",
+      dirty: "{{count}} verses with unsaved changes are left out.",
+      confirm: "Confirm",
+      cancel: "Cancel",
+    },
+    done: {
+      confirm: "Verse confirmed ({{count}} words).",
+      edited: "Verse confirmed ({{count}} words, edited).",
+      unchanged: "Nothing changed.",
+      discard: "AI proposal discarded.",
+      safe: "{{words}} words in {{units}} verses confirmed, {{low}} uncertain left open, {{other}} skipped, {{merged}} proposals closed.",
+    },
+    error: {
+      books: "The list of open chapters could not be loaded.",
+      chapter: "The chapter could not be loaded.",
+      notFound: "This chapter does not exist in the LXX.",
+      partial: "Lemma, Strong's and parsing belong together: all three or none.",
+      strongs: "Strong's number in the form G0746 or G20969.",
+      morphology: "Invalid parsing code.",
+      conflict: "The AI proposal has been replaced or closed meanwhile.",
+      save: "The verse could not be saved.",
+      invalidCount: "{{count}} words are invalid.",
+    },
+    empty: {
+      books: "No open LXX proposals",
+      booksHint:
+        'Nothing to review. Start the NT-form prefill under Maintenance > LXX, or AI proposals with "AI redo for selection" in a chapter (address /edit/lxx/<book>/<chapter>, filter "All verses").',
+      chapter: "This chapter has no verses.",
+      open: "Nothing is open in this chapter.",
+    },
+    ai: {
+      selection:
+        "{{count}} verses selected, {{blocks}} run(s) (one per contiguous block). Unselected verses are never tagged.",
+      skipConfirmed:
+        '{{count}} selected verses with confirmed tags are skipped unless "also confirmed verses" is set in the dialog.',
+      daniel: "Only the text form shown ({{form}}) is tagged.",
+    },
+    keys: {
+      title: "Keyboard",
+      move: "j / k or arrow keys: next / previous word",
+      edit: "e or Enter: search lemma; p: parsing",
+      hebrew: "1–9, 0 = 10: link Hebrew word (type two digits quickly for 11 and up)",
+      select: 'x: select verse for "AI redo"',
+      close: "Esc: close the editor",
+      confirm: "Ctrl/Cmd+Enter: confirm verse",
     },
   },
   notes: {

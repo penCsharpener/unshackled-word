@@ -113,6 +113,8 @@ public sealed class AgentRunService : IAgentRunService
             FromRefId = plan.FromRefId,
             ToRefId = plan.ToRefId,
             Mode = plan.Mode.ToDb(),
+            IncludeConfirmed = plan.IncludeConfirmed,
+            TextForm = plan.TextForm,
             Status = AgentRunStatuses.Queued,
             EstimatedTokens = estimate.EstimatedTotalTokens,
             EstimatedCostUsd = estimate.EstimatedCostUsd,
@@ -209,6 +211,17 @@ public sealed class AgentRunService : IAgentRunService
             return Plan.Fail(AgentRunPrepareOutcome.BadRequest, "mode lxx-tag needs an OT book (1..39); chapters and verses are Rahlfs numbers.");
         }
 
+        var textForm = string.IsNullOrWhiteSpace(request.TextForm) ? null : request.TextForm.Trim().ToLowerInvariant();
+        if (textForm is not (null or "og" or "th"))
+        {
+            return Plan.Fail(AgentRunPrepareOutcome.BadRequest, "textForm must be og or th.");
+        }
+
+        if (mode != AgentMode.LxxTag && (textForm is not null || request.IncludeConfirmed))
+        {
+            return Plan.Fail(AgentRunPrepareOutcome.BadRequest, "textForm and includeConfirmed are only valid with mode lxx-tag.");
+        }
+
         if (_profiles.Find(request.Profile) is not { } profile)
         {
             return Plan.Fail(AgentRunPrepareOutcome.BadRequest, $"Profile '{request.Profile}' is not configured (AgentMapping:Profiles).");
@@ -234,6 +247,8 @@ public sealed class AgentRunService : IAgentRunService
             MaxVersesPerPackage = profile.EffectiveMaxVerses(model),
             DryRun = true,
             PromptVersion = prompt.Version,
+            IncludeConfirmed = request.IncludeConfirmed,
+            TextForm = textForm,
         }, token);
 
         if (built is null)
@@ -251,6 +266,8 @@ public sealed class AgentRunService : IAgentRunService
             Profile = profile,
             Model = model,
             Mode = mode,
+            IncludeConfirmed = request.IncludeConfirmed,
+            TextForm = textForm,
             Prompt = prompt,
             PrefixTokens = _builder.EstimateTokens(prompt.StaticPrefix),
             Built = built,
@@ -266,6 +283,8 @@ public sealed class AgentRunService : IAgentRunService
         public AgentProfile? Profile { get; init; }
         public string? Model { get; init; }
         public AgentMode Mode { get; init; }
+        public bool IncludeConfirmed { get; init; }
+        public string? TextForm { get; init; }
         public AgentPrompt? Prompt { get; init; }
         public int PrefixTokens { get; init; }
         public GetAgentPackageResponse? Built { get; init; }

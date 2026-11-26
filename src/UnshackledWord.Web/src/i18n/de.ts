@@ -2692,7 +2692,12 @@ export const de = {
       cancelled: "Abgebrochen",
       "budget-exceeded": "Budget überschritten",
     },
-    mode: { redo: "Neu entscheiden", "fill-open": "Nur offene füllen", lemma: "Lemmata & Rollen" },
+    mode: {
+      redo: "Neu entscheiden",
+      "fill-open": "Nur offene füllen",
+      lemma: "Lemmata & Rollen",
+      "lxx-tag": "LXX taggen",
+    },
     chapter: { aiRedo: "KI neu zuordnen …" },
     dialog: {
       title: "KI neu zuordnen",
@@ -2714,8 +2719,18 @@ export const de = {
       modeHint: {
         redo: "Alle Zuordnungen des Bereichs werden neu entschieden. Vorhandene Zuordnungen dienen als Hinweis, nur von Menschen bestätigte bleiben fest.",
         "fill-open": "Nur Wörter ohne Zuordnung werden gefragt. Alles andere bleibt unverändert.",
+        "lxx-tag":
+          "Die KI schlägt für die LXX-Wörter Lemma, Strong's, Bestimmung und hebräische Verknüpfungen vor. Gespeichert wird erst beim Bestätigen unter /edit/lxx.",
         lemma:
           "Die Verknüpfungen bleiben fest; die KI prüft nur Lemmata, STTS-Tags, Rollen (Kern/Formteil), hebräische Morpheme und Subjektpronomen. Verse ohne Arbeit werden übersprungen.",
+      },
+      includeConfirmed: "auch bestätigte Verse neu taggen",
+      blocks: {
+        intro: "{{count}} zusammenhängende Verse-Blöcke, je ein Lauf nacheinander:",
+        waiting:
+          "{{done}} von {{count}} Läufen gestartet, der nächste folgt nach dem Ende des laufenden.",
+        stopped:
+          "Nach Lauf {{done}} von {{count}} gestoppt, weil der Lauf nicht regulär endete. Die übrigen Blöcke wurden nicht gestartet.",
       },
       advanced: "Erweitert",
       model: "Modell (überschreibt das Profil)",
@@ -3180,6 +3195,132 @@ export const de = {
     done: {
       accept: "Vorschlag angenommen.",
       reject: "Vorschlag abgelehnt.",
+    },
+  },
+  lxxReview: {
+    nav: "LXX prüfen",
+    title: "LXX prüfen",
+    intro:
+      "Offene Vorschläge für die Septuaginta: NT-Form-Vorbelegungen und KI-Vorschläge. Bestätigen speichert Lemma, Strong's, Bestimmung und die Verknüpfungen mit dem hebräischen Text.",
+    list: {
+      label: "Bücher und Kapitel",
+      rahlfs: "Kapitel nach Rahlfs",
+      book: "Buch",
+      chapter: "Kapitel",
+      open: "{{count}} offen",
+      low: "{{count}} unsicher",
+    },
+    filter: {
+      label: "Anzeigen",
+      open: "Offene Verse",
+      low: "Verse mit unsicheren Wörtern",
+      all: "Alle Verse",
+    },
+    form: { label: "Textform", both: "Beide", og: "Old Greek", th: "Theodotion" },
+    col: {
+      position: "Nr.",
+      greek: "Griechisch",
+      lemma: "Lemma",
+      strongs: "Strong's",
+      morphology: "Bestimmung",
+      hebrew: "Hebräisch",
+      confidence: "Sicherheit",
+      source: "Quelle",
+    },
+    badge: {
+      open: "offen",
+      confirmed: "bestätigt",
+      saved: "gespeichert",
+      addition: "Zusatz",
+      hasConfirmed: "enthält bestätigte",
+      run: "KI · Lauf {{runId}}",
+      high: "sicher",
+      low: "unsicher",
+      prefilled: "wie Vorbelegung",
+      changed: "geändert",
+      invalid: "fehlerhaft",
+    },
+    source: { "nt-form": "NT-Form", ai: "KI", human: "Mensch" },
+    status: { proposed: "vorgeschlagen", confirmed: "bestätigt" },
+    hebrew: {
+      addition: "Zusatz ohne hebräische Vorlage",
+      linked: "verknüpft",
+    },
+    edit: {
+      query: "Lemma oder Strong's suchen",
+      entry: "Eintrag",
+      noEntry: "Kein TBESG-Eintrag",
+      noEntryHint:
+        "Wörter ohne Eintrag (z. B. Namen wie Μωάβ) bleiben ohne Tag und bekommen nur Verknüpfungen.",
+      code: "Bestimmung",
+      clearTag: "Tag entfernen",
+      reset: "Zurücksetzen",
+    },
+    action: {
+      confirm: "Vers bestätigen",
+      discard: "Vers verwerfen",
+      confirmSafe: "Kapitel bestätigen (sichere)",
+      aiRedo: "KI neu für Auswahl ({{count}})",
+      saving: "Speichert …",
+      reload: "Neu laden",
+      showAll: "Alle Verse zeigen",
+      retry: "Erneut versuchen",
+    },
+    discard: {
+      title: "KI-Vorschlag für {{ref}} verwerfen?",
+      text: "Der KI-Vorschlag wird verworfen. Die NT-Form-Vorbelegungen bleiben erhalten.",
+      confirm: "Verwerfen",
+      cancel: "Abbrechen",
+    },
+    safe: {
+      title: "Sichere Wörter bestätigen",
+      text: "{{words}} sichere Wörter in {{units}} Versen bestätigen.",
+      low: "{{count}} unsichere Wörter bleiben offen.",
+      dirty: "{{count}} Verse mit ungespeicherten Änderungen werden ausgelassen.",
+      confirm: "Bestätigen",
+      cancel: "Abbrechen",
+    },
+    done: {
+      confirm: "Vers bestätigt ({{count}} Wörter).",
+      edited: "Vers bestätigt ({{count}} Wörter, bearbeitet übernommen).",
+      unchanged: "Keine Änderung.",
+      discard: "KI-Vorschlag verworfen.",
+      safe: "{{words}} Wörter in {{units}} Versen bestätigt, {{low}} unsichere offen, {{other}} übersprungen, {{merged}} Vorschläge abgeschlossen.",
+    },
+    error: {
+      books: "Die Liste der offenen Kapitel konnte nicht geladen werden.",
+      chapter: "Das Kapitel konnte nicht geladen werden.",
+      notFound: "Dieses Kapitel gibt es in der LXX nicht.",
+      partial: "Lemma, Strong's und Bestimmung gehören zusammen: alle drei oder keins.",
+      strongs: "Strong's-Nummer im Format G0746 oder G20969.",
+      morphology: "Ungültige Bestimmung.",
+      conflict: "Der KI-Vorschlag wurde inzwischen ersetzt oder geschlossen.",
+      save: "Der Vers konnte nicht gespeichert werden.",
+      invalidCount: "{{count}} Wörter sind fehlerhaft.",
+    },
+    empty: {
+      books: "Keine offenen LXX-Vorschläge",
+      booksHint:
+        "Nichts zu prüfen. Die NT-Form-Vorbelegung startest du unter Wartung > LXX, KI-Vorschläge mit „KI neu für Auswahl“ in einem Kapitel (Adresse /edit/lxx/<Buch>/<Kapitel>, Filter „Alle Verse“).",
+      chapter: "Dieses Kapitel hat keine Verse.",
+      open: "In diesem Kapitel ist nichts offen.",
+    },
+    ai: {
+      selection:
+        "{{count}} Verse gewählt, {{blocks}} Lauf/Läufe (je zusammenhängender Block). Nicht gewählte Verse werden nie getaggt.",
+      skipConfirmed:
+        "{{count}} gewählte Verse mit bestätigten Tags werden übersprungen, außer im Dialog ist „auch bestätigte Verse“ gesetzt.",
+      daniel: "Nur die angezeigte Textform ({{form}}) wird getaggt.",
+    },
+    keys: {
+      title: "Tastatur",
+      move: "j / k oder Pfeiltasten: nächstes / vorheriges Wort",
+      edit: "e oder Enter: Lemma suchen; p: Bestimmung",
+      hebrew:
+        "1–9, 0 = 10: hebräisches Wort verknüpfen (zwei Ziffern schnell hintereinander für 11 und mehr)",
+      select: "x: Vers für „KI neu“ auswählen",
+      close: "Esc: Editor schließen",
+      confirm: "Strg/Cmd+Enter: Vers bestätigen",
     },
   },
   notes: {

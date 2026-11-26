@@ -127,6 +127,8 @@ public static class AgentRunSql
                                            , r."FromHebRefId" "FromRefId"
                                            , r."ToHebRefId" "ToRefId"
                                            , r."Mode"
+                                           , r."IncludeConfirmed"
+                                           , r."TextForm"
                                            , r."Status"
                                            , r."StatusNote"
                                            , r."InputTokens"

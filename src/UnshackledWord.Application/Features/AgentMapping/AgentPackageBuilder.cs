@@ -44,6 +44,9 @@ public sealed class AgentBuildRequest
     /// <summary><c>lxx-tag</c> only: also package units whose words all have confirmed tags (default: they are skipped; units with some confirmed words are sent with those words marked <c>confirmed</c>).</summary>
     public bool IncludeConfirmed { get; init; }
 
+    /// <summary><c>lxx-tag</c> only: <c>og</c> or <c>th</c> builds only the units of that Daniel text form; null builds every unit.</summary>
+    public string? TextForm { get; init; }
+
     /// <summary>MCP: the token that asks; the new run is bound to it (daily proposal cap) and named <c>mcp</c> instead of <c>manual</c>.</summary>
     public int? ApiTokenId { get; init; }
 

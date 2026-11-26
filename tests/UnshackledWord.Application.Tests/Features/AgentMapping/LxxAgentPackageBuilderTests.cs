@@ -169,12 +169,13 @@ public class LxxAgentPackageBuilderTests
         }
     }
 
-    private static AgentBuildRequest Ruth1To4(bool includeConfirmed = false) => new()
+    private static AgentBuildRequest Ruth1To4(bool includeConfirmed = false, string? textForm = null) => new()
     {
         Range = new AgentRange { BibleBookId = 8, FromChapter = 1, FromVerse = 1, ToChapter = 1, ToVerse = 4 },
         Mode = AgentMode.LxxTag,
         DryRun = true,
         IncludeConfirmed = includeConfirmed,
+        TextForm = textForm,
     };
 
     [Fact]
@@ -190,6 +191,25 @@ public class LxxAgentPackageBuilderTests
         skipped!.Packages.Single().Package.Verses.Select(v => v.Ref).ShouldBe(["Rt 1:1", "Rt 1:4"]);
         skipped.Stats.Verses.ShouldBe(2);
         included!.Packages.Single().Package.Verses.Select(v => v.Ref).ShouldBe(["Rt 1:1", "Rt 1:2", "Rt 1:4"]);
+    }
+
+    [Fact]
+    public async Task TextForm_BuildsOnlyTheUnitsOfThatForm()
+    {
+        var data = new LxxAgentTestData();
+        data.Unit(LxxAgentTestData.Ruth, 1, 1).TextForm = "og";
+        data.Unit(LxxAgentTestData.Ruth, 1, 2).TextForm = "th";
+        data.Unit(LxxAgentTestData.Ruth, 1, 4).TextForm = "og";
+        var (builder, _, _) = data.Builder();
+
+        var both = await builder.BuildAsync(Ruth1To4(includeConfirmed: true));
+        var og = await builder.BuildAsync(Ruth1To4(textForm: "og"));
+        var th = await builder.BuildAsync(Ruth1To4(textForm: "th"));
+
+        both!.Packages.Single().Package.Verses.Select(v => v.Ref).Count().ShouldBeGreaterThanOrEqualTo(3);
+        og!.Packages.Single().Package.Verses.Select(v => v.Ref).ShouldBe(["Rt 1:1 (og)", "Rt 1:4 (og)"]);
+        th!.Packages.Single().Package.Verses.Select(v => v.Ref).ShouldBe(["Rt 1:2 (th)"]);
+        (await builder.BuildAsync(Ruth1To4(textForm: "th")))!.Stats.Verses.ShouldBe(1);
     }
 
     [Fact]

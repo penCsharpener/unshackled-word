@@ -23,6 +23,12 @@ public sealed class AgentRunInsert
 
     /// <summary>MCP token that built the packages of this run (null for the batch worker and the debug endpoint).</summary>
     public int? ApiTokenId { get; init; }
+
+    /// <summary>Mode <c>lxx-tag</c>: the run also packages units whose words are all confirmed (migration 0053).</summary>
+    public bool IncludeConfirmed { get; init; }
+
+    /// <summary>Mode <c>lxx-tag</c>: <c>og</c>/<c>th</c> restricts the run to one Daniel text form; null = both (migration 0053).</summary>
+    public string? TextForm { get; init; }
 }
 
 public sealed class AgentPackageInsert

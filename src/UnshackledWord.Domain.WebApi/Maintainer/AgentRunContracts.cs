@@ -23,6 +23,12 @@ public class AgentRunRangeRequest
 
     /// <summary><c>redo</c> (default) or <c>fill-open</c>.</summary>
     public string? Mode { get; set; }
+
+    /// <summary>Mode <c>lxx-tag</c> only (roadmap 0028.7f): also tag units whose words all have confirmed tags (default false: they are skipped).</summary>
+    public bool IncludeConfirmed { get; set; }
+
+    /// <summary>Mode <c>lxx-tag</c> only (Daniel): <c>og</c> or <c>th</c> restricts the run to that text form; null covers both.</summary>
+    public string? TextForm { get; set; }
 }
 
 public sealed class EstimateAgentRunRequest : AgentRunRangeRequest

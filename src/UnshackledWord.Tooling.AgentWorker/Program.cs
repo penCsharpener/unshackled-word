@@ -18,6 +18,7 @@ namespace UnshackledWord.Tooling.AgentWorker;
 /// estimate --book 41 --from 1:1 --to 1:8 --profile ollama [--model tag] [--mode redo|fill-open|lemma|lxx-tag]
 /// run      --book 41 --from 1:1 --to 1:8 --profile ollama --user 4 [--model tag] [--mode ...] [--max-tokens N] [--max-cost USD]
 /// lxx-tag (roadmap 0028.7): an OT book, chapters and verses in Rahlfs numbering, e.g. --book 8 --from 1:1 --to 4:22 --mode lxx-tag
+///          [--include-confirmed] also tags units whose words are all confirmed; [--text-form og|th] one Daniel text form (0028.7f)
 /// resume   --run 12 [--max-tokens N] [--max-cost USD]
 /// list
 /// </code>
@@ -163,11 +164,12 @@ public partial class Program
         public Options(string[] args)
         {
             Command = args.FirstOrDefault(a => !a.StartsWith("--")) ?? string.Empty;
-            for (var i = 0; i < args.Length - 1; i++)
+            for (var i = 0; i < args.Length; i++)
             {
                 if (args[i].StartsWith("--"))
                 {
-                    _values[args[i][2..]] = args[i + 1];
+                    // A flag without a value (`--include-confirmed`) counts as "true".
+                    _values[args[i][2..]] = i + 1 < args.Length && !args[i + 1].StartsWith("--") ? args[i + 1] : "true";
                 }
             }
         }
@@ -179,6 +181,8 @@ public partial class Program
         public long? Long(string key) => _values.TryGetValue(key, out var v) ? long.Parse(v) : null;
 
         public decimal? Decimal(string key) => _values.TryGetValue(key, out var v) ? decimal.Parse(v, System.Globalization.CultureInfo.InvariantCulture) : null;
+
+        public bool Flag(string key) => _values.TryGetValue(key, out var v) && !v.Equals("false", StringComparison.OrdinalIgnoreCase);
 
         public AgentRunRangeRequest Range()
         {
@@ -192,6 +196,8 @@ public partial class Program
                 Profile = _values.GetValueOrDefault("profile") ?? throw new ArgumentException("--profile <name> is required"),
                 Model = _values.GetValueOrDefault("model"),
                 Mode = _values.GetValueOrDefault("mode"),
+                IncludeConfirmed = Flag("include-confirmed"),
+                TextForm = _values.GetValueOrDefault("text-form"),
             };
         }
 

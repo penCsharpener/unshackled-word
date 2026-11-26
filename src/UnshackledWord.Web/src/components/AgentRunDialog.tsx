@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { sumEstimates } from "@/lib/agent/estimate";
 import { formatCost, formatTokens, skippedVersesFromNote } from "@/lib/agent/format";
 import {
   useAgentEstimate,
+  useAgentEstimates,
   useAgentProfiles,
   useAgentRun,
   useStartAgentRun,
@@ -11,6 +13,7 @@ import {
 import {
   type AgentMode,
   type AgentRun,
+  type AgentRunBlock,
   type AgentRunEstimate,
   type AgentRunRangeRequest,
   isRunActive,
@@ -41,6 +44,17 @@ export interface AgentRunDialogProps {
   bookName: string;
   /** Called once with the run the server created. */
   onStarted?: (run: AgentRun) => void;
+  /** Offered modes, the first preselected (default redo / fill-open / lemma); `/edit/lxx` passes `["lxx-tag"]`. */
+  modes?: AgentMode[];
+  /** Target of "Vorschläge prüfen" (default `/edit/proposals/{runId}`). */
+  reviewHref?: (runId: number) => string;
+  /**
+   * Several contiguous verse blocks (`/edit/lxx` selection with gaps): the range fields are replaced by the read-only block list,
+   * every block is estimated on its own (the dialog shows the sum) and started as its own run, one after the other.
+   */
+  blocks?: AgentRunBlock[];
+  /** Mode `lxx-tag` in Daniel: only this text form is tagged (sent with every request). */
+  textForm?: "og" | "th";
 }
 
 const ESTIMATE_DEBOUNCE_MS = 400;
@@ -72,20 +86,23 @@ function EstimateView({
   estimate,
   override,
   loading,
+  parts,
 }: {
   estimate: AgentRunEstimate;
   override: { maxTokens?: number; maxCostUsd?: number };
   loading: boolean;
+  /** The estimates behind a sum (one per block run): an own cap applies per run, so each part is compared on its own. */
+  parts?: AgentRunEstimate[];
 }) {
   const { t, i18n } = useTranslation();
   const n = (value: number) => formatTokens(value, i18n.language);
   const maxTokens = override.maxTokens ?? estimate.maxTokens;
   const maxCost = override.maxCostUsd ?? estimate.maxCostUsd;
   const hasOverride = override.maxTokens !== undefined || override.maxCostUsd !== undefined;
-  const exceeds = hasOverride
-    ? (override.maxTokens !== undefined && estimate.estimatedTotalTokens > override.maxTokens) ||
-      (override.maxCostUsd !== undefined && estimate.estimatedCostUsd > override.maxCostUsd)
-    : estimate.exceedsCap;
+  const overCap = (e: AgentRunEstimate) =>
+    (override.maxTokens !== undefined && e.estimatedTotalTokens > override.maxTokens) ||
+    (override.maxCostUsd !== undefined && e.estimatedCostUsd > override.maxCostUsd);
+  const exceeds = hasOverride ? (parts ?? [estimate]).some(overCap) : estimate.exceedsCap;
   return (
     <section
       aria-label={t("agent.dialog.estimate.title")}
@@ -222,7 +239,16 @@ function RunProgress({ runId, bookName }: { runId: number; bookName: string }) {
   );
 }
 
-function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunDialogProps) {
+function AgentRunDialogBody({
+  onClose,
+  initial,
+  bookName,
+  onStarted,
+  modes = MODES,
+  reviewHref = (id) => `/edit/proposals/${id}`,
+  blocks,
+  textForm,
+}: AgentRunDialogProps) {
   const { t } = useTranslation();
   const profiles = useAgentProfiles();
   const start = useStartAgentRun();
@@ -231,18 +257,43 @@ function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunD
   const [toChapter, setToChapter] = useState(initial.toChapter ? String(initial.toChapter) : "");
   const [toVerse, setToVerse] = useState(initial.toVerse ? String(initial.toVerse) : "");
   const [chosenProfile, setChosenProfile] = useState<string>();
-  const [mode, setMode] = useState<AgentMode>("redo");
+  const [mode, setMode] = useState<AgentMode>(modes[0] ?? "redo");
   const [model, setModel] = useState("");
   const [maxTokens, setMaxTokens] = useState("");
   const [maxCost, setMaxCost] = useState("");
-  const [runId, setRunId] = useState<number>();
+  const [runIds, setRunIds] = useState<number[]>([]);
+  const [includeConfirmed, setIncludeConfirmed] = useState(false);
+  const blockMode = blocks !== undefined && blocks.length > 0;
+  const runId = runIds[runIds.length - 1];
 
   const profileList = profiles.data ?? [];
   const firstUsable = profileList.find((p) => p.usable)?.name;
   const profile = chosenProfile ?? firstUsable ?? "";
   const selected = profileList.find((p) => p.name === profile);
 
+  const lxxOptions = useMemo(
+    () =>
+      mode === "lxx-tag"
+        ? {
+            ...(includeConfirmed ? { includeConfirmed: true } : {}),
+            ...(textForm ? { textForm } : {}),
+          }
+        : {},
+    [mode, includeConfirmed, textForm],
+  );
+
+  const shared = useMemo(
+    () => ({
+      profile,
+      ...(model.trim() ? { model: model.trim() } : {}),
+      mode,
+      ...lxxOptions,
+    }),
+    [profile, model, mode, lxxOptions],
+  );
+
   const request = useMemo<AgentRunRangeRequest | null>(() => {
+    if (blockMode) return null;
     const fromC = toCount(fromChapter);
     const fromV = toCount(fromVerse);
     const toC = toCount(toChapter);
@@ -255,45 +306,94 @@ function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunD
       fromVerse: fromV,
       ...(toC ? { toChapter: toC } : {}),
       ...(toV ? { toVerse: toV } : {}),
-      profile,
-      ...(model.trim() ? { model: model.trim() } : {}),
-      mode,
+      ...shared,
     };
-  }, [initial.book, fromChapter, fromVerse, toChapter, toVerse, selected, profile, model, mode]);
+  }, [blockMode, initial.book, fromChapter, fromVerse, toChapter, toVerse, selected, shared]);
+
+  const blockRequests = useMemo<AgentRunRangeRequest[] | null>(
+    () =>
+      blockMode && selected?.usable
+        ? (blocks ?? []).map((b) => ({ book: initial.book, ...b, ...shared }))
+        : null,
+    [blockMode, blocks, selected, initial.book, shared],
+  );
 
   const debounced = useDebouncedValue(request, ESTIMATE_DEBOUNCE_MS);
-  const settled = debounced === request;
-  const estimate = useAgentEstimate(debounced, true);
+  const debouncedBlocks = useDebouncedValue(blockRequests, ESTIMATE_DEBOUNCE_MS);
+  const settled = blockMode ? debouncedBlocks === blockRequests : debounced === request;
+  const single = useAgentEstimate(debounced, true);
+  const multi = useAgentEstimates(debouncedBlocks);
+  const multiReady =
+    debouncedBlocks !== null && multi.length > 0 && multi.every((q) => q.isSuccess);
+  const multiData = multiReady ? multi.map((q) => q.data as AgentRunEstimate) : undefined;
+  const multiError = multi.find((q) => q.isError)?.error;
+  const estimate = blockMode
+    ? {
+        data: multiData ? sumEstimates(multiData) : undefined,
+        isError: multiError !== undefined,
+        error: multiError,
+        isSuccess: multiReady,
+        isFetching: multi.some((q) => q.isFetching),
+        isPlaceholderData: false,
+      }
+    : single;
   const override = {
     maxTokens: toCount(maxTokens),
     maxCostUsd: Number(maxCost) > 0 ? Number(maxCost) : undefined,
   };
   const ready =
-    request !== null &&
+    (blockMode ? blockRequests !== null : request !== null) &&
     settled &&
     estimate.isSuccess &&
     !estimate.isPlaceholderData &&
     !start.isPending;
 
-  function begin() {
-    if (!request) return;
+  function startRequest(body: AgentRunRangeRequest) {
     start.mutate(
       {
-        ...request,
+        ...body,
         ...(override.maxTokens ? { maxTokens: override.maxTokens } : {}),
         ...(override.maxCostUsd ? { maxCostUsd: override.maxCostUsd } : {}),
       },
       {
         onSuccess: (run) => {
-          setRunId(run.id);
+          setRunIds((ids) => [...ids, run.id]);
           onStarted?.(run);
         },
       },
     );
   }
 
+  function begin() {
+    if (blockMode) {
+      const first = blockRequests?.[0];
+      if (first) startRequest(first);
+    } else if (request) {
+      startRequest(request);
+    }
+  }
+
   const progressRun = useAgentRun(runId ?? null);
-  const finished = progressRun.data !== undefined && !isRunActive(progressRun.data.status);
+  const lastStatus = progressRun.data?.status;
+  const total = blockMode ? (blocks?.length ?? 1) : 1;
+  // Blocks run one after the other: the next block starts when the previous run completed (a failed or capped run stops the chain).
+  const nextBlock = runIds.length < total ? blockRequests?.[runIds.length] : undefined;
+  const startRef = useRef(startRequest);
+  startRef.current = startRequest;
+  useEffect(() => {
+    if (nextBlock && lastStatus === "completed" && !start.isPending && !start.isError) {
+      startRef.current(nextBlock);
+    }
+  }, [nextBlock, lastStatus, start.isPending, start.isError]);
+  const chainStopped =
+    nextBlock !== undefined &&
+    lastStatus !== undefined &&
+    !isRunActive(lastStatus) &&
+    lastStatus !== "completed";
+  const finished =
+    progressRun.data !== undefined &&
+    !isRunActive(progressRun.data.status) &&
+    (nextBlock === undefined || chainStopped);
   const startErrors = start.isError ? describeApiErrors(start.error) : [];
   const estimateErrors = estimate.isError ? describeApiErrors(estimate.error) : [];
 
@@ -310,7 +410,7 @@ function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunD
     ) : (
       <div className="flex flex-wrap justify-end gap-2">
         {(progressRun.data?.proposedVerses ?? 0) > 0 ? (
-          <Link to={`/edit/proposals/${runId}`} className={buttonClasses({ variant: "secondary" })}>
+          <Link to={reviewHref(runId ?? 0)} className={buttonClasses({ variant: "secondary" })}>
             {t("agent.dialog.review")}
           </Link>
         ) : null}
@@ -336,7 +436,24 @@ function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunD
       footer={footer}
     >
       {runId !== undefined ? (
-        <RunProgress runId={runId} bookName={bookName} />
+        <div className="flex flex-col gap-4">
+          {runIds.map((id) => (
+            <RunProgress key={id} runId={id} bookName={bookName} />
+          ))}
+          {nextBlock && !chainStopped ? (
+            <p role="status" className="text-sm text-fg-muted">
+              {t("agent.dialog.blocks.waiting", { done: runIds.length, count: total })}
+            </p>
+          ) : null}
+          {chainStopped ? (
+            <p role="alert" className="text-sm text-fg-muted">
+              {t("agent.dialog.blocks.stopped", { done: runIds.length, count: total })}
+            </p>
+          ) : null}
+          {startErrors.map((message) => (
+            <FormError key={message} message={message} />
+          ))}
+        </div>
       ) : (
         <form
           className="flex flex-col gap-4"
@@ -349,44 +466,64 @@ function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunD
             <legend className="mb-1 font-medium">
               {t("agent.dialog.range")}: {bookName}
             </legend>
-            <div className="flex flex-wrap items-end gap-3">
-              <TextField
-                label={t("agent.dialog.fromChapter")}
-                type="number"
-                min={1}
-                size="sm"
-                value={fromChapter}
-                onChange={setFromChapter}
-              />
-              <TextField
-                label={t("agent.dialog.fromVerse")}
-                type="number"
-                min={1}
-                size="sm"
-                value={fromVerse}
-                onChange={setFromVerse}
-              />
-              <TextField
-                label={t("agent.dialog.toChapter")}
-                type="number"
-                min={1}
-                size="sm"
-                required={false}
-                placeholder={fromChapter}
-                value={toChapter}
-                onChange={setToChapter}
-              />
-              <TextField
-                label={t("agent.dialog.toVerse")}
-                type="number"
-                min={1}
-                size="sm"
-                required={false}
-                placeholder={toChapter.trim() ? t("agent.dialog.chapterEnd") : fromVerse}
-                value={toVerse}
-                onChange={setToVerse}
-              />
-            </div>
+            {blockMode ? (
+              <>
+                <p className="text-sm text-fg-muted">
+                  {t("agent.dialog.blocks.intro", { count: blocks?.length ?? 0 })}
+                </p>
+                <ul className="flex flex-col gap-1 text-sm">
+                  {(blocks ?? []).map((b) => (
+                    <li key={`${b.fromChapter}:${b.fromVerse}`} className="tabular-nums">
+                      {b.fromChapter},{b.fromVerse}
+                      {b.toChapter === b.fromChapter && b.toVerse === b.fromVerse
+                        ? ""
+                        : b.toChapter === b.fromChapter
+                          ? `–${b.toVerse}`
+                          : `–${b.toChapter},${b.toVerse}`}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <div className="flex flex-wrap items-end gap-3">
+                <TextField
+                  label={t("agent.dialog.fromChapter")}
+                  type="number"
+                  min={1}
+                  size="sm"
+                  value={fromChapter}
+                  onChange={setFromChapter}
+                />
+                <TextField
+                  label={t("agent.dialog.fromVerse")}
+                  type="number"
+                  min={1}
+                  size="sm"
+                  value={fromVerse}
+                  onChange={setFromVerse}
+                />
+                <TextField
+                  label={t("agent.dialog.toChapter")}
+                  type="number"
+                  min={1}
+                  size="sm"
+                  required={false}
+                  placeholder={fromChapter}
+                  value={toChapter}
+                  onChange={setToChapter}
+                />
+                <TextField
+                  label={t("agent.dialog.toVerse")}
+                  type="number"
+                  min={1}
+                  size="sm"
+                  required={false}
+                  placeholder={toChapter.trim() ? t("agent.dialog.chapterEnd") : fromVerse}
+                  value={toVerse}
+                  onChange={setToVerse}
+                />
+              </div>
+            )}
           </fieldset>
 
           <div className="flex flex-col gap-2">
@@ -412,9 +549,19 @@ function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunD
               label={t("agent.dialog.mode")}
               value={mode}
               onChange={(value) => setMode(value as AgentMode)}
-              options={MODES.map((m) => ({ value: m, label: t(`agent.mode.${m}`) }))}
+              options={modes.map((m) => ({ value: m, label: t(`agent.mode.${m}`) }))}
             />
             <p className="text-sm text-fg-muted">{t(`agent.dialog.modeHint.${mode}`)}</p>
+            {mode === "lxx-tag" ? (
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={includeConfirmed}
+                  onChange={(event) => setIncludeConfirmed(event.target.checked)}
+                />
+                {t("agent.dialog.includeConfirmed")}
+              </label>
+            ) : null}
           </div>
 
           <details className="rounded-md border border-border p-3">
@@ -462,8 +609,9 @@ function AgentRunDialogBody({ onClose, initial, bookName, onStarted }: AgentRunD
               estimate={estimate.data}
               override={override}
               loading={!ready && (estimate.isFetching || !settled)}
+              parts={blockMode ? multiData : undefined}
             />
-          ) : request !== null ? (
+          ) : request !== null || blockRequests !== null ? (
             <p role="status" className="text-fg-muted">
               {t("agent.dialog.estimate.loading")}
             </p>

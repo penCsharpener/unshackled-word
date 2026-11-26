@@ -131,4 +131,78 @@ public class AgentRunServiceTests
         h.Client.Calls.ShouldBe(0);
         h.Runs.Get(runId).Status.ShouldBe(AgentRunStatuses.Cancelled);
     }
+
+    private static AgentRunService LxxService(AgentRunHarness h, out List<AgentBuildRequest> requests)
+    {
+        var seen = new List<AgentBuildRequest>();
+        requests = seen;
+        var builder = Substitute.For<IAgentPackageBuilder>();
+        builder.BuildAsync(Arg.Do<AgentBuildRequest>(seen.Add), Arg.Any<CancellationToken>()).Returns(_ =>
+        {
+            var package = new AgentPackageDto { PackageId = Guid.NewGuid().ToString(), Lang = "lxx" };
+            package.Verses.Add(new AgentVerseDto { V = "v1", Ref = "Rt 1:1" });
+            var response = new GetAgentPackageResponse { Stats = new AgentTokenStats { Verses = 1 } };
+            response.Packages.Add(new AgentPackageEnvelope { Package = package, EstimatedTokens = 100, FromRefId = 8001001, ToRefId = 8001001 });
+            return Task.FromResult<GetAgentPackageResponse?>(response);
+        });
+
+        return new AgentRunService(builder, h.Runs, h.Store, h.Prompts, h.Configuration);
+    }
+
+    private static StartAgentRunRequest Lxx(Action<StartAgentRunRequest>? configure = null)
+    {
+        var request = new StartAgentRunRequest { Book = 8, FromChapter = 1, FromVerse = 1, ToVerse = 4, Profile = "p", Mode = "lxx-tag" };
+        configure?.Invoke(request);
+
+        return request;
+    }
+
+    [Fact]
+    public async Task LxxEstimateAndStart_CarryIncludeConfirmedAndTextForm_ToTheBuilderAndTheStoredRun()
+    {
+        var h = new AgentRunHarness();
+        var service = LxxService(h, out var requests);
+        AgentRunInsert? inserted = null;
+        h.Store.CreateRunAsync(Arg.Do<AgentRunInsert>(r => inserted = r), Arg.Any<CancellationToken>()).Returns(5);
+
+        var estimate = await service.EstimateAsync(Lxx(r => { r.IncludeConfirmed = true; r.TextForm = " TH "; }));
+        var created = await service.CreateRunAsync(Lxx(r => { r.IncludeConfirmed = true; r.TextForm = "og"; }), userId: 3);
+
+        estimate.Outcome.ShouldBe(AgentRunPrepareOutcome.Ok);
+        created.Outcome.ShouldBe(AgentRunPrepareOutcome.Ok);
+        requests.Select(r => (r.IncludeConfirmed, r.TextForm)).ShouldBe([(true, "th"), (true, "og")]);
+        inserted!.IncludeConfirmed.ShouldBeTrue();
+        inserted.TextForm.ShouldBe("og");
+    }
+
+    [Fact]
+    public async Task LxxStart_WithoutTheOptions_StoresDefaults()
+    {
+        var h = new AgentRunHarness();
+        var service = LxxService(h, out var requests);
+        AgentRunInsert? inserted = null;
+        h.Store.CreateRunAsync(Arg.Do<AgentRunInsert>(r => inserted = r), Arg.Any<CancellationToken>()).Returns(5);
+
+        (await service.CreateRunAsync(Lxx(), userId: 3)).Outcome.ShouldBe(AgentRunPrepareOutcome.Ok);
+
+        requests.Single().IncludeConfirmed.ShouldBeFalse();
+        requests.Single().TextForm.ShouldBeNull();
+        inserted!.IncludeConfirmed.ShouldBeFalse();
+        inserted.TextForm.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData("x", false, "lxx-tag")]
+    [InlineData("og", false, "redo")]
+    [InlineData(null, true, "fill-open")]
+    public async Task TheLxxOptions_AreABadRequest_ForOtherValuesAndOtherModes(string? textForm, bool includeConfirmed, string mode)
+    {
+        var h = new AgentRunHarness();
+        var service = LxxService(h, out var requests);
+
+        var result = await service.EstimateAsync(Lxx(r => { r.TextForm = textForm; r.IncludeConfirmed = includeConfirmed; r.Mode = mode; if (mode != "lxx-tag") { r.Book = 41; } }));
+
+        result.Outcome.ShouldBe(AgentRunPrepareOutcome.BadRequest);
+        requests.ShouldBeEmpty();
+    }
 }

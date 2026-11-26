@@ -2,6 +2,7 @@ import {
   keepPreviousData,
   queryOptions,
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -57,6 +58,19 @@ export function useAgentEstimate(request: AgentRunRangeRequest | null, enabled: 
     gcTime: 60_000,
     retry: false,
     placeholderData: keepPreviousData,
+  });
+}
+
+/** One estimate per request (multi-block runs); `requests` empty or null disables all. Same cache entries as `useAgentEstimate`. */
+export function useAgentEstimates(requests: AgentRunRangeRequest[] | null) {
+  return useQueries({
+    queries: (requests ?? []).map((request) => ({
+      queryKey: agentKeys.estimate(request),
+      queryFn: ({ signal }: { signal: AbortSignal }) => agentApi.estimate(request, signal),
+      staleTime: 30_000,
+      gcTime: 60_000,
+      retry: false,
+    })),
   });
 }
 

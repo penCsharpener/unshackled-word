@@ -227,3 +227,56 @@ describe("AgentRunDialog", () => {
     expect(screen.queryByRole("progressbar")).toBeNull();
   });
 });
+
+describe("AgentRunDialog lxx-tag options (roadmap 0028.7f)", () => {
+  it("offers 'also re-tag confirmed verses' only for lxx-tag and sends includeConfirmed and textForm", async () => {
+    const fetchMock = stubFetch({
+      ...base,
+      "POST /maintainer/agent-runs": () => json(run, 202),
+      "GET /maintainer/agent-runs/7": () => json({ ...run, status: "completed" }),
+    });
+    setup({
+      modes: ["lxx-tag"],
+      initial: { book: 27, fromChapter: 1, fromVerse: 1, toChapter: 1, toVerse: 3 },
+      textForm: "th",
+    });
+    const checkbox = await screen.findByLabelText("auch bestätigte Verse neu taggen");
+    expect(checkbox).not.toBeChecked();
+    await waitFor(
+      () =>
+        expect(bodiesOf(fetchMock, "POST /maintainer/agent-runs/estimate")[0]).toMatchObject({
+          mode: "lxx-tag",
+          textForm: "th",
+        }),
+      { timeout: 2000 },
+    );
+    expect(bodiesOf(fetchMock, "POST /maintainer/agent-runs/estimate")[0]).not.toHaveProperty(
+      "includeConfirmed",
+    );
+    await userEvent.click(checkbox);
+    const start = screen.getByRole("button", { name: "Lauf starten" });
+    await waitFor(
+      () =>
+        expect(bodiesOf(fetchMock, "POST /maintainer/agent-runs/estimate").at(-1)).toMatchObject({
+          includeConfirmed: true,
+        }),
+      { timeout: 2000 },
+    );
+    await waitFor(() => expect(start).toBeEnabled(), { timeout: 2000 });
+    await userEvent.click(start);
+    await waitFor(() =>
+      expect(bodiesOf(fetchMock, "POST /maintainer/agent-runs")[0]).toMatchObject({
+        includeConfirmed: true,
+        textForm: "th",
+        mode: "lxx-tag",
+      }),
+    );
+  });
+
+  it("has no such checkbox for the default modes", async () => {
+    stubFetch(base);
+    setup();
+    await screen.findByLabelText(/Anbieter-Profil/);
+    expect(screen.queryByLabelText("auch bestätigte Verse neu taggen")).toBeNull();
+  });
+});

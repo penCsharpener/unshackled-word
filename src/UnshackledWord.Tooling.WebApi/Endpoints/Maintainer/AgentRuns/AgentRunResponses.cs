@@ -28,5 +28,13 @@ public sealed class AgentRunRangeValidator : AbstractValidator<AgentRunRangeRequ
         RuleFor(x => x.Profile).NotEmpty().MaximumLength(100);
         RuleFor(x => x.Model).MaximumLength(200);
         RuleFor(x => x.Mode).Must(m => AgentModes.TryParse(m, out _)).WithMessage(AgentModes.ValidModesMessage);
+        RuleFor(x => x.TextForm)
+            .Must(f => string.IsNullOrWhiteSpace(f) || f.Trim().ToLowerInvariant() is "og" or "th")
+            .WithMessage("textForm must be og or th.");
+        RuleFor(x => x)
+            .Must(x => AgentModes.TryParse(x.Mode, out var mode) && mode == AgentMode.LxxTag || (string.IsNullOrWhiteSpace(x.TextForm) && !x.IncludeConfirmed))
+            .When(x => AgentModes.TryParse(x.Mode, out _))
+            .WithName("mode")
+            .WithMessage("textForm and includeConfirmed are only valid with mode lxx-tag.");
     }
 }
