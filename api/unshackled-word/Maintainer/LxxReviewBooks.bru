@@ -1,0 +1,19 @@
+meta {
+  name: LxxReviewBooks
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{url}}maintainer/lxx/review/books
+  body: none
+  auth: inherit
+}
+
+docs {
+  LXX review (roadmap 0028.7f): books and Rahlfs chapters with open work (proposed tags or open AI proposals), with AI unit and low-word counts. 401 anonymous; 403 other roles.
+}
+
+settings {
+  encodeUrl: true
+}

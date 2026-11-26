@@ -52,7 +52,9 @@ public sealed class LxxAgentPackageBuilder : ILxxAgentPackageBuilder
 
         var index = _index ??= new LxxCandidateIndex(LxxLexicon.Build(await _data.GetLexiconAsync(token)), await _data.GetNtFormsAsync(token));
         var skip = request.ExistingRunId is { } runId && !request.DryRun ? await _data.GetProposedUnitIdsAsync(runId, token) : new HashSet<int>();
-        var drafts = BuildDrafts(range.BibleBookId, data, index).Where(d => !skip.Contains(d.Unit.Id)).ToList();
+        var drafts = BuildDrafts(range.BibleBookId, data, index)
+            .Where(d => !skip.Contains(d.Unit.Id) && (request.IncludeConfirmed || !AllConfirmed(d)))
+            .ToList();
         if (drafts.Count == 0)
         {
             return null;
@@ -139,6 +141,9 @@ public sealed class LxxAgentPackageBuilder : ILxxAgentPackageBuilder
             })
             .ToList();
     }
+
+    /// <summary>Every word of the unit has a confirmed tag: nothing is left for the model (05-tagging.md, "KI neu" skips such units unless "auch bestätigte").</summary>
+    public static bool AllConfirmed(LxxUnitDraft draft) => draft.Words.Count > 0 && draft.Words.All(w => w.TagStatus == "confirmed");
 
     private int EstimateTokens(string text) => (int)Math.Ceiling(text.Sum(c => c < 128 ? 1 : 2) / _options.CharsPerToken);
 

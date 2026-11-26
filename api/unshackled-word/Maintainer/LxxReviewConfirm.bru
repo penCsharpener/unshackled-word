@@ -1,0 +1,28 @@
+meta {
+  name: LxxReviewConfirm
+  type: http
+  seq: 26
+}
+
+post {
+  url: {{url}}maintainer/lxx/review/confirm
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "lxxVerseId": 1,
+    "proposalId": null,
+    "words": [
+      { "lxxWordId": 1, "lemma": "καί", "strongs": "G2532", "morphology": "CONJ", "hebrewWordIds": [] }
+    ]
+  }
+}
+docs {
+  Confirms one unit: writes confirmed tags (source ai, nt-form or human), replaces links, appends one audit row (confirm or edit) and closes the AI proposal (merged or edited-merged). 400 rule failure (messages in errors); 404 unknown unit; 409 stale proposal. Replace the ids with real ones from LxxReviewChapter.
+}
+
+settings {
+  encodeUrl: true
+}

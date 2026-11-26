@@ -37,7 +37,20 @@ A failing word is dropped and recorded (`strongs-unknown`, `lemma-mismatch`, `mo
 
 ## Review and confirm
 
-- `/edit/lxx` lists verses that have open proposals, filtered by book and confidence.
-- Confirming a verse writes `LxxWordTags` (`confirmed`, `Source` `ai` or `human` when edited) and `LxxHebrewLinks`, appends one `LxxTagAudit` row, and sets the proposal to `merged` or `edited-merged`.
-- "Ganzes Kapitel bestätigen" confirms only the words of `high` confidence that the maintainer has seen on screen; `low` words stay open.
-- A newer run on a verse supersedes its open proposals but never overwrites confirmed tags. "KI neu für diesen Bereich" (the CLAUDE.md requirement) runs only on verses without confirmed tags unless the maintainer ticks "auch bestätigte".
+Backend built in 0028.7f (the page `/edit/lxx` follows, see [06-ui.md](06-ui.md)). Two proposal sources: `proposed` rows of `LxxWordTags` (pass 1, `nt-form`) and open AI proposals (`AgentVerseProposals`, language `lxx`, one per unit). Chapters are Rahlfs chapters; a unit is one `LxxVerses` row. All endpoints are Admin/Maintainer, under `api/maintainer/lxx/`:
+
+- `GET review/books`: books with open work (units with a proposed tag or an open AI proposal), chapters ascending, with AI unit and `low` word counts.
+- `GET review/{bibleBookId}/{chapter}`: every unit in Swete order with words, current tag (any status, lemma in TBESG spelling), stored links, the unit's Hebrew words (numbered 1.. as in the package), the open AI proposal (id, run, flags, per-word answer with confidence). 404 for a chapter without LXX verses.
+- `POST review/confirm` `{lxxVerseId, proposalId?, words:[{lxxWordId, lemma?, strongs?, morphology?, hebrewWordIds}]}`: confirms one unit as shown. 400 when a rule fails (Strong's not in TBESG, lemma not that entry's, code fails `GreekMorphologyCode`, Hebrew word not of the unit's verse or a link in an addition, lemma/Strong's/code not all three), 404 unknown unit, 409 when the open proposal is not `proposalId`.
+- `POST review/discard` `{lxxVerseId, proposalId}`: AI proposal `discarded`, audit `reject`; tags and nt-form proposals stay (pass 1 would write them again anyway). 409 when not open.
+- `POST review/confirm-chapter-safe` `{bibleBookId, chapter, units:[{lxxVerseId, proposalId, lxxWordIds}]}`: "Kapitel bestätigen (sichere)". Confirms only the listed words (what the maintainer saw) whose AI answer is `high` and that are not confirmed; `low`, words without an AI answer (an nt-form prefill alone is not safe) and already confirmed words are skipped and counted; units whose proposal changed are returned as `staleUnits`. The proposal becomes `merged` only when every word of it is confirmed as proposed, otherwise it stays open.
+- `GET lexicon?q=&limit=` (TBESG by Strong's number or lemma start, accents optional) and `GET morphology?code=` (live parse check) for the edit cells.
+
+One transaction per call locks the units, re-reads the state, closes the proposals first (a proposal that is no longer open aborts everything, `Stale`/409), upserts confirmed `LxxWordTags` (user = reviewer), replaces the words' `LxxHebrewLinks` (`confirmed`) and appends one `LxxTagAudit` row per unit with before/after snapshots. Rules of the write:
+
+- Source of a confirmed tag: `ai` when it equals the open AI answer for the word, else the current tag's source when it equals the current tag (`nt-form` for an accepted prefill), else `human`. "Equal" is Strong's, code and TBESG lemma. The stored lemma is always TBESG's.
+- Audit action `confirm`, or `edit` when a confirmed tag or link changes; nothing changed writes no row. Proposal `merged` only when tags and links equal the AI answer exactly, else `edited-merged`.
+- A word with all three tag fields empty keeps its stored tag and only gets its links (words without a TBESG entry, e.g. Μωάβ).
+- A newer run on a verse supersedes its open proposals but never overwrites confirmed tags.
+
+"KI neu für diesen Bereich" (the CLAUDE.md requirement): `LxxAgentPackageBuilder` skips units whose words all have confirmed tags unless `AgentBuildRequest.IncludeConfirmed` is set (the "auch bestätigte" tick); a unit with some confirmed words is sent with those words marked `"confirmed"` in the prefill, so the model copies them. The builder option exists; passing it through the run start request (`api/maintainer/agent-runs`) belongs to the frontend step.

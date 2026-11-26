@@ -152,6 +152,61 @@ public class LxxAgentPackageBuilderTests
         await store.DidNotReceive().CreateRunAsync(Arg.Any<AgentRunInsert>(), Arg.Any<CancellationToken>());
     }
 
+    private static void Confirm(LxxAgentTestData data, LxxAgentUnitRow unit, Func<LxxAgentWordRow, bool>? which = null)
+    {
+        // The fixture list is shared between tests: replace rows, never mutate them.
+        for (var i = 0; i < data.Words.Count; i++)
+        {
+            var w = data.Words[i];
+            if (w.LxxVerseId == unit.Id && (which?.Invoke(w) ?? true))
+            {
+                data.Words[i] = new LxxAgentWordRow
+                {
+                    Id = w.Id, LxxVerseId = w.LxxVerseId, Position = w.Position, Greek = w.Greek,
+                    TagLemma = "καί", TagStrongs = "G2532", TagMorphology = "CONJ", TagStatus = "confirmed", TagSource = "human",
+                };
+            }
+        }
+    }
+
+    private static AgentBuildRequest Ruth1To4(bool includeConfirmed = false) => new()
+    {
+        Range = new AgentRange { BibleBookId = 8, FromChapter = 1, FromVerse = 1, ToChapter = 1, ToVerse = 4 },
+        Mode = AgentMode.LxxTag,
+        DryRun = true,
+        IncludeConfirmed = includeConfirmed,
+    };
+
+    [Fact]
+    public async Task UnitsWhoseWordsAreAllConfirmed_AreSkippedByDefault_AndSentWithIncludeConfirmed()
+    {
+        var data = new LxxAgentTestData();
+        Confirm(data, data.Unit(LxxAgentTestData.Ruth, 1, 2));
+        var (builder, _, _) = data.Builder();
+
+        var skipped = await builder.BuildAsync(Ruth1To4());
+        var included = await builder.BuildAsync(Ruth1To4(includeConfirmed: true));
+
+        skipped!.Packages.Single().Package.Verses.Select(v => v.Ref).ShouldBe(["Rt 1:1", "Rt 1:4"]);
+        skipped.Stats.Verses.ShouldBe(2);
+        included!.Packages.Single().Package.Verses.Select(v => v.Ref).ShouldBe(["Rt 1:1", "Rt 1:2", "Rt 1:4"]);
+    }
+
+    [Fact]
+    public async Task AUnitWithSomeConfirmedWords_IsSent_WithThoseWordsMarkedConfirmed()
+    {
+        var data = new LxxAgentTestData();
+        Confirm(data, data.Unit(LxxAgentTestData.Ruth, 1, 4), w => w.Position == 1);
+        var (builder, _, _) = data.Builder();
+
+        var built = await builder.BuildAsync(Ruth1To4());
+
+        var verse = built!.Packages.Single().Package.Verses.Single(v => v.Ref == "Rt 1:4");
+        verse.Lxx!.Single(r => (int)r[0] == 1)[2].ShouldBe(new object[] { "καί", "G2532", "CONJ", "confirmed" });
+        verse.Lxx!.Where(r => r.Length > 2 && r[2] is object[] a && a.Length == 4).Count().ShouldBe(1);
+        built.Packages.Single().Stats.Fixed.ShouldBeGreaterThanOrEqualTo(1);
+    }
+
     [Fact]
     public async Task TheMappingBuilder_HandsLxxRequestsOn()
     {

@@ -1,0 +1,25 @@
+meta {
+  name: LxxReviewDiscard
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{url}}maintainer/lxx/review/discard
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "lxxVerseId": 1,
+    "proposalId": 1
+  }
+}
+docs {
+  Discards the open AI proposal of a unit (audit action reject); tags and nt-form proposals stay. 404 unknown unit; 409 proposal not open or not the shown one.
+}
+
+settings {
+  encodeUrl: true
+}

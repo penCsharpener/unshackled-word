@@ -1,0 +1,19 @@
+meta {
+  name: LxxLexicon
+  type: http
+  seq: 29
+}
+
+get {
+  url: {{url}}maintainer/lxx/lexicon?q=G746&limit=10
+  body: none
+  auth: inherit
+}
+
+docs {
+  TBESG lookup: q is a Strong's number or a lemma start (accents optional). 400 empty q.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,28 @@
+meta {
+  name: LxxReviewConfirmSafe
+  type: http
+  seq: 28
+}
+
+post {
+  url: {{url}}maintainer/lxx/review/confirm-chapter-safe
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "bibleBookId": 8,
+    "chapter": 1,
+    "units": [
+      { "lxxVerseId": 1, "proposalId": 1, "lxxWordIds": [1, 2, 3] }
+    ]
+  }
+}
+docs {
+  Confirms only the listed words with AI confidence high that are not confirmed yet (low words and nt-form alone stay open). Returns units, confirmedWords, skippedLow, skippedOther, staleUnits, mergedProposals.
+}
+
+settings {
+  encodeUrl: true
+}

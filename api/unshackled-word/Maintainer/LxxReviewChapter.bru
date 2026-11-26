@@ -1,0 +1,19 @@
+meta {
+  name: LxxReviewChapter
+  type: http
+  seq: 25
+}
+
+get {
+  url: {{url}}maintainer/lxx/review/8/1
+  body: none
+  auth: inherit
+}
+
+docs {
+  Every unit of Rahlfs chapter 1 of book 8 (Ruth) with words, tags, links, Hebrew words and the open AI proposal. 400 bad book or chapter; 404 no such chapter; 401/403 as above.
+}
+
+settings {
+  encodeUrl: true
+}

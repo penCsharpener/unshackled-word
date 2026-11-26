@@ -41,6 +41,9 @@ public sealed class AgentBuildRequest
     /// <summary>Verses (BBCCCVVV) that already have a proposal in the run; they are not packaged again (resume).</summary>
     public IReadOnlySet<int>? SkipRefIds { get; init; }
 
+    /// <summary><c>lxx-tag</c> only: also package units whose words all have confirmed tags (default: they are skipped; units with some confirmed words are sent with those words marked <c>confirmed</c>).</summary>
+    public bool IncludeConfirmed { get; init; }
+
     /// <summary>MCP: the token that asks; the new run is bound to it (daily proposal cap) and named <c>mcp</c> instead of <c>manual</c>.</summary>
     public int? ApiTokenId { get; init; }
 
