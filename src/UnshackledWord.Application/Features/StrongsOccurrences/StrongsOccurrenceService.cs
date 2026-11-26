@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Features.Lxx;
 using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Study;
@@ -9,11 +10,74 @@ public sealed class StrongsOccurrenceService : IStrongsOccurrenceService
 {
     private readonly IStrongsLexiconRepository _lexicon;
     private readonly IStrongsStatsRepository _stats;
+    private readonly ILxxStrongsOccurrenceRepository _lxx;
 
-    public StrongsOccurrenceService(IStrongsLexiconRepository lexicon, IStrongsStatsRepository stats)
+    public StrongsOccurrenceService(IStrongsLexiconRepository lexicon, IStrongsStatsRepository stats, ILxxStrongsOccurrenceRepository lxx)
     {
         _lexicon = lexicon;
         _stats = stats;
+        _lxx = lxx;
+    }
+
+    public async Task<GetStrongsOccurrencesResponse?> GetLxxAsync(string strongs, int page, int pageSize, bool includeUnconfirmedCount, CancellationToken token = default)
+    {
+        if (!StrongsNumber.TryNormalize(strongs, out var normalized, out var hebrew) || hebrew || page < 1 || pageSize < 1)
+        {
+            return null;
+        }
+
+        var parsed = StrongsNumber.Parse(normalized).Value!.Value;
+        var entries = await _lexicon.GetEntriesAsync(parsed, token);
+        var keys = StrongsMatchKeys.Resolve(normalized, parsed, entries);
+
+        var counts = await _lxx.CountAsync(keys, token);
+        var rows = counts.Confirmed == 0 || (long)(page - 1) * pageSize >= counts.Confirmed
+            ? []
+            : await _lxx.GetConfirmedPageAsync(keys, (page - 1) * pageSize, pageSize, token);
+
+        return new GetStrongsOccurrencesResponse
+        {
+            Strongs = normalized,
+            Language = "greek",
+            Corpus = "lxx",
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = counts.Confirmed,
+            TotalPages = (int)Math.Ceiling((double)counts.Confirmed / pageSize),
+            LxxItems = rows.Select(ToLxxResponse).ToList(),
+            UnconfirmedCount = includeUnconfirmedCount ? counts.Proposed : null
+        };
+    }
+
+    public static LxxStrongsOccurrenceResponse ToLxxResponse(LxxStrongsOccurrenceRow row)
+    {
+        var item = new LxxStrongsOccurrenceResponse
+        {
+            LxxWordId = row.LxxWordId,
+            LxxVerseId = row.LxxVerseId,
+            Ref = LxxChapterReadService.FormatRef(row.BibleBookId, row.Chapter, row.Verse, row.Subverse),
+            TextForm = row.TextForm,
+            BibleBookId = row.BibleBookId,
+            Chapter = row.Chapter,
+            Verse = row.Verse,
+            Subverse = row.Subverse,
+            Words = row.Words.OrderBy(w => w.Position).Select(w => Token(w.Greek, w.Position == row.Position)).ToList()
+        };
+
+        if (row.ElbHebRefId is { } heb)
+        {
+            item.Elb = new LxxElbVerseRef
+            {
+                HebRefId = heb,
+                BibleBookId = heb / 1_000_000,
+                Chapter = heb / 1_000 % 1_000,
+                Verse = heb % 1_000,
+                Text = row.ElbText,
+                ElbIsAnchor = row.ElbIsAnchor
+            };
+        }
+
+        return item;
     }
 
     public async Task<GetStrongsOccurrencesResponse?> GetAsync(string strongs, int page, int pageSize, StrongsOccurrenceFilter filter, CancellationToken token = default)

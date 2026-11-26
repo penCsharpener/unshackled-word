@@ -41,6 +41,22 @@ export function useStrongsOccurrences(
   });
 }
 
+/** Septuagint list of a Greek Strong's number (roadmap 0028.9); revalidated, since the list grows as tags are confirmed. */
+export function useLxxStrongsOccurrences(strongs: string | undefined, page: number) {
+  return useQuery({
+    queryKey: ["bible", "strongsOccurrencesLxx", strongs ?? "", page] as const,
+    queryFn: ({ signal }) =>
+      bibleApi.strongsOccurrencesLxx(strongs ?? "", page, STRONGS_PAGE_SIZE, signal),
+    placeholderData: keepPreviousData,
+    enabled: strongs !== undefined,
+  });
+}
+
+/** `?corpus=` as the Septuagint switch: only `lxx` is a value, anything else is the default list. */
+export function parseCorpus(value: string | null): "lxx" | undefined {
+  return value === "lxx" ? "lxx" : undefined;
+}
+
 /** `?page=` as a positive integer; anything else is page 1. */
 export function parsePage(value: string | null): number {
   const n = Number(value);

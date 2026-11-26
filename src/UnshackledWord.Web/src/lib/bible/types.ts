@@ -711,6 +711,36 @@ export interface GetStrongsOccurrencesResponse {
   totalItems: number;
   totalPages: number;
   items: StrongsOccurrence[];
+  /** "lxx" for the Septuagint list (roadmap 0028.9); then `lxxItems` carries the rows and `items` is empty. */
+  corpus?: "lxx";
+  lxxItems?: LxxStrongsOccurrence[];
+  /** Maintainers only: proposed LXX tags with this Strong's number. */
+  unconfirmedCount?: number;
+}
+
+/** One confirmed LXX tag of a Strong's number (roadmap 0028.9): the Greek verse with the word marked and its Elb1871 verse. */
+export interface LxxStrongsOccurrence {
+  lxxWordId: number;
+  lxxVerseId: number;
+  /** Rahlfs label, e.g. `Gen.1:1`. */
+  ref: string;
+  textForm: string;
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  subverse: number;
+  words: StrongsOccurrenceToken[];
+  /** The Elb1871 verse (or, for an addition, the verse it follows); absent when there is none. */
+  elb?: LxxStrongsElbVerse;
+}
+export interface LxxStrongsElbVerse {
+  hebRefId: number;
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  text?: string;
+  /** True when the LXX unit is an addition and this is only the verse it follows. */
+  elbIsAnchor?: boolean;
 }
 
 /** Optional filters of the Strong's concordance; `rendering` is a `StrongsRendering.key`. */

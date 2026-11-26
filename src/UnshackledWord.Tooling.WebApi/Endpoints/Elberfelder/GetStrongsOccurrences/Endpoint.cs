@@ -3,6 +3,7 @@ using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetStrongsOccurrences;
+using UnshackledWord.Tooling.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.RateLimiting;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.GetStrongsOccurrences;
@@ -27,6 +28,21 @@ public class Endpoint : Endpoint<GetStrongsOccurrencesRequest, GetStrongsOccurre
 
     public override async Task HandleAsync(GetStrongsOccurrencesRequest req, CancellationToken ct)
     {
+        if (req.Corpus == "lxx")
+        {
+            var lxx = await _service.GetLxxAsync(req.Strongs, req.Page, req.PageSize, User.HasWriteRole(), ct);
+            if (lxx is null)
+            {
+                await Send.ErrorsAsync(400, ct);
+                return;
+            }
+
+            // The count of unconfirmed tags depends on the role, and a confirmation must show on the next request.
+            HttpContext.Response.Headers.CacheControl = "private, no-cache";
+            await Send.OkAsync(lxx, ct);
+            return;
+        }
+
         var result = await _service.GetAsync(req.Strongs, req.Page, req.PageSize, new StrongsOccurrenceFilter(req.Book, req.Rendering), ct);
         if (result is null)
         {

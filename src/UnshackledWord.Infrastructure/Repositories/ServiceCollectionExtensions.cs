@@ -90,6 +90,7 @@ public static class ServiceCollectionExtensions
 
         // Septuagint reader (roadmap 0028.4)
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxReadRepository, UnshackledWord.Infrastructure.Lxx.LxxReadRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxStrongsOccurrenceRepository, UnshackledWord.Infrastructure.Lxx.LxxStrongsOccurrenceRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxNtFormRepository, UnshackledWord.Infrastructure.Lxx.LxxNtFormRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.LxxNtFormTagger>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxChapterReadService, UnshackledWord.Application.Features.Lxx.LxxChapterReadService>();

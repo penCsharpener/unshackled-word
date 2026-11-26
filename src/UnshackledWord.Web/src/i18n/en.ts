@@ -756,6 +756,22 @@ export const en: Translation = {
       previous: "‹ Previous",
       next: "Next ›",
       page: "Page {{page}} of {{pages}}",
+      corpus: {
+        label: "Text corpus",
+        nt: "NT",
+        ot: "OT (Heb.)",
+        lxx: "LXX",
+      },
+      lxx: {
+        list: "Occurrences in the LXX",
+        empty: "No reviewed LXX occurrences yet",
+        unconfirmed_one: "{{count}} more occurrence not yet reviewed",
+        unconfirmed_other: "{{count}} more occurrences not yet reviewed",
+        elb: "Elb1871 {{reference}}",
+        elbAnchor: "LXX addition, placed at Elb1871 {{reference}}",
+        noElb: "No counterpart in the Elb1871 text",
+        open: "Open {{reference}} in the reader with the LXX",
+      },
     },
     revision: {
       triggerLabel: "Revise verse {{verse}}",

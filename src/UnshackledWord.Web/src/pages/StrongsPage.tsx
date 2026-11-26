@@ -5,13 +5,21 @@ import { Button, buttonClasses } from "@/components/Button";
 import { StrongsStatsHeader } from "@/components/StrongsStatsHeader";
 import { bookName } from "@/lib/bible/books";
 import { useBibleStructure } from "@/lib/bible/queries";
+import { writeSidePanelMode } from "@/lib/bible/sidePanel";
 import {
   parseBookFilter,
+  parseCorpus,
   parsePage,
   parseRenderingFilter,
+  useLxxStrongsOccurrences,
   useStrongsOccurrences,
 } from "@/lib/bible/strongsOccurrences";
-import type { StrongsOccurrence, StrongsOccurrenceToken } from "@/lib/bible/types";
+import type {
+  BibleStructureBook,
+  LxxStrongsOccurrence,
+  StrongsOccurrence,
+  StrongsOccurrenceToken,
+} from "@/lib/bible/types";
 import { normalizeStrongs } from "@/lib/bible/wordDetail";
 
 const words = (tokens: StrongsOccurrenceToken[]) => tokens.map((token) => token.text).join(" ");
@@ -141,6 +149,83 @@ function KwicRow({
   );
 }
 
+/**
+ * One confirmed LXX occurrence (roadmap 0028.9f): Rahlfs label, the Greek verse with the tagged word marked and the Elb1871 verse it maps to.
+ * The link opens the reader at that Elb verse with the LXX side panel (the reader reads the stored panel mode).
+ */
+function LxxRow({
+  item,
+  books,
+  language,
+}: {
+  item: LxxStrongsOccurrence;
+  books: BibleStructureBook[] | undefined;
+  language: string;
+}) {
+  const { t } = useTranslation();
+  const elb = item.elb;
+  const elbBook = elb ? books?.find((b) => b.id === elb.bibleBookId) : undefined;
+  const elbReference = elb
+    ? `${elbBook ? bookName(elbBook, language) : elb.bibleBookId} ${elb.chapter},${elb.verse}`
+    : "";
+  const label = (
+    <span className="font-sans text-sm font-medium">
+      {item.ref}
+      {item.textForm !== "" && item.textForm !== "default" && ` (${item.textForm})`}
+    </span>
+  );
+  return (
+    <li className="border-b border-border py-3 hover:bg-surface-muted">
+      {elb ? (
+        <Link
+          to={`/bible/${elb.bibleBookId}/${elb.chapter}#v${elb.verse}`}
+          onClick={() => writeSidePanelMode("lxx")}
+          aria-label={t("bible.strongs.lxx.open", { reference: item.ref })}
+          className="text-accent underline"
+        >
+          {label}
+        </Link>
+      ) : (
+        <span className="text-fg-muted">{label}</span>
+      )}
+      <p lang="el" className="mt-1 font-original text-lg">
+        {item.words.map((token, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: tokens are positional and can repeat
+          <span key={index}>
+            {index > 0 && " "}
+            {token.matched ? (
+              <mark className="rounded-sm bg-mark-linked px-1 text-fg">{token.text}</mark>
+            ) : (
+              token.text
+            )}
+          </span>
+        ))}
+      </p>
+      <p className="mt-1 text-sm text-fg-muted">
+        {elb ? (
+          <>
+            <span className="font-sans">
+              {elb.elbIsAnchor
+                ? t("bible.strongs.lxx.elbAnchor", { reference: elbReference })
+                : t("bible.strongs.lxx.elb", { reference: elbReference })}
+            </span>
+            {!elb.elbIsAnchor && elb.text && (
+              <>
+                {" "}
+                <span lang="de" className="font-scripture">
+                  {elb.text}
+                </span>
+              </>
+            )}
+          </>
+        ) : (
+          <span className="font-sans">{t("bible.strongs.lxx.noElb")}</span>
+        )}
+      </p>
+    </li>
+  );
+}
+
 export function StrongsPage() {
   const { t, i18n } = useTranslation();
   const params = useParams();
@@ -150,8 +235,23 @@ export function StrongsPage() {
   const book = parseBookFilter(searchParams.get("book"));
   const rendering = parseRenderingFilter(searchParams.get("rendering"));
   const structure = useBibleStructure();
-  const occurrences = useStrongsOccurrences(strongs, page, { book, rendering });
+  // Only a Greek number has an LXX list; the corpus switch (roadmap 0028.9f) shows NT and LXX for it and nothing for a Hebrew one.
+  const greek = strongs?.startsWith("G") ?? false;
+  const lxx = greek && parseCorpus(searchParams.get("corpus")) === "lxx";
+  const ntOccurrences = useStrongsOccurrences(lxx ? undefined : strongs, page, { book, rendering });
+  const lxxOccurrences = useLxxStrongsOccurrences(lxx ? strongs : undefined, page);
+  const occurrences = lxx ? lxxOccurrences : ntOccurrences;
   const data = occurrences.data;
+
+  function setCorpus(next: "nt" | "lxx") {
+    setSearchParams((previous) => {
+      const params = new URLSearchParams(previous);
+      params.delete("page");
+      if (next === "lxx") params.set("corpus", "lxx");
+      else params.delete("corpus");
+      return params;
+    });
+  }
 
   /** Sets or clears one filter; a changed filter always starts again at page 1. */
   function setFilter(name: "book" | "rendering", value: string | null) {
@@ -204,6 +304,19 @@ export function StrongsPage() {
     );
   }
 
+  function pager(current: number, pages: number) {
+    return (
+      <nav
+        aria-label={t("bible.strongs.pagination")}
+        className="mt-6 flex items-center justify-between gap-4"
+      >
+        {pageLink(current - 1, t("bible.strongs.previous"), current > 1)}
+        <span className="text-fg-muted">{t("bible.strongs.page", { page: current, pages })}</span>
+        {pageLink(current + 1, t("bible.strongs.next"), current < pages)}
+      </nav>
+    );
+  }
+
   return (
     <>
       <title>{`${heading} – ${t("app.name")}`}</title>
@@ -217,7 +330,28 @@ export function StrongsPage() {
       <h2 className="mt-12 font-scripture text-2xl font-semibold">
         {t("bible.strongs.allOccurrences")}
       </h2>
-      {(book !== undefined || rendering !== undefined) && (
+      {greek && (
+        <fieldset className="mt-3 flex flex-wrap items-center gap-2">
+          <legend className="sr-only">{t("bible.strongs.corpus.label")}</legend>
+          <Button
+            variant={lxx ? "secondary" : "primary"}
+            size="sm"
+            aria-pressed={!lxx}
+            onClick={() => setCorpus("nt")}
+          >
+            {t("bible.strongs.corpus.nt")}
+          </Button>
+          <Button
+            variant={lxx ? "primary" : "secondary"}
+            size="sm"
+            aria-pressed={lxx}
+            onClick={() => setCorpus("lxx")}
+          >
+            {t("bible.strongs.corpus.lxx")}
+          </Button>
+        </fieldset>
+      )}
+      {!lxx && (book !== undefined || rendering !== undefined) && (
         <fieldset className="mt-3 flex flex-wrap items-center gap-2">
           <legend className="sr-only">{t("bible.strongs.filter.label")}</legend>
           {book !== undefined && (
@@ -277,10 +411,37 @@ export function StrongsPage() {
           </Button>
         </div>
       )}
-      {data && data.items.length === 0 && (
+      {lxx && data && (data.unconfirmedCount ?? 0) > 0 && (
+        <p className="mt-2 text-sm text-fg-muted">
+          {t("bible.strongs.lxx.unconfirmed", { count: data.unconfirmedCount })}
+        </p>
+      )}
+      {lxx && data && data.totalItems === 0 && (
+        <p className="mt-6 text-fg-muted">{t("bible.strongs.lxx.empty")}</p>
+      )}
+      {lxx && data && (data.lxxItems?.length ?? 0) > 0 && (
+        <>
+          <ol
+            aria-label={t("bible.strongs.lxx.list")}
+            aria-busy={occurrences.isPlaceholderData}
+            className="mt-6 font-scripture"
+          >
+            {data.lxxItems?.map((item) => (
+              <LxxRow
+                key={item.lxxWordId}
+                item={item}
+                books={structure.data}
+                language={i18n.language}
+              />
+            ))}
+          </ol>
+          {pager(data.page, data.totalPages)}
+        </>
+      )}
+      {!lxx && data && data.items.length === 0 && (
         <p className="mt-6 text-fg-muted">{t("bible.strongs.empty")}</p>
       )}
-      {data && data.items.length > 0 && (
+      {!lxx && data && data.items.length > 0 && (
         <>
           <ol
             aria-label={t("bible.strongs.list")}
@@ -302,16 +463,7 @@ export function StrongsPage() {
               );
             })}
           </ol>
-          <nav
-            aria-label={t("bible.strongs.pagination")}
-            className="mt-6 flex items-center justify-between gap-4"
-          >
-            {pageLink(page - 1, t("bible.strongs.previous"), page > 1)}
-            <span className="text-fg-muted">
-              {t("bible.strongs.page", { page: data.page, pages: data.totalPages })}
-            </span>
-            {pageLink(page + 1, t("bible.strongs.next"), page < data.totalPages)}
-          </nav>
+          {pager(data.page, data.totalPages)}
         </>
       )}
       <p className="mt-8 text-xs text-fg-muted">{t("bible.wordDetail.attribution")}</p>

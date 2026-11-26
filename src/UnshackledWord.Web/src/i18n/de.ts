@@ -767,6 +767,22 @@ export const de = {
       previous: "‹ Zurück",
       next: "Weiter ›",
       page: "Seite {{page}} von {{pages}}",
+      corpus: {
+        label: "Textkorpus",
+        nt: "NT",
+        ot: "AT (hebr.)",
+        lxx: "LXX",
+      },
+      lxx: {
+        list: "Vorkommen in der LXX",
+        empty: "Noch keine geprüften LXX-Vorkommen",
+        unconfirmed_one: "{{count}} weiteres Vorkommen noch ungeprüft",
+        unconfirmed_other: "{{count}} weitere Vorkommen noch ungeprüft",
+        elb: "Elb1871 {{reference}}",
+        elbAnchor: "Zusatz der LXX, steht bei Elb1871 {{reference}}",
+        noElb: "Ohne Entsprechung im Elb1871-Text",
+        open: "{{reference}} im Leser mit der LXX öffnen",
+      },
     },
     revision: {
       triggerLabel: "Vers {{verse}} revidieren",

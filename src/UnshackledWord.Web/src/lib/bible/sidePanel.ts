@@ -47,15 +47,20 @@ export function readSidePanelMode(): SidePanelMode {
   }
 }
 
+/** Stores the side panel choice for the reader (also used by links that open the reader with a given mode). */
+export function writeSidePanelMode(mode: SidePanelMode): void {
+  try {
+    localStorage.setItem(SIDE_PANEL_KEY, mode);
+  } catch {
+    // storage unavailable: the choice only lasts for this page view
+  }
+}
+
 /** The reader's side panel choice, global for all chapters and remembered in this browser. */
 export function useSidePanelMode() {
   const [mode, setMode] = useState<SidePanelMode>(readSidePanelMode);
   const update = useCallback((next: SidePanelMode) => {
-    try {
-      localStorage.setItem(SIDE_PANEL_KEY, next);
-    } catch {
-      // storage unavailable: the choice only lasts for this page view
-    }
+    writeSidePanelMode(next);
     setMode(next);
   }, []);
   return [mode, update] as const;

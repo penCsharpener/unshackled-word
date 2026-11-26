@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Features.Lxx;
 using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Study;
@@ -11,11 +12,12 @@ public class StrongsOccurrenceServiceTests
 
     private readonly IStrongsLexiconRepository _lexicon = Substitute.For<IStrongsLexiconRepository>();
     private readonly IStrongsStatsRepository _stats = Substitute.For<IStrongsStatsRepository>();
+    private readonly ILxxStrongsOccurrenceRepository _lxx = Substitute.For<ILxxStrongsOccurrenceRepository>();
     private readonly StrongsOccurrenceService _sut;
 
     public StrongsOccurrenceServiceTests()
     {
-        _sut = new StrongsOccurrenceService(_lexicon, _stats);
+        _sut = new StrongsOccurrenceService(_lexicon, _stats, _lxx);
     }
 
     private static bool Same(IReadOnlyList<string> actual, params string[] expected)
@@ -186,5 +188,89 @@ public class StrongsOccurrenceServiceTests
         item.Before.ShouldBeEmpty();
         item.Keyword.ShouldBeEmpty();
         item.After.ShouldBeEmpty();
+    }
+
+    private static LxxStrongsOccurrenceRow LxxRow(int position = 2, int? elb = 1_001_001, bool anchor = false) => new()
+    {
+        LxxWordId = 7,
+        LxxVerseId = 3,
+        Position = position,
+        BibleBookId = 1,
+        Chapter = 1,
+        Verse = 1,
+        TextForm = "default",
+        ElbHebRefId = elb,
+        ElbIsAnchor = anchor,
+        ElbText = "Im Anfang",
+        Words = [new(3, "τὸν"), new(1, "ἐν"), new(2, "ἀρχῇ")]
+    };
+
+    [Fact]
+    public async Task GetLxxAsync_Anonymous_HasNoUnconfirmedCount_AndNormalizesFiveDigits()
+    {
+        _lxx.CountAsync(Arg.Is<IReadOnlyList<string>>(k => Same(k, "G20969")), Arg.Any<CancellationToken>()).Returns(new LxxStrongsCounts(120, 5));
+        _lxx.GetConfirmedPageAsync(Arg.Any<IReadOnlyList<string>>(), 50, 50, Arg.Any<CancellationToken>()).Returns([LxxRow()]);
+
+        var result = await _sut.GetLxxAsync("g20969", 2, 50, includeUnconfirmedCount: false);
+
+        result!.Strongs.ShouldBe("G20969");
+        result.Corpus.ShouldBe("lxx");
+        result.TotalItems.ShouldBe(120);
+        result.TotalPages.ShouldBe(3);
+        result.UnconfirmedCount.ShouldBeNull();
+        result.Items.ShouldBeEmpty();
+        result.LxxItems!.Single().Ref.ShouldBe("Gen.1:1");
+    }
+
+    [Fact]
+    public async Task GetLxxAsync_Maintainer_GetsUnconfirmedCount()
+    {
+        _lxx.CountAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<CancellationToken>()).Returns(new LxxStrongsCounts(0, 9));
+
+        var result = await _sut.GetLxxAsync("G746", 1, 50, includeUnconfirmedCount: true);
+
+        result!.Strongs.ShouldBe("G0746");
+        result.UnconfirmedCount.ShouldBe(9);
+        result.TotalItems.ShouldBe(0);
+        result.LxxItems.ShouldBeEmpty();
+        await _lxx.DidNotReceive().GetConfirmedPageAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task GetLxxAsync_PageBeyondTheEnd_IsEmpty()
+    {
+        _lxx.CountAsync(Arg.Any<IReadOnlyList<string>>(), Arg.Any<CancellationToken>()).Returns(new LxxStrongsCounts(10, 0));
+
+        var result = await _sut.GetLxxAsync("G746", 3, 50, false);
+
+        result!.LxxItems.ShouldBeEmpty();
+        result.TotalPages.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData("H1254")]
+    [InlineData("xyz")]
+    public async Task GetLxxAsync_HebrewOrInvalid_ReturnsNull(string strongs)
+    {
+        (await _sut.GetLxxAsync(strongs, 1, 50, false)).ShouldBeNull();
+    }
+
+    [Fact]
+    public void ToLxxResponse_MarksTheTaggedWordAndOrdersWords()
+    {
+        var item = StrongsOccurrenceService.ToLxxResponse(LxxRow());
+
+        item.Words.Select(w => w.Text).ShouldBe(["ἐν", "ἀρχῇ", "τὸν"]);
+        item.Words.Where(w => w.Matched).Select(w => w.Text).ShouldBe(["ἀρχῇ"]);
+        item.Elb!.HebRefId.ShouldBe(1_001_001);
+        (item.Elb.BibleBookId, item.Elb.Chapter, item.Elb.Verse).ShouldBe((1, 1, 1));
+        item.Elb.ElbIsAnchor.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ToLxxResponse_AdditionKeepsAnchorFlag_AndNoVerseGivesNoElb()
+    {
+        StrongsOccurrenceService.ToLxxResponse(LxxRow(elb: 17_001_001, anchor: true)).Elb!.ElbIsAnchor.ShouldBeTrue();
+        StrongsOccurrenceService.ToLxxResponse(LxxRow(elb: null)).Elb.ShouldBeNull();
     }
 }

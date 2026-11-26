@@ -178,6 +178,24 @@ export const bibleApi = {
       signal,
     );
   },
+  /** Confirmed Septuagint tags of a Greek Strong's number (roadmap 0028.9); role-dependent (`unconfirmedCount` for maintainers). */
+  strongsOccurrencesLxx: (
+    strongs: string,
+    page: number,
+    pageSize: number,
+    signal?: AbortSignal,
+  ) => {
+    const query = new URLSearchParams({
+      corpus: "lxx",
+      page: String(page),
+      pageSize: String(pageSize),
+    });
+    return api.get<GetStrongsOccurrencesResponse>(
+      `/elberfelder/strongsOccurrences/strongs/${encodeURIComponent(strongs)}?${query}`,
+      signal,
+      { cache: "no-cache" },
+    );
+  },
   strongsSummary: (strongs: string, signal?: AbortSignal, fresh = false) =>
     api.get<GetStrongsSummaryResponse>(
       `/elberfelder/strongsSummary/strongs/${encodeURIComponent(strongs)}`,

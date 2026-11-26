@@ -129,4 +129,33 @@ public class LxxTagsDatabaseTests
         word.HebRefId.ShouldBe(Gen11);
         LxxWordReadService.Build(word, includeProposed: false, lexicon: null).Tag!.ParseGerman.ShouldBe("Nomen Dativ Singular feminin");
     });
+
+    [Fact]
+    public async Task StrongsOccurrenceSql_CountsByStatus_AndPagesConfirmedOnly() => await WithTransactionAsync(async (connection, transaction) =>
+    {
+        var ids = await Gen11WordIdsAsync(connection, transaction);
+        await connection.ExecuteAsync("""DELETE FROM "unshackled-word"."LxxWordTags" WHERE "LxxWordId" = ANY(@Ids)""", new { Ids = ids }, transaction);
+        await InsertTagAsync(connection, transaction, ids[1], "ἀρχή", "G0746", "N-DSF", LxxTagVisibility.Confirmed);
+        await InsertTagAsync(connection, transaction, ids[2], "ἀρχή", "G0746", "N-DSF", LxxTagVisibility.Proposed, "ai");
+        var keys = new[] { "G0746" };
+        var before = await connection.QuerySingleAsync<LxxStrongsCounts>(LxxStrongsOccurrenceSql.Count, new { Keys = new[] { "G9999" } }, transaction);
+
+        var counts = await connection.QuerySingleAsync<LxxStrongsCounts>(LxxStrongsOccurrenceSql.Count, new { Keys = keys }, transaction);
+        var page = (await connection.QueryAsync<LxxStrongsOccurrenceRow>(LxxStrongsOccurrenceSql.Page, new { Keys = keys, Skip = 0, Take = 10 }, transaction)).ToList();
+        var skipped = await connection.QueryAsync<LxxStrongsOccurrenceRow>(LxxStrongsOccurrenceSql.Page, new { Keys = keys, Skip = 1, Take = 10 }, transaction);
+        var words = (await connection.QueryAsync<(int LxxVerseId, int Position, string Greek)>(LxxStrongsOccurrenceSql.Words, new { VerseIds = new[] { page[0].LxxVerseId } }, transaction)).ToList();
+
+        before.ShouldBe(new LxxStrongsCounts(0, 0));
+        counts.Confirmed.ShouldBeGreaterThanOrEqualTo(1);
+        counts.Proposed.ShouldBeGreaterThanOrEqualTo(1);
+        page.Count.ShouldBe(counts.Confirmed);
+        page.Select(r => r.LxxWordId).ShouldContain(ids[1]);
+        page.Select(r => r.LxxWordId).ShouldNotContain(ids[2]);
+        skipped.Count().ShouldBe(page.Count - 1);
+        var gen = page.Single(r => r.LxxWordId == ids[1]);
+        (gen.BibleBookId, gen.Chapter, gen.Verse, gen.ElbHebRefId, gen.ElbIsAnchor).ShouldBe((1, 1, 1, Gen11, false));
+        gen.ElbText.ShouldNotBeNullOrEmpty();
+        words.ShouldContain(w => w.Position == 2);
+        words.Select(w => w.Position).ShouldBe(words.Select(w => w.Position).Order());
+    });
 }

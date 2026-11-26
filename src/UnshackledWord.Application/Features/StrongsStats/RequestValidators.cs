@@ -65,6 +65,11 @@ public sealed class GetStrongsOccurrencesRequestValidator : AbstractValidator<Ge
         RuleFor(x => x.Strongs)
             .Must(s => StrongsNumber.TryNormalize(s, out _, out _))
             .WithMessage("Strong's number must look like 'G26' or 'H1254A'.");
+        RuleFor(x => x.Corpus).Must(c => c == "lxx").When(x => x.Corpus is not null).WithMessage("Corpus must be 'lxx' or omitted.");
+        RuleFor(x => x.Strongs)
+            .Must(s => StrongsNumber.TryNormalize(s, out _, out var hebrew) && !hebrew)
+            .When(x => x.Corpus == "lxx")
+            .WithMessage("The Septuagint list needs a Greek Strong's number.");
         RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
         RuleFor(x => x.PageSize).InclusiveBetween(1, GetStrongsOccurrencesRequest.MaxPageSize);
         RuleFor(x => x.Book).InclusiveBetween(1, 66).When(x => x.Book is not null);
