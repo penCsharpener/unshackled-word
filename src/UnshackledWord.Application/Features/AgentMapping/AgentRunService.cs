@@ -201,7 +201,12 @@ public sealed class AgentRunService : IAgentRunService
 
         if (!AgentModes.TryParse(request.Mode, out var mode))
         {
-            return Plan.Fail(AgentRunPrepareOutcome.BadRequest, "mode must be redo, fill-open or lemma.");
+            return Plan.Fail(AgentRunPrepareOutcome.BadRequest, AgentModes.ValidModesMessage);
+        }
+
+        if (mode == AgentMode.LxxTag && request.Book > 39)
+        {
+            return Plan.Fail(AgentRunPrepareOutcome.BadRequest, "mode lxx-tag needs an OT book (1..39); chapters and verses are Rahlfs numbers.");
         }
 
         if (_profiles.Find(request.Profile) is not { } profile)
@@ -233,7 +238,7 @@ public sealed class AgentRunService : IAgentRunService
 
         if (built is null)
         {
-            return Plan.Fail(AgentRunPrepareOutcome.NotFound, "The range has no German words.");
+            return Plan.Fail(AgentRunPrepareOutcome.NotFound, mode == AgentMode.LxxTag ? "The range has no LXX words." : "The range has no German words.");
         }
 
         if (built.Stats.Verses > MaxVerses)

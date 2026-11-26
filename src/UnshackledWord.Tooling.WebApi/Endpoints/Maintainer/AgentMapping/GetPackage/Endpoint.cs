@@ -69,7 +69,7 @@ public sealed class Validator : Validator<GetAgentPackageRequest>
         RuleFor(x => x.FromVerse).GreaterThan(0);
         RuleFor(x => x.ToVerse).GreaterThanOrEqualTo(x => x.FromVerse).When(x => x.ToVerse is not null);
         RuleFor(x => x.ToVerse).Must((r, to) => to is null || to - r.FromVerse < MaxVerses).WithMessage($"At most {MaxVerses} verses per request.");
-        RuleFor(x => x.Mode).Must(m => AgentModes.TryParse(m, out _)).WithMessage("mode must be redo, fill-open or lemma.");
+        RuleFor(x => x.Mode).Must(m => AgentModes.TryParse(m, out _)).WithMessage(AgentModes.ValidModesMessage);
         RuleFor(x => x.TokenBudget).InclusiveBetween(300, 100_000).When(x => x.TokenBudget is not null);
     }
 }

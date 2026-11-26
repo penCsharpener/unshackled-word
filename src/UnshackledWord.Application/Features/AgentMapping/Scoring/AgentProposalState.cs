@@ -109,7 +109,7 @@ public static class AgentProposalState
         _ => role,
     };
 
-    public static List<string> FlagCodes(string? flagsJson) => Deserialize<AgentFlag>(flagsJson).Select(f => f.Code).ToList();
+    public static List<string> FlagCodes(string? flagsJson) => AgentProposalFlagsJson.Codes(flagsJson);
 
     private static void ApplyRole(AgentVerseSnapshot baseline, ReferenceVerse state, AgentRoleChange change)
     {

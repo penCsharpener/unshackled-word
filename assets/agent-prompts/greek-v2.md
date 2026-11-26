@@ -147,7 +147,7 @@ Answer:
 
 What to notice: Every hint is right, lemmas and tags too: silence keeps them (empty arrays). Both articles render a Greek article: `head` links, not added words.
 
-## Example: Mk 1:6
+## Example 2: Mk 1:6
 
 Package:
 

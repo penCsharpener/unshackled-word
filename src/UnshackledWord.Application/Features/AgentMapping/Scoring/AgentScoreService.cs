@@ -161,6 +161,12 @@ public sealed class AgentScoreService : IAgentScoreService
             return new AgentScoreResult { Outcome = AgentScoreOutcome.RunNotFound, Errors = [$"Run {runId} does not exist."] };
         }
 
+        if (run.Mode == AgentModes.LxxTag)
+        {
+            // Roadmap 0028.7: the reference set holds Elb1871 mappings; LXX tags are reviewed on their own page (0028.7f).
+            return new AgentScoreResult { Outcome = AgentScoreOutcome.NoReference, Errors = [$"Run {runId} is an LXX tagging run; LXX runs are not scored against the mapping reference."] };
+        }
+
         ReferenceSet? set;
         try
         {

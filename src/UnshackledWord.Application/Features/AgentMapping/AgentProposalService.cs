@@ -47,9 +47,12 @@ public sealed class AgentProposalService : IAgentProposalService
     private readonly AgentMappingOptions _options;
     private readonly TimeProvider _time;
     private readonly ILogger<AgentProposalService> _logger;
+    private readonly Lxx.ILxxProposalSubmitter? _lxx;
 
-    public AgentProposalService(IAgentStoreRepository store, IAgentDataRepository data, ISttsTagRepository sttsTags, AgentProposalStore proposals, Microsoft.Extensions.Configuration.IConfiguration configuration, TimeProvider time, ILogger<AgentProposalService> logger)
+    /// <param name="lxx">Validates and stores answers to <c>lxx-tag</c> packages (roadmap 0028.7).</param>
+    public AgentProposalService(IAgentStoreRepository store, IAgentDataRepository data, ISttsTagRepository sttsTags, AgentProposalStore proposals, Microsoft.Extensions.Configuration.IConfiguration configuration, TimeProvider time, ILogger<AgentProposalService> logger, Lxx.ILxxProposalSubmitter? lxx = null)
     {
+        _lxx = lxx;
         _store = store;
         _data = data;
         _sttsTags = sttsTags;
@@ -77,6 +80,12 @@ public sealed class AgentProposalService : IAgentProposalService
         }
 
         var map = AgentPackageMap.FromJson(package.LocalIdMap);
+        if (map.Mode == AgentModes.LxxTag)
+        {
+            return _lxx is null
+                ? new AgentSubmitResult { Outcome = AgentSubmitOutcome.Invalid, Errors = ["LXX packages cannot be submitted here (no LXX submitter registered)."] }
+                : await _lxx.SubmitAsync(id, package, map, answerJson, token);
+        }
 
         var staleVerses = package.Status == AgentPackageStatuses.Stale ? ["the package was already marked stale"] : await FindStaleVersesAsync(map, package.WordIdsHash, token);
         if (staleVerses.Count > 0)

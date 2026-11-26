@@ -76,13 +76,16 @@ public sealed class AgentPackageBuilder : IAgentPackageBuilder
     private readonly IAgentStoreRepository _store;
     private readonly AgentMappingOptions _options;
     private readonly TimeProvider _time;
+    private readonly Lxx.ILxxAgentPackageBuilder? _lxx;
 
-    public AgentPackageBuilder(IAgentDataRepository data, IAgentStoreRepository store, IConfiguration configuration, TimeProvider time)
+    /// <param name="lxx">Builds the packages of mode <c>lxx-tag</c> (roadmap 0028.7); without it such a request has no packages.</param>
+    public AgentPackageBuilder(IAgentDataRepository data, IAgentStoreRepository store, IConfiguration configuration, TimeProvider time, Lxx.ILxxAgentPackageBuilder? lxx = null)
     {
         _data = data;
         _store = store;
         _options = AgentMappingOptions.From(configuration);
         _time = time;
+        _lxx = lxx;
     }
 
     public Task<GetAgentPackageResponse?> BuildAsync(AgentRange range, AgentMode mode, int? tokenBudget, int userId, CancellationToken token = default) =>
@@ -90,6 +93,11 @@ public sealed class AgentPackageBuilder : IAgentPackageBuilder
 
     public async Task<GetAgentPackageResponse?> BuildAsync(AgentBuildRequest request, CancellationToken token = default)
     {
+        if (request.Mode == AgentMode.LxxTag)
+        {
+            return _lxx is null ? null : await _lxx.BuildAsync(request, token);
+        }
+
         var range = request.Range;
         var mode = request.Mode;
         var tokenBudget = request.TokenBudget;

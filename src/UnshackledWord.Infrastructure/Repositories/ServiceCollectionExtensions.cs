@@ -94,6 +94,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.Lxx.LxxNtFormTagger>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxChapterReadService, UnshackledWord.Application.Features.Lxx.LxxChapterReadService>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxWordReadService, UnshackledWord.Application.Features.Lxx.LxxWordReadService>();
+        // Roadmap 0028.7: run mode lxx-tag; AgentPackageBuilder and AgentProposalService hand lxx-tag packages to these two.
+        services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Lxx.ILxxAgentDataRepository, UnshackledWord.Infrastructure.Lxx.LxxAgentDataRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Lxx.ILxxAgentPackageBuilder, UnshackledWord.Application.Features.AgentMapping.Lxx.LxxAgentPackageBuilder>();
+        services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Lxx.ILxxProposalSubmitter, UnshackledWord.Application.Features.AgentMapping.Lxx.LxxProposalSubmitter>();
 
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();

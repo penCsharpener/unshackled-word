@@ -15,8 +15,9 @@ namespace UnshackledWord.Tooling.AgentWorker;
 /// Thin command line for the agent worker (roadmap 0016.6): the same services as the API's <c>api/maintainer/agent-runs</c> endpoints
 /// (<see cref="IAgentRunService"/> and <see cref="AgentRunExecutor"/>), run in this process. Replaces <c>Tooling.AiWorker</c>.
 /// <code>
-/// estimate --book 41 --from 1:1 --to 1:8 --profile ollama [--model tag] [--mode redo|fill-open|lemma]
+/// estimate --book 41 --from 1:1 --to 1:8 --profile ollama [--model tag] [--mode redo|fill-open|lemma|lxx-tag]
 /// run      --book 41 --from 1:1 --to 1:8 --profile ollama --user 4 [--model tag] [--mode ...] [--max-tokens N] [--max-cost USD]
+/// lxx-tag (roadmap 0028.7): an OT book, chapters and verses in Rahlfs numbering, e.g. --book 8 --from 1:1 --to 4:22 --mode lxx-tag
 /// resume   --run 12 [--max-tokens N] [--max-cost USD]
 /// list
 /// </code>

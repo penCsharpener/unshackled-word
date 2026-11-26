@@ -14,6 +14,16 @@ public class AgentSqlTests
         AgentStoreSql.SupersedeOpen.ShouldContain("\"Verse\" = @Verse");
     }
 
+    /// <summary>Roadmap 0028.7: the supersede key is the one of AgentVerseProposals_Open_UQ, so LXX and Hebrew proposals of Gen 1:1 never touch each other.</summary>
+    [Fact]
+    public void Store_SupersedeAndCount_UseTheKeyOfTheOpenProposalIndex()
+    {
+        AgentStoreSql.SupersedeOpen.ShouldContain("\"Language\" = @Language");
+        AgentStoreSql.SupersedeOpen.ShouldContain("COALESCE(\"Flags\" ->> 'textForm', '') = @TextForm");
+        AgentStoreSql.SupersedeOpen.ShouldContain("COALESCE(\"Flags\" ->> 'subverse', '0') = @Subverse");
+        AgentStoreSql.CountProposedVerses.ShouldContain("\"Language\", COALESCE(\"Flags\" ->> 'textForm', ''), COALESCE(\"Flags\" ->> 'subverse', '0')");
+    }
+
     [Fact]
     public void Morphology_IsJoinedByRefAndPosition_NeverById()
     {

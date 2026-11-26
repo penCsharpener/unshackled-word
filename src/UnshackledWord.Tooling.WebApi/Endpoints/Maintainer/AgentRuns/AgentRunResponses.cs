@@ -27,6 +27,6 @@ public sealed class AgentRunRangeValidator : AbstractValidator<AgentRunRangeRequ
         RuleFor(x => x.ToVerse).GreaterThan(0).When(x => x.ToVerse is not null);
         RuleFor(x => x.Profile).NotEmpty().MaximumLength(100);
         RuleFor(x => x.Model).MaximumLength(200);
-        RuleFor(x => x.Mode).Must(m => AgentModes.TryParse(m, out _)).WithMessage("mode must be redo, fill-open or lemma.");
+        RuleFor(x => x.Mode).Must(m => AgentModes.TryParse(m, out _)).WithMessage(AgentModes.ValidModesMessage);
     }
 }

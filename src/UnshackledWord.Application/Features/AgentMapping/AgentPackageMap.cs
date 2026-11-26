@@ -38,8 +38,11 @@ public sealed class AgentPackageMap
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool Roles { get; set; }
 
-    /// <summary>Keyed by the local verse id (<c>v1</c>).</summary>
+    /// <summary>Keyed by the local verse id (<c>v1</c>). Empty in mode <c>lxx-tag</c>.</summary>
     public Dictionary<string, AgentVerseMap> Verses { get; set; } = [];
+
+    /// <summary>Mode <c>lxx-tag</c> (roadmap 0028.7): the LXX units by local verse id; null in the other modes.</summary>
+    public Dictionary<string, LxxVerseMap>? LxxVerses { get; set; }
 
     public string ToJson() => JsonSerializer.Serialize(this, Json);
 
@@ -133,4 +136,36 @@ public sealed class AgentLinkMap
 
     /// <summary>Lemma mode: the deterministic role rules leave this link undecided; the model must decide it.</summary>
     public bool Open { get; set; }
+}
+
+/// <summary>One LXX unit of an <c>lxx-tag</c> package: database ids behind the positions the model answers with, and the prefills it was shown.</summary>
+public sealed class LxxVerseMap
+{
+    public string Ref { get; set; } = string.Empty;
+    public int LxxVerseId { get; set; }
+    public int Chapter { get; set; }
+    public int Verse { get; set; }
+    public int Subverse { get; set; }
+    public string TextForm { get; set; } = string.Empty;
+    public int? HebRefId { get; set; }
+
+    /// <summary>Hash of the LXX and Hebrew word ids when the package was built (<see cref="Lxx.LxxAgentPackageBuilder.VerseHash"/>).</summary>
+    public string Hash { get; set; } = string.Empty;
+
+    /// <summary>Swete position to <c>LxxWords.Id</c>.</summary>
+    public Dictionary<int, int> Words { get; set; } = [];
+
+    /// <summary>Hebrew number (1.. in reading order, as in the package) to <c>StepHebrewWords.Id</c>; empty for additions.</summary>
+    public Dictionary<int, int> Hebrew { get; set; } = [];
+
+    /// <summary>The prefill shown per position (Strong's and morphology), to mark answers that keep it.</summary>
+    public Dictionary<int, LxxPrefillMap> Prefill { get; set; } = [];
+}
+
+public sealed class LxxPrefillMap
+{
+    public string Strongs { get; set; } = string.Empty;
+    public string Morph { get; set; } = string.Empty;
+    public string Source { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
 }

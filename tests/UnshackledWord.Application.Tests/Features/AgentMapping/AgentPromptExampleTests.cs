@@ -220,7 +220,9 @@ public class AgentPromptExampleTests
         var examples = new List<PromptExample>();
         foreach (var section in sections)
         {
-            var reference = section[..section.IndexOf(" [", StringComparison.Ordinal)].Trim();
+            // The heading line: "Mk 1:1 [UNCONFIRMED]", or "Mk 1:1" once the maintainer has confirmed the example.
+            var heading = section[..section.IndexOf('\n')];
+            var reference = (heading.IndexOf(" [", StringComparison.Ordinal) is >= 0 and var tag ? heading[..tag] : heading).Trim();
             var blocks = Regex.Matches(section, "```json\n(.*?)\n```", RegexOptions.Singleline).Select(m => m.Groups[1].Value).ToList();
             blocks.Count.ShouldBe(2, $"{file} {reference}: a package and an answer");
             examples.Add(new PromptExample(reference, blocks[0], blocks[1]));

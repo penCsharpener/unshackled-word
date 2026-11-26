@@ -81,8 +81,8 @@ public static class LxxReadSql
                                       FROM "unshackled-word"."StepStrongsLexicon" ssl
                                       WHERE 1=1
                                           AND ssl."LanguageId" = 2
-                                          AND ssl."Number" = substring(t."Strongs" FROM 2 FOR 4)::int4
-                                      ORDER BY ssl."Extra" IS NOT DISTINCT FROM NULLIF(substring(t."Strongs" FROM 6), '') DESC
+                                          AND ssl."Number" = (regexp_match(t."Strongs", '^G([0-9]+)'))[1]::int4
+                                      ORDER BY ssl."Extra" IS NOT DISTINCT FROM (regexp_match(t."Strongs", '^G[0-9]+([A-Z])$'))[1] DESC
                                              , COALESCE(ssl."Extra", '') = '' DESC
                                              , ssl."Extra"
                                       LIMIT 1

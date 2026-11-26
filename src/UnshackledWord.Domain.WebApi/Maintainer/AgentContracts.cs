@@ -52,6 +52,52 @@ public sealed class AgentVerseDto
 
     /// <summary>Run mode <c>lemma</c>: why the verse is sent (<c>roles</c>, <c>ptkvz</c>, <c>homograph</c>, <c>lemmasharp</c>, <c>lexicon</c>). Null in the mapping modes.</summary>
     public List<string>? Work { get; set; }
+
+    /// <summary>
+    /// Run mode <c>lxx-tag</c> (roadmap 0028.7): the Swete words of the LXX unit, <c>[position, form, prefill?, candidates?]</c>. <c>prefill</c> is
+    /// <c>[lemma, strongs, morph]</c> (a pass-1 or earlier proposal: check it) or <c>[lemma, strongs, morph, "confirmed"]</c>; <c>candidates</c> are up
+    /// to 5 TBESG entries <c>[strongs, lemma, gloss]</c>. Null in the other modes. When set, the empty mapping lists are not written (<see cref="AgentPackageJson"/>).
+    /// </summary>
+    public List<object?[]>? Lxx { get; set; }
+
+    /// <summary>Run mode <c>lxx-tag</c>: the reference of the Hebrew verse TVTMS maps the unit to (Elberfelder counting); null for an LXX addition.</summary>
+    public string? HebRef { get; set; }
+
+    /// <summary>Run mode <c>lxx-tag</c>: <c>split</c> or <c>merged</c> when the unit is only part of its Hebrew verse or joins two; null for one-to-one.</summary>
+    public string? Map { get; set; }
+
+    /// <summary>Run mode <c>lxx-tag</c>: the STEP Hebrew words of <see cref="HebRef"/>, <c>[n, text, strongs, gloss, morph, morphemes?]</c> (n = 1.. in reading order).</summary>
+    public List<object?[]>? Heb { get; set; }
+}
+
+/// <summary>
+/// Serializer settings for packages as the model reads them: web names, nulls left out, Greek/Hebrew unescaped. An LXX verse
+/// (<see cref="AgentVerseDto.Lxx"/> set) leaves out the empty mapping lists (<c>de</c>, <c>src</c>, <c>fixed</c>, <c>hints</c>); mapping verses are written as before.
+/// </summary>
+public static class AgentPackageJson
+{
+    public static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web)
+    {
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        TypeInfoResolver = new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver { Modifiers = { SkipEmptyMappingListsOfLxxVerses } },
+    };
+
+    private static void SkipEmptyMappingListsOfLxxVerses(System.Text.Json.Serialization.Metadata.JsonTypeInfo info)
+    {
+        if (info.Type != typeof(AgentVerseDto))
+        {
+            return;
+        }
+
+        foreach (var property in info.Properties)
+        {
+            if (property.Name is "de" or "src" or "fixed" or "hints")
+            {
+                property.ShouldSerialize = (owner, value) => ((AgentVerseDto)owner).Lxx is null || value is System.Collections.ICollection { Count: > 0 };
+            }
+        }
+    }
 }
 
 public sealed class AgentTokenStats

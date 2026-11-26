@@ -71,7 +71,8 @@ public static class AgentMappingTools
             throw new McpException($"At most {options.McpMaxVersesPerPackageRequest} verses per request; ask for a smaller range.");
         }
 
-        if (!AgentModes.TryParse(mode, out var agentMode))
+        // lxx-tag (roadmap 0028.7) runs only as a batch agent run; its packages and answers have another shape than the mapping tools describe.
+        if (!AgentModes.TryParse(mode, out var agentMode) || agentMode == AgentMode.LxxTag)
         {
             throw new McpException("mode must be 'redo', 'fill-open' or 'lemma'.");
         }

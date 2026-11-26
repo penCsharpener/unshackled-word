@@ -80,7 +80,7 @@ public sealed class AgentStoreRepository : IAgentStoreRepository
 
         foreach (var proposal in proposals)
         {
-            superseded += await connection.ExecuteAsync(new CommandDefinition(AgentStoreSql.SupersedeOpen, new { proposal.BibleBookId, proposal.Chapter, proposal.Verse }, transaction, cancellationToken: token));
+            superseded += await connection.ExecuteAsync(new CommandDefinition(AgentStoreSql.SupersedeOpen, new { proposal.BibleBookId, proposal.Chapter, proposal.Verse, proposal.Language, proposal.TextForm, Subverse = proposal.Subverse.ToString(System.Globalization.CultureInfo.InvariantCulture) }, transaction, cancellationToken: token));
             ids.Add(await connection.ExecuteScalarAsync<long>(new CommandDefinition(AgentStoreSql.InsertProposal, new
             {
                 RunId = runId,
@@ -141,14 +141,19 @@ public static class AgentStoreSql
                                                AND "Id" = @PackageId
                                            """;
 
+    /// <summary>Distinct verses by the key of the open-proposal index (an LXX verse with subverses or two text forms counts each unit).</summary>
     public const string CountProposedVerses = """
-                                              SELECT count(DISTINCT ("Chapter", "Verse"))::int
+                                              SELECT count(DISTINCT ("Chapter", "Verse", "Language", COALESCE("Flags" ->> 'textForm', ''), COALESCE("Flags" ->> 'subverse', '0')))::int
                                               FROM "unshackled-word"."AgentVerseProposals"
                                               WHERE 1=1
                                                   AND "PackageId" = @PackageId
                                               """;
 
-    /// <summary>At most one open proposal per verse (unique index): the older one is marked superseded before the new one is inserted.</summary>
+    /// <summary>
+    /// At most one open proposal per verse (unique index <c>AgentVerseProposals_Open_UQ</c>, migration 0051): the older one is marked superseded
+    /// before the new one is inserted. The key is the index's own: book, chapter, verse, language and, for LXX proposals, <c>Flags.textForm</c> and
+    /// <c>Flags.subverse</c> (mapping proposals have an array in "Flags", so both read as the defaults). @Subverse is text, like the index.
+    /// </summary>
     public const string SupersedeOpen = """
                                         UPDATE "unshackled-word"."AgentVerseProposals"
                                         SET "Status" = 'superseded'
@@ -156,6 +161,9 @@ public static class AgentStoreSql
                                             AND "BibleBookId" = @BibleBookId
                                             AND "Chapter" = @Chapter
                                             AND "Verse" = @Verse
+                                            AND "Language" = @Language
+                                            AND COALESCE("Flags" ->> 'textForm', '') = @TextForm
+                                            AND COALESCE("Flags" ->> 'subverse', '0') = @Subverse
                                             AND "Status" = 'open'
                                         """;
 

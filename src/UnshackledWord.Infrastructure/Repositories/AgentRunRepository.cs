@@ -144,7 +144,7 @@ public static class AgentRunSql
                                            , (SELECT count(*) FROM "unshackled-word"."AgentPackages" p WHERE p."RunId" = r."Id" AND p."Status" = 'completed')::int "PackagesCompleted"
                                            , (SELECT count(*) FROM "unshackled-word"."AgentPackages" p WHERE p."RunId" = r."Id" AND p."Status" = 'failed')::int "PackagesFailed"
                                            , (SELECT count(*) FROM "unshackled-word"."AgentVerseProposals" v WHERE v."RunId" = r."Id")::int "ProposedVerses"
-                                           , (SELECT count(*) FROM "unshackled-word"."AgentVerseProposals" v WHERE v."RunId" = r."Id" AND v."Flags" IS NOT NULL AND v."Flags" <> '[]'::jsonb)::int "FlaggedVerses"
+                                           , (SELECT count(*) FROM "unshackled-word"."AgentVerseProposals" v WHERE v."RunId" = r."Id" AND CASE jsonb_typeof(v."Flags") WHEN 'array' THEN v."Flags" <> '[]'::jsonb WHEN 'object' THEN COALESCE(v."Flags" -> 'flags', '[]'::jsonb) <> '[]'::jsonb ELSE FALSE END)::int "FlaggedVerses"
                                            , (SELECT count(*) FROM "unshackled-word"."AgentVerseProposals" v WHERE v."RunId" = r."Id" AND v."Status" = 'open')::int "OpenProposals"
                                       """;
 

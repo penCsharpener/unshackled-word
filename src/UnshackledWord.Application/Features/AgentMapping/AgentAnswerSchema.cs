@@ -29,6 +29,27 @@ public static class AgentAnswerSchema
         {"type":"object","properties":{"forms":{"type":"array","items":{"type":"array","items":{"type":"string"}}}},"required":["forms"]}
         """;
 
+    /// <summary>
+    /// Run mode <c>lxx-tag</c> (roadmap 0028.7, prompt <c>lxx-tag-v1</c>): per verse <c>words</c> rows
+    /// <c>[position, lemma, strongs, morph, heb, confidence]</c> (<c>heb</c> an array of Hebrew positions, <c>confidence</c> <c>high</c>/<c>low</c>),
+    /// every LXX word exactly once, and an optional <c>note</c>. The row rules are checked by <see cref="Lxx.LxxAgentAnswerParser"/> and the validator.
+    /// </summary>
+    public const string LxxJson = """
+        {"type":"object","properties":{"packageId":{"type":"string"},"verses":{"type":"array","items":{"type":"object","properties":{"v":{"type":"string"},"words":{"type":"array","items":{"type":"array","items":{"anyOf":[{"type":"string"},{"type":"integer"},{"type":"array","items":{"type":"integer"}}]}}},"note":{"type":"string"}},"required":["v","words"]}}},"required":["packageId","verses"]}
+        """;
+
     /// <summary>The schema of a run mode.</summary>
-    public static string For(AgentMode mode) => mode == AgentMode.Lemma ? LemmaJson : Json;
+    public static string For(AgentMode mode) => mode switch
+    {
+        AgentMode.Lemma => LemmaJson,
+        AgentMode.LxxTag => LxxJson,
+        _ => Json,
+    };
+
+    /// <summary>The schema of a prompt language (<c>greek</c>, <c>lemma-hebrew</c>, <c>lxx-tag</c>, <c>vocab-form-greek</c> …).</summary>
+    public static string ForLanguage(string language) =>
+        language.StartsWith(AgentPromptProvider.VocabFormPrefix, StringComparison.Ordinal) ? VocabFormJson
+        : language.StartsWith(AgentPromptProvider.LemmaPrefix, StringComparison.Ordinal) ? LemmaJson
+        : language == AgentPromptProvider.LxxTagLanguage ? LxxJson
+        : Json;
 }

@@ -115,8 +115,9 @@ public sealed class AgentReviewService : IAgentReviewService
     public async Task<AgentProposalDiffResponse?> GetDiffAsync(long id, CancellationToken token = default)
     {
         var record = await _proposals.GetAsync(id, token);
-        if (record is null)
+        if (record is null || IsLxx(record))
         {
+            // An LXX proposal has no mapping diff; the LXX review page (0028.7f) reads it.
             return null;
         }
 
@@ -271,7 +272,7 @@ public sealed class AgentReviewService : IAgentReviewService
         var open = await _proposals.ListAsync(runId, AgentProposalStatuses.Open, token);
         var response = new BulkMergeAgentProposalsResponse { RunId = runId };
 
-        foreach (var record in open)
+        foreach (var record in open.Where(r => !IsLxx(r)))
         {
             if (ParseFlags(record).Count > 0)
             {
@@ -310,6 +311,11 @@ public sealed class AgentReviewService : IAgentReviewService
     private async Task<AgentReviewResult<MergeAgentProposalResponse>> WriteAsync(AgentProposalRecord record, IReadOnlyList<VerseMappingLink> links, IReadOnlyList<AgentLemmaEditDto> lemmaEdits, int authorUserId, int reviewerUserId, bool clearParts, bool edited, CancellationToken token)
     {
         static AgentReviewResult<MergeAgentProposalResponse> Fail(AgentReviewOutcome outcome, IEnumerable<string> errors) => new() { Outcome = outcome, Errors = [.. errors] };
+
+        if (IsLxx(record))
+        {
+            return Fail(AgentReviewOutcome.Invalid, [$"Proposal {record.Id} is an LXX tagging proposal; it is confirmed on the LXX review page, not merged as a mapping."]);
+        }
 
         if (record.Status != AgentProposalStatuses.Open)
         {
@@ -529,7 +535,8 @@ public sealed class AgentReviewService : IAgentReviewService
     private static List<AgentRoleChange> ParseRoles(AgentProposalRecord r) => string.IsNullOrEmpty(r.RolesJson) ? [] : JsonSerializer.Deserialize<List<AgentRoleChange>>(r.RolesJson, Json) ?? [];
 
     private static List<AgentFlagDiffDto> ParseFlags(AgentProposalRecord r) =>
-        string.IsNullOrEmpty(r.FlagsJson)
-            ? []
-            : (JsonSerializer.Deserialize<List<AgentFlagDiffDto>>(r.FlagsJson, Json) ?? []);
+        AgentProposalFlagsJson.Array(r.FlagsJson) is { } array ? JsonSerializer.Deserialize<List<AgentFlagDiffDto>>(array, Json) ?? [] : [];
+
+    /// <summary>LXX proposals (roadmap 0028.7) are confirmed on the LXX review page (0028.7f), never through the mapping merge.</summary>
+    private static bool IsLxx(AgentProposalRecord r) => r.Language == Lxx.LxxAgentPackageBuilder.PackageLanguage;
 }

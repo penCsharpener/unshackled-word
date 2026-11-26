@@ -64,6 +64,13 @@ public sealed class AgentProposalInsert
     public int Chapter { get; init; }
     public int Verse { get; init; }
     public string Language { get; init; } = string.Empty;
+
+    /// <summary>LXX (roadmap 0028.7): <c>og</c>/<c>th</c> in Daniel, else empty; the same value is in <c>Flags.textForm</c>. Empty for mapping proposals.</summary>
+    public string TextForm { get; init; } = string.Empty;
+
+    /// <summary>LXX: the Rahlfs subverse (additions, 1Ki 2:35.1 …); the same value is in <c>Flags.subverse</c>. 0 for mapping proposals.</summary>
+    public int Subverse { get; init; }
+
     public string LinksJson { get; init; } = "[]";
     public string? LemmasJson { get; init; }
     public string? PartsJson { get; init; }
@@ -98,6 +105,10 @@ public interface IAgentStoreRepository
     /// <summary>Number of distinct verses the package has a proposal for (any status); a package is completed when this reaches its verse count.</summary>
     Task<int> CountProposedVersesAsync(Guid packageId, CancellationToken token = default);
 
-    /// <summary>Stores the proposals in one transaction; an older open proposal of the same verse becomes <c>superseded</c> first.</summary>
+    /// <summary>
+    /// Stores the proposals in one transaction; an older open proposal of the same verse becomes <c>superseded</c> first. "Same verse" is the key of
+    /// the unique index <c>AgentVerseProposals_Open_UQ</c>: book, chapter, verse, language, <c>Flags.textForm</c> and <c>Flags.subverse</c>, so an LXX
+    /// proposal never supersedes a Hebrew mapping proposal of the same reference (or Daniel og one of th).
+    /// </summary>
     Task<AgentProposalStoreResult> StoreProposalsAsync(int runId, Guid packageId, IReadOnlyList<AgentProposalInsert> proposals, CancellationToken token = default);
 }

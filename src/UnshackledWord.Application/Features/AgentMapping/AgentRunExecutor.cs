@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Configuration;
@@ -22,11 +21,8 @@ public sealed class AgentRunExecutor
     /// <summary>Consecutive packages that fail for network or provider reasons before the run gives up (provider down, quota empty).</summary>
     public const int MaxConsecutiveTransientFailures = 3;
 
-    private static readonly JsonSerializerOptions PackageJson = new(JsonSerializerDefaults.Web)
-    {
-        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-    };
+    /// <summary>Mapping packages as before; LXX packages without the empty mapping lists (roadmap 0028.7).</summary>
+    private static readonly JsonSerializerOptions PackageJson = AgentPackageJson.Options;
 
     private readonly IAgentPackageBuilder _builder;
     private readonly IAgentProposalService _proposals;
@@ -305,7 +301,7 @@ public sealed class AgentRunExecutor
                         Model = run.Model,
                         StaticPrefix = prompt.StaticPrefix,
                         PackageJson = packageJson,
-                        JsonSchema = prompt.Language.StartsWith(AgentPromptProvider.LemmaPrefix, StringComparison.Ordinal) ? AgentAnswerSchema.LemmaJson : AgentAnswerSchema.Json,
+                        JsonSchema = AgentAnswerSchema.ForLanguage(prompt.Language),
                         MaxOutputTokens = profile.MaxOutputTokens,
                         Turns = turns.ToList(),
                     }, stop);
@@ -328,8 +324,13 @@ public sealed class AgentRunExecutor
                 await RecordAsync(run, profile, work, state, result.InputTokens, result.CachedInputTokens, result.OutputTokens);
                 TagUsage(attemptSpan, result.InputTokens, result.CachedInputTokens, result.OutputTokens);
                 (inputSum, cachedSum, outputSum) = (inputSum + result.InputTokens, cachedSum + result.CachedInputTokens, outputSum + result.OutputTokens);
-                _logger.LogInformation("Agent run {RunId} package {Package} attempt {Attempt}: {Input} input ({Cached} cached), {Output} output tokens, finish '{Finish}'",
-                    run.Id, work.Id, attempt + 1, result.InputTokens, result.CachedInputTokens, result.OutputTokens, result.FinishReason);
+                // Per verse (roadmap 0028.7): the call's tokens over the verses of the package (a resubmission still sends the whole package).
+                var verseCount = Math.Max(1, work.Verses);
+                attemptSpan?.SetTag("verses", verseCount);
+                attemptSpan?.SetTag("tokens.per_verse", (result.InputTokens + result.OutputTokens) / verseCount);
+                _logger.LogInformation("Agent run {RunId} package {Package} attempt {Attempt}: {Input} input ({Cached} cached), {Output} output tokens, finish '{Finish}'; {Verses} verse(s), {InputPerVerse} input and {OutputPerVerse} output tokens per verse",
+                    run.Id, work.Id, attempt + 1, result.InputTokens, result.CachedInputTokens, result.OutputTokens, result.FinishReason,
+                    verseCount, result.InputTokens / verseCount, result.OutputTokens / verseCount);
 
                 var answer = WithPackageId(result.Json, work.Id);
                 var submit = await _proposals.SubmitAsync(work.Id.ToString(), answer, CancellationToken.None);

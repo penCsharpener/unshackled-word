@@ -65,13 +65,25 @@ public enum AgentMode
     /// Only verses with work (06-ai-runs.md) are sent.
     /// </summary>
     Lemma,
+
+    /// <summary>
+    /// Roadmap 0028.7: LXX words (Swete, Rahlfs numbering) get lemma, Strong's (TBESG), Robinson morphology and the Hebrew words they render.
+    /// Packages and answers have their own shape (<see cref="Lxx.LxxAgentPackageBuilder"/>); proposals carry <c>Language = 'lxx'</c>.
+    /// </summary>
+    LxxTag,
 }
 
 public static class AgentModes
 {
+    /// <summary>The message of every mode validator.</summary>
+    public const string ValidModesMessage = "mode must be redo, fill-open, lemma or lxx-tag.";
+
     public const string FillOpen = "fill-open";
     public const string Redo = "redo";
     public const string Lemma = "lemma";
+
+    /// <summary>LXX tagging (roadmap 0028.7), prompt <c>lxx-tag-v1</c>.</summary>
+    public const string LxxTag = "lxx-tag";
 
     /// <summary>Run mode of the vocab dictionary-form fill (roadmap 0022.13); it has no <see cref="AgentMode"/> value, the vocab executor runs it.</summary>
     public const string VocabForm = "vocab-form";
@@ -80,6 +92,7 @@ public static class AgentModes
     {
         AgentMode.Redo => Redo,
         AgentMode.Lemma => Lemma,
+        AgentMode.LxxTag => LxxTag,
         _ => FillOpen,
     };
 
@@ -95,6 +108,9 @@ public static class AgentModes
                 return true;
             case Lemma:
                 mode = AgentMode.Lemma;
+                return true;
+            case LxxTag:
+                mode = AgentMode.LxxTag;
                 return true;
             default:
                 return false;
