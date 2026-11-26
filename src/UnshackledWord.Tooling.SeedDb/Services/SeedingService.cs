@@ -25,6 +25,8 @@ public sealed partial class SeedingService
         typeof(StepBible.StepDataRelationshipImporter),
         // after the Hebrew normalization above: the Old Testament tokens come from StepHebrewWordsNormalized (roadmap 0027.2)
         typeof(VerseSimilarity.VerseSimilarityRunner),
+        // after the STEP download, which holds TVTMS (roadmap 0028.3); only while LxxVerses is empty
+        typeof(Swete.LxxTextImporter),
         typeof(StepBible.StrongsToText.StepStrongsImport),
         typeof(AiMappingImport.AiMappingImportRunner),
         typeof(RevisionSeed.RevisionSeedRunner),

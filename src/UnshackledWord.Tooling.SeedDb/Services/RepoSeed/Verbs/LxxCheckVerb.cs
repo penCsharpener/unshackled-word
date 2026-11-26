@@ -29,7 +29,7 @@ namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 /// </summary>
 public sealed partial class LxxCheckVerb : IOfflineSeedVerb
 {
-    public const string ExceptionFile = "seed/lxx/swete-to-rahlfs.csv";
+    public const string ExceptionFile = LxxSourceLoader.ExceptionFile;
 
     public const string StatusOk = "ok";
     public const string StatusException = "explained (exception)";
@@ -37,17 +37,14 @@ public sealed partial class LxxCheckVerb : IOfflineSeedVerb
     public const string StatusGap = "gap";
     public const string StatusUnexplained = "unexplained";
 
-    private readonly SweteDownloader _sweteDownloader;
-    private readonly StepGithubDownloader _stepDownloader;
+    private readonly LxxSourceLoader _loader;
     private readonly IFileService _fileService;
     private readonly DatabaseSeedSettings _options;
     private readonly ILogger<LxxCheckVerb> _logger;
 
-    public LxxCheckVerb(SweteDownloader sweteDownloader, StepGithubDownloader stepDownloader, IFileService fileService,
-        IOptions<AppSettings> options, ILogger<LxxCheckVerb> logger)
+    public LxxCheckVerb(LxxSourceLoader loader, IFileService fileService, IOptions<AppSettings> options, ILogger<LxxCheckVerb> logger)
     {
-        _sweteDownloader = sweteDownloader;
-        _stepDownloader = stepDownloader;
+        _loader = loader;
         _fileService = fileService;
         _options = options.Value.DatabaseSeeding;
         _logger = logger;
@@ -60,25 +57,13 @@ public sealed partial class LxxCheckVerb : IOfflineSeedVerb
 
     public async Task<int> RunAsync(VerbArguments arguments, CancellationToken token)
     {
-        var sweteFiles = await _sweteDownloader.DownloadFileAsync(token);
-        var tvtmsPath = await EnsureTvtmsAsync(token);
-        if (tvtmsPath is null)
+        var sources = await _loader.LoadAsync(token);
+        if (sources is null)
         {
-            _logger.LogError("TVTMS file not found and could not be downloaded.");
             return 1;
         }
 
-        var exceptionPath = _fileService.Combine(_options.SolutionAssetsPath, ExceptionFile);
-        if (!_fileService.FileExists(exceptionPath))
-        {
-            _logger.LogError("Exception list {Path} not found.", exceptionPath);
-            return 1;
-        }
-
-        var verses = SweteParser.Parse(await File.ReadAllLinesAsync(sweteFiles[0], token), await File.ReadAllLinesAsync(sweteFiles[1], token));
-        var table = TvtmsGreekParser.Parse(await File.ReadAllLinesAsync(tvtmsPath, token));
-        var parseErrors = new List<string>();
-        var exceptions = SweteRahlfsExceptionList.Parse(await File.ReadAllLinesAsync(exceptionPath, token), parseErrors);
+        var (verses, table, exceptions, parseErrors, result) = sources;
         _logger.LogInformation("Swete: {Verses} verses, {Words} words, {Books} book codes. TVTMS Greek column: {Rows} alignment rows, {Unparsed} unreadable cells. Exception list: {Exceptions} rows.",
             verses.Count, verses.Sum(v => v.Words.Count), verses.Select(v => v.BookCode).Distinct().Count(), table.Rows.Count, table.UnparsedCells.Count,
             exceptions.Count);
@@ -89,7 +74,6 @@ public sealed partial class LxxCheckVerb : IOfflineSeedVerb
 
         LogBookTotals(verses);
 
-        var result = LxxVersification.Map(verses, exceptions, table);
         foreach (var error in parseErrors.Concat(result.Errors))
         {
             _logger.LogError("Exception list: {Error}", error);
@@ -122,19 +106,6 @@ public sealed partial class LxxCheckVerb : IOfflineSeedVerb
 
     private static string Counts(Dictionary<string, int> counts) =>
         string.Join(", ", new[] { StatusOk, StatusException, StatusTvtmsFix, StatusGap, StatusUnexplained }.Select(s => $"{s} {counts.GetValueOrDefault(s)}"));
-
-    private async Task<string?> EnsureTvtmsAsync(CancellationToken token)
-    {
-        var fileName = _fileService.GetFileName(_options.StepBibleData.VersificationFile).Replace("%20", " ");
-        var path = _fileService.Combine(_options.SolutionTempPath, "SeedData", "Step", fileName);
-        if (!_fileService.FileExists(path))
-        {
-            _logger.LogInformation("TVTMS not cached; running the STEP downloader.");
-            await _stepDownloader.DownloadFileAsync(token);
-        }
-
-        return _fileService.FileExists(path) ? path : null;
-    }
 
     private void LogBookTotals(IReadOnlyList<SweteVerse> verses)
     {

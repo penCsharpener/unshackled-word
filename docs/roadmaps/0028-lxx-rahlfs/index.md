@@ -15,7 +15,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); the rest is open.
+Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3 done; the rest is open.
 
 **0028.1 (download, parsers, `lxx-check`) done, with these findings and deviations:**
 
@@ -70,5 +70,42 @@ Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done 
   - Skip `IsEmpty` units.
   - Drop marker tokens (`LxxVersification.IsMarkerToken`), the `⸂ ⸆ ⸃` marks and the heading words from the word stream.
 - **Tests:** 12 new `LxxVersificationTests` pass (20 with the parser tests). The two AgentMapping prompt tests from 0028.1 still fail and are untouched.
+
+**0028.3 (migration 0050, `LxxTextImporter`) done, with these findings and deviations:**
+
+- **Schema:** `LxxVerses`/`LxxWords` as in [04-model.md](04-model.md), which now matches the migration. Changes against the plan:
+  - `SortOrder` (int4, unique) holds Swete's reading order, because `RahlfsRefId` order differs (Esther addition A sorts after 1:1).
+  - `RahlfsRefId` is nullable, for `absent` units only (CHECK). `SweteRef` is `varchar(60)`; the longest joined ref has 26 characters (`Job.41:1#6- + Job.41:2#1-6`).
+  - There are CHECKs on `MapKind`, `TextForm`, the book range 1..39, and on additions (no `LxxRefId`/`HebRefId`).
+  - FK to `BibleBooks`, and `LxxWords` → `LxxVerses` with `ON DELETE CASCADE`.
+  - Indexes: `HebRefId` and `AfterHebRefId` (partial), and `(BibleBookId, Chapter)`. The unique `(LxxVerseId, Position)` serves reads by verse.
+- **Import (dev DB):**
+  - 23,620 verses: one 23,203, split 48, merged 2, addition 367, absent 0. The 240 empty Swete verses are skipped.
+  - 486,313 words. That is the 0028.1 total of 487,224 tokens minus the 240 blanks and the 671 tokens dropped by the filter.
+  - The SeedDb pipeline imports in 11.2 s (download check, parse, map and insert in one transaction); the whole process run takes 13.4 s.
+  - The second run logs "LXX text up to date, no import" in 1.6 s and changes no row; the identity max values are unchanged.
+- **Per book (verses/words):** Gen 1532/32,635, Exo 1169/24,647, Lev 859/19,042, Num 1288/24,973, Deu 955/22,501, Jos 659/14,815, Jdg 618/15,570, Rut 85/2066, 1Sa 773/20,044, 2Sa 695/17,906, 1Ki 819/20,436, 2Ki 722/18,618, 1Ch 928/15,967, 2Ch 832/21,059, Ezr 278/5332, Neh 377/7336, Est 267/5830, Job 1082/13,509, Psa 2527/34,615, Pro 931/11,091, Ecc 222/4518, Sng 117/1994, Isa 1288/26,953, Jer 1296/28,775, Lam 150/2375, Ezk 1265/29,364, Dan og 415/10,952, Dan th 422/10,272, Hos 197/3915, Jol 73/1573, Amo 146/3200, Oba 21/456, Jon 48/1080, Mic 105/2342, Nam 47/931, Hab 56/1090, Zep 52/1223, Hag 38/948, Zec 211/4952, Mal 55/1408.
+  - Additions: Est 105, Dan og 74, Dan th 65, Pro 39, 1Ki 36, Job 13, 2Ch 12, Jos 10, Psa 7, 2Ki 4, 1Sa 2.
+- **Spot checks:**
+  - Jer 32:1 has `HebRefId` 24025015.
+  - Ps 9:22 has `HebRefId` 19010001.
+  - Est 1:1.1 (`SortOrder` 17629) comes before Est 1:1 (`Est.1:1[18]`, `SortOrder` 17646).
+- **Word filter (`LxxWordFilter`):** it dropped 671 tokens:
+  - 251 marker tokens;
+  - 330 editorial-mark tokens (`⸂⸆⸃`, `⸆`, `⸂⸆⸆⸃`). The marks attached to words (`⸂αἰρόμενα`, `χρονιεῖ,⸃`) are stripped, and the word is kept;
+  - 88 acrostic letter names in Lam 1-4 (`Ἄλεφ.`, `Βήθ.` … `Θαύ.`, including the mid-verse ones in Lam 1:1 and 3:45);
+  - 2 standalone `·` (Gen 36:40, Jer 5:6), appended to the previous word.
+- **No heading words:** Swete's word file has no book titles or section headings. The capitals at the start of a book (`ΕΝ ΑΡΧΗ` Gen 1:1, `ΚΑΙ` Lev/Num/Jos …, `ΛΟΓΟΣ` Hos, `ΜΑΚΑΡΙΟΣ` Ps 1:1, `ΕΤΟΥΣ` Est addition A) are the first words of the text, printed in unaccented capitals. They are kept as words.
+  - For tagging (0028.5), their form lacks accents.
+- **`GreekNoDiacritics`** uses `RemoveGreekDiacritics`, as for STEP. Swete's square brackets for supplied text (74 words: Gen 1:20-2:3, 1Ki 22:29, 2Ch 34:8, e.g. `[τοῖ]ς`) are also removed there; `Greek` keeps them. The elision mark `᾽` stays (`επ᾽`), as it does in the STEP words.
+- **Deviations:**
+  - `LxxSourceLoader` (Swete + TVTMS + exception list + `LxxVersification.Map`) is shared by `lxx-check` and the importer.
+  - The importer locks `LxxVerses` and checks the gate again inside its transaction.
+  - An exception list with errors stops the import (logged); the seed goes on.
+  - The verified run used only the LXX runner through the git-ignored `SeedingService.local.cs`. That change has been reverted.
+- **Tests:**
+  - 11 new `LxxTextBuilderTests` (filter and row mapping) pass, 31 Lxx tests in all.
+  - The 2 new `LxxTextDatabaseTests` pass against the dev DB: the migration runs twice, the insert and the gate work, and the transaction rolls back.
+  - The two known AgentMapping prompt tests still fail.
 
 Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051` and version 0.13.0. 0026 (morpheme alignment) is deferred indefinitely and will take whatever numbers are free when it is picked up.
