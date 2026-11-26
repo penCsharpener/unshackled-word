@@ -65,6 +65,37 @@ public sealed class VerseSearchRepository : IVerseSearchRepository
         return rows.ToList();
     }
 
+    public async Task<IReadOnlyList<int>> GetHitChaptersAsync(string tsQuery, int level, CancellationToken token = default)
+    {
+        if (level != IVerseSearchRepository.BaseLevel)
+        {
+            const string revisedSql = $"""
+                                       WITH "Effective" AS ({RevisionSql.EffectiveVerses})
+                                       SELECT DISTINCT (v."HebRefId" / 1000)::int "ChapterKey"
+                                       FROM "unshackled-word"."Elb1871Verses" v
+                                           JOIN "Effective" e ON e."HebRefId" = v."HebRefId"
+                                           LEFT JOIN "unshackled-word"."RevisionVerses" rv ON rv."Id" = e."RevisionVerseId"
+                                       WHERE 1=1
+                                           AND (v."SearchVector" @@ CAST(@Query AS tsquery) OR rv."SearchVector" @@ CAST(@Query AS tsquery))
+                                       ORDER BY 1
+                                       """;
+
+            var revisedRows = await _dbReader.ReadAsListAsync<int>(revisedSql, new { Query = tsQuery, Level = level, FromRefId = 0, ToRefId = int.MaxValue });
+            return revisedRows.ToList();
+        }
+
+        const string sql = """
+                           SELECT DISTINCT (v."HebRefId" / 1000)::int "ChapterKey"
+                           FROM "unshackled-word"."Elb1871Verses" v
+                           WHERE 1=1
+                               AND v."SearchVector" @@ CAST(@Query AS tsquery)
+                           ORDER BY 1
+                           """;
+
+        var rows = await _dbReader.ReadAsListAsync<int>(sql, new { Query = tsQuery });
+        return rows.ToList();
+    }
+
     public async Task<IReadOnlyList<VerseSearchHitRow>> GetHitsAsync(string tsQuery, string? literalTsQuery, int level, int firstRefId, int lastRefId, int offset, int limit, CancellationToken token = default)
     {
         if (level != IVerseSearchRepository.BaseLevel)

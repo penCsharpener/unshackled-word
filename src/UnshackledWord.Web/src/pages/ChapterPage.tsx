@@ -63,6 +63,11 @@ import type {
   WordToken,
 } from "@/lib/bible/types";
 import { useSaveVerseMapping, useVerseMapping } from "@/lib/bible/verseMapping";
+import {
+  isVerseSearchQuery,
+  useVerseChapterMatches,
+  useVerseNeighbours,
+} from "@/lib/bible/verseSearch";
 import { parseVerseSelection } from "@/lib/bible/verseSelection";
 import { useWordDetail, wordDetailQuery, wordDetailSource } from "@/lib/bible/wordDetail";
 import { buildHighlights, phraseWordIds, wordKey } from "@/lib/bible/words";
@@ -87,7 +92,7 @@ import {
   useGrammarNeighbours,
 } from "@/lib/search/grammarSearch";
 import {
-  markedGrammarQuery,
+  markedSearch,
   setSearchMark,
   setSearchOpen,
   useSearchState,
@@ -250,34 +255,55 @@ export function ChapterPage() {
     return { german, original };
   }, [mappingData, verseView, hoveredWord, hoveredOriginalId, revisedId]);
 
-  // Search marks (roadmap 0029.2f): the overlay's query, while "Treffer im Text markieren" is on, marks its matches in
-  // the open chapter. German words by their Elb1871 position (variant words through `basePosition`; a variant-only
-  // word is never marked), original words by their StepGreekWords id.
+  // Search marks (roadmap 0029.2f, 0029.10f): the overlay's query, while "Treffer im Text markieren" is on, marks its
+  // matches in the open chapter. The engine is the grammar search (original words by their StepGreekWords id, German
+  // words by their Elb1871 position) or the verse search (German words only: by Elb1871 position, or by the position
+  // in the shown variant for a revised verse). Variant words are matched through `basePosition`; a variant-only word
+  // is never marked by an Elb1871 position. `margin` (from lg) = both overlay columns are shown.
   const search = useSearchState();
   const { query: submittedSearch } = useSubmittedQuery(search.query);
-  const markQuery = ref
-    ? markedGrammarQuery({ ...search, query: submittedSearch }, isGrammarQuery)
-    : "";
-  const chapterMatches = useGrammarChapterMatches(markQuery, ref?.bookId ?? 0, ref?.chapter ?? 0);
-  const hitNeighbours = useGrammarNeighbours(markQuery, ref?.bookId ?? 0, ref?.chapter ?? 0);
+  const marked = ref
+    ? markedSearch({ ...search, query: submittedSearch }, isGrammarQuery, margin)
+    : null;
+  const markQuery = marked?.query ?? "";
+  const grammarMark = marked?.engine === "grammar" ? markQuery : "";
+  const verseMark = marked?.engine === "verses" ? markQuery : "";
+  const verseMarkInvalid = verseMark !== "" && !isVerseSearchQuery(verseMark);
+  const markBook = ref?.bookId ?? 0;
+  const markChapter = ref?.chapter ?? 0;
+  const grammarMatches = useGrammarChapterMatches(grammarMark, markBook, markChapter);
+  const grammarNeighbours = useGrammarNeighbours(grammarMark, markBook, markChapter);
+  const verseMatches = useVerseChapterMatches(verseMark, markBook, markChapter, reader.level);
+  const verseNeighbours = useVerseNeighbours(verseMark, markBook, markChapter, reader.level);
+  const chapterMatches = verseMark !== "" ? verseMatches : grammarMatches;
+  const hitNeighbours = verseMark !== "" ? verseNeighbours : grammarNeighbours;
   const searchMarks = useMemo(() => {
     const german = new Map<number, ReadonlySet<number>>();
+    const revisedGerman = new Map<number, ReadonlySet<number>>();
     const original = new Map<number, ReadonlySet<number>>();
-    for (const verse of markQuery !== "" ? (chapterMatches.data?.verses ?? []) : []) {
-      german.set(verse.verse, new Set(verse.germanPositions));
-      original.set(verse.verse, new Set(verse.originalWordIds));
+    if (grammarMark !== "") {
+      for (const verse of grammarMatches.data?.verses ?? []) {
+        german.set(verse.verse, new Set(verse.germanPositions));
+        original.set(verse.verse, new Set(verse.originalWordIds));
+      }
+    } else if (verseMark !== "") {
+      for (const verse of verseMatches.data?.verses ?? []) {
+        (verse.revised ? revisedGerman : german).set(verse.verse, new Set(verse.positions));
+      }
     }
-    return { german, original };
-  }, [markQuery, chapterMatches.data]);
-  const markStatus: SearchMarkStatus = chapterMatches.isError
-    ? chapterMatches.error instanceof ApiError && chapterMatches.error.status === 400
-      ? "incomplete"
-      : "error"
-    : chapterMatches.isPending
-      ? "loading"
-      : (chapterMatches.data?.total ?? 0) > 0
-        ? "hits"
-        : "none";
+    return { german, revisedGerman, original };
+  }, [grammarMark, verseMark, grammarMatches.data, verseMatches.data]);
+  const markStatus: SearchMarkStatus = verseMarkInvalid
+    ? "incomplete"
+    : chapterMatches.isError
+      ? chapterMatches.error instanceof ApiError && chapterMatches.error.status === 400
+        ? "incomplete"
+        : "error"
+      : chapterMatches.isPending
+        ? "loading"
+        : (chapterMatches.data?.total ?? 0) > 0
+          ? "hits"
+          : "none";
 
   // Left margin (from 120rem): TSK / Grundtext next to every verse, one request per chapter and kind.
   const wide = useMediaQuery("(min-width: 120rem)");
@@ -1457,8 +1483,11 @@ export function ChapterPage() {
                             (word.basePosition !== undefined &&
                               pillWords.base.has(word.basePosition)));
                         const searchHit =
-                          word.basePosition !== undefined &&
-                          searchMarks.german.get(v.verse)?.has(word.basePosition) === true;
+                          (word.basePosition !== undefined &&
+                            searchMarks.german.get(v.verse)?.has(word.basePosition) === true) ||
+                          (word.revisionWordId !== undefined &&
+                            word.position !== undefined &&
+                            searchMarks.revisedGerman.get(v.verse)?.has(word.position) === true);
                         const background = dropHere
                           ? "bg-mark-link"
                           : marked

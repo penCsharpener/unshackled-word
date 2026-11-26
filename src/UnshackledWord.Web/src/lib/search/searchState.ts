@@ -90,17 +90,29 @@ export function useSearchState(): SearchState {
 
 const normalize = (query: string) => query.trim().replace(/\s+/g, " ");
 
+/** The engine whose hits the reader marks: the grammar search (Grundtext column) or the verse search (Verse column). */
+export type SearchEngine = "grammar" | "verses";
+
+export interface MarkedSearch {
+  engine: SearchEngine;
+  /** Normalized query. */
+  query: string;
+}
+
 /**
- * The query the reader marks, or "" when nothing is marked: marking on and a query in the Grundtext engine. The engine
- * is the grammar search when the query is a grammar query or was typed in the Grundtext tab (a word-only query such
- * as `agape` marks too); a Verse-tab query marks nothing yet (roadmap 0029.10f).
+ * What the reader marks, or null when nothing is marked: marking on and a query long enough. The tab the query was
+ * typed in decides the engine (roadmap 0029.2f, 0029.10f). With both columns shown (`lg` and wider) the tab says
+ * nothing: a grammar query uses the grammar search, anything else the verse search. Below `lg` a word-only query
+ * typed in the Grundtext tab (`agape`) also uses the grammar search.
  */
-export function markedGrammarQuery(
+export function markedSearch(
   search: Pick<SearchState, "query" | "tab" | "mark">,
   isGrammar: (query: string) => boolean,
-): string {
-  if (!search.mark) return "";
+  bothColumns: boolean,
+): MarkedSearch | null {
+  if (!search.mark) return null;
   const query = normalize(search.query);
-  if (query.length < SEARCH_MIN_CHARS) return "";
-  return search.tab === "originals" || isGrammar(query) ? query : "";
+  if (query.length < SEARCH_MIN_CHARS) return null;
+  const grammar = isGrammar(query) || (!bothColumns && search.tab === "originals");
+  return { engine: grammar ? "grammar" : "verses", query };
 }

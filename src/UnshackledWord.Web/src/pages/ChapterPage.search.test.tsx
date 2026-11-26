@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -11,6 +11,8 @@ import {
   SEARCH_MARK_KEY,
   SEARCH_QUERY_KEY,
   SEARCH_TAB_KEY,
+  setSearchQuery,
+  setSearchTab,
   useSearchState,
 } from "@/lib/search/searchState";
 import { fixtureBooks, fixtureChapterWords } from "@/test/fixtures/bibleStructure";
@@ -55,6 +57,8 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 interface Stub {
   chapter: (url: URL) => Response;
   neighbours: (url: URL) => Response;
+  verseChapter: (url: URL) => Response;
+  verseNeighbours: (url: URL) => Response;
 }
 
 function stubFetch(overrides: Partial<Stub> = {}) {
@@ -68,6 +72,8 @@ function stubFetch(overrides: Partial<Stub> = {}) {
         total: 2,
       }),
     neighbours: () => json({ next: { bibleBookId: 43, chapter: 17 } }),
+    verseChapter: () => json({ verses: [{ verse: 1, positions: [4] }], total: 1 }),
+    verseNeighbours: () => json({ previous: { bibleBookId: 43, chapter: 1 } }),
     ...overrides,
   };
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
@@ -81,6 +87,8 @@ function stubFetch(overrides: Partial<Stub> = {}) {
     }
     if (path.startsWith("/elberfelder/search/grammar/chapter/")) return handlers.chapter(url);
     if (path === "/elberfelder/search/grammar/neighbours") return handlers.neighbours(url);
+    if (path.startsWith("/elberfelder/search/verses/chapter/")) return handlers.verseChapter(url);
+    if (path === "/elberfelder/search/verses/neighbours") return handlers.verseNeighbours(url);
     return new Response("{}", { status: 404 });
   });
   vi.stubGlobal("fetch", fetchMock);
@@ -91,6 +99,13 @@ const grammarCalls = (fetchMock: ReturnType<typeof stubFetch>) =>
   fetchMock.mock.calls
     .map(([url]) => String(url))
     .filter((url) => url.includes("/search/grammar/"));
+
+const verseCalls = (fetchMock: ReturnType<typeof stubFetch>) =>
+  fetchMock.mock.calls
+    .map(([url]) => String(url))
+    .filter(
+      (url) => url.includes("/search/verses/chapter/") || url.includes("/search/verses/neighbours"),
+    );
 
 function OpenProbe() {
   return <p data-testid="overlay-open">{String(useSearchState().open)}</p>;
@@ -218,7 +233,7 @@ describe("ChapterPage search marks", () => {
     expect(localStorage.getItem(SEARCH_QUERY_KEY)).toBe("agape Kasus:nom");
   });
 
-  it("fetches nothing while marking is off or for a Verse-tab query", async () => {
+  it("fetches nothing while marking is off", async () => {
     storeSearch("agape Kasus:nom", false);
     const fetchMock = stubFetch();
     renderPage();
@@ -227,13 +242,61 @@ describe("ChapterPage search marks", () => {
     expect(grammarCalls(fetchMock)).toHaveLength(0);
   });
 
-  it("does not mark a plain Verse-tab query", async () => {
-    storeSearch("Gott Welt", true, "verses");
+  it("marks a Verse-tab query with the verse search and navigates by its neighbours", async () => {
+    storeSearch("Gott Welt geliebt", true, "verses");
+    const fetchMock = stubFetch();
+    const router = renderPage();
+    const bar = await screen.findByTestId("search-mark-bar");
+    expect(await within(bar).findByText("1 Treffer")).toBeInTheDocument();
+    expect(within(bar).getByText("Gott Welt geliebt")).toBeInTheDocument();
+    await waitFor(() => expect(wordButton("Mensch").className).toContain("bg-mark-search"));
+    expect(wordButton("Es").className).not.toContain("bg-mark-search");
+    expect(grammarCalls(fetchMock)).toHaveLength(0);
+    const chapterCall = verseCalls(fetchMock).find((url) => url.includes("/chapter/43/3?"));
+    const params = new URL(chapterCall as string, "http://localhost").searchParams;
+    expect(params.get("q")).toBe("Gott Welt geliebt");
+    expect(params.get("level")).toBe("200");
+    await userEvent.click(
+      await within(bar).findByRole("button", {
+        name: "Vorheriges Kapitel mit Treffer: Johannes 1",
+      }),
+    );
+    expect(router.state.location.pathname).toBe("/bible/43/1");
+  });
+
+  it("switches the marks to the grammar search when the query moves to the Grundtext tab", async () => {
+    storeSearch("Gott Welt geliebt", true, "verses");
     const fetchMock = stubFetch();
     renderPage();
-    await screen.findByText("Mensch");
-    expect(screen.queryByTestId("search-mark-bar")).not.toBeInTheDocument();
-    expect(grammarCalls(fetchMock)).toHaveLength(0);
+    await waitFor(() => expect(wordButton("Mensch").className).toContain("bg-mark-search"));
+    act(() => {
+      setSearchQuery("agape");
+      setSearchTab("originals");
+    });
+    await waitFor(() => expect(wordButton("Dieser").className).toContain("bg-mark-search"));
+    expect(wordButton("Mensch").className).toContain("bg-mark-search");
+    expect(grammarCalls(fetchMock).some((url) => url.includes("/chapter/43/3?"))).toBe(true);
+  });
+
+  it("shows an invalid verse query as incomplete without asking the server", async () => {
+    storeSearch("a b c d e f g h i", true, "verses");
+    const fetchMock = stubFetch();
+    renderPage();
+    const bar = await screen.findByTestId("search-mark-bar");
+    await within(bar).findByRole("button", { name: "Suche unvollständig" });
+    expect(verseCalls(fetchMock)).toHaveLength(0);
+  });
+
+  it("marks the shown variant's own positions for a revised verse hit", async () => {
+    localStorage.setItem("uw.readerLevel", "300");
+    storeSearch("Gott Welt geliebt", true, "verses");
+    stubFetch({
+      verseChapter: () => json({ verses: [{ verse: 2, revised: true, positions: [1] }], total: 1 }),
+    });
+    renderPage();
+    await screen.findByText("Jener");
+    await waitFor(() => expect(wordButton("Jener").className).toContain("bg-mark-search"));
+    expect(wordButton("zu").className).not.toContain("bg-mark-search");
   });
 
   it("marks revised words through their base position only", async () => {

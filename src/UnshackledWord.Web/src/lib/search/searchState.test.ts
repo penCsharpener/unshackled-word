@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { isGrammarQuery } from "./grammarSearch";
 import {
-  markedGrammarQuery,
+  markedSearch,
   readSearchState,
   resetSearchState,
   SEARCH_MARK_KEY,
@@ -87,22 +87,37 @@ describe("search state persistence", () => {
   });
 });
 
-describe("markedGrammarQuery", () => {
-  const marked = (query: string, tab: "verses" | "originals", mark = true) =>
-    markedGrammarQuery({ query, tab, mark }, isGrammarQuery);
+describe("markedSearch", () => {
+  const marked = (query: string, tab: "verses" | "originals", bothColumns = false, mark = true) =>
+    markedSearch({ query, tab, mark }, isGrammarQuery, bothColumns);
 
-  it("marks a grammar query from either tab, normalized", () => {
-    expect(marked("  agape   Kasus:nom ", "verses")).toBe("agape Kasus:nom");
-    expect(marked("agape Kasus:nom", "originals")).toBe("agape Kasus:nom");
+  it("uses the grammar search for a grammar query from either tab, normalized", () => {
+    expect(marked("  agape   Kasus:nom ", "verses")).toEqual({
+      engine: "grammar",
+      query: "agape Kasus:nom",
+    });
+    expect(marked("agape Kasus:nom", "originals")?.engine).toBe("grammar");
+    expect(marked("agape Kasus:nom", "verses", true)?.engine).toBe("grammar");
   });
 
-  it("marks a word-only query typed in the Grundtext tab", () => {
-    expect(marked("agape", "originals")).toBe("agape");
+  it("uses the grammar search for a word-only query typed in the Grundtext tab below lg", () => {
+    expect(marked("agape", "originals")).toEqual({ engine: "grammar", query: "agape" });
   });
 
-  it("marks nothing for a Verse-tab word query, a too short query or with marking off", () => {
-    expect(marked("Gott Welt", "verses")).toBe("");
-    expect(marked("a", "originals")).toBe("");
-    expect(marked("agape Kasus:nom", "originals", false)).toBe("");
+  it("uses the verse search for a word query typed in the Verse tab", () => {
+    expect(marked("Gott Welt geliebt", "verses")).toEqual({
+      engine: "verses",
+      query: "Gott Welt geliebt",
+    });
+  });
+
+  it("uses the verse search for any word query when both columns are shown", () => {
+    expect(marked("agape", "originals", true)?.engine).toBe("verses");
+    expect(marked("Gott Welt", "originals", true)?.engine).toBe("verses");
+  });
+
+  it("marks nothing for a too short query or with marking off", () => {
+    expect(marked("a", "originals")).toBeNull();
+    expect(marked("Gott", "verses", false, false)).toBeNull();
   });
 });
