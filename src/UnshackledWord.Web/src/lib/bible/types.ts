@@ -572,6 +572,46 @@ export interface GetSimilarVersesResponse {
   verses: VerseSimilarVerses[];
 }
 
+/** One Septuagint word (Swete, roadmap 0028.4); tags come with 0028.5. */
+export interface LxxWord {
+  id: number;
+  position: number;
+  greek: string;
+}
+
+/** One Swete unit with its Rahlfs label (Rahlfs counting in `bibleBookId`/`chapter`/`verse`). */
+export interface LxxUnit {
+  lxxVerseId: number;
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  /** 0 for a whole verse; for additions the sequence number, so tell additions apart by `isAddition` */
+  subverse: number;
+  /** e.g. `Jer.32:1` (TVTMS book code); the client formats its own label */
+  ref: string;
+  /** Daniel: `og` (Old Greek) or `th` (Theodotion); empty elsewhere */
+  textForm: "" | "og" | "th";
+  mapKind: string;
+  isAddition: boolean;
+  /** the Rahlfs label differs from the Elb verse: show it */
+  differsFromHebrew: boolean;
+  words: LxxWord[];
+}
+
+/** The LXX units of one Elb1871 verse in Swete's reading order (empty = not in the LXX). */
+export interface LxxElbVerse {
+  hebRefId: number;
+  verse: number;
+  units: LxxUnit[];
+}
+
+/** `GET lxx/chapter/{bibleBookId}/{chapter}` (Elberfelder counting, books 1..39). */
+export interface GetLxxChapterResponse {
+  bibleBookId: number;
+  chapter: number;
+  verses: LxxElbVerse[];
+}
+
 /** `GET elberfelder/chapterOriginals/...`: original words of a whole chapter with the Elb1871 links (read only). */
 export interface ChapterOriginalVerse {
   verse: number;

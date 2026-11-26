@@ -9,6 +9,7 @@ import type {
   GetChapterOriginalsResponse,
   GetChapterTextResponse,
   GetGreekEditionsResponse,
+  GetLxxChapterResponse,
   GetPassageTextResponse,
   GetSimilarVersesResponse,
   GetStrongsOccurrencesResponse,
@@ -132,6 +133,9 @@ export const bibleApi = {
   /** Up to 30 similar verses of one verse ("mehr anzeigen"). */
   similarVersesOfVerse: (hebRefId: number, signal?: AbortSignal) =>
     api.get<VerseSimilarVerses>(`/elberfelder/similarVerses/verse/${hebRefId}`, signal),
+  /** Septuagint text (Swete, Rahlfs labels) of an OT chapter in Elberfelder counting (roadmap 0028.4). */
+  lxxChapter: (bookId: number, chapter: number, signal?: AbortSignal) =>
+    api.get<GetLxxChapterResponse>(`/lxx/chapter/${bookId}/${chapter}`, signal),
   chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetChapterOriginalsResponse>(
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,

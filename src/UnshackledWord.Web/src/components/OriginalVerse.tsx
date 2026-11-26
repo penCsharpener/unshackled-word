@@ -19,7 +19,14 @@ export interface OriginalVerseProps {
    * `margin`: the same words in the side panel next to the verse, no frame and toggles, every word links to its Strong's page.
    */
   variant?: "panel" | "margin";
-  data: Pick<GetVerseMappingResponse, "language" | "originalWords">;
+  /**
+   * `language: "lxx"` (roadmap 0028.4f, `margin` only): Septuagint words, Greek font and `lang="grc"`; words without a
+   * Strong's number (all until 0028.5) are plain text without link and hover card.
+   */
+  data: {
+    language: GetVerseMappingResponse["language"] | "lxx";
+    originalWords: GetVerseMappingResponse["originalWords"];
+  };
   /** `margin`: English gloss and lexicon text per Strong's number for the hover card (chapter originals `lexicon`). */
   lexicon?: Record<string, ChapterLexiconEntry>;
   /** e.g. "Johannes 3,1" */
@@ -145,6 +152,9 @@ export function OriginalVerse({
         >
           {words.map((word) => {
             const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
+            // untagged LXX word: plain text, nothing to link or explain
+            if (data.language === "lxx" && !strongs)
+              return <span key={word.id}>{word.original} </span>;
             const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
             const note = editionNote(word);
             const mark = note ? VARIANT_MARK : "";
@@ -240,7 +250,7 @@ export function OriginalVerse({
                 strongs: tipWord.strongs,
                 morphology: tipWord.morphology,
                 morphologyCode: tipWord.morphologyCode,
-                language: data.language,
+                language: data.language === "lxx" ? "greek" : data.language,
                 gloss: tipWord.strongs ? lexicon?.[tipWord.strongs]?.gloss : undefined,
                 definition: tipWord.strongs ? lexicon?.[tipWord.strongs]?.definition : undefined,
                 definitionSegments: tipWord.strongs
@@ -281,7 +291,7 @@ export function OriginalVerse({
                     strongs: word.strongs,
                     morphology: word.morphology,
                     morphologyCode: word.morphologyCode,
-                    language: data.language,
+                    language: data.language === "lxx" ? "greek" : data.language,
                     editionNote: note,
                   });
                 }}

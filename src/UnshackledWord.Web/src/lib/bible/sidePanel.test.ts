@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { nextSidePanelMode, readSidePanelMode, SIDE_PANEL_KEY } from "./sidePanel";
+import {
+  effectiveSidePanelMode,
+  nextSidePanelMode,
+  readSidePanelMode,
+  SIDE_PANEL_KEY,
+  sidePanelModes,
+} from "./sidePanel";
 
 afterEach(() => localStorage.clear());
 
@@ -25,10 +31,25 @@ describe("side panel mode", () => {
     expect(readSidePanelMode()).toBe("similar");
   });
 
-  it("cycles TSK → original → similar → off → TSK without a notes step", () => {
+  it("cycles TSK → original → LXX → similar → off → TSK without a notes step", () => {
     expect(nextSidePanelMode("tsk")).toBe("original");
-    expect(nextSidePanelMode("original")).toBe("similar");
+    expect(nextSidePanelMode("original")).toBe("lxx");
+    expect(nextSidePanelMode("lxx")).toBe("similar");
     expect(nextSidePanelMode("similar")).toBe("off");
     expect(nextSidePanelMode("off")).toBe("tsk");
+  });
+
+  it("reads the LXX mode", () => {
+    localStorage.setItem(SIDE_PANEL_KEY, "lxx");
+    expect(readSidePanelMode()).toBe("lxx");
+  });
+
+  it("skips the LXX in New Testament chapters", () => {
+    expect(sidePanelModes(false)).toEqual(["tsk", "original", "similar", "off"]);
+    expect(nextSidePanelMode("original", false)).toBe("similar");
+    // a stored LXX choice shows the Grundtext there and cycles on from it
+    expect(effectiveSidePanelMode("lxx", false)).toBe("original");
+    expect(effectiveSidePanelMode("lxx", true)).toBe("lxx");
+    expect(effectiveSidePanelMode("similar", false)).toBe("similar");
   });
 });

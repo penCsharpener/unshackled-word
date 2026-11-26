@@ -4,11 +4,19 @@ import { type CrossReferenceLinkMode, CrossReferenceList } from "@/components/Cr
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { SimilarVerseList } from "@/components/SimilarVerseList";
 import { VerseSidePanel } from "@/components/VerseSidePanel";
+import {
+  type LxxForm,
+  lxxBlocks,
+  lxxOriginalWords,
+  lxxReference,
+  unitsOfForm,
+} from "@/lib/bible/lxx";
 import type {
   BibleStructureBook,
   ChapterOriginalVerse,
   CrossReference,
   GetChapterOriginalsResponse,
+  LxxElbVerse,
   SimilarVerseHit,
   VerseSimilarVerses,
 } from "@/lib/bible/types";
@@ -23,7 +31,7 @@ export interface VerseLinkMode {
 }
 
 export interface VerseSideProps {
-  mode: "tsk" | "original" | "similar";
+  mode: "tsk" | "original" | "lxx" | "similar";
   verse: number;
   /** chapter and reader level, for the hover text of the TSK links */
   bookId: number;
@@ -69,6 +77,10 @@ export interface VerseSideProps {
   similar?: VerseSimilarVerses;
   /** `similar`: a hit is hovered or focused (`undefined` = none); the reader marks its source words in the verse. */
   onHoverSimilar?: (verse: number, hit: SimilarVerseHit | undefined) => void;
+  /** `lxx` (roadmap 0028.4f): the verse's Septuagint units in reading order (absent or empty = not in the LXX) */
+  lxx?: LxxElbVerse;
+  /** `lxx`, Daniel: the text form to show (units without a form always show) */
+  lxxForm?: LxxForm;
 }
 
 /**
@@ -100,8 +112,10 @@ export const VerseSide = memo(function VerseSide({
   edition = null,
   similar,
   onHoverSimilar,
+  lxx,
+  lxxForm = "th",
 }: VerseSideProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const preview = useMemo(
     () => ({ bookId, chapter, verse, level }),
     [bookId, chapter, verse, level],
@@ -166,6 +180,53 @@ export const VerseSide = memo(function VerseSide({
           books={books}
           onHoverHit={hoverSimilar}
         />
+      </VerseSidePanel>
+    );
+  }
+
+  if (mode === "lxx") {
+    const units = unitsOfForm(lxx?.units ?? [], lxxForm);
+    return (
+      <VerseSidePanel mode="lxx" label={t("bible.sidePanel.verseLxx", { verse })}>
+        {units.length === 0 ? (
+          <p className="text-fg-muted">{t("bible.sidePanel.lxx.absent")}</p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {lxxBlocks(units).map((block) =>
+              block.kind === "addition" ? (
+                <section
+                  key={block.units[0]?.lxxVerseId}
+                  aria-label={t("bible.sidePanel.lxx.addition")}
+                  className="rounded-md border border-border bg-surface-muted px-3 py-2"
+                >
+                  <h3 className="text-xs font-medium text-fg-muted">
+                    {t("bible.sidePanel.lxx.addition")}
+                  </h3>
+                  <OriginalVerse
+                    variant="margin"
+                    data={{ language: "lxx", originalWords: lxxOriginalWords(block.units) }}
+                    reference={reference}
+                  />
+                </section>
+              ) : (
+                <div key={block.unit.lxxVerseId}>
+                  {block.unit.differsFromHebrew && (
+                    <p className="text-xs text-fg-muted">
+                      {t("bible.sidePanel.lxx.label", {
+                        reference: lxxReference(block.unit, books, i18n.language),
+                      })}
+                    </p>
+                  )}
+                  <OriginalVerse
+                    variant="margin"
+                    data={{ language: "lxx", originalWords: lxxOriginalWords([block.unit]) }}
+                    reference={reference}
+                  />
+                </div>
+              ),
+            )}
+          </div>
+        )}
       </VerseSidePanel>
     );
   }

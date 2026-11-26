@@ -122,4 +122,21 @@ Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done 
 - **Timing (warm, local):** Ps 119 about 8 ms and 179 kB JSON, Jer 25 about 4 ms and 58 kB (uncompressed).
 - **Tests:** 4 `LxxChapterReadServiceTests` (grouping and empty verses, split order, addition before and after the main unit, Daniel forms) and 8 `LxxChapterValidatorTests` pass.
 
+**0028.4f (side panel mode "LXX") done, with these findings and deviations:**
+
+- **Mode:** `SidePanelMode` gains `"lxx"`, the cycle is `tsk → original → lxx → similar → off`. In NT chapters the LXX step and its rail button are left out (`sidePanelModes(false)`). A stored `lxx` choice shows the Grundtext there (`effectiveSidePanelMode`), and the stored choice stays, so the next OT chapter shows the LXX again. Rail: heading "Septuaginta (Swete)", the muted line "Griechischer Text nach Swete, Verszählung nach Rahlfs", the icon is the text "LXX". `useLxxChapter` (`lib/bible/sidePanel.ts`) runs only while the mode is shown; the panels wait for the data, so no verse flashes "nicht vorhanden" while loading.
+- **No new component:** the LXX list is a branch of `pages/chapter/VerseSide.tsx`, as the Grundtext is. The helpers are in `lib/bible/lxx.ts` (`unitsOfForm`, `lxxBlocks`, `lxxReference`, `lxxOriginalWords`, `useLxxForm`). `OriginalVerse` takes `language: "lxx"`: Greek font, `lang="grc"`, no edition filter; words without `strongs` (all until 0028.5) are plain text without link and hover card. `VerseSidePanel` takes `mode="lxx"`. Both are updated in `Components.md`.
+- **Labels:** "Jer 32,1 LXX" (German) and "Jer 32:1 LXX" (English), from the book abbreviation of the bible structure, only when `differsFromHebrew`. A subverse that is no addition shows as ".k" like the source label (`1Kön 2,35.1 LXX`).
+- **Deviation, additions:** consecutive additions form one muted frame (`border-border bg-surface-muted`) titled "Zusatz der LXX" (English "LXX addition"), with no reference and no subverse numbers. Est addition A (17 units) is one frame, not 17. The words of the frame run on as one text.
+- **Deviation, position:** additions stand where Swete prints them (the API order), not always after their verse. Est 1:1 shows the frame first, then the verse's own Greek.
+- **Daniel:** the Old Greek / Theodotion toggle sits in the rail (two secondary `Button`s with `aria-pressed`), only in Daniel and only in `lxx` mode. Theodotion is the default; the choice is in localStorage `uw.reader.lxxForm`. Units without a text form always show.
+- **Checked in the browser** (local API on 5142 against the dev DB, Vite on 5174, 2100 px wide):
+  - Jer 25 with `G` twice shows "Septuaginta (Swete)". 25:15 has "Jer 32,1 LXX", 25:14 "In der LXX nicht vorhanden".
+  - Est 1:1 shows the addition frame before the verse's own Greek.
+  - In Dan 3 the toggle swaps OG and Theodotion; after a reload OG is still on.
+  - Mt 1 has no LXX button; the stored `lxx` shows the Grundtext, and `G` goes on to "Ähnliche Verse".
+  - Dark and light mode were both checked.
+- **Tests:** 6 new `lxx.test.ts`, 8 new `VerseSide.lxx.test.tsx` (labels de/en, plain words, additions frame, empty state, Daniel filter, rail heading, NT without LXX button, toggle persistence). `sidePanel.test.ts` got the new cycle (+2 tests).
+- **Checks:** typecheck, lint (only the 8 known warnings) and `check:components` pass. Vitest in `node:24-slim` (the bun container failed to start its workers): 1171 passed, 8 failed, all of them the known ones in `CrossReferenceList`, `ChapterPage.tskProposal` and `NoteReviewPage`.
+
 Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051` and version 0.13.0. 0026 (morpheme alignment) is deferred indefinitely and will take whatever numbers are free when it is picked up.

@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 export interface VerseSidePanelProps {
-  /** `tsk`, `original` or `similar`; all stay in flow, so the verse row grows to the taller of German text and panel. */
-  mode: "tsk" | "original" | "similar";
+  /** `tsk`, `original`, `lxx` (roadmap 0028.4f) or `similar`; all stay in flow, so the verse row grows to the taller of German text and panel. */
+  mode: "tsk" | "original" | "lxx" | "similar";
   /** accessible name, e.g. "Querverweise zu Vers 16" */
   label: string;
   children: ReactNode;

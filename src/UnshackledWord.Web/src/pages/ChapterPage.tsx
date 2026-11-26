@@ -34,6 +34,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
 import { mainEditionCodes, useGreekEditionFilter } from "@/lib/bible/greekEditions";
+import { DANIEL_BOOK_ID, hasLxx, useLxxForm } from "@/lib/bible/lxx";
 import {
   chapterWordsQuery,
   useBibleStructure,
@@ -42,11 +43,13 @@ import {
   verseCrossReferenceTextsQuery,
 } from "@/lib/bible/queries";
 import {
+  effectiveSidePanelMode,
   nextSidePanelMode,
   type SidePanelMode,
   useChapterCrossReferences,
   useChapterOriginals,
   useChapterSimilarVerses,
+  useLxxChapter,
   useSidePanelMode,
   useTskOnlyHighlighted,
 } from "@/lib/bible/sidePanel";
@@ -239,7 +242,12 @@ export function ChapterPage() {
 
   // Left margin (from 120rem): TSK / Grundtext next to every verse, one request per chapter and kind.
   const wide = useMediaQuery("(min-width: 120rem)");
-  const [sideMode, setSideMode] = useSidePanelMode();
+  const [storedSideMode, setSideMode] = useSidePanelMode();
+  // Septuagint (roadmap 0028.4f): OT only; a stored LXX choice shows the Grundtext in NT chapters
+  const lxxAvailable = ref !== null && hasLxx(ref.bookId);
+  const sideMode = effectiveSidePanelMode(storedSideMode, lxxAvailable);
+  const showLxx = wide && sideMode === "lxx";
+  const [lxxForm, setLxxForm] = useLxxForm();
   const showTsk = wide && sideMode === "tsk";
   const showOriginal = wide && sideMode === "original";
   const showSimilar = wide && sideMode === "similar";
@@ -270,6 +278,8 @@ export function ChapterPage() {
     () => new Map(similar.data?.verses.map((v) => [v.verse, v])),
     [similar.data],
   );
+  const lxx = useLxxChapter(ref, showLxx);
+  const lxxByVerse = useMemo(() => new Map(lxx.data?.verses.map((v) => [v.verse, v])), [lxx.data]);
   const referencesByVerse = useMemo(
     () => new Map(crossReferences.data?.verses.map((v) => [v.verse, v.references])),
     [crossReferences.data],
@@ -456,15 +466,21 @@ export function ChapterPage() {
           : originals.isPending
             ? "loading"
             : "idle"
-        : sideMode === "similar"
-          ? similar.isError
+        : sideMode === "lxx"
+          ? lxx.isError
             ? "error"
-            : similar.isPending
+            : lxx.isPending
               ? "loading"
-              : similar.data.verses.every((v) => v.hits.length === 0)
-                ? "empty"
-                : "idle"
-          : "idle";
+              : "idle"
+          : sideMode === "similar"
+            ? similar.isError
+              ? "error"
+              : similar.isPending
+                ? "loading"
+                : similar.data.verses.every((v) => v.hits.length === 0)
+                  ? "empty"
+                  : "idle"
+            : "idle";
 
   // Notes (roadmap 0023): markers at verse numbers, words and the heading open the notes overlay (`NotesOverlay`,
   // also `N`). MDXEditor is only fetched once a note is shown or written (lazy chunks inside the overlay).
@@ -923,7 +939,7 @@ export function ChapterPage() {
         return;
       }
       if (event.key === "g" && wide) {
-        changeSideMode(nextSidePanelMode(sideMode));
+        changeSideMode(nextSidePanelMode(sideMode, lxxAvailable));
         return;
       }
       // N: notes of the selected words, else of the chapter
@@ -948,6 +964,7 @@ export function ChapterPage() {
     selectedKey,
     wide,
     sideMode,
+    lxxAvailable,
     changeSideMode,
     selection,
     selected,
@@ -1269,7 +1286,13 @@ export function ChapterPage() {
                 ? crossReferences.refetch()
                 : sideMode === "similar"
                   ? similar.refetch()
-                  : originals.refetch())
+                  : sideMode === "lxx"
+                    ? lxx.refetch()
+                    : originals.refetch())
+            }
+            lxxAvailable={lxxAvailable}
+            lxxForm={
+              ref.bookId === DANIEL_BOOK_ID ? { value: lxxForm, onChange: setLxxForm } : undefined
             }
             tsk={{
               onlyHighlighted,
@@ -1682,34 +1705,39 @@ export function ChapterPage() {
                       </div>
                     )}
                   </div>
-                  {wide && sideMode !== "off" && (sideMode !== "similar" || similar.data) && (
-                    <VerseSide
-                      mode={sideMode}
-                      verse={v.verse}
-                      bookId={ref.bookId}
-                      chapter={ref.chapter}
-                      level={reader.level}
-                      reference={`${reference(ref)},${v.verse}`}
-                      books={books}
-                      references={referencesByVerse.get(v.verse)}
-                      onlyHighlighted={onlyHighlighted}
-                      showHidden={tskCurate}
-                      editable={signedIn && tskEditMode}
-                      suggest={signedIn && !canRevise}
-                      link={linkMode ? verseLink : undefined}
-                      linkSelected={linkSelection?.verse === v.verse ? linkSelected : undefined}
-                      flashKeys={wordFlash?.verse === v.verse ? wordFlash.keys : NO_KEYS}
-                      onHoverReference={onHoverReference}
-                      original={originalsByVerse.get(v.verse)}
-                      language={originals.data?.language ?? "greek"}
-                      lexicon={originals.data?.lexicon}
-                      linkedIds={sideLinks.verse === v.verse ? sideLinks.original : NO_IDS}
-                      onHoverOriginal={onHoverOriginal}
-                      edition={greekEdition}
-                      similar={similarByVerse.get(v.verse)}
-                      onHoverSimilar={onHoverSimilar}
-                    />
-                  )}
+                  {wide &&
+                    sideMode !== "off" &&
+                    (sideMode !== "similar" || similar.data) &&
+                    (sideMode !== "lxx" || lxx.data) && (
+                      <VerseSide
+                        mode={sideMode}
+                        verse={v.verse}
+                        bookId={ref.bookId}
+                        chapter={ref.chapter}
+                        level={reader.level}
+                        reference={`${reference(ref)},${v.verse}`}
+                        books={books}
+                        references={referencesByVerse.get(v.verse)}
+                        onlyHighlighted={onlyHighlighted}
+                        showHidden={tskCurate}
+                        editable={signedIn && tskEditMode}
+                        suggest={signedIn && !canRevise}
+                        link={linkMode ? verseLink : undefined}
+                        linkSelected={linkSelection?.verse === v.verse ? linkSelected : undefined}
+                        flashKeys={wordFlash?.verse === v.verse ? wordFlash.keys : NO_KEYS}
+                        onHoverReference={onHoverReference}
+                        original={originalsByVerse.get(v.verse)}
+                        language={originals.data?.language ?? "greek"}
+                        lexicon={originals.data?.lexicon}
+                        linkedIds={sideLinks.verse === v.verse ? sideLinks.original : NO_IDS}
+                        onHoverOriginal={onHoverOriginal}
+                        edition={greekEdition}
+                        similar={similarByVerse.get(v.verse)}
+                        onHoverSimilar={onHoverSimilar}
+                        lxx={lxxByVerse.get(v.verse)}
+                        lxxForm={lxxForm}
+                      />
+                    )}
                 </div>
               );
             })}

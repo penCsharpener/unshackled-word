@@ -3,17 +3,38 @@ import { useCallback, useState } from "react";
 import { BASE_LEVEL, bibleApi } from "./api";
 import type { ChapterRef, VerseSimilarVerses } from "./types";
 
-export type SidePanelMode = "tsk" | "original" | "similar" | "off";
+export type SidePanelMode = "tsk" | "original" | "lxx" | "similar" | "off";
 
 export const SIDE_PANEL_KEY = "uw.sidePanel";
-export const SIDE_PANEL_MODES: readonly SidePanelMode[] = ["tsk", "original", "similar", "off"];
+export const SIDE_PANEL_MODES: readonly SidePanelMode[] = [
+  "tsk",
+  "original",
+  "lxx",
+  "similar",
+  "off",
+];
 const MODES = SIDE_PANEL_MODES;
 
+/** Modes offered in a chapter: without the LXX (roadmap 0028.4f) in New Testament chapters. */
+export function sidePanelModes(lxxAvailable: boolean): readonly SidePanelMode[] {
+  return lxxAvailable ? MODES : MODES.filter((mode) => mode !== "lxx");
+}
+
 /**
- * Next state of the `G` shortcut: TSK → Grundtext → Ähnliche Verse → off → TSK (notes have their own overlay, `N`).
+ * Next state of the `G` shortcut: TSK → Grundtext → Septuaginta → Ähnliche Verse → off → TSK (notes have their own
+ * overlay, `N`); the LXX step is skipped where it is not available.
  */
-export function nextSidePanelMode(mode: SidePanelMode): SidePanelMode {
-  return MODES[(MODES.indexOf(mode) + 1) % MODES.length] ?? "tsk";
+export function nextSidePanelMode(mode: SidePanelMode, lxxAvailable = true): SidePanelMode {
+  const modes = sidePanelModes(lxxAvailable);
+  return modes[(modes.indexOf(mode) + 1) % modes.length] ?? "tsk";
+}
+
+/**
+ * The mode a chapter shows: a stored LXX choice shows the Grundtext in New Testament chapters (the choice itself stays,
+ * so the next Old Testament chapter shows the LXX again).
+ */
+export function effectiveSidePanelMode(mode: SidePanelMode, lxxAvailable: boolean): SidePanelMode {
+  return mode === "lxx" && !lxxAvailable ? "original" : mode;
 }
 
 /** Stored mode; anything unknown (or no storage, or the former `notes` mode) falls back to TSK. */
@@ -79,6 +100,8 @@ export const sidePanelKeys = {
   /** Similar verses of a chapter (roadmap 0027.3f), `limit` hits per verse. */
   similar: (bookId: number, chapter: number, limit = SIMILAR_CHAPTER_LIMIT) =>
     ["bible", "chapterSimilarVerses", bookId, chapter, limit] as const,
+  /** Septuagint text of a chapter (roadmap 0028.4f), both Daniel forms in one entry. */
+  lxx: (bookId: number, chapter: number) => ["bible", "chapterLxx", bookId, chapter] as const,
   /** All (up to 30) similar verses of one verse, for "Mehr anzeigen". */
   similarOfVerse: (hebRefId: number) => ["bible", "similarVersesOfVerse", hebRefId] as const,
 };
@@ -137,6 +160,21 @@ export function useChapterSimilarVerses(ref: ChapterRef | null, enabled: boolean
       queryKey: sidePanelKeys.similar(ref?.bookId ?? 0, ref?.chapter ?? 0),
       queryFn: ({ signal }) =>
         bibleApi.similarVerses(ref?.bookId ?? 0, ref?.chapter ?? 0, SIMILAR_CHAPTER_LIMIT, signal),
+      staleTime: Number.POSITIVE_INFINITY,
+    }),
+    enabled: enabled && ref !== null,
+  });
+}
+
+/**
+ * Septuagint text of an Old Testament chapter (roadmap 0028.4f): one request for all verses, fetched only while the
+ * mode is shown. The text changes only with a reimport, so it is never refetched on its own.
+ */
+export function useLxxChapter(ref: ChapterRef | null, enabled: boolean) {
+  return useQuery({
+    ...queryOptions({
+      queryKey: sidePanelKeys.lxx(ref?.bookId ?? 0, ref?.chapter ?? 0),
+      queryFn: ({ signal }) => bibleApi.lxxChapter(ref?.bookId ?? 0, ref?.chapter ?? 0, signal),
       staleTime: Number.POSITIVE_INFINITY,
     }),
     enabled: enabled && ref !== null,

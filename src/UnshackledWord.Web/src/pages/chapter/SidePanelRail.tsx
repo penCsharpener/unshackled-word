@@ -2,7 +2,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
 import { Select } from "@/components/Select";
 import { Switch } from "@/components/Switch";
-import { SIDE_PANEL_MODES, type SidePanelMode } from "@/lib/bible/sidePanel";
+import type { LxxForm } from "@/lib/bible/lxx";
+import { type SidePanelMode, sidePanelModes } from "@/lib/bible/sidePanel";
 
 function ModeIcon({ mode }: { mode: SidePanelMode }) {
   if (mode === "tsk") {
@@ -25,6 +26,13 @@ function ModeIcon({ mode }: { mode: SidePanelMode }) {
     return (
       <span aria-hidden="true" className="font-original text-base leading-none">
         Αα
+      </span>
+    );
+  }
+  if (mode === "lxx") {
+    return (
+      <span aria-hidden="true" className="text-xs font-semibold leading-none">
+        LXX
       </span>
     );
   }
@@ -78,6 +86,10 @@ export interface SidePanelRailProps {
     onChange: (value: string | null) => void;
     disabled: boolean;
   };
+  /** False in New Testament chapters: no LXX button (roadmap 0028.4f). Default true. */
+  lxxAvailable?: boolean;
+  /** Daniel's text form toggle Old Greek / Theodotion, shown in `lxx` mode; only passed in Daniel. */
+  lxxForm?: { value: LxxForm; onChange: (value: LxxForm) => void };
   tsk?: {
     onlyHighlighted: boolean;
     onOnlyHighlightedChange: (value: boolean) => void;
@@ -97,6 +109,8 @@ export function SidePanelRail({
   status,
   onRetry,
   edition,
+  lxxAvailable = true,
+  lxxForm,
   tsk,
 }: SidePanelRailProps) {
   const { t } = useTranslation();
@@ -105,10 +119,19 @@ export function SidePanelRail({
       ? t("bible.sidePanel.headingTsk")
       : mode === "original"
         ? t("bible.sidePanel.headingOriginal")
+        : mode === "lxx"
+          ? t("bible.sidePanel.headingLxx")
+          : mode === "similar"
+            ? t("bible.sidePanel.headingSimilar")
+            : "";
+  const kind =
+    mode === "original"
+      ? "Original"
+      : mode === "lxx"
+        ? "Lxx"
         : mode === "similar"
-          ? t("bible.sidePanel.headingSimilar")
-          : "";
-  const kind = mode === "original" ? "Original" : mode === "similar" ? "Similar" : "Tsk";
+          ? "Similar"
+          : "Tsk";
 
   return (
     <aside aria-label={t("bible.sidePanel.rail")} className="side-rail">
@@ -119,7 +142,7 @@ export function SidePanelRail({
           </h2>
           <fieldset className="flex gap-1">
             <legend className="sr-only">{t("bible.sidePanel.modeGroup")}</legend>
-            {SIDE_PANEL_MODES.map((value) => (
+            {sidePanelModes(lxxAvailable).map((value) => (
               <Button
                 key={value}
                 variant="secondary"
@@ -175,6 +198,25 @@ export function SidePanelRail({
               </Switch>
             )}
           </div>
+        )}
+        {mode === "lxx" && (
+          <p className="text-end text-xs text-fg-muted">{t("bible.sidePanel.lxx.info")}</p>
+        )}
+        {mode === "lxx" && lxxForm && (
+          <fieldset className="flex gap-1">
+            <legend className="sr-only">{t("bible.sidePanel.lxx.form.group")}</legend>
+            {(["og", "th"] as const).map((value) => (
+              <Button
+                key={value}
+                variant="secondary"
+                size="sm"
+                aria-pressed={lxxForm.value === value}
+                onClick={() => lxxForm.onChange(value)}
+              >
+                {t(`bible.sidePanel.lxx.form.${value}`)}
+              </Button>
+            ))}
+          </fieldset>
         )}
         {mode === "similar" && (
           <p className="text-end text-xs text-fg-muted">{t("bible.sidePanel.similar.info")}</p>
