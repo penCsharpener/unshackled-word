@@ -25,6 +25,11 @@ public class GreekMorphologyDecoderTests
     [InlineData("N-PRI", "nounProper", null, null, null, null, null, null, null, null)]
     [InlineData("N-LI", "indeclinable", null, null, null, null, null, null, null, null)]
     [InlineData("A-NUI", "indeclinable", null, null, null, null, null, null, null, null)]
+    [InlineData("F-3ASM", "pronoun", null, null, null, "third", "accusative", "singular", "masculine", null)]
+    [InlineData("S-1PASF", "pronoun", null, null, null, "first", "accusative", "singular", "feminine", null)]
+    [InlineData("A-NUI + G3638", "indeclinable", null, null, null, null, null, null, null, null)]
+    [InlineData("P-1NS + G2532", "pronoun", null, null, null, "first", "nominative", "singular", null, null)]
+    [InlineData("ADV-C", "adverb", null, null, null, null, null, null, null, "comparative")]
     public void Decode_KnownCode_ReturnsKeys(string code, string? pos, string? tense, string? voice, string? mood, string? person,
         string? @case, string? number, string? gender, string? degree)
     {

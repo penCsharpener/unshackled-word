@@ -1,0 +1,20 @@
+meta {
+  name: GetLxxWord
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}lxx/word/:lxxWordId
+  body: none
+  auth: none
+}
+
+params:path {
+  lxxWordId: 2
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

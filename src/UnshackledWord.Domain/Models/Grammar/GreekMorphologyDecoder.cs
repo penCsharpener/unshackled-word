@@ -1,6 +1,10 @@
 namespace UnshackledWord.Domain.Models.Grammar;
 
-/// <summary>Decodes Robinson morphology codes as used by TAGNT (e.g. <c>N-NSM</c>, <c>V-2AAI-3S</c>) into contract keys. Pure, never throws.</summary>
+/// <summary>
+/// Decodes Robinson morphology codes as used by TAGNT (e.g. <c>N-NSM</c>, <c>V-2AAI-3S</c>) into contract keys. Pure, never throws, lenient: an
+/// unknown part is left null. Strict validation (and the German/English description) is <c>Application/Features/Lxx/GreekMorphologyCode</c>, which
+/// takes its keys from here.
+/// </summary>
 public static class GreekMorphologyDecoder
 {
     public static MorphologyKeys Decode(string? code)
@@ -10,14 +14,22 @@ public static class GreekMorphologyDecoder
             return MorphologyKeys.Empty;
         }
 
-        var parts = code.Trim().ToUpperInvariant().Split('-');
+        // "PREP + G1537": a crasis or compound, the second Strong's number does not change the parse.
+        var main = code.Trim().ToUpperInvariant();
+        var plus = main.IndexOf('+');
+        if (plus >= 0)
+        {
+            main = main[..plus].TrimEnd();
+        }
+
+        var parts = main.Split('-');
         var head = parts[0];
         var tail = parts.Skip(1).ToArray();
 
         switch (head)
         {
             case "ADV":
-                return new MorphologyKeys { PartOfSpeech = MorphologyKey.Adverb };
+                return new MorphologyKeys { PartOfSpeech = MorphologyKey.Adverb, Degree = DegreeOf(tail) };
             case "CONJ":
                 return new MorphologyKeys { PartOfSpeech = MorphologyKey.Conjunction };
             case "PREP":
@@ -92,18 +104,39 @@ public static class GreekMorphologyDecoder
             keys = keys with { Case = CaseOf(first[0]), Number = NumberOf(first[1]) };
         }
 
-        if (tail.Length > 1)
+        else if (first.Length == 4 && first[0] is '1' or '2' or '3')
         {
-            keys = tail[1] switch
+            // Reflexive pronouns: F-3ASM (person + case + number + gender)
+            keys = keys with
             {
-                "C" => keys with { Degree = MorphologyKey.Comparative },
-                "S" => keys with { Degree = MorphologyKey.Superlative },
-                _ => keys
+                Person = PersonOf(first[0]),
+                Case = CaseOf(first[1]),
+                Number = NumberOf(first[2]),
+                Gender = GenderOf(first[3]),
+            };
+        }
+        else if (first.Length == 5 && first[0] is '1' or '2' or '3')
+        {
+            // Possessive pronouns: S-1PASF (person + number of the possessor + case + number + gender of the thing possessed)
+            keys = keys with
+            {
+                Person = PersonOf(first[0]),
+                Case = CaseOf(first[2]),
+                Number = NumberOf(first[3]),
+                Gender = GenderOf(first[4]),
             };
         }
 
-        return keys;
+        return tail.Length > 1 ? keys with { Degree = DegreeOf(tail[1..]) } : keys;
     }
+
+    /// <summary>The suffix <c>-C</c> (comparative) or <c>-S</c> (superlative) of the first suffix segment.</summary>
+    private static string? DegreeOf(string[] suffixes) => suffixes.FirstOrDefault() switch
+    {
+        "C" => MorphologyKey.Comparative,
+        "S" => MorphologyKey.Superlative,
+        _ => null
+    };
 
     private static bool IsCaseNumberGender(string value)
     {

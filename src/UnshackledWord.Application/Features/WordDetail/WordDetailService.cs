@@ -96,7 +96,7 @@ public sealed class WordDetailService : IWordDetailService
             var strongs = CleanStrongs(row.Strongs);
             if (!lexiconCache.TryGetValue(strongs, out var entry))
             {
-                entry = await FindLexiconEntryAsync(strongs, token);
+                entry = await LexiconSummaries.FindEntryAsync(_lexicon, strongs, token);
                 lexiconCache[strongs] = entry;
             }
 
@@ -224,7 +224,7 @@ public sealed class WordDetailService : IWordDetailService
             Transliteration = NullIfEmpty(row.Transliteration),
             Strongs = strongs,
             ContextGloss = NullIfEmpty(row.ContextGloss),
-            Lexicon = BuildLexicon(strongs, entry, map),
+            Lexicon = LexiconSummaries.Build(strongs, entry, map),
         };
 
         var shared = coRows
@@ -358,27 +358,6 @@ public sealed class WordDetailService : IWordDetailService
         };
     }
 
-    private static LexiconSummaryResponse? BuildLexicon(string strongs, LexiconEntry? entry, IVerseCountingMap map)
-    {
-        if (entry is null)
-        {
-            return null;
-        }
-
-        var (text, truncated) = LexiconTextCleaner.Clean(entry.Lexicon);
-        var (segments, _) = LexiconTextSegmenter.Segment(entry.Lexicon, 600, map);
-        return new LexiconSummaryResponse
-        {
-            Strongs = strongs,
-            Lemma = entry.OriginalWord,
-            Transliteration = NullIfEmpty(entry.Transliteration),
-            Gloss = NullIfEmpty(entry.Gloss),
-            Definition = NullIfEmpty(text),
-            DefinitionSegments = LexiconSegmentMapper.ToResponse(segments),
-            DefinitionTruncated = truncated ? true : null,
-        };
-    }
-
     private static List<CoMappedWordResponse> BuildCoMappedWords(IReadOnlyList<CoMappedWordRow> rows)
     {
         // parent > addedWord > sameOriginal when a word is related in several ways
@@ -443,33 +422,6 @@ public sealed class WordDetailService : IWordDetailService
             Name = row.Name.Replace('_', ' ').Trim(),
             Brief = brief,
         };
-    }
-
-    private async Task<LexiconEntry?> FindLexiconEntryAsync(string strongs, CancellationToken token)
-    {
-        var parsed = StrongsNumber.Parse(strongs);
-        if (parsed.Value is null)
-        {
-            return null;
-        }
-
-        var entries = await _lexicon.GetEntriesAsync(parsed.Value.Value, token);
-        if (entries.Count == 0)
-        {
-            return null;
-        }
-
-        var extra = parsed.Value.Value.Extra;
-        if (extra is not null)
-        {
-            var exact = entries.FirstOrDefault(e => string.Equals(e.Extra, extra, StringComparison.OrdinalIgnoreCase));
-            if (exact is not null)
-            {
-                return exact;
-            }
-        }
-
-        return entries.FirstOrDefault(e => string.IsNullOrEmpty(e.Extra)) ?? entries[0];
     }
 
     /// <summary>"H9003/{H7225G}" and "{H7225G}" become "H7225G".</summary>

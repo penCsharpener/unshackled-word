@@ -3,10 +3,14 @@ using FluentValidation;
 using UnshackledWord.Application.Features.Lxx;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.WebApi.Lxx;
+using UnshackledWord.Tooling.WebApi.Auth;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Lxx.GetLxxChapter;
 
-/// <summary>The Septuagint (Swete text, Rahlfs labels) for one Elberfelder chapter (roadmap 0028.4). Public read; the general anonymous rate limit applies.</summary>
+/// <summary>
+/// The Septuagint (Swete text, Rahlfs labels) for one Elberfelder chapter (roadmap 0028.4), with word tags (0028.5): confirmed for everyone, proposed
+/// ones as well for Admin/Maintainer. Public read; the general anonymous rate limit applies.
+/// </summary>
 public class Endpoint : Ep.Req<GetLxxChapterRequest>.Res<GetLxxChapterResponse>
 {
     private readonly ILxxChapterReadService _service;
@@ -23,8 +27,12 @@ public class Endpoint : Ep.Req<GetLxxChapterRequest>.Res<GetLxxChapterResponse>
         AllowAnonymous();
     }
 
-    public override Task<GetLxxChapterResponse> ExecuteAsync(GetLxxChapterRequest req, CancellationToken ct) =>
-        _service.GetChapterAsync(req.BibleBookId, req.Chapter, ct);
+    public override Task<GetLxxChapterResponse> ExecuteAsync(GetLxxChapterRequest req, CancellationToken ct)
+    {
+        // The answer depends on the caller's role, and a confirmed tag must show on the next request.
+        HttpContext.Response.Headers.CacheControl = "private, no-cache";
+        return _service.GetChapterAsync(req.BibleBookId, req.Chapter, User.HasWriteRole(), ct);
+    }
 }
 
 public class GetLxxChapterRequestValidator : Validator<GetLxxChapterRequest>

@@ -26,7 +26,7 @@ public sealed class LxxElbVerseResponse
     public List<LxxUnitResponse> Units { get; set; } = [];
 }
 
-/// <summary>One Swete unit with its Rahlfs label. Extension point for 0028.5: tags per word are added to <see cref="LxxWordResponse"/>.</summary>
+/// <summary>One Swete unit with its Rahlfs label.</summary>
 public sealed class LxxUnitResponse
 {
     public int LxxVerseId { get; set; }
@@ -62,4 +62,29 @@ public sealed class LxxWordResponse
     public int Id { get; set; }
     public int Position { get; set; }
     public string Greek { get; set; } = "";
+
+    /// <summary>
+    /// The word's tag (roadmap 0028.5): confirmed tags for everyone, proposed ones only for Admin/Maintainer (<see cref="LxxTagResponse.Status"/>
+    /// <c>proposed</c>). Omitted for an untagged word, and for anonymous callers when the tag is only proposed.
+    /// </summary>
+    public LxxTagResponse? Tag { get; set; }
+}
+
+/// <summary>Lemma, Strong's and parse of an LXX word (<c>LxxWordTags</c>).</summary>
+public sealed class LxxTagResponse
+{
+    /// <summary>Greek lemma as in TBESG, e.g. ἀρχή.</summary>
+    public string Lemma { get; set; } = "";
+
+    /// <summary>Disambiguated Strong's number, e.g. G0746.</summary>
+    public string Strongs { get; set; } = "";
+
+    /// <summary>Short English gloss from TBESG (<c>StepStrongsLexicon.Gloss</c>); omitted when the lexicon has no entry.</summary>
+    public string? Gloss { get; set; }
+
+    /// <summary>The Robinson-style code and its decoded keys, the same shape as the NT word detail (the client translates the keys).</summary>
+    public UnshackledWord.Domain.WebApi.Elberfelder.GetWordDetail.MorphologyResponse Morphology { get; set; } = new();
+
+    /// <summary>confirmed | proposed (proposed only reaches Admin/Maintainer).</summary>
+    public string Status { get; set; } = "";
 }

@@ -31,29 +31,38 @@ CREATE TABLE "unshackled-word"."LxxWords" (                 -- 0050, as migrated
     "SrcHash"           varchar(8)   NOT NULL,           -- SourceKey hash, the seed anchor
     UNIQUE ("LxxVerseId", "Position"));                 -- also serves reads by "LxxVerseId"
 
-CREATE TABLE "unshackled-word"."LxxWordTags" (              -- the current tag per word
-    "LxxWordId"   int4         PRIMARY KEY REFERENCES "unshackled-word"."LxxWords",
-    "Lemma"       varchar(100) NOT NULL,
-    "Strongs"     varchar(20)  NOT NULL,                  -- TBESG, e.g. G0746, G6123
-    "Morphology"  varchar(30)  NOT NULL,                  -- Robinson style, e.g. N-DSF
-    "Status"      varchar(12)  NOT NULL,                  -- proposed | confirmed
-    "Source"      varchar(12)  NOT NULL,                  -- nt-form | ai | human
-    "UserId"      int4         NOT NULL,                  -- AI user, system user or maintainer
-    "UpdatedAt"   timestamptz  NOT NULL DEFAULT now());
+CREATE TABLE "unshackled-word"."LxxWordTags" (              -- 0051, as migrated: the current tag per word
+    "LxxWordId"  int4         PRIMARY KEY REFERENCES "unshackled-word"."LxxWords",   -- no CASCADE: deleting tagged text fails
+    "Lemma"      varchar(100) NOT NULL,                  -- TBESG lemma, e.g. ἀρχή; CHECK not blank
+    "Strongs"    varchar(20)  NOT NULL,                  -- disambiguated, CHECK ~ '^G[0-9]{4}[A-Z]?$' (G0746, G1487M); TBESG existence: application
+    "Morphology" varchar(30)  NOT NULL,                  -- Robinson style (StepGreekWords.Morphology), CHECK not blank; GreekMorphologyCode validates
+    "Status"     varchar(12)  NOT NULL,                  -- proposed | confirmed, CHECK
+    "Source"     varchar(12)  NOT NULL,                  -- nt-form | ai | human, CHECK
+    "UserId"     int4         NULL REFERENCES "unshackled-word"."Users",            -- AI user or maintainer; NULL = seed import
+    "UpdatedAt"  timestamptz  NOT NULL DEFAULT now());
+-- indexes: ("Strongs", "Status") for Strong's occurrences (0028.9); ("LxxWordId") WHERE "Status" = 'proposed' for the review page
 
-CREATE TABLE "unshackled-word"."LxxHebrewLinks" (           -- LXX word renders Hebrew word(s)
-    "LxxWordId"       int4 NOT NULL REFERENCES "unshackled-word"."LxxWords",
-    "StepHebrewWordId" int4 NOT NULL,
-    "Status"  varchar(12) NOT NULL, "UserId" int4 NOT NULL, "UpdatedAt" timestamptz NOT NULL DEFAULT now(),
-    PRIMARY KEY ("LxxWordId", "StepHebrewWordId"));
+CREATE TABLE "unshackled-word"."LxxHebrewLinks" (           -- 0051, as migrated: LXX word renders Hebrew word(s)
+    "LxxWordId"        int4        NOT NULL REFERENCES "unshackled-word"."LxxWords",
+    "StepHebrewWordId" int4        NOT NULL,             -- no FK (a STEP re-import renumbers it); the seed carries the Hebrew SourceKey
+    "Status"           varchar(12) NOT NULL,             -- proposed | confirmed, CHECK
+    "UserId"           int4        NULL REFERENCES "unshackled-word"."Users",       -- NULL = seed import
+    "UpdatedAt"        timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY ("LxxWordId", "StepHebrewWordId"));     -- also serves reads by LXX word
+-- index: ("StepHebrewWordId") for reverse reads and the re-resolve after a STEP re-import
 
-CREATE TABLE "unshackled-word"."LxxTagAudit" (               -- append-only, like RevisionVerseAudit
-    "Id" int8 GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "LxxVerseId" int4 NOT NULL, "Action" varchar(20) NOT NULL,   -- confirm | edit | reject | import
-    "Before" jsonb NULL, "After" jsonb NOT NULL, "UserId" int4 NOT NULL, "At" timestamptz NOT NULL DEFAULT now());
+CREATE TABLE "unshackled-word"."LxxTagAudit" (              -- 0051, as migrated: append-only, like TskCurationAudit
+    "Id"         int8        GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "LxxVerseId" int4        NOT NULL REFERENCES "unshackled-word"."LxxVerses",
+    "Action"     varchar(20) NOT NULL,                   -- confirm | edit | reject | import, CHECK
+    "Before"     jsonb       NULL,                       -- {words: [{position, lemma, strongs, morphology, status, source, hebrewWordIds}]}; NULL = none
+    "After"      jsonb       NOT NULL,
+    "UserId"     int4        NULL REFERENCES "unshackled-word"."Users",            -- NULL = seed import
+    "At"         timestamptz NOT NULL DEFAULT now());
+-- index: ("LxxVerseId", "At" DESC)
 ```
 
-- `AgentVerseProposals_Language_CK` gains `'lxx'` (in `0051`). A proposal row is keyed by `BibleBookId`/`Chapter`/`Verse` in Rahlfs numbering, plus `Flags.textForm` and `Flags.subverse`.
+- `AgentVerseProposals_Language_CK` gains `'lxx'` (in `0051`). A proposal row is keyed by `BibleBookId`/`Chapter`/`Verse` in Rahlfs numbering, plus `Flags.textForm` and `Flags.subverse`. `0051` therefore rebuilds the "one open proposal per verse" index `AgentVerseProposals_Open_UQ` as `("BibleBookId", "Chapter", "Verse", "Language", COALESCE("Flags" ->> 'textForm', ''), COALESCE("Flags" ->> 'subverse', '0')) WHERE "Status" = 'open'`, so an LXX proposal for Gen 1:1 does not collide with a Hebrew mapping proposal for Gen 1:1 (Greek and Hebrew proposals never share a verse, existing rows keep their meaning). The store's `AgentStoreSql.SupersedeOpen` still matches book/chapter/verse only; 0028.7 must add `Language` (and textForm/subverse) there.
 - **Text tables** are filled by SeedDb (`LxxTextImporter`) only when `LxxVerses` is empty, like the STEP import gate. A re-import never touches tags: they anchor on `(RahlfsRefId, TextForm, Position, SrcHash)`.
 - **Rows:** one per non-empty Swete unit of `LxxVersification`. Empty Swete verses (`absent` by rule) are not imported. An `absent` unit with text (Swete text without Rahlfs counterpart) would be kept with `RahlfsRefId` NULL and Swete's chapter/verse; the pinned data has none.
 - **Word filter** (`LxxWordFilter`): marker tokens, the editorial marks `⸂ ⸆ ⸃` (alone or attached; the Greek word stays) and the acrostic letter names of Lamentations (`Ἄλεφ.` …) are dropped; punctuation printed as its own token is appended to the previous word. Swete's capitals at the start of a book (`ΕΝ ΑΡΧΗ`, `ΚΑΙ`) are the text's first words, not headings, and are kept.
