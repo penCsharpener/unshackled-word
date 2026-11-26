@@ -1,5 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from "react";
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router";
 import { ApiError, describeApiError } from "@/lib/api";
@@ -33,6 +41,18 @@ import {
 } from "@/lib/bible/verseSearch";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
 import {
+  applySuggestion,
+  facetRequest,
+  type GrammarFacetRequest,
+  type GrammarSuggestion,
+  type GrammarVocabulary,
+  languageLimit,
+  lemmaLookupWord,
+  lemmaSuggestions,
+  tokenAtCaret,
+  vocabularySuggestions,
+} from "@/lib/search/grammarQuery";
+import {
   formatGrammarFilter,
   formatGrammarWords,
   type GrammarHit,
@@ -43,7 +63,9 @@ import {
   parseGrammarProblem,
   replaceGrammarToken,
   toVerseHit,
+  useGrammarFacets,
   useGrammarSearch,
+  useGrammarVocabulary,
 } from "@/lib/search/grammarSearch";
 import {
   setSearchMark,
@@ -54,12 +76,14 @@ import {
 import { useSubmittedQuery } from "@/lib/search/useSubmittedQuery";
 import { useTrackSearch } from "@/lib/search/useTrackSearch";
 import { useCoarsePointer } from "@/lib/useCoarsePointer";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import { BookBarChart } from "./BookBarChart";
 import { Button } from "./Button";
 import { Dialog } from "./Dialog";
 import { DonutChart, type DonutSlice } from "./DonutChart";
 import { EmptyState } from "./EmptyState";
 import { ReferenceCard } from "./ReferenceCard";
+import type { SuggestionItem } from "./SuggestionList";
 import { Switch } from "./Switch";
 import { TextField } from "./TextField";
 import { hitOptionId, hitPath, VerseHitList } from "./VerseHitList";
@@ -655,6 +679,95 @@ function GrammarPanel({
   );
 }
 
+const SUGGEST_DEBOUNCE_MS = 250;
+const MAX_LIST = 10;
+
+/** "nur Griechisch" / "nur Hebräisch" for a key or value limited to one language family. */
+function languageNote(languages: string[], t: (key: string) => string): string | undefined {
+  const limit = languageLimit(languages);
+  return limit ? t(`search.suggest.only.${limit}`) : undefined;
+}
+
+/**
+ * Autocomplete of the search field (roadmap 0029.3f/0029.4/0029.5f): vocabulary keys and values for the token under the
+ * caret (instant), lemma suggestions for a word token (debounced lookup, accepting inserts the Strong's number) and
+ * counts for the values of the slot (debounced facets; values without occurrences are dimmed).
+ */
+function useSearchSuggestions(
+  open: boolean,
+  input: string,
+  caret: number,
+  vocabulary: GrammarVocabulary | undefined,
+) {
+  const { t, i18n } = useTranslation();
+  const token = tokenAtCaret(input, caret, vocabulary);
+  const vocabularyHits =
+    open && token && vocabulary ? vocabularySuggestions(input, token, vocabulary) : [];
+
+  const lemmaWord = open ? lemmaLookupWord(token) : "";
+  const debouncedWord = useDebouncedValue(lemmaWord, SUGGEST_DEBOUNCE_MS);
+  const lookup = useSourceWordsLookup(debouncedWord === lemmaWord ? lemmaWord : "", 8);
+  const lemmaHits =
+    token && lemmaWord !== "" && debouncedWord === lemmaWord
+      ? lemmaSuggestions(token, lookup.data?.tokens[0]?.lemmas ?? [])
+      : [];
+
+  const request = open && vocabulary ? facetRequest(input, token, vocabulary) : null;
+  const requestKey = request ? JSON.stringify(request) : "";
+  const debouncedKey = useDebouncedValue(requestKey, SUGGEST_DEBOUNCE_MS);
+  const facets = useGrammarFacets(
+    request && debouncedKey === requestKey
+      ? (JSON.parse(debouncedKey) as GrammarFacetRequest)
+      : null,
+  );
+  const facet =
+    request && debouncedKey === requestKey && facets.isSuccess
+      ? facets.data.facets.find((f) => f.key === request.key)
+      : undefined;
+  const counts =
+    facets.isSuccess && facet ? new Map(facet.values.map((v) => [v.key, v.count])) : null;
+
+  const suggestions: GrammarSuggestion[] = [...vocabularyHits, ...lemmaHits].slice(0, MAX_LIST);
+  const english = i18n.language.startsWith("en");
+  const items: SuggestionItem[] = suggestions.map((s, index) => {
+    const id = `${s.kind}-${s.insert}-${index}`;
+    if (s.kind === "lemma" && s.lemma) {
+      return {
+        id,
+        label: (
+          <>
+            <OriginalText language={s.lemma.language}>{s.lemma.lemma}</OriginalText>{" "}
+            <span className="font-medium">{s.lemma.strongs}</span>
+          </>
+        ),
+        detail: s.lemma.gloss || undefined,
+        trailing: t("search.sourceWords.times", { count: s.lemma.occurrences }),
+      };
+    }
+    const value = s.value;
+    const languages = value?.languages ?? s.key?.languages ?? [];
+    if (s.kind === "value" && value) {
+      const count = counts?.get(value.key);
+      return {
+        id,
+        label: english ? value.labelEn : value.labelDe,
+        detail: languageNote(languages, t),
+        trailing: count ? t("search.suggest.count", { count }) : undefined,
+        dimmed: counts !== null && !count,
+      };
+    }
+    return {
+      id,
+      label: s.insert,
+      detail:
+        [value ? (english ? value.labelEn : value.labelDe) : undefined, languageNote(languages, t)]
+          .filter(Boolean)
+          .join(" · ") || undefined,
+    };
+  });
+  return { token, suggestions, items };
+}
+
 /**
  * Search palette over the reader: verse full text search (ranked hits with the matched words marked,
  * hits per book as filter) next to the original words of every query word. Opened from the menu
@@ -672,6 +785,44 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const setInput = setSearchQuery;
   const setTab = setSearchTab;
   const { query, submit } = useSubmittedQuery(input);
+  // Autocomplete: caret position, whether the list may show (typing opens it, Esc / accepting a value closes it),
+  // the highlighted entry for the current text and caret.
+  const vocabulary = useGrammarVocabulary(open).data;
+  const [caret, setCaret] = useState(() => input.length);
+  const [listWanted, setListWanted] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const pendingCaret = useRef<number | null>(null);
+  const suggest = useSearchSuggestions(open && listWanted && focused, input, caret, vocabulary);
+  const suggestionKey = `${input}|${caret}`;
+  const [pickedSuggestion, setPickedSuggestion] = useState({ key: "", index: -1 });
+  // Inside a filter or a grammar query the first entry is preselected (Enter accepts it); for a plain word Tab
+  // accepts the first entry and Enter still searches.
+  const preselect = suggest.token?.text.includes(":") || isGrammarQuery(input) ? 0 : -1;
+  const activeSuggestion =
+    pickedSuggestion.key === suggestionKey ? pickedSuggestion.index : preselect;
+
+  useEffect(() => {
+    if (!open) setListWanted(false);
+  }, [open]);
+
+  // After accepting a suggestion the caret goes behind the inserted text (runs once the new text is rendered).
+  useLayoutEffect(() => {
+    const position = pendingCaret.current;
+    if (position === null || !inputRef.current) return;
+    pendingCaret.current = null;
+    inputRef.current.setSelectionRange(position, position);
+  });
+
+  const acceptSuggestion = (index: number) => {
+    const suggestion = suggest.suggestions[index];
+    if (!suggestion) return;
+    const next = applySuggestion(input, suggestion);
+    pendingCaret.current = next.caret;
+    setCaret(next.caret);
+    setInput(next.value);
+    // After a key the values follow at once; a value or a lemma closes the list.
+    setListWanted(suggestion.kind === "key");
+  };
   // The book filter belongs to the query it was set for.
   const [filter, setFilter] = useState<{ query: string; bookId: number | null }>({
     query: "",
@@ -955,7 +1106,20 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             labelHidden
             required={false}
             value={input}
-            onChange={setInput}
+            onChange={(value) => {
+              setInput(value);
+              setCaret(inputRef.current?.selectionStart ?? value.length);
+              setListWanted(true);
+            }}
+            onSelect={(event) => setCaret(event.currentTarget.selectionStart ?? input.length)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            suggestions={suggest.items}
+            suggestionsLabel={t("search.suggest.label")}
+            activeSuggestion={activeSuggestion}
+            onActiveSuggestionChange={(index) => setPickedSuggestion({ key: suggestionKey, index })}
+            onSuggestionAccept={acceptSuggestion}
+            onSuggestionsDismiss={() => setListWanted(false)}
             inputRef={inputRef}
             placeholder={t("search.placeholder")}
             autoComplete="off"

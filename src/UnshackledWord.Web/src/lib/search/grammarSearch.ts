@@ -3,6 +3,7 @@ import type { TFunction } from "i18next";
 import { ApiError, api } from "@/lib/api";
 import type { OriginalLanguage, VerseSearchHit } from "@/lib/bible/types";
 import { retryUnlessRateLimited } from "@/lib/queryClient";
+import type { GrammarFacetRequest, GrammarVocabulary } from "./grammarQuery";
 
 /** How a slot's word was read: Strong's / lemma, German lemma, or no word (filters only). */
 export type GrammarReadAs = "lemma" | "german" | "any";
@@ -92,8 +93,8 @@ export const foldGrammar = (text: string) =>
     .normalize("NFD")
     .replace(/\p{Mn}/gu, "");
 
-/** Key names and aliases (folded). Static for now; row 0029.3f switches to the vocabulary endpoint. */
-const GRAMMAR_KEYS = new Set(
+/** Key names and aliases (folded) used until the vocabulary endpoint has answered. */
+const STATIC_GRAMMAR_KEYS: ReadonlySet<string> = new Set(
   [
     "Wortart",
     "Wa",
@@ -110,6 +111,9 @@ const GRAMMAR_KEYS = new Set(
     "Geschlecht",
     "Genus",
     "Steigerung",
+    "Stamm",
+    "Form",
+    "Status",
     "Sprache",
     "Code",
     "Strong",
@@ -117,17 +121,80 @@ const GRAMMAR_KEYS = new Set(
   ].map(foldGrammar),
 );
 
+let grammarKeys: ReadonlySet<string> = STATIC_GRAMMAR_KEYS;
+
+/** Switches `isGrammarQuery` to the keys and aliases of the loaded vocabulary (called by `useGrammarVocabulary`). */
+export function registerGrammarVocabulary(vocabulary: GrammarVocabulary): void {
+  const names = vocabulary.keys.flatMap((key) => [key.name, ...key.aliases]).map(foldGrammar);
+  grammarKeys = names.length > 0 ? new Set(names) : STATIC_GRAMMAR_KEYS;
+}
+
 const FILTER_TOKEN = /^-?(?:dt\.)?([^:\s]+):/i;
 
-/** True when one token is `key:` with a known key or alias (with or without `dt.`, optionally negated with `-`). */
-export function isGrammarQuery(input: string): boolean {
+/**
+ * True when one token is `key:` with a known key or alias (with or without `dt.`, optionally negated with `-`).
+ * Uses the vocabulary once it is loaded, a static key list before.
+ */
+export function isGrammarQuery(input: string, keys: ReadonlySet<string> = grammarKeys): boolean {
   return input
     .trim()
     .split(/\s+/)
     .some((token) => {
       const key = FILTER_TOKEN.exec(token)?.[1];
-      return key !== undefined && GRAMMAR_KEYS.has(foldGrammar(key));
+      return key !== undefined && keys.has(foldGrammar(key));
     });
+}
+
+export const grammarVocabularyKeys = {
+  vocabulary: ["search", "grammar", "vocabulary"] as const,
+  facets: (q: string, slot: number, key: string) =>
+    ["search", "grammar", "facets", q, slot, key] as const,
+};
+
+/** The keys and values of the grammar query (static per deployment): fetched once, never stale. */
+export function useGrammarVocabulary(enabled = true) {
+  return useQuery({
+    queryKey: grammarVocabularyKeys.vocabulary,
+    queryFn: async ({ signal }) => {
+      const vocabulary = await api.get<GrammarVocabulary>(
+        "/elberfelder/search/grammar/vocabulary",
+        signal,
+      );
+      registerGrammarVocabulary(vocabulary);
+      return vocabulary;
+    },
+    enabled,
+    staleTime: Number.POSITIVE_INFINITY,
+    gcTime: Number.POSITIVE_INFINITY,
+    retry: retryUnlessRateLimited,
+  });
+}
+
+/** `GET api/elberfelder/search/grammar/facets`: word counts per value of one key for one slot. */
+export interface GrammarFacetsResponse {
+  slot: number;
+  facets: { key: string; values: { key: string; labelDe: string; count: number }[] }[];
+}
+
+/** Counts per value of `key` in `slot` of `q` (an empty last value like `Kasus:` is allowed); idle for an empty query. */
+export function useGrammarFacets(request: GrammarFacetRequest | null) {
+  return useQuery({
+    queryKey: grammarVocabularyKeys.facets(
+      request?.q ?? "",
+      request?.slot ?? 0,
+      request?.key ?? "",
+    ),
+    queryFn: ({ signal }) => {
+      const { q, slot, key } = request as GrammarFacetRequest;
+      return api.get<GrammarFacetsResponse>(
+        `/elberfelder/search/grammar/facets?${new URLSearchParams({ q, slot: String(slot), key })}`,
+        signal,
+      );
+    },
+    enabled: request !== null && request.q !== "",
+    staleTime: 5 * 60_000,
+    retry: noRetryOn400,
+  });
 }
 
 /** The grammar problem of a failed search, or null when the error is not a readable 400 problem body. */
