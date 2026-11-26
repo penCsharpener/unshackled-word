@@ -38,7 +38,7 @@ public sealed class LxxChapterReadService : ILxxChapterReadService
         var wordsByUnit = rows.Words
             .GroupBy(w => w.LxxVerseId)
             .ToDictionary(g => g.Key, g => g.OrderBy(w => w.Position)
-                .Select(w => new LxxWordResponse { Id = w.Id, Position = w.Position, Greek = w.Greek, Tag = ToTag(w, includeProposed) })
+                .Select(w => ToWord(w, includeProposed))
                 .ToList());
 
         // Key = the Elb verse a unit belongs to (HebRefId for mapped units, AfterHebRefId for additions).
@@ -60,6 +60,23 @@ public sealed class LxxChapterReadService : ILxxChapterReadService
         }
 
         return response;
+    }
+
+    /// <summary>The word with its visible tag and Hebrew links (confirmed for all, proposed too for <paramref name="includeProposed"/>).</summary>
+    public static LxxWordResponse ToWord(LxxWordRow word, bool includeProposed)
+    {
+        var confirmed = word.ConfirmedHebrewWordIds ?? [];
+        var proposed = includeProposed ? word.ProposedHebrewWordIds ?? [] : [];
+        var all = confirmed.Concat(proposed).Distinct().Order().ToList();
+        return new LxxWordResponse
+        {
+            Id = word.Id,
+            Position = word.Position,
+            Greek = word.Greek,
+            Tag = ToTag(word, includeProposed),
+            HebrewWordIds = all.Count == 0 ? null : all,
+            ProposedHebrewWordIds = proposed.Length == 0 ? null : proposed.Order().ToList(),
+        };
     }
 
     /// <summary>The word's tag when the caller may see it, else null.</summary>

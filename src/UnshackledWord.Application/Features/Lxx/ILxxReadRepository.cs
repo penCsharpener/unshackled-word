@@ -55,6 +55,12 @@ public class LxxWordRow
 
     /// <summary>TBESG gloss of <see cref="Strongs"/> (exact disambiguation first, then the plain number).</summary>
     public string? Gloss { get; init; }
+
+    /// <summary><c>LxxHebrewLinks</c> (0028.10): STEP Hebrew word ids of confirmed links; null/empty when none.</summary>
+    public int[]? ConfirmedHebrewWordIds { get; init; }
+
+    /// <summary>STEP Hebrew word ids of proposed links (only Admin/Maintainer get them returned).</summary>
+    public int[]? ProposedHebrewWordIds { get; init; }
 }
 
 /// <summary>A word with the unit it belongs to (word box).</summary>

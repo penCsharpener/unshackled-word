@@ -213,6 +213,10 @@ export function OriginalVerse({
                     aria-expanded={tip?.pinned && tip.id === word.id}
                     className={`hover:underline ${highlight}`}
                     onClick={(event) => openDetail(event.currentTarget)}
+                    onMouseEnter={() => onHoverWord?.(word.id)}
+                    onMouseLeave={() => onHoverWord?.(undefined)}
+                    onFocus={() => onHoverWord?.(word.id)}
+                    onBlur={() => onHoverWord?.(undefined)}
                   >
                     {word.original}
                   </Button>{" "}

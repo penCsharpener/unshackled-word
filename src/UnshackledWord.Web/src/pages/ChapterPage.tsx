@@ -34,7 +34,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
 import { mainEditionCodes, useGreekEditionFilter } from "@/lib/bible/greekEditions";
-import { DANIEL_BOOK_ID, hasLxx, useLxxForm } from "@/lib/bible/lxx";
+import { DANIEL_BOOK_ID, hasLxx, lxxHebrewWordIds, useLxxForm } from "@/lib/bible/lxx";
 import {
   chapterWordsQuery,
   useBibleStructure,
@@ -271,7 +271,8 @@ export function ChapterPage() {
     tskCurate,
     reader.level,
   );
-  const originals = useChapterOriginals(ref, showOriginal);
+  // the LXX panel also needs the Hebrew word links of the chapter (no request on hover): Hebrew word -> Elb1871 German word
+  const originals = useChapterOriginals(ref, showOriginal || showLxx);
   // similar verses (roadmap 0027.3f): fetched only while that mode is shown
   const similar = useChapterSimilarVerses(ref, showSimilar);
   const similarByVerse = useMemo(
@@ -402,10 +403,39 @@ export function ChapterPage() {
     setHoveredSide(id === undefined ? undefined : { verse, id });
   }, []);
   const sideActive = showOriginal ? hoveredSide : undefined;
+  /**
+   * Hovered or focused LXX word (roadmap 0028.10f): its linked Hebrew word ids within the Elb verse the unit is shown at (so Psalms and
+   * Jeremiah renumbering lands on the right verse). Tied to the chapter it was hovered in, like the similar hit above.
+   */
+  const lxxKey = showLxx && ref ? `${ref.bookId}:${ref.chapter}` : null;
+  const [hoveredLxxRaw, setHoveredLxx] = useState<{
+    key: string | null;
+    verse: number;
+    hebrewIds: number[];
+  }>();
+  const onHoverLxxWord = useCallback(
+    (verse: number, lxxWordId: number | undefined) => {
+      const hebrewIds =
+        lxxWordId === undefined ? [] : lxxHebrewWordIds(lxxByVerse.get(verse), lxxWordId);
+      setHoveredLxx(hebrewIds.length > 0 ? { key: lxxKey, verse, hebrewIds } : undefined);
+    },
+    [lxxByVerse, lxxKey],
+  );
+  const hoveredLxxWord =
+    lxxKey !== null && hoveredLxxRaw?.key === lxxKey ? hoveredLxxRaw : undefined;
   /** German and original words linked to the hovered original word or (non-revised) German word, within one verse. */
   const sideLinks = useMemo(() => {
     const german = new Set<number>();
     const original = new Set<number>();
+    if (hoveredLxxWord) {
+      const ids = new Set(hoveredLxxWord.hebrewIds);
+      for (const l of originalsByVerse.get(hoveredLxxWord.verse)?.links ?? []) {
+        if (!ids.has(l.originalId)) continue;
+        german.add(l.germanId);
+        original.add(l.originalId);
+      }
+      return { verse: hoveredLxxWord.verse, german, original };
+    }
     const verse = sideActive?.verse ?? (showOriginal ? hoveredVerse?.verse : undefined);
     const links = verse !== undefined ? (originalsByVerse.get(verse)?.links ?? []) : [];
     const hoveredGerman =
@@ -419,7 +449,7 @@ export function ChapterPage() {
       }
     }
     return { verse, german, original };
-  }, [sideActive, showOriginal, hoveredVerse, hoveredWordRaw, originalsByVerse]);
+  }, [sideActive, showOriginal, hoveredVerse, hoveredWordRaw, originalsByVerse, hoveredLxxWord]);
   // What the right margin shows on hover: the German word's reading (the source-language words show their own tooltip).
   const infoData = hoveredInfo;
   const infoVerse = hoveredVerse;
@@ -433,6 +463,7 @@ export function ChapterPage() {
       const row = rows.find((r) => r.getBoundingClientRect().bottom > 0);
       scrollAnchor.current = row ? { row, top: row.getBoundingClientRect().top } : undefined;
       setHoveredSide(undefined);
+      setHoveredLxx(undefined);
       setSideMode(next);
     },
     [sideMode, setSideMode],
@@ -1736,6 +1767,7 @@ export function ChapterPage() {
                         onHoverSimilar={onHoverSimilar}
                         lxx={lxxByVerse.get(v.verse)}
                         lxxForm={lxxForm}
+                        onHoverLxxWord={onHoverLxxWord}
                       />
                     )}
                 </div>

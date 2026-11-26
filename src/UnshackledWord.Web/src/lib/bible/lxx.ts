@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { bibleApi } from "./api";
 import { bookAbbreviation } from "./books";
-import type { BibleStructureBook, LxxUnit, VerseMappingOriginalWord } from "./types";
+import type { BibleStructureBook, LxxElbVerse, LxxUnit, VerseMappingOriginalWord } from "./types";
 
 /** Daniel's two Greek text forms: Old Greek and Theodotion (roadmap 0028). */
 export type LxxForm = "og" | "th";
@@ -103,6 +103,15 @@ export function lxxOriginalWords(
         lxx: { ref, status: w.tag?.status },
       }));
   });
+}
+
+/** STEP Hebrew word ids linked to one LXX word of an Elb verse (roadmap 0028.10f); empty when the word is unknown or has no link. */
+export function lxxHebrewWordIds(verse: LxxElbVerse | undefined, lxxWordId: number): number[] {
+  for (const unit of verse?.units ?? []) {
+    const word = unit.words.find((w) => w.id === lxxWordId);
+    if (word) return word.hebrewWordIds ?? [];
+  }
+  return [];
 }
 
 /** One LXX word with tag and lexicon entry, fetched when its detail opens (the tag may change, so it is not kept long). */

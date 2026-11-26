@@ -39,7 +39,7 @@ public sealed class LxxReadRepository : ILxxReadRepository
 /// <summary>The SQL of <see cref="LxxReadRepository"/>, public so the database tests can run it inside a rolled-back transaction.</summary>
 public static class LxxReadSql
 {
-    /// <summary>Three result sets: Elb1871 verse ids, LXX units, words with tag (any status) and TBESG gloss. Parameters FromHebRefId, ToHebRefId.</summary>
+    /// <summary>Three result sets: Elb1871 verse ids, LXX units, words with tag (any status), TBESG gloss and Hebrew link ids (confirmed / proposed arrays, 0028.10). Parameters FromHebRefId, ToHebRefId.</summary>
     public const string Chapter = """
                                   SELECT v."HebRefId"
                                   FROM "unshackled-word"."Elb1871Verses" v
@@ -73,6 +73,8 @@ public static class LxxReadSql
                                        , t."Status"
                                        , t."Source"
                                        , g."Gloss"
+                                       , COALESCE(hl."Confirmed", '{}'::int4[]) AS "ConfirmedHebrewWordIds"
+                                       , COALESCE(hl."Proposed", '{}'::int4[]) AS "ProposedHebrewWordIds"
                                   FROM "unshackled-word"."LxxVerses" l
                                   JOIN "unshackled-word"."LxxWords" w ON w."LxxVerseId" = l."Id"
                                   LEFT JOIN "unshackled-word"."LxxWordTags" t ON t."LxxWordId" = w."Id"
@@ -87,6 +89,12 @@ public static class LxxReadSql
                                              , ssl."Extra"
                                       LIMIT 1
                                   ) g ON TRUE
+                                  LEFT JOIN LATERAL (
+                                      SELECT array_agg(k."StepHebrewWordId" ORDER BY k."StepHebrewWordId") FILTER (WHERE k."Status" = 'confirmed') AS "Confirmed"
+                                           , array_agg(k."StepHebrewWordId" ORDER BY k."StepHebrewWordId") FILTER (WHERE k."Status" = 'proposed') AS "Proposed"
+                                      FROM "unshackled-word"."LxxHebrewLinks" k
+                                      WHERE k."LxxWordId" = w."Id"
+                                  ) hl ON TRUE
                                   WHERE 1=1
                                       AND (l."HebRefId" BETWEEN @FromHebRefId AND @ToHebRefId
                                            OR l."AfterHebRefId" BETWEEN @FromHebRefId AND @ToHebRefId)

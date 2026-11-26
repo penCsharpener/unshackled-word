@@ -87,4 +87,32 @@ public class LxxChapterReadServiceTests
 
         LxxChapterReadService.Build(27, 3, rows).Verses.Single().Units.Select(u => u.TextForm).ShouldBe(["og", "th"]);
     }
+
+    [Fact]
+    public void Build_Returns_Confirmed_Hebrew_Links_For_Everyone_And_Proposed_Only_For_Maintainers()
+    {
+        var rows = new LxxChapterRows
+        {
+            ElbHebRefIds = [1001001],
+            Units = [Unit(1, 1, 1, 1, 1, 1001001)],
+            Words =
+            [
+                new LxxWordRow { Id = 1, LxxVerseId = 1, Position = 1, Greek = "a", ConfirmedHebrewWordIds = [20, 10], ProposedHebrewWordIds = [30] },
+                new LxxWordRow { Id = 2, LxxVerseId = 1, Position = 2, Greek = "b", ProposedHebrewWordIds = [40] },
+                new LxxWordRow { Id = 3, LxxVerseId = 1, Position = 3, Greek = "c", ConfirmedHebrewWordIds = [] },
+            ],
+        };
+
+        var anonymous = LxxChapterReadService.Build(1, 1, rows).Verses.Single().Units.Single().Words;
+        anonymous[0].HebrewWordIds.ShouldBe([10, 20]);
+        anonymous[0].ProposedHebrewWordIds.ShouldBeNull();
+        anonymous[1].HebrewWordIds.ShouldBeNull();
+        anonymous[2].HebrewWordIds.ShouldBeNull();
+
+        var maintainer = LxxChapterReadService.Build(1, 1, rows, includeProposed: true).Verses.Single().Units.Single().Words;
+        maintainer[0].HebrewWordIds.ShouldBe([10, 20, 30]);
+        maintainer[0].ProposedHebrewWordIds.ShouldBe([30]);
+        maintainer[1].HebrewWordIds.ShouldBe([40]);
+        maintainer[1].ProposedHebrewWordIds.ShouldBe([40]);
+    }
 }

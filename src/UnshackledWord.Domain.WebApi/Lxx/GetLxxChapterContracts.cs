@@ -68,6 +68,15 @@ public sealed class LxxWordResponse
     /// <c>proposed</c>). Omitted for an untagged word, and for anonymous callers when the tag is only proposed.
     /// </summary>
     public LxxTagResponse? Tag { get; set; }
+
+    /// <summary>
+    /// STEP Hebrew word ids this word renders (roadmap 0028.10, the ids of the original panel): confirmed links for everyone, proposed ones only for
+    /// Admin/Maintainer (also listed in <see cref="ProposedHebrewWordIds"/>). Omitted when there are none.
+    /// </summary>
+    public List<int>? HebrewWordIds { get; set; }
+
+    /// <summary>The proposed subset of <see cref="HebrewWordIds"/> (Admin/Maintainer only); omitted when empty.</summary>
+    public List<int>? ProposedHebrewWordIds { get; set; }
 }
 
 /// <summary>Lemma, Strong's and parse of an LXX word (<c>LxxWordTags</c>).</summary>

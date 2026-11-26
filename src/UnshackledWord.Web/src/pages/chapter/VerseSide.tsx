@@ -81,6 +81,8 @@ export interface VerseSideProps {
   lxx?: LxxElbVerse;
   /** `lxx`, Daniel: the text form to show (units without a form always show) */
   lxxForm?: LxxForm;
+  /** `lxx` (roadmap 0028.10f): an LXX word is hovered or focused (`undefined` = none anymore); the reader marks its linked Hebrew and German words. */
+  onHoverLxxWord?: (verse: number, lxxWordId: number | undefined) => void;
 }
 
 /**
@@ -114,6 +116,7 @@ export const VerseSide = memo(function VerseSide({
   onHoverSimilar,
   lxx,
   lxxForm = "th",
+  onHoverLxxWord,
 }: VerseSideProps) {
   const { t, i18n } = useTranslation();
   const preview = useMemo(
@@ -149,6 +152,11 @@ export const VerseSide = memo(function VerseSide({
   const hoverSimilar = useMemo(
     () => onHoverSimilar && ((hit: SimilarVerseHit | undefined) => onHoverSimilar(verse, hit)),
     [onHoverSimilar, verse],
+  );
+
+  const hoverLxxWord = useMemo(
+    () => onHoverLxxWord && ((id: number | undefined) => onHoverLxxWord(verse, id)),
+    [onHoverLxxWord, verse],
   );
 
   if (mode === "tsk") {
@@ -209,6 +217,7 @@ export const VerseSide = memo(function VerseSide({
                       originalWords: lxxOriginalWords(block.units, books, i18n.language),
                     }}
                     reference={reference}
+                    onHoverWord={hoverLxxWord}
                   />
                 </section>
               ) : (
@@ -227,6 +236,7 @@ export const VerseSide = memo(function VerseSide({
                       originalWords: lxxOriginalWords([block.unit], books, i18n.language),
                     }}
                     reference={reference}
+                    onHoverWord={hoverLxxWord}
                   />
                 </div>
               ),

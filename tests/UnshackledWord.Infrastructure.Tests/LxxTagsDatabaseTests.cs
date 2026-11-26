@@ -131,6 +131,33 @@ public class LxxTagsDatabaseTests
     });
 
     [Fact]
+    public async Task ReadSql_ReturnsHebrewLinkIds_ByStatus() => await WithTransactionAsync(async (connection, transaction) =>
+    {
+        var ids = await Gen11WordIdsAsync(connection, transaction);
+        await connection.ExecuteAsync("""DELETE FROM "unshackled-word"."LxxHebrewLinks" WHERE "LxxWordId" = ANY(@Ids)""", new { Ids = ids }, transaction);
+        await connection.ExecuteAsync("""
+            INSERT INTO "unshackled-word"."LxxHebrewLinks" ("LxxWordId", "StepHebrewWordId", "Status")
+            VALUES (@A, 900001, 'confirmed'), (@A, 900002, 'proposed'), (@B, 900003, 'proposed')
+            """, new { A = ids[1], B = ids[2] }, transaction);
+
+        using var grid = await connection.QueryMultipleAsync(LxxReadSql.Chapter, new { FromHebRefId = Gen11, ToHebRefId = Gen11 + 30 }, transaction);
+        _ = await grid.ReadAsync<int>();
+        _ = await grid.ReadAsync<LxxUnitRow>();
+        var words = (await grid.ReadAsync<LxxWordRow>()).ToDictionary(w => w.Id);
+
+        words[ids[0]].ConfirmedHebrewWordIds.ShouldBeEmpty();
+        words[ids[1]].ConfirmedHebrewWordIds.ShouldBe([900001]);
+        words[ids[1]].ProposedHebrewWordIds.ShouldBe([900002]);
+        words[ids[2]].ConfirmedHebrewWordIds.ShouldBeEmpty();
+        words.Count.ShouldBe(words.Values.Select(w => w.Id).Distinct().Count()); // the lateral join adds no rows
+
+        // end to end through the service: an unconfirmed word returns no links for anonymous callers
+        LxxChapterReadService.ToWord(words[ids[2]], false).HebrewWordIds.ShouldBeNull();
+        LxxChapterReadService.ToWord(words[ids[2]], true).HebrewWordIds.ShouldBe([900003]);
+        LxxChapterReadService.ToWord(words[ids[1]], false).HebrewWordIds.ShouldBe([900001]);
+    });
+
+    [Fact]
     public async Task StrongsOccurrenceSql_CountsByStatus_AndPagesConfirmedOnly() => await WithTransactionAsync(async (connection, transaction) =>
     {
         var ids = await Gen11WordIdsAsync(connection, transaction);

@@ -588,6 +588,10 @@ export interface LxxWord {
   position: number;
   greek: string;
   tag?: LxxWordTag;
+  /** STEP Hebrew word ids this word renders (roadmap 0028.10; the ids of the original panel): confirmed, plus proposed for Admin/Maintainer. */
+  hebrewWordIds?: number[];
+  /** the proposed subset of `hebrewWordIds` (Admin/Maintainer only) */
+  proposedHebrewWordIds?: number[];
 }
 
 /** `GET lxx/word/{id}` (roadmap 0028.5): one LXX word with its tag, parse text and TBESG entry. */
