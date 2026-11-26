@@ -52,6 +52,18 @@ public class GrammarSearchRepositoryDatabaseTests
     });
 
     [Fact]
+    public async Task CountCodes_FoldedByCase_GivesTheFacetOfAgapeWithoutItsOwnFilter() => await WithDatabaseAsync(async (repository, index) =>
+    {
+        var rows = await repository.CountCodesAsync([.. GrammarSearchService.StrongsKeys("G0026")], TestContext.Current.CancellationToken);
+        var facet = GrammarFacetFolder.Fold(GrammarVocabulary.FindKey("Kasus", false)!, rows.ToDictionary(r => r.Code, r => r.Count), index);
+
+        facet.Values.Select(v => (v.LabelDe, v.Count)).ShouldBe([("Nominativ", 36), ("Genitiv", 18), ("Dativ", 29), ("Akkusativ", 33)]);
+
+        var all = await repository.CountCodesAsync(null, TestContext.Current.CancellationToken);
+        all.Sum(r => r.Count).ShouldBeGreaterThan(rows.Sum(r => r.Count));
+    });
+
+    [Fact]
     public async Task GrammarWithoutLemma_CountsTheAoristPassives() => await WithDatabaseAsync(async (repository, index) =>
     {
         var verses = await repository.FindVersesAsync([Slot("Tempus:aor Diathese:pass", index, null)], TestContext.Current.CancellationToken);

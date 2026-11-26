@@ -24,6 +24,8 @@ public sealed class GrammarFilterResolver
     public async Task<IReadOnlyList<string>> ResolveGreekAsync(IReadOnlyList<GrammarFilter> filters, CancellationToken token = default) =>
         Resolve(filters, await _index.GetGreekAsync(token), GrammarVocabulary.LanguageGreek);
 
+    public Task<IReadOnlyList<MorphologyCodeEntry>> GreekCodesAsync(CancellationToken token = default) => _index.GetGreekAsync(token);
+
     /// <summary>Pure core: the codes of <paramref name="codes"/> (of language <paramref name="language"/>) that satisfy all filters.</summary>
     public static IReadOnlyList<string> Resolve(IReadOnlyList<GrammarFilter> filters, IEnumerable<MorphologyCodeEntry> codes, string language) =>
         [.. codes.Where(entry => filters.All(f => Holds(f, entry, language))).Select(e => e.Code)];

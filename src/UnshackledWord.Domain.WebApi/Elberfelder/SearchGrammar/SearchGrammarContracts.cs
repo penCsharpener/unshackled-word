@@ -187,6 +187,46 @@ public sealed class GrammarChapterRef
     public int Chapter { get; set; }
 }
 
+/// <summary><c>GET api/elberfelder/search/grammar/facets?q=&amp;slot=&amp;key=</c> (roadmap 0029.5).</summary>
+public sealed class SearchGrammarFacetsRequest
+{
+    /// <summary>Query such as <c>agape Kasus:</c>; a filter without value at the end is allowed.</summary>
+    public string Q { get; set; } = string.Empty;
+
+    /// <summary>0-based slot of the parsed query.</summary>
+    public int Slot { get; set; }
+
+    /// <summary>Key to count (name or alias); omitted = every key with fixed values.</summary>
+    public string? Key { get; set; }
+}
+
+public sealed class SearchGrammarFacetsResponse
+{
+    public int Slot { get; set; }
+
+    public List<GrammarFacet> Facets { get; set; } = [];
+}
+
+public sealed class GrammarFacet
+{
+    /// <summary>Canonical key name, e.g. <c>Kasus</c>.</summary>
+    public string Key { get; set; } = string.Empty;
+
+    /// <summary>Values with at least one word, in vocabulary order.</summary>
+    public List<GrammarFacetValue> Values { get; set; } = [];
+}
+
+public sealed class GrammarFacetValue
+{
+    /// <summary>Value id as in the vocabulary (<c>GrammarVocabularyValue.Key</c>).</summary>
+    public string Key { get; set; } = string.Empty;
+
+    public string LabelDe { get; set; } = string.Empty;
+
+    /// <summary>Original words that satisfy the slot's lemma and its other filters and have this value.</summary>
+    public int Count { get; set; }
+}
+
 /// <summary>400 body of a query that cannot be searched; the frontend marks <c>token</c> and offers <c>candidates</c>.</summary>
 public sealed class GrammarSearchProblem
 {
@@ -194,7 +234,7 @@ public sealed class GrammarSearchProblem
 
     public string Title { get; set; } = "The grammar query cannot be searched.";
 
-    /// <summary>unknownKey, unknownValue, ambiguousValue, tooManySlots, tooManyFilters, emptyQuery or unknownWord.</summary>
+    /// <summary>unknownKey, unknownValue, ambiguousValue, tooManySlots, tooManyFilters, emptyQuery or unknownWord (facets: also unknownSlot, and unknownKey for a key without fixed values).</summary>
     public string Code { get; set; } = string.Empty;
 
     /// <summary>The offending token as typed (omitted for emptyQuery).</summary>

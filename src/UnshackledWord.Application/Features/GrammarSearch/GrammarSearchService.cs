@@ -151,6 +151,46 @@ public sealed class GrammarSearchService : IGrammarSearchService
         }
     }
 
+    public async Task<GrammarOutcome<SearchGrammarFacetsResponse>> FacetsAsync(string? query, int slot, string? key, CancellationToken token = default)
+    {
+        var parsed = GrammarQueryParser.Parse(query, allowEmptyValue: true);
+        if (parsed.Error is not null) return new() { Error = parsed.Error };
+        if (slot < 0 || slot >= parsed.Slots.Count) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownSlot, slot.ToString(CultureInfo.InvariantCulture)) };
+
+        var facetKeys = GrammarFacetFolder.FacetKeys(GrammarLanguages.Greek);
+        if (!string.IsNullOrWhiteSpace(key))
+        {
+            var found = GrammarVocabulary.FindKey(key, false);
+            if (found is null || !facetKeys.Contains(found)) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownKey, key, [.. facetKeys.Select(k => k.Name)]) };
+            facetKeys = [found];
+        }
+
+        var spec = parsed.Slots[slot];
+        IReadOnlyList<GrammarLemma> lemmas = [];
+        if (spec.Word is not null)
+        {
+            lemmas = await _words.ReadGreekAsync(spec.Word, spec.Mode, token);
+            if (lemmas.Count == 0) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownWord, spec.Word) };
+        }
+
+        // One count per code for the lemma; every key then drops its own filters and folds the codes the other filters leave.
+        var rows = await _repository.CountCodesAsync(spec.Word is null ? null : [.. lemmas.SelectMany(l => StrongsKeys(l.Key))], token);
+        var counts = rows.ToDictionary(r => r.Code, r => r.Count);
+        var index = await _resolver.GreekCodesAsync(token);
+
+        var response = new SearchGrammarFacetsResponse { Slot = slot };
+        foreach (var facetKey in facetKeys)
+        {
+            var others = spec.Filters.Where(f => f.Key != facetKey).ToList();
+            var allowedCodes = GrammarFilterResolver.Resolve(others, index, GrammarVocabulary.LanguageGreek).ToHashSet();
+            var allowed = index.Where(e => allowedCodes.Contains(e.Code));
+            var facet = GrammarFacetFolder.Fold(facetKey, counts, allowed);
+            if (facet.Values.Count > 0) response.Facets.Add(facet);
+        }
+
+        return new() { Response = response };
+    }
+
     private static int ChapterStart(int bibleBookId, int chapter) => bibleBookId * BookShift + chapter * ChapterSpan;
 
     private static bool HasAssignment(IEnumerable<GrammarMatchRow> verseMatches, int slotCount)

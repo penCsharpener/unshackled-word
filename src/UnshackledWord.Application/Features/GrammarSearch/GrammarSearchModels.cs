@@ -31,6 +31,13 @@ public sealed class GrammarMatchRow
     public string Morphology { get; init; } = string.Empty;
 }
 
+/// <summary>Words with one morphology code (roadmap 0029.5).</summary>
+public sealed class GrammarCodeCountRow
+{
+    public string Code { get; init; } = string.Empty;
+    public int Count { get; init; }
+}
+
 public sealed class GrammarGermanWordRow
 {
     public int HebRefId { get; init; }
@@ -58,6 +65,9 @@ public interface IGrammarSearchRepository
 
     /// <summary>The nearest verses (at most <paramref name="limit"/>) before (<c>HebRefId &lt; boundary</c>, descending) or after (<c>&gt;</c>, ascending) the boundary where every slot has a candidate.</summary>
     Task<IReadOnlyList<GrammarVerseRow>> FindVersesNearAsync(IReadOnlyList<GrammarSlotQuery> slots, int boundaryHebRefId, bool before, int limit, CancellationToken token = default);
+
+    /// <summary>Number of Greek words per morphology code, restricted to the given Strong's keys (null = all words); the basis of the facet counts.</summary>
+    Task<IReadOnlyList<GrammarCodeCountRow>> CountCodesAsync(IReadOnlyList<string>? strongsKeys, CancellationToken token = default);
 
     Task<IReadOnlyList<GrammarGermanWordRow>> ReadGermanWordsAsync(IReadOnlyList<int> hebRefIds, CancellationToken token = default);
 
@@ -94,4 +104,7 @@ public interface IGrammarSearchService
 
     /// <summary>The nearest chapters before and after the given one that have a hit (roadmap 0029.2).</summary>
     Task<GrammarOutcome<SearchGrammarNeighboursResponse>> NeighboursAsync(string? query, int bibleBookId, int chapter, CancellationToken token = default);
+
+    /// <summary>The values of <paramref name="key"/> (null = every key with fixed values) with the number of original words that satisfy slot <paramref name="slot"/> without its own filter on that key (roadmap 0029.5).</summary>
+    Task<GrammarOutcome<SearchGrammarFacetsResponse>> FacetsAsync(string? query, int slot, string? key, CancellationToken token = default);
 }

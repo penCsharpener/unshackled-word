@@ -149,6 +149,20 @@ public sealed class GrammarSearchRepository : IGrammarSearchRepository
         return [.. await _dbReader.ReadAsListAsync<GrammarVerseRow>(sql, parameters)];
     }
 
+    public async Task<IReadOnlyList<GrammarCodeCountRow>> CountCodesAsync(IReadOnlyList<string>? strongsKeys, CancellationToken token = default)
+    {
+        const string sql = """
+            SELECT w."Morphology" AS "Code"
+                 , count(*)::int  AS "Count"
+            FROM "unshackled-word"."StepGreekWords" w
+            WHERE 1=1
+                AND (@Strongs::text[] IS NULL OR w."DisambiguatedStrongs" = ANY(@Strongs))
+            GROUP BY w."Morphology"
+            """;
+
+        return [.. await _dbReader.ReadAsListAsync<GrammarCodeCountRow>(sql, new { Strongs = strongsKeys?.ToArray() })];
+    }
+
     public async Task<IReadOnlyList<GrammarGermanWordRow>> ReadGermanWordsAsync(IReadOnlyList<int> hebRefIds, CancellationToken token = default)
     {
         const string sql = """

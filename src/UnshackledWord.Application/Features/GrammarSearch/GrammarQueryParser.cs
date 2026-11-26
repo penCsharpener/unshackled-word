@@ -9,6 +9,7 @@ public static class GrammarErrorCodes
     public const string TooManyFilters = "tooManyFilters";
     public const string EmptyQuery = "emptyQuery";
     public const string UnknownWord = "unknownWord";
+    public const string UnknownSlot = "unknownSlot";
 }
 
 /// <summary>A query that cannot be searched: machine-readable <see cref="Code"/>, the offending <see cref="Token"/> and the valid <see cref="Candidates"/> (when there are any).</summary>
@@ -67,7 +68,9 @@ public static class GrammarQueryParser
         public GrammarSlotSpec Build() => new(string.Join(' ', Tokens), Word, Mode, Filters);
     }
 
-    public static GrammarParseResult Parse(string? query)
+    /// <param name="query">The query text.</param>
+    /// <param name="allowEmptyValue">Facet requests: a filter without value (<c>Kasus:</c>) is kept in its slot's text but adds no filter, instead of failing with <c>unknownValue</c>.</param>
+    public static GrammarParseResult Parse(string? query, bool allowEmptyValue = false)
     {
         var tokens = (query ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
         if (tokens.Length == 0) return Fail(new GrammarQueryError(GrammarErrorCodes.EmptyQuery));
@@ -106,6 +109,13 @@ public static class GrammarQueryParser
             }
 
             if (++filterCount > MaxFilters) return Fail(new GrammarQueryError(GrammarErrorCodes.TooManyFilters, token));
+            if (allowEmptyValue && valueText.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Length == 0)
+            {
+                if (slots.Count == 0) slots.Add(new SlotBuilder(null, GrammarWordMode.Auto, token));
+                else slots[^1].Tokens.Add(token);
+                continue;
+            }
+
             var parsed = ParseFilter(token, key, valueText, negated, german, out var error);
             if (parsed is null) return Fail(error!);
 

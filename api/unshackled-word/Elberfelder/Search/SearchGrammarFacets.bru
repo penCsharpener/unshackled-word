@@ -1,0 +1,22 @@
+meta {
+  name: SearchGrammarFacets
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar/facets?q=agape Kasus:&slot=0&key=Kasus
+  body: none
+  auth: none
+}
+
+params:query {
+  q: agape Kasus:
+  slot: 0
+  key: Kasus
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
