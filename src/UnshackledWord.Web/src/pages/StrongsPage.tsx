@@ -6,6 +6,17 @@ import { StrongsStatsHeader } from "@/components/StrongsStatsHeader";
 import { bookName } from "@/lib/bible/books";
 import { useBibleStructure } from "@/lib/bible/queries";
 import {
+  activeGrammarValue,
+  type GrammarTerm,
+  grammarTerms,
+  grammarValueLabel,
+  grammarValueToken,
+  parseGrammarFilter,
+  removeGrammarTerm,
+  setGrammarValue,
+  useStrongsForms,
+} from "@/lib/bible/strongsGrammar";
+import {
   parseBookFilter,
   parsePage,
   parseRenderingFilter,
@@ -13,6 +24,7 @@ import {
 } from "@/lib/bible/strongsOccurrences";
 import type { StrongsOccurrence, StrongsOccurrenceToken } from "@/lib/bible/types";
 import { normalizeStrongs } from "@/lib/bible/wordDetail";
+import { useGrammarVocabulary } from "@/lib/search/grammarSearch";
 
 const words = (tokens: StrongsOccurrenceToken[]) => tokens.map((token) => token.text).join(" ");
 
@@ -141,6 +153,67 @@ function KwicRow({
   );
 }
 
+/**
+ * "Formen": one row per grammar key that occurs for the lemma, with the count of each value.
+ * A value is a toggle for the `grammar` filter (one value per key).
+ */
+function FormsBlock({
+  strongs,
+  grammar,
+  onSet,
+}: {
+  strongs: string;
+  grammar: string | undefined;
+  onSet: (key: string, value: string | null) => void;
+}) {
+  const { t, i18n } = useTranslation();
+  const forms = useStrongsForms(strongs);
+  const vocabulary = useGrammarVocabulary().data;
+  const rows = (forms.data?.facets ?? []).filter((facet) => facet.values.length > 0);
+  if (rows.length === 0) return null;
+  return (
+    <section aria-labelledby="strongs-forms" className="mt-8">
+      <h2 id="strongs-forms" className="font-scripture text-2xl font-semibold">
+        {t("bible.strongs.forms.title")}
+      </h2>
+      <dl className="mt-3 grid gap-2">
+        {rows.map((facet) => {
+          const active = activeGrammarValue(grammar, facet.key);
+          return (
+            <div key={facet.key} className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <dt className="w-28 shrink-0 text-fg-muted">
+                {t(`bible.strongs.forms.key.${facet.key}`, { defaultValue: facet.key })}
+              </dt>
+              <dd className="flex flex-wrap items-center gap-2">
+                {[...facet.values]
+                  .sort((x, y) => y.count - x.count)
+                  .map((value) => {
+                    const token = grammarValueToken(facet.key, value.labelDe);
+                    const label = grammarValueLabel(vocabulary, facet.key, token, i18n.language);
+                    const pressed =
+                      active !== undefined &&
+                      grammarValueLabel(vocabulary, facet.key, active, i18n.language) === label;
+                    return (
+                      <Button
+                        key={value.key}
+                        variant="secondary"
+                        size="sm"
+                        aria-pressed={pressed}
+                        onClick={() => onSet(facet.key, pressed ? null : token)}
+                      >
+                        {label} <span className="text-fg-muted">{value.count}</span>
+                      </Button>
+                    );
+                  })}
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
+    </section>
+  );
+}
+
 export function StrongsPage() {
   const { t, i18n } = useTranslation();
   const params = useParams();
@@ -150,15 +223,18 @@ export function StrongsPage() {
   const book = parseBookFilter(searchParams.get("book"));
   const rendering = parseRenderingFilter(searchParams.get("rendering"));
   const structure = useBibleStructure();
-  const occurrences = useStrongsOccurrences(strongs, page, { book, rendering });
+  const grammar = parseGrammarFilter(searchParams.get("grammar"));
+  const terms = grammarTerms(grammar);
+  const vocabulary = useGrammarVocabulary().data;
+  const occurrences = useStrongsOccurrences(strongs, page, { book, rendering, grammar });
   const data = occurrences.data;
 
   /** Sets or clears one filter; a changed filter always starts again at page 1. */
-  function setFilter(name: "book" | "rendering", value: string | null) {
+  function setFilter(name: "book" | "rendering" | "grammar", value: string | null | undefined) {
     setSearchParams((previous) => {
       const next = new URLSearchParams(previous);
       next.delete("page");
-      if (value === null) next.delete(name);
+      if (value === null || value === undefined) next.delete(name);
       else next.set(name, value);
       return next;
     });
@@ -179,6 +255,20 @@ export function StrongsPage() {
   const lang = data?.language === "hebrew" ? "he" : "el";
   const dir = data?.language === "hebrew" ? "rtl" : "ltr";
   const bookEntry = book === undefined ? undefined : structure.data?.find((b) => b.id === book);
+
+  const filterCount =
+    terms.length + (book === undefined ? 0 : 1) + (rendering === undefined ? 0 : 1);
+
+  /** "Kasus: Nominativ", "Kasus: nicht Nominativ", several values joined with "oder". */
+  function grammarTermLabel(term: GrammarTerm): string {
+    const values = term.values
+      .map((value) => grammarValueLabel(vocabulary, term.key, value, i18n.language))
+      .join(t("bible.strongs.forms.or"));
+    return t("bible.strongs.filter.grammar", {
+      key: t(`bible.strongs.forms.key.${term.key}`, { defaultValue: term.key }),
+      value: term.negated ? t("bible.strongs.forms.not", { text: values }) : values,
+    });
+  }
 
   function pageHref(target: number) {
     const next = new URLSearchParams(searchParams);
@@ -214,10 +304,15 @@ export function StrongsPage() {
         onSelectBook={(bookId) => setFilter("book", bookId === null ? null : String(bookId))}
         onSelectRendering={(key) => setFilter("rendering", key)}
       />
+      <FormsBlock
+        strongs={strongs}
+        grammar={grammar}
+        onSet={(key, value) => setFilter("grammar", setGrammarValue(grammar, key, value))}
+      />
       <h2 className="mt-12 font-scripture text-2xl font-semibold">
         {t("bible.strongs.allOccurrences")}
       </h2>
-      {(book !== undefined || rendering !== undefined) && (
+      {(book !== undefined || rendering !== undefined || terms.length > 0) && (
         <fieldset className="mt-3 flex flex-wrap items-center gap-2">
           <legend className="sr-only">{t("bible.strongs.filter.label")}</legend>
           {book !== undefined && (
@@ -246,7 +341,22 @@ export function StrongsPage() {
               <span aria-hidden="true">×</span>
             </Button>
           )}
-          {book !== undefined && rendering !== undefined && (
+          {terms.map((term) => {
+            const name = grammarTermLabel(term);
+            return (
+              <Button
+                key={term.raw}
+                variant="secondary"
+                size="sm"
+                aria-label={t("bible.strongs.filter.remove", { name })}
+                onClick={() => setFilter("grammar", removeGrammarTerm(grammar, term))}
+              >
+                {name}
+                <span aria-hidden="true">×</span>
+              </Button>
+            );
+          })}
+          {filterCount > 1 && (
             <Button
               variant="ghost"
               size="sm"
@@ -256,6 +366,7 @@ export function StrongsPage() {
                   next.delete("page");
                   next.delete("book");
                   next.delete("rendering");
+                  next.delete("grammar");
                   return next;
                 })
               }

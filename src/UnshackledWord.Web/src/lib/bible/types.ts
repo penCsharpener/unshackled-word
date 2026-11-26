@@ -643,6 +643,8 @@ export interface StrongsOccurrenceFilters {
   /** Elberfelder book id 1-66. */
   book?: number;
   rendering?: string;
+  /** Grammar filter tokens (`Kasus:nom Numerus:Plural`), the server's grammar query syntax. */
+  grammar?: string;
 }
 
 export interface StrongsBookStat {

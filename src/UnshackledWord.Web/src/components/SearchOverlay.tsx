@@ -20,6 +20,7 @@ import {
   viewOfParse,
 } from "@/lib/bible/referenceParse";
 import { splitSourceWords, useSourceWordsLookup } from "@/lib/bible/sourceWords";
+import { slotStrongsLink } from "@/lib/bible/strongsGrammar";
 import {
   isLookupQuery,
   originalTextAttributes,
@@ -438,8 +439,9 @@ function OriginalsPanel({
 }
 
 /** "ἀγάπη G26 · Nominativ": how a slot's word was read plus its filters in words. */
-function GrammarSlotChip({ slot }: { slot: GrammarSlot }) {
+function GrammarSlotChip({ slot, onNavigate }: { slot: GrammarSlot; onNavigate: () => void }) {
   const { t } = useTranslation();
+  const strongsLink = slotStrongsLink(slot);
   const word =
     slot.readAs === "lemma" && slot.lemmas.length > 0
       ? slot.lemmas.map((lemma) => (
@@ -453,7 +455,13 @@ function GrammarSlotChip({ slot }: { slot: GrammarSlot }) {
         : t("search.grammar.anyWord");
   return (
     <li className="inline-flex flex-wrap items-center gap-1 rounded-md border border-border bg-surface-muted px-2 py-1 text-sm">
-      {word}
+      {strongsLink ? (
+        <Link to={strongsLink} className={linkClasses} onClick={onNavigate}>
+          {word}
+        </Link>
+      ) : (
+        word
+      )}
       {slot.filters.map((filter) => (
         <span key={`${filter.german}-${filter.key}-${filter.negated}`}>
           {" · "}
@@ -573,6 +581,7 @@ function GrammarPanel({
   activeIndex,
   onOpenHit,
   onReplace,
+  onNavigate,
 }: {
   query: string;
   search: ReturnType<typeof useGrammarSearch>;
@@ -584,6 +593,7 @@ function GrammarPanel({
   activeIndex: number;
   onOpenHit: (index: number) => void;
   onReplace: (candidate: string) => void;
+  onNavigate: () => void;
 }) {
   const { t } = useTranslation();
   const pages = search.data?.pages ?? [];
@@ -613,7 +623,7 @@ function GrammarPanel({
         {first.slots.map((slot, i) => (
           // Slots are in query order; the index is the identity.
           // biome-ignore lint/suspicious/noArrayIndexKey: see above
-          <GrammarSlotChip key={i} slot={slot} />
+          <GrammarSlotChip key={i} slot={slot} onNavigate={onNavigate} />
         ))}
       </ul>
       <p role="status" aria-live="polite" className="text-sm text-fg-muted">
@@ -1076,6 +1086,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
           listId={listId}
           activeIndex={activeIndex}
           onOpenHit={openHit}
+          onNavigate={onClose}
           onReplace={(candidate) => {
             const problem = parseGrammarProblem(grammarSearch.error);
             if (problem) setInput(replaceGrammarToken(input, problem, candidate));

@@ -808,6 +808,10 @@ describe("SearchOverlay originals", () => {
 
       const chips = await screen.findByRole("list", { name: "So wurde die Suche gelesen" });
       expect(chips).toHaveTextContent("ἀγάπη G26 · Nominativ");
+      expect(within(chips).getByRole("link", { name: /G26/ })).toHaveAttribute(
+        "href",
+        "/bible/strongs/G26?grammar=Kasus%3ANominativ",
+      );
       expect(await screen.findByText("36 Vorkommen in 32 Versen")).toBeInTheDocument();
       const list = await screen.findByRole("listbox", { name: "Treffer" });
       expect(within(list).getByText("Liebe").tagName).toBe("MARK");
