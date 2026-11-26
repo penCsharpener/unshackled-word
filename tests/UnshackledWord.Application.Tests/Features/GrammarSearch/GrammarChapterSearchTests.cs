@@ -15,11 +15,12 @@ public class GrammarChapterSearchTests
     public GrammarChapterSearchTests()
     {
         var words = Substitute.For<IGrammarWordReader>();
-        words.ReadGreekAsync("agape", Arg.Any<GrammarWordMode>(), Arg.Any<CancellationToken>()).Returns([Agape]);
-        words.ReadGreekAsync("unknown", Arg.Any<GrammarWordMode>(), Arg.Any<CancellationToken>()).Returns([]);
+        words.ReadAsync("agape", Arg.Any<GrammarWordMode>(), Arg.Any<CancellationToken>()).Returns([Agape]);
+        words.ReadAsync("unknown", Arg.Any<GrammarWordMode>(), Arg.Any<CancellationToken>()).Returns([]);
 
         var index = Substitute.For<IMorphologyCodeIndex>();
         index.GetGreekAsync(Arg.Any<CancellationToken>()).Returns(new[] { "N-NSF", "N-ASF" }.Select(c => new MorphologyCodeEntry(c, GreekMorphologyDecoder.Decode(c))).ToList());
+        index.GetHebrewAsync(Arg.Any<CancellationToken>()).Returns(new[] { "HVqp3ms", "HNcmsa" }.Select(c => new MorphologyCodeEntry(c, HebrewMorphologyDecoder.Decode(c).Root)).ToList());
 
         _repository.ReadMappingsAsync(Arg.Any<IReadOnlyList<int>>(), Arg.Any<CancellationToken>())
             .Returns(call => call.Arg<IReadOnlyList<int>>().Select(id => new GrammarMappingRow { StepWordId = id, PositionInVerse = id % 100 }).ToList());

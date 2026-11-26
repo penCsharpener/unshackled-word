@@ -37,7 +37,7 @@ public class GrammarSearchRepositoryDatabaseTests
     {
         var filters = GrammarQueryParser.Parse(query).Slots.Single().Filters;
         var codes = filters.Count == 0 ? null : GrammarFilterResolver.Resolve(filters, index, GrammarVocabulary.LanguageGreek);
-        return new GrammarSlotQuery(codes, lemmaKey is null ? null : [.. GrammarSearchService.StrongsKeys(lemmaKey)]);
+        return new GrammarSlotQuery(new GrammarSide(codes, lemmaKey is null ? null : [.. GrammarSearchService.StrongsKeys(lemmaKey)]), null);
     }
 
     [Fact]
@@ -126,6 +126,76 @@ public class GrammarSearchRepositoryDatabaseTests
         after.Count.ShouldBe(3);
         after.Select(v => v.HebRefId).ShouldBe([.. after.Select(v => v.HebRefId).Order()]);
         after.ShouldAllBe(v => v.HebRefId > 40_024_999);
+    });
+
+    private static async Task WithHebrewDatabaseAsync(Func<GrammarSearchRepository, IReadOnlyList<MorphologyCodeEntry>, Task> test)
+    {
+        var connectionString = Environment.GetEnvironmentVariable(EnvVar);
+        Assert.SkipWhen(string.IsNullOrWhiteSpace(connectionString), $"{EnvVar} is not set.");
+
+        using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+        var codes = (await connection.QueryAsync<string>("""
+            SELECT DISTINCT w."Grammar"
+            FROM "unshackled-word"."StepHebrewWords" w
+            WHERE w."Grammar" <> ''
+            """)).Select(c =>
+        {
+            var decoded = HebrewMorphologyDecoder.Decode(c);
+            return new MorphologyCodeEntry(c, decoded.Root, decoded.IsAramaic);
+        }).ToList();
+
+        await test(new GrammarSearchRepository(new ConnectionDbReader(connection)), codes);
+    }
+
+    private static GrammarSlotQuery HebrewSlot(string query, IReadOnlyList<MorphologyCodeEntry> index, string? lemmaKey)
+    {
+        var filters = GrammarQueryParser.Parse(query).Slots.Single().Filters;
+        var codes = filters.Count == 0 ? null : GrammarFilterResolver.Resolve(filters, index, GrammarVocabulary.LanguageHebrew);
+        return new GrammarSlotQuery(null, new GrammarSide(codes, lemmaKey is null ? null : [.. GrammarSearchService.StrongsKeys(lemmaKey)]));
+    }
+
+    [Fact]
+    public async Task Hebrew_QalOfBara_IsFoundInThirtyThreeVersesStartingWithGenesis1() => await WithHebrewDatabaseAsync(async (repository, index) =>
+    {
+        var verses = await repository.FindVersesAsync([HebrewSlot("Stamm:qal", index, "H1254")], TestContext.Current.CancellationToken);
+
+        verses.Count.ShouldBe(33);
+        verses.Sum(v => v.Words).ShouldBe(39);
+        verses.Min(v => v.HebRefId).ShouldBe(1_001_001);
+    });
+
+    [Fact]
+    public async Task Hebrew_Aramaic_IsFoundInEzraDanielAndJeremiah1011() => await WithHebrewDatabaseAsync(async (repository, index) =>
+    {
+        var verses = await repository.FindVersesAsync([HebrewSlot("Sprache:aramäisch", index, null)], TestContext.Current.CancellationToken);
+
+        verses.Sum(v => v.Words).ShouldBe(4827);
+        verses.GroupBy(v => v.HebRefId / 1_000_000).ToDictionary(g => g.Key, g => g.Sum(v => v.Words)).ShouldBe(new Dictionary<int, int> { [15] = 1212, [24] = 15, [27] = 3600 }, ignoreOrder: true);
+    });
+
+    [Fact]
+    public async Task Hebrew_ChapterRangeMatchesAndMappings_NameTheGermanWordOfGenesis1() => await WithHebrewDatabaseAsync(async (repository, index) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+
+        var matches = await repository.ReadMatchesInRangeAsync([HebrewSlot("Stamm:qal", index, "H1254")], 1_001_000, 1_001_999, token);
+
+        matches.Select(m => m.HebRefId % 1000).ShouldBe([1, 21, 27, 27, 27]);
+        matches.ShouldAllBe(m => m.IsHebrew && m.Strongs == "H1254A" && m.Morphology.StartsWith('H'));
+        var mapped = await repository.ReadHebrewMappingsAsync([.. matches.Select(m => m.WordId)], token);
+        var german = await repository.ReadGermanWordsAsync([1_001_001], token);
+        german.Single(g => g.PositionInVerse == mapped.First().PositionInVerse).WordInContext.ShouldBe("schuf");
+    });
+
+    [Fact]
+    public async Task Hebrew_CountCodes_FoldedByStemGivesTheFacetOfBara() => await WithHebrewDatabaseAsync(async (repository, index) =>
+    {
+        var rows = await repository.CountHebrewCodesAsync([.. GrammarSearchService.StrongsKeys("H1254")], TestContext.Current.CancellationToken);
+        var facet = GrammarFacetFolder.Fold(GrammarVocabulary.FindKey("Stamm", false)!, rows.ToDictionary(r => r.Code, r => r.Count), index);
+
+        facet.Values.First().LabelDe.ShouldBe("Qal");
+        facet.Values.First().Count.ShouldBe(39);
     });
 
     private sealed class ConnectionDbReader(IDbConnection connection) : IDbReader

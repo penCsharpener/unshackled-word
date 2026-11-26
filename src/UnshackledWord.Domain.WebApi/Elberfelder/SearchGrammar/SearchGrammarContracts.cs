@@ -117,6 +117,10 @@ public sealed class GrammarMatch
 
 public sealed class GrammarOriginalWord
 {
+    /// <summary><c>greek</c>, <c>hebrew</c> or <c>aramaic</c> (roadmap 0029.6).</summary>
+    public string Language { get; set; } = string.Empty;
+
+    /// <summary>The printed Greek form, or the Hebrew form with vowels and accents.</summary>
     public string Form { get; set; } = string.Empty;
 
     public string Lemma { get; set; } = string.Empty;
@@ -124,10 +128,10 @@ public sealed class GrammarOriginalWord
     /// <summary>Display key, e.g. <c>G26</c>.</summary>
     public string Strongs { get; set; } = string.Empty;
 
-    /// <summary>Raw Robinson code.</summary>
+    /// <summary>Raw Robinson code (Greek) or OSHB code (Hebrew/Aramaic, all segments).</summary>
     public string Code { get; set; } = string.Empty;
 
-    /// <summary>Decoded parts by group name (<c>partOfSpeech</c>, <c>tense</c>, <c>voice</c>, <c>mood</c>, <c>person</c>, <c>case</c>, <c>number</c>, <c>gender</c>, <c>degree</c>) with the contract key as value; translated by the frontend.</summary>
+    /// <summary>Decoded parts by group name (<c>partOfSpeech</c>, <c>tense</c>, <c>voice</c>, <c>mood</c>, <c>person</c>, <c>case</c>, <c>number</c>, <c>gender</c>, <c>degree</c>; Hebrew: <c>stem</c>, <c>hebrewForm</c>, <c>state</c>) with the contract key as value; translated by the frontend.</summary>
     public Dictionary<string, string> Keys { get; set; } = [];
 }
 

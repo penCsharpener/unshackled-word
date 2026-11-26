@@ -36,6 +36,36 @@ public sealed class GrammarSearchService : IGrammarSearchService
         public List<GrammarSlotQuery> Queries => [.. Slots.Select(s => s.Query!)];
     }
 
+    /// <summary>The languages a slot is searched in: those of its lemmas, both without a lemma.</summary>
+    private static (bool Greek, bool Hebrew) SlotLanguages(GrammarSlotSpec spec, IReadOnlyList<GrammarLemma> lemmas) =>
+        spec.Word is null ? (true, true) : (lemmas.Any(l => !l.IsHebrew), lemmas.Any(l => l.IsHebrew));
+
+    private static bool AppliesToGreek(GrammarKeyDef key) => key.Languages.HasFlag(GrammarLanguages.Greek);
+
+    private static bool AppliesToHebrew(GrammarKeyDef key) => (key.Languages & GrammarLanguages.HebrewAramaic) != 0;
+
+    private static bool FitsGreek(GrammarSlotSpec spec) => spec.Filters.All(f => AppliesToGreek(f.Key));
+
+    private static bool FitsHebrew(GrammarSlotSpec spec) => spec.Filters.All(f => AppliesToHebrew(f.Key));
+
+    /// <summary>A slot with a lemma whose filters do not all exist in at least one language of that lemma is an error (<c>G26 Stamm:qal</c>); without a lemma such a slot just has no hit in that language.</summary>
+    private static GrammarQueryError? CheckKeysExist(GrammarSlotSpec spec, bool greek, bool hebrew)
+    {
+        if (spec.Word is null || (greek && FitsGreek(spec)) || (hebrew && FitsHebrew(spec))) return null;
+
+        var offending = spec.Filters.FirstOrDefault(f => !(greek && AppliesToGreek(f.Key)) && !(hebrew && AppliesToHebrew(f.Key))) ?? spec.Filters[0];
+        var candidates = GrammarVocabulary.Keys.Where(k => k.Kind != GrammarKeyKind.Word && ((greek && AppliesToGreek(k)) || (hebrew && AppliesToHebrew(k)))).Select(k => k.Name).ToList();
+        return new GrammarQueryError(GrammarErrorCodes.KeyNotInLanguage, offending.Text, candidates);
+    }
+
+    private async Task<GrammarSide?> ResolveSideAsync(GrammarSlotSpec spec, IReadOnlyList<GrammarLemma> lemmas, bool hebrew, CancellationToken token)
+    {
+        var codes = spec.Filters.Count == 0 ? null : hebrew ? await _resolver.ResolveHebrewAsync(spec.Filters, token) : await _resolver.ResolveGreekAsync(spec.Filters, token);
+        if (codes is { Count: 0 }) return null;
+
+        return new GrammarSide(codes, spec.Word is null ? null : [.. lemmas.Where(l => l.IsHebrew == hebrew).SelectMany(l => StrongsKeys(l.Key))]);
+    }
+
     /// <summary>Parses the query, reads the word tokens and resolves the filters of every slot (shared by the search and the chapter endpoints).</summary>
     private async Task<PreparedQuery> PrepareAsync(string? query, CancellationToken token)
     {
@@ -45,14 +75,15 @@ public sealed class GrammarSearchService : IGrammarSearchService
         var slots = new List<ReadSlot>();
         foreach (var spec in parsed.Slots)
         {
-            var lemmas = spec.Word is null ? [] : await _words.ReadGreekAsync(spec.Word, spec.Mode, token);
+            var lemmas = spec.Word is null ? [] : await _words.ReadAsync(spec.Word, spec.Mode, token);
             if (spec.Word is not null && lemmas.Count == 0) return new PreparedQuery([], new GrammarQueryError(GrammarErrorCodes.UnknownWord, spec.Word));
 
-            var codes = spec.Filters.Count == 0 ? null : await _resolver.ResolveGreekAsync(spec.Filters, token);
-            var slotQuery = codes is { Count: 0 }
-                ? null
-                : new GrammarSlotQuery(codes, spec.Word is null ? null : [.. lemmas.SelectMany(l => StrongsKeys(l.Key))]);
-            slots.Add(new ReadSlot(spec, lemmas, slotQuery));
+            var (greek, hebrew) = SlotLanguages(spec, lemmas);
+            if (CheckKeysExist(spec, greek, hebrew) is { } keyError) return new PreparedQuery([], keyError);
+
+            var greekSide = greek && FitsGreek(spec) ? await ResolveSideAsync(spec, lemmas, false, token) : null;
+            var hebrewSide = hebrew && FitsHebrew(spec) ? await ResolveSideAsync(spec, lemmas, true, token) : null;
+            slots.Add(new ReadSlot(spec, lemmas, greekSide is null && hebrewSide is null ? null : new GrammarSlotQuery(greekSide, hebrewSide)));
         }
 
         return new PreparedQuery(slots, null);
@@ -103,7 +134,7 @@ public sealed class GrammarSearchService : IGrammarSearchService
             .Where(v => HasAssignment(v, queries.Count))
             .ToList();
         var wordIds = hits.SelectMany(v => v).Select(m => m.WordId).Distinct().ToList();
-        var mappings = (await _repository.ReadMappingsAsync(wordIds, token)).ToLookup(m => m.StepWordId, m => m.PositionInVerse);
+        var mappings = await ReadMappingsAsync(hits.SelectMany(v => v), token);
 
         response.Verses = [.. hits.OrderBy(v => v.Key).Select(v =>
         {
@@ -112,7 +143,7 @@ public sealed class GrammarSearchService : IGrammarSearchService
             {
                 Verse = v.Key % 1000,
                 OriginalWordIds = ids,
-                GermanPositions = [.. ids.SelectMany(id => mappings[id]).Distinct().Order()],
+                GermanPositions = [.. ids.SelectMany(id => mappings[(v.First().IsHebrew, id)]).Distinct().Order()],
             };
         })];
         response.Total = wordIds.Count;
@@ -157,35 +188,62 @@ public sealed class GrammarSearchService : IGrammarSearchService
         if (parsed.Error is not null) return new() { Error = parsed.Error };
         if (slot < 0 || slot >= parsed.Slots.Count) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownSlot, slot.ToString(CultureInfo.InvariantCulture)) };
 
-        var facetKeys = GrammarFacetFolder.FacetKeys(GrammarLanguages.Greek);
-        if (!string.IsNullOrWhiteSpace(key))
-        {
-            var found = GrammarVocabulary.FindKey(key, false);
-            if (found is null || !facetKeys.Contains(found)) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownKey, key, [.. facetKeys.Select(k => k.Name)]) };
-            facetKeys = [found];
-        }
-
         var spec = parsed.Slots[slot];
         IReadOnlyList<GrammarLemma> lemmas = [];
         if (spec.Word is not null)
         {
-            lemmas = await _words.ReadGreekAsync(spec.Word, spec.Mode, token);
+            lemmas = await _words.ReadAsync(spec.Word, spec.Mode, token);
             if (lemmas.Count == 0) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownWord, spec.Word) };
         }
 
-        // One count per code for the lemma; every key then drops its own filters and folds the codes the other filters leave.
-        var rows = await _repository.CountCodesAsync(spec.Word is null ? null : [.. lemmas.SelectMany(l => StrongsKeys(l.Key))], token);
-        var counts = rows.ToDictionary(r => r.Code, r => r.Count);
-        var index = await _resolver.GreekCodesAsync(token);
+        var (greek, hebrew) = SlotLanguages(spec, lemmas);
+        if (CheckKeysExist(spec, greek, hebrew) is { } keyError) return new() { Error = keyError };
+
+        var allKeys = GrammarFacetFolder.FacetKeys(GrammarLanguages.Greek).Concat(GrammarFacetFolder.FacetKeys(GrammarLanguages.Hebrew)).Distinct().ToList();
+        var facetKeys = allKeys.Where(k => (greek && AppliesToGreek(k)) || (hebrew && AppliesToHebrew(k))).ToList();
+        if (!string.IsNullOrWhiteSpace(key))
+        {
+            var found = GrammarVocabulary.FindKey(key, false);
+            if (found is null || !allKeys.Contains(found)) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownKey, key, [.. facetKeys.Select(k => k.Name)]) };
+            if (!facetKeys.Contains(found)) return new() { Error = new GrammarQueryError(GrammarErrorCodes.KeyNotInLanguage, key, [.. facetKeys.Select(k => k.Name)]) };
+            facetKeys = [found];
+        }
+
+        // One count per code and language for the lemma; every key then drops its own filters and folds the codes the other filters leave.
+        var sides = new List<(string Language, Dictionary<string, int> Counts, IReadOnlyList<MorphologyCodeEntry> Index)>();
+        if (greek)
+        {
+            var rows = await _repository.CountCodesAsync(spec.Word is null ? null : [.. lemmas.Where(l => !l.IsHebrew).SelectMany(l => StrongsKeys(l.Key))], token);
+            sides.Add((GrammarVocabulary.LanguageGreek, rows.ToDictionary(r => r.Code, r => r.Count), await _resolver.GreekCodesAsync(token)));
+        }
+
+        if (hebrew)
+        {
+            var rows = await _repository.CountHebrewCodesAsync(spec.Word is null ? null : [.. lemmas.Where(l => l.IsHebrew).SelectMany(l => StrongsKeys(l.Key))], token);
+            sides.Add((GrammarVocabulary.LanguageHebrew, rows.ToDictionary(r => r.Code, r => r.Count), await _resolver.HebrewCodesAsync(token)));
+        }
 
         var response = new SearchGrammarFacetsResponse { Slot = slot };
         foreach (var facetKey in facetKeys)
         {
             var others = spec.Filters.Where(f => f.Key != facetKey).ToList();
-            var allowedCodes = GrammarFilterResolver.Resolve(others, index, GrammarVocabulary.LanguageGreek).ToHashSet();
-            var allowed = index.Where(e => allowedCodes.Contains(e.Code));
-            var facet = GrammarFacetFolder.Fold(facetKey, counts, allowed);
-            if (facet.Values.Count > 0) response.Facets.Add(facet);
+            var perValue = new Dictionary<string, int>();
+            foreach (var (language, counts, index) in sides)
+            {
+                if (!(language == GrammarVocabulary.LanguageGreek ? AppliesToGreek(facetKey) : AppliesToHebrew(facetKey))) continue;
+                var allowedCodes = GrammarFilterResolver.Resolve(others, index, language).ToHashSet();
+                foreach (var value in GrammarFacetFolder.Fold(facetKey, counts, index.Where(e => allowedCodes.Contains(e.Code))).Values)
+                {
+                    perValue[value.Key] = perValue.GetValueOrDefault(value.Key) + value.Count;
+                }
+            }
+
+            if (perValue.Count == 0) continue;
+            response.Facets.Add(new GrammarFacet
+            {
+                Key = facetKey.Name,
+                Values = [.. facetKey.Values.Where(v => perValue.ContainsKey(v.Id)).Select(v => new GrammarFacetValue { Key = v.Id, LabelDe = v.De, Count = perValue[v.Id] })],
+            });
         }
 
         return new() { Response = response };
@@ -224,12 +282,24 @@ public sealed class GrammarSearchService : IGrammarSearchService
         return [.. rows.Where(r => !rejected.Contains(r.HebRefId)).OrderBy(r => r.HebRefId)];
     }
 
+    /// <summary>German positions per original word, keyed by (is Hebrew, word id) because the Greek and Hebrew word ids overlap.</summary>
+    private async Task<ILookup<(bool IsHebrew, int WordId), int>> ReadMappingsAsync(IEnumerable<GrammarMatchRow> matches, CancellationToken token)
+    {
+        var rows = matches.ToList();
+        var greek = await _repository.ReadMappingsAsync([.. rows.Where(m => !m.IsHebrew).Select(m => m.WordId).Distinct()], token);
+        var hebrewIds = rows.Where(m => m.IsHebrew).Select(m => m.WordId).Distinct().ToList();
+        var hebrew = hebrewIds.Count == 0 ? [] : await _repository.ReadHebrewMappingsAsync(hebrewIds, token);
+        return greek.Select(m => (Key: (false, m.StepWordId), m.PositionInVerse))
+            .Concat(hebrew.Select(m => (Key: (true, m.StepWordId), m.PositionInVerse)))
+            .ToLookup(x => x.Key, x => x.PositionInVerse);
+    }
+
     private async Task<List<GrammarHit>> BuildHitsAsync(IReadOnlyList<GrammarSlotQuery> queries, IReadOnlyList<int> verseIds, CancellationToken token)
     {
         var matches = await _repository.ReadMatchesAsync(queries, verseIds, token);
         var german = await _repository.ReadGermanWordsAsync(verseIds, token);
-        var mappings = (await _repository.ReadMappingsAsync([.. matches.Select(m => m.WordId).Distinct()], token))
-            .ToLookup(m => m.StepWordId, m => m.PositionInVerse);
+        var mappings = await ReadMappingsAsync(matches, token);
+        var hebrewLemmas = await _words.ReadHebrewLemmasAsync(matches.Where(m => m.IsHebrew).Select(m => BaseKey(m.Strongs)).Distinct(), token);
 
         var matchesByVerse = matches.ToLookup(m => m.HebRefId);
         var germanByVerse = german.ToLookup(g => g.HebRefId);
@@ -242,20 +312,41 @@ public sealed class GrammarSearchService : IGrammarSearchService
             Matches = [.. matchesByVerse[id].OrderBy(m => m.Slot).ThenBy(m => m.Position).Select(m => new GrammarMatch
             {
                 Slot = m.Slot,
-                GermanPositions = [.. mappings[m.WordId].Distinct().Order()],
-                Original = ToOriginal(m),
+                GermanPositions = [.. mappings[(m.IsHebrew, m.WordId)].Distinct().Order()],
+                Original = ToOriginal(m, hebrewLemmas),
             })],
         })];
     }
 
-    private static GrammarOriginalWord ToOriginal(GrammarMatchRow row) => new()
+    private static GrammarOriginalWord ToOriginal(GrammarMatchRow row, IReadOnlyDictionary<string, string> hebrewLemmas)
     {
-        Form = row.Greek,
-        Lemma = row.Lemma,
-        Strongs = DisplayStrongs(row.Strongs),
-        Code = row.Morphology,
-        Keys = KeysOf(GreekMorphologyDecoder.Decode(row.Morphology)),
-    };
+        if (!row.IsHebrew)
+        {
+            return new GrammarOriginalWord
+            {
+                Language = GrammarVocabulary.LanguageGreek,
+                Form = row.Form,
+                Lemma = row.Lemma,
+                Strongs = DisplayStrongs(row.Strongs),
+                Code = row.Morphology,
+                Keys = KeysOf(GreekMorphologyDecoder.Decode(row.Morphology)),
+            };
+        }
+
+        var decoded = HebrewMorphologyDecoder.Decode(row.Morphology);
+        return new GrammarOriginalWord
+        {
+            Language = decoded.IsAramaic ? GrammarVocabulary.LanguageAramaic : GrammarVocabulary.LanguageHebrew,
+            Form = row.Form,
+            Lemma = hebrewLemmas.GetValueOrDefault(BaseKey(row.Strongs), string.Empty),
+            Strongs = DisplayStrongs(row.Strongs),
+            Code = row.Morphology,
+            Keys = KeysOf(decoded.Root),
+        };
+    }
+
+    /// <summary>"H1254A" → "H1254": the lexicon key of a stored Strong's key.</summary>
+    private static string BaseKey(string key) => key.Length > 5 ? key[..5] : key;
 
     private static Dictionary<string, string> KeysOf(MorphologyKeys keys)
     {
@@ -274,6 +365,9 @@ public sealed class GrammarSearchService : IGrammarSearchService
         Add("number", keys.Number);
         Add("gender", keys.Gender);
         Add("degree", keys.Degree);
+        Add("stem", keys.Stem);
+        Add("hebrewForm", keys.HebrewForm);
+        Add("state", keys.State);
         return result;
     }
 

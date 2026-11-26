@@ -6,8 +6,8 @@ using UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.Search.SourceWords;
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Elberfelder.Search.Grammar;
 
 /// <summary>
-/// Reads a word token of a grammar query as Greek lemmas, with the lexicon of the source word search (roadmap 0029.1). First match wins: Strong's number, then the exact
-/// Greek lemma or printed form (diacritics ignored), then the exact transliteration. No gloss, skeleton or prefix tiers: a grammar query wants the word it names.
+/// Reads a word token of a grammar query as Greek or Hebrew lemmas, with the lexicon of the source word search (roadmap 0029.1, 0029.6). First match wins: Strong's number, then the exact
+/// Greek or Hebrew lemma or printed form (diacritics and vowels ignored), then the exact transliteration (<c>agape</c> is G26, <c>bara</c> is H1254). No gloss, skeleton or prefix tiers: a grammar query wants the word it names.
 /// <c>Strong:</c> forces the first, <c>Lemma:</c> the last two steps.
 /// </summary>
 public sealed class GrammarWordReader : IGrammarWordReader
@@ -24,11 +24,11 @@ public sealed class GrammarWordReader : IGrammarWordReader
         _forms = forms;
     }
 
-    public async Task<IReadOnlyList<GrammarLemma>> ReadGreekAsync(string token, GrammarWordMode mode, CancellationToken ct = default)
+    public async Task<IReadOnlyList<GrammarLemma>> ReadAsync(string token, GrammarWordMode mode, CancellationToken ct = default)
     {
         if (mode != GrammarWordMode.Lemma)
         {
-            var strongs = TranslitFolding.ParseStrongs(token).Where(k => k[0] == 'G').ToList();
+            var strongs = TranslitFolding.ParseStrongs(token).ToList();
             var entries = (await _lexicon.GetManyAsync(strongs, ct)).Values.ToList();
             if (entries.Count > 0 || mode == GrammarWordMode.Strongs) return [.. entries.Select(ToLemma)];
         }
@@ -44,7 +44,7 @@ public sealed class GrammarWordReader : IGrammarWordReader
         var latin = TranslitFolding.Latin(token);
         var hits = await _lexicon.SearchAsync(token, TranslitPool, ct);
         return [.. hits
-            .Where(h => h.MatchedBy == "translit" && h.Entry.Lang == "G" && h.Entry.FoldedTranslit.Split(' ').Contains(latin, StringComparer.Ordinal))
+            .Where(h => h.MatchedBy == "translit" && h.Entry.FoldedTranslit.Split(' ').Contains(latin, StringComparer.Ordinal))
             .Select(h => ToLemma(h.Entry))];
     }
 
@@ -53,18 +53,21 @@ public sealed class GrammarWordReader : IGrammarWordReader
         var found = new Dictionary<string, LexiconEntry>(StringComparer.Ordinal);
         foreach (var hit in await _lexicon.SearchAsync(token, TranslitPool, ct))
         {
-            if (hit.MatchedBy == "script" && hit.Entry.Lang == "G" && TranslitFolding.FoldScript(hit.Entry.Lemma) == folded) found[hit.Entry.Key] = hit.Entry;
+            if (hit.MatchedBy == "script" && TranslitFolding.FoldScript(hit.Entry.Lemma) == folded) found[hit.Entry.Key] = hit.Entry;
         }
 
         if (await _forms.IsReadyAsync(ct))
         {
-            var forms = (await _forms.MatchAsync(folded, FormPool, ct)).Where(f => f.Folded == folded && f.StrongsKey[0] == 'G').ToList();
+            var forms = (await _forms.MatchAsync(folded, FormPool, ct)).Where(f => f.Folded == folded).ToList();
             var entries = await _lexicon.GetManyAsync(forms.Select(f => f.StrongsKey).Distinct(), ct);
             foreach (var entry in entries.Values) found.TryAdd(entry.Key, entry);
         }
 
         return [.. found.Values.OrderBy(e => e.Key, StringComparer.Ordinal).Select(ToLemma)];
     }
+
+    public async Task<IReadOnlyDictionary<string, string>> ReadHebrewLemmasAsync(IEnumerable<string> baseKeys, CancellationToken ct = default) =>
+        (await _lexicon.GetManyAsync(baseKeys, ct)).ToDictionary(e => e.Key, e => e.Value.Lemma, StringComparer.Ordinal);
 
     private static GrammarLemma ToLemma(LexiconEntry entry) => new(entry.Key, entry.Lemma, entry.Transliteration, entry.Gloss);
 }

@@ -28,7 +28,7 @@ public static class GrammarVocabularyContract
                 Key = v.Id,
                 LabelDe = v.De,
                 LabelEn = v.En,
-                Aliases = [.. v.Aliases ?? []],
+                Aliases = [.. GrammarVocabulary.ListedAliases(v)],
                 Languages = languages,
             })],
         };

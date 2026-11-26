@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarHebrewForm
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=Stamm:nifal Form:InfAbs&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Stamm:nifal Form:InfAbs
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Space-less alias of Infinitivus absolutus; Form:qatal, Form:Weqatal, Status:absolutus work the same.
+}

@@ -12,6 +12,7 @@ public enum GrammarLanguages
     Greek = 1,
     Hebrew = 2,
     Aramaic = 4,
+    HebrewAramaic = Hebrew | Aramaic,
     Original = Greek | Hebrew | Aramaic,
 }
 
@@ -58,7 +59,7 @@ public static class GrammarVocabulary
     public const string LanguageHebrew = "hebrew";
     public const string LanguageAramaic = "aramaic";
 
-    private static GrammarValueDef V(string id, string de, string en) => new(id, de, en);
+    private static GrammarValueDef V(string id, string de, string en, params string[] aliases) => new(id, de, en, aliases.Length == 0 ? null : aliases);
 
     /// <summary>Case, umlaut and ß folded text used to match keys, aliases and values.</summary>
     public static string Fold(string? text)
@@ -71,6 +72,40 @@ public static class GrammarVocabulary
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>Folded text with everything but letters and digits removed (<c>perfekt (qatal)</c> becomes <c>perfektqatal</c>).</summary>
+    private static string Compact(string folded) => string.Concat(folded.Where(char.IsLetterOrDigit));
+
+    /// <summary>
+    /// The folded spellings that select <paramref name="value"/>: its label, its aliases and, for each of them, the form without whitespace
+    /// (<c>futur ii</c> becomes <c>futurii</c>) and the form without any punctuation. A token ends at whitespace, so a multi-word label is reachable only through these.
+    /// </summary>
+    public static IReadOnlyList<string> MatchLabels(GrammarValueDef value)
+    {
+        var result = new List<string>();
+        foreach (var folded in new[] { value.De }.Concat(value.Aliases ?? []).Select(Fold))
+        {
+            foreach (var form in new[] { folded, string.Concat(folded.Where(c => !char.IsWhiteSpace(c))), Compact(folded) })
+            {
+                if (form.Length > 0 && !result.Contains(form)) result.Add(form);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>The aliases the vocabulary lists for <paramref name="value"/>: its own plus the space-less spelling of the label and of every alias that holds whitespace or punctuation.</summary>
+    public static IReadOnlyList<string> ListedAliases(GrammarValueDef value)
+    {
+        var result = new List<string>(value.Aliases ?? []);
+        foreach (var spelling in new[] { value.De }.Concat(value.Aliases ?? []))
+        {
+            var spaceless = string.Concat(spelling.Where(char.IsLetterOrDigit));
+            if (spaceless.Length > 0 && spaceless != spelling && !result.Contains(spaceless, StringComparer.OrdinalIgnoreCase)) result.Add(spaceless);
+        }
+
+        return result;
     }
 
     /// <summary>Switched on by roadmap row 0029.7, when the search can apply German filters.</summary>
@@ -99,7 +134,7 @@ public static class GrammarVocabulary
             [
                 V(MorphologyKey.Present, "Präsens", "Present"), V(MorphologyKey.Imperfect, "Imperfekt", "Imperfect"), V(MorphologyKey.Future, "Futur", "Future"),
                 V(MorphologyKey.Aorist, "Aorist", "Aorist"), V(MorphologyKey.Perfect, "Perfekt", "Perfect"), V(MorphologyKey.Pluperfect, "Plusquamperfekt", "Pluperfect"),
-                V(MorphologyKey.FuturePerfect, "Futur II", "Future perfect"),
+                V(MorphologyKey.FuturePerfect, "Futur II", "Future perfect", "Futur2"),
             ],
         },
         new()
@@ -109,7 +144,7 @@ public static class GrammarVocabulary
             Values =
             [
                 V(MorphologyKey.Active, "Aktiv", "Active"), V(MorphologyKey.Middle, "Medium", "Middle"), V(MorphologyKey.Passive, "Passiv", "Passive"),
-                V(MorphologyKey.MiddleOrPassive, "Medium oder Passiv", "Middle or passive"),
+                V(MorphologyKey.MiddleOrPassive, "Medium oder Passiv", "Middle or passive", "MediumPassiv", "Mediopassiv"),
             ],
         },
         new()
@@ -159,6 +194,47 @@ public static class GrammarVocabulary
             Name = "Steigerung", Kind = GrammarKeyKind.Morphology, Languages = GrammarLanguages.Greek, GermanPrefix = true,
             Selector = k => k.Degree,
             Values = [V(MorphologyKey.Comparative, "Komparativ", "Comparative"), V(MorphologyKey.Superlative, "Superlativ", "Superlative")],
+        },
+        new()
+        {
+            Name = "Stamm", Kind = GrammarKeyKind.Morphology, Languages = GrammarLanguages.HebrewAramaic,
+            Selector = k => k.Stem,
+            Values =
+            [
+                V(MorphologyKey.Qal, "Qal", "Qal"), V(MorphologyKey.Niphal, "Nifal", "Niphal", "niphal"), V(MorphologyKey.Piel, "Piel", "Piel"),
+                V(MorphologyKey.Pual, "Pual", "Pual"), V(MorphologyKey.Hiphil, "Hifil", "Hiphil", "hiphil"), V(MorphologyKey.Hophal, "Hofal", "Hophal", "hophal"),
+                V(MorphologyKey.Hithpael, "Hitpael", "Hithpael", "hithpael"), V(MorphologyKey.Other, "anderer Stamm", "other stem"),
+            ],
+        },
+        new()
+        {
+            Name = "Form", Kind = GrammarKeyKind.Morphology, Languages = GrammarLanguages.HebrewAramaic,
+            Selector = k => k.HebrewForm,
+            Values =
+            [
+                V(MorphologyKey.Perfect, "Perfekt (Qatal)", "perfect (qatal)", "qatal", "Perfekt"),
+                V(MorphologyKey.Imperfect, "Imperfekt (Jiqtol)", "imperfect (yiqtol)", "jiqtol", "yiqtol", "Imperfekt"),
+                V(MorphologyKey.SequentialPerfect, "Weqatal", "sequential perfect (weqatal)"),
+                V(MorphologyKey.SequentialImperfect, "Wajjiqtol", "sequential imperfect (wayyiqtol)", "wayyiqtol", "wajiqtol"),
+                V(MorphologyKey.Cohortative, "Kohortativ", "cohortative", "cohortative"),
+                V(MorphologyKey.Jussive, "Jussiv", "jussive", "jussive"),
+                V(MorphologyKey.Imperative, "Imperativ", "imperative"),
+                V(MorphologyKey.InfinitiveAbsolute, "Infinitivus absolutus", "infinitive absolute", "InfAbs"),
+                V(MorphologyKey.InfinitiveConstruct, "Infinitivus constructus", "infinitive construct", "InfCs", "InfConstr"),
+                V(MorphologyKey.ParticipleActive, "Partizip aktiv", "active participle", "PartAkt", "PartAktiv"),
+                V(MorphologyKey.ParticiplePassive, "Partizip passiv", "passive participle", "PartPass", "PartPassiv"),
+            ],
+        },
+        new()
+        {
+            Name = "Status", Kind = GrammarKeyKind.Morphology, Languages = GrammarLanguages.HebrewAramaic,
+            Selector = k => k.State,
+            Values =
+            [
+                V(MorphologyKey.Absolute, "Status absolutus", "absolute", "absolutus", "absolut"),
+                V(MorphologyKey.Construct, "Status constructus", "construct", "constructus", "konstruktus"),
+                V(MorphologyKey.Determined, "determiniert", "determined", "determined"),
+            ],
         },
         new()
         {

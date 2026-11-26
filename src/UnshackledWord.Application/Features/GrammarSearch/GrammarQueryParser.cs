@@ -10,6 +10,7 @@ public static class GrammarErrorCodes
     public const string EmptyQuery = "emptyQuery";
     public const string UnknownWord = "unknownWord";
     public const string UnknownSlot = "unknownSlot";
+    public const string KeyNotInLanguage = "keyNotInLanguage";
 }
 
 /// <summary>A query that cannot be searched: machine-readable <see cref="Code"/>, the offending <see cref="Token"/> and the valid <see cref="Candidates"/> (when there are any).</summary>
@@ -169,8 +170,7 @@ public static class GrammarQueryParser
         return null;
     }
 
-    private static IEnumerable<string> Labels(GrammarValueDef value) =>
-        new[] { value.De }.Concat(value.Aliases ?? []).Select(GrammarVocabulary.Fold);
+    private static IReadOnlyList<string> Labels(GrammarValueDef value) => GrammarVocabulary.MatchLabels(value);
 
     private static GrammarParseResult Fail(GrammarQueryError error) => new([], error);
 }

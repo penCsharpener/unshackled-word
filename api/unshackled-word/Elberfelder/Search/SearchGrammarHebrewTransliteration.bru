@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarHebrewTransliteration
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=bara Stamm:qal&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: bara Stamm:qal
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Same hits as H1254 Stamm:qal: the word token is read through the transliteration.
+}
