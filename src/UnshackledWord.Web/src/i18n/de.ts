@@ -2687,6 +2687,7 @@ export const de = {
       slots: "So wurde die Suche gelesen",
       anyWord: "beliebiges Wort",
       germanWord: "{{word}} → deutsches Wort",
+      germanMatch: "deutsches Wort",
       or: " oder ",
       germanPrefix: "dt.",
       not: "nicht {{text}}",

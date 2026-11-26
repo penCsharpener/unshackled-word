@@ -2657,6 +2657,7 @@ export const en: Translation = {
       slots: "How the query was read",
       anyWord: "any word",
       germanWord: "{{word}} → German word",
+      germanMatch: "German word",
       or: " or ",
       germanPrefix: "Ger.",
       not: "not {{text}}",

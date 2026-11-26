@@ -28,6 +28,8 @@ export interface GrammarFilter {
 export interface GrammarSlot {
   text: string;
   readAs: GrammarReadAs;
+  /** The German lemma (lower case) of a slot read as `german`. */
+  germanLemma?: string;
   lemmas: GrammarLemma[];
   filters: GrammarFilter[];
 }
@@ -45,9 +47,13 @@ export interface GrammarOriginalWord {
 
 export interface GrammarMatch {
   slot: number;
-  /** Elb1871 positions mapped to the original word; empty when it has no German rendering. */
+  /**
+   * Elb1871 positions of the match: the German words the slot constrains (German lemma or `dt.` filters), otherwise
+   * the words mapped to the original word; empty when the original word has no German rendering.
+   */
   germanPositions: number[];
-  original: GrammarOriginalWord;
+  /** The matched original word; absent when the slot constrains only the German word. */
+  original?: GrammarOriginalWord;
 }
 
 export interface GrammarHit {
@@ -274,6 +280,29 @@ export function formatGrammarFilter(filter: GrammarFilter, t: TFunction): string
   const text = filter.key === "Code" ? `${filter.key} ${values}` : values;
   const german = filter.german ? `${t("search.grammar.germanPrefix")} ${text}` : text;
   return filter.negated ? t("search.grammar.not", { text: german }) : german;
+}
+
+/**
+ * The German word a slot was read as, spelled as typed: the token whose folded form is the slot's German lemma
+ * (also after `dt.Wort:`), else the lemma itself; the first token for servers without `germanLemma`.
+ */
+export function germanReading(slot: Pick<GrammarSlot, "text" | "germanLemma">): string {
+  const tokens = slot.text.split(/\s+/).filter(Boolean);
+  if (!slot.germanLemma) return tokens[0] ?? "";
+  const lemma = foldGrammar(slot.germanLemma);
+  const typed = tokens
+    .map((token) => token.replace(/^(?:dt\.)?Wort:/i, ""))
+    .find((token) => foldGrammar(token) === lemma);
+  return typed ?? slot.germanLemma;
+}
+
+/** "geliebt" for a match that is only a German word: its words in verse order. */
+export function germanMatchText(hit: Pick<GrammarHit, "words">, match: GrammarMatch): string {
+  const positions = new Set(match.germanPositions);
+  return hit.words
+    .filter((word) => positions.has(word.position))
+    .map((word) => word.text)
+    .join(" ");
 }
 
 /** Language of an original word by its Strong's prefix (`G26` → Greek); Aramaic shares the `H` prefix and needs the server's `language`. */

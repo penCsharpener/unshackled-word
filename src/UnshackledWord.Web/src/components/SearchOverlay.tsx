@@ -59,6 +59,8 @@ import {
   type GrammarHit,
   type GrammarProblem,
   type GrammarSlot,
+  germanMatchText,
+  germanReading,
   isGrammarQuery,
   languageOfOriginal,
   languageOfStrongs,
@@ -451,7 +453,7 @@ function GrammarSlotChip({ slot, onNavigate }: { slot: GrammarSlot; onNavigate: 
           </span>
         ))
       : slot.readAs === "german"
-        ? t("search.grammar.germanWord", { word: slot.text.split(/\s+/)[0] })
+        ? t("search.grammar.germanWord", { word: germanReading(slot) })
         : t("search.grammar.anyWord");
   return (
     <li className="inline-flex flex-wrap items-center gap-1 rounded-md border border-border bg-surface-muted px-2 py-1 text-sm">
@@ -533,28 +535,46 @@ function GrammarProblemBlock({
   );
 }
 
-/** Per match: original form, lemma and the decoded grammar in words; "nicht übersetzt" without German words. */
-function GrammarMatchLines({ hit }: { hit: GrammarHit }) {
+/**
+ * Per match: original form, lemma and the decoded grammar in words; "nicht übersetzt" without German words.
+ * A match of a German-only slot shows the German word and the slot's `dt.` filters instead.
+ */
+function GrammarMatchLines({ hit, slots }: { hit: GrammarHit; slots: GrammarSlot[] }) {
   const { t } = useTranslation();
   return (
     <span className="grid gap-0.5 text-sm text-fg-muted">
       {hit.matches.map((match, i) => {
-        const language = languageOfOriginal(match.original);
+        if (!match.original) {
+          const filters = (slots[match.slot]?.filters ?? [])
+            .filter((filter) => filter.german)
+            .map((filter) => formatGrammarFilter(filter, t));
+          return (
+            // Matches keep the server order; the index is the identity.
+            // biome-ignore lint/suspicious/noArrayIndexKey: see above
+            <span key={i} className="block" data-testid="grammar-match">
+              <span className="text-base text-fg">{germanMatchText(hit, match)}</span>
+              {" · "}
+              {[t("search.grammar.germanMatch"), ...filters].join(", ")}
+            </span>
+          );
+        }
+        const original = match.original;
+        const language = languageOfOriginal(original);
         return (
           // Matches keep the server order; the index is the identity.
           // biome-ignore lint/suspicious/noArrayIndexKey: see above
           <span key={i} className="block" data-testid="grammar-match">
             <span className="text-base text-fg">
-              <OriginalText language={language}>{match.original.form}</OriginalText>
+              <OriginalText language={language}>{original.form}</OriginalText>
             </span>
-            {sameWord(match.original.form, match.original.lemma) ? null : (
+            {sameWord(original.form, original.lemma) ? null : (
               <>
                 {" · "}
-                <OriginalText language={language}>{match.original.lemma}</OriginalText>
+                <OriginalText language={language}>{original.lemma}</OriginalText>
               </>
             )}
             {" · "}
-            {formatGrammarWords(match.original.keys, t, match.original.code)}
+            {formatGrammarWords(original.keys, t, original.code)}
             {match.germanPositions.length === 0 ? ` (${t("search.grammar.notTranslated")})` : null}
           </span>
         );
@@ -679,7 +699,7 @@ function GrammarPanel({
           onSelect={(hit) => onOpenHit(hits.indexOf(hit))}
           renderDetails={(_, index) => {
             const hit = grammarHits[index];
-            return hit ? <GrammarMatchLines hit={hit} /> : null;
+            return hit ? <GrammarMatchLines hit={hit} slots={first.slots} /> : null;
           }}
           onLoadMore={() => search.fetchNextPage()}
           hasMore={search.hasNextPage}

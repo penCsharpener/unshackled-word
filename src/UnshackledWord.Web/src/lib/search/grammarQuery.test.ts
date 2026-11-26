@@ -38,6 +38,7 @@ const vocabulary: GrammarVocabulary = {
         value("Perfekt"),
         value("Futur II", ["Futur2", "FuturII"]),
       ],
+      germanValues: [value("Präsens", [], []), value("Präteritum", [], [])],
     },
     {
       name: "Kasus",
@@ -71,6 +72,17 @@ const vocabulary: GrammarVocabulary = {
       kind: "filter",
       freeValue: false,
       values: [value("Qal", [], ["hebrew", "aramaic"])],
+    },
+    {
+      name: "Verbform",
+      aliases: [],
+      germanPrefixAllowed: true,
+      germanOnly: true,
+      languages: [],
+      kind: "filter",
+      freeValue: false,
+      values: [],
+      germanValues: [value("finit", [], []), value("Infinitiv", [], []), value("Partizip", [], [])],
     },
     {
       name: "Strong",
@@ -270,5 +282,43 @@ describe("isGrammarQuery with the vocabulary", () => {
     expect(isGrammarQuery("agape Kasus:nom")).toBe(false);
     registerGrammarVocabulary(vocabulary);
     expect(isGrammarQuery("agape Kasus:nom")).toBe(true);
+  });
+});
+
+describe("dt. keys (roadmap 0029.7f)", () => {
+  it("offers every German key right after dt., German-only keys only there", () => {
+    const keys = suggest("dt.");
+    expect(keys).toContain("dt.Tempus:");
+    expect(keys).toContain("dt.Verbform:");
+    expect(keys).not.toContain("dt.Kasus:");
+    expect(suggest("dt.Verb")).toEqual(["dt.Verbform:"]);
+    expect(suggest("Verb")).toEqual([]);
+    expect(suggest("-dt.Ve")).toEqual(["-dt.Verbform:"]);
+  });
+
+  it("offers the German values after dt.Key:", () => {
+    expect(suggest("Tempus:aor Modus:part dt.Verbform:")).toEqual([
+      "finit",
+      "Infinitiv",
+      "Partizip",
+    ]);
+    expect(suggest("dt.Verbform:fi")).toEqual(["finit"]);
+    expect(suggest("dt.Tempus:prät")).toEqual(["Präteritum"]);
+    expect(suggest("Tempus:prät")).toEqual([]);
+    expect(suggest("Verbform:fi")).toEqual([]);
+  });
+
+  it("keys German values under dt. for a bare value prefix", () => {
+    expect(suggest("dt.fin")).toEqual(["dt.Verbform:finit"]);
+    expect(suggest("fin")).toEqual([]);
+  });
+
+  it("asks for German facets with the dt. key", () => {
+    const input = "agape dt.Verbform:fi";
+    expect(facetRequest(input, at(input), vocabulary)).toEqual({
+      q: "agape dt.Verbform:",
+      slot: 0,
+      key: "dt.Verbform",
+    });
   });
 });

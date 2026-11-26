@@ -4,6 +4,8 @@ import { ApiError } from "@/lib/api";
 import {
   formatGrammarFilter,
   formatGrammarWords,
+  germanMatchText,
+  germanReading,
   isGrammarQuery,
   languageOfOriginal,
   parseGrammarProblem,
@@ -202,5 +204,27 @@ describe("toVerseHit", () => {
       { text: "die", matched: false },
       { text: "Liebe", matched: true },
     ]);
+  });
+});
+
+describe("German side (roadmap 0029.7f)", () => {
+  it("reads the German word as typed, also after dt.Wort:", () => {
+    expect(germanReading({ text: "Liebe dt.Numerus:plural", germanLemma: "liebe" })).toBe("Liebe");
+    expect(germanReading({ text: "dt.Wort:Sohn dt.Numerus:plural", germanLemma: "sohn" })).toBe(
+      "Sohn",
+    );
+    expect(germanReading({ text: "dt.Numerus:plural", germanLemma: "liebe" })).toBe("liebe");
+    expect(germanReading({ text: "Liebe" })).toBe("Liebe");
+  });
+
+  it("names the German words of a German-only match", () => {
+    const hit = {
+      words: [
+        { text: "Gott", position: 1 },
+        { text: "hat", position: 2 },
+        { text: "geliebt", position: 3 },
+      ],
+    };
+    expect(germanMatchText(hit, { slot: 0, germanPositions: [3, 1] })).toBe("Gott geliebt");
   });
 });

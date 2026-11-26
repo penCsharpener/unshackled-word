@@ -17,12 +17,16 @@ export interface GrammarVocabularyKey {
   aliases: string[];
   /** Whether `dt.` may precede the key (and the parser accepts it today). */
   germanPrefixAllowed: boolean;
+  /** The key exists only after `dt.` (`Verbform`, `STTS`, `Wort`); absent in answers of older servers. */
+  germanOnly?: boolean;
   languages: string[];
   /** `filter` limits a word, `word` (`Strong`, `Lemma`) forces how a word token is read. */
   kind: "filter" | "word";
   /** Free text value (`Code`, `Strong`, `Lemma`): no value list. */
   freeValue: boolean;
   values: GrammarVocabularyValue[];
+  /** The values after `dt.` (German tag set: Präteritum, finit …); absent in answers of older servers. */
+  germanValues?: GrammarVocabularyValue[];
 }
 
 export interface GrammarVocabulary {
@@ -56,7 +60,17 @@ export interface QueryToken {
 
 const DEFAULT_GERMAN_PREFIX = "dt.";
 
-/** The key of the vocabulary named `name` (canonical or alias, folded); with `german` only keys that allow `dt.`. */
+/** Whether `key` may stand after `dt.` (`german`) or without it: German-only keys need the prefix. */
+const keyFitsPrefix = (
+  vocabulary: GrammarVocabulary,
+  key: GrammarVocabularyKey,
+  german: boolean,
+) => (german ? vocabulary.germanKeysEnabled && key.germanPrefixAllowed : !key.germanOnly);
+
+/**
+ * The key of the vocabulary named `name` (canonical or alias, folded); with `german` only keys that allow `dt.`,
+ * without it only keys that exist on the original word.
+ */
 export function findVocabularyKey(
   vocabulary: GrammarVocabulary,
   name: string,
@@ -66,10 +80,14 @@ export function findVocabularyKey(
   if (folded === "") return undefined;
   return vocabulary.keys.find(
     (key) =>
-      (!german || (vocabulary.germanKeysEnabled && key.germanPrefixAllowed)) &&
+      keyFitsPrefix(vocabulary, key, german) &&
       [key.name, ...key.aliases].some((n) => foldGrammar(n) === folded),
   );
 }
+
+/** The values of `key` after `dt.` (the German tag set) or without it (the original word). */
+export const keyValues = (key: GrammarVocabularyKey, german: boolean): GrammarVocabularyValue[] =>
+  german ? (key.germanValues ?? []) : key.values;
 
 interface TokenParts {
   negated: boolean;
@@ -181,9 +199,12 @@ function valueRank(value: GrammarVocabularyValue, prefix: string): number {
   return names.some((name) => name.startsWith(prefix)) ? 1 : -1;
 }
 
-/** Values of `key` matching `prefix` (folded), exact matches first, else in vocabulary order. */
-function matchingValues(key: GrammarVocabularyKey, prefix: string): GrammarVocabularyValue[] {
-  return key.values
+/** Values matching `prefix` (folded), exact matches first, else in vocabulary order. */
+function matchingValues(
+  values: GrammarVocabularyValue[],
+  prefix: string,
+): GrammarVocabularyValue[] {
+  return values
     .map((value, index) => ({ value, index, rank: valueRank(value, prefix) }))
     .filter((v) => v.rank >= 0)
     .sort((a, b) => a.rank - b.rank || a.index - b.index)
@@ -191,13 +212,14 @@ function matchingValues(key: GrammarVocabularyKey, prefix: string): GrammarVocab
 }
 
 const keyAllowed = (vocabulary: GrammarVocabulary, key: GrammarVocabularyKey, token: QueryToken) =>
-  (!token.german || (vocabulary.germanKeysEnabled && key.germanPrefixAllowed)) &&
-  !(token.negated && key.kind === "word");
+  keyFitsPrefix(vocabulary, key, token.german) && !(token.negated && key.kind === "word");
 
 /**
  * Suggestions from the vocabulary for the token under the caret (instant, no request):
- * after `Key:` the matching values; for a bare prefix the keys it starts (2+ letters) and, from 3 letters, the values
- * it starts in their keyed form (`aor` → `Tempus:Aorist`). A list whose only entry would not change the text is empty.
+ * after `Key:` the matching values; for a bare prefix the keys it starts (2+ letters, after `dt.` every German key
+ * from the first letter on) and, from 3 letters, the values it starts in their keyed form (`aor` → `Tempus:Aorist`).
+ * After `dt.` the German keys and their German values are offered. A list whose only entry would not change the
+ * text is empty.
  */
 export function vocabularySuggestions(
   input: string,
@@ -210,19 +232,21 @@ export function vocabularySuggestions(
     const key = findVocabularyKey(vocabulary, token.key, token.german);
     if (!key || key.freeValue || key.kind === "word") return [];
     const { start, end, prefix } = token.part;
-    suggestions = matchingValues(key, foldGrammar(prefix)).map((value) => ({
-      kind: "value",
-      insert: valueText(value),
-      start,
-      end,
-      key,
-      value,
-    }));
+    suggestions = matchingValues(keyValues(key, token.german), foldGrammar(prefix)).map(
+      (value) => ({
+        kind: "value",
+        insert: valueText(value),
+        start,
+        end,
+        key,
+        value,
+      }),
+    );
   } else if (token.key === undefined) {
     const prefix = foldGrammar(token.bodyPrefix);
     const end = token.text.includes(":") ? token.start + token.text.indexOf(":") : token.end;
     const keys: GrammarSuggestion[] =
-      prefix.length >= MIN_KEY_PREFIX
+      prefix.length >= (token.german ? 0 : MIN_KEY_PREFIX)
         ? vocabulary.keys
             .filter(
               (key) =>
@@ -242,7 +266,7 @@ export function vocabularySuggestions(
         ? vocabulary.keys
             .filter((key) => keyAllowed(vocabulary, key, token) && !key.freeValue)
             .flatMap((key) =>
-              matchingValues(key, prefix).map((value) => ({
+              matchingValues(keyValues(key, token.german), prefix).map((value) => ({
                 kind: "keyedValue" as const,
                 insert: `${lead}${key.name}:${valueText(value)}`,
                 start: token.start,
@@ -342,13 +366,16 @@ export function facetRequest(
 ): GrammarFacetRequest | null {
   if (!token?.part || token.key === undefined) return null;
   const key = findVocabularyKey(vocabulary, token.key, token.german);
-  if (!key || key.kind !== "filter" || key.freeValue || key.values.length === 0) return null;
+  if (!key || key.kind !== "filter" || key.freeValue || keyValues(key, token.german).length === 0)
+    return null;
   // The slot's own filter on the key is ignored by the server, so the whole value is emptied (`Kasus:nom,a` → `Kasus:`).
   const emptied = input.slice(token.start, token.bodyStart + token.key.length + 1);
   const q = `${input.slice(0, token.start)}${emptied}${input.slice(token.end)}`
     .trim()
     .replace(/\s+/g, " ");
-  return { q, slot: token.slot, key: key.name };
+  // German facets are asked for and answered as `dt.Numerus`.
+  const name = token.german ? `${vocabulary.germanPrefix}${key.name}` : key.name;
+  return { q, slot: token.slot, key: name };
 }
 
 /** Which original languages a key or value is limited to: `greek`, `hebrew`, `aramaic`, or null for all. */
