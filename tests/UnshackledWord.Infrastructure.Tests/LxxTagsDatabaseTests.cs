@@ -10,6 +10,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// <see cref="LxxReadRepository"/> returns tags with their TBESG gloss. One rolled-back transaction per test; the tag tests need the LXX text
 /// (Gen 1:1) and are skipped without it. Skipped without <c>UNSHACKLEDWORD_TEST_POSTGRES</c>.
 /// </summary>
+[Collection("LxxDatabase")]
 public class LxxTagsDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

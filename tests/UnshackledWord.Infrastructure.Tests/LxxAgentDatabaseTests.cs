@@ -16,6 +16,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// language-aware supersede of <see cref="AgentStoreSql.SupersedeOpen"/>, and (only when <c>UNSHACKLEDWORD_LXX_FIXTURE_OUT</c> is set) the export of the
 /// prompt-example fixture. Every write runs in a rolled-back transaction. Skipped without <c>UNSHACKLEDWORD_TEST_POSTGRES</c>.
 /// </summary>
+[Collection("LxxDatabase")]
 public class LxxAgentDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

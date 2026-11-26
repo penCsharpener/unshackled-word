@@ -11,6 +11,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// ids (unnest arrays incl. NULLs) only while <c>LxxVerses</c> is empty. One rolled-back transaction per test; existing rows are never deleted,
 /// so on a database that already holds the LXX text the insert test checks the gate instead. Skipped without <c>UNSHACKLEDWORD_TEST_POSTGRES</c>.
 /// </summary>
+[Collection("LxxDatabase")]
 public class LxxTextDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

@@ -305,7 +305,7 @@ These are background jobs inside the API process; their state is lost if the API
 
 ### LXX (roadmap 0028)
 
-SeedDb downloads the Swete files (about 12 MB, pinned commit `AppSettings:DatabaseSeeding:Swete:Commit`) into `temp/SeedData/Swete/` on first run and imports the text only into an empty `LxxVerses`. The confirmed LXX tags in `assets/seed/lxx/` are applied only while no tag is confirmed; afterwards use the maintainer export ("Wartung") and import ("Importe").
+SeedDb downloads the Swete files (about 12 MB, pinned commit `AppSettings:DatabaseSeeding:Swete:Commit`) into `temp/SeedData/Swete/` on first run and imports the text only into an empty `LxxVerses`. The confirmed LXX tags in `assets/seed/lxx/` are applied only while no tag is confirmed; afterwards use the maintainer export ("Wartung") and import ("Importe"). A STEP re-import renumbers the Hebrew words: SeedDb then deletes the LXX Hebrew links and re-imports them from `assets/seed/lxx/links.csv`, so export the LXX tags before it.
 
 AI tagging runs (mode `lxx-tag`) need a model profile under `AgentMapping:Profiles` and cost money, so estimate first. Set `MaxOutputTokens` to at least 16384, or `MaxVersesPerPackage` to about 10, for this mode.
 

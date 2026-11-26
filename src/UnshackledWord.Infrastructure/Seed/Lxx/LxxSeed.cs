@@ -657,6 +657,15 @@ public static partial class LxxSeed
             WHERE t."Status" = 'confirmed'
             """, null, transaction, cancellationToken: token));
 
+    /// <summary>
+    /// Deletes every <c>LxxHebrewLinks</c> row and returns how many there were. Only for the re-resolve after a STEP import that inserted Hebrew words: the table was
+    /// empty before, so every stored <c>StepHebrewWordId</c> belongs to the old numbering (risk "Hebrew link anchors", 08-risks.md).
+    /// </summary>
+    public static async Task<int> DeleteAllLinksAsync(IDbConnection connection, IDbTransaction transaction, CancellationToken token = default) =>
+        await connection.ExecuteAsync(new CommandDefinition("""
+            DELETE FROM "unshackled-word"."LxxHebrewLinks"
+            """, null, transaction, cancellationToken: token));
+
     private static string Label(long rahlfsRef, string textForm, int position) =>
         $"{rahlfsRef}{(textForm.Length > 0 ? "/" + textForm : string.Empty)}#{position}";
 

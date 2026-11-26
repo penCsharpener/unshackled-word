@@ -9,6 +9,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// proposals already in the dev database are removed inside the transaction first. Skipped without <c>UNSHACKLEDWORD_TEST_POSTGRES</c> or without
 /// LXX words.
 /// </summary>
+[Collection("LxxDatabase")]
 public class LxxNtFormDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";

@@ -163,6 +163,40 @@ public sealed class LxxSeedService
         return await ImportAsync(connection, transaction, layout, mirror: false, progress: null, token);
     }
 
+    /// <summary>
+    /// SeedDb, after a STEP import that inserted Hebrew words (it inserts only into an empty <c>StepHebrewWords</c>, so every id is new): the stored links point to
+    /// the old numbering. Deletes them all and re-resolves the links of the seed files by their Hebrew <c>SourceKey</c> (tags are not touched; they do not depend on
+    /// STEP). Links confirmed after the last export are lost; export before a STEP re-import. Null when there was no link (a fresh database).
+    /// </summary>
+    public async Task<SeedStepReport?> RelinkAfterStepImportAsync(IDbConnection connection, IDbTransaction transaction, SeedLayout layout, CancellationToken token)
+    {
+        var stale = await LxxSeed.DeleteAllLinksAsync(connection, transaction, token);
+        if (stale == 0)
+        {
+            return null;
+        }
+
+        var files = await ReadFilesAsync(layout, token);
+        var report = files is null
+            ? SeedStepReport.Skip(LxxSeed.Kind, "import", SeedSkipReason.NoSeed)
+            : await LxxSeed.ImportAsync(connection, transaction, [], files.Value.Links, mirror: false, progress: null, token);
+        _logger.LogWarning("STEP Hebrew words were re-imported: deleted {Stale} stale LXX Hebrew links and re-resolved the links of the seed files", stale);
+
+        return report.WithCount("staleLinksDeleted", stale);
+    }
+
+    public async Task<SeedStepReport?> RelinkAfterStepImportAsync(CancellationToken token)
+    {
+        using var connection = await _factory.CreateDbConnectionAsync(token);
+        using var transaction = connection.BeginTransaction();
+
+        var report = await RelinkAfterStepImportAsync(connection, transaction, CreateRepoLayout(), token);
+
+        transaction.Commit();
+
+        return report;
+    }
+
     public async Task<SeedStepReport> ApplyInitialSeedAsync(CancellationToken token)
     {
         using var connection = await _factory.CreateDbConnectionAsync(token);

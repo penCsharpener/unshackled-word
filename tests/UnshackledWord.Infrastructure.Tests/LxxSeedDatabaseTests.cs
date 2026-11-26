@@ -20,6 +20,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// the files lack but keeps proposals, audit <c>import</c> without user) and the one-time apply of SeedDb. Every test runs in one rolled-back transaction and writes
 /// its files to a temp folder, never to <c>assets/seed</c>. Skipped without <c>UNSHACKLEDWORD_TEST_POSTGRES</c> or without the LXX text.
 /// </summary>
+[Collection("LxxDatabase")]
 public partial class LxxSeedDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";
@@ -328,6 +329,34 @@ public partial class LxxSeedDatabaseTests
             var applied = await f.Service.ApplyInitialSeedAsync(f.C, f.T, f.Layout, Token);
             applied.Skipped.ShouldBeFalse();
             (await TagsAsync(f, "confirmed")).Count.ShouldBe(3);
+        });
+    }
+
+    [Fact]
+    public async Task RelinkAfterStepImport_ReplacesStaleLinksWithTheFilesLinks_AndKeepsTags()
+    {
+        await WithRuthAsync(async f =>
+        {
+            await CurateAsync(f);
+            await f.Service.ExportAsync(f.C, f.T, f.Layout, null, Token);
+
+            // after a STEP re-import the stored ids point to the old numbering: a link the files lack stands for such a stale row
+            await SetLinkAsync(f, 2, 4);
+            var tagsBefore = await TagsAsync(f);
+
+            var report = await f.Service.RelinkAfterStepImportAsync(f.C, f.T, f.Layout, Token);
+
+            report.ShouldNotBeNull();
+            report.Counts["staleLinksDeleted"].ShouldBeGreaterThanOrEqualTo(5);
+            report.Counts["inserted"].ShouldBe(3);
+            (await LinksAsync(f)).Select(l => (l.LxxWordId, l.StepHebrewWordId, l.Status)).ShouldBe([
+                (f.Words[0], f.Hebrew[0], "confirmed"), (f.Words[0], f.Hebrew[1], "confirmed"), (f.Words[1], f.Hebrew[2], "confirmed"),
+            ], ignoreOrder: true);
+            (await TagsAsync(f)).ShouldBe(tagsBefore);
+
+            // without any link (a fresh database) there is nothing to re-resolve
+            await f.C.ExecuteAsync("""DELETE FROM "unshackled-word"."LxxHebrewLinks" """, transaction: f.T);
+            (await f.Service.RelinkAfterStepImportAsync(f.C, f.T, f.Layout, Token)).ShouldBeNull();
         });
     }
 

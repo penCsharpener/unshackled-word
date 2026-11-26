@@ -15,6 +15,7 @@ namespace UnshackledWord.Infrastructure.Tests;
 /// discard, "sichere" confirm, stale and conflict. Everything runs in one rolled-back transaction per test; nothing stays in the database. Skipped without
 /// <c>UNSHACKLEDWORD_TEST_POSTGRES</c> or without the LXX text.
 /// </summary>
+[Collection("LxxDatabase")]
 public class LxxReviewDatabaseTests
 {
     private const string EnvVar = "UNSHACKLEDWORD_TEST_POSTGRES";
