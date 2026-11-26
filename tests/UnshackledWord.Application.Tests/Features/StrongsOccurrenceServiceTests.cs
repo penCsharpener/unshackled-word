@@ -1,5 +1,7 @@
+using UnshackledWord.Application.Features.GrammarSearch;
 using UnshackledWord.Application.Features.StrongsOccurrences;
 using UnshackledWord.Application.Repositories;
+using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Domain.Models.Study;
 using UnshackledWord.Domain.WebApi.Elberfelder.GetStrongsOccurrences;
 
@@ -15,7 +17,45 @@ public class StrongsOccurrenceServiceTests
 
     public StrongsOccurrenceServiceTests()
     {
-        _sut = new StrongsOccurrenceService(_lexicon, _stats);
+        var index = Substitute.For<IMorphologyCodeIndex>();
+        index.GetGreekAsync(Arg.Any<CancellationToken>()).Returns(new[] { "N-NSF", "N-ASF" }.Select(c => new MorphologyCodeEntry(c, GreekMorphologyDecoder.Decode(c))).ToList());
+        index.GetHebrewAsync(Arg.Any<CancellationToken>()).Returns(new[] { "HVqp3ms", "HVNp3ms" }.Select(c =>
+        {
+            var decoded = HebrewMorphologyDecoder.Decode(c);
+            return new MorphologyCodeEntry(c, decoded.Root, decoded.IsAramaic);
+        }).ToList());
+        _sut = new StrongsOccurrenceService(_lexicon, _stats, new GrammarFilterResolver(index));
+    }
+
+    [Fact]
+    public async Task GetAsync_WithGrammar_PassesTheResolvedCodesToCountAndPage()
+    {
+        _stats.CountOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), false, Arg.Any<StrongsOccurrenceFilter>()).Returns(1);
+        _stats.GetOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), false, Arg.Any<StrongsOccurrenceFilter>(), 0, 50).Returns([new StrongsOccurrenceRow()]);
+
+        var result = await _sut.GetAsync("G26", 1, 50, new StrongsOccurrenceFilter(Book: 43), "Kasus:nom", CancellationToken.None);
+
+        result.Error.ShouldBeNull();
+        result.Response!.TotalItems.ShouldBe(1);
+        await _stats.Received().CountOccurrencesAsync(Arg.Any<IReadOnlyList<string>>(), false, Arg.Is<StrongsOccurrenceFilter>(f => f.Book == 43 && f.Codes != null && f.Codes.SequenceEqual(new[] { "N-NSF" })));
+    }
+
+    [Fact]
+    public async Task GetAsync_WithGrammarOfTheOtherLanguage_IsKeyNotInLanguage()
+    {
+        var result = await _sut.GetAsync("G26", 1, 50, StrongsOccurrenceFilter.None, "Stamm:qal", CancellationToken.None);
+
+        result.Response.ShouldBeNull();
+        result.Error!.Code.ShouldBe(GrammarErrorCodes.KeyNotInLanguage);
+        await _stats.DidNotReceiveWithAnyArgs().CountOccurrencesAsync(default!, default, default!);
+    }
+
+    [Fact]
+    public async Task GetAsync_WithGrammar_RejectsWordAndGermanTokens()
+    {
+        (await _sut.GetAsync("G26", 1, 50, StrongsOccurrenceFilter.None, "agape Kasus:nom", CancellationToken.None)).Error!.Code.ShouldBe(GrammarErrorCodes.UnknownKey);
+        (await _sut.GetAsync("G26", 1, 50, StrongsOccurrenceFilter.None, "dt.Kasus:nom", CancellationToken.None)).Error!.Code.ShouldBe(GrammarErrorCodes.UnknownKey);
+        (await _sut.GetAsync("G26", 1, 50, StrongsOccurrenceFilter.None, "Kasus:xyz", CancellationToken.None)).Error!.Code.ShouldBe(GrammarErrorCodes.UnknownValue);
     }
 
     private static bool Same(IReadOnlyList<string> actual, params string[] expected)

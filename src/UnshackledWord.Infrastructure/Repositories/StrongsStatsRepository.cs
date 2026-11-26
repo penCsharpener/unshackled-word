@@ -501,6 +501,7 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                 WHERE 1=1
                                     AND sgw."DisambiguatedStrongs" = ANY(@Keys)
                                     AND (@Book::int IS NULL OR COALESCE(vm."HebRefId", sgw."LxxRefId") / 1000000 = @Book::int)
+                                    AND (@Codes::text[] IS NULL OR sgw."Morphology" = ANY(@Codes))
                                     AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                              FROM "unshackled-word"."Elb1871GreekMapping" egm
                                                                                  JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
@@ -524,6 +525,7 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                  WHERE 1=1
                                      AND split_part(shw."RootDisambiguatedStrongsInstance", '_', 1) = ANY(@Keys)
                                      AND (@Book::int IS NULL OR COALESCE(vm."HebRefId", shw."LxxRefId") / 1000000 = @Book::int)
+                                    AND (@Codes::text[] IS NULL OR shw."Grammar" = ANY(@Codes))
                                      AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                               FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                                                                   JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
@@ -534,7 +536,7 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                                                                   AND (LOWER(m."Lemma") = LOWER(@Rendering::text) OR LOWER(ew."PlainWord") = LOWER(@Rendering::text))))
                                  """;
 
-        return await _dbReader.ExecuteScalarAsync<int>(hebrew ? hebrewSql : greekSql, new { Keys = keys.ToArray(), filter.Book, filter.Rendering });
+        return await _dbReader.ExecuteScalarAsync<int>(hebrew ? hebrewSql : greekSql, new { Keys = keys.ToArray(), filter.Book, filter.Rendering, Codes = filter.Codes?.ToArray() });
     }
 
     public async Task<IReadOnlyList<StrongsOccurrenceRow>> GetOccurrencesAsync(IReadOnlyList<string> keys, bool hebrew, StrongsOccurrenceFilter filter, int skip, int take, CancellationToken token = default)
@@ -556,6 +558,7 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                     WHERE 1=1
                                         AND sgw."DisambiguatedStrongs" = ANY(@Keys)
                                         AND (@Book::int IS NULL OR COALESCE(vm."HebRefId", sgw."LxxRefId") / 1000000 = @Book::int)
+                                        AND (@Codes::text[] IS NULL OR sgw."Morphology" = ANY(@Codes))
                                         AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                                  FROM "unshackled-word"."Elb1871GreekMapping" egm
                                                                                      JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = egm."ElbWordId"
@@ -622,6 +625,7 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                      WHERE 1=1
                                          AND split_part(shw."RootDisambiguatedStrongsInstance", '_', 1) = ANY(@Keys)
                                          AND (@Book::int IS NULL OR COALESCE(vm."HebRefId", shw."LxxRefId") / 1000000 = @Book::int)
+                                        AND (@Codes::text[] IS NULL OR shw."Grammar" = ANY(@Codes))
                                          AND (@Rendering::text IS NULL OR EXISTS (SELECT 1
                                                                                   FROM "unshackled-word"."Elb1871HebrewMapping" ehm
                                                                                       JOIN "unshackled-word"."Elb1871Words" ew ON ew."Id" = ehm."ElbWordId"
@@ -671,7 +675,7 @@ public sealed class StrongsStatsRepository : IStrongsStatsRepository
                                  ORDER BY page."LxxRefId", page."PositionInVerse", page."Id"
                                  """;
 
-        var rows = await _dbReader.ReadAsListAsync<StrongsOccurrenceRow>(hebrew ? hebrewSql : greekSql, new { Keys = keys.ToArray(), filter.Book, filter.Rendering, Skip = skip, Take = take });
+        var rows = await _dbReader.ReadAsListAsync<StrongsOccurrenceRow>(hebrew ? hebrewSql : greekSql, new { Keys = keys.ToArray(), filter.Book, filter.Rendering, Codes = filter.Codes?.ToArray(), Skip = skip, Take = take });
         return rows.ToList();
     }
 }

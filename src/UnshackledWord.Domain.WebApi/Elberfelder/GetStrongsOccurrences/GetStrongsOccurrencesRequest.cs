@@ -17,4 +17,7 @@ public sealed class GetStrongsOccurrencesRequest
 
     /// <summary>Optional German word key (a <c>key</c> of the Strong's summary renderings), compared lower-cased.</summary>
     public string? Rendering { get; set; }
+
+    /// <summary>Optional grammar filter tokens (roadmap 0029.8), e.g. <c>Kasus:nom</c>: one slot bound to this Strong's number; no word tokens, no <c>dt.</c> filters.</summary>
+    public string? Grammar { get; set; }
 }

@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Features.GrammarSearch;
 using UnshackledWord.Application.Features.StrongsStats;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Study;
@@ -10,17 +11,30 @@ public sealed class StrongsOccurrenceService : IStrongsOccurrenceService
     private readonly IStrongsLexiconRepository _lexicon;
     private readonly IStrongsStatsRepository _stats;
 
-    public StrongsOccurrenceService(IStrongsLexiconRepository lexicon, IStrongsStatsRepository stats)
+    private readonly GrammarFilterResolver _resolver;
+
+    public StrongsOccurrenceService(IStrongsLexiconRepository lexicon, IStrongsStatsRepository stats, GrammarFilterResolver resolver)
     {
         _lexicon = lexicon;
         _stats = stats;
+        _resolver = resolver;
     }
 
-    public async Task<GetStrongsOccurrencesResponse?> GetAsync(string strongs, int page, int pageSize, StrongsOccurrenceFilter filter, CancellationToken token = default)
+    public async Task<GetStrongsOccurrencesResponse?> GetAsync(string strongs, int page, int pageSize, StrongsOccurrenceFilter filter, CancellationToken token = default) =>
+        (await GetAsync(strongs, page, pageSize, filter, null, token)).Response;
+
+    public async Task<GrammarOutcome<GetStrongsOccurrencesResponse>> GetAsync(string strongs, int page, int pageSize, StrongsOccurrenceFilter filter, string? grammar, CancellationToken token = default)
     {
         if (!StrongsNumber.TryNormalize(strongs, out var normalized, out var hebrew) || page < 1 || pageSize < 1)
         {
-            return null;
+            return new();
+        }
+
+        if (!string.IsNullOrWhiteSpace(grammar))
+        {
+            var codes = await ResolveCodesAsync(grammar, hebrew, token);
+            if (codes.Error is not null) return new() { Error = codes.Error };
+            filter = filter with { Codes = codes.Codes };
         }
 
         var parsed = StrongsNumber.Parse(normalized).Value!.Value;
@@ -32,16 +46,40 @@ public sealed class StrongsOccurrenceService : IStrongsOccurrenceService
             ? []
             : await _stats.GetOccurrencesAsync(keys, hebrew, filter, (page - 1) * pageSize, pageSize, token);
 
-        return new GetStrongsOccurrencesResponse
+        return new()
         {
-            Strongs = normalized,
-            Language = hebrew ? "hebrew" : "greek",
-            Page = page,
-            PageSize = pageSize,
-            TotalItems = total,
-            TotalPages = (int)Math.Ceiling((double)total / pageSize),
-            Items = rows.Select(ToResponse).ToList()
+            Response = new GetStrongsOccurrencesResponse
+            {
+                Strongs = normalized,
+                Language = hebrew ? "hebrew" : "greek",
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = total,
+                TotalPages = (int)Math.Ceiling((double)total / pageSize),
+                Items = rows.Select(ToResponse).ToList()
+            }
         };
+    }
+
+    /// <summary>
+    /// The <c>grammar</c> parameter (roadmap 0029.8): filter tokens only, read as one slot bound to the Strong's number, resolved to the code set of its language.
+    /// A word token or a <c>dt.</c> filter is rejected; a key the language does not have is <c>keyNotInLanguage</c>.
+    /// </summary>
+    private async Task<(IReadOnlyList<string>? Codes, GrammarQueryError? Error)> ResolveCodesAsync(string grammar, bool hebrew, CancellationToken token)
+    {
+        var parsed = GrammarQueryParser.Parse(grammar);
+        if (parsed.Error is not null) return (null, parsed.Error);
+
+        var word = parsed.Slots.FirstOrDefault(s => s.Word is not null);
+        if (word is not null) return (null, new GrammarQueryError(GrammarErrorCodes.UnknownKey, word.Text, GrammarVocabulary.KeyNames(false)));
+
+        var filters = parsed.Slots.SelectMany(s => s.Filters).ToList();
+        if (filters.FirstOrDefault(f => f.German) is { } german) return (null, new GrammarQueryError(GrammarErrorCodes.UnknownKey, german.Text, GrammarVocabulary.KeyNames(false)));
+
+        if (GrammarSearchService.CheckKeysExist(filters, true, !hebrew, hebrew) is { } keyError) return (null, keyError);
+
+        var codes = hebrew ? await _resolver.ResolveHebrewAsync(filters, token) : await _resolver.ResolveGreekAsync(filters, token);
+        return (codes, null);
     }
 
     public static StrongsOccurrenceResponse ToResponse(StrongsOccurrenceRow row)

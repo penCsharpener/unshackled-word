@@ -54,7 +54,7 @@ public sealed class GrammarSearchService : IGrammarSearchService
     private static bool FitsHebrew(IReadOnlyList<GrammarFilter> filters) => filters.All(f => AppliesToHebrew(f.Key));
 
     /// <summary>A slot with an original lemma whose filters do not all exist in at least one language of that lemma is an error (<c>G26 Stamm:qal</c>); without a lemma such a slot just has no hit in that language.</summary>
-    private static GrammarQueryError? CheckKeysExist(IReadOnlyList<GrammarFilter> filters, bool hasLemma, bool greek, bool hebrew)
+    internal static GrammarQueryError? CheckKeysExist(IReadOnlyList<GrammarFilter> filters, bool hasLemma, bool greek, bool hebrew)
     {
         if (!hasLemma || filters.Count == 0 || (greek && FitsGreek(filters)) || (hebrew && FitsHebrew(filters))) return null;
 
