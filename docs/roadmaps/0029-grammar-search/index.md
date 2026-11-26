@@ -25,3 +25,5 @@ Implementation started 2026-11-26 on `feature/morphology-search`. Numbering cont
 - `Code:` without `*` is an exact match; `books` counts verses; `original.form` is the printed Greek (may carry punctuation).
 - `dt.` keys are typed but disabled (`GermanKeysEnabled = false`) until 0029.7.
 - Open: two Application test failures in the agent-prompt tests (`AgentPromptProviderTests`, `AgentPromptExampleTests`) are outside this change and not yet investigated.
+
+**0029.2 (chapter matches and neighbours, backend) done, 0.14.1.** `chapter/40/24?q=agape Kasus:nom` → verse 12, position 9, ~30 ms warm; `neighbours` for Matt 24 → no previous, next John 17. Decisions: `total` counts matched original words in the chapter; in a hit verse every candidate word of every slot is marked (the distinct-word rule only decides whether the verse is a hit); `originalWordIds` are `StepGreekWords.Id` as used by `OriginalVerse`. Frontend row 0029.2f open.

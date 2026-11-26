@@ -31,13 +31,7 @@ public class Endpoint : Endpoint<SearchGrammarRequest>
         var result = await _service.SearchAsync(req.Q, req.Page, req.Book, ct);
         if (result.Error is { } error)
         {
-            var problem = new GrammarSearchProblem
-            {
-                Code = error.Code,
-                Token = error.Token,
-                Candidates = error.Candidates is null ? null : [.. error.Candidates],
-            };
-            await Send.ResponseAsync(problem, 400, ct);
+            await Send.ResponseAsync(GrammarProblemMapper.ToProblem(error), 400, ct);
             return;
         }
 

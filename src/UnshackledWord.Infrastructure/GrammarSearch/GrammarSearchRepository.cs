@@ -27,8 +27,11 @@ public sealed class GrammarSearchRepository : IGrammarSearchRepository
         _dbReader = dbReader;
     }
 
-    /// <summary>The WITH clause (verse map, slot CTEs, <c>cand</c>) and its parameters; <paramref name="restrictToVerses"/> adds <c>@VerseIds</c>.</summary>
-    internal static string BuildWith(IReadOnlyList<GrammarSlotQuery> slots, bool restrictToVerses, DynamicParameters parameters)
+    private const string VerseIdCondition = "= ANY(@VerseIds)";
+    private const string VerseRangeCondition = "BETWEEN @From AND @To";
+
+    /// <summary>The WITH clause (verse map, slot CTEs, <c>cand</c>) and its parameters; <paramref name="verseCondition"/> (one of the constants above, null = none) restricts the verses and needs its parameters.</summary>
+    internal static string BuildWith(IReadOnlyList<GrammarSlotQuery> slots, string? verseCondition, DynamicParameters parameters)
     {
         var ctes = new List<string> { VerseMapCte };
         for (var i = 0; i < slots.Count; i++)
@@ -46,7 +49,7 @@ public sealed class GrammarSearchRepository : IGrammarSearchRepository
                 parameters.Add($"Strongs{i}", keys.ToArray());
             }
 
-            if (restrictToVerses) conditions.Add("AND COALESCE(vm.\"HebRefId\", w.\"LxxRefId\") = ANY(@VerseIds)");
+            if (verseCondition is not null) conditions.Add($"AND COALESCE(vm.\"HebRefId\", w.\"LxxRefId\") {verseCondition}");
 
             ctes.Add($"""
                 s{i} AS (
@@ -73,7 +76,7 @@ public sealed class GrammarSearchRepository : IGrammarSearchRepository
     {
         var parameters = new DynamicParameters();
         parameters.Add("SlotCount", slots.Count);
-        var sql = BuildWith(slots, false, parameters) + """
+        var sql = BuildWith(slots, null, parameters) + """
 
             SELECT c."HebRefId"                             AS "HebRefId"
                  , (count(*) > count(DISTINCT c."WordId"))  AS "Shared"
@@ -90,7 +93,20 @@ public sealed class GrammarSearchRepository : IGrammarSearchRepository
     {
         var parameters = new DynamicParameters();
         parameters.Add("VerseIds", hebRefIds.ToArray());
-        var sql = BuildWith(slots, true, parameters) + """
+        return await ReadMatchesAsync(slots, VerseIdCondition, parameters);
+    }
+
+    public async Task<IReadOnlyList<GrammarMatchRow>> ReadMatchesInRangeAsync(IReadOnlyList<GrammarSlotQuery> slots, int fromHebRefId, int toHebRefId, CancellationToken token = default)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("From", fromHebRefId);
+        parameters.Add("To", toHebRefId);
+        return await ReadMatchesAsync(slots, VerseRangeCondition, parameters);
+    }
+
+    private async Task<IReadOnlyList<GrammarMatchRow>> ReadMatchesAsync(IReadOnlyList<GrammarSlotQuery> slots, string verseCondition, DynamicParameters parameters)
+    {
+        var sql = BuildWith(slots, verseCondition, parameters) + """
 
             SELECT c."Slot"                 AS "Slot"
                  , c."HebRefId"             AS "HebRefId"
@@ -106,6 +122,31 @@ public sealed class GrammarSearchRepository : IGrammarSearchRepository
             """;
 
         return [.. await _dbReader.ReadAsListAsync<GrammarMatchRow>(sql, parameters)];
+    }
+
+    public async Task<IReadOnlyList<GrammarVerseRow>> FindVersesNearAsync(IReadOnlyList<GrammarSlotQuery> slots, int boundaryHebRefId, bool before, int limit, CancellationToken token = default)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("SlotCount", slots.Count);
+        parameters.Add("Boundary", boundaryHebRefId);
+        parameters.Add("Limit", limit);
+        var comparison = before ? "<" : ">";
+        var direction = before ? "DESC" : "ASC";
+        var sql = BuildWith(slots, null, parameters) + $"""
+
+            SELECT c."HebRefId"                             AS "HebRefId"
+                 , (count(*) > count(DISTINCT c."WordId"))  AS "Shared"
+                 , count(DISTINCT c."WordId")::int          AS "Words"
+            FROM cand c
+            WHERE 1=1
+                AND c."HebRefId" {comparison} @Boundary
+            GROUP BY c."HebRefId"
+            HAVING count(DISTINCT c."Slot") = @SlotCount
+            ORDER BY c."HebRefId" {direction}
+            LIMIT @Limit
+            """;
+
+        return [.. await _dbReader.ReadAsListAsync<GrammarVerseRow>(sql, parameters)];
     }
 
     public async Task<IReadOnlyList<GrammarGermanWordRow>> ReadGermanWordsAsync(IReadOnlyList<int> hebRefIds, CancellationToken token = default)

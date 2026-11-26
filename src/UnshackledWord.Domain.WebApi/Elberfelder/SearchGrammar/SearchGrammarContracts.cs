@@ -131,6 +131,62 @@ public sealed class GrammarOriginalWord
     public Dictionary<string, string> Keys { get; set; } = [];
 }
 
+/// <summary><c>GET api/elberfelder/search/grammar/chapter/{bibleBookId}/{chapter}?q=</c> (roadmap 0029.2): the hits of a query in one chapter. A query of words only is valid.</summary>
+public sealed class SearchGrammarChapterRequest
+{
+    public int BibleBookId { get; set; }
+
+    public int Chapter { get; set; }
+
+    public string Q { get; set; } = string.Empty;
+}
+
+public sealed class SearchGrammarChapterResponse
+{
+    /// <summary>Hit verses of the chapter in verse order.</summary>
+    public List<GrammarChapterVerse> Verses { get; set; } = [];
+
+    /// <summary>Matched original words in the chapter.</summary>
+    public int Total { get; set; }
+}
+
+public sealed class GrammarChapterVerse
+{
+    public int Verse { get; set; }
+
+    /// <summary>Elb1871 word positions mapped to the matched original words, ascending.</summary>
+    public List<int> GermanPositions { get; set; } = [];
+
+    /// <summary>Ids of the matched original words (<c>StepGreekWords.Id</c>, the <c>id</c> of the words in the chapter originals), ascending.</summary>
+    public List<int> OriginalWordIds { get; set; } = [];
+}
+
+/// <summary><c>GET api/elberfelder/search/grammar/neighbours?q=&amp;bibleBookId=&amp;chapter=</c> (roadmap 0029.2).</summary>
+public sealed class SearchGrammarNeighboursRequest
+{
+    public string Q { get; set; } = string.Empty;
+
+    public int BibleBookId { get; set; }
+
+    public int Chapter { get; set; }
+}
+
+public sealed class SearchGrammarNeighboursResponse
+{
+    /// <summary>The nearest chapter before with a hit; omitted when there is none.</summary>
+    public GrammarChapterRef? Previous { get; set; }
+
+    /// <summary>The nearest chapter after with a hit; omitted when there is none.</summary>
+    public GrammarChapterRef? Next { get; set; }
+}
+
+public sealed class GrammarChapterRef
+{
+    public int BibleBookId { get; set; }
+
+    public int Chapter { get; set; }
+}
+
 /// <summary>400 body of a query that cannot be searched; the frontend marks <c>token</c> and offers <c>candidates</c>.</summary>
 public sealed class GrammarSearchProblem
 {

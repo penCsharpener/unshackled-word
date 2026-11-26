@@ -86,6 +86,36 @@ public class GrammarSearchRepositoryDatabaseTests
         german.Single(g => g.PositionInVerse == mapped.Single().PositionInVerse).WordInContext.ShouldBe("Liebe");
     });
 
+    [Fact]
+    public async Task ChapterRange_ReturnsOnlyTheWordsOfThatChapter() => await WithDatabaseAsync(async (repository, index) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+
+        var matches = await repository.ReadMatchesInRangeAsync([Slot("G26", index, "G0026")], 40_024_000, 40_024_999, token);
+
+        matches.ShouldNotBeEmpty();
+        matches.ShouldAllBe(m => m.HebRefId / 1000 == 40_024);
+        matches.ShouldContain(m => m.HebRefId == Matt2412);
+
+        var nominatives = await repository.ReadMatchesInRangeAsync([Slot("Kasus:nom", index, "G0026")], 40_024_000, 40_024_999, token);
+        nominatives.ShouldHaveSingleItem().HebRefId.ShouldBe(Matt2412);
+    });
+
+    [Fact]
+    public async Task NearVerses_AreOrderedAwayFromTheBoundary() => await WithDatabaseAsync(async (repository, index) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+        var slots = new[] { Slot("Kasus:nom", index, "G0026") };
+
+        var before = await repository.FindVersesNearAsync(slots, 40_024_000, true, 3, token);
+        var after = await repository.FindVersesNearAsync(slots, 40_024_999, false, 3, token);
+
+        before.ShouldBeEmpty();
+        after.Count.ShouldBe(3);
+        after.Select(v => v.HebRefId).ShouldBe([.. after.Select(v => v.HebRefId).Order()]);
+        after.ShouldAllBe(v => v.HebRefId > 40_024_999);
+    });
+
     private sealed class ConnectionDbReader(IDbConnection connection) : IDbReader
     {
         public Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object? param = null) => connection.QueryFirstOrDefaultAsync<T>(sql, param);
