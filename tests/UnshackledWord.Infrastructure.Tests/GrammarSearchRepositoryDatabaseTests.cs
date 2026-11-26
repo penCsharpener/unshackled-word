@@ -198,6 +198,122 @@ public class GrammarSearchRepositoryDatabaseTests
         facet.Values.First().Count.ShouldBe(39);
     });
 
+    // Roadmap 0029.7: German-only and mixed slots.
+
+    private static GrammarSlotQuery GermanSlot(string? lemma, params GrammarGermanFilter[] filters) => new(null, null, new GrammarGermanSide(lemma, filters));
+
+    private static GrammarSlotQuery MixedSlot(string query, IReadOnlyList<MorphologyCodeEntry> index, params GrammarGermanFilter[] filters) =>
+        Slot(query, index, null) with { German = new GrammarGermanSide(null, filters) };
+
+    [Fact]
+    public async Task German_LemmaAlone_CountsTheWordsWithThatLemma() => await WithDatabaseAsync(async (repository, _) =>
+    {
+        var verses = await repository.FindVersesAsync([GermanSlot("liebe")], TestContext.Current.CancellationToken);
+
+        verses.Sum(v => v.Words).ShouldBe(184);
+        verses.Count.ShouldBe(172);
+        verses.ShouldAllBe(v => !v.Shared);
+    });
+
+    [Fact]
+    public async Task German_LemmaWithNumber_OnlyTheMatchingForms() => await WithDatabaseAsync(async (repository, _) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+        var plural = await repository.FindVersesAsync([GermanSlot("sohn", new GrammarGermanFilter("Number", ["P"], false))], token);
+        var notPlural = await repository.FindVersesAsync([GermanSlot("sohn", new GrammarGermanFilter("Number", ["P"], true))], token);
+
+        plural.Sum(v => v.Words).ShouldBe(1234);
+        notPlural.Sum(v => v.Words).ShouldBeGreaterThan(1000);
+
+        var matches = await repository.ReadMatchesAsync([GermanSlot("sohn", new GrammarGermanFilter("Number", ["P"], false))], [1_005_004], token);
+        var row = matches.ShouldHaveSingleItem();
+        row.IsGerman.ShouldBeTrue();
+        row.GermanPosition.ShouldBe(16);
+        row.Position.ShouldBe(16);
+        row.Form.ShouldBe("Söhne");
+    });
+
+    [Fact]
+    public async Task German_PartOfSpeechWithTwoStoredTags_AndSttsPattern() => await WithDatabaseAsync(async (repository, _) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+        var conjunctions = await repository.FindVersesAsync([GermanSlot(null, new GrammarGermanFilter("PartOfSpeech", ["CCONJ", "SCONJ"], false))], token);
+        var participles = await repository.FindVersesAsync([GermanSlot(null, new GrammarGermanFilter("Stts", ["VVPP"], false, Pattern: true))], token);
+        var verbs = await repository.FindVersesAsync([GermanSlot(null, new GrammarGermanFilter("Stts", ["VV%"], false, Pattern: true), new GrammarGermanFilter("VerbForm", ["Fin"], true))], token);
+
+        conjunctions.Sum(v => v.Words).ShouldBe(78456);
+        participles.Sum(v => v.Words).ShouldBe(17265);
+        verbs.Sum(v => v.Words).ShouldBeGreaterThan(30000);
+    });
+
+    [Fact]
+    public async Task Mixed_GreekAoristParticipleRenderedByAFiniteVerb() => await WithDatabaseAsync(async (repository, index) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+        var slot = MixedSlot("Tempus:aor Modus:partizip", index, new GrammarGermanFilter("VerbForm", ["Fin"], false));
+
+        var verses = await repository.FindVersesAsync([slot], token);
+
+        verses.Sum(v => v.Words).ShouldBe(1478);
+        verses.Count.ShouldBe(1247);
+        verses.ShouldAllBe(v => !v.Shared);
+
+        var matches = await repository.ReadMatchesAsync([slot], [40_001_020], token);
+        var row = matches.ShouldHaveSingleItem();
+        row.IsGerman.ShouldBeFalse();
+        row.Strongs.ShouldBe("G1760");
+        row.GermanPosition.ShouldBe(7);
+    });
+
+    [Fact]
+    public async Task Mixed_GermanLemmaOfAnOriginalWord() => await WithDatabaseAsync(async (repository, index) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+        var slot = Slot("Kasus:nom", index, "G0026") with { German = new GrammarGermanSide("liebe", []) };
+
+        var verses = await repository.FindVersesAsync([slot], token);
+
+        verses.ShouldContain(v => v.HebRefId == Matt2412);
+        verses.Sum(v => v.Words).ShouldBeLessThanOrEqualTo(36);
+    });
+
+    [Fact]
+    public async Task GermanSlotAndOriginalSlot_AreDifferentWordsEvenAtTheSamePosition() => await WithDatabaseAsync(async (repository, index) =>
+    {
+        var verses = await repository.FindVersesAsync([GermanSlot("liebe"), Slot("Kasus:nom", index, "G0026")], TestContext.Current.CancellationToken);
+
+        var matt = verses.Single(v => v.HebRefId == Matt2412);
+        matt.Shared.ShouldBeFalse();
+        matt.Words.ShouldBe(2);
+    });
+
+    [Fact]
+    public async Task Near_AndRange_WorkForGermanSlots() => await WithDatabaseAsync(async (repository, _) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+        var slots = new[] { GermanSlot("liebe") };
+
+        var next = await repository.FindVersesNearAsync(slots, Matt2412, false, 1, token);
+        var inRange = await repository.ReadMatchesInRangeAsync(slots, 40_024_000, 40_024_999, token);
+
+        next.ShouldHaveSingleItem().HebRefId.ShouldBeGreaterThan(Matt2412);
+        inRange.ShouldAllBe(m => m.IsGerman && m.HebRefId / 1000 == 40_024);
+        inRange.ShouldContain(m => m.HebRefId == Matt2412 && m.Position == 9);
+    });
+
+    [Fact]
+    public async Task CountGerman_FoldsTheStoredValuesOfAColumn() => await WithDatabaseAsync(async (repository, _) =>
+    {
+        var token = TestContext.Current.CancellationToken;
+        var all = await repository.CountGermanAsync("VerbForm", null, token);
+        var liebe = await repository.CountGermanAsync("PartOfSpeech", new GrammarGermanSide("liebe", []), token);
+
+        all.ToDictionary(r => r.Code, r => r.Count).ShouldBe(new Dictionary<string, int> { ["Fin"] = 95423, ["Inf"] = 18528, ["Part"] = 17862 });
+        liebe.ToDictionary(r => r.Code, r => r.Count).ShouldBe(new Dictionary<string, int> { ["NOUN"] = 157, ["VERB"] = 27 });
+        (await repository.GermanLemmaExistsAsync("liebe", token)).ShouldBeTrue();
+        (await repository.GermanLemmaExistsAsync("xyzzyq", token)).ShouldBeFalse();
+    });
+
     private sealed class ConnectionDbReader(IDbConnection connection) : IDbReader
     {
         public Task<T?> ReadFirstOrDefaultAsync<T>(string sql, object? param = null) => connection.QueryFirstOrDefaultAsync<T>(sql, param);

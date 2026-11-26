@@ -41,8 +41,11 @@ public sealed class GrammarSlotResponse
     /// <summary>The tokens of the slot as typed.</summary>
     public string Text { get; set; } = string.Empty;
 
-    /// <summary><c>lemma</c> (word read as Strong's / lemma), <c>german</c> (German lemma, later) or <c>any</c> (filters only).</summary>
+    /// <summary><c>lemma</c> (word read as Strong's / lemma), <c>german</c> (German lemma, see <c>germanLemma</c>) or <c>any</c> (filters only).</summary>
     public string ReadAs { get; set; } = "any";
+
+    /// <summary>The German lemma of a slot read as <c>german</c> (lower case); omitted otherwise.</summary>
+    public string? GermanLemma { get; set; }
 
     public List<GrammarLemmaResponse> Lemmas { get; set; } = [];
 
@@ -109,10 +112,14 @@ public sealed class GrammarMatch
     /// <summary>0-based index into <c>slots</c>.</summary>
     public int Slot { get; set; }
 
-    /// <summary>Elb1871 word positions mapped to the original word; empty when the word has no German mapping.</summary>
+    /// <summary>
+    /// Elb1871 word positions of the match: the German words the slot constrains (German lemma or <c>dt.</c> filters), otherwise the words mapped to the original word;
+    /// empty when the original word has no German mapping.
+    /// </summary>
     public List<int> GermanPositions { get; set; } = [];
 
-    public GrammarOriginalWord Original { get; set; } = new();
+    /// <summary>The matched original word; omitted when the slot constrains only the German word (the match is the German word at <c>germanPositions</c>).</summary>
+    public GrammarOriginalWord? Original { get; set; }
 }
 
 public sealed class GrammarOriginalWord

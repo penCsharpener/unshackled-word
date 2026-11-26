@@ -91,7 +91,7 @@ public class GrammarQueryParserTests
     [Theory]
     [InlineData("Foo:bar", GrammarErrorCodes.UnknownKey)]
     [InlineData("-Strong:G26", GrammarErrorCodes.UnknownKey)]
-    [InlineData("dt.Verbform:finit", GrammarErrorCodes.UnknownKey)]
+    [InlineData("Verbform:finit", GrammarErrorCodes.UnknownKey)]
     [InlineData("dt.Kasus:akk", GrammarErrorCodes.UnknownKey)]
     [InlineData("Kasus:xyz", GrammarErrorCodes.UnknownValue)]
     [InlineData("Kasus:", GrammarErrorCodes.UnknownValue)]

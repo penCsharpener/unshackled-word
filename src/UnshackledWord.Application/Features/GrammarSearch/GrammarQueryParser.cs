@@ -16,12 +16,15 @@ public static class GrammarErrorCodes
 /// <summary>A query that cannot be searched: machine-readable <see cref="Code"/>, the offending <see cref="Token"/> and the valid <see cref="Candidates"/> (when there are any).</summary>
 public sealed record GrammarQueryError(string Code, string? Token = null, IReadOnlyList<string>? Candidates = null);
 
-/// <summary>How a word token is read: by the order of roadmap 0029 (<see cref="Auto"/>) or forced by <c>Strong:</c> / <c>Lemma:</c>.</summary>
+/// <summary>How a word token is read: by the order of roadmap 0029 (<see cref="Auto"/>) or forced by <c>Strong:</c> / <c>Lemma:</c> / <c>dt.Wort:</c>.</summary>
 public enum GrammarWordMode
 {
     Auto,
     Strongs,
     Lemma,
+
+    /// <summary><c>dt.Wort:</c>: the token is a German lemma.</summary>
+    German,
 }
 
 /// <summary>One parsed filter token. <see cref="Values"/> are the matched value definitions (OR); <see cref="CodePatterns"/> the upper-cased patterns of a <c>Code</c> filter (OR).</summary>
@@ -105,7 +108,7 @@ public static class GrammarQueryParser
                 if (negated) return Fail(new GrammarQueryError(GrammarErrorCodes.UnknownKey, token, GrammarVocabulary.KeyNames(german)));
                 if (valueText.Length == 0) return Fail(new GrammarQueryError(GrammarErrorCodes.UnknownValue, token));
                 if (slots.Count >= MaxSlots) return Fail(new GrammarQueryError(GrammarErrorCodes.TooManySlots, token));
-                slots.Add(new SlotBuilder(valueText, key.Name == "Strong" ? GrammarWordMode.Strongs : GrammarWordMode.Lemma, token));
+                slots.Add(new SlotBuilder(valueText, german ? GrammarWordMode.German : key.Name == "Strong" ? GrammarWordMode.Strongs : GrammarWordMode.Lemma, token));
                 continue;
             }
 
@@ -134,7 +137,7 @@ public static class GrammarQueryParser
         var parts = valueText.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0)
         {
-            error = new GrammarQueryError(GrammarErrorCodes.UnknownValue, token, key.Values.Select(v => v.De).ToList());
+            error = new GrammarQueryError(GrammarErrorCodes.UnknownValue, token, (german ? key.GermanValues : key.Values).Select(v => v.De).ToList());
             return null;
         }
 
@@ -146,7 +149,7 @@ public static class GrammarQueryParser
         var values = new List<GrammarValueDef>();
         foreach (var part in parts)
         {
-            var value = MatchValue(key, part, token, out error);
+            var value = MatchValue(german ? key.GermanValues : key.Values, part, token, out error);
             if (value is null) return null;
             if (!values.Contains(value)) values.Add(value);
         }
@@ -154,18 +157,18 @@ public static class GrammarQueryParser
         return new GrammarFilter(token, key, values, [], negated, german);
     }
 
-    private static GrammarValueDef? MatchValue(GrammarKeyDef key, string typed, string token, out GrammarQueryError? error)
+    private static GrammarValueDef? MatchValue(IReadOnlyList<GrammarValueDef> values, string typed, string token, out GrammarQueryError? error)
     {
         error = null;
         var folded = GrammarVocabulary.Fold(typed);
-        var exact = key.Values.Where(v => Labels(v).Any(l => l == folded)).ToList();
+        var exact = values.Where(v => Labels(v).Any(l => l == folded)).ToList();
         if (exact.Count == 1) return exact[0];
 
-        var prefix = key.Values.Where(v => Labels(v).Any(l => l.StartsWith(folded, StringComparison.Ordinal))).ToList();
+        var prefix = values.Where(v => Labels(v).Any(l => l.StartsWith(folded, StringComparison.Ordinal))).ToList();
         if (prefix.Count == 1) return prefix[0];
 
         error = prefix.Count == 0
-            ? new GrammarQueryError(GrammarErrorCodes.UnknownValue, token, key.Values.Select(v => v.De).ToList())
+            ? new GrammarQueryError(GrammarErrorCodes.UnknownValue, token, values.Select(v => v.De).ToList())
             : new GrammarQueryError(GrammarErrorCodes.AmbiguousValue, token, prefix.Select(v => v.De).ToList());
         return null;
     }

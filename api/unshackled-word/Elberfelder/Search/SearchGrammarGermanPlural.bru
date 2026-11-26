@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarGermanPlural
+  type: http
+  seq: 29
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=Sohn dt.Numerus:plural&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Sohn dt.Numerus:plural
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  200: only plural forms of Sohn (Soehne): 1,234 words in 1,032 verses, first hit Gen 5:4; the hit has no original word, germanPositions name the plural word.
+}

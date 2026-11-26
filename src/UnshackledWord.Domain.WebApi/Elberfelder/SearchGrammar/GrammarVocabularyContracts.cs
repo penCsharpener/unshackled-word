@@ -6,7 +6,7 @@ public sealed class GrammarVocabularyResponse
     /// <summary>Prefix that applies a key to the German word, e.g. <c>dt.</c>.</summary>
     public string GermanPrefix { get; set; } = string.Empty;
 
-    /// <summary>False while the parser rejects <c>dt.</c> keys; then <c>germanPrefixAllowed</c> is false on every key.</summary>
+    /// <summary>False while the parser rejects <c>dt.</c> keys; then <c>germanPrefixAllowed</c> is false on every key (true since roadmap 0029.7).</summary>
     public bool GermanKeysEnabled { get; set; }
 
     public List<GrammarVocabularyKey> Keys { get; set; } = [];
@@ -22,6 +22,9 @@ public sealed class GrammarVocabularyKey
     /// <summary>Whether <c>dt.</c> may precede the key (and the parser accepts it today).</summary>
     public bool GermanPrefixAllowed { get; set; }
 
+    /// <summary>True for keys that exist only after <c>dt.</c> (<c>Verbform</c>, <c>STTS</c>, <c>Wort</c>): a client must not offer them without the prefix. Their <c>languages</c> are empty.</summary>
+    public bool GermanOnly { get; set; }
+
     /// <summary><c>greek</c>, <c>hebrew</c>, <c>aramaic</c>: the original languages the key applies to.</summary>
     public List<string> Languages { get; set; } = [];
 
@@ -31,7 +34,11 @@ public sealed class GrammarVocabularyKey
     /// <summary>True when the value is free text (<c>Code</c> pattern, Strong's number, lemma): <c>values</c> is empty and the UI offers no value list.</summary>
     public bool FreeValue { get; set; }
 
+    /// <summary>The values of the original word (after the key without prefix).</summary>
     public List<GrammarVocabularyValue> Values { get; set; } = [];
+
+    /// <summary>The values after <c>dt.</c> (the German tag set differs: Präteritum, finit, Positiv ...); empty when the key has no German filter or a free value (<c>STTS</c>).</summary>
+    public List<GrammarVocabularyValue> GermanValues { get; set; } = [];
 }
 
 public sealed class GrammarVocabularyValue

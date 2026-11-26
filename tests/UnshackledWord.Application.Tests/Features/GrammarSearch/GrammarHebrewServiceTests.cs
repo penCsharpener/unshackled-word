@@ -32,7 +32,7 @@ public class GrammarHebrewServiceTests
         _service = new GrammarSearchService(words, new GrammarFilterResolver(index), _repository);
     }
 
-    private static GrammarMatchRow HebrewMatch(int slot, int verse, int wordId) => new() { Slot = slot, HebRefId = Gen1Start + verse, WordId = wordId, IsHebrew = true };
+    private static GrammarMatchRow HebrewMatch(int slot, int verse, int wordId) => new() { Slot = slot, HebRefId = Gen1Start + verse, WordId = wordId, WordKey = wordId * 3 + 1, IsHebrew = true };
 
     [Fact]
     public async Task Chapter_HebrewLemmaWithStem_QueriesOnlyTheHebrewSideWithRootStrongsAndCodes()

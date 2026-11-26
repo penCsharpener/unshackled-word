@@ -72,7 +72,7 @@ German keys (prefix `dt.`), from `Elb1871Morphology`:
 | `dt.Person`, `dt.Numerus`, `dt.Geschlecht`, `dt.Steigerung` | as above | `Person`, `Number`, `Gender`, `Degree` |
 | `dt.STTS` | raw STTS tag (`VVPP`, `NN` …) | `Stts` |
 
-`dt.Kasus` is withheld ([02-decisions.md](02-decisions.md)). Labels missing from `de.ts` (Präteritum, finit) are added there.
+`dt.Kasus` is withheld ([02-decisions.md](02-decisions.md)). Labels missing from `de.ts` (Präteritum, finit, Positiv, Hilfsverb, Determinativ, Zahlwort, Sonstiges) are added there. `dt.Wort:` forces the German lemma reading. The German value sets differ from the original ones (`dt.Steigerung` also has Positiv, `dt.Wortart` has Hilfsverb, Determinativ with alias Artikel, Zahlwort, Sonstiges); the vocabulary lists them as `germanValues`.
 
 ## Errors
 

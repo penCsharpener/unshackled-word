@@ -21,6 +21,7 @@ public partial class GrammarVocabularyLabelTests
         ["Stamm"] = "stem",
         ["Form"] = "hebrewForm",
         ["Status"] = "state",
+        ["Verbform"] = "verbForm",
     };
 
     [Fact]
@@ -32,10 +33,23 @@ public partial class GrammarVocabularyLabelTests
     [Fact]
     public void Every_value_key_has_a_translation_category_except_languages()
     {
-        foreach (var key in GrammarVocabularyContract.Build().Keys.Where(k => k.Values.Count > 0 && k.Name != "Sprache"))
+        foreach (var key in GrammarVocabularyContract.Build().Keys.Where(k => (k.Values.Count > 0 || k.GermanValues.Count > 0) && k.Name != "Sprache"))
         {
             CategoryByKey.ContainsKey(key.Name).ShouldBeTrue($"vocabulary key '{key.Name}' has no category mapping to the grammar block of de.ts");
         }
+    }
+
+    [Fact]
+    public void German_keys_are_listed_and_kasus_is_withheld()
+    {
+        var vocabulary = GrammarVocabularyContract.Build();
+        vocabulary.GermanKeysEnabled.ShouldBeTrue();
+
+        var german = vocabulary.Keys.Where(k => k.GermanPrefixAllowed).Select(k => k.Name).ToList();
+        german.ShouldBe(["Wortart", "Tempus", "Modus", "Person", "Numerus", "Geschlecht", "Steigerung", "Verbform", "STTS", "Wort"], ignoreOrder: true);
+        vocabulary.Keys.Where(k => k.GermanOnly).Select(k => k.Name).ShouldBe(["Verbform", "STTS", "Wort"], ignoreOrder: true);
+        vocabulary.Keys.Single(k => k.Name == "Kasus").GermanPrefixAllowed.ShouldBeFalse();
+        vocabulary.Keys.Single(k => k.Name == "Tempus").GermanValues.Select(v => v.LabelDe).ShouldBe(["Präsens", "Präteritum"]);
     }
 
     private static void AssertLabels(string fileName, Func<Domain.WebApi.Elberfelder.SearchGrammar.GrammarVocabularyValue, string> label, bool ignoreCase = false)
@@ -45,7 +59,7 @@ public partial class GrammarVocabularyLabelTests
         {
             if (!CategoryByKey.TryGetValue(key.Name, out var category)) continue;
             categories.ContainsKey(category).ShouldBeTrue($"{fileName}: category grammar.{category} (vocabulary key {key.Name}) is missing");
-            foreach (var value in key.Values)
+            foreach (var value in key.Values.Concat(key.GermanValues))
             {
                 var path = $"{category}.{value.Key}";
                 categories[category].TryGetValue(value.Key, out var expected).ShouldBeTrue($"{fileName}: label {path} is missing (vocabulary key {key.Name})");

@@ -26,7 +26,8 @@ public sealed class GrammarSearchService : IGrammarSearchService
         _repository = repository;
     }
 
-    private sealed record ReadSlot(GrammarSlotSpec Spec, IReadOnlyList<GrammarLemma> Lemmas, GrammarSlotQuery? Query);
+    /// <param name="GermanLemma">The lower-case German lemma when the word token was read as a German word (roadmap 0029.7); then <paramref name="Lemmas"/> is empty.</param>
+    private sealed record ReadSlot(GrammarSlotSpec Spec, IReadOnlyList<GrammarLemma> Lemmas, string? GermanLemma, GrammarSlotQuery? Query);
 
     private sealed record PreparedQuery(List<ReadSlot> Slots, GrammarQueryError? Error)
     {
@@ -36,34 +37,73 @@ public sealed class GrammarSearchService : IGrammarSearchService
         public List<GrammarSlotQuery> Queries => [.. Slots.Select(s => s.Query!)];
     }
 
-    /// <summary>The languages a slot is searched in: those of its lemmas, both without a lemma.</summary>
-    private static (bool Greek, bool Hebrew) SlotLanguages(GrammarSlotSpec spec, IReadOnlyList<GrammarLemma> lemmas) =>
-        spec.Word is null ? (true, true) : (lemmas.Any(l => !l.IsHebrew), lemmas.Any(l => l.IsHebrew));
+    /// <summary>The languages a slot is searched in: those of its lemmas, both without an original lemma.</summary>
+    private static (bool Greek, bool Hebrew) SlotLanguages(IReadOnlyList<GrammarLemma> lemmas) =>
+        lemmas.Count == 0 ? (true, true) : (lemmas.Any(l => !l.IsHebrew), lemmas.Any(l => l.IsHebrew));
 
     private static bool AppliesToGreek(GrammarKeyDef key) => key.Languages.HasFlag(GrammarLanguages.Greek);
 
     private static bool AppliesToHebrew(GrammarKeyDef key) => (key.Languages & GrammarLanguages.HebrewAramaic) != 0;
 
-    private static bool FitsGreek(GrammarSlotSpec spec) => spec.Filters.All(f => AppliesToGreek(f.Key));
+    private static List<GrammarFilter> OriginalFilters(GrammarSlotSpec spec) => [.. spec.Filters.Where(f => !f.German)];
 
-    private static bool FitsHebrew(GrammarSlotSpec spec) => spec.Filters.All(f => AppliesToHebrew(f.Key));
+    private static List<GrammarFilter> GermanFilters(GrammarSlotSpec spec) => [.. spec.Filters.Where(f => f.German)];
 
-    /// <summary>A slot with a lemma whose filters do not all exist in at least one language of that lemma is an error (<c>G26 Stamm:qal</c>); without a lemma such a slot just has no hit in that language.</summary>
-    private static GrammarQueryError? CheckKeysExist(GrammarSlotSpec spec, bool greek, bool hebrew)
+    private static bool FitsGreek(IReadOnlyList<GrammarFilter> filters) => filters.All(f => AppliesToGreek(f.Key));
+
+    private static bool FitsHebrew(IReadOnlyList<GrammarFilter> filters) => filters.All(f => AppliesToHebrew(f.Key));
+
+    /// <summary>A slot with an original lemma whose filters do not all exist in at least one language of that lemma is an error (<c>G26 Stamm:qal</c>); without a lemma such a slot just has no hit in that language.</summary>
+    private static GrammarQueryError? CheckKeysExist(IReadOnlyList<GrammarFilter> filters, bool hasLemma, bool greek, bool hebrew)
     {
-        if (spec.Word is null || (greek && FitsGreek(spec)) || (hebrew && FitsHebrew(spec))) return null;
+        if (!hasLemma || filters.Count == 0 || (greek && FitsGreek(filters)) || (hebrew && FitsHebrew(filters))) return null;
 
-        var offending = spec.Filters.FirstOrDefault(f => !(greek && AppliesToGreek(f.Key)) && !(hebrew && AppliesToHebrew(f.Key))) ?? spec.Filters[0];
-        var candidates = GrammarVocabulary.Keys.Where(k => k.Kind != GrammarKeyKind.Word && ((greek && AppliesToGreek(k)) || (hebrew && AppliesToHebrew(k)))).Select(k => k.Name).ToList();
+        var offending = filters.FirstOrDefault(f => !(greek && AppliesToGreek(f.Key)) && !(hebrew && AppliesToHebrew(f.Key))) ?? filters[0];
+        var candidates = GrammarVocabulary.Keys.Where(k => k.Kind != GrammarKeyKind.Word && !k.GermanOnly && ((greek && AppliesToGreek(k)) || (hebrew && AppliesToHebrew(k)))).Select(k => k.Name).ToList();
         return new GrammarQueryError(GrammarErrorCodes.KeyNotInLanguage, offending.Text, candidates);
     }
 
-    private async Task<GrammarSide?> ResolveSideAsync(GrammarSlotSpec spec, IReadOnlyList<GrammarLemma> lemmas, bool hebrew, CancellationToken token)
+    private async Task<GrammarSide?> ResolveSideAsync(IReadOnlyList<GrammarFilter> filters, IReadOnlyList<GrammarLemma> lemmas, bool hebrew, CancellationToken token)
     {
-        var codes = spec.Filters.Count == 0 ? null : hebrew ? await _resolver.ResolveHebrewAsync(spec.Filters, token) : await _resolver.ResolveGreekAsync(spec.Filters, token);
+        var codes = filters.Count == 0 ? null : hebrew ? await _resolver.ResolveHebrewAsync(filters, token) : await _resolver.ResolveGreekAsync(filters, token);
         if (codes is { Count: 0 }) return null;
 
-        return new GrammarSide(codes, spec.Word is null ? null : [.. lemmas.Where(l => l.IsHebrew == hebrew).SelectMany(l => StrongsKeys(l.Key))]);
+        return new GrammarSide(codes, lemmas.Count == 0 ? null : [.. lemmas.Where(l => l.IsHebrew == hebrew).SelectMany(l => StrongsKeys(l.Key))]);
+    }
+
+    /// <summary>The German side of a slot: its German lemma and <c>dt.</c> filters as the repository queries them; null when the slot constrains no German word.</summary>
+    private static GrammarGermanSide? ToGermanSide(string? germanLemma, IReadOnlyList<GrammarFilter> germanFilters)
+    {
+        if (germanLemma is null && germanFilters.Count == 0) return null;
+
+        return new GrammarGermanSide(germanLemma, [.. germanFilters.Select(f => new GrammarGermanFilter(
+            f.Key.GermanColumn!,
+            f.Key.Kind == GrammarKeyKind.Code ? [.. f.CodePatterns.Select(LikePattern)] : [.. f.Values.SelectMany(v => v.DbCodes ?? [])],
+            f.Negated,
+            f.Key.Kind == GrammarKeyKind.Code))]);
+    }
+
+    /// <summary>"VV*" → "VV%": <c>*</c> is the wildcard of the query language; LIKE's own wildcards are escaped.</summary>
+    internal static string LikePattern(string pattern) =>
+        pattern.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("%", "\\%", StringComparison.Ordinal).Replace("_", "\\_", StringComparison.Ordinal).Replace('*', '%');
+
+    /// <summary>
+    /// Reads the word token of a slot: Strong's, script or transliteration as original lemmas; otherwise (roadmap 0029.7, step 4) a German lemma. <c>dt.Wort:</c> forces the German reading.
+    /// Null lemma and German lemma with no error mean the slot has no word token.
+    /// </summary>
+    private async Task<(IReadOnlyList<GrammarLemma> Lemmas, string? GermanLemma, GrammarQueryError? Error)> ReadWordAsync(GrammarSlotSpec spec, CancellationToken token)
+    {
+        if (spec.Word is null) return ([], null, null);
+
+        if (spec.Mode != GrammarWordMode.German)
+        {
+            var lemmas = await _words.ReadAsync(spec.Word, spec.Mode, token);
+            if (lemmas.Count > 0) return (lemmas, null, null);
+            if (spec.Mode != GrammarWordMode.Auto) return ([], null, new GrammarQueryError(GrammarErrorCodes.UnknownWord, spec.Word));
+        }
+
+        var german = spec.Word.ToLowerInvariant();
+        return await _repository.GermanLemmaExistsAsync(german, token) ? ([], german, null) : ([], null, new GrammarQueryError(GrammarErrorCodes.UnknownWord, spec.Word));
     }
 
     /// <summary>Parses the query, reads the word tokens and resolves the filters of every slot (shared by the search and the chapter endpoints).</summary>
@@ -75,15 +115,28 @@ public sealed class GrammarSearchService : IGrammarSearchService
         var slots = new List<ReadSlot>();
         foreach (var spec in parsed.Slots)
         {
-            var lemmas = spec.Word is null ? [] : await _words.ReadAsync(spec.Word, spec.Mode, token);
-            if (spec.Word is not null && lemmas.Count == 0) return new PreparedQuery([], new GrammarQueryError(GrammarErrorCodes.UnknownWord, spec.Word));
+            var (lemmas, germanLemma, wordError) = await ReadWordAsync(spec, token);
+            if (wordError is not null) return new PreparedQuery([], wordError);
 
-            var (greek, hebrew) = SlotLanguages(spec, lemmas);
-            if (CheckKeysExist(spec, greek, hebrew) is { } keyError) return new PreparedQuery([], keyError);
+            var originalFilters = OriginalFilters(spec);
+            var german = ToGermanSide(germanLemma, GermanFilters(spec));
+            var (greek, hebrew) = SlotLanguages(lemmas);
+            if (CheckKeysExist(originalFilters, lemmas.Count > 0, greek, hebrew) is { } keyError) return new PreparedQuery([], keyError);
 
-            var greekSide = greek && FitsGreek(spec) ? await ResolveSideAsync(spec, lemmas, false, token) : null;
-            var hebrewSide = hebrew && FitsHebrew(spec) ? await ResolveSideAsync(spec, lemmas, true, token) : null;
-            slots.Add(new ReadSlot(spec, lemmas, greekSide is null && hebrewSide is null ? null : new GrammarSlotQuery(greekSide, hebrewSide)));
+            // A slot constrains the original word when it has an original lemma or original filters; otherwise it is a German-only slot.
+            GrammarSlotQuery? slotQuery;
+            if (lemmas.Count == 0 && originalFilters.Count == 0)
+            {
+                slotQuery = new GrammarSlotQuery(null, null, german);
+            }
+            else
+            {
+                var greekSide = greek && FitsGreek(originalFilters) ? await ResolveSideAsync(originalFilters, lemmas, false, token) : null;
+                var hebrewSide = hebrew && FitsHebrew(originalFilters) ? await ResolveSideAsync(originalFilters, lemmas, true, token) : null;
+                slotQuery = greekSide is null && hebrewSide is null ? null : new GrammarSlotQuery(greekSide, hebrewSide, german);
+            }
+
+            slots.Add(new ReadSlot(spec, lemmas, germanLemma, slotQuery));
         }
 
         return new PreparedQuery(slots, null);
@@ -133,20 +186,16 @@ public sealed class GrammarSearchService : IGrammarSearchService
         var hits = matches.GroupBy(m => m.HebRefId)
             .Where(v => HasAssignment(v, queries.Count))
             .ToList();
-        var wordIds = hits.SelectMany(v => v).Select(m => m.WordId).Distinct().ToList();
+        var wordKeys = hits.SelectMany(v => v).Select(m => m.WordKey).Distinct().ToList();
         var mappings = await ReadMappingsAsync(hits.SelectMany(v => v), token);
 
-        response.Verses = [.. hits.OrderBy(v => v.Key).Select(v =>
+        response.Verses = [.. hits.OrderBy(v => v.Key).Select(v => new GrammarChapterVerse
         {
-            var ids = v.Select(m => m.WordId).Distinct().Order().ToList();
-            return new GrammarChapterVerse
-            {
-                Verse = v.Key % 1000,
-                OriginalWordIds = ids,
-                GermanPositions = [.. ids.SelectMany(id => mappings[(v.First().IsHebrew, id)]).Distinct().Order()],
-            };
+            Verse = v.Key % 1000,
+            OriginalWordIds = [.. v.Where(m => !m.IsGerman).Select(m => m.WordId).Distinct().Order()],
+            GermanPositions = [.. v.SelectMany(m => GermanPositionsOf(m, mappings)).Distinct().Order()],
         })];
-        response.Total = wordIds.Count;
+        response.Total = wordKeys.Count;
         return new() { Response = response };
     }
 
@@ -189,15 +238,17 @@ public sealed class GrammarSearchService : IGrammarSearchService
         if (slot < 0 || slot >= parsed.Slots.Count) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownSlot, slot.ToString(CultureInfo.InvariantCulture)) };
 
         var spec = parsed.Slots[slot];
-        IReadOnlyList<GrammarLemma> lemmas = [];
-        if (spec.Word is not null)
-        {
-            lemmas = await _words.ReadAsync(spec.Word, spec.Mode, token);
-            if (lemmas.Count == 0) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownWord, spec.Word) };
-        }
+        var (lemmas, germanLemma, wordError) = await ReadWordAsync(spec, token);
+        if (wordError is not null) return new() { Error = wordError };
 
-        var (greek, hebrew) = SlotLanguages(spec, lemmas);
-        if (CheckKeysExist(spec, greek, hebrew) is { } keyError) return new() { Error = keyError };
+        var originalFilters = OriginalFilters(spec);
+        var germanFilters = GermanFilters(spec);
+        var (greek, hebrew) = SlotLanguages(lemmas);
+        if (CheckKeysExist(originalFilters, lemmas.Count > 0, greek, hebrew) is { } keyError) return new() { Error = keyError };
+
+        var germanKey = !string.IsNullOrWhiteSpace(key) && key.StartsWith(GrammarVocabulary.GermanPrefix, StringComparison.OrdinalIgnoreCase);
+        var germanOnlySlot = lemmas.Count == 0 && originalFilters.Count == 0 && (germanLemma is not null || germanFilters.Count > 0);
+        if (germanKey || (string.IsNullOrWhiteSpace(key) && germanOnlySlot)) return await GermanFacetsAsync(slot, germanKey ? key![GrammarVocabulary.GermanPrefix.Length..] : null, germanLemma, germanFilters, token);
 
         var allKeys = GrammarFacetFolder.FacetKeys(GrammarLanguages.Greek).Concat(GrammarFacetFolder.FacetKeys(GrammarLanguages.Hebrew)).Distinct().ToList();
         var facetKeys = allKeys.Where(k => (greek && AppliesToGreek(k)) || (hebrew && AppliesToHebrew(k))).ToList();
@@ -213,20 +264,20 @@ public sealed class GrammarSearchService : IGrammarSearchService
         var sides = new List<(string Language, Dictionary<string, int> Counts, IReadOnlyList<MorphologyCodeEntry> Index)>();
         if (greek)
         {
-            var rows = await _repository.CountCodesAsync(spec.Word is null ? null : [.. lemmas.Where(l => !l.IsHebrew).SelectMany(l => StrongsKeys(l.Key))], token);
+            var rows = await _repository.CountCodesAsync(lemmas.Count == 0 ? null : [.. lemmas.Where(l => !l.IsHebrew).SelectMany(l => StrongsKeys(l.Key))], token);
             sides.Add((GrammarVocabulary.LanguageGreek, rows.ToDictionary(r => r.Code, r => r.Count), await _resolver.GreekCodesAsync(token)));
         }
 
         if (hebrew)
         {
-            var rows = await _repository.CountHebrewCodesAsync(spec.Word is null ? null : [.. lemmas.Where(l => l.IsHebrew).SelectMany(l => StrongsKeys(l.Key))], token);
+            var rows = await _repository.CountHebrewCodesAsync(lemmas.Count == 0 ? null : [.. lemmas.Where(l => l.IsHebrew).SelectMany(l => StrongsKeys(l.Key))], token);
             sides.Add((GrammarVocabulary.LanguageHebrew, rows.ToDictionary(r => r.Code, r => r.Count), await _resolver.HebrewCodesAsync(token)));
         }
 
         var response = new SearchGrammarFacetsResponse { Slot = slot };
         foreach (var facetKey in facetKeys)
         {
-            var others = spec.Filters.Where(f => f.Key != facetKey).ToList();
+            var others = originalFilters.Where(f => f.Key != facetKey).ToList();
             var perValue = new Dictionary<string, int>();
             foreach (var (language, counts, index) in sides)
             {
@@ -249,12 +300,36 @@ public sealed class GrammarSearchService : IGrammarSearchService
         return new() { Response = response };
     }
 
+    /// <summary>The facets of the German word (<c>dt.</c> keys): words of <c>Elb1871Morphology</c> per value, given the slot's German lemma and its other German filters. <paramref name="keyName"/> null = every key with a value list.</summary>
+    private async Task<GrammarOutcome<SearchGrammarFacetsResponse>> GermanFacetsAsync(int slot, string? keyName, string? germanLemma, IReadOnlyList<GrammarFilter> germanFilters, CancellationToken token)
+    {
+        var allKeys = GrammarFacetFolder.GermanFacetKeys();
+        var facetKeys = allKeys;
+        if (keyName is not null)
+        {
+            var found = GrammarVocabulary.FindKey(keyName, true);
+            if (found is null || !allKeys.Contains(found)) return new() { Error = new GrammarQueryError(GrammarErrorCodes.UnknownKey, GrammarVocabulary.GermanPrefix + keyName, [.. allKeys.Select(k => GrammarVocabulary.GermanPrefix + k.Name)]) };
+            facetKeys = [found];
+        }
+
+        var response = new SearchGrammarFacetsResponse { Slot = slot };
+        foreach (var facetKey in facetKeys)
+        {
+            var side = ToGermanSide(germanLemma, [.. germanFilters.Where(f => f.Key != facetKey)]);
+            var rows = await _repository.CountGermanAsync(facetKey.GermanColumn!, side, token);
+            var facet = GrammarFacetFolder.FoldGerman(facetKey, rows.ToDictionary(r => r.Code, r => r.Count));
+            if (facet.Values.Count > 0) response.Facets.Add(facet);
+        }
+
+        return new() { Response = response };
+    }
+
     private static int ChapterStart(int bibleBookId, int chapter) => bibleBookId * BookShift + chapter * ChapterSpan;
 
     private static bool HasAssignment(IEnumerable<GrammarMatchRow> verseMatches, int slotCount)
     {
         var rows = verseMatches.ToList();
-        var perSlot = Enumerable.Range(0, slotCount).Select(i => rows.Where(m => m.Slot == i).Select(m => m.WordId).ToHashSet()).ToList();
+        var perSlot = Enumerable.Range(0, slotCount).Select(i => rows.Where(m => m.Slot == i).Select(m => m.WordKey).ToHashSet()).ToList();
         return perSlot.All(p => p.Count > 0) && DistinctWordAssignment.Exists(perSlot);
     }
 
@@ -285,14 +360,20 @@ public sealed class GrammarSearchService : IGrammarSearchService
     /// <summary>German positions per original word, keyed by (is Hebrew, word id) because the Greek and Hebrew word ids overlap.</summary>
     private async Task<ILookup<(bool IsHebrew, int WordId), int>> ReadMappingsAsync(IEnumerable<GrammarMatchRow> matches, CancellationToken token)
     {
-        var rows = matches.ToList();
-        var greek = await _repository.ReadMappingsAsync([.. rows.Where(m => !m.IsHebrew).Select(m => m.WordId).Distinct()], token);
+        // Rows of a slot that constrains the German word already carry their German position; German rows have no mapping.
+        var rows = matches.Where(m => !m.IsGerman && m.GermanPosition is null).ToList();
+        var greekIds = rows.Where(m => !m.IsHebrew).Select(m => m.WordId).Distinct().ToList();
+        var greek = greekIds.Count == 0 ? [] : await _repository.ReadMappingsAsync(greekIds, token);
         var hebrewIds = rows.Where(m => m.IsHebrew).Select(m => m.WordId).Distinct().ToList();
         var hebrew = hebrewIds.Count == 0 ? [] : await _repository.ReadHebrewMappingsAsync(hebrewIds, token);
         return greek.Select(m => (Key: (false, m.StepWordId), m.PositionInVerse))
             .Concat(hebrew.Select(m => (Key: (true, m.StepWordId), m.PositionInVerse)))
             .ToLookup(x => x.Key, x => x.PositionInVerse);
     }
+
+    /// <summary>The German positions of one candidate: the constrained German word when the slot has one, otherwise the words mapped to the original word.</summary>
+    private static IEnumerable<int> GermanPositionsOf(GrammarMatchRow row, ILookup<(bool IsHebrew, int WordId), int> mappings) =>
+        row.GermanPosition is { } position ? [position] : mappings[(row.IsHebrew, row.WordId)];
 
     private async Task<List<GrammarHit>> BuildHitsAsync(IReadOnlyList<GrammarSlotQuery> queries, IReadOnlyList<int> verseIds, CancellationToken token)
     {
@@ -309,14 +390,17 @@ public sealed class GrammarSearchService : IGrammarSearchService
             Chapter = id / 1000 % 1000,
             Verse = id % 1000,
             Words = [.. germanByVerse[id].OrderBy(w => w.PositionInVerse).Select(w => new GrammarHitWord { Text = w.WordInContext, Position = w.PositionInVerse })],
-            Matches = [.. matchesByVerse[id].OrderBy(m => m.Slot).ThenBy(m => m.Position).Select(m => new GrammarMatch
-            {
-                Slot = m.Slot,
-                GermanPositions = [.. mappings[(m.IsHebrew, m.WordId)].Distinct().Order()],
-                Original = ToOriginal(m, hebrewLemmas),
-            })],
+            Matches = [.. matchesByVerse[id].GroupBy(m => (m.Slot, m.WordKey)).Select(g => ToMatch([.. g], mappings, hebrewLemmas)).OrderBy(m => m.Slot)],
         })];
     }
+
+    /// <summary>One match: an original word (or a German word of a German-only slot) with the German positions of all its rows; the rows are in SQL order, so the matches keep the order of the original words.</summary>
+    private static GrammarMatch ToMatch(List<GrammarMatchRow> rows, ILookup<(bool IsHebrew, int WordId), int> mappings, IReadOnlyDictionary<string, string> hebrewLemmas) => new()
+    {
+        Slot = rows[0].Slot,
+        GermanPositions = [.. rows.SelectMany(m => GermanPositionsOf(m, mappings)).Distinct().Order()],
+        Original = rows[0].IsGerman ? null : ToOriginal(rows[0], hebrewLemmas),
+    };
 
     private static GrammarOriginalWord ToOriginal(GrammarMatchRow row, IReadOnlyDictionary<string, string> hebrewLemmas)
     {
@@ -374,7 +458,8 @@ public sealed class GrammarSearchService : IGrammarSearchService
     private static GrammarSlotResponse ToSlotResponse(ReadSlot slot) => new()
     {
         Text = slot.Spec.Text,
-        ReadAs = slot.Spec.Word is null ? "any" : "lemma",
+        ReadAs = slot.GermanLemma is not null ? "german" : slot.Spec.Word is null ? "any" : "lemma",
+        GermanLemma = slot.GermanLemma,
         Lemmas = [.. slot.Lemmas.Select(l => new GrammarLemmaResponse { Strongs = DisplayStrongs(l.Key), Lemma = l.Lemma, Transliteration = l.Transliteration, Gloss = l.Gloss })],
         Filters = [.. slot.Spec.Filters.Select(f => new GrammarFilterResponse
         {

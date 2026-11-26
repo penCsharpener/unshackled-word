@@ -27,7 +27,7 @@ public class GrammarChapterSearchTests
         _service = new GrammarSearchService(words, new GrammarFilterResolver(index), _repository);
     }
 
-    private static GrammarMatchRow Match(int slot, int verse, int wordId) => new() { Slot = slot, HebRefId = Matt24Start + verse, WordId = wordId };
+    private static GrammarMatchRow Match(int slot, int verse, int wordId) => new() { Slot = slot, HebRefId = Matt24Start + verse, WordId = wordId, WordKey = wordId * 3 };
 
     [Fact]
     public async Task Chapter_WordOnlyQuery_ReturnsPositionsAndWordIds()

@@ -12,8 +12,25 @@ public sealed record GrammarLemma(string Key, string Lemma, string Transliterati
 /// <summary>One language of a slot as the repository queries it. Null = no restriction: <see cref="Codes"/> null means any code, <see cref="StrongsKeys"/> null any lemma.</summary>
 public sealed record GrammarSide(IReadOnlyList<string>? Codes, IReadOnlyList<string>? StrongsKeys);
 
-/// <summary>One slot as the repository queries it: the Greek and the Hebrew/Aramaic side, null = that language is not searched for this slot.</summary>
-public sealed record GrammarSlotQuery(GrammarSide? Greek, GrammarSide? Hebrew);
+/// <summary>
+/// One <c>dt.</c> filter on an <c>Elb1871Morphology</c> column: the stored values (OR), or LIKE patterns when <paramref name="Pattern"/> is set (<c>dt.STTS</c>); <paramref name="Negated"/> excludes them
+/// (a word without a value counts as not matching the values). <paramref name="Column"/> is one of <see cref="GrammarVocabulary.GermanColumns"/>.
+/// </summary>
+public sealed record GrammarGermanFilter(string Column, IReadOnlyList<string> Values, bool Negated, bool Pattern = false);
+
+/// <summary>The German word a slot constrains: its lowercase lemma (null = any lemma) and its <c>dt.</c> filters (AND).</summary>
+public sealed record GrammarGermanSide(string? Lemma, IReadOnlyList<GrammarGermanFilter> Filters);
+
+/// <summary>
+/// One slot as the repository queries it: the Greek and the Hebrew/Aramaic side (null = that language is not searched for this slot) and, optionally, the German word.
+/// Without a German side the slot is an original word; with one and an original side it is a mixed slot (the original word must be mapped to a German word that satisfies the German side);
+/// with one and no original side it is a German-only slot over the German words themselves.
+/// </summary>
+public sealed record GrammarSlotQuery(GrammarSide? Greek, GrammarSide? Hebrew, GrammarGermanSide? German = null)
+{
+    /// <summary>A slot without any original constraint: its words are German words.</summary>
+    public bool IsGermanOnly => German is not null && Greek is null && Hebrew is null;
+}
 
 /// <summary>A verse in which every slot has a candidate. <see cref="Shared"/>: some word is a candidate of two slots (the distinct-word rule has to be checked).</summary>
 public sealed class GrammarVerseRow
@@ -25,16 +42,26 @@ public sealed class GrammarVerseRow
     public int Words { get; init; }
 }
 
-/// <summary>One (slot, original word) candidate of a verse with the word's details.</summary>
+/// <summary>One (slot, word) candidate of a verse with the word's details; an original word of a mixed slot appears once per German word that satisfies the slot.</summary>
 public sealed class GrammarMatchRow
 {
     public int Slot { get; init; }
     public int HebRefId { get; init; }
     public int WordId { get; init; }
+
+    /// <summary>Identifies the word across the three word tables (their ids overlap): used by the distinct-word rule.</summary>
+    public int WordKey { get; init; }
+
     public int Position { get; init; }
 
-    /// <summary>True for a <c>StepHebrewWords</c> row (Hebrew and Aramaic); false for <c>StepGreekWords</c>. The ids of the two tables overlap but never occur in one verse.</summary>
+    /// <summary>True for a <c>StepHebrewWords</c> row (Hebrew and Aramaic); false for <c>StepGreekWords</c> (and for German rows).</summary>
     public bool IsHebrew { get; init; }
+
+    /// <summary>True for a German word of a German-only slot (<see cref="WordId"/> is the <c>Elb1871Morphology</c> id; <see cref="Form"/> the printed word).</summary>
+    public bool IsGerman { get; init; }
+
+    /// <summary>The German word the slot constrains (position in the Elb1871 verse): set for German rows and for original words of mixed slots, null for original-only slots.</summary>
+    public int? GermanPosition { get; init; }
 
     /// <summary>The printed Greek or Hebrew form.</summary>
     public string Form { get; init; } = string.Empty;
@@ -83,6 +110,12 @@ public interface IGrammarSearchRepository
 
     /// <summary>The same for the Hebrew/Aramaic words (root Strong's keys, <c>"Grammar"</c> codes).</summary>
     Task<IReadOnlyList<GrammarCodeCountRow>> CountHebrewCodesAsync(IReadOnlyList<string>? strongsKeys, CancellationToken token = default);
+
+    /// <summary>Number of German words per stored value of <paramref name="column"/> (a <see cref="GrammarVocabulary.GermanColumns"/> entry), restricted to the lemma and filters of <paramref name="side"/> (null = all words); the basis of the <c>dt.</c> facet counts.</summary>
+    Task<IReadOnlyList<GrammarCodeCountRow>> CountGermanAsync(string column, GrammarGermanSide? side, CancellationToken token = default);
+
+    /// <summary>Does a German word with this lemma (compared in lower case) exist?</summary>
+    Task<bool> GermanLemmaExistsAsync(string lowerLemma, CancellationToken token = default);
 
     Task<IReadOnlyList<GrammarGermanWordRow>> ReadGermanWordsAsync(IReadOnlyList<int> hebRefIds, CancellationToken token = default);
 

@@ -20,19 +20,23 @@ public static class GrammarVocabularyContract
             Name = key.Name,
             Aliases = [.. key.Aliases],
             GermanPrefixAllowed = key.GermanPrefix && GrammarVocabulary.GermanKeysEnabled,
+            GermanOnly = key.GermanOnly,
             Languages = languages,
             Kind = key.Kind == GrammarKeyKind.Word ? "word" : "filter",
             FreeValue = key.Kind is GrammarKeyKind.Code or GrammarKeyKind.Word,
-            Values = [.. key.Values.Select(v => new GrammarVocabularyValue
-            {
-                Key = v.Id,
-                LabelDe = v.De,
-                LabelEn = v.En,
-                Aliases = [.. GrammarVocabulary.ListedAliases(v)],
-                Languages = languages,
-            })],
+            Values = [.. key.Values.Select(v => ToValue(v, languages))],
+            GermanValues = [.. key.GermanValues.Select(v => ToValue(v, []))],
         };
     }
+
+    private static GrammarVocabularyValue ToValue(GrammarValueDef value, List<string> languages) => new()
+    {
+        Key = value.Id,
+        LabelDe = value.De,
+        LabelEn = value.En,
+        Aliases = [.. GrammarVocabulary.ListedAliases(value)],
+        Languages = languages,
+    };
 
     private static List<string> ToLanguages(GrammarLanguages languages)
     {
