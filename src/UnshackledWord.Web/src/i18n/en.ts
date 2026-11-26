@@ -2678,6 +2678,7 @@ export const en: Translation = {
         tooManyFilters: "At most 12 filters per grammar search.",
         emptyQuery: "The grammar search needs a word or a filter.",
         unknownWord: "“{{token}}” was not found in the original text.",
+        keyNotInLanguage: "“{{token}}” does not exist in the language of this word.",
         generic: "The grammar search cannot be read like this.",
       },
     },

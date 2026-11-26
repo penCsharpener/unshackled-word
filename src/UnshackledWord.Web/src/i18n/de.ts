@@ -2708,6 +2708,7 @@ export const de = {
         tooManyFilters: "Höchstens 12 Filter pro Grammatiksuche.",
         emptyQuery: "Die Grammatiksuche braucht ein Wort oder einen Filter.",
         unknownWord: "„{{token}}“ wurde im Grundtext nicht gefunden.",
+        keyNotInLanguage: "„{{token}}“ gibt es in der Sprache dieses Worts nicht.",
         generic: "Die Grammatiksuche ist so nicht lesbar.",
       },
     },

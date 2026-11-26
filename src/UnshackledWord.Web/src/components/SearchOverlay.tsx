@@ -496,6 +496,7 @@ function GrammarProblemBlock({
     "tooManyFilters",
     "emptyQuery",
     "unknownWord",
+    "keyNotInLanguage",
   ];
   const message = t(
     `search.grammar.problems.${known.includes(problem.code) ? problem.code : "generic"}`,

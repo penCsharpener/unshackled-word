@@ -228,3 +228,13 @@ describe("German side (roadmap 0029.7f)", () => {
     expect(germanMatchText(hit, { slot: 0, germanPositions: [3, 1] })).toBe("Gott geliebt");
   });
 });
+
+describe("keyNotInLanguage (roadmap 0029 review)", () => {
+  it("replaces the key, not the value", () => {
+    const problem = { code: "keyNotInLanguage", token: "Kasus:nom", candidates: ["Stamm"] };
+    expect(replaceGrammarToken("bara Kasus:nom", problem, "Stamm")).toBe("bara Stamm:nom");
+    expect(
+      replaceGrammarToken("bara -Kasus:nom", { ...problem, token: "-Kasus:nom" }, "Stamm"),
+    ).toBe("bara -Stamm:nom");
+  });
+});

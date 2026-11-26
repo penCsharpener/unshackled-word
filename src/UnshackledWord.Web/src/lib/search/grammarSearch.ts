@@ -81,7 +81,8 @@ export type GrammarProblemCode =
   | "tooManySlots"
   | "tooManyFilters"
   | "emptyQuery"
-  | "unknownWord";
+  | "unknownWord"
+  | "keyNotInLanguage";
 
 /** The 400 body of a query that cannot be searched. */
 export interface GrammarProblem {
@@ -224,7 +225,7 @@ export function parseGrammarProblem(error: unknown): GrammarProblem | null {
 }
 
 /**
- * The query with the offending token replaced by a candidate: for `unknownKey` the key part
+ * The query with the offending token replaced by a candidate: for `unknownKey` and `keyNotInLanguage` the key part
  * (`-dt.Kasu:nom` → `-dt.Kasus:nom`), for a value problem the value part (`Tempus:p` → `Tempus:Präsens`),
  * otherwise the whole token. Whitespace in a candidate is dropped (tokens are split at whitespace).
  */
@@ -238,7 +239,8 @@ export function replaceGrammarToken(
   const value = candidate.replace(/\s+/g, "");
   const colon = token.indexOf(":");
   let replacement = value;
-  if (colon >= 0 && problem.code === "unknownKey") {
+  // The candidates of these codes are key names: they replace the key and keep the value.
+  if (colon >= 0 && (problem.code === "unknownKey" || problem.code === "keyNotInLanguage")) {
     const prefix = /^-?(?:dt\.)?/i.exec(token)?.[0] ?? "";
     replacement = `${prefix}${value}${token.slice(colon)}`;
   } else if (colon >= 0) {

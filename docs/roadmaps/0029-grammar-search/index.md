@@ -12,7 +12,9 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 | [06-tasks.md](06-tasks.md) | Task table (backend and frontend woven) |
 | [07-risks.md](07-risks.md) | Risks worth naming before starting |
 
-## Status (2026-11-26)
+## Status (2026-11-27)
+
+**All rows done (0029.1–0029.11), end-of-roadmap review done (0.14.16).** Open items are listed under 0029.11 and in the review paragraph at the end.
 
 Implementation started 2026-11-26 on `feature/morphology-search`. Numbering continues from `feature/lxx` (0.13.18, migrations up to 0053): this roadmap is version 0.14.0 with 0029.1, then a build number per row; migrations `0054_GrammarSearchGreekIndex.sql` (0029.1) and `0055` (Hebrew index, 0029.6). `ExpectedMigration` follows.
 
@@ -67,3 +69,5 @@ Implementation started 2026-11-26 on `feature/morphology-search`. Numbering cont
 - The first fresh SeedDb run failed in `ElberfelderTextRunner` with an Npgsql read timeout (default 30 s command timeout on the word bulk insert into a cold bind-mounted Postgres) and still exited 0; with `Command Timeout=900` in the connection string the run passed. A seed failure that exits 0 hides itself from compose.
 - The dev database lacks 542 Hebrew lexicon numbers, H1254 among them, so `bara`/`H1254` are `unknownWord` there; the fresh database has them (importer fixed in 0022.1b). The dev database needs `step-lexicon-repair` (SeedDb verb), then an API restart.
 - This branch starts from `main`, not from `feature/lxx`: a fresh database has no LXX, and migrations 0054/0055 follow 0049 here. Merge `feature/lxx` first.
+
+**End-of-roadmap review (0.14.16).** Every row of [06-tasks.md](06-tasks.md) checked against its "done when" through the status notes, the fresh-database run and the code; the risks in [07-risks.md](07-risks.md) are handled (label test, "nicht übersetzt", always-visible reader chip, cheat-sheet notes on German number/gender, Hebrew state and deponents). Tests: Domain 766/766, Application 1,400/1,402 (the two known agent-prompt failures), Infrastructure grammar DB tests 19/19 against the fresh database, WebApi 310 + 5 skipped (vocabulary labels and version sync pass); frontend typecheck, lint and `check:components` pass. Fixed: the overlay had no message for 400 `keyNotInLanguage` (0029.6) and its key-name candidates replaced the value (`Kasus:nom` → `Kasus:Wortart`); now "„Stamm:qal“ gibt es in der Sprache dieses Worts nicht." and a candidate replaces the key (`agape Stamm:qal` → `agape Kasus:qal`), checked in the browser. Not fixed, outside this roadmap: Vitest cannot start any jsdom test in the web container (also on the commits before this roadmap's last steps), so the frontend component tests did not run; the two agent-prompt test failures; `step-lexicon-repair` on the dev database.
