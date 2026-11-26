@@ -1494,6 +1494,29 @@ export const de = {
       },
       dialog: { cancel: "Abbrechen" },
     },
+    lxx: {
+      title: "LXX",
+      intro:
+        "Schlägt Lemma, Strong's und Bestimmung für Wörter vor, deren Form im NT genau eine Analyse hat. Vorschläge sind nur für Maintainer sichtbar und müssen bestätigt werden.",
+      counts: "Bestand",
+      verses: "Verse",
+      words: "Wörter",
+      tags: "Tags",
+      coverage: "Abdeckung (Wörter mit Tag)",
+      byStatus: "Nach Status",
+      bySource: "Nach Quelle",
+      status: { proposed: "vorgeschlagen", confirmed: "bestätigt" },
+      source: { "nt-form": "NT-Form", ai: "KI", human: "Mensch" },
+      prefill: "Vorbelegen",
+      running: "Läuft …",
+      progress: "Die Vorbelegung läuft, das dauert einige Sekunden.",
+      busy: "Es läuft schon ein anderer Seed- oder LXX-Auftrag.",
+      startFailed: "Die Vorbelegung konnte nicht gestartet werden.",
+      loadFailed: "Der LXX-Stand konnte nicht geladen werden.",
+      lastJob: "Letzter Auftrag",
+      jobFailed: "Der Auftrag ist fehlgeschlagen: {{error}}",
+      jobStatus: { running: "läuft", succeeded: "fertig", failed: "fehlgeschlagen" },
+    },
     verseSimilarity: {
       title: "Ähnliche Verse",
       intro:
@@ -1579,6 +1602,7 @@ export const de = {
         notesImport: "Notizen importieren",
         tskExport: "TSK-Kuratierung exportieren",
         verseSimilarity: "Ähnliche Verse",
+        lxxPrefill: "LXX vorbelegen",
         tskImport: "TSK-Kuratierung importieren",
       },
       hints: {

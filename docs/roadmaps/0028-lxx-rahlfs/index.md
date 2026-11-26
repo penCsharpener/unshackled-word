@@ -15,7 +15,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3, 0028.4 and 0028.4f done; 0028.5 and 0028.5f done; 0028.6 done (backend); the rest is open.
+Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3, 0028.4 and 0028.4f done; 0028.5 and 0028.5f done; 0028.6 and 0028.6f done; the rest is open.
 
 **0028.1 (download, parsers, `lxx-check`) done, with these findings and deviations:**
 
@@ -187,3 +187,10 @@ Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051
 - **Dev DB:** the 265,807 `nt-form` proposals were left in place. Undo: `DELETE FROM "unshackled-word"."LxxWordTags" WHERE "Source" = 'nt-form' AND "Status" = 'proposed'`.
 - **Tests:** 37 `LxxNtFormTaggerTests` (normalization, capitals, Strong's format, one-analysis rule, ambiguous skipped, confirmed/ai/human kept, per-book coverage), 2 `LxxNtFormDatabaseTests` (upsert idempotent and second run 0 rows, confirmed/ai untouched, changed rows updated, stale deleted; rolled back, skipped without `UNSHACKLEDWORD_TEST_POSTGRES`), 4 `LxxMaintainerTests` (202 with coverage in the log, 409, status, login required).
 - **Deviations:** no version bump and no commit (by instruction). The SeedDb verb needs `UNSHACKLEDWORD_ConnectionStrings__PostgresConnection` locally because the checked-in connection string points to port 15435.
+
+**0028.6f (card "LXX" on Wartung) done, with these findings and deviations:**
+
+- **Code:** page section `pages/LxxSection.tsx` (not a shared component, no `Components.md` entry) and `lib/maintainer/lxx.ts` (`useLxxStatus` polling once a second while `running`, `useStartLxxPrefill`, `sumTags`, `invalidateReaderLxx`), modelled on `VerseSimilaritySection`. Placed in `MaintainerPage` right after "Ähnliche Verse" (write roles). `SeedOperation` got `lxxPrefill`; i18n `maintainer.lxx.*` (de/en) plus the operation label.
+- **Content:** verses, words, tags and coverage (all tag rows / words, one decimal), counts by status and by source, button "Vorbelegen"/"Prefill" (label "Läuft …" while running), badge and time of the last job, job log, status line, 409 message "another seed or LXX job runs". After a running job ends, the queries `["bible","chapterLxx"]` (reader panel) and `["bible","lxxWord"]` (word card) are invalidated.
+- **Checks:** typecheck, lint (8 pre-existing warnings), `check:components` (75 ok). Vitest 1180 passed, 8 failed, all the known ones. 4 new `LxxSection.test.tsx` (counts and percentage, start with running log, 409, invalidation).
+- **Not verified in a browser:** needs a maintainer login, which was not available; covered by tests only.

@@ -1478,6 +1478,29 @@ export const en: Translation = {
       },
       dialog: { cancel: "Cancel" },
     },
+    lxx: {
+      title: "LXX",
+      intro:
+        "Proposes lemma, Strong's and parsing for words whose form has exactly one analysis in the NT. Proposals are visible to maintainers only and must be confirmed.",
+      counts: "Totals",
+      verses: "Verses",
+      words: "Words",
+      tags: "Tags",
+      coverage: "Coverage (words with a tag)",
+      byStatus: "By status",
+      bySource: "By source",
+      status: { proposed: "proposed", confirmed: "confirmed" },
+      source: { "nt-form": "NT form", ai: "AI", human: "Human" },
+      prefill: "Prefill",
+      running: "Running …",
+      progress: "Prefilling, this takes a few seconds.",
+      busy: "Another seed or LXX job is already running.",
+      startFailed: "The prefill could not be started.",
+      loadFailed: "The LXX state could not be loaded.",
+      lastJob: "Last job",
+      jobFailed: "The job failed: {{error}}",
+      jobStatus: { running: "running", succeeded: "done", failed: "failed" },
+    },
     verseSimilarity: {
       title: "Similar verses",
       intro:
@@ -1563,6 +1586,7 @@ export const en: Translation = {
         notesImport: "Import notes",
         tskExport: "Export TSK curation",
         verseSimilarity: "Similar verses",
+        lxxPrefill: "LXX prefill",
         tskImport: "Import TSK curation",
       },
       hints: {

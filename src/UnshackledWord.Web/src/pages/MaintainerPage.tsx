@@ -13,6 +13,7 @@ import { exportSeed, type SeedKind } from "@/lib/maintainer/api";
 import { AgentRunsSection } from "./agent/AgentRunsSection";
 import { ApiTokensSection } from "./agent/ApiTokensSection";
 import { LinkRolesSection } from "./LinkRolesSection";
+import { LxxSection } from "./LxxSection";
 import { RevisionLevelsSection } from "./RevisionLevelsSection";
 import { RevisionOverviewSection } from "./RevisionOverviewSection";
 import { SeedRoundTripSection } from "./SeedRoundTripSection";
@@ -86,6 +87,7 @@ export function MaintainerPage() {
           {hasWriteRole(user) ? <SeedRoundTripSection /> : null}
           {hasWriteRole(user) ? <VocabJobsSection /> : null}
           {hasWriteRole(user) ? <VerseSimilaritySection /> : null}
+          {hasWriteRole(user) ? <LxxSection /> : null}
           {hasWriteRole(user) ? <LinkRolesSection /> : null}
           <RevisionOverviewSection />
           {hasWriteRole(user) ? <RevisionLevelsSection /> : null}
