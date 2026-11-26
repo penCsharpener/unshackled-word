@@ -8,9 +8,9 @@ CREATE TABLE "unshackled-word"."LxxVerses" (
     "BibleBookId"   int4        NOT NULL,
     "TextForm"      varchar(4)  NOT NULL DEFAULT '',    -- '' | 'og' | 'th' (Daniel)
     "Chapter"       int4        NOT NULL,
-    "Verse"         int4        NOT NULL,               -- 0 = Psalm title
+    "Verse"         int4        NOT NULL,               -- Psalm title = verse 1 (Greek counting)
     "Subverse"      int4        NOT NULL DEFAULT 0,
-    "RahlfsRefId"   int8        NOT NULL,
+    "RahlfsRefId"   int8        NOT NULL,               -- book·10⁸ + chapter·10⁵ + verse·10² + subverse
     "SweteRef"      varchar(30) NOT NULL,
     "LxxRefId"      int4        NULL,                   -- STEP / English counting
     "HebRefId"      int4        NULL,                   -- Elberfelder counting

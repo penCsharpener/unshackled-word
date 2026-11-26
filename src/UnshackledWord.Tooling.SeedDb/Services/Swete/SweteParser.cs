@@ -1,15 +1,7 @@
 using System.Globalization;
+using UnshackledWord.Application.Features.Lxx;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.Swete;
-
-/// <summary>One Greek word of Swete's text with its running position inside the verse (1..n). <c>Text</c> carries the punctuation.</summary>
-public sealed record SweteWord(int Id, int Position, string Text);
-
-/// <summary>One verse of Swete's text in Swete's own numbering. <c>BookCode</c> is Swete's three character code (<c>Gen</c>, <c>1Sa</c>, <c>Dat</c>).</summary>
-public sealed record SweteVerse(int FirstWordId, string BookCode, int Chapter, int Verse, IReadOnlyList<SweteWord> Words)
-{
-    public string Reference => $"{BookCode}.{Chapter}:{Verse}";
-}
 
 /// <summary>
 /// Parser of eliranwong/LXX-Swete-1930 (roadmap 0028.1). Both files are UTF-8, tab separated, have no header and use LF line ends.

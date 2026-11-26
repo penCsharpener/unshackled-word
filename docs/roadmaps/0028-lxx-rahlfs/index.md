@@ -15,7 +15,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); the rest is open.
+Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); the rest is open.
 
 **0028.1 (download, parsers, `lxx-check`) done, with these findings and deviations:**
 
@@ -39,5 +39,36 @@ Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done 
   - The verb downloads STEP itself when TVTMS is missing.
   - The stub `RalfsLxxParserStrategy` and its setting are removed.
 - **Tests:** new parser tests pass (8 + 3). Two AgentMapping prompt tests (`AgentPromptProviderTests`, `AgentPromptExampleTests` greek-v2) fail; this change touches neither the prompt files nor that code.
+
+**0028.2 (exception list, `LxxVersification`, `lxx-check --show`) done, with these findings and deviations:**
+
+- **Exception list:** `assets/seed/lxx/swete-to-rahlfs.csv` has 133 rows (syntax in [03-versification.md](03-versification.md#assetsseedlxxswete-to-rahlfscsv)).
+  - 54 rows cover Swete's English/Vulgate chapter divisions where Rahlfs follows the Hebrew: 1Sa 20/21, 2Sa 18/19, 2Ki 11/12, 1Ch 5/6, 2Ch 1/2 and 13/14, Neh 3/4, Ecc 6/7, Song 5-7, Hos, Joel, Mic, Nah, Hag, Zech, Isa 8/9 and 63/64, Jer 2:36 and 8/9, Ezek 20/21, Dan 5/6 (both forms).
+  - 45 rows cover Greek order and pluses: Gen 5:32/6:1, Jos 9:2a-f, 2Sa 23:30, 3 Kgdms 4-6 and 9-10, Prov 15-20, 24 and 29 (Hebrew 30-31 inside), Est 1:1, 5:1-2 and 9.
+  - 24 rows cover places where Swete follows TVTMS Greek2/Latin: Gen 2:25, Exo 36 and 39, Job 16, 39-41, Neh 4:4-5, Jer 30:1-5.
+  - 21 rows are word-range splits (10 verses). 9 are gap rows (16 Rahlfs verses without Swete text), and 1 is an absent row (Prov 24:23).
+- **Inline additions:** the marker rule gives 232 subverses (Esther A–F, 3 Kgdms 2:35a-o/2:46a-l/12:24a-z/16:28a-h, Prov, Job, Dan OG 4). Of the 367 additions, the rest are:
+  - Dan 3:24-90 in both forms, as S3Y;
+  - Ps 151;
+  - Prov 15:29.1.
+- **TVTMS fixes in code:** Mal 4 (the typo and the 4:4-6 order), Dan 3:52-90 (commented out), Dan 3:98-100 (`Absent`), Exo 38:19 (missing). Deu 28:69 is an artefact of `VerseTables`: the English count for Deu 28 is 69, but should be 68. It is filtered in the check, and `BibleBook` is unchanged.
+- **Gen 2 and Deu 28:** only Gen 2 is a Greek2 case, fixed by a word split. Deu 28 was the count artefact.
+- **1Ki 14:1-20:** no TVTMS error. Swete leaves them empty, like 239 other verse numbers (240 empty Swete verses in all).
+- **Check:** `lxx-check` maps 23,860 units:
+  - by MapKind: one 23,203, split 48, merged 2, addition 367, absent 240 (all empty);
+  - chapters: ok 869, explained (exception) 63, explained (tvtms-fix) 5, gap 6, **unexplained 0**;
+  - references: explained (exception) 81, gap 69, unexplained 0.
+  
+  The full mapping is in `temp/lxx/swete-to-rahlfs-mapping.csv`.
+- **Deviations:**
+  - The `RahlfsRefId` encoding is book·10⁸ + chapter·10⁵ + verse·10² + subverse, because Est 4:17 has 30 subverses.
+  - "Rahlfs" is defined as the TVTMS Greek column.
+  - `SweteVerse`/`SweteWord` moved to `Application/Features/Lxx`, so that `LxxVersification` stays pure.
+  - The check finds count differences only. Shifts inside a chapter with an equal count, for example Prov 16, map as TVTMS does.
+- **Notes for 0028.3:**
+  - Import in `Order` (Swete order), not in `RahlfsRefId` order.
+  - Skip `IsEmpty` units.
+  - Drop marker tokens (`LxxVersification.IsMarkerToken`), the `⸂ ⸆ ⸃` marks and the heading words from the word stream.
+- **Tests:** 12 new `LxxVersificationTests` pass (20 with the parser tests). The two AgentMapping prompt tests from 0028.1 still fail and are untouched.
 
 Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051` and version 0.13.0. 0026 (morpheme alignment) is deferred indefinitely and will take whatever numbers are free when it is picked up.

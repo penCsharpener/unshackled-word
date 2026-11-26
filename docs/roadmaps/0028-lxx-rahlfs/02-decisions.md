@@ -18,6 +18,22 @@
 - **Seed rule like TSK curation:** SeedDb applies `assets/seed/lxx/*.csv` only to a fresh database (empty `LxxWordTags`). After that, only the maintainer export ("Wartung") and import ("Importe") change it.
 - **Double texts:** Swete prints Daniel in both OG and Theodotion, and Rahlfs has both as well. Both are kept with `TextForm` (`og`/`th`), and the reader shows Theodotion by default. Joshua and Judges: Swete prints codex B, which Rahlfs keeps as the B column, so B is the only form we have. 0028.1 checks this against the CSVs.
 
+## Decisions in 0028.2 (versification)
+
+- **"Rahlfs" = the TVTMS Greek column.** We store TVTMS's Greek key, even where it differs from a printed Rahlfs, for example Jer 30 (Ammon at 30:17-21) and Prov 24-31 (Hebrew numbers in the Greek order). TVTMS is the bridge, so our key has to be its key.
+- **Inline additions are subverses, by a marker rule.** Swete's `[N]` marks are its a, b, c … pluses, not verse numbers of their own. A verse is cut at its markers, and the k-th segment becomes subverse k (Est 1:1.1-17, 1Ki 2:35.1-14, Prov 3:16.1 …). This rule is code, not 232 CSV rows. The CSV handles only the irregular cases:
+  - Est 1:1 `[18]` is the canonical 1:1;
+  - Est 5:1-2 follow TVTMS's D numbering;
+  - 2Sa 23:30 `[31]` stays one verse.
+  
+  Subverses that TVTMS lacks become additions after their main verse.
+- **Swete following Greek2 (Gen 2, Exo 36/39, Job 16/39-41, Neh 4) maps back to the Greek column.** We use word splits (`Gen.3:1#1-15` = Gen 2:25) and joins (`Exo.36:23-24` = Greek 36:23). We do not use the Greek2 column itself.
+- **TVTMS errors are fixed in code** (`TvtmsGreekFixes`: Mal 4, Dan 3:52-90, Dan 3:98-100, Exo 38:19, Deu 28:69). They are not written as fake Swete exceptions. 1Ki 14:1-20 needed no fix, because Swete leaves those verses empty.
+- **Empty Swete verses** (one blank word, 240 of them) are `absent` by rule and are not imported.
+- **`RahlfsRefId` = book·10⁸ + chapter·10⁵ + verse·10² + subverse.** The planned verse·10 + subverse cannot hold Est 4:17.30.
+- **Psalm titles:** `LxxRefId` is verse 0, as in STEP's Hebrew words (`Psa.3.0`). `HebRefId` is Hebrew verse 1.
+- **Reading order = Swete order.** Addition A precedes Est 1:1 even though its `RahlfsRefId` sorts after it.
+
 ## Code findings the plan rests on
 
 - TVTMS condensed table starts at line 162 (`#DataStart(Condensed)`), records like `OneToOne  Psa.10:1-18  Psa.10:1-18  Psa.9:22-39 …` with columns English KJV, Hebrew, Latin, Greek, Greek2 (Brenton). Subverses for LXX additions (`1Ki.2:35.1`…, Esther additions) are part of the format.

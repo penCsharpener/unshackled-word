@@ -1,0 +1,144 @@
+# Swete -> Rahlfs exceptions (roadmap 0028.2, CC0). Only places where Swete's numbering differs from the Rahlfs/TVTMS Greek column.
+# Syntax (docs/roadmaps/0028-lxx-rahlfs/03-versification.md):
+#   SweteRef  Swete book code (Joe, Sol, Eze, Nah, Dat ...): Book.C:V | Book.C:V-W | Book.C:V[N] | Book.C:V[N-M] (Swete marker segments)
+#             | Book.C:V#A-B | Book.C:V#A- (word positions 1..n of the verse) | empty = gap row (Rahlfs verse without Swete text)
+#   RahlfsRef TVTMS syntax and book codes (Jol, Sng, Ezk, Nam, Dan): Book.C:V | Book.C:V-W | Book.C:V.S | Book.C:V.S-T, one chapter
+#             | empty = Swete text without Rahlfs/TVTMS counterpart (MapKind absent)
+#   Same count on both sides = pairwise; one RahlfsRef = the units join (rows naming the same RahlfsRef join too, in Swete order).
+#   TextForm  empty, or og/th for Daniel (must match Dan/Dat). Every row has a Note.
+# Not listed here: Swete's [N] marker segments become subverse N (by order) by rule, empty Swete verses are absent by rule, and TVTMS
+# errors are fixed in code (TvtmsGreekFixes: Mal 4, Dan 3:52-90, Dan 3:98-100, Exo 38:19, Deu 28:69).
+SweteRef;RahlfsRef;TextForm;Note
+Gen.6:1#1-16;Gen.6:1.1;;Swete has no 5:32; its 6:1 = Heb 5:32 + 6:1 (TVTMS Greek 6:1.1-2); split at word 17
+Gen.6:1#17-;Gen.6:1.2;;= Heb 6:1 (TVTMS Greek 6:1.2)
+Gen.3:1#1-15;Gen.2:25;;Swete prints 2:25 as the start of 3:1 (TVTMS Greek2 numbering); split back to the Greek column
+Gen.3:1#16-;Gen.3:1;;rest of Swete 3:1 after 2:25
+Exo.36:23-24;Exo.36:23;;Swete follows Greek2 (NETS) in Exo 36: Greek 36:23 (Eng 39:16) is Swete 36:23-24; joined
+Exo.36:25-27;Exo.36:24-26;;Swete Greek2 numbering (= Eng 39:17-19)
+Exo.36:28-35;Exo.36:27-34;;Swete Greek2 numbering (= Eng 39:20-27)
+Exo.36:36-37;Exo.36:35-36;;Swete Greek2 numbering (= Eng 39:28-29)
+Exo.36:38-39;Exo.36:37;;Greek 36:37 (Eng 39:30) is Swete 36:38-39 (Greek2); joined
+Exo.36:40;Exo.36:38;;Swete Greek2 numbering (= Eng 39:31)
+Exo.39:10-11;Exo.39:10;;Swete follows Greek2 in Exo 39: Greek 39:10 (Eng 38:2 / 39:32a) is Swete 39:10-11; joined
+Exo.39:12-21;Exo.39:11-20;;Swete Greek2 numbering (Greek + 1 in 39:11-20)
+Jos.9:3-8;Jos.9:2.1-6;;Heb 8:30-35 follow 9:2 in the Greek (Rahlfs 9:2a-f); Swete numbers them 9:3-8
+Jos.9:9-33;Jos.9:3-27;;Swete numbering shifted by the six verses 9:2a-f
+1Sa.20:43;1Sa.21:1;;Swete English chapter division (Eng 20:42b = Heb 21:1)
+1Sa.21:1-15;1Sa.21:2-16;;Swete English numbering, Rahlfs follows the Hebrew
+2Sa.18:33;2Sa.19:1;;Swete English numbering (Eng 18:33 = Heb 19:1)
+2Sa.19:1-43;2Sa.19:2-44;;Swete English numbering, Rahlfs follows the Hebrew
+2Sa.23:30;2Sa.23:30;;the marker [31] in Swete 23:30 shows where Heb 23:31 begins; not a subverse, the verse stays whole
+1Ki.4:20-21;1Ki.5:1;;Greek 5:1 = Heb 5:7-8 (Swete prints the Greek of 3 Kgdms 5:1-14 as 4:20-33); joined
+1Ki.4:22-24;1Ki.5:2-4;;Swete English-style numbering of Greek 5:2-4
+1Ki.4:25-30;1Ki.5:9-14;;Greek 5:9-14; the Greek has Heb 5:5-6 at 2:46g-i, so 5:5-8 are not numbered
+1Ki.4:31;1Ki.5:14.1;;Rahlfs 5:14a (= Heb 3:1)
+1Ki.4:32-33;1Ki.5:14.2;;Rahlfs 5:14b (= Heb 9:16-17); joined
+1Ki.5:1-16;1Ki.5:15-30;;Swete English numbering (Eng 5:1-16 = Heb 5:15-30)
+1Ki.5:17;1Ki.5:32;;= Heb 5:32 (stones and timber prepared three years); TVTMS files Greek 5:30-32 under Heb 5:30
+;1Ki.5:31;;TVTMS Greek 5:31 (a part of Heb 5:30) has no verse of its own in Swete
+1Ki.6:2-5;1Ki.6:1.1-4;;Rahlfs 6:1a-d (= Heb 5:31-32, 6:37-38); Swete numbers them 6:2-5
+1Ki.6:6;1Ki.6:2;;Swete numbering shifted by 6:1a-d
+1Ki.6:7-8;1Ki.6:3;;Swete 6:8 (he built the house and finished it) continues Greek 6:3; joined
+1Ki.6:9-15;1Ki.6:4-10;;Swete numbering shifted by 6:1a-d and 6:8
+;1Ki.6:11-14;;the Greek lacks Heb 6:11-14
+1Ki.6:16-18;1Ki.6:15-17;;Swete numbering shifted (the Greek lacks Heb 6:11-14)
+;1Ki.6:18-19;;the Greek lacks Heb 6:18; Heb 6:19 is folded into Swete 6:18
+1Ki.6:19;1Ki.6:20;;= Heb 6:20
+1Ki.6:20-29;1Ki.6:21-30;;Swete numbering shifted
+1Ki.6:30-31;1Ki.6:31;;Swete 6:31 (four-sided porches) ends Heb 6:31; joined
+;1Ki.6:32-33;;the Greek lacks Heb 6:32-33 (Swete 6:32 is Heb 6:34)
+1Ki.6:32-34;1Ki.6:34-36;;= Heb 6:34-36
+1Ki.9:9#1-36;1Ki.9:9;;Rahlfs 9:9a (= Heb 9:24) is printed inside Swete 9:9 without a mark; split at word 37
+1Ki.9:9#37-;1Ki.9:9.1;;Rahlfs 9:9a (= Heb 9:24)
+1Ki.10:23-25;1Ki.10:22.1-3;;Rahlfs 10:22a-c (= Heb 9:15, 9:20, 9:22); Swete numbers them 10:23-25
+1Ki.10:26-29;1Ki.10:23-26;;Swete numbering shifted by 10:22a-c
+1Ki.10:30;1Ki.10:26.1;;Rahlfs 10:26a (= Heb 5:1)
+1Ki.10:31-33;1Ki.10:27-29;;Swete numbering shifted by 10:22a-c and 10:26a
+;1Ki.11:14.1-2;;TVTMS 11:14a-b (Heb 11:23-25) are printed inside Swete 11:14 and interleaved with Heb 11:14; not split
+2Ki.11:21;2Ki.12:1;;Swete English numbering (Eng 11:21 = Heb 12:1)
+2Ki.12:1-21;2Ki.12:2-22;;Swete English numbering
+1Ch.6:1-15;1Ch.5:27-41;;Swete English numbering (Eng 6:1-15 = Heb 5:27-41)
+1Ch.6:16-81;1Ch.6:1-66;;Swete English numbering
+1Ch.12:4#1-12;1Ch.12:4;;Swete 12:4 = Heb 12:4-5 (English numbering); split at word 13
+1Ch.12:4#13-;1Ch.12:5;;= Heb 12:5 (Jeremiah, Jahaziel, Johanan, Jozabad)
+1Ch.12:5-40;1Ch.12:6-41;;Swete English numbering
+2Ch.2:1;2Ch.1:18;;Swete English numbering (Eng 2:1 = Heb 1:18)
+2Ch.2:2-18;2Ch.2:1-17;;Swete English numbering
+2Ch.14:1;2Ch.13:23;;Swete English numbering (Eng 14:1 = Heb 13:23)
+2Ch.14:2-15;2Ch.14:1-14;;Swete English numbering
+Neh.4:1-3;Neh.3:33-35;;Swete English numbering (Eng 4:1-3 = Heb 3:33-35; Rahlfs 2 Esdras 13:33-35)
+Neh.4:4-5;Neh.3:36;;Swete (Greek2) splits Heb 3:36 (Eng 4:4) into 4:4-5; joined
+Neh.4:6;Neh.3:37;;= Heb 3:37; the Greek lacks Heb 3:38 (Eng 4:6)
+Neh.4:7-23;Neh.4:1-17;;Swete English numbering
+Est.1:1[18];Est.1:1;;Swete [18] is the canonical 1:1; [1]-[17] are addition A (TVTMS 1:1.1-17) by the marker rule
+Est.5:1[1-6];Est.5:1.1-6;;addition D 1-6 (TVTMS 5:1.1-6); the canonical 5:1 has no Greek text of its own
+Est.5:1[7-11];Est.5:2.1-5;;addition D 7-11 (TVTMS 5:2.1-5)
+Est.5:2[12-16];Est.5:2.6-10;;addition D 12-16 (TVTMS 5:2.6-10); the canonical 5:2 has no Greek text of its own
+Est.9:30-31;Est.9:31-32;;the Greek lacks Heb 9:30; Swete 9:30-31 = Heb 9:31-32
+;Est.9:30;;the Greek lacks Heb 9:30 (letters to the 127 provinces)
+Pro.16:1;Pro.15:29.1;;= Heb 16:9, placed after 15:29 in the Greek (Rahlfs 15:29b); the inline plus 15:29a stays in 15:29
+Pro.16:2;Pro.15:30;;= Heb 15:30; Swete prints Heb 15:30-33 at the head of chapter 16
+Pro.16:3-4;Pro.15:32-33;;= Heb 15:32-33
+;Pro.15:31;;the Greek lacks Heb 15:31
+;Pro.16:1-4;;no Swete verse with these numbers: the Greek lacks Heb 16:1-3, Heb 16:4 is partly in Swete 16:5
+Pro.18:23;Pro.19:3;;= Heb 19:3 (folly perverts his way), placed after 18:22 in the Greek; the Greek lacks Heb 18:23-24 and 19:1-2
+Pro.19:1-26;Pro.19:4-29;;the Greek lacks Heb 19:1-2; Swete numbers Heb 19:4-29 as 19:1-26
+Pro.20:10-12;Pro.20:9.1-3;;Rahlfs 20:9a-c (= Heb 20:20-22); Swete numbers them 20:10-12
+Pro.20:13-16;Pro.20:10-13;;Swete numbering shifted by 20:9a-c
+Pro.20:17-24;Pro.20:23-30;;the Greek lacks Heb 20:14-19 (20:20-22 are 9a-c); Swete numbers Heb 20:23-30 as 20:17-24
+Pro.24:23;;;Swete keeps an empty 24:23; the text of Heb 24:23 is Swete 24:38
+Pro.24:24-37;Pro.30:1-14;;Greek order: Heb 30:1-14 follow 24:22; Swete continues 24:24-37, Rahlfs keeps the Hebrew numbers
+Pro.24:38-49;Pro.24:23-34;;Heb 24:23-34 follow Heb 30:14 in the Greek; Swete 24:38-49
+Pro.24:50-68;Pro.30:15-33;;Heb 30:15-33 in the Greek order; Swete 24:50-68
+Pro.24:69-77;Pro.31:1-9;;Heb 31:1-9 in the Greek order; Swete 24:69-77
+Pro.29:28-49;Pro.31:10-31;;Heb 31:10-31 follow Heb 29 in the Greek; Swete 29:28-49
+Ecc.7:1;Ecc.6:12;;Swete starts chapter 7 one verse early (Vulgate division)
+Ecc.7:2-30;Ecc.7:1-29;;Swete numbering shifted by one
+Sol.5:17;Sng.6:1;;Swete English-style division (Eng 6:1 = Swete 5:17)
+Sol.6:1-11;Sng.6:2-12;;Swete numbering shifted by one
+Sol.6:12;Sng.7:1;;Swete prints the first half of Heb 7:1 (Eng 6:13a) as 6:12; joined with Swete 7:1#1-11
+Sol.7:1#1-11;Sng.7:1;;second half of Heb 7:1 (Eng 6:13b); joined with Swete 6:12
+Sol.7:1#12-;Sng.7:2;;= Heb 7:2 (Eng 7:1)
+Sol.7:2-13;Sng.7:3-14;;Swete English numbering
+Job.10:21#1-12;Job.10:21;;Swete 10:21 = Heb 10:21-22; split at word 13
+Job.10:21#13-;Job.10:22;;= Heb 10:22
+Job.16:4-5;Job.16:4;;Swete (Latin numbering) splits Heb 16:4 into 4-5; joined
+Job.16:6-23;Job.16:5-22;;Swete Latin numbering
+Job.39:31-35;Job.40:1-5;;Swete (Greek2/Latin) numbers Heb 40:1-5 as 39:31-35
+Job.40:1-27;Job.40:6-32;;Swete Greek2/Latin numbering
+Job.41:1#1-5;Job.41:1;;Swete (Greek2) has no 41:1 of its own; its 41:1-2 hold Heb 41:1-3, split at words
+Job.41:1#6-;Job.41:2;;joined with Swete 41:2#1-6 (= Heb 41:2)
+Job.41:2#1-6;Job.41:2;;joined with Swete 41:1#6- (= Heb 41:2)
+Job.41:2#7-;Job.41:3;;= Heb 41:3
+Job.41:3-25;Job.41:4-26;;Swete Greek2 numbering (one behind the Hebrew)
+Hos.1:10-11;Hos.2:1-2;;Swete English numbering (Eng 1:10-11 = Heb 2:1-2)
+Hos.2:1-23;Hos.2:3-25;;Swete English numbering
+Hos.11:12;Hos.12:1;;Swete English numbering (Eng 11:12 = Heb 12:1)
+Hos.12:1-14;Hos.12:2-15;;Swete English numbering
+Joe.2:28-32;Jol.3:1-5;;Swete English numbering (Eng 2:28-32 = Heb/Greek 3:1-5)
+Joe.3:1-21;Jol.4:1-21;;Swete English numbering (Eng 3 = Heb/Greek 4)
+Mic.5:1;Mic.4:14;;Swete English numbering (Eng 5:1 = Heb 4:14)
+Mic.5:2-15;Mic.5:1-14;;Swete English numbering
+Nah.1:15;Nam.2:1;;Swete English numbering (Eng 1:15 = Heb 2:1a); joined with Swete 2:1
+Nah.2:1;Nam.2:1;;end of Heb 2:1 (Eng 1:15b); joined with Swete 1:15
+Hag.2:1#1-15;Hag.1:15;;Swete starts chapter 2 at Heb 1:15 (Vulgate division); split at word 16
+Hag.2:1#16-;Hag.2:1;;= Heb 2:1
+Zec.1:18-21;Zec.2:1-4;;Swete English numbering (Eng 1:18-21 = Heb 2:1-4)
+Zec.2:1-13;Zec.2:5-17;;Swete English numbering
+Isa.9:1;Isa.8:23;;Swete English numbering (Eng 9:1 = Heb 8:23)
+Isa.9:2-21;Isa.9:1-20;;Swete English numbering
+Isa.63:19;Isa.63:19;;joined with Swete 64:1
+Isa.64:1;Isa.63:19;;Swete English numbering (Eng 64:1 = Heb 63:19b); joined with Swete 63:19
+Isa.64:2-12;Isa.64:1-11;;Swete English numbering
+Jer.2:36#1-16;Jer.2:36;;Swete 2:36 = Heb 2:36-37; split at word 17
+Jer.2:36#17-;Jer.2:37;;= Heb 2:37
+Jer.9:1;Jer.8:23;;Swete English numbering (Eng 9:1 = Heb 8:23)
+Jer.9:2-26;Jer.9:1-25;;Swete English numbering
+Jer.30:1-5;Jer.30:17-21;;Ammon (Heb 49:1-5): Swete prints it first as 30:1-5 (Greek2/NETS), the TVTMS Greek column after Damascus as 30:17-21
+;Jer.30:22;;TVTMS Greek 30:22 (= Heb 49:6, marked Empty) has no text in Swete
+Eze.20:45-49;Ezk.21:1-5;;Swete English numbering (Eng 20:45-49 = Heb 21:1-5)
+Eze.21:1-32;Ezk.21:6-37;;Swete English numbering
+Dan.5:31;Dan.6:1;og;Swete English numbering (Eng 5:31 = Aramaic/Greek 6:1)
+Dan.6:1-28;Dan.6:2-29;og;Swete English numbering
+Dat.5:31;Dan.6:1;th;Swete English numbering (Eng 5:31 = Aramaic/Greek 6:1)
+Dat.6:1-28;Dan.6:2-29;th;Swete English numbering
