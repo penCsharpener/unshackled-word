@@ -15,7 +15,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3, 0028.4 and 0028.4f done; 0028.5 (backend) done, 0028.5f open; the rest is open.
+Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3, 0028.4 and 0028.4f done; 0028.5 and 0028.5f done; the rest is open.
 
 **0028.1 (download, parsers, `lxx-check`) done, with these findings and deviations:**
 
@@ -162,5 +162,14 @@ Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done 
   - Afterwards `LxxWordTags`, `LxxHebrewLinks` and `LxxTagAudit` are empty again.
 - **Tests:** 40 `GreekMorphologyCodeTests` cases (all 1161 STEP codes, complete keys, 18 descriptions, structure, 19 rejected codes), 14 `LxxTagVisibilityTests` (rule, chapter anonymous/maintainer, word untagged/confirmed/proposed/unparsable, service skips the lexicon for hidden tags), 5 new `GreekMorphologyDecoderTests` cases; 7 `LxxTagsDatabaseTests` against the dev DB (0051 runs twice, 5 refused rows, read SQL with tags and gloss) pass, skipped without `UNSHACKLEDWORD_TEST_POSTGRES`. Full suites: Domain 771, Infrastructure 178 (+153 skipped), WebApi 277 (+42 skipped) pass; Application 1349 pass, 2 fail (the known AgentMapping prompt tests).
 - **Deviations:** no version bump and no commit (by instruction). Bruno `api/unshackled-word/Lxx/GetLxxWord.bru`. `LxxReadRepository`'s SQL moved into the public `LxxReadSql` so the DB tests can run it inside a rolled-back transaction.
+
+**0028.5f (LXX words with hover card and detail in the panel) done, with these findings and deviations:**
+
+- **No new component.** `OriginalVerse` (`language: "lxx"`) and `WordInfoCard` got props/fields: `info.notes`, `info.badge`, `onClose`; `VerseMappingOriginalWord.lxx` carries the Rahlfs label and tag status. `lxxOriginalWords(units, books, language)` maps the chapter `tag` to the same fields NT words have. Types `LxxWordTag`, `GetLxxWordResponse`, `bibleApi.lxxWord`, hook `useLxxWord` (stale time 60 s). `Components.md` updated.
+- **Parse wording:** formatted from the `morphology` keys with `formatMorphology`, as NT words ("Substantiv · Dativ · Singular · feminin"); the server's `parseGerman` ("Nomen ...") is not shown. The Strong's link and label use `normalizeStrongs` like NT words, so `G0746` links to `/bible/strongs/G746`.
+- **Deviation, detail surface:** `WordDetailPopover` is built for Elberfelder words (`GetWordDetailResponse`: readings, mapping, TSK), so the LXX detail is the margin card pinned on click: adds the Rahlfs reference and the TBESG definition from `GET api/lxx/word/{id}`, closes with "Schließen", Escape or a click on another word. A plain click on a tagged link opens it instead of navigating; Ctrl/Shift/Alt/middle click still follows the link; the card has the Strong's link.
+- **Untagged words** are `Button variant="inline"` ("{word}: noch nicht bestimmt, Details öffnen") and open the card with "Noch nicht bestimmt" (en "Not yet tagged"). **Proposed** tags (maintainers): dotted underline (the edition mark class) and a neutral "Vorschlag" badge plus a hint line. The maintainer path is covered by tests only.
+- **Checked in the browser** (API 5142, Vite 5175, 2100 px, temporary confirmed tag on word 486320): ΑΡΧΗ is a link to `/bible/strongs/G746`, hover shows ἀρχή, G0746, "Substantiv · Dativ · Singular · feminin", "beginning"; click pins the card with "1Mo 1,1", the TBESG definition and "Schließen"; other words are buttons and show "Noch nicht bestimmt". Tag deleted afterwards (`LxxWordTags` and `LxxTagAudit` empty), servers stopped, localStorage reset.
+- **Tests:** 5 new `OriginalVerse.lxx.test.tsx` (link and card, pin and close, untagged de/en, proposed badge). Vitest: 1176 passed, 8 failed, all the known ones.
 
 Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051` and version 0.13.0. 0026 (morpheme alignment) is deferred indefinitely and will take whatever numbers are free when it is picked up.

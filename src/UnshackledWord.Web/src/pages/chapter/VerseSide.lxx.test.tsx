@@ -80,7 +80,7 @@ describe("VerseSide, mode lxx", () => {
     expect(screen.queryByText(/LXX$/)).not.toBeInTheDocument();
   });
 
-  it("renders untagged words as plain Greek text without links", () => {
+  it("renders untagged words as Greek text without links (buttons open the detail)", () => {
     renderVerse({ hebRefId: 24_025_001, verse: 1, units: [unit(1, ["Ὁ", "λόγος"])] });
     const text = screen.getByText("λόγος").closest("p");
     expect(text).toHaveAttribute("lang", "grc");

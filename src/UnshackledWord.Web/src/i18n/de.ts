@@ -1161,6 +1161,10 @@ export const de = {
       hiddenWords_other: "{{count}} Wörter ausgeblendet (nicht in {{edition}})",
       strongsLink: "{{original}}, {{strongs}}: Strong's-Seite öffnen",
       lxx: {
+        untagged: "Noch nicht bestimmt",
+        proposal: "Vorschlag",
+        untaggedLink: "{{original}}: noch nicht bestimmt, Details öffnen",
+        proposalHint: "Nur für Maintainer sichtbar: Vorschlag, noch nicht bestätigt",
         info: "Griechischer Text nach Swete, Verszählung nach Rahlfs",
         label: "{{reference}} LXX",
         addition: "Zusatz der LXX",

@@ -1,4 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
+import { bibleApi } from "./api";
 import { bookAbbreviation } from "./books";
 import type { BibleStructureBook, LxxUnit, VerseMappingOriginalWord } from "./types";
 
@@ -76,11 +78,39 @@ export function lxxReference(
  * The words of one or more units as `OriginalVerse` words, in reading order: positions run on across units, because
  * `OriginalVerse` sorts by position and each unit starts again at 1.
  */
-export function lxxOriginalWords(units: readonly LxxUnit[]): VerseMappingOriginalWord[] {
+export function lxxOriginalWords(
+  units: readonly LxxUnit[],
+  books?: readonly BibleStructureBook[],
+  language = "de",
+): VerseMappingOriginalWord[] {
   let position = 0;
-  return units.flatMap((u) =>
-    [...u.words]
+  return units.flatMap((u) => {
+    const ref = lxxReference(u, books, language);
+    return [...u.words]
       .sort((a, b) => a.position - b.position)
-      .map((w) => ({ id: w.id, position: ++position, original: w.greek })),
-  );
+      .map((w) => ({
+        id: w.id,
+        position: ++position,
+        original: w.greek,
+        // tagged (roadmap 0028.5): same fields as an NT word, so the margin card shows them alike
+        ...(w.tag && {
+          lemma: w.tag.lemma,
+          strongs: w.tag.strongs,
+          gloss: w.tag.gloss,
+          morphologyCode: w.tag.morphology.code,
+          morphology: w.tag.morphology,
+        }),
+        lxx: { ref, status: w.tag?.status },
+      }));
+  });
+}
+
+/** One LXX word with tag and lexicon entry, fetched when its detail opens (the tag may change, so it is not kept long). */
+export function useLxxWord(lxxWordId: number | undefined) {
+  return useQuery({
+    queryKey: ["bible", "lxxWord", lxxWordId ?? 0] as const,
+    queryFn: ({ signal }) => bibleApi.lxxWord(lxxWordId ?? 0, signal),
+    enabled: lxxWordId !== undefined,
+    staleTime: 60_000,
+  });
 }

@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 import { ScriptureText, StrongsLink } from "@/components/ScriptureText";
 import { formatMorphology } from "@/lib/bible/morphology";
 import { type HeaderWordInfo as HeaderWordInfoData, useHeaderInfo } from "@/lib/headerInfo";
+import { Button } from "./Button";
+import { StatusBadge } from "./StatusBadge";
 
 /**
  * Original word, lemma, Strong's and morphology of the hovered word, in the centre of the sticky top
@@ -18,10 +20,25 @@ export function HeaderWordInfo() {
 }
 
 /** The same info as a small box in the page margin (hover info, "HI"; never pinned). */
-export function WordInfoCard({ info }: { info: HeaderWordInfoData }) {
+export function WordInfoCard({
+  info,
+  onClose,
+}: {
+  info: HeaderWordInfoData;
+  /** pinned card (Septuagint detail, roadmap 0028.5f): shows a close button */
+  onClose?: () => void;
+}) {
+  const { t } = useTranslation();
   return (
     <div className="rounded-md border border-border bg-surface-muted p-3 shadow-sm">
       <WordInfoBody info={info} className="items-start text-start" wrap stacked />
+      {onClose && (
+        <div className="mt-2 flex justify-end">
+          <Button variant="secondary" size="sm" onClick={onClose}>
+            {t("bible.wordDetail.close")}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -77,6 +94,16 @@ function WordInfoBody({
           </p>
         )}
         {info.editionNote && <p className="w-full text-base text-fg-muted">{info.editionNote}</p>}
+        {info.notes?.map((note) => (
+          <p key={note} className="w-full text-base text-fg-muted">
+            {note}
+          </p>
+        ))}
+        {info.badge && (
+          <p className="w-full">
+            <StatusBadge tone="neutral">{info.badge}</StatusBadge>
+          </p>
+        )}
         {info.gloss && (
           <p lang="en" className="w-full text-lg text-fg">
             {info.gloss}

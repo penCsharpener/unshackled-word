@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { editionVariant, filterWordsByEdition, mainEditionCodes } from "@/lib/bible/greekEditions";
+import { useLxxWord } from "@/lib/bible/lxx";
 import { useGreekEditions } from "@/lib/bible/queries";
 import type {
   ChapterLexiconEntry,
@@ -20,8 +21,10 @@ export interface OriginalVerseProps {
    */
   variant?: "panel" | "margin";
   /**
-   * `language: "lxx"` (roadmap 0028.4f, `margin` only): Septuagint words, Greek font and `lang="grc"`; words without a
-   * Strong's number (all until 0028.5) are plain text without link and hover card.
+   * `language: "lxx"` (roadmap 0028.4f/0028.5f, `margin` only): Septuagint words, Greek font and `lang="grc"`. Tagged
+   * words (`strongs`) are links with the hover card; a plain click pins the card with the details of `GET lxx/word/{id}`.
+   * Untagged words are plain-looking buttons that pin a card saying "Noch nicht bestimmt". Proposed tags (maintainers
+   * only, `lxx.status`) get a dotted underline and a "Vorschlag" badge.
    */
   data: {
     language: GetVerseMappingResponse["language"] | "lxx";
@@ -104,22 +107,30 @@ export function OriginalVerse({
   };
   // margin variant: lemma, Strong's and morphology of the hovered word as a card above it (data is already loaded with the chapter)
   // `top`/`bottom`: viewport edges of the hovered word; the card sits above it, or below when it does not fit above
-  const [tip, setTip] = useState<{ id: number; x: number; top: number; bottom: number } | null>(
-    null,
-  );
+  const [tip, setTip] = useState<{
+    id: number;
+    x: number;
+    top: number;
+    bottom: number;
+    /** Septuagint detail: stays until closed (button, Escape, another word) */
+    pinned?: boolean;
+  } | null>(null);
   const tipWord = tip ? words.find((w) => w.id === tip.id) : undefined;
   // the card stays while the pointer (or focus) moves from the word onto it, so its Strong's links can be clicked
   const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   // Ctrl held = pin: the card stays until Ctrl is released and the pointer is off word and card
   const ctrlHeld = useRef(false);
+  const pinnedRef = useRef(false);
   const cancelHide = () => clearTimeout(hideTimer.current);
   const closeNow = useRef(() => {
     clearTimeout(hideTimer.current);
+    pinnedRef.current = false;
     setTip(null);
   }).current;
   const scheduleHide = () => {
     cancelHide();
     hideTimer.current = setTimeout(() => {
+      if (pinnedRef.current) return;
       if (ctrlHeld.current) {
         scheduleHide();
         return;
@@ -131,6 +142,7 @@ export function OriginalVerse({
   useEffect(() => {
     const track = (event: KeyboardEvent) => {
       ctrlHeld.current = event.ctrlKey;
+      if (event.key === "Escape" && pinnedRef.current) closeNow();
     };
     window.addEventListener("keydown", track);
     window.addEventListener("keyup", track);
@@ -142,6 +154,10 @@ export function OriginalVerse({
     };
   }, []);
 
+  const isLxx = data.language === "lxx";
+  // the pinned Septuagint card adds the TBESG definition from the word detail
+  const { data: lxxDetail } = useLxxWord(isLxx && tip?.pinned ? tip.id : undefined);
+
   if (variant === "margin") {
     return (
       <>
@@ -152,15 +168,15 @@ export function OriginalVerse({
         >
           {words.map((word) => {
             const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
-            // untagged LXX word: plain text, nothing to link or explain
-            if (data.language === "lxx" && !strongs)
-              return <span key={word.id}>{word.original} </span>;
             const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
             const note = editionNote(word);
             const mark = note ? VARIANT_MARK : "";
             const noteId = note ? `${idBase}-edition-${word.id}` : undefined;
-            const enter = (element: HTMLElement) => {
+            const enter = (element: HTMLElement, pinned = false) => {
+              // a pinned card is not replaced by hovering other words
+              if (pinnedRef.current && !pinned) return;
               cancelHide();
+              pinnedRef.current = pinned;
               if (closeShownTip && closeShownTip !== closeNow) closeShownTip();
               closeShownTip = closeNow;
               onHoverWord?.(word.id);
@@ -170,6 +186,7 @@ export function OriginalVerse({
                 x: Math.max(TIP_GAP, Math.min(rect.left, window.innerWidth - TIP_WIDTH - TIP_GAP)),
                 top: rect.top,
                 bottom: rect.bottom,
+                pinned: pinned || undefined,
               });
             };
             const leave = () => {
@@ -183,6 +200,25 @@ export function OriginalVerse({
               onFocus: (event: { currentTarget: HTMLElement }) => enter(event.currentTarget),
               onBlur: leave,
             };
+            // Septuagint: a plain click opens the detail card; modified clicks still follow the link
+            const openDetail = (element: HTMLElement) => enter(element, true);
+            const proposed = isLxx && word.lxx?.status === "proposed";
+            const lxxMark = proposed ? VARIANT_MARK : "";
+            if (isLxx && !strongs) {
+              return (
+                <span key={word.id}>
+                  <Button
+                    variant="inline"
+                    aria-label={t("bible.sidePanel.lxx.untaggedLink", { original: word.original })}
+                    aria-expanded={tip?.pinned && tip.id === word.id}
+                    className={`hover:underline ${highlight}`}
+                    onClick={(event) => openDetail(event.currentTarget)}
+                  >
+                    {word.original}
+                  </Button>{" "}
+                </span>
+              );
+            }
             return (
               <span key={word.id}>
                 {strongs ? (
@@ -193,7 +229,13 @@ export function OriginalVerse({
                       strongs,
                     })}
                     aria-describedby={noteId}
-                    className={`rounded-sm hover:underline ${mark} ${highlight}`}
+                    className={`rounded-sm hover:underline ${mark} ${lxxMark} ${highlight}`}
+                    onClick={(event) => {
+                      if (!isLxx || event.button !== 0) return;
+                      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                      event.preventDefault();
+                      openDetail(event.currentTarget);
+                    }}
                     {...hover}
                   >
                     {word.original}
@@ -244,6 +286,7 @@ export function OriginalVerse({
             className="fixed z-50 w-64 -translate-y-full pb-2 font-sans text-base data-below:translate-y-0 data-below:pt-2 data-below:pb-0"
           >
             <WordInfoCard
+              onClose={tip.pinned ? closeNow : undefined}
               info={{
                 original: tipWord.original,
                 lemma: tipWord.lemma,
@@ -251,12 +294,30 @@ export function OriginalVerse({
                 morphology: tipWord.morphology,
                 morphologyCode: tipWord.morphologyCode,
                 language: data.language === "lxx" ? "greek" : data.language,
-                gloss: tipWord.strongs ? lexicon?.[tipWord.strongs]?.gloss : undefined,
-                definition: tipWord.strongs ? lexicon?.[tipWord.strongs]?.definition : undefined,
+                gloss:
+                  tipWord.gloss ??
+                  (tipWord.strongs ? lexicon?.[tipWord.strongs]?.gloss : undefined),
+                definition: tipWord.strongs
+                  ? (lexicon?.[tipWord.strongs]?.definition ?? lxxDetail?.tag?.lexicon?.definition)
+                  : undefined,
                 definitionSegments: tipWord.strongs
-                  ? lexicon?.[tipWord.strongs]?.definitionSegments
+                  ? (lexicon?.[tipWord.strongs]?.definitionSegments ??
+                    lxxDetail?.tag?.lexicon?.definitionSegments)
                   : undefined,
                 editionNote: editionNote(tipWord),
+                ...(tipWord.lxx && {
+                  notes: [
+                    ...(tip.pinned ? [tipWord.lxx.ref] : []),
+                    ...(tipWord.strongs ? [] : [t("bible.sidePanel.lxx.untagged")]),
+                    ...(tipWord.lxx.status === "proposed"
+                      ? [t("bible.sidePanel.lxx.proposalHint")]
+                      : []),
+                  ],
+                  badge:
+                    tipWord.lxx.status === "proposed"
+                      ? t("bible.sidePanel.lxx.proposal")
+                      : undefined,
+                }),
               }}
             />
           </div>

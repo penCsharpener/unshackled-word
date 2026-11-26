@@ -10,6 +10,7 @@ import type {
   GetChapterTextResponse,
   GetGreekEditionsResponse,
   GetLxxChapterResponse,
+  GetLxxWordResponse,
   GetPassageTextResponse,
   GetSimilarVersesResponse,
   GetStrongsOccurrencesResponse,
@@ -136,6 +137,9 @@ export const bibleApi = {
   /** Septuagint text (Swete, Rahlfs labels) of an OT chapter in Elberfelder counting (roadmap 0028.4). */
   lxxChapter: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetLxxChapterResponse>(`/lxx/chapter/${bookId}/${chapter}`, signal),
+  /** One Septuagint word with tag and lexicon entry (roadmap 0028.5); public, role-dependent (proposed tags for maintainers). */
+  lxxWord: (lxxWordId: number, signal?: AbortSignal) =>
+    api.get<GetLxxWordResponse>(`/lxx/word/${lxxWordId}`, signal),
   chapterOriginals: (bookId: number, chapter: number, signal?: AbortSignal) =>
     api.get<GetChapterOriginalsResponse>(
       `/elberfelder/chapterOriginals/bookId/${bookId}/chapterId/${chapter}`,

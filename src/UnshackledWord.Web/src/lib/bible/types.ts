@@ -572,11 +572,46 @@ export interface GetSimilarVersesResponse {
   verses: VerseSimilarVerses[];
 }
 
-/** One Septuagint word (Swete, roadmap 0028.4); tags come with 0028.5. */
+/** Lemma, Strong's and parse of an LXX word (roadmap 0028.5); `proposed` only reaches Admin/Maintainer. */
+export interface LxxWordTag {
+  lemma: string;
+  strongs: string;
+  /** short English gloss from TBESG */
+  gloss?: string;
+  morphology: Morphology;
+  status: "confirmed" | "proposed";
+}
+
+/** One Septuagint word (Swete, roadmap 0028.4); omitted `tag` = not (yet) tagged. */
 export interface LxxWord {
   id: number;
   position: number;
   greek: string;
+  tag?: LxxWordTag;
+}
+
+/** `GET lxx/word/{id}` (roadmap 0028.5): one LXX word with its tag, parse text and TBESG entry. */
+export interface GetLxxWordResponse {
+  id: number;
+  lxxVerseId: number;
+  position: number;
+  greek: string;
+  /** Rahlfs reference, e.g. `Gen.1:1` or `1Ki.2:35.1` */
+  ref: string;
+  bibleBookId: number;
+  chapter: number;
+  verse: number;
+  subverse: number;
+  textForm: "" | "og" | "th";
+  isAddition: boolean;
+  hebRefId?: number;
+  tag?: LxxWordTag & {
+    parseGerman?: string;
+    parseEnglish?: string;
+    /** Admin/Maintainer only */
+    source?: "nt-form" | "ai" | "human";
+    lexicon?: LexiconSummary;
+  };
 }
 
 /** One Swete unit with its Rahlfs label (Rahlfs counting in `bibleBookId`/`chapter`/`verse`). */
@@ -786,6 +821,8 @@ export interface VerseMappingOriginalWord {
   editionCodes?: string[];
   /** Greek, chapter originals: the word stands elsewhere in at least one edition; no mark in the Grundtext panel (word box only) */
   hasShift?: boolean;
+  /** Septuagint words (roadmap 0028.5f, `language: "lxx"`): Rahlfs label of the word's unit and the tag status; `status` absent = untagged */
+  lxx?: { ref: string; status?: "confirmed" | "proposed" };
 }
 /** One morpheme of a Hebrew word (roadmap 0018); a link picks one with `strongsNumber`. */
 export interface VerseMappingMorpheme {

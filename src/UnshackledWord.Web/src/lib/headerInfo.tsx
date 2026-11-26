@@ -16,6 +16,10 @@ export interface HeaderWordInfo {
   definitionSegments?: DefinitionSegment[];
   /** Greek word not in all main editions (roadmap 0025.5f): "nur in TR, Byz" / "fehlt in WH, Treg" */
   editionNote?: string;
+  /** Septuagint (roadmap 0028.5f), stacked card: status badge text, e.g. "Vorschlag" */
+  badge?: string;
+  /** Septuagint, stacked card: muted lines (Rahlfs reference, "Noch nicht bestimmt") */
+  notes?: string[];
   /** shown in the page margin from 1024px (the reader), so the header leaves it out there */
   inMargin?: boolean;
 }

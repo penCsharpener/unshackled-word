@@ -1146,6 +1146,10 @@ export const en: Translation = {
       hiddenWords_other: "{{count}} words hidden (not in {{edition}})",
       strongsLink: "{{original}}, {{strongs}}: open Strong's page",
       lxx: {
+        untagged: "Not yet tagged",
+        proposal: "Proposal",
+        untaggedLink: "{{original}}: not yet tagged, open details",
+        proposalHint: "Visible to maintainers only: proposal, not yet confirmed",
         info: "Greek text after Swete, verse numbering after Rahlfs",
         label: "{{reference}} LXX",
         addition: "LXX addition",

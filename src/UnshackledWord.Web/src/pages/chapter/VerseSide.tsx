@@ -204,7 +204,10 @@ export const VerseSide = memo(function VerseSide({
                   </h3>
                   <OriginalVerse
                     variant="margin"
-                    data={{ language: "lxx", originalWords: lxxOriginalWords(block.units) }}
+                    data={{
+                      language: "lxx",
+                      originalWords: lxxOriginalWords(block.units, books, i18n.language),
+                    }}
                     reference={reference}
                   />
                 </section>
@@ -219,7 +222,10 @@ export const VerseSide = memo(function VerseSide({
                   )}
                   <OriginalVerse
                     variant="margin"
-                    data={{ language: "lxx", originalWords: lxxOriginalWords([block.unit]) }}
+                    data={{
+                      language: "lxx",
+                      originalWords: lxxOriginalWords([block.unit], books, i18n.language),
+                    }}
                     reference={reference}
                   />
                 </div>
