@@ -10,6 +10,8 @@
 - **The query stays in the box until it is cleared** (2026-11-26), and a switch marks the hits of the current query in the chapter being read, also after navigating. The reader can type a query, ignore the result list and read with marks instead.
 - **Numbering (2026-11-26):** continue from `feature/lxx` (0.13.18, migrations to 0053): version 0.14.0, migrations 0054 (Greek index) and 0055 (Hebrew index).
 
+- **Components approved (2026-11-26):** `VerseHitList` gets a `renderDetails(hit)` prop for the original lines; `TextField` gets `suggestions` / `activeSuggestion` / `onSuggestionAccept` rendered by a new `SuggestionList` listbox; a new `SearchMarkBar` in the reader (query, count, ‹ › neighbours, ×) instead of a `StatusBadge` variant; slot chips stay internal to `SearchOverlay`; the marking switch is the existing `Switch`.
+
 ## Plan decisions
 
 - **One word = one slot.** A filter binds to the nearest word before it; filters before any word form a slot of their own ("any word"). Slots are AND-ed per verse, without order or distance. Details in [03-query-language.md](03-query-language.md).
