@@ -17,25 +17,7 @@ public sealed class AgentStoreRepository : IAgentStoreRepository
     public async Task<int> CreateRunAsync(AgentRunInsert run, CancellationToken token = default)
     {
         using var connection = await _factory.CreateDbConnectionAsync(token);
-        return await connection.ExecuteScalarAsync<int>(new CommandDefinition(AgentStoreSql.InsertRun, new
-        {
-            run.CreatedByUserId,
-            run.AiUserId,
-            run.Profile,
-            run.Model,
-            run.PromptVersion,
-            run.BibleBookId,
-            FromHebRefId = run.FromRefId,
-            ToHebRefId = run.ToRefId,
-            run.Mode,
-            run.Status,
-            run.StatusNote,
-            run.EstimatedTokens,
-            run.EstimatedCostUsd,
-            run.MaxTokens,
-            run.MaxCostUsd,
-            run.ApiTokenId,
-        }, cancellationToken: token));
+        return await connection.ExecuteScalarAsync<int>(new CommandDefinition(AgentStoreSql.InsertRun, AgentStoreSql.InsertRunParameters(run), cancellationToken: token));
     }
 
     public async Task InsertPackageAsync(AgentPackageInsert package, CancellationToken token = default)
@@ -106,6 +88,29 @@ public sealed class AgentStoreRepository : IAgentStoreRepository
 
 public static class AgentStoreSql
 {
+    /// <summary>The parameters of <see cref="InsertRun"/>: every <c>@Name</c> of the SQL must be a property here (an unbound <c>@Name</c> is Postgres' absolute-value operator on a column).</summary>
+    public static object InsertRunParameters(AgentRunInsert run) => new
+    {
+        run.CreatedByUserId,
+        run.AiUserId,
+        run.Profile,
+        run.Model,
+        run.PromptVersion,
+        run.BibleBookId,
+        FromHebRefId = run.FromRefId,
+        ToHebRefId = run.ToRefId,
+        run.Mode,
+        run.Status,
+        run.StatusNote,
+        run.EstimatedTokens,
+        run.EstimatedCostUsd,
+        run.MaxTokens,
+        run.MaxCostUsd,
+        run.ApiTokenId,
+        run.IncludeConfirmed,
+        run.TextForm,
+    };
+
     // queued: no start, no end; running: started now; everything else (the debug endpoint writes "completed"): started and finished now.
     public const string InsertRun = """
                                     INSERT INTO "unshackled-word"."AgentRuns" ("CreatedByUserId", "AiUserId", "Profile", "Model", "PromptVersion", "BibleBookId", "FromHebRefId", "ToHebRefId", "Mode", "Status", "StatusNote", "EstimatedTokens", "EstimatedCostUsd", "MaxTokens", "MaxCostUsd", "ApiTokenId", "IncludeConfirmed", "TextForm", "StartedAt", "FinishedAt")

@@ -137,6 +137,7 @@ public abstract class AgentHttpAdapter : IAgentModelClient
     protected static string RequireJson(string? text, bool truncated, string finishReason, long input, long cached, long output)
     {
         var json = StripFence(text);
+        var detail = json.Length == 0 ? " (empty answer)" : string.Empty;
         if (!truncated && json.Length > 0)
         {
             try
@@ -145,14 +146,20 @@ public abstract class AgentHttpAdapter : IAgentModelClient
 
                 return json;
             }
-            catch (JsonException)
+            catch (JsonException e)
             {
+                if ((LeadingObject(json) ?? RebalancedClosers(json)) is { } repaired)
+                {
+                    return repaired;
+                }
+
+                detail = $" ({e.Message} Length {json.Length}, near: {Excerpt(json, e.BytePositionInLine, e.LineNumber)})";
             }
         }
 
         throw new AgentModelException(
             AgentModelErrorKind.SchemaFailure,
-            truncated ? $"The answer was cut off ({finishReason}) and is not complete JSON." : "The answer is not valid JSON.",
+            truncated ? $"The answer was cut off ({finishReason}) and is not complete JSON." : $"The answer is not valid JSON{detail}.",
             inputTokens: input,
             cachedInputTokens: cached,
             outputTokens: output);
@@ -219,6 +226,108 @@ public abstract class AgentHttpAdapter : IAgentModelClient
     }
 
     protected static string BaseUrl(AgentProfile profile) => profile.BaseUrl.TrimEnd('/');
+
+    /// <summary>
+    /// A complete JSON object at the start of an answer that has trailing junk after it (gemma4 once closed a valid answer and added a stray
+    /// <c>"</c>); null when the answer does not start with a complete object. Only what follows the object is dropped.
+    /// </summary>
+    public static string? LeadingObject(string json)
+    {
+        var bytes = System.Text.Encoding.UTF8.GetBytes(json);
+        var reader = new Utf8JsonReader(bytes, new JsonReaderOptions { AllowMultipleValues = true });
+        try
+        {
+            if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject || !reader.TrySkip())
+            {
+                return null;
+            }
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+
+        return System.Text.Encoding.UTF8.GetString(bytes, 0, (int)reader.BytesConsumed);
+    }
+
+    /// <summary>
+    /// The answer with its final run of <c>]</c>/<c>}</c> rewritten from the bracket stack (gemma4 on Ollama Cloud ended a valid answer with
+    /// <c>]]}]]}</c> instead of <c>]]}]}</c>), or null when the text before that run is not a valid unclosed prefix or the result does not parse.
+    /// Content is never changed: the validator still flags every word the answer lacks.
+    /// </summary>
+    public static string? RebalancedClosers(string json)
+    {
+        var tail = json.Length;
+        while (tail > 0 && json[tail - 1] is ']' or '}' or ' ' or '\n' or '\r' or '\t')
+        {
+            tail--;
+        }
+
+        var stack = new Stack<char>();
+        var inString = false;
+        for (var i = 0; i < tail; i++)
+        {
+            var c = json[i];
+            if (inString)
+            {
+                if (c == '\\')
+                {
+                    i++;
+                }
+                else if (c == '"')
+                {
+                    inString = false;
+                }
+
+                continue;
+            }
+
+            switch (c)
+            {
+                case '"': inString = true; break;
+                case '{': stack.Push('}'); break;
+                case '[': stack.Push(']'); break;
+                case '}' or ']':
+                    if (stack.Count == 0 || stack.Pop() != c)
+                    {
+                        return null;
+                    }
+
+                    break;
+            }
+        }
+
+        if (inString || stack.Count == 0)
+        {
+            return null;
+        }
+
+        var repaired = json[..tail] + string.Concat(stack);
+        try
+        {
+            using var _ = JsonDocument.Parse(repaired);
+
+            return repaired;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>About 120 characters of the answer around the parse error (line and byte position from <see cref="JsonException"/>), on one line.</summary>
+    private static string Excerpt(string json, long? bytePositionInLine, long? lineNumber)
+    {
+        var lines = json.Split('\n');
+        var line = (int)Math.Clamp(lineNumber ?? 0, 0, lines.Length - 1);
+        var lineBytes = System.Text.Encoding.UTF8.GetBytes(lines[line]);
+        var inLine = System.Text.Encoding.UTF8.GetCharCount(lineBytes, 0, (int)Math.Min(bytePositionInLine ?? 0, lineBytes.Length));
+        var offset = lines.Take(line).Sum(l => l.Length + 1) + inLine;
+        var start = Math.Max(0, offset - 80);
+        var excerpt = json.Substring(start, Math.Min(json.Length - start, 120)).ReplaceLineEndings(" ");
+
+        return $"'…{excerpt}…'";
+    }
 
     private static string StripFence(string? text)
     {

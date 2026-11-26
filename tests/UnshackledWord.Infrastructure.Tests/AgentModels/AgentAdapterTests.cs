@@ -154,6 +154,54 @@ public class AgentAdapterTests
         error.OutputTokens.ShouldBe(6);
     }
 
+    /// <summary>The first paid LXX run over Ruth (0.13.18): gemma4 closed a valid answer and added a stray quote; the object is kept.</summary>
+    [Fact]
+    public async Task Ollama_TrailingJunkAfterACompleteObject_KeepsTheObject()
+    {
+        var http = new FakeHttp().Ok($$$"""{"model":"gemma4:31b","message":{"role":"assistant","content":{{{Escaped(Answer + "\"")}}} },"done":true,"done_reason":"stop","prompt_eval_count":9,"eval_count":12}""");
+        var client = new OllamaAgentClient(http.Client(), Profile("ollama", "https://ollama.com"), AgentRetryPolicy.Immediate);
+
+        var result = await client.CompleteAsync(Request(), CancellationToken.None);
+
+        result.Json.ShouldBe(Answer);
+    }
+
+    /// <summary>The second error of that run: one closer too many at the end (<c>]]}]]}</c>); the closers are rebuilt, the content is untouched.</summary>
+    [Theory]
+    [InlineData("""{"packageId":"p1","verses":[{"v":"v1","words":[[1,"καί","G2532","CONJ",[1],"high"]]}]]}""")]
+    [InlineData("""{"packageId":"p1","verses":[{"v":"v1","words":[[1,"καί","G2532","CONJ",[1],"high"]]}""")]
+    [InlineData("""{"packageId":"p1","verses":[{"v":"v1","words":[[1,"a]}",  "G2532","CONJ",[1],"high"]]}]}}""")]
+    public void WrongClosersAtTheEnd_AreRebuiltFromTheBracketStack(string answer)
+    {
+        var repaired = AgentHttpAdapter.RebalancedClosers(answer);
+
+        repaired.ShouldNotBeNull();
+        repaired.ShouldEndWith("\"high\"]]}]}");
+        repaired.ShouldStartWith(answer[..answer.IndexOf("\"high\"", StringComparison.Ordinal)]);
+    }
+
+    [Theory]
+    [InlineData("""{"packageId":"p1","verses":[{"v":"v1","words":[[1,"καί","G2532","CONJ",[1],"high"]]},"note":"x"}]}""")]
+    [InlineData("""{"packageId":"p1","verses":[{"v":"v1","words":[[1,"καί""")]
+    [InlineData("""{"packageId":"p1","verses":[{"v":"v1"],"words":[]}]}""")]
+    public void OtherErrors_AreNotRepaired(string answer) => AgentHttpAdapter.RebalancedClosers(answer).ShouldBeNull();
+
+    /// <summary>A structural error (gemma4 closed the verse before a trailing <c>note</c>) stays a schema failure, with the parse position and an excerpt.</summary>
+    [Fact]
+    public async Task Ollama_BrokenStructure_IsASchemaFailure_WithAnExcerptOfTheError()
+    {
+        const string broken = """{"packageId":"p1","verses":[{"v":"v1","words":[[1,"καί","G2532","CONJ",[1],"high"]]},"note":"Νωεμεὶν"}]}""";
+        var http = new FakeHttp().Ok($$$"""{"model":"gemma4:31b","message":{"role":"assistant","content":{{{Escaped(broken)}}} },"done":true,"done_reason":"stop","prompt_eval_count":9,"eval_count":12}""");
+        var client = new OllamaAgentClient(http.Client(), Profile("ollama", "https://ollama.com"), AgentRetryPolicy.Immediate);
+
+        var error = await Should.ThrowAsync<AgentModelException>(() => client.CompleteAsync(Request(), CancellationToken.None));
+
+        error.Kind.ShouldBe(AgentModelErrorKind.SchemaFailure);
+        error.Message.ShouldContain("not valid JSON");
+        error.Message.ShouldContain("\"high\"]]},\"note\"");
+        error.OutputTokens.ShouldBe(12);
+    }
+
     // ---- Ollama native ------------------------------------------------------------------------------------------------------
 
     [Fact]

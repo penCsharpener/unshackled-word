@@ -82,7 +82,7 @@ public static class AgentModes
     public const string Redo = "redo";
     public const string Lemma = "lemma";
 
-    /// <summary>LXX tagging (roadmap 0028.7), prompt <c>lxx-tag-v1</c>.</summary>
+    /// <summary>LXX tagging (roadmap 0028.7), prompt <c>lxx-tag-v2</c> (v1 until 0.13.18).</summary>
     public const string LxxTag = "lxx-tag";
 
     /// <summary>Run mode of the vocab dictionary-form fill (roadmap 0022.13); it has no <see cref="AgentMode"/> value, the vocab executor runs it.</summary>

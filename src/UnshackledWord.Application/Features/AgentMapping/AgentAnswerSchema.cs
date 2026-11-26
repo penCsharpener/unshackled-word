@@ -30,12 +30,12 @@ public static class AgentAnswerSchema
         """;
 
     /// <summary>
-    /// Run mode <c>lxx-tag</c> (roadmap 0028.7, prompt <c>lxx-tag-v1</c>): per verse <c>words</c> rows
+    /// Run mode <c>lxx-tag</c> (roadmap 0028.7, prompts <c>lxx-tag-v1</c>/<c>v2</c>; <c>note</c> before <c>words</c> since v2): per verse <c>words</c> rows
     /// <c>[position, lemma, strongs, morph, heb, confidence]</c> (<c>heb</c> an array of Hebrew positions, <c>confidence</c> <c>high</c>/<c>low</c>),
     /// every LXX word exactly once, and an optional <c>note</c>. The row rules are checked by <see cref="Lxx.LxxAgentAnswerParser"/> and the validator.
     /// </summary>
     public const string LxxJson = """
-        {"type":"object","properties":{"packageId":{"type":"string"},"verses":{"type":"array","items":{"type":"object","properties":{"v":{"type":"string"},"words":{"type":"array","items":{"type":"array","items":{"anyOf":[{"type":"string"},{"type":"integer"},{"type":"array","items":{"type":"integer"}}]}}},"note":{"type":"string"}},"required":["v","words"]}}},"required":["packageId","verses"]}
+        {"type":"object","properties":{"packageId":{"type":"string"},"verses":{"type":"array","items":{"type":"object","properties":{"v":{"type":"string"},"note":{"type":"string"},"words":{"type":"array","items":{"type":"array","items":{"anyOf":[{"type":"string"},{"type":"integer"},{"type":"array","items":{"type":"integer"}}]}}}},"required":["v","words"]}}},"required":["packageId","verses"]}
         """;
 
     /// <summary>The schema of a run mode.</summary>

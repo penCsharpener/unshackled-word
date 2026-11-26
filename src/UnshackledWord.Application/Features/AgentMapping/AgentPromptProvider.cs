@@ -41,7 +41,7 @@ public sealed partial class AgentPromptProvider : IAgentPromptProvider
     /// <summary>Prefix of the vocab dictionary-form prompt languages (<c>vocab-form-greek</c>, <c>vocab-form-hebrew</c>; roadmap 0022.13).</summary>
     public const string VocabFormPrefix = "vocab-form-";
 
-    /// <summary>Prompt language of the LXX tagging mode (roadmap 0028.7; file <c>lxx-tag-v1.md</c>).</summary>
+    /// <summary>Prompt language of the LXX tagging mode (roadmap 0028.7; files <c>lxx-tag-v1.md</c>, <c>lxx-tag-v2.md</c>).</summary>
     public const string LxxTagLanguage = "lxx-tag";
 
     /// <summary>
@@ -62,7 +62,9 @@ public sealed partial class AgentPromptProvider : IAgentPromptProvider
             return false;
         }
 
-        return match.Groups["lang"].Value.StartsWith(LemmaPrefix, StringComparison.Ordinal) || int.Parse(match.Groups["n"].Value) >= 2;
+        var language = match.Groups["lang"].Value;
+
+        return language.StartsWith(LemmaPrefix, StringComparison.Ordinal) || (language is "greek" or "hebrew" && int.Parse(match.Groups["n"].Value) >= 2);
     }
 
     /// <summary>The version <see cref="Get"/> serves for a language right now, or null when no prompt file exists.</summary>
