@@ -45,6 +45,12 @@ import {
   toVerseHit,
   useGrammarSearch,
 } from "@/lib/search/grammarSearch";
+import {
+  setSearchMark,
+  setSearchQuery,
+  setSearchTab,
+  useSearchState,
+} from "@/lib/search/searchState";
 import { useSubmittedQuery } from "@/lib/search/useSubmittedQuery";
 import { useTrackSearch } from "@/lib/search/useTrackSearch";
 import { useCoarsePointer } from "@/lib/useCoarsePointer";
@@ -54,6 +60,7 @@ import { Dialog } from "./Dialog";
 import { DonutChart, type DonutSlice } from "./DonutChart";
 import { EmptyState } from "./EmptyState";
 import { ReferenceCard } from "./ReferenceCard";
+import { Switch } from "./Switch";
 import { TextField } from "./TextField";
 import { hitOptionId, hitPath, VerseHitList } from "./VerseHitList";
 
@@ -61,8 +68,6 @@ export interface SearchOverlayProps {
   open: boolean;
   onClose: () => void;
 }
-
-type Tab = "verses" | "originals";
 
 const normalized = (input: string) => input.trim().replace(/\s+/g, " ");
 
@@ -661,9 +666,12 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const coarse = useCoarsePointer();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [input, setInput] = useState("");
+  // Query, tab and marking live in the shared search state (localStorage): closing, following a hit and a reload
+  // keep them; only the clear button or deleting the text removes the query.
+  const { query: input, tab, mark } = useSearchState();
+  const setInput = setSearchQuery;
+  const setTab = setSearchTab;
   const { query, submit } = useSubmittedQuery(input);
-  const [tab, setTab] = useState<Tab>("verses");
   // The book filter belongs to the query it was set for.
   const [filter, setFilter] = useState<{ query: string; bookId: number | null }>({
     query: "",
@@ -940,39 +948,72 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       initialFocusRef={coarse && input !== "" ? undefined : inputRef}
     >
       <div className="grid gap-2 border-b border-border px-4 pt-2 pb-3">
-        <TextField
-          type="search"
-          label={t("search.label")}
-          labelHidden
-          required={false}
-          value={input}
-          onChange={setInput}
-          inputRef={inputRef}
-          placeholder={t("search.placeholder")}
-          autoComplete="off"
-          spellCheck={false}
-          enterKeyHint="search"
-          role="combobox"
-          aria-autocomplete="list"
-          aria-expanded={hits.length > 0}
-          aria-controls={hits.length > 0 ? listId : undefined}
-          aria-activedescendant={activeIndex >= 0 ? hitOptionId(listId, activeIndex) : undefined}
-          onKeyDown={onKeyDown}
-        />
-        <fieldset className="flex gap-2 lg:hidden">
-          <legend className="sr-only">{t("search.tabs.label")}</legend>
-          {(["verses", "originals"] as const).map((id) => (
+        <div className="relative">
+          <TextField
+            type="search"
+            label={t("search.label")}
+            labelHidden
+            required={false}
+            value={input}
+            onChange={setInput}
+            inputRef={inputRef}
+            placeholder={t("search.placeholder")}
+            autoComplete="off"
+            spellCheck={false}
+            enterKeyHint="search"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={hits.length > 0}
+            aria-controls={hits.length > 0 ? listId : undefined}
+            aria-activedescendant={activeIndex >= 0 ? hitOptionId(listId, activeIndex) : undefined}
+            onKeyDown={onKeyDown}
+            className="search-field pe-10"
+          />
+          {input !== "" && (
             <Button
-              key={id}
-              variant="secondary"
+              variant="ghost"
               size="sm"
-              aria-pressed={tab === id}
-              onClick={() => setTab(id)}
+              className="absolute inset-y-1 end-1"
+              aria-label={t("search.clear")}
+              title={t("search.clear")}
+              onClick={() => {
+                setInput("");
+                inputRef.current?.focus();
+              }}
             >
-              {t(`search.tabs.${id}`)}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
             </Button>
-          ))}
-        </fieldset>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+          <Switch checked={mark} onCheckedChange={setSearchMark}>
+            {t("search.mark.switch")}
+          </Switch>
+          <fieldset className="flex gap-2 lg:hidden">
+            <legend className="sr-only">{t("search.tabs.label")}</legend>
+            {(["verses", "originals"] as const).map((id) => (
+              <Button
+                key={id}
+                variant="secondary"
+                size="sm"
+                aria-pressed={tab === id}
+                onClick={() => setTab(id)}
+              >
+                {t(`search.tabs.${id}`)}
+              </Button>
+            ))}
+          </fieldset>
+        </div>
       </div>
       <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-2 lg:divide-x lg:divide-border">
         {versesColumn}

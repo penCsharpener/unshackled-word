@@ -27,6 +27,7 @@ import { NoteMarker } from "@/components/NoteMarker";
 import { NotesOverlay, type NotesOverlayRequest, noteTarget } from "@/components/NotesOverlay";
 import { OriginalVerse } from "@/components/OriginalVerse";
 import { RevisionEditor } from "@/components/RevisionEditor";
+import { SearchMarkBar, type SearchMarkStatus } from "@/components/SearchMarkBar";
 import { type WordDetailCloseReason, WordDetailPopover } from "@/components/WordDetailPopover";
 import { track, trackRevisionLevel } from "@/lib/analytics";
 import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
@@ -80,6 +81,18 @@ import { useShowOthersNotes } from "@/lib/notes/showOthers";
 import { reviewMarkers, toMappingData } from "@/lib/revision/mapping";
 import { useRevisionMapping, useSaveRevisionMapping } from "@/lib/revision/queries";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
+import {
+  isGrammarQuery,
+  useGrammarChapterMatches,
+  useGrammarNeighbours,
+} from "@/lib/search/grammarSearch";
+import {
+  markedGrammarQuery,
+  setSearchMark,
+  setSearchOpen,
+  useSearchState,
+} from "@/lib/search/searchState";
+import { useSubmittedQuery } from "@/lib/search/useSubmittedQuery";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { SidePanelRail } from "./chapter/SidePanelRail";
 import { type VerseLinkMode, VerseSide } from "./chapter/VerseSide";
@@ -236,6 +249,35 @@ export function ChapterPage() {
     }
     return { german, original };
   }, [mappingData, verseView, hoveredWord, hoveredOriginalId, revisedId]);
+
+  // Search marks (roadmap 0029.2f): the overlay's query, while "Treffer im Text markieren" is on, marks its matches in
+  // the open chapter. German words by their Elb1871 position (variant words through `basePosition`; a variant-only
+  // word is never marked), original words by their StepGreekWords id.
+  const search = useSearchState();
+  const { query: submittedSearch } = useSubmittedQuery(search.query);
+  const markQuery = ref
+    ? markedGrammarQuery({ ...search, query: submittedSearch }, isGrammarQuery)
+    : "";
+  const chapterMatches = useGrammarChapterMatches(markQuery, ref?.bookId ?? 0, ref?.chapter ?? 0);
+  const hitNeighbours = useGrammarNeighbours(markQuery, ref?.bookId ?? 0, ref?.chapter ?? 0);
+  const searchMarks = useMemo(() => {
+    const german = new Map<number, ReadonlySet<number>>();
+    const original = new Map<number, ReadonlySet<number>>();
+    for (const verse of markQuery !== "" ? (chapterMatches.data?.verses ?? []) : []) {
+      german.set(verse.verse, new Set(verse.germanPositions));
+      original.set(verse.verse, new Set(verse.originalWordIds));
+    }
+    return { german, original };
+  }, [markQuery, chapterMatches.data]);
+  const markStatus: SearchMarkStatus = chapterMatches.isError
+    ? chapterMatches.error instanceof ApiError && chapterMatches.error.status === 400
+      ? "incomplete"
+      : "error"
+    : chapterMatches.isPending
+      ? "loading"
+      : (chapterMatches.data?.total ?? 0) > 0
+        ? "hits"
+        : "none";
 
   // Left margin (from 120rem): TSK / Grundtext next to every verse, one request per chapter and kind.
   const wide = useMediaQuery("(min-width: 120rem)");
@@ -1079,6 +1121,15 @@ export function ChapterPage() {
     return `${bookName(target, language)} ${r.chapter}`;
   };
   const title = `${reference(ref)} – ${t("app.name")}`;
+  /** Previous / next chapter with a hit of the marked search, when the book is known. */
+  const hitChapter = (direction: "previous" | "next"): ChapterRef | undefined => {
+    const target = hitNeighbours.data?.[direction];
+    return target && books.some((b) => b.id === target.bibleBookId)
+      ? { bookId: target.bibleBookId, chapter: target.chapter }
+      : undefined;
+  };
+  const previousHit = hitChapter("previous");
+  const nextHit = hitChapter("next");
   const revisedLabel = (level: number) =>
     t("bible.revision.revisedMark", {
       level: reader.levels.find((l) => l.level === level)?.name ?? level,
@@ -1194,6 +1245,23 @@ export function ChapterPage() {
               {t("notes.addChapter")}
             </Button>
           </div>
+          {markQuery !== "" && (
+            <div className="mt-2 flex justify-center">
+              <SearchMarkBar
+                query={markQuery}
+                status={markStatus}
+                count={chapterMatches.data?.total}
+                previous={previousHit && reference(previousHit)}
+                next={nextHit && reference(nextHit)}
+                onNavigate={(direction) => {
+                  const target = direction === "previous" ? previousHit : nextHit;
+                  if (target) navigate(chapterPath(target));
+                }}
+                onOpen={() => setSearchOpen(true)}
+                onOff={() => setSearchMark(false)}
+              />
+            </div>
+          )}
           {linkMode &&
             (linkSelection || linkWord.isPending || linkWord.isError || linkProposed) && (
               // overlay under the sticky header: appearing or changing never moves the verses
@@ -1388,6 +1456,9 @@ export function ChapterPage() {
                           ((word.position !== undefined && pillWords.shown.has(word.position)) ||
                             (word.basePosition !== undefined &&
                               pillWords.base.has(word.basePosition)));
+                        const searchHit =
+                          word.basePosition !== undefined &&
+                          searchMarks.german.get(v.verse)?.has(word.basePosition) === true;
                         const background = dropHere
                           ? "bg-mark-link"
                           : marked
@@ -1400,7 +1471,9 @@ export function ChapterPage() {
                               ? "bg-mark-linked"
                               : kind
                                 ? HIGHLIGHT_CLASSES[kind]
-                                : "";
+                                : searchHit
+                                  ? "bg-mark-search"
+                                  : "";
                         const actionHere =
                           selected &&
                           selected.end.verse === v.verse &&
@@ -1620,6 +1693,7 @@ export function ChapterPage() {
                             data={mappingData}
                             reference={`${reference(ref)},${v.verse}`}
                             linkedIds={linked.original}
+                            searchIds={searchMarks.original.get(v.verse)}
                             onHoverWord={setHoveredOriginalId}
                             showLemma={showLemma}
                             onToggleLemma={() => setShowLemma(!showLemma)}
@@ -1704,6 +1778,7 @@ export function ChapterPage() {
                       language={originals.data?.language ?? "greek"}
                       lexicon={originals.data?.lexicon}
                       linkedIds={sideLinks.verse === v.verse ? sideLinks.original : NO_IDS}
+                      searchIds={searchMarks.original.get(v.verse) ?? NO_IDS}
                       onHoverOriginal={onHoverOriginal}
                       edition={greekEdition}
                       similar={similarByVerse.get(v.verse)}

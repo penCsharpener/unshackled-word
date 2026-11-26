@@ -1,4 +1,4 @@
-import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import type { TFunction } from "i18next";
 import { ApiError, api } from "@/lib/api";
 import type { OriginalLanguage, VerseSearchHit } from "@/lib/bible/types";
@@ -223,7 +223,71 @@ export function toVerseHit(hit: GrammarHit): VerseSearchHit {
 
 export const grammarSearchKeys = {
   search: (q: string, bookId: number | null) => ["search", "grammar", q, bookId ?? 0] as const,
+  chapter: (q: string, bookId: number, chapter: number) =>
+    ["search", "grammar", "chapter", q, bookId, chapter] as const,
+  neighbours: (q: string, bookId: number, chapter: number) =>
+    ["search", "grammar", "neighbours", q, bookId, chapter] as const,
 };
+
+/** Matched words of one verse: Elb1871 positions and `StepGreekWords` ids. */
+export interface GrammarChapterVerse {
+  verse: number;
+  germanPositions: number[];
+  originalWordIds: number[];
+}
+
+export interface SearchGrammarChapterResponse {
+  verses: GrammarChapterVerse[];
+  /** Matched original words in the chapter. */
+  total: number;
+}
+
+export interface GrammarChapterRef {
+  bibleBookId: number;
+  chapter: number;
+}
+
+export interface SearchGrammarNeighboursResponse {
+  previous?: GrammarChapterRef;
+  next?: GrammarChapterRef;
+}
+
+const noRetryOn400 = (count: number, error: unknown) =>
+  !(error instanceof ApiError && error.status === 400) && retryUnlessRateLimited(count, error);
+
+/** Matches of a grammar query in one chapter (reader marks, roadmap 0029.2f); idle for an empty query. */
+export function useGrammarChapterMatches(q: string, bookId: number, chapter: number) {
+  return useQuery({
+    queryKey: grammarSearchKeys.chapter(q, bookId, chapter),
+    queryFn: ({ signal }) =>
+      api.get<SearchGrammarChapterResponse>(
+        `/elberfelder/search/grammar/chapter/${bookId}/${chapter}?${new URLSearchParams({ q })}`,
+        signal,
+      ),
+    enabled: q !== "",
+    staleTime: 5 * 60_000,
+    retry: noRetryOn400,
+  });
+}
+
+/** The previous and next chapter with a match of a grammar query; idle for an empty query. */
+export function useGrammarNeighbours(q: string, bookId: number, chapter: number) {
+  return useQuery({
+    queryKey: grammarSearchKeys.neighbours(q, bookId, chapter),
+    queryFn: ({ signal }) =>
+      api.get<SearchGrammarNeighboursResponse>(
+        `/elberfelder/search/grammar/neighbours?${new URLSearchParams({
+          q,
+          bibleBookId: String(bookId),
+          chapter: String(chapter),
+        })}`,
+        signal,
+      ),
+    enabled: q !== "",
+    staleTime: 5 * 60_000,
+    retry: noRetryOn400,
+  });
+}
 
 /** `GET api/elberfelder/search/grammar` for one page. */
 export function searchGrammar(
@@ -255,7 +319,6 @@ export function useGrammarSearch(q: string, bookId: number | null = null) {
     enabled: trimmed !== "" && isGrammarQuery(trimmed),
     placeholderData: keepPreviousData,
     staleTime: 5 * 60_000,
-    retry: (count, error) =>
-      !(error instanceof ApiError && error.status === 400) && retryUnlessRateLimited(count, error),
+    retry: noRetryOn400,
   });
 }

@@ -428,6 +428,35 @@ describe("SearchOverlay", () => {
     await user.keyboard("f");
     expect(await screen.findByRole("combobox", { name: "Suchbegriffe" })).toHaveValue("ging ");
   });
+
+  it("stores query and marking, and the clear button empties the field", async () => {
+    stubFetch();
+    const user = userEvent.setup();
+    setup();
+    await user.keyboard("f");
+    expect(screen.queryByRole("button", { name: "Suche leeren" })).not.toBeInTheDocument();
+    await user.type(searchField(), "agape Kasus:nom");
+    expect(localStorage.getItem("uw.search.query")).toBe("agape Kasus:nom");
+    const markSwitch = screen.getByRole("switch", { name: "Treffer im Text markieren" });
+    expect(markSwitch).toHaveAttribute("aria-checked", "false");
+    await user.click(markSwitch);
+    expect(markSwitch).toHaveAttribute("aria-checked", "true");
+    expect(localStorage.getItem("uw.search.mark")).toBe("true");
+
+    await user.click(screen.getByRole("button", { name: "Suche leeren" }));
+    expect(searchField()).toHaveValue("");
+    expect(searchField()).toHaveFocus();
+    expect(localStorage.getItem("uw.search.query")).toBeNull();
+  });
+
+  it("restores the stored query after a reload", async () => {
+    localStorage.setItem("uw.search.query", "ging");
+    stubFetch();
+    const user = userEvent.setup();
+    setup();
+    await user.keyboard("f");
+    expect(await screen.findByRole("combobox", { name: "Suchbegriffe" })).toHaveValue("ging");
+  });
 });
 
 describe("SearchOverlay originals", () => {

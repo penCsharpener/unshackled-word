@@ -62,6 +62,8 @@ export interface VerseSideProps {
   lexicon?: GetChapterOriginalsResponse["lexicon"];
   /** original word ids to highlight (linked to the hovered German word or original word) */
   linkedIds: ReadonlySet<number>;
+  /** original word ids matched by the marked search (roadmap 0029.2f) */
+  searchIds?: ReadonlySet<number>;
   onHoverOriginal: (verse: number, id: number | undefined) => void;
   /** `original`: edition filter of the Grundtext panel (null = all words) */
   edition?: string | null;
@@ -96,6 +98,7 @@ export const VerseSide = memo(function VerseSide({
   language,
   lexicon,
   linkedIds,
+  searchIds,
   onHoverOriginal,
   edition = null,
   similar,
@@ -179,6 +182,7 @@ export const VerseSide = memo(function VerseSide({
           lexicon={lexicon}
           reference={reference}
           linkedIds={linkedIds}
+          searchIds={searchIds}
           onHoverWord={(id) => onHoverOriginal(verse, id)}
           edition={edition}
         />

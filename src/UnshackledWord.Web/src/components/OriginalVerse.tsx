@@ -26,6 +26,8 @@ export interface OriginalVerseProps {
   reference: string;
   /** Original words to highlight (linked to the hovered German word). */
   linkedIds?: ReadonlySet<number>;
+  /** Original words matched by the marked search (roadmap 0029.2f); the linked highlight wins over it. */
+  searchIds?: ReadonlySet<number>;
   /** Called with the hovered original word id, or undefined when the pointer leaves. */
   onHoverWord?: (id: number | undefined) => void;
   /**
@@ -59,6 +61,7 @@ export function OriginalVerse({
   lexicon,
   reference,
   linkedIds,
+  searchIds,
   onHoverWord,
   edition = null,
   showLemma = false,
@@ -145,7 +148,11 @@ export function OriginalVerse({
         >
           {words.map((word) => {
             const strongs = word.strongs ? normalizeStrongs(word.strongs) : undefined;
-            const highlight = linkedIds?.has(word.id) ? "bg-mark-linked" : "";
+            const highlight = linkedIds?.has(word.id)
+              ? "bg-mark-linked"
+              : searchIds?.has(word.id)
+                ? "bg-mark-search"
+                : "";
             const note = editionNote(word);
             const mark = note ? VARIANT_MARK : "";
             const noteId = note ? `${idBase}-edition-${word.id}` : undefined;
@@ -273,7 +280,7 @@ export function OriginalVerse({
               // biome-ignore lint/a11y/noStaticElementInteractions: mouse-only hover hint; the same data is in the word popover
               <span
                 key={word.id}
-                className={`inline-flex flex-col items-center rounded-sm ${linkedIds?.has(word.id) ? "bg-mark-linked" : ""}`}
+                className={`inline-flex flex-col items-center rounded-sm ${linkedIds?.has(word.id) ? "bg-mark-linked" : searchIds?.has(word.id) ? "bg-mark-search" : ""}`}
                 onMouseEnter={() => {
                   onHoverWord?.(word.id);
                   setInfo({
