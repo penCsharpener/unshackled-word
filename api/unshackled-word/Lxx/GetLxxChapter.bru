@@ -1,0 +1,21 @@
+meta {
+  name: GetLxxChapter
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}lxx/chapter/:bookId/:chapter
+  body: none
+  auth: none
+}
+
+params:path {
+  chapter: 25
+  bookId: 24
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

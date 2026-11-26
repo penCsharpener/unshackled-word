@@ -88,6 +88,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityExplainerCache>();
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityReadService, UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityReadService>();
 
+        // Septuagint reader (roadmap 0028.4)
+        services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxReadRepository, UnshackledWord.Infrastructure.Lxx.LxxReadRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxChapterReadService, UnshackledWord.Application.Features.Lxx.LxxChapterReadService>();
+
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Notes.NoteService>();

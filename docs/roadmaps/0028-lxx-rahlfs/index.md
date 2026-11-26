@@ -108,4 +108,18 @@ Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done 
   - The 2 new `LxxTextDatabaseTests` pass against the dev DB: the migration runs twice, the insert and the gate work, and the transaction rolls back.
   - The two known AgentMapping prompt tests still fail.
 
+**0028.4 (read endpoint `GET api/lxx/chapter/{bibleBookId}/{chapter}`) done, with these findings and deviations:**
+
+- **Shape:** `{ bibleBookId, chapter, verses: [{ hebRefId, verse, units: [{ lxxVerseId, bibleBookId, chapter, verse, subverse, ref, textForm, mapKind, isAddition, differsFromHebrew, words: [{ id, position, greek }] }] }] }`. One entry per Elb1871 verse (from `Elb1871Verses`), empty `units` when the LXX has no text. `ref` is `Jer.32:1` or `1Ki.2:35.1` (TVTMS book code); the client formats it.
+- **Reading order rule:** per Elb verse the units are those with `HebRefId` = verse plus additions with `AfterHebRefId` = verse, all in `SortOrder` (Swete's order). Additions therefore come before or after the main unit as Swete prints them; there is no "additions last" rule. Est 1:1 returns addition A (`Est.1:1.1` to `1:1.17`) first, then `Est.1:1`, which matches 03-versification.md "Reading order". For additions the `subverse` is the sequence number, so the client must use `isAddition`, not the label, to tell `Est.1:1.1` (addition) from a subverse.
+- **`differsFromHebrew`:** true for additions, any subverse, and a Rahlfs chapter or verse unequal to the Elb verse.
+- **Daniel:** both text forms are returned, the client filters. No tags field yet: the extension point is `LxxWordResponse` (0028.5). Rate limit: the general anonymous limiter applies, there is no per-endpoint policy in this code base.
+- **Code:** `Domain.WebApi/Lxx/GetLxxChapterContracts.cs`, `Application/Features/Lxx` (`ILxxReadRepository`, `LxxChapterReadService`), `Infrastructure/Lxx/LxxReadRepository` (one round trip, three result sets: Elb verse ids, units, words), endpoint `Endpoints/Lxx/GetLxxChapter`, Bruno `api/unshackled-word/Lxx/GetLxxChapter.bru`. Validation: book 1..39 and an existing chapter, else 400.
+- **Checked against the dev DB (local Kestrel 5142):**
+  - Jer 25:1-13 carry Jer 25:1-13 (`differsFromHebrew` false), 25:14 is empty (not in the LXX), 25:15-38 carry Jer 32:1-24 (true).
+  - Ps 10 carries Psa 9:22-39 (18 verses, all true).
+  - Est 1 as above. Mt 1 gives 400.
+- **Timing (warm, local):** Ps 119 about 8 ms and 179 kB JSON, Jer 25 about 4 ms and 58 kB (uncompressed).
+- **Tests:** 4 `LxxChapterReadServiceTests` (grouping and empty verses, split order, addition before and after the main unit, Daniel forms) and 8 `LxxChapterValidatorTests` pass.
+
 Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051` and version 0.13.0. 0026 (morpheme alignment) is deferred indefinitely and will take whatever numbers are free when it is picked up.
