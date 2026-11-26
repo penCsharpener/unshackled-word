@@ -2711,6 +2711,29 @@ export const de = {
         generic: "Die Grammatiksuche ist so nicht lesbar.",
       },
     },
+    help: {
+      toggle: "Grammatiksuche: Hilfe",
+      title: "Grammatiksuche",
+      intro:
+        "Ein Wort (Strong-Nummer wie G26, griechisch/hebräisch, Umschrift wie agape oder ein deutsches Wort) und Schlüssel:Wert-Filter, die zum Wort davor gehören. Werte dürfen abgekürzt werden (Kasus:nom), mehrere Werte mit Komma heißen „oder“ (Kasus:nom,akk), Werte mit Leerzeichen werden zusammengeschrieben (FuturII, 1Person), ein - davor verneint (-Modus:Partizip). Filter ohne Wort suchen jedes Wort. Höchstens 4 Wörter.",
+      examples: "Beispiele:",
+      run: "Suche „{{query}}“ ausführen",
+      germanTitle: "Das deutsche Wort",
+      germanIntro:
+        "Mit {{prefix}} davor gilt ein Filter für das deutsche Wort der Elberfelder 1871, das dem Grundtextwort zugeordnet ist (die deutschen Werte unterscheiden sich: Präteritum, finit …).",
+      germanNote:
+        "Die deutschen Merkmale stammen aus einer automatischen Analyse: Numerus und Geschlecht sind nur bei Substantiven verlässlich (mit dt.Wortart:Substantiv kombinieren), einen deutschen Kasus gibt es deshalb nicht.",
+      statusNote:
+        "Hebräisch: Status und Form beziehen sich auf die Wurzel, nicht auf Vorsilben (Artikel, Präpositionen); Status:determiniert trifft nur den aramäischen Status emphaticus. Code: erreicht jede Einzelheit des Codes (z. B. Deponens).",
+      free: {
+        generic: "freier Wert",
+        Code: "Morphologie-Code (Robinson, OSHB), * als Platzhalter: Code:V-AAP*",
+        Strong: "Strong-Nummer: Strong:G26",
+        Lemma: "Lemma oder Umschrift: Lemma:agape",
+        STTS: "STTS-Tag, * als Platzhalter: dt.STTS:VVFIN",
+        Wort: "erzwingt das deutsche Wort: dt.Wort:Liebe",
+      },
+    },
     sourceWords: {
       heading: "Griechische und hebräische Wörter",
       none: "Zu diesen Grundtextwörtern wurde nichts gefunden.",

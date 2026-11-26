@@ -2681,6 +2681,29 @@ export const en: Translation = {
         generic: "The grammar search cannot be read like this.",
       },
     },
+    help: {
+      toggle: "Grammar search: help",
+      title: "Grammar search",
+      intro:
+        'A word (Strong\'s number like G26, Greek/Hebrew, a transliteration like agape, or a German word) and key:value filters that belong to the word before them. Values may be shortened (Kasus:nom), several values with a comma mean "or" (Kasus:nom,akk), values with spaces are typed without them (FuturII, 1Person), a leading - negates (-Modus:Partizip). Filters without a word match any word. At most 4 words. Keys and values are typed in German.',
+      examples: "Examples:",
+      run: 'Run the search "{{query}}"',
+      germanTitle: "The German word",
+      germanIntro:
+        "With {{prefix}} in front, a filter applies to the German word of the Elberfelder 1871 mapped to the original word (the German values differ: Präteritum, finit …).",
+      germanNote:
+        "The German features come from an automatic analysis: number and gender are reliable on nouns only (combine with dt.Wortart:Substantiv), so there is no German case.",
+      statusNote:
+        "Hebrew: state and form describe the root, not prefixes (article, prepositions); Status:determiniert only matches the Aramaic emphatic state. Code: reaches every detail of the code (e.g. deponents).",
+      free: {
+        generic: "free value",
+        Code: "morphology code (Robinson, OSHB), * as wildcard: Code:V-AAP*",
+        Strong: "Strong's number: Strong:G26",
+        Lemma: "lemma or transliteration: Lemma:agape",
+        STTS: "STTS tag, * as wildcard: dt.STTS:VVFIN",
+        Wort: "forces the German word: dt.Wort:Liebe",
+      },
+    },
     sourceWords: {
       heading: "Greek and Hebrew words",
       none: "Nothing was found for these original-language words.",

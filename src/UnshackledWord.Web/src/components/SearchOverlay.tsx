@@ -47,6 +47,8 @@ import {
   type GrammarFacetRequest,
   type GrammarSuggestion,
   type GrammarVocabulary,
+  type GrammarVocabularyKey,
+  type GrammarVocabularyValue,
   languageLimit,
   lemmaLookupWord,
   lemmaSuggestions,
@@ -54,6 +56,7 @@ import {
   vocabularySuggestions,
 } from "@/lib/search/grammarQuery";
 import {
+  foldGrammar,
   formatGrammarFilter,
   formatGrammarWords,
   type GrammarHit,
@@ -710,6 +713,125 @@ function GrammarPanel({
   );
 }
 
+/** Example queries of the cheat sheet; clicking one runs it. */
+const GRAMMAR_EXAMPLES = ["agape Kasus:nom", "Tempus:aor Diathese:pass", "bara Stamm:qal"] as const;
+const GERMAN_EXAMPLE = "Tempus:aor Modus:part dt.Verbform:finit";
+
+/** Values of a key by their German label, with the English label in an English UI when it differs. */
+function cheatSheetValues(values: GrammarVocabularyValue[], english: boolean): string {
+  return values
+    .map((value) =>
+      english && foldGrammar(value.labelEn) !== foldGrammar(value.labelDe)
+        ? `${value.labelDe} (${value.labelEn})`
+        : value.labelDe,
+    )
+    .join(" · ");
+}
+
+/** One key of the cheat sheet: name, aliases, language note; values or what a free value looks like. */
+function CheatSheetKey({
+  name,
+  vocabularyKey,
+  values,
+}: {
+  name: string;
+  vocabularyKey: GrammarVocabularyKey;
+  values: GrammarVocabularyValue[];
+}) {
+  const { t, i18n } = useTranslation();
+  const note = languageNote(vocabularyKey.languages, t);
+  return (
+    <div className="grid gap-0.5">
+      <dt>
+        <code className="font-medium text-fg">{name}:</code>
+        {vocabularyKey.aliases.length > 0 ? (
+          <span className="text-fg-muted"> ({vocabularyKey.aliases.join(", ")})</span>
+        ) : null}
+        {note ? <span className="text-fg-muted"> · {note}</span> : null}
+      </dt>
+      <dd className="text-fg-muted">
+        {values.length > 0
+          ? cheatSheetValues(values, i18n.language.startsWith("en"))
+          : t(`search.help.free.${vocabularyKey.name}`, {
+              defaultValue: t("search.help.free.generic"),
+            })}
+      </dd>
+    </div>
+  );
+}
+
+/**
+ * Grammar cheat sheet (roadmap 0029.9), generated from the vocabulary: syntax, example queries, every key with its
+ * aliases and values, the `dt.` keys with their German values and the known limits.
+ */
+function GrammarCheatSheet({
+  id,
+  vocabulary,
+  onExample,
+}: {
+  id: string;
+  vocabulary: GrammarVocabulary | undefined;
+  onExample: (query: string) => void;
+}) {
+  const { t } = useTranslation();
+  const example = (query: string) => (
+    <Button
+      key={query}
+      variant="secondary"
+      size="sm"
+      aria-label={t("search.help.run", { query })}
+      onClick={() => onExample(query)}
+    >
+      <code>{query}</code>
+    </Button>
+  );
+  if (!vocabulary) return <EmptyState>{t("search.loading")}</EmptyState>;
+  const originalKeys = vocabulary.keys.filter((key) => !key.germanOnly);
+  const germanKeys = vocabulary.germanKeysEnabled
+    ? vocabulary.keys.filter((key) => key.germanPrefixAllowed)
+    : [];
+  return (
+    <section
+      id={id}
+      aria-labelledby={`${id}-title`}
+      className="grid max-h-80 gap-3 overflow-y-auto rounded-md border border-border bg-surface-muted p-3 text-sm"
+    >
+      <h4 id={`${id}-title`} className="font-semibold">
+        {t("search.help.title")}
+      </h4>
+      <p>{t("search.help.intro")}</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-fg-muted">{t("search.help.examples")}</span>
+        {GRAMMAR_EXAMPLES.map(example)}
+      </div>
+      <dl className="grid gap-2 sm:grid-cols-2">
+        {originalKeys.map((key) => (
+          <CheatSheetKey key={key.name} name={key.name} vocabularyKey={key} values={key.values} />
+        ))}
+      </dl>
+      {germanKeys.length > 0 ? (
+        <>
+          <h5 className="font-semibold">{t("search.help.germanTitle")}</h5>
+          <p>{t("search.help.germanIntro", { prefix: vocabulary.germanPrefix })}</p>
+          <div className="flex flex-wrap items-center gap-2">{example(GERMAN_EXAMPLE)}</div>
+          <dl className="grid gap-2 sm:grid-cols-2">
+            {germanKeys.map((key) => (
+              <CheatSheetKey
+                key={key.name}
+                name={`${vocabulary.germanPrefix}${key.name}`}
+                vocabularyKey={{ ...key, languages: [] }}
+                values={key.germanValues ?? []}
+              />
+            ))}
+          </dl>
+          <p className="text-fg-muted">{t("search.help.germanNote")}</p>
+        </>
+      ) : null}
+      <p className="text-fg-muted">{t("search.help.statusNote")}</p>
+    </section>
+  );
+}
+
 const SUGGEST_DEBOUNCE_MS = 250;
 const MAX_LIST = 10;
 
@@ -819,6 +941,8 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   // Autocomplete: caret position, whether the list may show (typing opens it, Esc / accepting a value closes it),
   // the highlighted entry for the current text and caret.
   const vocabulary = useGrammarVocabulary(open).data;
+  const [helpOpen, setHelpOpen] = useState(false);
+  const helpId = useId();
   const [caret, setCaret] = useState(() => input.length);
   const [listWanted, setListWanted] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -1192,9 +1316,22 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
           )}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-          <Switch checked={mark} onCheckedChange={setSearchMark}>
-            {t("search.mark.switch")}
-          </Switch>
+          <div className="flex flex-wrap items-center gap-2">
+            <Switch checked={mark} onCheckedChange={setSearchMark}>
+              {t("search.mark.switch")}
+            </Switch>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-expanded={helpOpen}
+              aria-controls={helpOpen ? helpId : undefined}
+              aria-label={t("search.help.toggle")}
+              title={t("search.help.toggle")}
+              onClick={() => setHelpOpen((value) => !value)}
+            >
+              ?
+            </Button>
+          </div>
           <fieldset className="flex gap-2 lg:hidden">
             <legend className="sr-only">{t("search.tabs.label")}</legend>
             {(["verses", "originals"] as const).map((id) => (
@@ -1210,6 +1347,18 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             ))}
           </fieldset>
         </div>
+        {helpOpen ? (
+          <GrammarCheatSheet
+            id={helpId}
+            vocabulary={vocabulary}
+            onExample={(example) => {
+              setInput(example);
+              setTab("originals");
+              setHelpOpen(false);
+              inputRef.current?.focus();
+            }}
+          />
+        ) : null}
       </div>
       <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-2 lg:divide-x lg:divide-border">
         {versesColumn}
