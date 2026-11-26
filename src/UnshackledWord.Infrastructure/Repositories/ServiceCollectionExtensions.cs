@@ -98,6 +98,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Lxx.ILxxAgentDataRepository, UnshackledWord.Infrastructure.Lxx.LxxAgentDataRepository>();
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Lxx.ILxxAgentPackageBuilder, UnshackledWord.Application.Features.AgentMapping.Lxx.LxxAgentPackageBuilder>();
         services.AddScoped<UnshackledWord.Application.Features.AgentMapping.Lxx.ILxxProposalSubmitter, UnshackledWord.Application.Features.AgentMapping.Lxx.LxxProposalSubmitter>();
+        // Roadmap 0028.7f: LXX review page (endpoints still to do)
+        services.AddSingleton<UnshackledWord.Application.Features.Lxx.Review.ILxxLexiconSource, UnshackledWord.Infrastructure.Lxx.LxxLexiconCache>();
+        services.AddScoped<UnshackledWord.Application.Features.Lxx.Review.ILxxReviewRepository, UnshackledWord.Infrastructure.Lxx.LxxReviewRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.Lxx.Review.LxxReviewService>();
 
         // Notes (roadmap 0023)
         services.AddScoped<UnshackledWord.Application.Features.Notes.INoteRepository, UnshackledWord.Infrastructure.Notes.NoteRepository>();
