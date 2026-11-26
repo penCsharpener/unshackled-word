@@ -1,0 +1,19 @@
+meta {
+  name: LxxPrefill
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{url}}maintainer/lxx/prefill
+  body: none
+  auth: inherit
+}
+
+docs {
+  LXX pass 1 (roadmap 0028.6) in the background: an LXX word whose normalized form occurs in the NT with exactly one (lemma, Strong's, morphology) gets it as a proposal (status proposed, source nt-form, no user). Never touches confirmed, ai or human rows; a second run changes nothing. 202 with the job (the log lists coverage per book); 409 while another seed or LXX job runs; 401 anonymous; 403 other roles. Poll LxxStatus.
+}
+
+settings {
+  encodeUrl: true
+}

@@ -28,6 +28,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOfflineSeedVerb, LxxCheckVerb>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxTextRepository, UnshackledWord.Infrastructure.Lxx.LxxTextRepository>();
         services.AddScoped<UnshackledWord.Tooling.SeedDb.Services.Swete.LxxTextImporter>();
+        services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxNtFormRepository, UnshackledWord.Infrastructure.Lxx.LxxNtFormRepository>();
+        services.AddScoped<UnshackledWord.Application.Features.Lxx.LxxNtFormTagger>();
+        services.AddScoped<ISeedVerb, LxxPrefillVerb>();
         services.AddScoped<UnshackledWord.Tooling.SeedDb.Services.VerseSimilarity.VerseSimilarityRunner>();
 
         return services;

@@ -1,0 +1,19 @@
+meta {
+  name: LxxStatus
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{url}}maintainer/lxx/status
+  body: none
+  auth: inherit
+}
+
+docs {
+  Counts for the LXX card (roadmap 0028.6): verses, words, tag rows per status and source, whether a prefill job runs, and the running or last prefill job of this API process with its log. 401 anonymous; 403 other roles.
+}
+
+settings {
+  encodeUrl: true
+}

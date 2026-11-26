@@ -15,7 +15,7 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 
 ## Status (2026-11-25)
 
-Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3, 0028.4 and 0028.4f done; 0028.5 and 0028.5f done; the rest is open.
+Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done (version 0.13.0); 0028.2 done (0.13.1); 0028.3, 0028.4 and 0028.4f done; 0028.5 and 0028.5f done; 0028.6 done (backend); the rest is open.
 
 **0028.1 (download, parsers, `lxx-check`) done, with these findings and deviations:**
 
@@ -173,3 +173,17 @@ Interview held 2026-11-25 (see [02-decisions.md](02-decisions.md)). 0028.1 done 
 - **Tests:** 5 new `OriginalVerse.lxx.test.tsx` (link and card, pin and close, untagged de/en, proposed badge). Vitest: 1176 passed, 8 failed, all the known ones.
 
 Numbering (2026-11-25): this roadmap goes next and takes migrations `0050`/`0051` and version 0.13.0. 0026 (morpheme alignment) is deferred indefinitely and will take whatever numbers are free when it is picked up.
+
+**0028.6 (pass 1: NT forms, `lxx-prefill`) done (backend; 0028.6f open), with these findings and deviations:**
+
+- **Code:** `Application/Features/Lxx` has `LxxFormNormalizer`, `LxxNtFormTagger` (pure `Compute` plus the run) and `ILxxNtFormRepository`; `Infrastructure/Lxx/LxxNtFormRepository` has the SQL (public `LxxNtFormSql`). Verb `lxx-prefill` (`Verbs/LxxPrefillVerb`), `POST api/maintainer/lxx/prefill` (202 with job, 409 when a seed or LXX job runs, job operation `lxxPrefill`) and `GET api/maintainer/lxx/status` (verses, words, tags per status and source, running flag, last prefill job with its log), contracts in `Domain.WebApi/Maintainer/LxxContracts.cs`, Bruno `Maintainer/LxxPrefill.bru` and `LxxStatus.bru`. Normalization and rules are in [05-tagging.md](05-tagging.md#pass-1-deterministic-nt-forms).
+- **Approach:** all in memory (142k NT rows grouped by SQL, 486k LXX words, existing tags), then one transaction: delete `nt-form`/`proposed` rows that no longer qualify, `INSERT ... ON CONFLICT DO UPDATE ... WHERE` (only `nt-form`/`proposed` rows whose triple changed). Confirmed, `ai` and `human` rows are never written. A run takes about 11 s the first time and 4 s when nothing changes.
+- **Measured on the dev DB (first run, 486,313 words):** 265,807 proposals (54.7 %), 139,749 words with an ambiguous form (28.7 %), 80,717 with a form not in the NT (16.6 %), 40 skipped unaccented capitals, 0 invalid Strong's/morphology, 0 empty. Per book 45 % (1 Chr) to 60 % (Jon), most 53 to 57 %; the second run changed 0 rows (0 inserted, 0 updated, 0 deleted).
+- **Acceptance:** Gen 1:1 `ΕΝ` is a capital opening and is skipped (the accented form is unknowable); a lower-case `ἐν` (PREP, G1722, one analysis in the NT) gets its proposal. `οὐρανὸν`, `καὶ` and `τὴν` in Gen 1:1 get proposals; `ὁ` (T-NSM and T-VSM) and `θεὸς` (N-NSM, N-VSM) do not. **`λόγου` is not ambiguous in the NT** (27 times, always `N-GSM`) and does get a proposal; `ἦν` is not ambiguous either (always `V-IAI-3S`). The examples in 05-tagging.md were wrong; real ones are `ὁ`, `αὐτῶν` (gender) and `θεός`.
+- **Finding, noise in the NT data:** "exactly one analysis" is strict, so one odd NT occurrence blocks a form, e.g. `τὸν` has `T-ASM` 1,628 times and `T-DSF` once, hence it is ambiguous. About a thousand forms differ in exactly two analyses. A majority rule (dominant analysis at 99 % or more, say) would raise the coverage; not done here because the task says exactly one. Decide before 0028.7 if the AI should see these forms as prefilled.
+- **Finding:** pass 1 gives the NT analysis of the form, which is right for function words and wrong where LXX usage differs (case, gender and number of identical forms are only unambiguous inside the NT). All proposals are visible to maintainers only, and the review step checks them.
+- **System user:** `UserId` stays NULL for `nt-form` rows (documented in 05-tagging.md); the table already allows it.
+- **Local checks:** `api/maintainer/lxx/prefill` and `lxx/status` answer 401 anonymously on the local WebApi (5142). A maintainer session was not used; the 202 and 409 paths are covered by `LxxMaintainerTests`.
+- **Dev DB:** the 265,807 `nt-form` proposals were left in place. Undo: `DELETE FROM "unshackled-word"."LxxWordTags" WHERE "Source" = 'nt-form' AND "Status" = 'proposed'`.
+- **Tests:** 37 `LxxNtFormTaggerTests` (normalization, capitals, Strong's format, one-analysis rule, ambiguous skipped, confirmed/ai/human kept, per-book coverage), 2 `LxxNtFormDatabaseTests` (upsert idempotent and second run 0 rows, confirmed/ai untouched, changed rows updated, stale deleted; rolled back, skipped without `UNSHACKLEDWORD_TEST_POSTGRES`), 4 `LxxMaintainerTests` (202 with coverage in the log, 409, status, login required).
+- **Deviations:** no version bump and no commit (by instruction). The SeedDb verb needs `UNSHACKLEDWORD_ConnectionStrings__PostgresConnection` locally because the checked-in connection string points to port 15435.
