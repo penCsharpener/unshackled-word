@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import type { SeedKind } from "@/lib/maintainer/api";
 import { useSeedStatus, useStartSeedJob } from "@/lib/maintainer/seedJobs";
+import { LxxSeedJobsSection } from "./LxxSeedJobsSection";
 import { NotesJobsSection } from "./NotesJobsSection";
 import { SeedJobResultView } from "./SeedJobResultView";
 import { TskCurationJobsSection } from "./TskCurationJobsSection";
@@ -152,6 +153,9 @@ export function SeedImportsPage() {
         </li>
         <li>
           <TskCurationJobsSection blocked={blocked} />
+        </li>
+        <li>
+          <LxxSeedJobsSection blocked={blocked} />
         </li>
       </ul>
 

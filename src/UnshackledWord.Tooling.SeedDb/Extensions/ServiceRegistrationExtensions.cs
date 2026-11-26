@@ -37,6 +37,7 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<SrRunner>();
         services.AddScoped<TskRunner>();
         services.AddScoped<TskCurationSeedRunner>();
+        services.AddScoped<Services.Swete.LxxTagSeedRunner>();
         services.AddScoped<GbtRunner>();
         services.AddSblServices();
         services.AddByzTxtServices();

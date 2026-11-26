@@ -27,6 +27,9 @@ public sealed class SeedManifest
     /// <summary>The TSK curation change file <c>assets/seed/tsk/curations.csv</c> (roadmap 0024.7); absent until a TSK export ran.</summary>
     public SeedKind? Tsk { get; set; }
 
+    /// <summary>The LXX tag files <c>assets/seed/lxx/tags.csv</c> and <c>links.csv</c> (roadmap 0028.8); absent until an LXX export ran.</summary>
+    public SeedKind? Lxx { get; set; }
+
     public static readonly JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true,

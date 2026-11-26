@@ -1,0 +1,25 @@
+meta {
+  name: LxxSeedImport
+  type: http
+  seq: 32
+}
+
+post {
+  url: {{url}}maintainer/lxx/seed/import
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "mirror": false
+  }
+}
+
+docs {
+  Imports assets/seed/lxx/tags.csv and links.csv in the background (roadmap 0028.8). Lines whose LXX word is gone or whose hash changed are skipped and listed (anchorMismatch). mirror false: insert missing, update differing or proposed tags, never delete. mirror true (Exakt wie Datei): also delete confirmed tags and links the files lack; proposals stay. 202 with the job (operation lxxSeedImport); 409; 422; 401; 403. Poll SeedStatus.
+}
+
+settings {
+  encodeUrl: true
+}

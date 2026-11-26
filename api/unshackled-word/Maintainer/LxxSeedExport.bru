@@ -1,0 +1,19 @@
+meta {
+  name: LxxSeedExport
+  type: http
+  seq: 31
+}
+
+post {
+  url: {{url}}maintainer/lxx/seed/export
+  body: none
+  auth: inherit
+}
+
+docs {
+  Exports the confirmed LXX tags and links (roadmap 0028.8) in the background to assets/seed/lxx/tags.csv and links.csv plus the lxx part of manifest.json; no Greek text, no user ids, no proposals. 202 with the job (operation lxxSeedExport, counts tags and links); 409 while another seed job runs; 422 assets folder not reachable; 401 anonymous; 403 other roles. Poll SeedStatus.
+}
+
+settings {
+  encodeUrl: true
+}

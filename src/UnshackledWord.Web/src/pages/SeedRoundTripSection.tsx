@@ -7,6 +7,7 @@ import { FormError } from "@/components/FormError";
 import { Select } from "@/components/Select";
 import { ApiError, describeApiError } from "@/lib/api";
 import type { SeedKind } from "@/lib/maintainer/api";
+import { useStartLxxSeedJob } from "@/lib/maintainer/lxxSeedJobs";
 import {
   type SeedImportRow,
   type SeedOperation,
@@ -72,8 +73,10 @@ export function SeedRoundTripSection() {
   const status = useSeedStatus(true);
   const start = useStartSeedJob();
   const tskStart = useStartTskJob();
+  const lxxStart = useStartLxxSeedJob();
   const job = status.data?.job;
-  const running = job?.status === "running" || start.isPending || tskStart.isPending;
+  const running =
+    job?.status === "running" || start.isPending || tskStart.isPending || lxxStart.isPending;
   const assetsProblem = status.data?.assetsProblem;
   const blocked = running || Boolean(assetsProblem);
 
@@ -95,7 +98,7 @@ export function SeedRoundTripSection() {
     setBackupConfirmed(false);
   }
 
-  const startError = start.error ?? tskStart.error;
+  const startError = start.error ?? tskStart.error ?? lxxStart.error;
   const startMessage = !startError
     ? ""
     : startError instanceof ApiError && startError.status === 409
@@ -145,6 +148,14 @@ export function SeedRoundTripSection() {
           onClick={() => tskStart.mutate({ operation: "export" })}
         >
           {t("maintainer.seedJobs.operations.tskExport")}
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={blocked}
+          title={t("maintainer.seedJobs.hints.lxxSeedExport")}
+          onClick={() => lxxStart.mutate({ operation: "export" })}
+        >
+          {t("maintainer.seedJobs.operations.lxxSeedExport")}
         </Button>
       </div>
       <FormError message={startMessage} />

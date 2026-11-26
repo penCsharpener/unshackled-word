@@ -244,3 +244,25 @@ public sealed class TskCurationImportPreviewResponse
     /// <summary>Lines of <c>assets/seed/tsk/curations.csv</c>; omitted when the file does not exist.</summary>
     public int? FileRows { get; set; }
 }
+
+/// <summary>Body of <c>POST api/maintainer/lxx/seed/import</c> (roadmap 0028.8): <c>mirror</c> = "Exakt wie Datei" (confirmed tags and links the files lack are deleted; proposals stay).</summary>
+public sealed class ImportLxxSeedRequest
+{
+    public bool Mirror { get; set; }
+}
+
+/// <summary>Answer of <c>GET api/maintainer/lxx/seed/import/preview</c>: what "Exakt wie Datei" would delete, before the maintainer confirms.</summary>
+public sealed class LxxSeedImportPreviewResponse
+{
+    /// <summary>Confirmed <c>LxxWordTags</c> rows the files do not have.</summary>
+    public int WouldDeleteTags { get; set; }
+
+    /// <summary>Confirmed <c>LxxHebrewLinks</c> rows the files do not have.</summary>
+    public int WouldDeleteLinks { get; set; }
+
+    /// <summary>Lines of <c>assets/seed/lxx/tags.csv</c>; omitted when neither file exists.</summary>
+    public int? FileTagRows { get; set; }
+
+    /// <summary>Lines of <c>assets/seed/lxx/links.csv</c>; omitted when neither file exists.</summary>
+    public int? FileLinkRows { get; set; }
+}

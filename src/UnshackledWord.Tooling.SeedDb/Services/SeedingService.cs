@@ -27,6 +27,8 @@ public sealed partial class SeedingService
         typeof(VerseSimilarity.VerseSimilarityRunner),
         // after the STEP download, which holds TVTMS (roadmap 0028.3); only while LxxVerses is empty
         typeof(Swete.LxxTextImporter),
+        // the confirmed LXX tags and links of the repo seed, only while LxxWordTags has no confirmed row (roadmap 0028.8)
+        typeof(Swete.LxxTagSeedRunner),
         typeof(StepBible.StrongsToText.StepStrongsImport),
         typeof(AiMappingImport.AiMappingImportRunner),
         typeof(RevisionSeed.RevisionSeedRunner),

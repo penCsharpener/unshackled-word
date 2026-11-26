@@ -12,6 +12,8 @@ export type SeedOperation =
   | "notesImport"
   | "tskExport"
   | "tskImport"
+  | "lxxSeedExport"
+  | "lxxSeedImport"
   | "verseSimilarity"
   | "lxxPrefill";
 export type SeedJobState = "running" | "succeeded" | "failed";
@@ -82,7 +84,7 @@ export interface SeedJobResult {
 export interface SeedJob {
   id: string;
   operation: SeedOperation;
-  kind: SeedKind | "notes" | "tsk";
+  kind: SeedKind | "notes" | "tsk" | "lxx";
   status: SeedJobState;
   startedAt: string;
   finishedAt?: string;

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using UnshackledWord.Infrastructure.Seed.BaseText;
+using UnshackledWord.Infrastructure.Seed.Lxx;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Infrastructure.Seed.Morphology;
 using UnshackledWord.Infrastructure.Seed.Revision;
@@ -25,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<SeedExportRunner>();
         services.AddScoped<SeedFileExportService>();
         services.AddScoped<TskCurationSeedService>();
+        services.AddScoped<LxxSeedService>();
 
         return services;
     }

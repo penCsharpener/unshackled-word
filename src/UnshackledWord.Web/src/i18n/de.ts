@@ -1416,6 +1416,7 @@ export const de = {
         vocab: "Vokabeln",
         notes: "Notizen",
         tsk: "TSK-Kuratierung",
+        lxx: "LXX-Tags",
       },
       export: "Seed exportieren",
       exporting: "wird erstellt …",
@@ -1604,6 +1605,8 @@ export const de = {
         verseSimilarity: "Ähnliche Verse",
         lxxPrefill: "LXX vorbelegen",
         tskImport: "TSK-Kuratierung importieren",
+        lxxSeedExport: "LXX-Tags exportieren",
+        lxxSeedImport: "LXX-Tags importieren",
       },
       hints: {
         export:
@@ -1618,6 +1621,8 @@ export const de = {
           "Exportiert, baut Wörter und Verse aus dem Basistext neu auf und importiert Morphologie und Zuordnungen wieder. Braucht eine Bestätigung.",
         tskExport:
           "Schreibt alle TSK-Kuratierungen (Bewertungen, Kommentare, Wortverknüpfungen, ergänzte Verweise) nach assets/seed/tsk/curations.csv, ohne Nutzerdaten.",
+        lxxSeedExport:
+          "Schreibt alle bestätigten LXX-Tags und Hebräisch-Verknüpfungen nach assets/seed/lxx/tags.csv und links.csv, ohne Griechisch-Text und ohne Nutzerdaten. Vorschläge werden nicht exportiert.",
       },
       actions: { import: "Import", update: "Aktualisierung", export: "Export" },
       skipped: "Übersprungen: {{reason}}",
@@ -1653,6 +1658,9 @@ export const de = {
         deleted: "gelöscht",
         skipped: "übersprungen",
         alignedChapters: "Kapitel ausgerichtet",
+        tags: "Tags",
+        links: "Verknüpfungen",
+        anchorMismatch: "Anker passt nicht mehr",
       },
       lists: {
         orphans: "Nicht zuordenbar",
@@ -1800,6 +1808,22 @@ export const de = {
       confirmTitle: "Exakt wie Datei importieren?",
       wouldDelete_one: "{{count}} Eintrag wird gelöscht.",
       wouldDelete_other: "{{count}} Einträge werden gelöscht.",
+      confirmRun: "Importieren",
+      cancel: "Abbrechen",
+      startFailed: "Der Auftrag konnte nicht gestartet werden.",
+    },
+    lxx: {
+      title: "LXX-Tags",
+      what: "Spielt die bestätigten LXX-Tags und Hebräisch-Verknüpfungen aus assets/seed/lxx (tags.csv, links.csv) ein. Die Dateien enthalten keinen Griechisch-Text; jede Zeile hängt am Wort über Rahlfs-Verweis, Position und Wort-Hash. Exportiert werden sie unter „Wartung“.",
+      rules:
+        "Fehlende Tags und Verknüpfungen kommen neu dazu, abweichende bestätigte Tags übernehmen den Stand der Datei, ein Vorschlag, den die Datei bestätigt, wird bestätigt. Zeilen, deren Wort sich geändert hat, werden übersprungen und gelistet. Es wird nichts gelöscht; Vorschläge bleiben immer unberührt.",
+      mirror: "Exakt wie Datei",
+      mirrorHint:
+        "Löscht bestätigte Tags und Verknüpfungen, die nur in der Datenbank stehen (Vorschläge bleiben). Vor dem Start wird die Anzahl angezeigt.",
+      import: "LXX-Tags importieren",
+      confirmTitle: "Exakt wie Datei importieren?",
+      wouldDelete:
+        "{{tags}} bestätigte Tags und {{links}} bestätigte Verknüpfungen werden gelöscht. Vorschläge bleiben.",
       confirmRun: "Importieren",
       cancel: "Abbrechen",
       startFailed: "Der Auftrag konnte nicht gestartet werden.",

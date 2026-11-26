@@ -30,6 +30,11 @@ public sealed class SeedLayout
     public const string TskCurationsFile = "curations.csv";
     public const string TskCurationsPath = TskFolder + "/" + TskCurationsFile;
 
+    /// <summary>LXX tag seed (roadmap 0028.8), below the seed root: <c>lxx/tags.csv</c>, <c>lxx/links.csv</c> (confirmed tags and Hebrew links, no Greek text, no user).</summary>
+    public const string LxxFolder = "lxx";
+    public const string LxxTagsPath = LxxFolder + "/tags.csv";
+    public const string LxxLinksPath = LxxFolder + "/links.csv";
+
     public static readonly UTF8Encoding Utf8NoBom = new(false);
 
     private readonly IFileService _fileService;

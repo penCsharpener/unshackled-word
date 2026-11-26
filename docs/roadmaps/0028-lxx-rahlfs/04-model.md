@@ -69,6 +69,6 @@ CREATE TABLE "unshackled-word"."LxxTagAudit" (              -- 0051, as migrated
 - **Word filter** (`LxxWordFilter`): marker tokens, the editorial marks `⸂ ⸆ ⸃` (alone or attached; the Greek word stays) and the acrostic letter names of Lamentations (`Ἄλεφ.` …) are dropped; punctuation printed as its own token is appended to the previous word. Swete's capitals at the start of a book (`ΕΝ ΑΡΧΗ`, `ΚΑΙ`) are the text's first words, not headings, and are kept.
 - **Seed files** (`assets/seed/lxx/`, CC0, no Greek text, no user names):
   - `swete-to-rahlfs.csv`: `SweteRef;RahlfsRef;TextForm;Note`
-  - `tags.csv`: `RahlfsRef;TextForm;Position;SrcHash;Lemma;Strongs;Morphology` (confirmed tags only)
-  - `links.csv`: `RahlfsRef;TextForm;Position;SrcHash;HebLxxRefId;HebPosition;HebSrcHash` (Hebrew side as `SourceKey`)
+  - `tags.csv`: `RahlfsRef,TextForm,Position,SrcHash,Strongs,Morphology,Source` (confirmed tags only; comma CSV like the other seeds). **No `Lemma` column**: a lemma is Greek script and the files must hold none; import takes it from TBESG by Strong's, where the stored lemma comes from. `RahlfsRef` is the numeric `RahlfsRefId`; `Source` is `nt-form`, `ai` or `human` (empty on import = `human`)
+  - `links.csv`: `RahlfsRef,TextForm,Position,SrcHash,HebLxxRefId,HebPosition,HebSrcHash` (Hebrew side as `SourceKey`)
 - **Hebrew link anchor:** `StepHebrewWordId` is a serial that a STEP re-import renumbers. The seed therefore stores the Hebrew `SourceKey`, and import resolves it with `SourceWordResolver`, as the mapping seed does.

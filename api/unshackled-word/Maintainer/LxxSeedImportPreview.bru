@@ -1,0 +1,19 @@
+meta {
+  name: LxxSeedImportPreview
+  type: http
+  seq: 33
+}
+
+get {
+  url: {{url}}maintainer/lxx/seed/import/preview
+  body: none
+  auth: inherit
+}
+
+docs {
+  Dry run of the import with mirror true: wouldDeleteTags, wouldDeleteLinks, fileTagRows, fileLinkRows. Runs in a rolled-back transaction. 422 when the assets folder is not reachable; 401 anonymous; 403 other roles.
+}
+
+settings {
+  encodeUrl: true
+}

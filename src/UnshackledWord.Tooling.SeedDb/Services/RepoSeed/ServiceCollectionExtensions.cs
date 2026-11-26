@@ -31,6 +31,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxNtFormRepository, UnshackledWord.Infrastructure.Lxx.LxxNtFormRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.LxxNtFormTagger>();
         services.AddScoped<ISeedVerb, LxxPrefillVerb>();
+        services.AddScoped<ISeedVerb, LxxSeedVerb>();
         services.AddScoped<UnshackledWord.Tooling.SeedDb.Services.VerseSimilarity.VerseSimilarityRunner>();
 
         return services;

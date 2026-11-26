@@ -1401,6 +1401,7 @@ export const en: Translation = {
         vocab: "Vocabulary",
         notes: "Notes",
         tsk: "TSK curation",
+        lxx: "LXX tags",
       },
       export: "Export seed",
       exporting: "Building …",
@@ -1588,6 +1589,8 @@ export const en: Translation = {
         verseSimilarity: "Similar verses",
         lxxPrefill: "LXX prefill",
         tskImport: "Import TSK curation",
+        lxxSeedExport: "Export LXX tags",
+        lxxSeedImport: "Import LXX tags",
       },
       hints: {
         export:
@@ -1602,6 +1605,8 @@ export const en: Translation = {
           "Exports, rebuilds words and verses from the base text and imports morphology and mappings again. Needs a confirmation.",
         tskExport:
           "Writes every TSK curation (ratings, comments, word links, added references) to assets/seed/tsk/curations.csv, without user data.",
+        lxxSeedExport:
+          "Writes every confirmed LXX tag and Hebrew link to assets/seed/lxx/tags.csv and links.csv, without Greek text and without user data. Proposals are not exported.",
       },
       actions: { import: "Import", update: "Update", export: "Export" },
       skipped: "Skipped: {{reason}}",
@@ -1637,6 +1642,9 @@ export const en: Translation = {
         updated: "changed",
         skipped: "skipped",
         alignedChapters: "chapters aligned",
+        tags: "tags",
+        links: "links",
+        anchorMismatch: "anchor no longer matches",
       },
       lists: {
         orphans: "Orphaned",
@@ -1783,6 +1791,22 @@ export const en: Translation = {
       confirmTitle: "Import exactly as the file?",
       wouldDelete_one: "{{count}} entry will be deleted.",
       wouldDelete_other: "{{count}} entries will be deleted.",
+      confirmRun: "Import",
+      cancel: "Cancel",
+      startFailed: "The job could not be started.",
+    },
+    lxx: {
+      title: "LXX tags",
+      what: "Imports the confirmed LXX tags and Hebrew links from assets/seed/lxx (tags.csv, links.csv). The files hold no Greek text; every line is attached to its word by Rahlfs reference, position and word hash. They are exported under “Maintenance”.",
+      rules:
+        "Missing tags and links are added, differing confirmed tags take the file's state, and a proposal that the file confirms becomes confirmed. Lines whose word has changed are skipped and listed. Nothing is deleted; proposals are always left alone.",
+      mirror: "Exactly as the file",
+      mirrorHint:
+        "Deletes confirmed tags and links that exist only in the database (proposals stay). The number is shown before the import starts.",
+      import: "Import LXX tags",
+      confirmTitle: "Import exactly as the file?",
+      wouldDelete:
+        "{{tags}} confirmed tags and {{links}} confirmed links will be deleted. Proposals stay.",
       confirmRun: "Import",
       cancel: "Cancel",
       startFailed: "The job could not be started.",
