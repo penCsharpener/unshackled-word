@@ -27,3 +27,5 @@ Implementation started 2026-11-26 on `feature/morphology-search`. Numbering cont
 - Open: two Application test failures in the agent-prompt tests (`AgentPromptProviderTests`, `AgentPromptExampleTests`) are outside this change and not yet investigated.
 
 **0029.2 (chapter matches and neighbours, backend) done, 0.14.1.** `chapter/40/24?q=agape Kasus:nom` → verse 12, position 9, ~30 ms warm; `neighbours` for Matt 24 → no previous, next John 17. Decisions: `total` counts matched original words in the chapter; in a hit verse every candidate word of every slot is marked (the distinct-word rule only decides whether the verse is a hit); `originalWordIds` are `StepGreekWords.Id` as used by `OriginalVerse`. Frontend row 0029.2f open.
+
+**0029.3 (vocabulary endpoint) done, 0.14.2.** `api/elberfelder/search/grammar/vocabulary` is built from `GrammarVocabulary` (no second list); `GrammarVocabularyLabelTests` compares every value label with `de.ts` (exact) and `en.ts` (case-insensitive) and fails naming category and key. Languages include `aramaic`; `dt.` keys are not listed while `germanKeysEnabled` is false; `Code`/`Strong`/`Lemma` are `freeValue`.

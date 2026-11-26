@@ -84,7 +84,7 @@ public static class GrammarVocabulary
             Selector = k => k.PartOfSpeech,
             Values =
             [
-                V(MorphologyKey.Noun, "Substantiv", "Noun"), V(MorphologyKey.NounProper, "Eigenname", "Proper name"), V(MorphologyKey.Verb, "Verb", "Verb"),
+                V(MorphologyKey.Noun, "Substantiv", "Noun"), V(MorphologyKey.NounProper, "Eigenname", "Proper noun"), V(MorphologyKey.Verb, "Verb", "Verb"),
                 V(MorphologyKey.Adjective, "Adjektiv", "Adjective"), V(MorphologyKey.Adverb, "Adverb", "Adverb"), V(MorphologyKey.Article, "Artikel", "Article"),
                 V(MorphologyKey.Pronoun, "Pronomen", "Pronoun"), V(MorphologyKey.Preposition, "Präposition", "Preposition"),
                 V(MorphologyKey.Conjunction, "Konjunktion", "Conjunction"), V(MorphologyKey.Particle, "Partikel", "Particle"),
