@@ -1939,12 +1939,16 @@ export const en: Translation = {
       cancel: "Cancel",
       startFailed: "The job could not be started.",
     },
+    rootsPreview: "Roots: {{added}} new, {{changed}} changed, {{kept}} kept (manual)",
+    rootsPreviewSkipped: "{{count}} root rows cannot be applied.",
+    rootsPreviewFiles: "Files: {{roots}} roots, {{words}} word assignments.",
+    rootsPreviewFailed: "The root preview could not be loaded.",
     run: "Import {{kind}}",
     runUpdate: "Update {{kind}}",
     kinds: {
       vocab: {
         title: "Vocab",
-        what: "The vocab entries with their Strong's keys and meanings (assets/seed/vocab).",
+        what: "The vocab entries with their Strong's keys and meanings, plus the roots (assets/seed/vocab). The preview shows beforehand what the root files change; root assignments set manually here are kept.",
         import:
           "Matches every seed entry to an existing entry (track and lemma, else Strong's key) and creates missing ones. Matched entries take the seed values and their keys and meanings are aligned (meanings and keys missing from the seed are deleted).",
         update:
@@ -2467,6 +2471,7 @@ export const en: Translation = {
       roles: "Roles",
       tsk: "TSK curation",
       editions: "Text editions",
+      vocab: "Vocab roots",
     },
     severity: { error: "Error", warning: "Check", info: "Note", ok: "Clean" },
     delta: "{{sign}}{{count}} since last run",
@@ -2502,6 +2507,9 @@ export const en: Translation = {
       T2: { title: "Word link drifted" },
       G1: { title: "Unknown Greek editions" },
       G2: { title: "Words without editions" },
+      V1: { title: "Entry keys with different roots" },
+      V2: { title: "Root key missing in the lexicon" },
+      V3: { title: "Root's own key belongs to another root" },
     },
     help: {
       toggle: "What does this area check?",
@@ -2516,6 +2524,8 @@ export const en: Translation = {
         roles: "Roles – checks head words, auxiliary words (unit) and part lemmas of the links.",
         tsk: "TSK curation – checks the curated cross references (roadmap 0024) for orphaned keys and drifted word links.",
         editions: "Text editions – checks which Greek editions a word is listed in (roadmap 0025).",
+        vocab:
+          "Vocab roots – checks the roots of the vocab entries (roadmap 0030) for contradicting keys and missing lexicon entries.",
       },
       checks: {
         U1: {
@@ -2617,6 +2627,18 @@ export const en: Translation = {
         G2: {
           what: "A word has a non-empty edition string that produced no row in the word-edition table (e.g. only separators). The value should be 0.",
           fix: "Check the string in the STEP data and rebuild the assignment (RefreshStepGreekWordEditions).",
+        },
+        V1: {
+          what: "A vocab entry has several Strong’s keys whose root rows point at different roots. The list names the root per key. The value should be 0, because the root of an entry hangs on its main key.",
+          fix: "Check and set the root of the entry in the vocab editor, or split the keys into two entries.",
+        },
+        V2: {
+          what: "The Strong’s key of a root is not in StepStrongsLexicon (typo or a number without a lexicon entry). The value should be 0.",
+          fix: "Correct the key of the root in the vocab editor or remove the root.",
+        },
+        V3: {
+          what: "The root has its own Strong’s key, but the root row of that key points at another root. A word that belongs under a parent root is linked through the parent root, not like this.",
+          fix: "Check the root of the entry in the vocab editor and set the parent root if needed.",
         },
       },
       unmapped: {

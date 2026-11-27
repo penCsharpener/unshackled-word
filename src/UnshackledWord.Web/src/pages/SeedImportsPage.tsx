@@ -6,7 +6,11 @@ import { ApiError, describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import type { SeedKind } from "@/lib/maintainer/api";
-import { useSeedStatus, useStartSeedJob } from "@/lib/maintainer/seedJobs";
+import {
+  useSeedStatus,
+  useStartSeedJob,
+  useVocabSeedImportPreview,
+} from "@/lib/maintainer/seedJobs";
 import { LxxSeedJobsSection } from "./LxxSeedJobsSection";
 import { NotesJobsSection } from "./NotesJobsSection";
 import { SeedJobResultView } from "./SeedJobResultView";
@@ -27,7 +31,14 @@ interface ImportSpec {
 const IMPORTS: ImportSpec[] = [
   {
     kind: "vocab",
-    tables: ["VocabEntries", "VocabStrongs", "VocabMeanings", "VocabEntryChanges"],
+    tables: [
+      "VocabEntries",
+      "VocabStrongs",
+      "VocabMeanings",
+      "VocabEntryChanges",
+      "VocabRoots",
+      "VocabStrongsRoots",
+    ],
     update: false,
     overwrites: true,
   },
@@ -50,6 +61,32 @@ const IMPORTS: ImportSpec[] = [
     overwrites: false,
   },
 ];
+
+/** Roadmap 0030.7f: what the root files would do, shown on the vocab card before the maintainer presses the import button. */
+function VocabRootsPreview({ refreshKey }: { refreshKey: number | string | null }) {
+  const { t } = useTranslation();
+  const preview = useVocabSeedImportPreview(true, refreshKey);
+  if (preview.isError) {
+    return <p className="text-sm text-fg-muted">{t("imports.rootsPreviewFailed")}</p>;
+  }
+  const data = preview.data;
+  if (!data) return null;
+  return (
+    <div role="status" className="flex flex-col gap-1 text-sm">
+      <p className="font-medium">
+        {t("imports.rootsPreview", {
+          added: data.rootsNew,
+          changed: data.rootsChanged,
+          kept: data.manualKept,
+        })}
+      </p>
+      <p className="text-fg-muted">
+        {t("imports.rootsPreviewFiles", { roots: data.fileRoots, words: data.fileWordRoots })}
+        {data.skipped > 0 ? ` ${t("imports.rootsPreviewSkipped", { count: data.skipped })}` : ""}
+      </p>
+    </div>
+  );
+}
 
 /** "Importe": every seed import as its own explained button; nothing is imported automatically. */
 export function SeedImportsPage() {
@@ -127,6 +164,9 @@ export function SeedImportsPage() {
                   components={{ maint: maintenanceLink }}
                 />
               </p>
+            ) : null}
+            {spec.kind === "vocab" ? (
+              <VocabRootsPreview refreshKey={job?.status === "succeeded" ? job.id : null} />
             ) : null}
             <div className="flex flex-wrap gap-2 pt-1">
               <Button

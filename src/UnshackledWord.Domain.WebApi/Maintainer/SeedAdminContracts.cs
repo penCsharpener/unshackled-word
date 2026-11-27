@@ -266,3 +266,24 @@ public sealed class LxxSeedImportPreviewResponse
     /// <summary>Lines of <c>assets/seed/lxx/links.csv</c>; omitted when neither file exists.</summary>
     public int? FileLinkRows { get; set; }
 }
+
+/// <summary>Answer of <c>GET api/maintainer/vocab/seed/import/preview</c> (roadmap 0030.7f): what the root files in <c>assets/seed/vocab</c> would do, before the maintainer confirms the vocab import.</summary>
+public sealed class VocabSeedImportPreviewResponse
+{
+    /// <summary>Roots and word rows the database does not have yet.</summary>
+    public int RootsNew { get; set; }
+
+    /// <summary>Roots and word rows that exist and would change.</summary>
+    public int RootsChanged { get; set; }
+
+    /// <summary>Local <c>manual</c> word rows that stay because the seed row is not manual.</summary>
+    public int ManualKept { get; set; }
+
+    /// <summary>Seed rows that cannot be applied (root key held by another root, root missing).</summary>
+    public int Skipped { get; set; }
+
+    /// <summary>Lines of <c>roots.csv</c> and <c>word-roots.csv</c>; 0 when a file does not exist.</summary>
+    public int FileRoots { get; set; }
+
+    public int FileWordRoots { get; set; }
+}

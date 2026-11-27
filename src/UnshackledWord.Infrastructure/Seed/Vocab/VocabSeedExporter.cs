@@ -15,6 +15,38 @@ public sealed class VocabSeedExporter
     public const string EntriesFile = "entries.csv";
     public const string KeysFile = "keys.csv";
     public const string MeaningsFile = "meanings.csv";
+    public const string RootsFile = "roots.csv";
+    public const string WordRootsFile = "word-roots.csv";
+
+    // Roots (roadmap 0030.7): the parent by natural key; sorted by track, root text, homograph so an unchanged database exports unchanged bytes.
+    private const string SelectRoots = """
+        SELECT r."Track"
+             , r."Root"
+             , r."Homograph"::int AS "Homograph"
+             , r."StrongsKey"
+             , p."Root" AS "ParentRoot"
+             , p."Homograph"::int AS "ParentHomograph"
+        FROM "unshackled-word"."VocabRoots" r
+            LEFT JOIN "unshackled-word"."VocabRoots" p ON p."Id" = r."ParentRootId"
+        ORDER BY r."Track"
+               , r."RootNormalized" COLLATE "C"
+               , r."Homograph"
+        """;
+
+    private const string SelectWordRoots = """
+        SELECT s."Lang"
+             , s."StrongsKey"
+             , r."Track" AS "RootTrack"
+             , r."Root"
+             , r."Homograph"::int AS "RootHomograph"
+             , s."Prefixes"
+             , array_to_string(s."PrefixKeys", ';') AS "PrefixKeys"
+             , s."Origin"
+        FROM "unshackled-word"."VocabStrongsRoots" s
+            JOIN "unshackled-word"."VocabRoots" r ON r."Id" = s."VocabRootId"
+        ORDER BY s."Lang"
+               , s."StrongsKey" COLLATE "C"
+        """;
 
     // Live entries with their homograph number: the n-th entry with this lemma in the track, by lowest Strong's key (ordinal), then id.
     private const string LiveEntries = """
@@ -122,15 +154,17 @@ public sealed class VocabSeedExporter
             await File.WriteAllBytesAsync(Path.Combine(folder, name), bytes, token);
         }
 
-        _logger.LogInformation("Vocab seed exported to {Folder}: {Entries} entries, {Keys} keys, {Meanings} meanings", folder, data.Entries.Count, data.Keys.Count, data.Meanings.Count);
+        _logger.LogInformation("Vocab seed exported to {Folder}: {Entries} entries, {Keys} keys, {Meanings} meanings, {Roots} roots, {WordRoots} word roots", folder, data.Entries.Count, data.Keys.Count, data.Meanings.Count, data.Roots.Count, data.WordRoots.Count);
     }
 
-    /// <summary>The three files as bytes (name, content); used by the exporter and by the round-trip test.</summary>
+    /// <summary>The five files as bytes (name, content); used by the exporter and by the round-trip test.</summary>
     public static List<(string Name, byte[] Bytes)> Serialize(VocabSeedData data) =>
     [
         (EntriesFile, SeedCsv.Serialize<VocabSeedEntryLine, VocabSeedEntryLineMap>(data.Entries).Bytes),
         (KeysFile, SeedCsv.Serialize<VocabSeedKeyLine, VocabSeedKeyLineMap>(data.Keys).Bytes),
-        (MeaningsFile, SeedCsv.Serialize<VocabSeedMeaningLine, VocabSeedMeaningLineMap>(data.Meanings).Bytes)
+        (MeaningsFile, SeedCsv.Serialize<VocabSeedMeaningLine, VocabSeedMeaningLineMap>(data.Meanings).Bytes),
+        (RootsFile, SeedCsv.Serialize<VocabSeedRootLine, VocabSeedRootLineMap>(data.Roots).Bytes),
+        (WordRootsFile, SeedCsv.Serialize<VocabSeedWordRootLine, VocabSeedWordRootLineMap>(data.WordRoots).Bytes)
     ];
 
     /// <summary>Reads the live content. Identity across databases is <c>(Track, Lemma, Homograph)</c>; a split leaves two entries with one lemma, the homograph number tells them apart.</summary>
@@ -140,7 +174,9 @@ public sealed class VocabSeedExporter
         {
             Entries = (await c.QueryAsync<VocabSeedEntryLine>(SelectEntries, transaction: t)).ToList(),
             Keys = (await c.QueryAsync<VocabSeedKeyLine>(SelectKeys, transaction: t)).ToList(),
-            Meanings = (await c.QueryAsync<VocabSeedMeaningLine>(SelectMeanings, transaction: t)).ToList()
+            Meanings = (await c.QueryAsync<VocabSeedMeaningLine>(SelectMeanings, transaction: t)).ToList(),
+            Roots = (await c.QueryAsync<VocabSeedRootLine>(SelectRoots, transaction: t)).ToList(),
+            WordRoots = (await c.QueryAsync<VocabSeedWordRootLine>(SelectWordRoots, transaction: t)).ToList()
         };
 
         return data;

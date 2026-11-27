@@ -82,7 +82,9 @@ describe("SeedImportsPage TSK curation card (0024.7f)", () => {
     expect(screen.getAllByText("gelöscht").length).toBeGreaterThan(0);
     expect(screen.getByText("Übersprungen (1)")).toBeInTheDocument();
     expect(postBodies(fetchMock)).toEqual([["/api/maintainer/tsk/import", { mirror: false }]]);
-    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("preview"))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("tsk/import/preview"))).toBe(
+      false,
+    );
   });
 
   it("with Exakt wie Datei asks first with the preview count and deletes after confirming", async () => {

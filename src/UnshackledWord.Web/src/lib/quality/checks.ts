@@ -2,7 +2,7 @@ import type { CheckSummary, Finding } from "./types";
 import { normalizeOriginalQ, type TrailEntry } from "./url";
 
 export type TileSeverity = "error" | "warning" | "info" | "ok";
-export type CheckGroupKey = "mapping" | "lemma" | "roles" | "tsk" | "editions";
+export type CheckGroupKey = "mapping" | "lemma" | "roles" | "tsk" | "editions" | "vocab";
 
 /** No findings = ok, any error finding = error, otherwise worth a look. */
 export function tileSeverity(check: Pick<CheckSummary, "count" | "errorCount">): TileSeverity {
@@ -10,11 +10,12 @@ export function tileSeverity(check: Pick<CheckSummary, "count" | "errorCount">):
   return check.errorCount > 0 ? "error" : "warning";
 }
 
-/** L* checks are about the German lemma / morphology, R* about link roles, T* about TSK curations, G* about Greek editions, everything else about the mapping. */
+/** L* checks are about the German lemma / morphology, R* about link roles, T* about TSK curations, G* about Greek editions, V* about vocab roots, everything else about the mapping. */
 export function checkGroup(code: string): CheckGroupKey {
   if (code.startsWith("R")) return "roles";
   if (code.startsWith("T")) return "tsk";
   if (code.startsWith("G")) return "editions";
+  if (code.startsWith("V")) return "vocab";
   return code.startsWith("L") ? "lemma" : "mapping";
 }
 

@@ -150,3 +150,24 @@ export function useStartSeedJob() {
     },
   });
 }
+
+/** Dry run of the root files of the vocab import (roadmap 0030.7f); roots and word rows are counted together. */
+export interface VocabSeedImportPreview {
+  rootsNew: number;
+  rootsChanged: number;
+  manualKept: number;
+  skipped: number;
+  fileRoots: number;
+  fileWordRoots: number;
+}
+
+/** The preview of the vocab import's roots; `refreshKey` (a finished job's id) refetches it after an import. */
+export function useVocabSeedImportPreview(enabled: boolean, refreshKey: number | string | null) {
+  return useQuery({
+    queryKey: ["maintainer", "vocabSeedPreview", refreshKey],
+    queryFn: ({ signal }) =>
+      api.get<VocabSeedImportPreview>("/maintainer/vocab/seed/import/preview", signal),
+    enabled,
+    retry: false,
+  });
+}

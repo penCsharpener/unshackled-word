@@ -1956,12 +1956,16 @@ export const de = {
       cancel: "Abbrechen",
       startFailed: "Der Auftrag konnte nicht gestartet werden.",
     },
+    rootsPreview: "Wurzeln: {{added}} neu, {{changed}} geändert, {{kept}} manuell behalten",
+    rootsPreviewSkipped: "{{count}} Wurzel-Zeilen können nicht angewendet werden.",
+    rootsPreviewFiles: "Dateien: {{roots}} Wurzeln, {{words}} Wort-Zuordnungen.",
+    rootsPreviewFailed: "Die Wurzel-Vorschau konnte nicht geladen werden.",
     run: "{{kind}} importieren",
     runUpdate: "{{kind}} aktualisieren",
     kinds: {
       vocab: {
         title: "Vokabeln",
-        what: "Die Vokabel-Einträge mit ihren Strong's-Schlüsseln und Bedeutungen (assets/seed/vocab).",
+        what: "Die Vokabel-Einträge mit ihren Strong's-Schlüsseln und Bedeutungen sowie die Wurzeln (assets/seed/vocab). Die Vorschau zeigt vorab, was die Wurzel-Dateien ändern; lokal manuell gesetzte Wurzel-Zuordnungen bleiben erhalten.",
         import:
           "Ordnet jeden Seed-Eintrag einem vorhandenen Eintrag zu (Spur und Lemma, sonst Strong's-Schlüssel) und legt fehlende Einträge neu an. Zugeordnete Einträge übernehmen die Seed-Werte, ihre Schlüssel und Bedeutungen werden angeglichen (Bedeutungen und Schlüssel, die im Seed fehlen, werden gelöscht).",
         update:
@@ -2495,6 +2499,7 @@ export const de = {
       roles: "Rollen",
       tsk: "TSK-Kuratierung",
       editions: "Textausgaben",
+      vocab: "Vokabel-Wurzeln",
     },
     severity: { error: "Fehler", warning: "Prüfen", info: "Hinweis", ok: "Unauffällig" },
     delta: "{{sign}}{{count}} seit letzter Berechnung",
@@ -2530,6 +2535,9 @@ export const de = {
       T2: { title: "Wort-Verknüpfung verschoben" },
       G1: { title: "Unbekannte Textausgaben" },
       G2: { title: "Wörter ohne Textausgaben" },
+      V1: { title: "Schlüssel eines Eintrags mit verschiedenen Wurzeln" },
+      V2: { title: "Wurzel-Schlüssel fehlt im Lexikon" },
+      V3: { title: "Eigener Schlüssel der Wurzel gehört zu anderer Wurzel" },
     },
     help: {
       toggle: "Was prüft dieser Bereich?",
@@ -2545,6 +2553,8 @@ export const de = {
         tsk: "TSK-Kuratierung – prüft die kuratierten Querverweise (Roadmap 0024) auf verwaiste Schlüssel und verschobene Wort-Verknüpfungen.",
         editions:
           "Textausgaben – prüft die Angaben, in welchen griechischen Ausgaben ein Wort steht (Roadmap 0025).",
+        vocab:
+          "Vokabel-Wurzeln – prüft die Wurzeln der Vokabel-Einträge (Roadmap 0030) auf widersprüchliche Schlüssel und fehlende Lexikon-Einträge.",
       },
       checks: {
         U1: {
@@ -2646,6 +2656,18 @@ export const de = {
         G2: {
           what: "Die Ausgaben-Angabe eines Wortes ist nicht leer, ergab aber keinen Eintrag in der Wort-Ausgaben-Tabelle (z. B. nur Trennzeichen). Der Wert sollte 0 sein.",
           fix: "Die Angabe in den STEP-Daten prüfen und die Zuordnung neu aufbauen (RefreshStepGreekWordEditions).",
+        },
+        V1: {
+          what: "Ein Vokabel-Eintrag hat mehrere Strong's-Schlüssel, deren Wurzel-Zeilen auf verschiedene Wurzeln zeigen. Die Liste nennt je Schlüssel die Wurzel. Der Wert sollte 0 sein, weil die Wurzel des Eintrags an seinem Hauptschlüssel hängt.",
+          fix: "Im Vokabel-Editor die Wurzel des Eintrags prüfen und setzen oder die Schlüssel in zwei Einträge trennen.",
+        },
+        V2: {
+          what: "Der Strong's-Schlüssel einer Wurzel steht nicht in StepStrongsLexicon (Tippfehler oder Nummer ohne Lexikon-Eintrag). Der Wert sollte 0 sein.",
+          fix: "Den Schlüssel der Wurzel im Vokabel-Editor korrigieren oder die Wurzel entfernen.",
+        },
+        V3: {
+          what: "Die Wurzel hat einen eigenen Strong's-Schlüssel, aber die Wurzel-Zeile dieses Schlüssels zeigt auf eine andere Wurzel. Ein Wort, das zu einer übergeordneten Wurzel gehört, wird über die Eltern-Wurzel verbunden, nicht so.",
+          fix: "Die Wurzel des Eintrags im Vokabel-Editor prüfen und bei Bedarf die Eltern-Wurzel setzen.",
         },
       },
       unmapped: {

@@ -42,6 +42,15 @@ describe("SeedImportsPage", () => {
     const fetchMock = stubApi({
       "GET /auth/me": () => json({ ...me, roles: ["maintainer"] }),
       "GET /maintainer/seed/status": () => json(current),
+      "GET /maintainer/vocab/seed/import/preview": () =>
+        json({
+          rootsNew: 3,
+          rootsChanged: 2,
+          manualKept: 1,
+          skipped: 0,
+          fileRoots: 10,
+          fileWordRoots: 20,
+        }),
       "POST /maintainer/seed/jobs": () => {
         current = { imports: [], job: running };
         return json(running, 202);
@@ -53,6 +62,7 @@ describe("SeedImportsPage", () => {
     expect(vocab).not.toBeNull();
     const card = within(vocab as HTMLElement);
     expect(card.getByText("VocabMeanings")).toBeInTheDocument();
+    expect(await card.findByText("Roots: 3 new, 2 changed, 1 kept (manual)")).toBeInTheDocument();
     for (const link of screen.getAllByRole("link", { name: "Maintenance" })) {
       expect(link).toHaveAttribute("href", "/edit/maintainer");
     }

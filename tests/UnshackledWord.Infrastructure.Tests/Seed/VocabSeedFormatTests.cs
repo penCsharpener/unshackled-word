@@ -11,10 +11,10 @@ public class VocabSeedFormatTests
         var folder = FindRepoFolder(Path.Combine("assets", "seed", "vocab"));
         Assert.SkipWhen(folder is null, "assets/seed/vocab not found.");
 
-        var files = new[] { VocabSeedExporter.EntriesFile, VocabSeedExporter.KeysFile, VocabSeedExporter.MeaningsFile }
+        var files = new[] { VocabSeedExporter.EntriesFile, VocabSeedExporter.KeysFile, VocabSeedExporter.MeaningsFile, VocabSeedExporter.RootsFile, VocabSeedExporter.WordRootsFile }
             .Select(name => File.ReadAllBytes(Path.Combine(folder!, name)))
             .ToArray();
-        var data = VocabSeedImporter.Parse(files[0], files[1], files[2]);
+        var data = VocabSeedImporter.Parse(files[0], files[1], files[2], files[3], files[4]);
         var written = VocabSeedExporter.Serialize(data);
 
         for (var i = 0; i < files.Length; i++)
