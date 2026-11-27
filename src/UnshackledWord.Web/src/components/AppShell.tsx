@@ -55,22 +55,10 @@ function AppShellContent() {
               <NavLink
                 to="/bible"
                 title={`v${__APP_VERSION__}`}
-                className="font-scripture text-lg font-semibold text-accent"
+                className="flex shrink-0 items-center gap-2 whitespace-nowrap font-scripture text-lg font-semibold text-accent"
               >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  className="size-6 md:hidden"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z" />
-                  <path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5" />
-                </svg>
-                <span className="sr-only md:not-sr-only">{t("app.name")}</span>
+                <img src="/logo.svg" alt="" className="h-8 w-auto shrink-0 md:h-9" />
+                <span className="sr-only whitespace-nowrap md:not-sr-only">{t("app.name")}</span>
               </NavLink>
               <NavLink
                 to="/about"
