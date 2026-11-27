@@ -400,6 +400,13 @@ public sealed class VocabSessionService
             card.Options = pending.Options.Select((o, index) => new VocabCardOptionResponse { Id = index, Text = o.Text, None = o.IsNone ? true : null }).ToList();
         }
 
+        var roots = await VocabRootRepository.ReadByEntryIdsAsync(c, t, [pending.EntryId]);
+
+        if (roots.TryGetValue(pending.EntryId, out var root) && !root.IsSimple)
+        {
+            card.Root = root;
+        }
+
         return card;
     }
 

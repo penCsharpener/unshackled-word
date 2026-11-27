@@ -128,6 +128,36 @@ public class VocabSessionDatabaseTests
         seen.Skip(4).Select(x => x.Entry.Id).Distinct().Count().ShouldBeGreaterThan(1);
     });
 
+    // roadmap 0030.6: a compound carries its root on the card, a simple word carries none
+    [Fact]
+    public async Task Card_CarriesTheRootOnlyForACompound() => await WithTransactionAsync(async (c, t) =>
+    {
+        var userId = await NewUserAsync(c, t);
+        var service = Service(new FixedTime(T0));
+        var start = Ok(await service.StartAsync(c, t, userId, Course));
+        var firstId = Ok(await service.NextAsync(c, t, userId, start.SessionId)).Card!.Entry.Id;
+
+        var key = await c.QuerySingleAsync<string>("""
+            SELECT vs."StrongsKey" FROM "unshackled-word"."VocabStrongs" vs WHERE vs."VocabEntryId" = @Id ORDER BY vs."Occurrences" DESC, vs."StrongsKey" LIMIT 1
+            """, new { Id = firstId }, t);
+        var rootId = await VocabRootRepository.UpsertRootAsync(c, t, new VocabRootUpsert { Track = "G", Root = "μαρτυρέω", StrongsKey = "G3140" });
+        await VocabRootRepository.UpsertWordRootAsync(c, t, new VocabWordRootUpsert
+        {
+            Lang = "G", StrongsKey = key, VocabRootId = rootId, Prefixes = "σύν + ἐπί", PrefixKeys = ["G4862", "G1909"], Origin = "manual"
+        });
+
+        var card = Ok(await service.NextAsync(c, t, userId, start.SessionId)).Card!;
+        card.Root.ShouldNotBeNull();
+        card.Root.Root.ShouldBe("μαρτυρέω");
+        card.Root.Prefixes.ShouldBe("σύν + ἐπί");
+
+        // the same word as a simple word: no root object
+        await VocabRootRepository.UpsertWordRootAsync(c, t, new VocabWordRootUpsert { Lang = "G", StrongsKey = key, VocabRootId = rootId, Origin = "manual" });
+        await c.ExecuteAsync("""UPDATE "unshackled-word"."VocabRoots" SET "StrongsKey" = @Key WHERE "Id" = @Id""", new { Key = key, Id = rootId }, t);
+
+        Ok(await service.NextAsync(c, t, userId, start.SessionId)).Card!.Root.ShouldBeNull();
+    });
+
     [Fact]
     public async Task PendingCardWhoseEntryIsMergedAway_IsDropped_AndTheSessionMovesOn() => await WithTransactionAsync(async (c, t) =>
     {

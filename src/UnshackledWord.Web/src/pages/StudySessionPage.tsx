@@ -305,6 +305,7 @@ function StudySession() {
             ))}
           </ol>
         ) : null}
+        {renderRoot(current)}
         {current.verse ? renderVerse(current.verse, entry.lang) : null}
         <Button
           ref={primaryRef}
@@ -405,6 +406,18 @@ function StudySession() {
     );
   };
 
+  /** The root line on the back of a card: `prefixes + root`, nothing for a simple word. */
+  const renderRoot = (shown: VocabCard) => {
+    const root = shown.root;
+    if (!root) return null;
+    const parts = [root.prefixes, root.root].filter(Boolean).join(" + ");
+    return (
+      <p lang={shown.entry.lang} className="font-original text-fg-muted">
+        {!root.prefixes && root.strongsKey ? `${parts} (${root.strongsKey})` : parts}
+      </p>
+    );
+  };
+
   const renderFeedback = (result: VocabAnswerResponse, noneWasRight = false) => (
     <div role="status" className="grid gap-3 border-t border-border pt-4">
       <p className="text-lg font-semibold">
@@ -426,6 +439,7 @@ function StudySession() {
           </span>
         </p>
       )}
+      {feedback ? renderRoot(feedback.card) : null}
       {result.strength ? (
         <StrengthBar before={result.strength.before} after={result.strength.after} />
       ) : null}

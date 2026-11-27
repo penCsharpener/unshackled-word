@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import type { VocabLang, VocabSampleVerse } from "./api";
+import type { VocabLang, VocabRoot, VocabSampleVerse } from "./api";
 
 /** Where a session stands; words are the 20-word target (review and new words). Mirrors `VocabSessionProgress`. */
 export interface VocabSessionProgress {
@@ -79,6 +79,8 @@ export interface VocabCard {
   /** Typing: groups and separators of the target form; `answers` sends one string per group. */
   layout?: VocabTypingPart[] | null;
   verse?: VocabSampleVerse | null;
+  /** Compound or derived words only (never a simple word): shown on the back of the card as `prefixes + root`. */
+  root?: VocabRoot | null;
 }
 
 export type VocabStrengthChange = "moved" | "held" | "dropped";

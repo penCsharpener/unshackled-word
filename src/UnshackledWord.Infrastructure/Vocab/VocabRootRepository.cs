@@ -326,6 +326,24 @@ public sealed class VocabRootRepository
 
         var rows = await dbReader.ReadAsListAsync<EntryRootRow>(SelectByEntryIds, new { Ids = entryIds.ToArray() });
 
+        return ToResponses(rows);
+    }
+
+    /// <summary>Same as <see cref="GetByEntryIdsAsync"/> inside the caller's connection and transaction (the study session).</summary>
+    public static async Task<IReadOnlyDictionary<int, VocabRootResponse>> ReadByEntryIdsAsync(IDbConnection connection, IDbTransaction? transaction, IReadOnlyCollection<int> entryIds)
+    {
+        if (entryIds.Count == 0)
+        {
+            return new Dictionary<int, VocabRootResponse>();
+        }
+
+        var rows = await connection.QueryAsync<EntryRootRow>(new CommandDefinition(SelectByEntryIds, new { Ids = entryIds.ToArray() }, transaction));
+
+        return ToResponses(rows);
+    }
+
+    private static Dictionary<int, VocabRootResponse> ToResponses(IEnumerable<EntryRootRow> rows)
+    {
         return rows.ToDictionary(r => r.VocabEntryId, r => new VocabRootResponse
         {
             Id = r.Id,
