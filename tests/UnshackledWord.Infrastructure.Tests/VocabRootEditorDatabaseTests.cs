@@ -168,6 +168,24 @@ public class VocabRootEditorDatabaseTests
     });
 
     [Fact]
+    public Task Hebrew_homograph_of_another_verb_is_refused_and_keeps_its_key() => WithTransactionAsync(async (c, t) =>
+    {
+        // slot כתב 78 belongs to another (made-up) verb key; saving the verb H3789 into that slot must not move the key
+        await VocabRootRepository.UpsertRootAsync(c, t, new VocabRootUpsert { Track = "H", Root = "כתב", Homograph = 78, StrongsKey = "H0000T" });
+        var entry = await c.QuerySingleAsync<int>("""
+            SELECT e."Id" FROM "unshackled-word"."VocabEntries" e WHERE e."Track" = 'H' AND e."RetiredAt" IS NULL AND NOT e."IsMorpheme" ORDER BY e."FrequencyRank" NULLS LAST LIMIT 1
+            """, transaction: t);
+
+        var outcome = await VocabRootEditor.SetEntryRootAsync(c, t, entry, new SetVocabEntryRootRequest { Id = entry, RootLetters = "כתב", RootKey = "H3789", Homograph = 78 }, null);
+
+        outcome.Status.ShouldBe(VocabEditStatus.Invalid);
+        outcome.Message.ShouldContain("H0000T");
+        (await c.QuerySingleAsync<string>("""
+            SELECT r."StrongsKey" FROM "unshackled-word"."VocabRoots" r WHERE r."Track" = 'H' AND r."RootNormalized" = 'כתב' AND r."Homograph" = 78
+            """, transaction: t)).ShouldBe("H0000T");
+    });
+
+    [Fact]
     public Task Parent_is_set_and_cleared_and_a_cycle_is_refused() => WithTransactionAsync(async (c, t) =>
     {
         var martyreo = await MartyreoAsync(c, t);

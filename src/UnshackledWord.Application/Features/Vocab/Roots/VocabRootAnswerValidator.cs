@@ -144,7 +144,8 @@ public static partial class VocabRootAnswerValidator
             return Rejected($"rootLetters must be {MinHebrewRootLetters} to {MaxHebrewRootLetters} consonants, got {letters.Length}.");
         }
 
-        string? rootKey = null;
+        // a verb that is its own root keeps its key, so it is dimmed as a simple word and its family links to it
+        string? rootKey = answer.Simple && context.HebrewVerbConsonants(entry.MainKey) == letters ? entry.MainKey : null;
 
         if (!answer.Simple && answer.RootKey is not null)
         {

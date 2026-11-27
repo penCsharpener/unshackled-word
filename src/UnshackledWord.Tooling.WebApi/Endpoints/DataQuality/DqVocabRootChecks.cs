@@ -58,6 +58,8 @@ internal static class DqVocabRootChecks
                 WHERE 1=1
                     AND (l."LanguageId" = 2) = (r."Track" = 'G')
                     AND l."Number" = NULLIF(regexp_replace(r."StrongsKey", '\D', '', 'g'), '')::int
+                    -- the letter after the number counts (G5259G is not G5259)
+                    AND upper(COALESCE(l."Extra", '')) = regexp_replace(r."StrongsKey", '^[GH]\d+', '')
             )
         """;
 

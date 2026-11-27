@@ -147,6 +147,15 @@ describe("VocabEditorListPage", () => {
     ).toHaveAttribute("href", "/edit/vocab?root=7&filter=all");
   });
 
+  it("opens the whole family: search, rank range and another filter are dropped, the track is kept", async () => {
+    stubRoutes();
+    renderAt("/edit/vocab?track=G&filter=formMissing&q=mes&rankFrom=10&page=2");
+    const table = await screen.findByRole("table");
+    expect(
+      within(table).getByRole("link", { name: "Show the word family of μέσος" }),
+    ).toHaveAttribute("href", "/edit/vocab?track=G&root=7&filter=all");
+  });
+
   it("sends an edited rank bound in the query", async () => {
     const fetchMock = stubRoutes();
     renderAt();

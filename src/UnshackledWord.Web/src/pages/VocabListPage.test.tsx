@@ -214,6 +214,33 @@ describe("VocabListPage", () => {
     await waitFor(() => expect(screen.queryByTestId("family-filter")).toBeNull());
   });
 
+  it("opens the whole family from a searched list: the search and the page are dropped, the track is kept", async () => {
+    stubApi({
+      "GET /vocab/courses": () => json(courses),
+      [`GET /vocab/courses/nt-greek/entries?skip=50&take=50&q=${encodeURIComponent("πορευ")}`]:
+        () =>
+          json(
+            page("nt-greek", [
+              entry({
+                id: 20,
+                lemma: "πορεύω",
+                strongsKeys: ["G4198"],
+                root: {
+                  id: 4,
+                  root: "πορεύω",
+                  strongsKey: "G4198",
+                  origin: "prefill",
+                  isSimple: true,
+                },
+              }),
+            ]),
+          ),
+    });
+    renderPage("/vocab?track=G&page=2&q=πορευ");
+    const links = await screen.findAllByRole("link", { name: "Show the word family of πορεύω" });
+    expect(links[0]).toHaveAttribute("href", "/vocab?track=G&root=4");
+  });
+
   it("hides the sub-root toggle and the parent link for a root without either", async () => {
     stubApi({
       "GET /vocab/courses": () => json(courses),

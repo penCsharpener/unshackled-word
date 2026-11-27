@@ -124,7 +124,18 @@ public static class VocabRootSeedSync
                 // a seed root without a key leaves a local key alone (a Hebrew root may have got its verb key here)
                 await c.ExecuteAsync(UpdateRoot, new { existing.Id, line.Root, line.StrongsKey }, t);
                 existing.Root = line.Root;
-                existing.StrongsKey = line.StrongsKey ?? existing.StrongsKey;
+
+                // keep the key lookup current: the old key is free again, the new one is taken (a later line must not insert it twice)
+                if (line.StrongsKey is not null && existing.StrongsKey != line.StrongsKey)
+                {
+                    if (existing.StrongsKey is not null)
+                    {
+                        keyOwner.Remove(existing.StrongsKey);
+                    }
+
+                    keyOwner[line.StrongsKey] = existing;
+                    existing.StrongsKey = line.StrongsKey;
+                }
                 counts.RootsChanged++;
             }
         }

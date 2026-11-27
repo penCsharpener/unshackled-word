@@ -195,6 +195,20 @@ public class VocabRootRunTests
         CheckHebrew("אֶבֶן", Answer(null, simple: true)).Plan!.RootText.ShouldBe("אבן");
 
     [Fact]
+    public void Hebrew_SimpleVerb_KeepsItsOwnKeyAsRootKey()
+    {
+        var plan = VocabRootAnswerValidator.Check('H', new VocabRootInput(1, "כָּתַב", "H3789", "H:V", null, null), Answer(null, simple: true), Context, false).Plan!;
+
+        plan.RootText.ShouldBe("כתב");
+        plan.RootKey.ShouldBe("H3789");
+        plan.IsSimple.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Hebrew_SimpleNoun_HasNoRootKey() =>
+        CheckHebrew("אֶבֶן", Answer(null, simple: true)).Plan!.RootKey.ShouldBeNull();
+
+    [Fact]
     public void Package_RoundTripsLocalIdsAndDropsUnknownAndDuplicateRows()
     {
         var entries = new[]

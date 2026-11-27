@@ -114,12 +114,15 @@ export function VocabListPage() {
 
   const lang = vocabLang(track);
 
-  /** The list of one word family, other list params kept (the page and the sub-root choice start again). */
+  /**
+   * The list of one whole word family: only the track is kept. A search would cut the family down (the root's Strong's link
+   * falls back to `?q=<root>`, and that search matches the root alone, not its compounds).
+   */
   const familyHref = (rootId: number) => {
-    const next = new URLSearchParams(params);
+    const next = new URLSearchParams();
+    const trackParam = params.get("track");
+    if (trackParam) next.set("track", trackParam);
     next.set("root", String(rootId));
-    next.delete("page");
-    next.delete("subRoots");
     return `/vocab?${next.toString()}`;
   };
 

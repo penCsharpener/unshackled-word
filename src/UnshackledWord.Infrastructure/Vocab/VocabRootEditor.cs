@@ -212,11 +212,6 @@ public sealed class VocabRootEditor
             return VocabEditOutcome.Invalid(verdict.Reason ?? "The root is not valid.");
         }
 
-        if (track == 'H' && plan.IsSimple && context.HebrewVerbConsonants(entry.MainKey) == plan.RootText)
-        {
-            plan = plan with { RootKey = entry.MainKey };
-        }
-
         var (resolvedId, problem) = await ResolveRootAsync(c, t, track, picked, plan, request.Homograph, userId);
 
         if (resolvedId is null)
@@ -357,6 +352,15 @@ public sealed class VocabRootEditor
         if (homograph is null && slots.Count == 1)
         {
             return (slots[0].Id, null);
+        }
+
+        // the upsert below would move the slot's key to the new verb and leave the slot's own verb without its root
+        if (homograph is { } number
+            && plan.RootKey is not null
+            && slots.FirstOrDefault(s => s.Homograph == number) is { StrongsKey: { } slotKey }
+            && slotKey != plan.RootKey)
+        {
+            return (null, $"{plan.RootText} {number} is the root of {slotKey}; give a free homograph number for {plan.RootKey}.");
         }
 
         var id = await VocabRootRepository.UpsertRootAsync(c, t, new VocabRootUpsert

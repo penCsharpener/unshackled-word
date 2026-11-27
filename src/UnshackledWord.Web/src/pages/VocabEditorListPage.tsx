@@ -146,13 +146,16 @@ export function VocabEditorListPage() {
     enabled: canWrite && courseCode !== undefined,
   });
 
-  /** The list of one word family; a family shows every entry, so without an explicit filter the default "Ungeprüft" becomes "Alle". */
+  /**
+   * The list of one whole word family: only the track is kept and the filter is "Alle". A search, a rank range or another
+   * filter would cut the family down (the root's Strong's link falls back to `?q=<root>`, which matches the root alone).
+   */
   const familyHref = (rootId: number) => {
-    const next = new URLSearchParams(params);
+    const next = new URLSearchParams();
+    const trackParam = params.get("track");
+    if (trackParam) next.set("track", trackParam);
     next.set("root", String(rootId));
-    next.delete("page");
-    next.delete("subRoots");
-    if (!next.has("filter")) next.set("filter", "all");
+    next.set("filter", "all");
     return `/edit/vocab?${next.toString()}`;
   };
 
