@@ -47,7 +47,7 @@ public static class VocabRootSeedSync
     private const string UpdateRoot = """
         UPDATE "unshackled-word"."VocabRoots"
         SET "Root" = @Root
-          , "StrongsKey" = @StrongsKey
+          , "StrongsKey" = COALESCE(@StrongsKey, "StrongsKey")
           , "UpdatedAt" = now()
         WHERE "Id" = @Id
         """;
@@ -91,6 +91,14 @@ public static class VocabRootSeedSync
             var normalized = VocabText.Normalize(line.Root);
             var identity = (line.Track, normalized, line.Homograph);
 
+            if (line.Track == "G" && line.StrongsKey is null)
+            {
+                // a Greek root is identified by its key (VocabRoots_Greek_Key_CK)
+                counts.Skipped++;
+
+                continue;
+            }
+
             if (line.StrongsKey is not null && keyOwner.TryGetValue(line.StrongsKey, out var holder) && (holder.Track, holder.RootNormalized, holder.Homograph) != identity)
             {
                 counts.Skipped++;
@@ -111,11 +119,12 @@ public static class VocabRootSeedSync
 
                 counts.RootsNew++;
             }
-            else if (existing.Root != line.Root || existing.StrongsKey != line.StrongsKey)
+            else if (existing.Root != line.Root || (line.StrongsKey is not null && existing.StrongsKey != line.StrongsKey))
             {
+                // a seed root without a key leaves a local key alone (a Hebrew root may have got its verb key here)
                 await c.ExecuteAsync(UpdateRoot, new { existing.Id, line.Root, line.StrongsKey }, t);
                 existing.Root = line.Root;
-                existing.StrongsKey = line.StrongsKey;
+                existing.StrongsKey = line.StrongsKey ?? existing.StrongsKey;
                 counts.RootsChanged++;
             }
         }

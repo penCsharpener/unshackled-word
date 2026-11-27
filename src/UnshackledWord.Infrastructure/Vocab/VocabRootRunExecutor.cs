@@ -254,6 +254,13 @@ public sealed class VocabRootRunExecutor
                     await _roots.SetItemAsync(run.Id, entryId, entry.MainKey, "rejected", reason, Describe(rows.First(r => r.EntryId == entryId)), CancellationToken.None);
                 }
 
+                // asked again because of a broken rule, but the second answer left the entry out: the first problem still belongs in the report
+                foreach (var entry in pending.Where(p => attempt == 1 && !answered.Contains(p.EntryId)))
+                {
+                    counts.Rejected++;
+                    await _roots.SetItemAsync(run.Id, entry.EntryId, entry.MainKey, "rejected", entry.Problem ?? "No valid answer after the second call.", null, CancellationToken.None);
+                }
+
                 break;
             }
 
@@ -274,10 +281,12 @@ public sealed class VocabRootRunExecutor
         {
             case VocabRootWriteStatus.Written:
                 counts.Written++;
+                await _roots.ClearItemAsync(run.Id, entry.EntryId, CancellationToken.None);
 
                 break;
             case VocabRootWriteStatus.Confirmed:
                 counts.Confirmed++;
+                await _roots.ClearItemAsync(run.Id, entry.EntryId, CancellationToken.None);
 
                 break;
             case VocabRootWriteStatus.Replaced:
@@ -286,8 +295,7 @@ public sealed class VocabRootRunExecutor
 
                 break;
             default:
-                counts.Flagged++;
-                await _roots.SetItemAsync(run.Id, entry.EntryId, entry.MainKey, "flagged", outcome.Reason ?? "Not written.", Describe(row), CancellationToken.None);
+                counts.Dropped++;
 
                 break;
         }

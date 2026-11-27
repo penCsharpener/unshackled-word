@@ -115,4 +115,30 @@ public class VocabRootSeedDatabaseTests
             """, transaction: t)).ToList();
         rows.ShouldBe([("G99010", "τεστα", "manual"), ("G99011", "τεστβ", "manual")]);
     });
+
+    [Fact]
+    public async Task Import_KeepsALocalVerbKey_WhenTheSeedRootHasNone_AndSkipsAGreekRootWithoutAKey() => await WithTransactionAsync(async (c, t) =>
+    {
+        await ClearAsync(c, t);
+        await c.ExecuteAsync("""
+            INSERT INTO "unshackled-word"."VocabRoots" ("Track", "Root", "RootNormalized", "Homograph", "StrongsKey")
+            VALUES ('H', 'כתב', 'כתב', 1, 'H99001')
+            """, transaction: t);
+
+        var data = new VocabSeedData
+        {
+            Roots =
+            [
+                new VocabSeedRootLine { Track = "H", Root = "כתב", Homograph = 1 },
+                new VocabSeedRootLine { Track = "G", Root = "τεστα", Homograph = 1 }
+            ]
+        };
+
+        var counts = await VocabRootSeedSync.ApplyAsync(c, t, data);
+
+        counts.RootsNew.ShouldBe(0);
+        counts.RootsChanged.ShouldBe(0);
+        counts.Skipped.ShouldBe(1);
+        (await c.ExecuteScalarAsync<string>("""SELECT "StrongsKey" FROM "unshackled-word"."VocabRoots" WHERE "Track" = 'H' AND "Root" = 'כתב'""", transaction: t)).ShouldBe("H99001");
+    });
 }

@@ -270,7 +270,7 @@ public static class VocabRootRunWriter
 
         var prefixes = plan.PrefixKeys.Length == 0 ? null : plan.Prefixes;
 
-        await VocabRootRepository.UpsertWordRootAsync(connection, transaction, new VocabWordRootUpsert
+        var written = await VocabRootRepository.UpsertWordRootAsync(connection, transaction, new VocabWordRootUpsert
         {
             Lang = trackText,
             StrongsKey = entry.MainKey,
@@ -281,6 +281,12 @@ public static class VocabRootRunWriter
             AgentRunId = runId,
             UserId = aiUserId,
         }, token);
+
+        if (!written)
+        {
+            // the maintainer saved a manual row after the run loaded its candidates: the repository kept it
+            return new VocabRootWriteResult(VocabRootWriteStatus.Skipped, "Row is manual.");
+        }
 
         if (entry.Existing is not { } existing)
         {
