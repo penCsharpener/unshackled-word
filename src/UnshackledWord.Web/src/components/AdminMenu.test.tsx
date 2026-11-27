@@ -13,6 +13,10 @@ describe("AdminMenu", () => {
     stubApi({ "GET /auth/me": () => json({ ...me, roles: ["user", "admin"] }) });
     renderWithAuth(<AdminMenu />);
     await userEvent.click(await screen.findByRole("button", { name: "Administration" }));
+    expect(screen.getByRole("menuitem", { name: "Initial setup" })).toHaveAttribute(
+      "href",
+      "/edit/setup",
+    );
     expect(screen.getByRole("menuitem", { name: "Users" })).toHaveAttribute("href", "/admin/users");
     expect(screen.getByRole("menuitem", { name: "Invitations" })).toHaveAttribute(
       "href",

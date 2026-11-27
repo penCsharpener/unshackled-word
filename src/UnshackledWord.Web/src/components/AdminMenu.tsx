@@ -13,6 +13,7 @@ export function AdminMenu() {
     <HeaderMenu
       label={t("admin.menu.label")}
       items={[
+        { key: "setup", to: "/edit/setup", label: t("admin.setup.menu") },
         { key: "users", to: "/admin/users", label: t("admin.users.menu") },
         { key: "new", to: "/admin/users/new", label: t("admin.users.create") },
         { key: "invitations", to: "/admin/invitations", label: t("admin.invitations.menu") },

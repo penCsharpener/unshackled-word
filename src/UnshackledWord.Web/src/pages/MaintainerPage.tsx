@@ -1,13 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate } from "react-router";
+import { Link, Navigate } from "react-router";
 import { Button } from "@/components/Button";
 import { FormError } from "@/components/FormError";
 import { Select } from "@/components/Select";
 import { ApiError, describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { hasRevisionOverviewRole, hasWriteRole } from "@/lib/auth/roles";
+import { hasRevisionOverviewRole, hasWriteRole, isAdmin } from "@/lib/auth/roles";
 import { saveBlob } from "@/lib/download";
 import { exportSeed, type SeedKind } from "@/lib/maintainer/api";
 import { AgentRunsSection } from "./agent/AgentRunsSection";
@@ -49,6 +49,13 @@ export function MaintainerPage() {
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-col gap-4 p-4">
       <h1 className="text-2xl font-semibold">{t("maintainer.title")}</h1>
+      {isAdmin(user) ? (
+        <p className="text-sm">
+          <Link to="/edit/setup" className="text-accent underline">
+            {t("setup.link")}
+          </Link>
+        </p>
+      ) : null}
       {hasRevisionOverviewRole(user) ? (
         <>
           {hasWriteRole(user) ? (

@@ -11,3 +11,6 @@ const REVISION_OVERVIEW_ROLES = [...WRITE_ROLES, "reviewer"];
 
 export const hasRevisionOverviewRole = (user: Me | null | undefined): boolean =>
   !!user?.roles?.some((role) => REVISION_OVERVIEW_ROLES.includes(role.toLowerCase()));
+
+export const isAdmin = (user: Me | null | undefined): boolean =>
+  !!user?.roles?.some((role) => role.toLowerCase() === "admin");

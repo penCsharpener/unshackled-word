@@ -4,7 +4,7 @@ import { Button } from "@/components/Button";
 import { FormError } from "@/components/FormError";
 import { ApiError, describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { hasWriteRole } from "@/lib/auth/roles";
+import { hasWriteRole, isAdmin } from "@/lib/auth/roles";
 import type { SeedKind } from "@/lib/maintainer/api";
 import {
   useSeedStatus,
@@ -125,6 +125,13 @@ export function SeedImportsPage() {
       <p className="text-fg-muted">
         <Trans i18nKey="imports.intro" components={{ maint: maintenanceLink }} />
       </p>
+      {isAdmin(user) ? (
+        <p className="text-sm">
+          <Link to="/edit/setup" className="text-accent underline">
+            {t("setup.link")}
+          </Link>
+        </p>
+      ) : null}
       {assetsProblem ? (
         <p role="status" className="text-sm text-fg-muted">
           {t("maintainer.seedJobs.assetsProblem", { problem: assetsProblem })}
