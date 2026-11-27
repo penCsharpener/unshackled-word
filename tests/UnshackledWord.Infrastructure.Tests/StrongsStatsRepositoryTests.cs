@@ -63,6 +63,23 @@ public class StrongsStatsRepositoryTests
     }
 
     [Theory]
+    [InlineData(false, "sgw.\"Morphology\" = ANY(@Codes)")]
+    [InlineData(true, "shw.\"Grammar\" = ANY(@Codes)")]
+    public async Task OccurrencesAsync_RestrictToTheMorphologyCodes(bool hebrew, string condition)
+    {
+        var filter = new StrongsOccurrenceFilter(Codes: ["N-NSF"]);
+        var count = new FakeDbReader().Returns(5);
+        await new StrongsStatsRepository(count).CountOccurrencesAsync(Keys, hebrew, filter);
+        count.LastSql.ShouldContain(condition);
+        ((string[])count.LastParam("Codes")!).ShouldBe(["N-NSF"]);
+
+        var page = new FakeDbReader().Returns(new StrongsOccurrenceRow());
+        await new StrongsStatsRepository(page).GetOccurrencesAsync(Keys, hebrew, filter, 0, 50);
+        page.LastSql.ShouldContain(condition);
+        ((string[])page.LastParam("Codes")!).ShouldBe(["N-NSF"]);
+    }
+
+    [Theory]
     [InlineData(false, "\"Elb1871GreekMapping\"")]
     [InlineData(true, "\"Elb1871HebrewMapping\"")]
     public async Task GetMappedCountAsync_CountsDistinctOriginalWords(bool hebrew, string mapping)

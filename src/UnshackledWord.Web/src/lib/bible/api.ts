@@ -173,6 +173,7 @@ export const bibleApi = {
     const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
     if (filters.book !== undefined) query.set("book", String(filters.book));
     if (filters.rendering !== undefined) query.set("rendering", filters.rendering);
+    if (filters.grammar !== undefined) query.set("grammar", filters.grammar);
     return api.get<GetStrongsOccurrencesResponse>(
       `/elberfelder/strongsOccurrences/strongs/${encodeURIComponent(strongs)}?${query}`,
       signal,

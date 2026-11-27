@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarGermanLemma
+  type: http
+  seq: 28
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=Liebe&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Liebe
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  200: readAs german, 184 words in 172 verses (lemma Liebe, includes 27 verb forms the tagger lemmatized as Liebe).
+}

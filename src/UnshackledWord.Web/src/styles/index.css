@@ -43,6 +43,8 @@
   --uw-mark-link: oklch(0.89 0.08 190);
   /* Greek words not in all main editions: dotted underline in the Grundtext panel; neutral on purpose, never a warning colour (roadmap 0025.5f). */
   --uw-mark-variant: oklch(0.6 0.02 250);
+  /* Words matched by the marked search in the reader (roadmap 0029.2f); a background, combines with the underline marks. */
+  --uw-mark-search: oklch(0.87 0.11 60);
   /* Note markers of other people's notes (own notes use the accent). */
   --uw-note-other: oklch(0.5 0.09 200);
   /* Categorical chart slots (BookBarChart sections, DonutChart slices) and the empty track. */
@@ -223,6 +225,7 @@
   --uw-mark-note: oklch(0.42 0.1 320);
   --uw-mark-link: oklch(0.45 0.08 190);
   --uw-mark-variant: oklch(0.68 0.02 250);
+  --uw-mark-search: oklch(0.46 0.1 60);
   --uw-note-other: oklch(0.76 0.08 200);
   --uw-chart-1: #3987e5;
   --uw-chart-2: #d95926;
@@ -263,6 +266,7 @@
   --color-mark-note: var(--uw-mark-note);
   --color-mark-link: var(--uw-mark-link);
   --color-mark-variant: var(--uw-mark-variant);
+  --color-mark-search: var(--uw-mark-search);
   --color-note-other: var(--uw-note-other);
   --color-chart-1: var(--uw-chart-1);
   --color-chart-2: var(--uw-chart-2);
@@ -1571,4 +1575,9 @@ body .note-md-content code {
 body .note-md-content a {
   color: var(--color-accent);
   text-decoration: underline;
+}
+
+/* Search field with its own clear button (SearchOverlay): no second, native clear button in Chromium. */
+.search-field::-webkit-search-cancel-button {
+  appearance: none;
 }

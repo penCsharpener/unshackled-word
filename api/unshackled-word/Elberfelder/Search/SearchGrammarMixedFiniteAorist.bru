@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarMixedFiniteAorist
+  type: http
+  seq: 31
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=Tempus:aor Modus:partizip dt.Verbform:finit&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Tempus:aor Modus:partizip dt.Verbform:finit
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  200: Greek aorist participles rendered by a finite German verb: 1,478 words in 1,247 verses, first hit Matt 1:20 with the Greek word and German position 7.
+}

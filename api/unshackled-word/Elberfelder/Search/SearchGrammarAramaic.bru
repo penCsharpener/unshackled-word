@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarAramaic
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=Sprache:aramäisch&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Sprache:aramäisch
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  4,827 words in Ezra (1,212), Daniel (3,600) and Jer 10:11 (15).
+}

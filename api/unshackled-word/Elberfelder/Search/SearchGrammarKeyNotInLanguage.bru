@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarKeyNotInLanguage
+  type: http
+  seq: 25
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=G26 Stamm:qal&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: G26 Stamm:qal
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  400 keyNotInLanguage: Stamm exists only for Hebrew/Aramaic, G26 is Greek.
+}

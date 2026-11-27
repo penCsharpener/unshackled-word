@@ -20,4 +20,6 @@ public sealed class GetStrongsOccurrencesRequest
 
     /// <summary>Optional: "lxx" lists the confirmed Septuagint tags of a Greek Strong's number (roadmap 0028.9); otherwise the NT/OT list.</summary>
     public string? Corpus { get; set; }
+    /// <summary>Optional grammar filter tokens (roadmap 0029.8), e.g. <c>Kasus:nom</c>: one slot bound to this Strong's number; no word tokens, no <c>dt.</c> filters.</summary>
+    public string? Grammar { get; set; }
 }

@@ -13,6 +13,7 @@ export const strongsOccurrencesKeys = {
       page,
       filters.book ?? null,
       filters.rendering ?? null,
+      filters.grammar ?? null,
     ] as const,
 };
 

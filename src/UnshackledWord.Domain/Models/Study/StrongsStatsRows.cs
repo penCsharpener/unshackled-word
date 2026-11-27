@@ -46,8 +46,8 @@ public sealed class WordOriginalRow
     public string? Gloss { get; set; }
 }
 
-/// <summary>Optional concordance filters; both are combined with AND. Rendering is a German word key (compared lower-cased).</summary>
-public sealed record StrongsOccurrenceFilter(int? Book = null, string? Rendering = null)
+/// <summary>Optional concordance filters, combined with AND. Rendering is a German word key (compared lower-cased); Codes is the morphology code set (roadmap 0029.8, null = no restriction, empty = no hit).</summary>
+public sealed record StrongsOccurrenceFilter(int? Book = null, string? Rendering = null, IReadOnlyList<string>? Codes = null)
 {
     public static StrongsOccurrenceFilter None { get; } = new();
 }

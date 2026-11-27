@@ -92,3 +92,64 @@ public sealed class SearchVersesHitToken
 
     public bool Matched { get; set; }
 }
+
+/// <summary><c>GET api/elberfelder/search/verses/chapter/{bibleBookId}/{chapter}?q=&amp;level=</c> (roadmap 0029.10): the hits of a verse query in one chapter, for marking in the reader.</summary>
+public sealed class SearchVersesChapterRequest
+{
+    public int BibleBookId { get; set; }
+
+    public int Chapter { get; set; }
+
+    public string Q { get; set; } = string.Empty;
+
+    /// <summary>Reader level 0-1000 as in <see cref="SearchVersesRequest.Level"/>; the positions refer to the text this level shows.</summary>
+    public int Level { get; set; } = 200;
+}
+
+public sealed class SearchVersesChapterResponse
+{
+    /// <summary>Hit verses of the chapter in verse order (a verse without a matching word is left out).</summary>
+    public List<SearchVersesChapterVerse> Verses { get; set; } = [];
+
+    /// <summary>Matched words in the chapter.</summary>
+    public int Total { get; set; }
+}
+
+public sealed class SearchVersesChapterVerse
+{
+    public int Verse { get; set; }
+
+    /// <summary>Set when the positions refer to the revision variant of the verse (<c>RevisionWords.PositionInVerse</c>); omitted for Elb1871 positions (<c>Elb1871Words.PositionInVerse</c>).</summary>
+    public bool? Revised { get; set; }
+
+    /// <summary>Positions of the matched words in the verse, ascending.</summary>
+    public List<int> Positions { get; set; } = [];
+}
+
+/// <summary><c>GET api/elberfelder/search/verses/neighbours?q=&amp;level=&amp;bibleBookId=&amp;chapter=</c> (roadmap 0029.10).</summary>
+public sealed class SearchVersesNeighboursRequest
+{
+    public string Q { get; set; } = string.Empty;
+
+    public int Level { get; set; } = 200;
+
+    public int BibleBookId { get; set; }
+
+    public int Chapter { get; set; }
+}
+
+public sealed class SearchVersesNeighboursResponse
+{
+    /// <summary>The nearest chapter before with a hit; omitted when there is none.</summary>
+    public SearchVersesChapterRef? Previous { get; set; }
+
+    /// <summary>The nearest chapter after with a hit; omitted when there is none.</summary>
+    public SearchVersesChapterRef? Next { get; set; }
+}
+
+public sealed class SearchVersesChapterRef
+{
+    public int BibleBookId { get; set; }
+
+    public int Chapter { get; set; }
+}

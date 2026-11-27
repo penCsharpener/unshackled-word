@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarFuturII
+  type: http
+  seq: 26
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=Tempus:FuturII&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Tempus:FuturII
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Space-less spelling of the multi-word label Futur II (also Futur2); no Futur II exists in the NT, so no hits.
+}

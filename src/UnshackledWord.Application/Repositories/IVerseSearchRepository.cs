@@ -17,6 +17,9 @@ public interface IVerseSearchRepository
     /// <summary>One page of matching verses in relevance order: literal matches (<paramref name="literalTsQuery"/>, null when the query has no lemma part) first, then rank, then Bible order. One row per verse; RevisionVerseId is set when the shown text is the revision variant.</summary>
     Task<IReadOnlyList<VerseSearchHitRow>> GetHitsAsync(string tsQuery, string? literalTsQuery, int level, int firstRefId, int lastRefId, int offset, int limit, CancellationToken token = default);
 
+    /// <summary>The chapters (book * 1000 + chapter, ascending) with at least one verse matching the whole query, by the same rule as <see cref="GetBookCountsAsync"/>.</summary>
+    Task<IReadOnlyList<int>> GetHitChaptersAsync(string tsQuery, int level, CancellationToken token = default);
+
     /// <summary>The words of the given verses with the stems of the plain word and the morphology lemma, in verse and word order.</summary>
     Task<IReadOnlyList<VerseSearchWordRow>> GetWordsAsync(IReadOnlyList<int> hebRefIds, CancellationToken token = default);
 

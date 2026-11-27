@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarGermanKasusWithheld
+  type: http
+  seq: 33
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=dt.Kasus:akk&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: dt.Kasus:akk
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  400 unknownKey: the German case tags are wrong, dt.Kasus is not offered; candidates list the dt. keys.
+}

@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarGermanStts
+  type: http
+  seq: 34
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=dt.STTS:VV* -dt.Verbform:finit&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: dt.STTS:VV* -dt.Verbform:finit
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  200: free STTS tag with * wildcard, negated German filter.
+}

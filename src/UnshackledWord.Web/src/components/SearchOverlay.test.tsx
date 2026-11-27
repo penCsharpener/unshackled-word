@@ -27,6 +27,7 @@ interface Stub {
   originals: (params: URLSearchParams) => Response;
   sourceWords: (params: URLSearchParams) => Response;
   parse: (params: URLSearchParams) => Response;
+  grammar: (params: URLSearchParams) => Response;
 }
 
 function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
@@ -35,6 +36,7 @@ function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
     originals: () => json(fixtureOriginals),
     sourceWords: () => json(fixtureSourceWords),
     parse: () => json({ references: [], bookCandidates: [] }),
+    grammar: () => json(fixtureGrammar),
     ...overrides,
   };
   const fetchMock = vi.fn(async (url: string) => {
@@ -43,6 +45,7 @@ function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
     if (path === "/meta-bible/structure") return json(fixtureStructure);
     if (path === "/revision/levels") return json(levels);
     if (path === "/elberfelder/search/verses") return handlers.verses(parsed.searchParams);
+    if (path === "/elberfelder/search/grammar") return handlers.grammar(parsed.searchParams);
     if (path === "/references/parse") return handlers.parse(parsed.searchParams);
     if (path === "/elberfelder/search/originals") return handlers.originals(parsed.searchParams);
     if (path === "/elberfelder/search/sourcewords")
@@ -52,6 +55,53 @@ function stubFetch(overrides: Partial<Stub> = {}, levels: unknown[] = []) {
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
 }
+
+const fixtureGrammar = {
+  slots: [
+    {
+      text: "agape Kasus:nom",
+      readAs: "lemma",
+      lemmas: [{ strongs: "G26", lemma: "ἀγάπη", transliteration: "agapē", gloss: "love" }],
+      filters: [{ key: "Kasus", values: ["Nominativ"], negated: false, german: false }],
+    },
+  ],
+  totalWords: 36,
+  totalVerses: 32,
+  page: 1,
+  pageSize: 50,
+  books: [{ bibleBookId: 40, count: 1 }],
+  hits: [
+    {
+      bibleBookId: 40,
+      chapter: 24,
+      verse: 12,
+      words: [
+        { text: "wird", position: 1 },
+        { text: "die", position: 2 },
+        { text: "Liebe", position: 3 },
+        { text: "erkalten", position: 4 },
+      ],
+      matches: [
+        {
+          slot: 0,
+          germanPositions: [3],
+          original: {
+            form: "ἀγάπη",
+            lemma: "ἀγάπη",
+            strongs: "G26",
+            code: "N-NSF",
+            keys: {
+              partOfSpeech: "noun",
+              case: "nominative",
+              number: "singular",
+              gender: "feminine",
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
 
 const verseCalls = (fetchMock: ReturnType<typeof stubFetch>) =>
   fetchMock.mock.calls.filter(([url]) => String(url).includes("/search/verses"));
@@ -377,6 +427,35 @@ describe("SearchOverlay", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     await user.keyboard("f");
     expect(await screen.findByRole("combobox", { name: "Suchbegriffe" })).toHaveValue("ging ");
+  });
+
+  it("stores query and marking, and the clear button empties the field", async () => {
+    stubFetch();
+    const user = userEvent.setup();
+    setup();
+    await user.keyboard("f");
+    expect(screen.queryByRole("button", { name: "Suche leeren" })).not.toBeInTheDocument();
+    await user.type(searchField(), "agape Kasus:nom");
+    expect(localStorage.getItem("uw.search.query")).toBe("agape Kasus:nom");
+    const markSwitch = screen.getByRole("switch", { name: "Treffer im Text markieren" });
+    expect(markSwitch).toHaveAttribute("aria-checked", "false");
+    await user.click(markSwitch);
+    expect(markSwitch).toHaveAttribute("aria-checked", "true");
+    expect(localStorage.getItem("uw.search.mark")).toBe("true");
+
+    await user.click(screen.getByRole("button", { name: "Suche leeren" }));
+    expect(searchField()).toHaveValue("");
+    expect(searchField()).toHaveFocus();
+    expect(localStorage.getItem("uw.search.query")).toBeNull();
+  });
+
+  it("restores the stored query after a reload", async () => {
+    localStorage.setItem("uw.search.query", "ging");
+    stubFetch();
+    const user = userEvent.setup();
+    setup();
+    await user.keyboard("f");
+    expect(await screen.findByRole("combobox", { name: "Suchbegriffe" })).toHaveValue("ging");
   });
 });
 
@@ -707,6 +786,75 @@ describe("SearchOverlay originals", () => {
       fireEvent.change(searchField(), { target: { value: "ging " } });
       expect(await screen.findByRole("listbox", { name: "Treffer" })).toBeInTheDocument();
       expect(screen.queryByRole("list", { name: "Bibelstellen" })).not.toBeInTheDocument();
+    });
+  });
+  describe("grammar search", () => {
+    beforeEach(async () => {
+      await i18n.changeLanguage("de");
+    });
+    afterEach(() => vi.unstubAllGlobals());
+
+    async function openGrammar(text: string) {
+      const user = userEvent.setup();
+      const router = setup("/bible");
+      await user.keyboard("f");
+      fireEvent.change(searchField(), { target: { value: text } });
+      return { user, router };
+    }
+
+    it("shows the slot chip, the summary and the hits with the original line instead of the lemma cards", async () => {
+      const fetchMock = stubFetch();
+      const { router } = await openGrammar("agape Kasus:nom ");
+
+      const chips = await screen.findByRole("list", { name: "So wurde die Suche gelesen" });
+      expect(chips).toHaveTextContent("ἀγάπη G26 · Nominativ");
+      expect(within(chips).getByRole("link", { name: /G26/ })).toHaveAttribute(
+        "href",
+        "/bible/strongs/G26?grammar=Kasus%3ANominativ",
+      );
+      expect(await screen.findByText("36 Vorkommen in 32 Versen")).toBeInTheDocument();
+      const list = await screen.findByRole("listbox", { name: "Treffer" });
+      expect(within(list).getByText("Liebe").tagName).toBe("MARK");
+      expect(within(list).getByTestId("grammar-match")).toHaveTextContent(
+        "ἀγάπη · Substantiv, Nominativ Singular feminin",
+      );
+      expect(
+        screen.getByText("Grammatiksuche – die Treffer stehen im Grundtext."),
+      ).toBeInTheDocument();
+      expect(verseCalls(fetchMock)).toHaveLength(0);
+      expect(
+        fetchMock.mock.calls.some(([url]) => String(url).includes("/search/sourcewords")),
+      ).toBe(false);
+
+      fireEvent.keyDown(searchField(), { key: "ArrowDown" });
+      fireEvent.keyDown(searchField(), { key: "Enter" });
+      await waitFor(() => expect(router.state.location.pathname).toBe("/bible/40/24"));
+      expect(router.state.location.hash).toBe("#v12");
+    });
+
+    it("marks the ambiguous token and replaces it with a candidate", async () => {
+      stubFetch({
+        grammar: () =>
+          json(
+            {
+              status: 400,
+              code: "ambiguousValue",
+              token: "Tempus:p",
+              candidates: ["Präsens", "Perfekt", "Plusquamperfekt"],
+            },
+            400,
+          ),
+      });
+      const { user } = await openGrammar("Tempus:p ");
+
+      const alert = await screen.findByText("Tempus:p ist mehrdeutig.");
+      expect(alert).toBeInTheDocument();
+      expect(screen.getByText("Tempus:p", { selector: "li" })).toHaveAttribute(
+        "data-problem",
+        "true",
+      );
+      await user.click(screen.getByRole("button", { name: "Tempus:p durch Perfekt ersetzen" }));
+      expect(searchField()).toHaveValue("Tempus:Perfekt");
     });
   });
 });

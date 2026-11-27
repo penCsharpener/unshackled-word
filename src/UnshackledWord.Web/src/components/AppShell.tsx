@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, ScrollRestoration, useLocation, useMatches } from "react-router";
 import { HeaderInfoProvider } from "@/lib/headerInfo";
 import { PickerSlotProvider, useSetPickerSlot } from "@/lib/pickerSlot";
 import { SEARCH_ICON_PATHS } from "@/lib/search/icon";
+import { setSearchOpen, useSearchState } from "@/lib/search/searchState";
 import { useSearchHotkey } from "@/lib/search/useSearchHotkey";
 import { AdminMenu } from "./AdminMenu";
 import { Button } from "./Button";
@@ -34,7 +35,8 @@ function AppShellContent() {
   // The search belongs to the reading area: reader, book picker and Strong's page.
   const { pathname } = useLocation();
   const searchAvailable = pathname === "/bible" || pathname.startsWith("/bible/");
-  const [searchOpen, setSearchOpen] = useState(false);
+  // Shared with the reader: its search chip opens the overlay too.
+  const searchOpen = useSearchState().open;
   const searchButton = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
   useSearchHotkey(searchAvailable && !searchOpen, () => setSearchOpen(true));

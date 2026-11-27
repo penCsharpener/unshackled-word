@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { bookName } from "@/lib/bible/books";
@@ -15,6 +15,8 @@ export interface VerseHitListProps {
   onSelect: (hit: VerseSearchHit) => void;
   /** Tooltip / accessible name of the marker on revised hits, for a level (like the reader's revised verses). */
   revisedLabel?: (level: number) => string;
+  /** Extra lines under a hit's verse text (e.g. the matched original words of a grammar search); `index` is the hit's position. */
+  renderDetails?: (hit: VerseSearchHit, index: number) => ReactNode;
   onLoadMore: () => void;
   hasMore: boolean;
   /** The next page is being fetched. */
@@ -37,6 +39,7 @@ export function VerseHitList({
   activeIndex,
   onSelect,
   revisedLabel,
+  renderDetails,
   onLoadMore,
   hasMore,
   loading = false,
@@ -97,6 +100,9 @@ export function VerseHitList({
                     </span>
                   ))}
                 </span>
+                {renderDetails ? (
+                  <span className="mt-1 block">{renderDetails(hit, index)}</span>
+                ) : null}
               </Link>
             </div>
           );

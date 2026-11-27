@@ -32,6 +32,22 @@ public class VerseSearchRepositoryTests
         reader.LastParam("Query").ShouldBe("(('gott'))");
     }
 
+    [Theory]
+    [InlineData(0, false)]
+    [InlineData(200, true)]
+    public async Task GetHitChaptersAsync_ListsDistinctChapterKeys_AndAddsTheVariantAtRevisionLevels(int level, bool revised)
+    {
+        var reader = new FakeDbReader().Returns(43003);
+
+        (await new VerseSearchRepository(reader).GetHitChaptersAsync("(('gott'))", level)).ShouldBe([43003]);
+
+        reader.LastSql.ShouldContain("SELECT DISTINCT (v.\"HebRefId\" / 1000)::int");
+        reader.LastSql.ShouldContain("CAST(@Query AS tsquery)");
+        reader.LastSql.ShouldContain("ORDER BY 1");
+        reader.LastSql.Contains("rv.\"SearchVector\"").ShouldBe(revised);
+        reader.LastParam("Query").ShouldBe("(('gott'))");
+    }
+
     [Fact]
     public async Task GetHitsAsync_OrdersLiteralFirst_ThenRank_ThenBibleOrder_AndNeverConcatenatesTheQuery()
     {

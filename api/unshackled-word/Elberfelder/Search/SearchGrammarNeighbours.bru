@@ -1,0 +1,22 @@
+meta {
+  name: SearchGrammarNeighbours
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar/neighbours?q=agape Kasus:nom&bibleBookId=40&chapter=24
+  body: none
+  auth: none
+}
+
+params:query {
+  q: agape Kasus:nom
+  bibleBookId: 40
+  chapter: 24
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

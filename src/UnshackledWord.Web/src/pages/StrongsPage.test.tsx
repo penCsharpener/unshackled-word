@@ -39,6 +39,46 @@ const page1: GetStrongsOccurrencesResponse = {
   ],
 };
 
+const facets = {
+  slot: 0,
+  facets: [
+    {
+      key: "Kasus",
+      values: [
+        { key: "nominative", labelDe: "Nominativ", count: 36 },
+        { key: "accusative", labelDe: "Akkusativ", count: 33 },
+        { key: "dative", labelDe: "Dativ", count: 29 },
+        { key: "genitive", labelDe: "Genitiv", count: 18 },
+      ],
+    },
+    { key: "Numerus", values: [{ key: "plural", labelDe: "Plural", count: 1 }] },
+  ],
+};
+
+const vocabulary = {
+  germanPrefix: "dt.",
+  germanKeysEnabled: true,
+  keys: [
+    {
+      name: "Kasus",
+      aliases: [],
+      germanPrefixAllowed: true,
+      languages: ["greek"],
+      kind: "filter",
+      freeValue: false,
+      values: [
+        {
+          key: "nominative",
+          labelDe: "Nominativ",
+          labelEn: "nominative",
+          aliases: ["nom"],
+          languages: [],
+        },
+      ],
+    },
+  ],
+};
+
 function stubFetch(occurrences: Response, summary?: Response) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
@@ -48,6 +88,8 @@ function stubFetch(occurrences: Response, summary?: Response) {
     if (url.includes("/strongsSummary/")) {
       return summary?.clone() ?? new Response(JSON.stringify(fixtureSummary));
     }
+    if (url.includes("/search/grammar/facets")) return new Response(JSON.stringify(facets));
+    if (url.includes("/search/grammar/vocabulary")) return new Response(JSON.stringify(vocabulary));
     if (url.includes("/wordStats")) return new Response(JSON.stringify(fixtureWordStats));
     return occurrences.clone();
   });
@@ -262,6 +304,77 @@ describe("StrongsPage", () => {
     expect(screen.getByRole("link", { name: "Weiter ›" })).toHaveAttribute(
       "href",
       expect.stringContaining("book=40"),
+    );
+  });
+
+  it("shows the forms of the lemma and filters by a clicked value", async () => {
+    const user = userEvent.setup();
+    const fetchMock = stubFetch(new Response(JSON.stringify(page1)));
+    renderAt("/bible/strongs/G26?page=2");
+
+    const forms = await screen.findByRole("region", { name: "Formen" });
+    expect(within(forms).getByText("Kasus")).toBeInTheDocument();
+    expect(within(forms).getByRole("button", { name: "Nominativ 36" })).toBeInTheDocument();
+    expect(within(forms).getByRole("button", { name: "Genitiv 18" })).toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.some(([url]) =>
+        String(url).endsWith("/search/grammar/facets?q=G26&slot=0"),
+      ),
+    ).toBe(true);
+
+    await user.click(within(forms).getByRole("button", { name: "Nominativ 36" }));
+    await waitFor(() =>
+      expect(
+        fetchMock.mock.calls.some(([url]) =>
+          String(url).endsWith(
+            "/strongsOccurrences/strongs/G26?page=1&pageSize=50&grammar=Kasus%3ANominativ",
+          ),
+        ),
+      ).toBe(true),
+    );
+    expect(
+      await screen.findByRole("button", { name: "Filter entfernen: Kasus: Nominativ" }),
+    ).toBeVisible();
+    expect(within(forms).getByRole("button", { name: "Nominativ 36" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    // Another value of the same key replaces the filter, a click on the active value clears it.
+    await user.click(within(forms).getByRole("button", { name: "Genitiv 18" }));
+    expect(
+      await screen.findByRole("button", { name: "Filter entfernen: Kasus: Genitiv" }),
+    ).toBeVisible();
+    await user.click(within(forms).getByRole("button", { name: "Genitiv 18" }));
+    await waitFor(() =>
+      expect(screen.queryByRole("group", { name: "Aktive Filter" })).not.toBeInTheDocument(),
+    );
+  });
+
+  it("applies the grammar filter from the query string, removable and part of clear all", async () => {
+    const user = userEvent.setup();
+    const fetchMock = stubFetch(new Response(JSON.stringify(page1)));
+    renderAt("/bible/strongs/G26?book=40&grammar=Kasus:nom");
+
+    expect(
+      await screen.findByRole("button", { name: "Filter entfernen: Kasus: Nominativ" }),
+    ).toBeVisible();
+    expect(
+      fetchMock.mock.calls.some(([url]) =>
+        String(url).endsWith(
+          "/strongsOccurrences/strongs/G26?page=1&pageSize=50&book=40&grammar=Kasus%3Anom",
+        ),
+      ),
+    ).toBe(true);
+    // The alias `nom` still marks the Nominativ value of the block.
+    expect(await screen.findByRole("button", { name: "Nominativ 36" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await user.click(screen.getByRole("button", { name: "Alle Filter entfernen" }));
+    await waitFor(() =>
+      expect(screen.queryByRole("group", { name: "Aktive Filter" })).not.toBeInTheDocument(),
     );
   });
 

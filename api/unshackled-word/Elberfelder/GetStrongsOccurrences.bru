@@ -13,6 +13,7 @@ get {
 params:query {
   page: 1
   pageSize: 50
+  ~grammar: Kasus:nom
 }
 
 params:path {
@@ -29,4 +30,9 @@ docs {
   the Elberfelder verse split into `before`, `keyword` and `after` token lists ({ text, matched }). The keyword spans the
   first to the last mapped Elberfelder word; words in between have matched=false. `keywordSuffix` is punctuation that
   trailed the keyword. Unmapped words have an empty keyword and the whole verse in `after`.
+
+  Optional `grammar` (roadmap 0029.8): filter tokens only, one slot bound to this Strong's number; combines with book,
+  rendering and paging, totals reflect the filter. G0026 with `Kasus:nom` returns 36 occurrences. 400 with the grammar
+  problem body: `keyNotInLanguage` (G0026 with `Stamm:qal`; H1254 with `Stamm:qal` returns 39), `unknownKey` for a
+  word token or a `dt.` filter, `unknownValue` / `ambiguousValue` for a bad value.
 }

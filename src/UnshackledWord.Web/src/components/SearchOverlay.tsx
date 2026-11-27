@@ -1,5 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from "react";
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router";
 import { ApiError, describeApiError } from "@/lib/api";
@@ -12,6 +20,7 @@ import {
   viewOfParse,
 } from "@/lib/bible/referenceParse";
 import { splitSourceWords, useSourceWordsLookup } from "@/lib/bible/sourceWords";
+import { slotStrongsLink } from "@/lib/bible/strongsGrammar";
 import {
   isLookupQuery,
   originalTextAttributes,
@@ -32,15 +41,57 @@ import {
   VERSE_SEARCH_PAGE_SIZE,
 } from "@/lib/bible/verseSearch";
 import { useReaderLevel } from "@/lib/revision/readerLevel";
+import {
+  applySuggestion,
+  facetRequest,
+  type GrammarFacetRequest,
+  type GrammarSuggestion,
+  type GrammarVocabulary,
+  type GrammarVocabularyKey,
+  type GrammarVocabularyValue,
+  languageLimit,
+  lemmaLookupWord,
+  lemmaSuggestions,
+  tokenAtCaret,
+  vocabularySuggestions,
+} from "@/lib/search/grammarQuery";
+import {
+  foldGrammar,
+  formatGrammarFilter,
+  formatGrammarWords,
+  type GrammarHit,
+  type GrammarProblem,
+  type GrammarSlot,
+  germanMatchText,
+  germanReading,
+  isGrammarQuery,
+  languageOfOriginal,
+  languageOfStrongs,
+  parseGrammarProblem,
+  replaceGrammarToken,
+  toVerseHit,
+  useGrammarFacets,
+  useGrammarSearch,
+  useGrammarVocabulary,
+} from "@/lib/search/grammarSearch";
+import {
+  setSearchMark,
+  setSearchQuery,
+  setSearchTab,
+  useSearchState,
+} from "@/lib/search/searchState";
 import { useSubmittedQuery } from "@/lib/search/useSubmittedQuery";
 import { useTrackSearch } from "@/lib/search/useTrackSearch";
 import { useCoarsePointer } from "@/lib/useCoarsePointer";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import { BookBarChart } from "./BookBarChart";
 import { Button } from "./Button";
 import { Dialog } from "./Dialog";
 import { DonutChart, type DonutSlice } from "./DonutChart";
 import { EmptyState } from "./EmptyState";
 import { ReferenceCard } from "./ReferenceCard";
+import type { SuggestionItem } from "./SuggestionList";
+import { Switch } from "./Switch";
 import { TextField } from "./TextField";
 import { hitOptionId, hitPath, VerseHitList } from "./VerseHitList";
 
@@ -48,8 +99,6 @@ export interface SearchOverlayProps {
   open: boolean;
   onClose: () => void;
 }
-
-type Tab = "verses" | "originals";
 
 const normalized = (input: string) => input.trim().replace(/\s+/g, " ");
 
@@ -394,6 +443,485 @@ function OriginalsPanel({
   );
 }
 
+/** "ἀγάπη G26 · Nominativ": how a slot's word was read plus its filters in words. */
+function GrammarSlotChip({ slot, onNavigate }: { slot: GrammarSlot; onNavigate: () => void }) {
+  const { t } = useTranslation();
+  const strongsLink = slotStrongsLink(slot);
+  const word =
+    slot.readAs === "lemma" && slot.lemmas.length > 0
+      ? slot.lemmas.map((lemma) => (
+          <span key={lemma.strongs}>
+            <OriginalText language={languageOfStrongs(lemma.strongs)}>{lemma.lemma}</OriginalText>{" "}
+            <span className="text-fg-muted">{lemma.strongs}</span>
+          </span>
+        ))
+      : slot.readAs === "german"
+        ? t("search.grammar.germanWord", { word: germanReading(slot) })
+        : t("search.grammar.anyWord");
+  return (
+    <li className="inline-flex flex-wrap items-center gap-1 rounded-md border border-border bg-surface-muted px-2 py-1 text-sm">
+      {strongsLink ? (
+        <Link to={strongsLink} className={linkClasses} onClick={onNavigate}>
+          {word}
+        </Link>
+      ) : (
+        word
+      )}
+      {slot.filters.map((filter) => (
+        <span key={`${filter.german}-${filter.key}-${filter.negated}`}>
+          {" · "}
+          {formatGrammarFilter(filter, t)}
+        </span>
+      ))}
+    </li>
+  );
+}
+
+/** The typed tokens with the offending one marked, the message and the candidates that replace the token. */
+function GrammarProblemBlock({
+  query,
+  problem,
+  onReplace,
+}: {
+  query: string;
+  problem: GrammarProblem;
+  onReplace: (candidate: string) => void;
+}) {
+  const { t } = useTranslation();
+  const known = [
+    "unknownKey",
+    "unknownValue",
+    "ambiguousValue",
+    "tooManySlots",
+    "tooManyFilters",
+    "emptyQuery",
+    "unknownWord",
+    "keyNotInLanguage",
+  ];
+  const message = t(
+    `search.grammar.problems.${known.includes(problem.code) ? problem.code : "generic"}`,
+    { token: problem.token ?? "" },
+  );
+  const tokens = query.split(/\s+/).filter(Boolean);
+  return (
+    <div role="alert" className="grid justify-items-start gap-2 text-sm">
+      <ul aria-label={t("search.grammar.slots")} className="flex flex-wrap gap-2">
+        {tokens.map((token, i) => (
+          <li
+            // Tokens of the typed query in order; the index is the identity.
+            // biome-ignore lint/suspicious/noArrayIndexKey: see above
+            key={i}
+            data-problem={token === problem.token || undefined}
+            className={`rounded-md border px-2 py-1 ${token === problem.token ? "border-sev-error text-sev-error" : "border-border text-fg-muted"}`}
+          >
+            {token}
+          </li>
+        ))}
+      </ul>
+      <p>{message}</p>
+      {problem.candidates && problem.candidates.length > 0 && problem.token ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-fg-muted">{t("search.grammar.candidates")}</span>
+          {problem.candidates.map((candidate) => (
+            <Button
+              key={candidate}
+              variant="secondary"
+              size="sm"
+              aria-label={t("search.grammar.replace", { token: problem.token, candidate })}
+              onClick={() => onReplace(candidate)}
+            >
+              {candidate}
+            </Button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * Per match: original form, lemma and the decoded grammar in words; "nicht übersetzt" without German words.
+ * A match of a German-only slot shows the German word and the slot's `dt.` filters instead.
+ */
+function GrammarMatchLines({ hit, slots }: { hit: GrammarHit; slots: GrammarSlot[] }) {
+  const { t } = useTranslation();
+  return (
+    <span className="grid gap-0.5 text-sm text-fg-muted">
+      {hit.matches.map((match, i) => {
+        if (!match.original) {
+          const filters = (slots[match.slot]?.filters ?? [])
+            .filter((filter) => filter.german)
+            .map((filter) => formatGrammarFilter(filter, t));
+          return (
+            // Matches keep the server order; the index is the identity.
+            // biome-ignore lint/suspicious/noArrayIndexKey: see above
+            <span key={i} className="block" data-testid="grammar-match">
+              <span className="text-base text-fg">{germanMatchText(hit, match)}</span>
+              {" · "}
+              {[t("search.grammar.germanMatch"), ...filters].join(", ")}
+            </span>
+          );
+        }
+        const original = match.original;
+        const language = languageOfOriginal(original);
+        return (
+          // Matches keep the server order; the index is the identity.
+          // biome-ignore lint/suspicious/noArrayIndexKey: see above
+          <span key={i} className="block" data-testid="grammar-match">
+            <span className="text-base text-fg">
+              <OriginalText language={language}>{original.form}</OriginalText>
+            </span>
+            {sameWord(original.form, original.lemma) ? null : (
+              <>
+                {" · "}
+                <OriginalText language={language}>{original.lemma}</OriginalText>
+              </>
+            )}
+            {" · "}
+            {formatGrammarWords(original.keys, t, original.code)}
+            {match.germanPositions.length === 0 ? ` (${t("search.grammar.notTranslated")})` : null}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
+/** Form and lemma spelled alike once the printed punctuation is dropped (the lemma is then not repeated). */
+function sameWord(form: string, lemma: string): boolean {
+  const letters = (s: string) => s.replace(/[^\p{L}\p{M}]/gu, "");
+  return letters(form) === letters(lemma);
+}
+
+/** The grammar result in the originals column: slot chips or the problem, summary, book chart and hits. */
+function GrammarPanel({
+  query,
+  search,
+  books,
+  language,
+  bookId,
+  onSelectBook,
+  listId,
+  activeIndex,
+  onOpenHit,
+  onReplace,
+  onNavigate,
+}: {
+  query: string;
+  search: ReturnType<typeof useGrammarSearch>;
+  books: BibleStructureBook[];
+  language: string;
+  bookId: number | null;
+  onSelectBook: (bookId: number | null) => void;
+  listId: string;
+  activeIndex: number;
+  onOpenHit: (index: number) => void;
+  onReplace: (candidate: string) => void;
+  onNavigate: () => void;
+}) {
+  const { t } = useTranslation();
+  const pages = search.data?.pages ?? [];
+  const first = pages[0];
+  const grammarHits = pages.flatMap((page) => page.hits);
+  const hits = grammarHits.map(toVerseHit);
+  const dimmed = search.isPlaceholderData || (search.isFetching && !search.isFetchingNextPage);
+  const selectedBook = bookId === null ? undefined : books.find((b) => b.id === bookId);
+
+  if (search.isError) {
+    const problem = parseGrammarProblem(search.error);
+    if (problem)
+      return <GrammarProblemBlock query={query} problem={problem} onReplace={onReplace} />;
+    return (
+      <div role="alert" className="grid justify-items-start gap-2 text-sm">
+        <p>{describeApiError(search.error, t("search.grammar.error"))}</p>
+        <Button variant="secondary" size="sm" onClick={() => search.refetch()}>
+          {t("search.retry")}
+        </Button>
+      </div>
+    );
+  }
+  if (!first) return <EmptyState>{t("search.loading")}</EmptyState>;
+  return (
+    <div className={`grid gap-3 ${dimmed ? "opacity-60" : ""}`}>
+      <ul aria-label={t("search.grammar.slots")} className="flex flex-wrap gap-2">
+        {first.slots.map((slot, i) => (
+          // Slots are in query order; the index is the identity.
+          // biome-ignore lint/suspicious/noArrayIndexKey: see above
+          <GrammarSlotChip key={i} slot={slot} onNavigate={onNavigate} />
+        ))}
+      </ul>
+      <p role="status" aria-live="polite" className="text-sm text-fg-muted">
+        {dimmed
+          ? ""
+          : `${t("search.grammar.occurrences", { count: first.totalWords })} ${t("search.grammar.inVerses", { count: first.totalVerses })}`}
+      </p>
+      {first.totalVerses > 0 && books.length > 0 ? (
+        <details className="rounded-md border border-border p-3">
+          <summary className="cursor-pointer text-sm font-medium">
+            {t("search.books.filterBy")}
+          </summary>
+          <div className="mt-3">
+            <BookBarChart
+              books={books}
+              counts={first.books}
+              testaments={["ot", "nt"]}
+              title={t("search.books.title")}
+              summary={t("search.books.summary", {
+                count: first.totalVerses,
+                books: first.books.length,
+                total: books.length,
+              })}
+              selectedBookId={bookId}
+              onSelectBook={onSelectBook}
+            />
+          </div>
+        </details>
+      ) : null}
+      {selectedBook ? (
+        <div>
+          <Button
+            variant="secondary"
+            size="sm"
+            aria-label={t("search.filter.remove", { book: bookName(selectedBook, language) })}
+            onClick={() => onSelectBook(null)}
+          >
+            {t("search.filter.book", { book: bookName(selectedBook, language) })}
+            <span aria-hidden="true">✕</span>
+          </Button>
+        </div>
+      ) : null}
+      {first.totalVerses === 0 ? (
+        <EmptyState>{t("search.grammar.empty", { query })}</EmptyState>
+      ) : (
+        <VerseHitList
+          id={listId}
+          label={t("search.results")}
+          hits={hits}
+          books={books}
+          language={language}
+          activeIndex={activeIndex}
+          onSelect={(hit) => onOpenHit(hits.indexOf(hit))}
+          renderDetails={(_, index) => {
+            const hit = grammarHits[index];
+            return hit ? <GrammarMatchLines hit={hit} slots={first.slots} /> : null;
+          }}
+          onLoadMore={() => search.fetchNextPage()}
+          hasMore={search.hasNextPage}
+          loading={search.isFetchingNextPage}
+        />
+      )}
+    </div>
+  );
+}
+
+/** Example queries of the cheat sheet; clicking one runs it. */
+const GRAMMAR_EXAMPLES = ["agape Kasus:nom", "Tempus:aor Diathese:pass", "bara Stamm:qal"] as const;
+const GERMAN_EXAMPLE = "Tempus:aor Modus:part dt.Verbform:finit";
+
+/** Values of a key by their German label, with the English label in an English UI when it differs. */
+function cheatSheetValues(values: GrammarVocabularyValue[], english: boolean): string {
+  return values
+    .map((value) =>
+      english && foldGrammar(value.labelEn) !== foldGrammar(value.labelDe)
+        ? `${value.labelDe} (${value.labelEn})`
+        : value.labelDe,
+    )
+    .join(" · ");
+}
+
+/** One key of the cheat sheet: name, aliases, language note; values or what a free value looks like. */
+function CheatSheetKey({
+  name,
+  vocabularyKey,
+  values,
+}: {
+  name: string;
+  vocabularyKey: GrammarVocabularyKey;
+  values: GrammarVocabularyValue[];
+}) {
+  const { t, i18n } = useTranslation();
+  const note = languageNote(vocabularyKey.languages, t);
+  return (
+    <div className="grid gap-0.5">
+      <dt>
+        <code className="font-medium text-fg">{name}:</code>
+        {vocabularyKey.aliases.length > 0 ? (
+          <span className="text-fg-muted"> ({vocabularyKey.aliases.join(", ")})</span>
+        ) : null}
+        {note ? <span className="text-fg-muted"> · {note}</span> : null}
+      </dt>
+      <dd className="text-fg-muted">
+        {values.length > 0
+          ? cheatSheetValues(values, i18n.language.startsWith("en"))
+          : t(`search.help.free.${vocabularyKey.name}`, {
+              defaultValue: t("search.help.free.generic"),
+            })}
+      </dd>
+    </div>
+  );
+}
+
+/**
+ * Grammar cheat sheet (roadmap 0029.9), generated from the vocabulary: syntax, example queries, every key with its
+ * aliases and values, the `dt.` keys with their German values and the known limits.
+ */
+function GrammarCheatSheet({
+  id,
+  vocabulary,
+  onExample,
+}: {
+  id: string;
+  vocabulary: GrammarVocabulary | undefined;
+  onExample: (query: string) => void;
+}) {
+  const { t } = useTranslation();
+  const example = (query: string) => (
+    <Button
+      key={query}
+      variant="secondary"
+      size="sm"
+      aria-label={t("search.help.run", { query })}
+      onClick={() => onExample(query)}
+    >
+      <code>{query}</code>
+    </Button>
+  );
+  if (!vocabulary) return <EmptyState>{t("search.loading")}</EmptyState>;
+  const originalKeys = vocabulary.keys.filter((key) => !key.germanOnly);
+  const germanKeys = vocabulary.germanKeysEnabled
+    ? vocabulary.keys.filter((key) => key.germanPrefixAllowed)
+    : [];
+  return (
+    <section
+      id={id}
+      aria-labelledby={`${id}-title`}
+      className="grid max-h-80 gap-3 overflow-y-auto rounded-md border border-border bg-surface-muted p-3 text-sm"
+    >
+      <h4 id={`${id}-title`} className="font-semibold">
+        {t("search.help.title")}
+      </h4>
+      <p>{t("search.help.intro")}</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-fg-muted">{t("search.help.examples")}</span>
+        {GRAMMAR_EXAMPLES.map(example)}
+      </div>
+      <dl className="grid gap-2 sm:grid-cols-2">
+        {originalKeys.map((key) => (
+          <CheatSheetKey key={key.name} name={key.name} vocabularyKey={key} values={key.values} />
+        ))}
+      </dl>
+      {germanKeys.length > 0 ? (
+        <>
+          <h5 className="font-semibold">{t("search.help.germanTitle")}</h5>
+          <p>{t("search.help.germanIntro", { prefix: vocabulary.germanPrefix })}</p>
+          <div className="flex flex-wrap items-center gap-2">{example(GERMAN_EXAMPLE)}</div>
+          <dl className="grid gap-2 sm:grid-cols-2">
+            {germanKeys.map((key) => (
+              <CheatSheetKey
+                key={key.name}
+                name={`${vocabulary.germanPrefix}${key.name}`}
+                vocabularyKey={{ ...key, languages: [] }}
+                values={key.germanValues ?? []}
+              />
+            ))}
+          </dl>
+          <p className="text-fg-muted">{t("search.help.germanNote")}</p>
+        </>
+      ) : null}
+      <p className="text-fg-muted">{t("search.help.statusNote")}</p>
+    </section>
+  );
+}
+
+const SUGGEST_DEBOUNCE_MS = 250;
+const MAX_LIST = 10;
+
+/** "nur Griechisch" / "nur Hebräisch" for a key or value limited to one language family. */
+function languageNote(languages: string[], t: (key: string) => string): string | undefined {
+  const limit = languageLimit(languages);
+  return limit ? t(`search.suggest.only.${limit}`) : undefined;
+}
+
+/**
+ * Autocomplete of the search field (roadmap 0029.3f/0029.4/0029.5f): vocabulary keys and values for the token under the
+ * caret (instant), lemma suggestions for a word token (debounced lookup, accepting inserts the Strong's number) and
+ * counts for the values of the slot (debounced facets; values without occurrences are dimmed).
+ */
+function useSearchSuggestions(
+  open: boolean,
+  input: string,
+  caret: number,
+  vocabulary: GrammarVocabulary | undefined,
+) {
+  const { t, i18n } = useTranslation();
+  const token = tokenAtCaret(input, caret, vocabulary);
+  const vocabularyHits =
+    open && token && vocabulary ? vocabularySuggestions(input, token, vocabulary) : [];
+
+  const lemmaWord = open ? lemmaLookupWord(token) : "";
+  const debouncedWord = useDebouncedValue(lemmaWord, SUGGEST_DEBOUNCE_MS);
+  const lookup = useSourceWordsLookup(debouncedWord === lemmaWord ? lemmaWord : "", 8);
+  const lemmaHits =
+    token && lemmaWord !== "" && debouncedWord === lemmaWord
+      ? lemmaSuggestions(token, lookup.data?.tokens[0]?.lemmas ?? [])
+      : [];
+
+  const request = open && vocabulary ? facetRequest(input, token, vocabulary) : null;
+  const requestKey = request ? JSON.stringify(request) : "";
+  const debouncedKey = useDebouncedValue(requestKey, SUGGEST_DEBOUNCE_MS);
+  const facets = useGrammarFacets(
+    request && debouncedKey === requestKey
+      ? (JSON.parse(debouncedKey) as GrammarFacetRequest)
+      : null,
+  );
+  const facet =
+    request && debouncedKey === requestKey && facets.isSuccess
+      ? facets.data.facets.find((f) => f.key === request.key)
+      : undefined;
+  const counts =
+    facets.isSuccess && facet ? new Map(facet.values.map((v) => [v.key, v.count])) : null;
+
+  const suggestions: GrammarSuggestion[] = [...vocabularyHits, ...lemmaHits].slice(0, MAX_LIST);
+  const english = i18n.language.startsWith("en");
+  const items: SuggestionItem[] = suggestions.map((s, index) => {
+    const id = `${s.kind}-${s.insert}-${index}`;
+    if (s.kind === "lemma" && s.lemma) {
+      return {
+        id,
+        label: (
+          <>
+            <OriginalText language={s.lemma.language}>{s.lemma.lemma}</OriginalText>{" "}
+            <span className="font-medium">{s.lemma.strongs}</span>
+          </>
+        ),
+        detail: s.lemma.gloss || undefined,
+        trailing: t("search.sourceWords.times", { count: s.lemma.occurrences }),
+      };
+    }
+    const value = s.value;
+    const languages = value?.languages ?? s.key?.languages ?? [];
+    if (s.kind === "value" && value) {
+      const count = counts?.get(value.key);
+      return {
+        id,
+        label: english ? value.labelEn : value.labelDe,
+        detail: languageNote(languages, t),
+        trailing: count ? t("search.suggest.count", { count }) : undefined,
+        dimmed: counts !== null && !count,
+      };
+    }
+    return {
+      id,
+      label: s.insert,
+      detail:
+        [value ? (english ? value.labelEn : value.labelDe) : undefined, languageNote(languages, t)]
+          .filter(Boolean)
+          .join(" · ") || undefined,
+    };
+  });
+  return { token, suggestions, items };
+}
+
 /**
  * Search palette over the reader: verse full text search (ranked hits with the matched words marked,
  * hits per book as filter) next to the original words of every query word. Opened from the menu
@@ -405,9 +933,52 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const coarse = useCoarsePointer();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [input, setInput] = useState("");
+  // Query, tab and marking live in the shared search state (localStorage): closing, following a hit and a reload
+  // keep them; only the clear button or deleting the text removes the query.
+  const { query: input, tab, mark } = useSearchState();
+  const setInput = setSearchQuery;
+  const setTab = setSearchTab;
   const { query, submit } = useSubmittedQuery(input);
-  const [tab, setTab] = useState<Tab>("verses");
+  // Autocomplete: caret position, whether the list may show (typing opens it, Esc / accepting a value closes it),
+  // the highlighted entry for the current text and caret.
+  const vocabulary = useGrammarVocabulary(open).data;
+  const [helpOpen, setHelpOpen] = useState(false);
+  const helpId = useId();
+  const [caret, setCaret] = useState(() => input.length);
+  const [listWanted, setListWanted] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const pendingCaret = useRef<number | null>(null);
+  const suggest = useSearchSuggestions(open && listWanted && focused, input, caret, vocabulary);
+  const suggestionKey = `${input}|${caret}`;
+  const [pickedSuggestion, setPickedSuggestion] = useState({ key: "", index: -1 });
+  // Inside a filter or a grammar query the first entry is preselected (Enter accepts it); for a plain word Tab
+  // accepts the first entry and Enter still searches.
+  const preselect = suggest.token?.text.includes(":") || isGrammarQuery(input) ? 0 : -1;
+  const activeSuggestion =
+    pickedSuggestion.key === suggestionKey ? pickedSuggestion.index : preselect;
+
+  useEffect(() => {
+    if (!open) setListWanted(false);
+  }, [open]);
+
+  // After accepting a suggestion the caret goes behind the inserted text (runs once the new text is rendered).
+  useLayoutEffect(() => {
+    const position = pendingCaret.current;
+    if (position === null || !inputRef.current) return;
+    pendingCaret.current = null;
+    inputRef.current.setSelectionRange(position, position);
+  });
+
+  const acceptSuggestion = (index: number) => {
+    const suggestion = suggest.suggestions[index];
+    if (!suggestion) return;
+    const next = applySuggestion(input, suggestion);
+    pendingCaret.current = next.caret;
+    setCaret(next.caret);
+    setInput(next.value);
+    // After a key the values follow at once; a value or a lemma closes the list.
+    setListWanted(suggestion.kind === "key");
+  };
   // The book filter belongs to the query it was set for.
   const [filter, setFilter] = useState<{ query: string; bookId: number | null }>({
     query: "",
@@ -421,12 +992,14 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const structure = useQuery({ ...structureQuery(), enabled: open });
   const books = structure.data ?? [];
   const reader = useReaderLevel();
-  const parse = useReferenceParse(open ? query : "");
+  const grammar = isGrammarQuery(query);
+  const parse = useReferenceParse(open && !grammar ? query : "");
   const reference = viewOfParse(parse.data);
   // Full-text search is skipped for a reference. A query with a digit may be one, so it waits for the parse
   // answer (a failed parse counts as "no reference"); plain words search at once.
   const waitsForParse = parse.isPending && /\d/.test(query);
-  const searchQuery = open && !waitsForParse && !reference.skipsFullText ? query : "";
+  const searchQuery = open && !grammar && !waitsForParse && !reference.skipsFullText ? query : "";
+  const grammarSearch = useGrammarSearch(open && grammar ? query : "", bookId);
   const search = useVerseSearch(
     searchQuery,
     bookId,
@@ -442,7 +1015,11 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
   const pages = search.data?.pages ?? [];
   const first = pages[0];
-  const hits = pages.flatMap((page) => page.hits);
+  const verseHits = pages.flatMap((page) => page.hits);
+  // The keyboard drives the visible list: the grammar hits for a grammar query, else the verse hits.
+  const hits = grammar
+    ? (grammarSearch.data?.pages ?? []).flatMap((page) => page.hits).map(toVerseHit)
+    : verseHits;
   const searching = searchQuery !== "";
   const invalid = searching && !isVerseSearchQuery(searchQuery);
   const showReference =
@@ -530,6 +1107,19 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         />
       ) : null}
       {query === "" ? <EmptyState>{t("search.hint")}</EmptyState> : null}
+      {open && grammar ? (
+        <div className="flex flex-wrap items-center gap-2 text-sm text-fg-muted">
+          <p>{t("search.grammar.hint")}</p>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="lg:hidden"
+            onClick={() => setTab("originals")}
+          >
+            {t("search.grammar.showOriginals")}
+          </Button>
+        </div>
+      ) : null}
       {invalid ? (
         <p role="alert" className="text-sm text-fg">
           {t("search.tooLong")}
@@ -600,19 +1190,19 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
               <VerseHitList
                 id={listId}
                 label={t("search.results")}
-                hits={hits}
+                hits={verseHits}
                 books={books}
                 language={language}
                 activeIndex={activeIndex}
                 revisedLabel={revisedLabel}
-                onSelect={(hit) => openHit(hits.indexOf(hit))}
+                onSelect={(hit) => openHit(verseHits.indexOf(hit))}
                 onLoadMore={() => search.fetchNextPage()}
                 hasMore={search.hasNextPage}
                 loading={search.isFetchingNextPage}
               />
               {search.hasNextPage ? (
                 <p className="text-xs text-fg-muted">
-                  {t("search.shown", { shown: hits.length, total: first.total })}
+                  {t("search.shown", { shown: verseHits.length, total: first.total })}
                 </p>
               ) : null}
             </>
@@ -630,7 +1220,26 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       <h3 className="text-sm font-semibold text-fg-muted max-lg:hidden">
         {t("search.originals.heading")}
       </h3>
-      <OriginalsPanel query={query} books={books} appLanguage={language} onNavigate={onClose} />
+      {grammar ? (
+        <GrammarPanel
+          query={query}
+          search={grammarSearch}
+          books={books}
+          language={language}
+          bookId={bookId}
+          onSelectBook={(id) => setFilter({ query, bookId: id })}
+          listId={listId}
+          activeIndex={activeIndex}
+          onOpenHit={openHit}
+          onNavigate={onClose}
+          onReplace={(candidate) => {
+            const problem = parseGrammarProblem(grammarSearch.error);
+            if (problem) setInput(replaceGrammarToken(input, problem, candidate));
+          }}
+        />
+      ) : (
+        <OriginalsPanel query={query} books={books} appLanguage={language} onNavigate={onClose} />
+      )}
     </section>
   );
 
@@ -647,39 +1256,110 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       initialFocusRef={coarse && input !== "" ? undefined : inputRef}
     >
       <div className="grid gap-2 border-b border-border px-4 pt-2 pb-3">
-        <TextField
-          type="search"
-          label={t("search.label")}
-          labelHidden
-          required={false}
-          value={input}
-          onChange={setInput}
-          inputRef={inputRef}
-          placeholder={t("search.placeholder")}
-          autoComplete="off"
-          spellCheck={false}
-          enterKeyHint="search"
-          role="combobox"
-          aria-autocomplete="list"
-          aria-expanded={hits.length > 0}
-          aria-controls={hits.length > 0 ? listId : undefined}
-          aria-activedescendant={activeIndex >= 0 ? hitOptionId(listId, activeIndex) : undefined}
-          onKeyDown={onKeyDown}
-        />
-        <fieldset className="flex gap-2 lg:hidden">
-          <legend className="sr-only">{t("search.tabs.label")}</legend>
-          {(["verses", "originals"] as const).map((id) => (
+        <div className="relative">
+          <TextField
+            type="search"
+            label={t("search.label")}
+            labelHidden
+            required={false}
+            value={input}
+            onChange={(value) => {
+              setInput(value);
+              setCaret(inputRef.current?.selectionStart ?? value.length);
+              setListWanted(true);
+            }}
+            onSelect={(event) => setCaret(event.currentTarget.selectionStart ?? input.length)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            suggestions={suggest.items}
+            suggestionsLabel={t("search.suggest.label")}
+            activeSuggestion={activeSuggestion}
+            onActiveSuggestionChange={(index) => setPickedSuggestion({ key: suggestionKey, index })}
+            onSuggestionAccept={acceptSuggestion}
+            onSuggestionsDismiss={() => setListWanted(false)}
+            inputRef={inputRef}
+            placeholder={t("search.placeholder")}
+            autoComplete="off"
+            spellCheck={false}
+            enterKeyHint="search"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={hits.length > 0}
+            aria-controls={hits.length > 0 ? listId : undefined}
+            aria-activedescendant={activeIndex >= 0 ? hitOptionId(listId, activeIndex) : undefined}
+            onKeyDown={onKeyDown}
+            className="search-field pe-10"
+          />
+          {input !== "" && (
             <Button
-              key={id}
-              variant="secondary"
+              variant="ghost"
               size="sm"
-              aria-pressed={tab === id}
-              onClick={() => setTab(id)}
+              className="absolute inset-y-1 end-1"
+              aria-label={t("search.clear")}
+              title={t("search.clear")}
+              onClick={() => {
+                setInput("");
+                inputRef.current?.focus();
+              }}
             >
-              {t(`search.tabs.${id}`)}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
             </Button>
-          ))}
-        </fieldset>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+          <div className="flex flex-wrap items-center gap-2">
+            <Switch checked={mark} onCheckedChange={setSearchMark}>
+              {t("search.mark.switch")}
+            </Switch>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-expanded={helpOpen}
+              aria-controls={helpOpen ? helpId : undefined}
+              aria-label={t("search.help.toggle")}
+              title={t("search.help.toggle")}
+              onClick={() => setHelpOpen((value) => !value)}
+            >
+              ?
+            </Button>
+          </div>
+          <fieldset className="flex gap-2 lg:hidden">
+            <legend className="sr-only">{t("search.tabs.label")}</legend>
+            {(["verses", "originals"] as const).map((id) => (
+              <Button
+                key={id}
+                variant="secondary"
+                size="sm"
+                aria-pressed={tab === id}
+                onClick={() => setTab(id)}
+              >
+                {t(`search.tabs.${id}`)}
+              </Button>
+            ))}
+          </fieldset>
+        </div>
+        {helpOpen ? (
+          <GrammarCheatSheet
+            id={helpId}
+            vocabulary={vocabulary}
+            onExample={(example) => {
+              setInput(example);
+              setTab("originals");
+              setHelpOpen(false);
+              inputRef.current?.focus();
+            }}
+          />
+        ) : null}
       </div>
       <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-2 lg:divide-x lg:divide-border">
         {versesColumn}

@@ -75,5 +75,6 @@ public sealed class GetStrongsOccurrencesRequestValidator : AbstractValidator<Ge
         RuleFor(x => x.Book).InclusiveBetween(1, 66).When(x => x.Book is not null);
         RuleFor(x => x.Rendering).Must(r => r is { Length: >= 1 and <= 50 }).When(x => x.Rendering is not null)
             .WithMessage("Rendering must be 1 to 50 characters.");
+        RuleFor(x => x.Grammar).MaximumLength(200);
     }
 }

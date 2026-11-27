@@ -1,0 +1,22 @@
+meta {
+  name: SearchVersesNeighbours
+  type: http
+  seq: 38
+}
+
+get {
+  url: {{url}}elberfelder/search/verses/neighbours?q=Gott Welt geliebt&bibleBookId=43&chapter=3
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Gott Welt geliebt
+  bibleBookId: 43
+  chapter: 3
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

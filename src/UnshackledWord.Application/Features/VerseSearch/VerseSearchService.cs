@@ -24,19 +24,11 @@ public sealed class VerseSearchService : IVerseSearchService
 
     public async Task<SearchVersesResponse?> SearchAsync(string query, int page, int pageSize, int? bookId, int level, CancellationToken token = default)
     {
-        var parsed = VerseSearchQueryParser.Parse(query);
-        if (!parsed.HasPositive)
+        var built = await BuildAsync(query, token);
+        if (built is null)
         {
             return null;
         }
-
-        var atoms = parsed.AllWords.SelectMany(VerseSearchQueryBuilder.Atoms).Distinct(StringComparer.Ordinal).ToList();
-        var stems = (await _verses.GetLexemesAsync(atoms, token))
-            .Where(r => !string.IsNullOrEmpty(r.Lexeme))
-            .ToDictionary(r => r.Word, r => r.Lexeme!, StringComparer.Ordinal);
-
-        var lemmas = await ResolveLemmasAsync(parsed, token);
-        var built = VerseSearchQueryBuilder.Build(parsed, stems, lemmas);
 
         // Both queries scan the matching verses; they run side by side (own connections) so the slowest one decides the latency.
         var offset = (page - 1) * pageSize;
@@ -77,6 +69,86 @@ public sealed class VerseSearchService : IVerseSearchService
             BookCounts = bookCounts.Select(c => new SearchVersesBookCount { BookId = c.BookId, Count = c.Count }).ToList(),
             Hits = hits
         };
+    }
+
+    /// <summary>Longest chapter (Psalm 119) with room to spare: all hit verses of a chapter come in one go.</summary>
+    private const int MaxVersesPerChapter = 200;
+
+    public async Task<SearchVersesChapterResponse?> ChapterAsync(string query, int bibleBookId, int chapter, int level, CancellationToken token = default)
+    {
+        var built = await BuildAsync(query, token);
+        if (built is null)
+        {
+            return null;
+        }
+
+        var first = bibleBookId * 1_000_000 + chapter * 1_000;
+        var rows = await _verses.GetHitsAsync(built.TsQuery, null, level, first, first + 999, 0, MaxVersesPerChapter, token);
+        var verses = new List<SearchVersesChapterVerse>();
+        if (rows.Count > 0)
+        {
+            var baseIds = rows.Where(r => r.RevisionVerseId is null).Select(r => r.HebRefId).ToList();
+            var revisedIds = rows.Where(r => r.RevisionVerseId is not null).Select(r => r.RevisionVerseId!.Value).ToList();
+            var baseWords = baseIds.Count == 0 ? Enumerable.Empty<VerseSearchWordRow>() : await _verses.GetWordsAsync(baseIds, token);
+            var revisedWords = revisedIds.Count == 0 ? Enumerable.Empty<VerseSearchWordRow>() : await _verses.GetRevisionWordsAsync(revisedIds, token);
+            var baseLookup = baseWords.ToLookup(w => w.HebRefId);
+            var revisedLookup = revisedWords.ToLookup(w => w.HebRefId);
+
+            foreach (var row in rows.OrderBy(r => r.HebRefId))
+            {
+                var revised = row.RevisionVerseId is not null;
+                var positions = (revised ? revisedLookup[row.HebRefId] : baseLookup[row.HebRefId])
+                    .Where(w => IsMatch(w, built))
+                    .Select(w => w.PositionInVerse)
+                    .Order()
+                    .ToList();
+                if (positions.Count > 0)
+                {
+                    verses.Add(new SearchVersesChapterVerse { Verse = row.HebRefId % 1_000, Revised = revised ? true : null, Positions = positions });
+                }
+            }
+        }
+
+        return new SearchVersesChapterResponse { Verses = verses, Total = verses.Sum(v => v.Positions.Count) };
+    }
+
+    public async Task<SearchVersesNeighboursResponse?> NeighboursAsync(string query, int bibleBookId, int chapter, int level, CancellationToken token = default)
+    {
+        var built = await BuildAsync(query, token);
+        if (built is null)
+        {
+            return null;
+        }
+
+        // Chapter key = book * 1000 + chapter; the list is ordered, so the neighbours are the nearest keys on either side.
+        var current = bibleBookId * 1_000 + chapter;
+        var keys = await _verses.GetHitChaptersAsync(built.TsQuery, level, token);
+        var previous = keys.Where(k => k < current).Select(k => (int?)k).LastOrDefault();
+        var next = keys.Where(k => k > current).Select(k => (int?)k).FirstOrDefault();
+        return new SearchVersesNeighboursResponse { Previous = ToRef(previous), Next = ToRef(next) };
+    }
+
+    private static SearchVersesChapterRef? ToRef(int? key)
+    {
+        return key is { } k ? new SearchVersesChapterRef { BibleBookId = k / 1_000, Chapter = k % 1_000 } : null;
+    }
+
+    /// <summary>Parse, stem and lemma-widen the query; null when it has no positive word.</summary>
+    private async Task<BuiltVerseQuery?> BuildAsync(string query, CancellationToken token)
+    {
+        var parsed = VerseSearchQueryParser.Parse(query);
+        if (!parsed.HasPositive)
+        {
+            return null;
+        }
+
+        var atoms = parsed.AllWords.SelectMany(VerseSearchQueryBuilder.Atoms).Distinct(StringComparer.Ordinal).ToList();
+        var stems = (await _verses.GetLexemesAsync(atoms, token))
+            .Where(r => !string.IsNullOrEmpty(r.Lexeme))
+            .ToDictionary(r => r.Word, r => r.Lexeme!, StringComparer.Ordinal);
+
+        var lemmas = await ResolveLemmasAsync(parsed, token);
+        return VerseSearchQueryBuilder.Build(parsed, stems, lemmas);
     }
 
     private async Task<IReadOnlyDictionary<string, IReadOnlyList<string>>> ResolveLemmasAsync(VerseSearchQuery query, CancellationToken token)

@@ -1,0 +1,25 @@
+meta {
+  name: SearchGrammarHebrewQal
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar?q=H1254 Stamm:qal&page=1
+  body: none
+  auth: none
+}
+
+params:query {
+  q: H1254 Stamm:qal
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Roadmap 0029.6: 33 verses, 39 words, first Gen 1:1 (H1254 = bara). `bara Stamm:qal` (transliteration) gives the same result.
+}

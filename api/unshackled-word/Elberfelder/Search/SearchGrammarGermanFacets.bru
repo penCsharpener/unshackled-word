@@ -1,0 +1,26 @@
+meta {
+  name: SearchGrammarGermanFacets
+  type: http
+  seq: 36
+}
+
+get {
+  url: {{url}}elberfelder/search/grammar/facets?q=Liebe dt.Numerus:&slot=0&key=dt.Numerus
+  body: none
+  auth: none
+}
+
+params:query {
+  q: Liebe dt.Numerus:
+  slot: 0
+  key: dt.Numerus
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  200: dt. facet counts German words (Singular 184 for lemma Liebe). Key may be omitted for a German-only slot: all dt. keys.
+}
