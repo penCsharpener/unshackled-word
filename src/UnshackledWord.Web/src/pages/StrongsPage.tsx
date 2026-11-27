@@ -235,7 +235,10 @@ function LxxRow({
         )}
       </p>
     </li>
+  );
+}
 
+/**
  * "Formen": one row per grammar key that occurs for the lemma, with the count of each value.
  * A value is a toggle for the `grammar` filter (one value per key).
  */
@@ -311,7 +314,11 @@ export function StrongsPage() {
   const grammar = parseGrammarFilter(searchParams.get("grammar"));
   const terms = grammarTerms(grammar);
   const vocabulary = useGrammarVocabulary().data;
-  const ntOccurrences = useStrongsOccurrences(lxx ? undefined : strongs, page, { book, rendering, grammar });
+  const ntOccurrences = useStrongsOccurrences(lxx ? undefined : strongs, page, {
+    book,
+    rendering,
+    grammar,
+  });
   const lxxOccurrences = useLxxStrongsOccurrences(lxx ? strongs : undefined, page);
   const occurrences = lxx ? lxxOccurrences : ntOccurrences;
   const data = occurrences.data;
