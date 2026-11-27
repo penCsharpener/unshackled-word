@@ -121,6 +121,63 @@ describe("VocabDetailPage", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows the word family with prefixes, root and the other members", async () => {
+    stubApi({
+      "GET /vocab/entries/56": () =>
+        json({
+          ...logos,
+          entry: {
+            ...logos.entry,
+            root: {
+              id: 4,
+              root: "πορεύω",
+              strongsKey: "G4198",
+              prefixes: "ἐκ",
+              origin: "prefill",
+              isSimple: false,
+            },
+          },
+        }),
+      "GET /vocab/roots/4": () =>
+        json({
+          id: 4,
+          root: "πορεύω",
+          strongsKey: "G4198",
+          subRoots: [],
+          members: [
+            { entryId: 20, lemma: "πορεύω", meaning: "gehen", rank: 30 },
+            { entryId: 56, lemma: "λόγος", meaning: "Wort", rank: 87 },
+            { entryId: 21, lemma: "εἰσπορεύω", rank: 400 },
+          ],
+          memberTotal: 20,
+        }),
+      "GET /meta-bible/structure": () => json(fixtureStructure),
+    });
+    renderAt();
+    const section = (await screen.findByRole("heading", { name: "Word family" })).closest(
+      "section",
+    ) as HTMLElement;
+    expect(within(section).getByTestId("family-root")).toHaveTextContent("ἐκ + πορεύω");
+    expect(await within(section).findByRole("link", { name: "πορεύω" })).toBeDefined();
+    const members = await within(section).findAllByRole("listitem");
+    // the entry itself is not listed among the others
+    expect(members.map((item) => item.textContent)).toEqual(["πορεύωgehen#30", "εἰσπορεύω#400"]);
+    expect(within(section).getByRole("link", { name: "show all (20)" })).toHaveAttribute(
+      "href",
+      "/vocab?track=G&root=4",
+    );
+  });
+
+  it("shows no word family block without a root", async () => {
+    stubApi({
+      "GET /vocab/entries/56": () => json(logos),
+      "GET /meta-bible/structure": () => json(fixtureStructure),
+    });
+    renderAt();
+    await screen.findByRole("heading", { level: 1 });
+    expect(screen.queryByRole("heading", { name: "Word family" })).toBeNull();
+  });
+
   it("offers the editor link only to maintainers", async () => {
     const stubs = (roles: string[]) =>
       stubApi({

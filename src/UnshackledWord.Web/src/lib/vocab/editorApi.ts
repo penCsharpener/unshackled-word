@@ -1,5 +1,13 @@
 import { api } from "@/lib/api";
-import type { VocabRendering, VocabSampleVerse, VocabTrack } from "./api";
+import type {
+  VocabRendering,
+  VocabRoot,
+  VocabRootDetail,
+  VocabRootOrigin,
+  VocabRootRef,
+  VocabSampleVerse,
+  VocabTrack,
+} from "./api";
 
 // Vocab editor (roadmap 0022.4): `api/maintainer/vocab/entries`, Admin/Maintainer only.
 // Mirrors `VocabEditorContracts.cs`; nulls are omitted by the API.
@@ -13,6 +21,9 @@ export const vocabEditorKeys = {
   search: (course: string | undefined, term: string) =>
     ["vocab", "editor", "search", course ?? null, term] as const,
   entry: (id: number) => ["vocab", "editor", "entry", id] as const,
+  rootSearch: (track: VocabTrack, term: string) =>
+    ["vocab", "editor", "rootSearch", track, term] as const,
+  prepositions: ["vocab", "editor", "prepositions"] as const,
 };
 
 /** Where the study form comes from: `generated` (lexicon), `agent` (KI proposal) or `manual`. */
@@ -31,6 +42,12 @@ export interface VocabEditorListQuery {
   retired?: boolean;
   rankFrom?: number;
   rankTo?: number;
+  /** Family filter (`VocabRoots."Id"`), the root's own entry first. */
+  root?: number;
+  /** With `root`: also the sub-roots' entries; the API default is on, only `false` is sent. */
+  subRoots?: boolean;
+  /** Active entries a root applies to whose main key has no root yet. */
+  missingRoot?: boolean;
   skip: number;
   take: number;
 }
@@ -42,6 +59,7 @@ const FLAGS = [
   "formFromAgent",
   "multiKey",
   "retired",
+  "missingRoot",
 ] as const;
 
 /** Query string of `GET api/maintainer/vocab/entries`; false flags are left out. */
@@ -55,6 +73,10 @@ export function vocabEditorListQueryString(query: VocabEditorListQuery): string 
   }
   if (query.rankFrom != null) params.set("rankFrom", String(query.rankFrom));
   if (query.rankTo != null) params.set("rankTo", String(query.rankTo));
+  if (query.root != null) {
+    params.set("root", String(query.root));
+    if (query.subRoots === false) params.set("subRoots", "false");
+  }
   params.set("skip", String(query.skip));
   params.set("take", String(query.take));
   return params.toString();
@@ -81,6 +103,8 @@ export interface VocabEditorListItem {
   /** Accepted meanings in rank order. */
   meanings: { german: string; rank: number }[];
   strongsKeys: string[];
+  /** The entry's root (roadmap 0030), absent while none is known. */
+  root?: VocabRoot | null;
 }
 
 export interface VocabEditorListResponse {
@@ -141,6 +165,8 @@ export interface VocabEditorEntryResponse {
   entry: VocabEditorEntry;
   meanings: VocabEditorMeaning[];
   strongsKeys: VocabEditorKey[];
+  /** The root of the main key with its parents, absent while none is known (roadmap 0030.5). */
+  root?: VocabEditorRoot | null;
   /** Users with a card on the entry. */
   learners: number;
   renderings: VocabRendering[];
@@ -251,4 +277,72 @@ export function uploadVocabAudio(id: number, file: Blob, fileName = "audio.mp3")
 /** Removes the entry's audio (`DELETE .../audio`). */
 export function deleteVocabAudio(id: number) {
   return api.delete<VocabEditResponse>(`${BASE}/${id}/audio`);
+}
+
+/** The editable root of an entry (`VocabEditorRootResponse`); nulls are omitted by the API. */
+export interface VocabEditorRoot {
+  rootId: number;
+  root: string;
+  /** Strong's key of the root word; absent for a Hebrew root without a verb. */
+  strongsKey?: string | null;
+  homograph: number;
+  /** Keys of the stripped prepositions in word order. */
+  prefixKeys: string[];
+  prefixes?: string | null;
+  origin: VocabRootOrigin;
+  isSimple: boolean;
+  /** The root's parents, nearest first (at most 4). */
+  ancestors: VocabRootRef[];
+}
+
+/** Body of `PUT .../entries/{id}/root` (`SetVocabEntryRootRequest`): simple word, or prefixes + a root (id or key), or Hebrew letters. */
+export interface SetVocabEntryRootBody {
+  simple?: boolean;
+  prefixKeys?: string[];
+  rootId?: number;
+  rootKey?: string;
+  rootLetters?: string;
+  homograph?: number;
+}
+
+/** A root the picker offers (`VocabRootCandidateResponse`): `rootId` is absent while a Greek word has no root row yet. */
+export interface VocabRootCandidate {
+  rootId?: number | null;
+  root: string;
+  strongsKey?: string | null;
+  homograph: number;
+  meaning?: string | null;
+}
+
+/** One preposition of the closed prefix list. */
+export interface VocabPreposition {
+  key: string;
+  lemma: string;
+}
+
+/** Sets the manual root of the entry's main key (`PUT .../entries/{id}/root`); no version bump. */
+export function setVocabEntryRoot(id: number, body: SetVocabEntryRootBody) {
+  return api.put<VocabEditResponse>(`${BASE}/${id}/root`, body);
+}
+
+/** Sets (or, without a parent, clears) the parent of a root (`PUT api/maintainer/vocab/roots/{id}/parent`). */
+export function setVocabRootParent(
+  id: number,
+  body: { parentRootId?: number; parentStrongsKey?: string },
+) {
+  return api.put<VocabRootDetail>(`/maintainer/vocab/roots/${id}/parent`, body);
+}
+
+/** Root candidates by typed text (`GET api/maintainer/vocab/roots/search`): Greek lemmas or existing Hebrew roots. */
+export function searchVocabRoots(track: VocabTrack, q: string, signal?: AbortSignal) {
+  const params = new URLSearchParams({ track, q, take: "8" });
+  return api.get<{ items: VocabRootCandidate[] }>(
+    `/maintainer/vocab/roots/search?${params.toString()}`,
+    signal,
+  );
+}
+
+/** The closed preposition list for the prefix picker (`GET api/maintainer/vocab/roots/prepositions`). */
+export function getVocabPrepositions(signal?: AbortSignal) {
+  return api.get<{ items: VocabPreposition[] }>("/maintainer/vocab/roots/prepositions", signal);
 }

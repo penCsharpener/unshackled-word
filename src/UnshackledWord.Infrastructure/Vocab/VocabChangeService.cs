@@ -82,6 +82,7 @@ public sealed class VocabChangeService
         WHERE 1=1
             AND c."UserId" = @UserId
             AND c."VocabEntryId" = ANY(@Ids)
+            AND ch."Kind" <> 'root' -- root edits do not change what a card asks (roadmap 0030.5)
         ORDER BY ch."VocabEntryId", ch."ContentVersion", ch."Id"
         """;
 

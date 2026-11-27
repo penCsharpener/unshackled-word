@@ -30,6 +30,14 @@ public static class AgentAnswerSchema
         """;
 
     /// <summary>
+    /// Run mode <c>vocab-root</c> (roadmap 0030.4): per answered entry <c>id</c>, <c>simple</c>, <c>prefixes</c> (Strong's keys of the stripped prepositions),
+    /// <c>rootKey</c> (Greek), <c>rootLetters</c> (Hebrew), <c>confidence</c> and <c>note</c>; an entry the model cannot decide is left out.
+    /// </summary>
+    public const string VocabRootJson = """
+        {"type":"object","properties":{"roots":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"simple":{"type":"boolean"},"prefixes":{"type":"array","items":{"type":"string"}},"rootKey":{"type":"string"},"rootLetters":{"type":"string"},"confidence":{"type":"string","enum":["high","low"]},"note":{"type":"string"}},"required":["id"]}}},"required":["roots"]}
+        """;
+
+    /// <summary>
     /// Run mode <c>lxx-tag</c> (roadmap 0028.7, prompts <c>lxx-tag-v1</c>/<c>v2</c>; <c>note</c> before <c>words</c> since v2): per verse <c>words</c> rows
     /// <c>[position, lemma, strongs, morph, heb, confidence]</c> (<c>heb</c> an array of Hebrew positions, <c>confidence</c> <c>high</c>/<c>low</c>),
     /// every LXX word exactly once, and an optional <c>note</c>. The row rules are checked by <see cref="Lxx.LxxAgentAnswerParser"/> and the validator.
@@ -49,6 +57,7 @@ public static class AgentAnswerSchema
     /// <summary>The schema of a prompt language (<c>greek</c>, <c>lemma-hebrew</c>, <c>lxx-tag</c>, <c>vocab-form-greek</c> …).</summary>
     public static string ForLanguage(string language) =>
         language.StartsWith(AgentPromptProvider.VocabFormPrefix, StringComparison.Ordinal) ? VocabFormJson
+        : language.StartsWith(AgentPromptProvider.VocabRootPrefix, StringComparison.Ordinal) ? VocabRootJson
         : language.StartsWith(AgentPromptProvider.LemmaPrefix, StringComparison.Ordinal) ? LemmaJson
         : language == AgentPromptProvider.LxxTagLanguage ? LxxJson
         : Json;

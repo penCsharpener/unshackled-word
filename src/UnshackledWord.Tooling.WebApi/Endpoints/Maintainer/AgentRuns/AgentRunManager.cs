@@ -47,6 +47,11 @@ public sealed class AgentRunManager : IHostedService
                     // Roadmap 0022.13: dictionary forms of vocab entries; start, cancel, resume and status are the ones of every run.
                     await scope.ServiceProvider.GetRequiredService<UnshackledWord.Infrastructure.Vocab.VocabFormRunExecutor>().RunAsync(runId, _shutdown.Token);
                 }
+                else if (run?.Mode == AgentModes.VocabRoot)
+                {
+                    // Roadmap 0030.4: roots and stripped prepositions of vocab entries; start, cancel, resume and status are the ones of every run.
+                    await scope.ServiceProvider.GetRequiredService<UnshackledWord.Infrastructure.Vocab.VocabRootRunExecutor>().RunAsync(runId, _shutdown.Token);
+                }
                 else
                 {
                     await scope.ServiceProvider.GetRequiredService<AgentRunExecutor>().RunAsync(runId, _shutdown.Token);

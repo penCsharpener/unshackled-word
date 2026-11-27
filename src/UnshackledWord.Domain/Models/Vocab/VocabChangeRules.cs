@@ -11,6 +11,9 @@ public static class VocabChangeKinds
     public const string Split = "split";
     public const string Retire = "retire";
     public const string Delete = "delete";
+
+    /// <summary>Maintainer edit of the entry's root (roadmap 0030.5): logged at the current version, no bump, never listed for learners.</summary>
+    public const string Root = "root";
 }
 
 /// <summary>Where a dictionary form came from (<c>VocabEntries.DictionaryFormOrigin</c>).</summary>

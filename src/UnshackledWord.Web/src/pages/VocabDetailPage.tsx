@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { useBibleStructure } from "@/lib/bible/queries";
 import { formatStamp } from "@/lib/format";
-import { getVocabEntry, type VocabEntryResponse, vocabLang } from "@/lib/vocab/api";
+import { getVocabEntry, getVocabRoot, type VocabEntryResponse, vocabLang } from "@/lib/vocab/api";
 import { sampleVerseHref, sampleVerseReference } from "@/lib/vocab/verseReference";
 
 const entryKey = (id: number) => ["vocab", "entry", id] as const;
@@ -29,6 +29,13 @@ export function VocabDetailPage() {
     queryKey: entryKey(entryId),
     queryFn: ({ signal }) => getVocabEntry(entryId, signal),
     enabled: validId,
+  });
+
+  const rootId = query.data?.entry.root?.id;
+  const family = useQuery({
+    queryKey: ["vocab", "root", rootId] as const,
+    queryFn: ({ signal }) => getVocabRoot(rootId as number, signal),
+    enabled: rootId !== undefined,
   });
 
   const number = (value: number) => value.toLocaleString(i18n.language);
@@ -68,6 +75,8 @@ export function VocabDetailPage() {
     value: rendering.linkCount,
     share: rendering.share / 100,
   }));
+
+  const others = (family.data?.members ?? []).filter((member) => member.entryId !== entry.id);
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4">
@@ -151,6 +160,59 @@ export function VocabDetailPage() {
           </p>
         </div>
       </div>
+
+      {entry.root ? (
+        <section className="grid content-start gap-3 rounded-lg border border-border bg-surface p-4">
+          <h2 className="text-lg font-semibold">{t("vocab.root.family")}</h2>
+          <p
+            lang={lang}
+            dir={lang === "he" ? "rtl" : undefined}
+            className="font-original text-xl"
+            data-testid="family-root"
+          >
+            {entry.root.prefixes ? `${entry.root.prefixes} + ` : ""}
+            <Link
+              to={`/vocab?track=${entry.track}&root=${entry.root.id}`}
+              className={entry.root.isSimple ? "text-fg-muted underline" : "text-accent underline"}
+            >
+              {entry.root.root}
+            </Link>
+          </p>
+          {family.isError ? <FormError message={t("vocab.root.loadFailed")} /> : null}
+          {family.data ? (
+            <>
+              {others.length === 0 ? (
+                <p className="text-sm text-fg-muted">{t("vocab.root.noOthers")}</p>
+              ) : (
+                <ul className="grid gap-1 text-sm">
+                  {others.map((member) => (
+                    <li key={member.entryId} className="flex flex-wrap items-baseline gap-x-2">
+                      <Link
+                        to={`/vocab/${member.entryId}`}
+                        lang={lang}
+                        dir={lang === "he" ? "rtl" : undefined}
+                        className="font-original text-base text-accent underline"
+                      >
+                        {member.lemma}
+                      </Link>
+                      {member.meaning ? <span>{member.meaning}</span> : null}
+                      <span className="text-fg-muted tabular-nums">#{number(member.rank)}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {family.data.memberTotal > family.data.members.length ? (
+                <Link
+                  to={`/vocab?track=${entry.track}&root=${entry.root.id}`}
+                  className="text-sm text-accent underline"
+                >
+                  {t("vocab.root.showAll", { count: number(family.data.memberTotal) })}
+                </Link>
+              ) : null}
+            </>
+          ) : null}
+        </section>
+      ) : null}
 
       {data.sampleVerses.length > 0 ? (
         <section className="grid gap-3">
