@@ -131,34 +131,34 @@ When the server sends back rejected verses ("The server rejected the following .
 
 The examples below were built from the real package format and the current data (after the 0018 role backfill). **[UNCONFIRMED] They are proposals: the maintainer has not confirmed these mappings, roles and lemmas yet.** Package ids and local ids are those of a one-verse package.
 
-## Example 1: Mk 1:1
+## Example 1: Mk 1:1 [UNCONFIRMED]
 
 Package:
 
 ```json
-{"packageId":"p_example","lang":"greek","verses":[{"v":"v1","ref":"Mk 1:1","de":[["g1","Anfang","Anfang","NN"],["g2","des","der","ART"],["g3","Evangeliums","Evangelium","NN"],["g4","Jesu","Jesus","NE","fixed-lemma"],["g5","Christi","Christus","NE","fixed-lemma"],["g6","des","der","ART"],["g7","Sohnes","Sohn","NN","hint-lemma"],["g8","Gottes","Gott","NN"]],"src":[["s1","Ἀρχὴ","ἀρχή","G0746","beginning","N-NSF"],["s2","τοῦ","ὁ","G3588","the/this/who","T-GSN"],["s3","εὐαγγελίου","εὐαγγέλιον","G2098","gospel","N-GSN"],["s4","Ἰησοῦ","Ἰησοῦς","G2424G","Jesus/Joshua","N-GSM-P"],["s5","Χριστοῦ","Χριστός","G5547","Christ","N-GSM-T"],["s6","υἱοῦ","υἱός","G5207","son","N-GSM"],["s7","τοῦ","ὁ","G3588","the/this/who","T-GSM"],["s8","θεοῦ·","θεός","G2316","God","N-GSM-T"]],"fixed":[],"hints":[["g1","s1","head"],["g2","s2","head"],["g3","s3","head"],["g4","s4","head"],["g5","s5","head"],["g6","s7","head"],["g7","s6","head"],["g8","s8","head"]]}]}
+{"packageId":"p_example1","lang":"greek","verses":[{"v":"v1","ref":"Mk 1:1","de":[["g1","Anfang","Anfang","NN"],["g2","des","der","ART"],["g3","Evangeliums","Evangelium","NN"],["g4","Jesu","Jesus","NE","fixed-lemma"],["g5","Christi","Christus","NE","fixed-lemma"],["g6","des","der","ART"],["g7","Sohnes","Sohn","NN","hint-lemma"],["g8","Gottes","Gott","NN"]],"src":[["s1","Ἀρχὴ","ἀρχή","G0746","beginning","N-NSF"],["s2","τοῦ","ὁ","G3588","the/this/who","T-GSN"],["s3","εὐαγγελίου","εὐαγγέλιον","G2098","gospel","N-GSN"],["s4","Ἰησοῦ","Ἰησοῦς","G2424G","Jesus/Joshua","N-GSM-P"],["s5","Χριστοῦ","Χριστός","G5547","Christ","N-GSM-T"],["s6","υἱοῦ","υἱός","G5207","son","N-GSM"],["s7","τοῦ","ὁ","G3588","the/this/who","T-GSM"],["s8","θεοῦ·","θεός","G2316","God","N-GSM-T"]],"fixed":[],"hints":[["g1","s1","head"],["g2","s2","head"],["g3","s3","head"],["g4","s4","head"],["g5","s5","head"],["g6","s7","head"],["g7","s6","head"],["g8","s8","head"]]}]}
 ```
 
 Answer:
 
 ```json
-{"packageId":"p_example","verses":[{"v":"v1","links":[],"added":[],"lemmas":[],"parts":[],"unmapped":[]}]}
+{"packageId":"p_example1","verses":[{"v":"v1","links":[],"added":[],"lemmas":[],"parts":[],"unmapped":[]}]}
 ```
 
 What to notice: Every hint is right, lemmas and tags too: silence keeps them (empty arrays). Both articles render a Greek article: `head` links, not added words.
 
-## Example: Mk 1:6
+## Example 2: Mk 1:6 [UNCONFIRMED]
 
 Package:
 
 ```json
-{"packageId":"p_example","lang":"greek","verses":[{"v":"v1","ref":"Mk 1:6","de":[["g1","Johannes","Johannes","NE"],["g2","aber","aber","KON"],["g3","war","sein","VAFIN"],["g4","bekleidet","bekleiden","VVPP","fixed-lemma"],["g5","mit","mit","APPR"],["g6","Kamelhaaren","Kamelhaare","NN"],["g7","und","und","KON"],["g8","einem","ein","ART"],["g9","ledernen","ledern","ADJA","fixed-lemma"],["g10","Gürtel","Gürtel","NN"],["g11","um","um","APPR"],["g12","seine","sein","PPOSAT"],["g13","Lenden","Lenden","NN"],["g14","und","und","KON"],["g15","er","er","PPER"],["g16","aß","essen","VVFIN","fixed-lemma"],["g17","Heuschrecken","Heuschrecke","NN"],["g18","und","und","KON"],["g19","wilden","wild","ADJA"],["g20","Honig","Honig","NN"]],"src":[["s1","καὶ","καί","G2532","and","CONJ"],["s2","ἦν","εἰμί","G1510","to be","V-IAI-3S"],["s3","δὲ","δέ","G1161","but/and","CONJ"],["s4","ὁ","ὁ","G3588","the/this/who","T-NSM"],["s5","Ἰωάννης","Ἰωάννης","G2491G","John","N-NSM-P"],["s6","ἐνδεδυμένος","ἐνδύω","G1746","to put on","V-RMP-NSM"],["s7","τρίχας","θρίξ","G2359","hair","N-APF"],["s8","καμήλου","κάμηλος","G2574","camel","N-GSF"],["s9","καὶ","καί","G2532","and","CONJ"],["s10","ζώνην","ζώνη","G2223","belt/sash/girdle","N-ASF"],["s11","δερματίνην","δερμάτινος","G1193","made of leather","A-ASF"],["s12","περὶ","περί","G4012","about","PREP"],["s13","τὴν","ὁ","G3588","the/this/who","T-ASF"],["s14","ὀσφὺν","ὀσφῦς","G3751","loins","N-ASF"],["s15","αὐτοῦ","αὐτός","G0846","he/she/it/self","P-GSM"],["s16","καὶ","καί","G2532","and","CONJ"],["s17","ἐσθίων","ἐσθίω","G2068","to eat","V-PAP-NSM"],["s18","ἀκρίδας","ἀκρίς","G0200","locust","N-APF"],["s19","καὶ","καί","G2532","and","CONJ"],["s20","μέλι","μέλι","G3192","honey","N-ASN"],["s21","ἄγριον.","ἄγριος","G0066","wild","A-ASN"]],"fixed":[],"hints":[["g1","s4","head"],["g1","s5","head"],["g2","s3","head"],["g3","s2","head"],["g4","s6","head"],["g5","g6"],["g6","s8","head"],["g6","s7","head"],["g7","s9","head"],["g8","g10"],["g9","s11","head"],["g10","s10","head"],["g11","s12","head"],["g12","s15","head"],["g13","s13","head"],["g13","s14","head"],["g14","s16","head"],["g15","s17","unit"],["g16","s17","head"],["g17","s18","head"],["g18","s19","head"],["g19","s21","head"],["g20","s20","head"]]}]}
+{"packageId":"p_example2","lang":"greek","verses":[{"v":"v1","ref":"Mk 1:6","de":[["g1","Johannes","Johannes","NE"],["g2","aber","aber","KON"],["g3","war","sein","VAFIN"],["g4","bekleidet","bekleiden","VVFIN"],["g5","mit","mit","APPR"],["g6","Kamelhaaren","Kamelhaare","NN"],["g7","und","und","KON"],["g8","einem","ein","ART"],["g9","ledernen","ledern","VVFIN"],["g10","Gürtel","Gürtel","NN"],["g11","um","um","APPR"],["g12","seine","sein","PPOSAT"],["g13","Lenden","Lenden","NN"],["g14","und","und","KON"],["g15","er","er","PPER"],["g16","aß","aß","VVFIN"],["g17","Heuschrecken","Heuschrecke","NN"],["g18","und","und","KON"],["g19","wilden","wild","ADJA"],["g20","Honig","Honig","NN"]],"src":[["s1","καὶ","καί","G2532","and","CONJ"],["s2","ἦν","εἰμί","G1510","to be","V-IAI-3S"],["s3","δὲ","δέ","G1161","but/and","CONJ"],["s4","ὁ","ὁ","G3588","the/this/who","T-NSM"],["s5","Ἰωάννης","Ἰωάννης","G2491G","John","N-NSM-P"],["s6","ἐνδεδυμένος","ἐνδύω","G1746","to put on","V-RMP-NSM"],["s7","τρίχας","θρίξ","G2359","hair","N-APF"],["s8","καμήλου","κάμηλος","G2574","camel","N-GSF"],["s9","καὶ","καί","G2532","and","CONJ"],["s10","ζώνην","ζώνη","G2223","belt/sash/girdle","N-ASF"],["s11","δερματίνην","δερμάτινος","G1193","made of leather","A-ASF"],["s12","περὶ","περί","G4012","about","PREP"],["s13","τὴν","ὁ","G3588","the/this/who","T-ASF"],["s14","ὀσφὺν","ὀσφῦς","G3751","loins","N-ASF"],["s15","αὐτοῦ","αὐτός","G0846","he/she/it/self","P-GSM"],["s16","καὶ","καί","G2532","and","CONJ"],["s17","ἐσθίων","ἐσθίω","G2068","to eat","V-PAP-NSM"],["s18","ἀκρίδας","ἀκρίς","G0200","locust","N-APF"],["s19","καὶ","καί","G2532","and","CONJ"],["s20","μέλι","μέλι","G3192","honey","N-ASN"],["s21","ἄγριον.","ἄγριος","G0066","wild","A-ASN"]],"fixed":[],"hints":[["g1","s5","head"],["g2","s3","head"],["g3","s2","head"],["g4","s6","head"],["g5","g6"],["g6","s7","head"],["g7","s9","head"],["g8","g10"],["g9","s11","head"],["g10","s10","head"],["g11","s12","head"],["g12","s15","head"],["g13","s14","head"],["g14","s16","head"],["g15","g16"],["g16","s17","head"],["g17","s18","head"],["g18","s19","head"],["g19","s21","head"],["g20","s20","head"]]}]}
 ```
 
 Answer:
 
 ```json
-{"packageId":"p_example","verses":[{"v":"v1","links":[],"added":[],"lemmas":[],"parts":[["g6","s7",1,"Kamel","Kamel"],["g6","s8",2,"haaren","Haar"]],"unmapped":[]}]}
+{"packageId":"p_example2","verses":[{"v":"v1","links":[],"added":[],"lemmas":[["g4","bekleiden","VVPP","VERB"],["g6","Kamelhaar"],["g9","ledern","ADJA","ADJ"],["g13","Lende"],["g16","essen"]],"parts":[["g6","s8",1,"Kamel","Kamel"],["g6","s7",2,"haaren","Haar"]],"unmapped":[]}]}
 ```
 
 What to notice: `Kamelhaaren` renders two Greek words (`τρίχας καμήλου`): parts with part lemmas instead of a plain link; the word lemma is the whole compound `Kamelhaar`. The untranslated articles s4 and s13 stay without a link. `er` (an added word of `aß`) is supplied by the verb ending.

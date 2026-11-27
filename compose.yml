@@ -73,6 +73,10 @@ services:
       - ./assets:/src/assets
       - ./temp:/src/temp
     environment:
+      # ASP.NET picks the hosting environment from ASPNETCORE_ENVIRONMENT only; the UNSHACKLEDWORD_ prefix is read too late (after the host is built).
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT:-Production}
+      # appsettings.Development.json sets urls to :5142 (for dotnet run); the container port mapping and the web proxy expect 8080.
+      - UNSHACKLEDWORD_URLS=http://+:8080
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
       - UNSHACKLEDWORD_MAPPINGEDITING__ENABLED=${MAPPING_EDITING_ENABLED:-false}

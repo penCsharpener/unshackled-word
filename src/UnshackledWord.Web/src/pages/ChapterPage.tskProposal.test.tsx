@@ -136,7 +136,8 @@ describe("ChapterPage TSK suggestions (roadmap 0024.6f)", () => {
     renderAt("/bible/1/1");
     const panel = await verse2();
     expect(within(panel).queryByTestId("pending-proposal")).toBeNull();
-    await user.click(within(panel).getByRole("button", { name: pen }));
+    await user.click(screen.getByRole("switch", { name: "Bearbeiten" }));
+    await user.click(within(panel).getByRole("link", { name: /^Psalmen 104,30/ }));
     const editor = screen.getByRole("dialog", { name: pen });
     await user.click(within(editor).getByRole("button", { name: "Ausblenden" }));
     await user.click(within(editor).getByRole("button", { name: "Vorschlag senden" }));
@@ -163,7 +164,7 @@ describe("ChapterPage TSK suggestions (roadmap 0024.6f)", () => {
     expect(screen.queryByRole("dialog", { name: pen })).toBeNull();
 
     // the editor shows current against proposed and starts at the proposed state
-    await user.click(within(panel).getByRole("button", { name: pen }));
+    await user.click(within(panel).getByRole("link", { name: /^Psalmen 104,30/ }));
     const again = screen.getByRole("dialog", { name: pen });
     const pending = within(again).getByTestId("editor-pending-proposal");
     expect(pending).toHaveTextContent("Vorschlag offen");
@@ -194,7 +195,8 @@ describe("ChapterPage TSK suggestions (roadmap 0024.6f)", () => {
     renderAt("/bible/1/1");
     const panel = await verse2();
     expect(within(panel).queryByTestId("pending-proposal")).toBeNull();
-    await user.click(within(panel).getByRole("button", { name: pen }));
+    await user.click(screen.getByRole("switch", { name: "Bearbeiten" }));
+    await user.click(within(panel).getByRole("link", { name: /^Psalmen 104,30/ }));
     const editor = screen.getByRole("dialog", { name: pen });
     expect(await within(editor).findByTestId("editor-rejected")).toHaveTextContent(
       "Abgelehnt: zu schwach",
@@ -218,7 +220,8 @@ describe("ChapterPage TSK suggestions (roadmap 0024.6f)", () => {
     const user = userEvent.setup();
     renderAt("/bible/1/1");
     const panel = await verse2();
-    await user.click(within(panel).getByRole("button", { name: pen }));
+    await user.click(screen.getByRole("switch", { name: "Bearbeiten" }));
+    await user.click(within(panel).getByRole("link", { name: /^Psalmen 104,30/ }));
     const editor = screen.getByRole("dialog", { name: pen });
     await waitFor(() => expect(within(editor).getByRole("button", { name: "Vorschlag senden" })));
     expect(within(editor).queryByTestId("editor-rejected")).toBeNull();
@@ -249,7 +252,8 @@ describe("ChapterPage TSK suggestions (roadmap 0024.6f)", () => {
     const user = userEvent.setup();
     renderAt("/bible/1/1");
     const panel = await verse2();
-    await user.click(within(panel).getByRole("button", { name: pen }));
+    await user.click(screen.getByRole("switch", { name: "Bearbeiten" }));
+    await user.click(within(panel).getByRole("link", { name: /^Psalmen 104,30/ }));
     const editor = screen.getByRole("dialog", { name: pen });
     expect(within(editor).getByRole("button", { name: "Speichern" })).toBeInTheDocument();
     expect(within(editor).queryByRole("button", { name: "Vorschlag senden" })).toBeNull();

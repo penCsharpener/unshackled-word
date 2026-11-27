@@ -370,7 +370,7 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
   });
 
   it("closes the editor on Abbrechen and Escape without saving", async () => {
-    const fetchMock = vi.fn();
+    const fetchMock = vi.fn(async () => Response.json({ references: [] }));
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
     renderList({ preview: source, editable: true });
@@ -381,7 +381,10 @@ describe("CrossReferenceList curation (roadmap 0024.3f)", () => {
     await user.click(pen);
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(fetchMock).not.toHaveBeenCalled();
+    // opening the editor may load data, but nothing is written
+    for (const [, init] of fetchMock.mock.calls as unknown as [string, RequestInit | undefined][]) {
+      expect(init?.method ?? "GET").toBe("GET");
+    }
   });
 });
 
@@ -584,7 +587,7 @@ describe("CrossReferenceList add (roadmap 0024.4f)", () => {
     const fetchMock = stubApi({ startAdded: true });
     const user = userEvent.setup();
     renderHarness();
-    await user.click(await screen.findByRole("link", { name: "Römer 8,28–30" }));
+    await user.click(await screen.findByRole("link", { name: /^Römer 8,28–30/ }));
     const editor = screen.getByRole("dialog");
     await user.click(within(editor).getByRole("button", { name: "Querverweis entfernen" }));
     expect(

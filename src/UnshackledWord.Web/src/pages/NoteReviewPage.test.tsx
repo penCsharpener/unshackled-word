@@ -76,7 +76,7 @@ function stubFetch(roles: string[], calls: Call[] = [], approveStatus = 204) {
       });
     }
     if (url.includes("/maintainer/notes/") && method === "POST") {
-      return new Response("", { status: 204 });
+      return new Response(null, { status: 204 });
     }
     return new Response("{}");
   });
