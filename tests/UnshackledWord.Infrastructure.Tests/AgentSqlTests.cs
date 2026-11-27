@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Features.AgentMapping;
 using UnshackledWord.Infrastructure.Repositories;
 
 namespace UnshackledWord.Infrastructure.Tests;
@@ -12,6 +13,19 @@ public class AgentSqlTests
         AgentStoreSql.SupersedeOpen.ShouldContain("\"BibleBookId\" = @BibleBookId");
         AgentStoreSql.SupersedeOpen.ShouldContain("\"Chapter\" = @Chapter");
         AgentStoreSql.SupersedeOpen.ShouldContain("\"Verse\" = @Verse");
+    }
+
+    /// <summary>
+    /// Every <c>@Name</c> of the run insert is bound: an unbound <c>@IncludeConfirmed</c> is Postgres' absolute-value operator on a column and failed
+    /// the first real LXX run with 42703 (0.13.18).
+    /// </summary>
+    [Fact]
+    public void Store_InsertRun_BindsEveryParameter()
+    {
+        var bound = AgentStoreSql.InsertRunParameters(new AgentRunInsert { IncludeConfirmed = true, TextForm = "og" }).GetType().GetProperties().Select(p => p.Name).ToHashSet();
+        var used = System.Text.RegularExpressions.Regex.Matches(AgentStoreSql.InsertRun, "@([A-Za-z]+)").Select(m => m.Groups[1].Value).Distinct();
+
+        used.Where(name => !bound.Contains(name)).ShouldBeEmpty();
     }
 
     /// <summary>Roadmap 0028.7: the supersede key is the one of AgentVerseProposals_Open_UQ, so LXX and Hebrew proposals of Gen 1:1 never touch each other.</summary>

@@ -12,7 +12,7 @@ namespace UnshackledWord.Application.Tests.Features.AgentMapping;
 /// </summary>
 public class LxxAgentPromptTests
 {
-    private const string File = "lxx-tag-v1";
+    private const string File = "lxx-tag-v2";
 
     private static AgentPromptProvider Provider() => new(AgentPromptProvider.ResolveDirectory(new TestConfiguration(new Dictionary<string, string?>())));
 
@@ -37,6 +37,7 @@ public class LxxAgentPromptTests
         prompt.StaticPrefix.ShouldNotContain("\r");
         prompt.StaticPrefix.ShouldNotMatch("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "no real package ids");
         prompt.StaticPrefix.Split("## Example ").Length.ShouldBe(4, "three worked examples");
+        prompt.StaticPrefix.ShouldNotContain("]],\"note\"", Case.Sensitive, "v2: a note comes before words (gemma closed the verse before a trailing note)");
         AgentAnswerSchema.ForLanguage(language).ShouldBe(AgentAnswerSchema.LxxJson);
         AgentAnswerSchema.For(AgentMode.LxxTag).ShouldBe(AgentAnswerSchema.LxxJson);
     }

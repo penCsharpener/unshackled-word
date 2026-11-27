@@ -209,7 +209,7 @@ public sealed class AgentRunExecutor
                             queue.AddFirst(parts[i]);
                         }
 
-                        _logger.LogWarning("Agent run {RunId}: package of {Verses} verses failed the schema, continuing with at most {Max} verses per package", run.Id, done.Verses, shrinkTo);
+                        _logger.LogWarning("Agent run {RunId}: package of {Verses} verses failed the schema, continuing with at most {Max} verses per package: {Reason}", run.Id, done.Verses, shrinkTo, outcome.Message);
                     }
                     else
                     {

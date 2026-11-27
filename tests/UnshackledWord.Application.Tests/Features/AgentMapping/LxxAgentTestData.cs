@@ -24,12 +24,15 @@ public sealed class LxxAgentTestData : ILxxAgentDataRepository
     public LxxAgentTestData()
     {
         var f = Shared.Value;
-        Units = [.. f.Units];
-        Words = [.. f.Words];
-        Hebrew = [.. f.Hebrew];
+        // Fresh row objects per instance: the rows have setters, and a test (or the code under test) that changes one must not change it for the next test.
+        Units = [.. f.Units.Select(Copy)];
+        Words = [.. f.Words.Select(Copy)];
+        Hebrew = [.. f.Hebrew.Select(Copy)];
         Lexicon = [.. f.Lexicon];
         NtForms = [.. f.NtForms];
     }
+
+    private static T Copy<T>(T row) => System.Text.Json.JsonSerializer.Deserialize<T>(System.Text.Json.JsonSerializer.Serialize(row))!;
 
     public List<LxxAgentUnitRow> Units { get; }
     public List<LxxAgentWordRow> Words { get; }
