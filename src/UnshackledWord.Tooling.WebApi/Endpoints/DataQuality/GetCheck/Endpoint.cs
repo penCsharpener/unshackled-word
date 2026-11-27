@@ -23,7 +23,7 @@ public sealed class Endpoint : Endpoint<CheckRequest, CheckResponse>
         Get("checks/{code}");
         Group<RouteGroupConfig>();
         Roles(AppRoles.Admin, AppRoles.Maintainer);
-        Summary(s => s.Summary = "Findings of one check (U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5 L6 L7 R1-R6 T1 T2 G1 G2). Aggregated checks return groups; pass group to expand one into findings.");
+        Summary(s => s.Summary = "Findings of one check (U1 U2 U3 C1 M1 M2 M3 M4 L1 L2 L3 L4 L5 L6 L7 R1-R6 T1 T2 G1 G2 V1 V2 V3). Aggregated checks return groups; pass group to expand one into findings.");
     }
 
     public override async Task HandleAsync(CheckRequest req, CancellationToken ct)

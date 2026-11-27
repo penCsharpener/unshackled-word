@@ -21,7 +21,7 @@ public sealed class Endpoint : Endpoint<GetVocabCourseEntriesRequest, GetVocabCo
         Get("courses/{code}/entries");
         Group<RouteGroupConfig>();
         AllowAnonymous();
-        Summary(s => s.Summary = "Entries of a vocab course in rank order (take at most 100). q matches the normalized lemma prefix, the transliteration prefix or a German meaning.");
+        Summary(s => s.Summary = "Entries of a vocab course in rank order (take at most 100). q matches the normalized lemma prefix, the transliteration prefix or a German meaning. root lists one word family (root id, own entry first; subRoots=false leaves the sub-roots out).");
     }
 
     public override async Task HandleAsync(GetVocabCourseEntriesRequest req, CancellationToken ct)
@@ -31,7 +31,7 @@ public sealed class Endpoint : Endpoint<GetVocabCourseEntriesRequest, GetVocabCo
         var normalized = hasQuery ? VocabText.Normalize(q) : null;
 
         // a query that normalizes to nothing (only combining marks) cannot match a lemma; it still may match a transliteration or a meaning
-        var result = await _repository.GetEntriesAsync(req.Code, req.Skip, req.Take, hasQuery ? normalized ?? string.Empty : null, hasQuery ? q!.ToLowerInvariant() : null);
+        var result = await _repository.GetEntriesAsync(req.Code, req.Skip, req.Take, hasQuery ? normalized ?? string.Empty : null, hasQuery ? q!.ToLowerInvariant() : null, req.Root, req.SubRoots);
 
         if (result is null)
         {
@@ -52,5 +52,6 @@ public sealed class Validator : Validator<GetVocabCourseEntriesRequest>
         RuleFor(x => x.Skip).GreaterThanOrEqualTo(0);
         RuleFor(x => x.Take).InclusiveBetween(1, GetVocabCourseEntriesRequest.MaxTake);
         RuleFor(x => x.Q).MaximumLength(GetVocabCourseEntriesRequest.MaxQueryLength);
+        RuleFor(x => x.Root).GreaterThanOrEqualTo(1).When(x => x.Root is not null);
     }
 }

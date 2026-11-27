@@ -281,6 +281,7 @@ public sealed class VocabEntryRepository
         }
 
         entry.AudioUrl = VocabAudio.UrlFor(_storage, entry.AudioObjectKey);
+        entry.Root = (await VocabRootRepository.ReadByEntryIdsAsync(_dbReader, [id])).GetValueOrDefault(id);
 
         var keys = (await _dbReader.ReadAsListAsync<VocabEntryKeyResponse>(SelectKeys, new { Id = id })).ToList();
         var meanings = (await _dbReader.ReadAsListAsync<VocabMeaningResponse>(SelectMeanings, new { Id = id })).ToList();

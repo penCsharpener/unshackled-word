@@ -118,6 +118,9 @@ public sealed class VocabCardResponse
     /// Verse context: the question's verse, the original with the word highlighted and the German rendering words blanked (<c>isGap</c>, no text).
     /// </summary>
     public VocabSampleVerseResponse? Verse { get; set; }
+
+    /// <summary>The word's root for the back of the card, only for a compound or derived word (never for a simple word); the UI shows <c>prefixes + root</c>. Not part of answer checking.</summary>
+    public VocabRootResponse? Root { get; set; }
 }
 
 public sealed class VocabSessionWordResponse

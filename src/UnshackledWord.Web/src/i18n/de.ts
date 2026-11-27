@@ -251,6 +251,26 @@ export const de = {
     },
   },
   vocab: {
+    root: {
+      prefixes: "Präfixe",
+      root: "Wurzel",
+      strongs: "Wurzel-Strong's",
+      agent: "KI",
+      agentTitle: "Von der KI zugeordnet, noch nicht bestätigt",
+      simple: "Einfaches Wort, seine eigene Wurzel",
+      openRoot: "Wurzel {{key}} öffnen",
+      openFamily: "Wortfamilie von {{root}} anzeigen",
+      family: "Wortfamilie",
+      familyFilter: "Wortfamilie: {{root}}",
+      clearFamily: "Wortfamilien-Filter entfernen",
+      withSubRoots: "mit Unterwurzeln",
+      parent: "↑ {{root}}",
+      parentTitle: "Die übergeordnete, weitere Wortfamilie anzeigen",
+      familyIntro: "Wurzel: {{root}}",
+      noOthers: "Keine weiteren Wörter in dieser Familie.",
+      showAll: "alle anzeigen ({{count}})",
+      loadFailed: "Die Wortfamilie konnte nicht geladen werden.",
+    },
     list: {
       title: "Vokabeln",
       intro: "Der ganze Wortschatz des Grundtexts, die häufigsten Wörter zuerst.",
@@ -395,6 +415,17 @@ export const de = {
         never: "Noch nicht ausgeführt",
         start: "Starten",
       },
+      roots: {
+        title: "Wurzeln",
+        last: "Zuletzt {{time}} · {{greek}} griechische Zusammensetzungen und {{hebrew}} hebräische Verben geschrieben, {{unresolved}} nicht aufgelöst",
+        never: "Noch nicht ausgeführt",
+        start: "Wurzeln vorbefüllen",
+        prefill: "Vorbefüllt",
+        agent: "KI",
+        manual: "Manuell",
+        missing: "Ohne Wurzel",
+        notApplicable: "Nicht zutreffend",
+      },
       renderings: {
         title: "Wiedergaben aktualisieren",
         asOf: "Stand {{time}}",
@@ -430,6 +461,27 @@ export const de = {
         start: "Lauf starten",
         startFailed: "Der Lauf konnte nicht gestartet werden.",
       },
+      rootRun: {
+        title: "Wurzeln per KI",
+        intro:
+          "Bestimmt Wurzel und abgetrennte Präpositionen für Wörter ohne Wurzelzeile. Eigene Wurzeln bleiben unberührt.",
+        noEntries: "Im gewählten Bereich braucht kein Eintrag eine Wurzel.",
+        start: "Wurzel-Lauf starten",
+        startFailed: "Der Lauf konnte nicht gestartet werden.",
+        checkPrefill: "Vorbefüllung prüfen",
+        checkPrefillHint:
+          "Fragt auch Einträge mit vorbefüllter Wurzel ab und ersetzt sie. Jede Ersetzung steht im Bericht.",
+        report: {
+          title: "Bericht: {{rejected}} abgelehnt, {{flagged}} markiert, {{replaced}} ersetzt",
+          entry: "Eintrag",
+          kind: "Art",
+          answer: "Antwort der KI",
+          reason: "Grund",
+          empty: "Der Lauf hat nichts Auffälliges gemeldet.",
+          failed: "Der Bericht konnte nicht geladen werden.",
+          kinds: { rejected: "Abgelehnt", flagged: "Markiert", replaced: "Ersetzt" },
+        },
+      },
     },
     editor: {
       audio: { title: "Aussprache" },
@@ -447,6 +499,7 @@ export const de = {
         formFromAgent: "Lernform von KI",
         multiKey: "Mehrere Strong's",
         retired: "Stillgelegt",
+        missingRoot: "Ohne Wurzel",
       },
       rankFrom: "Rang von",
       rankTo: "bis",
@@ -523,6 +576,39 @@ export const de = {
         notAccepted: "nicht angenommen",
         verses: "Verse mit „{{word}}“ ansehen (neuer Tab)",
         versesKey: "Verse mit „{{word}}“ bei {{key}} ansehen (neuer Tab)",
+      },
+      root: {
+        title: "Wurzel",
+        none: "Noch keine Wurzel",
+        origin: { prefill: "Vorbefüllung", manual: "Manuell", agent: "KI" },
+        simple: "Einfaches Wort",
+        simpleHint: "Das Wort ist seine eigene Wurzel, ohne Präfixe.",
+        prefixes: "Präfixe",
+        noPrefixes: "Keine Präfixe",
+        prefixAdd: "Präfix hinzufügen",
+        prefixUp: "{{prefix}} nach vorn",
+        prefixRemove: "{{prefix}} entfernen",
+        search: "Wurzel suchen",
+        searchPlaceholder: "Lemma beginnt mit …",
+        letters: "Wurzelbuchstaben",
+        noRootRow: "noch ohne Wurzel",
+        picked: "Gewählt:",
+        unpick: "Auswahl aufheben",
+        verbKey: "Verb-Strong's (optional)",
+        homograph: "Homograph (optional)",
+        create: "Wurzel neu anlegen",
+        save: "Wurzel speichern",
+        saveFirst: "Speichere zuerst die Änderungen oben.",
+        failed: "Die Wurzel konnte nicht gespeichert werden.",
+        parent: {
+          title: "Übergeordnete Wurzel",
+          none: "Keine übergeordnete Wurzel.",
+          needRoot: "Speichere zuerst eine Wurzel für dieses Wort.",
+          search: "Übergeordnete Wurzel suchen",
+          set: "Als übergeordnete Wurzel setzen",
+          clear: "Übergeordnete Wurzel entfernen",
+          failed: "Die übergeordnete Wurzel konnte nicht gesetzt werden.",
+        },
       },
       keyMove: {
         title: "{{key}} verschieben",
@@ -1870,12 +1956,16 @@ export const de = {
       cancel: "Abbrechen",
       startFailed: "Der Auftrag konnte nicht gestartet werden.",
     },
+    rootsPreview: "Wurzeln: {{added}} neu, {{changed}} geändert, {{kept}} manuell behalten",
+    rootsPreviewSkipped: "{{count}} Wurzel-Zeilen können nicht angewendet werden.",
+    rootsPreviewFiles: "Dateien: {{roots}} Wurzeln, {{words}} Wort-Zuordnungen.",
+    rootsPreviewFailed: "Die Wurzel-Vorschau konnte nicht geladen werden.",
     run: "{{kind}} importieren",
     runUpdate: "{{kind}} aktualisieren",
     kinds: {
       vocab: {
         title: "Vokabeln",
-        what: "Die Vokabel-Einträge mit ihren Strong's-Schlüsseln und Bedeutungen (assets/seed/vocab).",
+        what: "Die Vokabel-Einträge mit ihren Strong's-Schlüsseln und Bedeutungen sowie die Wurzeln (assets/seed/vocab). Die Vorschau zeigt vorab, was die Wurzel-Dateien ändern; lokal manuell gesetzte Wurzel-Zuordnungen bleiben erhalten.",
         import:
           "Ordnet jeden Seed-Eintrag einem vorhandenen Eintrag zu (Spur und Lemma, sonst Strong's-Schlüssel) und legt fehlende Einträge neu an. Zugeordnete Einträge übernehmen die Seed-Werte, ihre Schlüssel und Bedeutungen werden angeglichen (Bedeutungen und Schlüssel, die im Seed fehlen, werden gelöscht).",
         update:
@@ -2409,6 +2499,7 @@ export const de = {
       roles: "Rollen",
       tsk: "TSK-Kuratierung",
       editions: "Textausgaben",
+      vocab: "Vokabel-Wurzeln",
     },
     severity: { error: "Fehler", warning: "Prüfen", info: "Hinweis", ok: "Unauffällig" },
     delta: "{{sign}}{{count}} seit letzter Berechnung",
@@ -2444,6 +2535,9 @@ export const de = {
       T2: { title: "Wort-Verknüpfung verschoben" },
       G1: { title: "Unbekannte Textausgaben" },
       G2: { title: "Wörter ohne Textausgaben" },
+      V1: { title: "Schlüssel eines Eintrags mit verschiedenen Wurzeln" },
+      V2: { title: "Wurzel-Schlüssel fehlt im Lexikon" },
+      V3: { title: "Eigener Schlüssel der Wurzel gehört zu anderer Wurzel" },
     },
     help: {
       toggle: "Was prüft dieser Bereich?",
@@ -2459,6 +2553,8 @@ export const de = {
         tsk: "TSK-Kuratierung – prüft die kuratierten Querverweise (Roadmap 0024) auf verwaiste Schlüssel und verschobene Wort-Verknüpfungen.",
         editions:
           "Textausgaben – prüft die Angaben, in welchen griechischen Ausgaben ein Wort steht (Roadmap 0025).",
+        vocab:
+          "Vokabel-Wurzeln – prüft die Wurzeln der Vokabel-Einträge (Roadmap 0030) auf widersprüchliche Schlüssel und fehlende Lexikon-Einträge.",
       },
       checks: {
         U1: {
@@ -2560,6 +2656,18 @@ export const de = {
         G2: {
           what: "Die Ausgaben-Angabe eines Wortes ist nicht leer, ergab aber keinen Eintrag in der Wort-Ausgaben-Tabelle (z. B. nur Trennzeichen). Der Wert sollte 0 sein.",
           fix: "Die Angabe in den STEP-Daten prüfen und die Zuordnung neu aufbauen (RefreshStepGreekWordEditions).",
+        },
+        V1: {
+          what: "Ein Vokabel-Eintrag hat mehrere Strong's-Schlüssel, deren Wurzel-Zeilen auf verschiedene Wurzeln zeigen. Die Liste nennt je Schlüssel die Wurzel. Der Wert sollte 0 sein, weil die Wurzel des Eintrags an seinem Hauptschlüssel hängt.",
+          fix: "Im Vokabel-Editor die Wurzel des Eintrags prüfen und setzen oder die Schlüssel in zwei Einträge trennen.",
+        },
+        V2: {
+          what: "Der Strong's-Schlüssel einer Wurzel steht nicht in StepStrongsLexicon (Tippfehler oder Nummer ohne Lexikon-Eintrag). Der Wert sollte 0 sein.",
+          fix: "Den Schlüssel der Wurzel im Vokabel-Editor korrigieren oder die Wurzel entfernen.",
+        },
+        V3: {
+          what: "Die Wurzel hat einen eigenen Strong's-Schlüssel, aber die Wurzel-Zeile dieses Schlüssels zeigt auf eine andere Wurzel. Ein Wort, das zu einer übergeordneten Wurzel gehört, wird über die Eltern-Wurzel verbunden, nicht so.",
+          fix: "Die Wurzel des Eintrags im Vokabel-Editor prüfen und bei Bedarf die Eltern-Wurzel setzen.",
         },
       },
       unmapped: {

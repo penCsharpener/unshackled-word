@@ -119,10 +119,66 @@ public sealed class VocabSeedMeaningLineMap : ClassMap<VocabSeedMeaningLine>
     }
 }
 
+/// <summary><c>vocab/roots.csv</c> (roadmap 0030.7): one line per root, identity <c>(Track, RootNormalized, Homograph)</c>; the parent by natural key.</summary>
+public sealed class VocabSeedRootLine
+{
+    public string Track { get; set; } = string.Empty;
+    public string Root { get; set; } = string.Empty;
+    public int Homograph { get; set; } = 1;
+    public string? StrongsKey { get; set; }
+    public string? ParentRoot { get; set; }
+    public int? ParentHomograph { get; set; }
+}
+
+/// <summary><c>vocab/word-roots.csv</c> (roadmap 0030.7): the root of a Strong's key; <c>PrefixKeys</c> joined with <c>;</c>. No user ids, no run ids.</summary>
+public sealed class VocabSeedWordRootLine
+{
+    public string Lang { get; set; } = string.Empty;
+    public string StrongsKey { get; set; } = string.Empty;
+    public string RootTrack { get; set; } = string.Empty;
+    public string Root { get; set; } = string.Empty;
+    public int RootHomograph { get; set; } = 1;
+    public string? Prefixes { get; set; }
+    public string? PrefixKeys { get; set; }
+    public string Origin { get; set; } = string.Empty;
+}
+
+public sealed class VocabSeedRootLineMap : ClassMap<VocabSeedRootLine>
+{
+    public VocabSeedRootLineMap()
+    {
+        Map(x => x.Track).Index(0).Name("Track");
+        Map(x => x.Root).Index(1).Name("Root");
+        Map(x => x.Homograph).Index(2).Name("Homograph");
+        Map(x => x.StrongsKey).Index(3).Name("StrongsKey");
+        Map(x => x.ParentRoot).Index(4).Name("ParentRoot");
+        Map(x => x.ParentHomograph).Index(5).Name("ParentHomograph");
+    }
+}
+
+public sealed class VocabSeedWordRootLineMap : ClassMap<VocabSeedWordRootLine>
+{
+    public VocabSeedWordRootLineMap()
+    {
+        Map(x => x.Lang).Index(0).Name("Lang");
+        Map(x => x.StrongsKey).Index(1).Name("StrongsKey");
+        Map(x => x.RootTrack).Index(2).Name("RootTrack");
+        Map(x => x.Root).Index(3).Name("Root");
+        Map(x => x.RootHomograph).Index(4).Name("RootHomograph");
+        Map(x => x.Prefixes).Index(5).Name("Prefixes");
+        Map(x => x.PrefixKeys).Index(6).Name("PrefixKeys");
+        Map(x => x.Origin).Index(7).Name("Origin");
+    }
+}
+
 /// <summary>The whole vocab seed in memory; the files are serialised from it and the importer applies it.</summary>
 public sealed class VocabSeedData
 {
     public List<VocabSeedEntryLine> Entries { get; set; } = [];
     public List<VocabSeedKeyLine> Keys { get; set; } = [];
     public List<VocabSeedMeaningLine> Meanings { get; set; } = [];
+
+    /// <summary>Roots and word roots (roadmap 0030.7); empty when the files do not exist.</summary>
+    public List<VocabSeedRootLine> Roots { get; set; } = [];
+    public List<VocabSeedWordRootLine> WordRoots { get; set; } = [];
 }

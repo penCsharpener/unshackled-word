@@ -37,6 +37,9 @@ public sealed class VocabEntryDetailResponse
     /// <summary>Internal: the object key behind <see cref="AudioUrl"/>.</summary>
     [JsonIgnore]
     public string? AudioObjectKey { get; set; }
+
+    /// <summary>The entry's root (roadmap 0030.3, family block of the detail page); null while none is known.</summary>
+    public VocabRootResponse? Root { get; set; }
 }
 
 /// <summary>One Strong's key of an entry with its occurrences in the original text.</summary>

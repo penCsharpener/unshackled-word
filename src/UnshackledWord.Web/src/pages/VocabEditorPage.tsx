@@ -45,6 +45,7 @@ import {
 import { formatPos } from "@/lib/vocab/pos";
 import { KeyMoveDialog } from "./vocab/KeyMoveDialog";
 import { MergeDialog } from "./vocab/MergeDialog";
+import { RootSection } from "./vocab/RootSection";
 
 type ConfirmAction = "retire" | "delete";
 
@@ -423,6 +424,13 @@ function VocabEditorBody({ data, save }: VocabEditorBodyProps) {
               onMove={setMoveKey}
             />
           </section>
+
+          <RootSection
+            entryId={entry.id}
+            track={entry.track}
+            root={data.root}
+            blocked={plan.count > 0}
+          />
 
           <section className="grid gap-3 rounded-lg border border-border bg-surface p-4">
             <h2 className="text-lg font-semibold">{t("vocab.editor.audio.title")}</h2>

@@ -48,13 +48,13 @@ public class VocabSeedDatabaseTests
             await c.ExecuteAsync($"""DELETE FROM "unshackled-word"."{table}" """, transaction: t);
         }
 
-        var report = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes));
+        var report = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes, first[3].Bytes, first[4].Bytes));
         report.Counts["created"].ShouldBe(data.Entries.Count);
         report.Counts["bumped"].ShouldBe(0);
 
         var second = VocabSeedExporter.Serialize(await VocabSeedExporter.ReadAsync(c, t));
 
-        second.Count.ShouldBe(3);
+        second.Count.ShouldBe(5);
 
         for (var i = 0; i < first.Count; i++)
         {
@@ -93,7 +93,7 @@ public class VocabSeedDatabaseTests
             await c.ExecuteAsync($"""DELETE FROM "unshackled-word"."{table}" """, transaction: t);
         }
 
-        var report = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes));
+        var report = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes, first[3].Bytes, first[4].Bytes));
         report.Counts["created"].ShouldBe(data.Entries.Count);
         report.Counts["keyConflicts"].ShouldBe(0);
 
@@ -105,7 +105,7 @@ public class VocabSeedDatabaseTests
         }
 
         // a second import over the same files matches every entry, including both homographs
-        var again = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes));
+        var again = await VocabSeedImporter.ImportAsync(c, t, VocabSeedImporter.Parse(first[0].Bytes, first[1].Bytes, first[2].Bytes, first[3].Bytes, first[4].Bytes));
         again.Counts["created"].ShouldBe(0);
         again.Counts["updated"].ShouldBe(0);
     });

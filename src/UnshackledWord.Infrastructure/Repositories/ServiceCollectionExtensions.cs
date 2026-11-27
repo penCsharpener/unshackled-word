@@ -127,6 +127,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabFormRepository>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabFormRunService>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabFormRunExecutor>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabRootRunRepository>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabRootRunService>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabRootRunExecutor>();
         services.AddSingleton<IAgentModelClientFactory, UnshackledWord.Infrastructure.AgentModels.AgentModelClientFactory>();
         services.AddSingleton<IAgentPromptProvider>(sp => AgentPromptProvider.FromConfiguration(sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()));
         services.TryAddSingleton(TimeProvider.System);

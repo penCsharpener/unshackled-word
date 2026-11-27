@@ -45,6 +45,28 @@ const dryRunReport = job({
   },
 });
 
+const rootsJob = job({
+  operation: "vocabRootPrefill",
+  result: {
+    steps: [
+      {
+        kind: "vocab",
+        action: "rootPrefill",
+        counts: { greekWritten: 1025, greekUpdated: 0, hebrewWritten: 1511, greekUnresolved: 478 },
+        lists: {},
+        reportFiles: [],
+      },
+    ],
+  },
+});
+
+const rootStatus: { current: Record<string, unknown> } = {
+  current: {
+    job: null,
+    counts: { prefill: 0, agent: 1, manual: 2, missing: 13500, notApplicable: 1900 },
+  },
+};
+
 function renderSection() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
@@ -64,6 +86,11 @@ function stubJobs(meaningStatus: { current: unknown }, onStart?: (body: unknown)
     "GET /maintainer/vocab/renderings/status": () => json({}),
     "GET /maintainer/vocab/status": () => json({}),
     "GET /maintainer/vocab/meanings/status": () => json(meaningStatus.current),
+    "GET /maintainer/vocab/roots/status": () => json(rootStatus.current),
+    "POST /maintainer/vocab/roots/prefill": () => {
+      rootStatus.current = { ...rootStatus.current, job: rootsJob };
+      return json(rootsJob, 202);
+    },
     "POST /maintainer/vocab/meanings/derive": () => {
       const result = onStart?.(undefined);
       return json(result ?? dryRunReport, 202);
@@ -80,7 +107,13 @@ function derivePayloads(fetchMock: ReturnType<typeof stubApi>) {
     .map(([, init]) => JSON.parse(String(init?.body)) as Record<string, unknown>);
 }
 
-beforeEach(() => i18n.changeLanguage("en"));
+beforeEach(() => {
+  rootStatus.current = {
+    job: null,
+    counts: { prefill: 0, agent: 1, manual: 2, missing: 13500, notApplicable: 1900 },
+  };
+  return i18n.changeLanguage("en");
+});
 afterEach(() => vi.unstubAllGlobals());
 
 describe("VocabJobsSection meaning derivation", () => {
@@ -221,5 +254,115 @@ describe("VocabJobsSection study-form run", () => {
     );
     expect(formPosts(fetchMock, "/maintainer/vocab/form-runs/estimate")).toContainEqual(body);
     expect(await screen.findByText("118 forms written, 2 kept")).toBeInTheDocument();
+  });
+});
+
+describe("VocabJobsSection root run", () => {
+  const rootEstimate = { ...formEstimate, promptVersion: "vocab-root-greek-v1", entries: 80 };
+  const rootRun = {
+    ...formRun,
+    id: 9,
+    promptVersion: "vocab-root-greek-v1",
+    mode: "vocab-root",
+    statusNote: "Wrote 70 roots, replaced 1 prefill rows",
+  };
+  const report = {
+    runId: 9,
+    rejected: 1,
+    flagged: 1,
+    replaced: 1,
+    items: [
+      {
+        entryId: 501,
+        lemma: "ἐκπορεύω",
+        strongsKey: "G1607",
+        kind: "rejected",
+        reason: "Prefix key G9999 is not in the preposition table.",
+        answer: "G9999 + G4198",
+      },
+      {
+        entryId: 502,
+        lemma: "συνεπιμαρτυρέω",
+        strongsKey: "G4901",
+        kind: "flagged",
+        reason: "Prefixes and root do not plausibly form συνεπιμαρτυρέω.",
+      },
+      {
+        entryId: 503,
+        lemma: "ἀπέχω",
+        strongsKey: "G0576",
+        kind: "replaced",
+        reason: "Prefill: ἀπό + G2192; run: ἀπό + G2192 (other root).",
+      },
+    ],
+  };
+
+  it("estimates, sends the prefill-check option, then lists rejected and flagged entries with editor links", async () => {
+    const fetchMock = stubApi({
+      "GET /maintainer/vocab/renderings/status": () => json({}),
+      "GET /maintainer/vocab/status": () => json({}),
+      "GET /maintainer/vocab/meanings/status": () => json({}),
+      "GET /maintainer/agent-runs/profiles": () => json([profile]),
+      "GET /maintainer/agent-runs?limit=50": () => json({ runs: [] }),
+      "POST /maintainer/vocab/root-runs/estimate": () => json(rootEstimate),
+      "POST /maintainer/vocab/root-runs": () => json(rootRun, 202),
+      "GET /maintainer/agent-runs/9": () => json(rootRun),
+      "GET /maintainer/vocab/root-runs/9/report": () => json(report),
+    });
+    renderSection();
+
+    const start = await screen.findByRole("button", { name: "Start root run" });
+    await waitFor(() => expect(start).toBeEnabled());
+    await userEvent.click(screen.getByRole("switch", { name: "Check prefill" }));
+    await waitFor(() =>
+      expect(
+        formPosts(fetchMock, "/maintainer/vocab/root-runs/estimate").some(
+          (body) => body.checkPrefill === true,
+        ),
+      ).toBe(true),
+    );
+    await waitFor(() => expect(start).toBeEnabled());
+
+    await userEvent.click(start);
+
+    await waitFor(() =>
+      expect(formPosts(fetchMock, "/maintainer/vocab/root-runs")).toEqual([
+        { course: "nt-greek", fromRank: 1, toRank: 200, profile: "ollama", checkPrefill: true },
+      ]),
+    );
+    expect(await screen.findByText("Wrote 70 roots, replaced 1 prefill rows")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Report: 1 rejected, 1 flagged, 1 replaced"),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "ἐκπορεύω" })).toHaveAttribute(
+      "href",
+      "/edit/vocab/501",
+    );
+    expect(screen.getByRole("link", { name: "συνεπιμαρτυρέω" })).toHaveAttribute(
+      "href",
+      "/edit/vocab/502",
+    );
+    expect(
+      screen.getByText("Prefix key G9999 is not in the preposition table."),
+    ).toBeInTheDocument();
+  });
+});
+
+describe("VocabJobsSection root prefill", () => {
+  it("shows the root counts and starts the prefill", async () => {
+    stubJobs({ current: { job: null } });
+    renderSection();
+
+    expect(await screen.findByText("13,500")).toBeInTheDocument();
+    expect(screen.getByText("Without root")).toBeInTheDocument();
+    expect(screen.getByText("1,900")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Prefill roots" }));
+
+    expect(
+      await screen.findByText(
+        /1,025 Greek compounds and 1,511 Hebrew verbs written, 478 unresolved/,
+      ),
+    ).toBeInTheDocument();
   });
 });

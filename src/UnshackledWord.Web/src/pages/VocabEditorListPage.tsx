@@ -8,6 +8,7 @@ import { FormError } from "@/components/FormError";
 import { Select } from "@/components/Select";
 import { TextField } from "@/components/TextField";
 import { VocabEntryList, type VocabEntryRow } from "@/components/VocabEntryList";
+import { VocabFamilyFilter } from "@/components/VocabFamilyFilter";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { hasWriteRole } from "@/lib/auth/roles";
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
@@ -28,6 +29,7 @@ const FILTERS = [
   "formFromAgent",
   "multiKey",
   "retired",
+  "missingRoot",
   "all",
 ] as const;
 type EditorFilter = (typeof FILTERS)[number];
@@ -40,7 +42,14 @@ const FILTER_FLAGS: Record<EditorFilter, Partial<VocabEditorListQuery>> = {
   formFromAgent: { formFromAgent: true },
   multiKey: { multiKey: true },
   retired: { retired: true },
+  missingRoot: { missingRoot: true },
 };
+
+/** The family filter from the URL: a positive root id, otherwise none. */
+function parseRoot(value: string | null): number | null {
+  const id = Number(value);
+  return value !== null && Number.isInteger(id) && id > 0 ? id : null;
+}
 
 function parsePage(value: string | null): number {
   const page = Number(value);
@@ -72,6 +81,8 @@ export function VocabEditorListPage() {
   const filter = parseFilter(params.get("filter"));
   const page = parsePage(params.get("page"));
   const query = params.get("q") ?? "";
+  const root = parseRoot(params.get("root"));
+  const subRoots = params.get("subRoots") !== "false";
   const rankFromText = params.get("rankFrom") ?? "";
   const rankToText = params.get("rankTo") ?? "";
   const rankFrom = parseRank(params.get("rankFrom"));
@@ -105,6 +116,12 @@ export function VocabEditorListPage() {
     updateParams({ q: term || null, page: null }, true);
   }, [debouncedSearch]);
 
+  // A link that changes the search (the root's Strong's link, back/forward) updates the search field.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed on the URL query on purpose
+  useEffect(() => {
+    if (query !== debouncedSearch.trim()) setSearch(query);
+  }, [query]);
+
   const courses = useQuery({
     queryKey: ["vocab", "courses"],
     queryFn: ({ signal }) => getCourses(signal),
@@ -118,6 +135,8 @@ export function VocabEditorListPage() {
     ...FILTER_FLAGS[filter],
     rankFrom: rankFrom ?? undefined,
     rankTo: rankTo ?? undefined,
+    root: root ?? undefined,
+    subRoots,
     skip,
     take: VOCAB_PAGE_SIZE,
   };
@@ -126,6 +145,19 @@ export function VocabEditorListPage() {
     queryFn: ({ signal }) => getVocabEditorList(listQuery, signal),
     enabled: canWrite && courseCode !== undefined,
   });
+
+  /**
+   * The list of one whole word family: only the track is kept and the filter is "Alle". A search, a rank range or another
+   * filter would cut the family down (the root's Strong's link falls back to `?q=<root>`, which matches the root alone).
+   */
+  const familyHref = (rootId: number) => {
+    const next = new URLSearchParams();
+    const trackParam = params.get("track");
+    if (trackParam) next.set("track", trackParam);
+    next.set("root", String(rootId));
+    next.set("filter", "all");
+    return `/edit/vocab?${next.toString()}`;
+  };
 
   if (status === "loading") return null;
   if (status === "anonymous") return <Navigate to="/login" replace />;
@@ -151,6 +183,7 @@ export function VocabEditorListPage() {
     hasAudio: item.hasAudio,
     reviewed: item.reviewed,
     strongsKeys: item.strongsKeys,
+    root: item.root ?? null,
     lang: vocabLang(item.track),
     formOrigin: item.dictionaryFormOrigin ?? null,
     learners: item.learners,
@@ -219,11 +252,29 @@ export function VocabEditorListPage() {
         ) : null}
       </div>
 
+      {root !== null ? (
+        <VocabFamilyFilter
+          rootId={root}
+          lang={vocabLang(track)}
+          subRoots={subRoots}
+          onSubRootsChange={(value) =>
+            updateParams({ subRoots: value ? null : "false", page: null })
+          }
+          onClear={() => updateParams({ root: null, subRoots: null, page: null })}
+          rootHref={familyHref}
+        />
+      ) : null}
       <FormError message={failed ? t("vocab.editor.listLoadFailed") : ""} />
       {data && data.items.length === 0 ? <EmptyState>{t("vocab.editor.empty")}</EmptyState> : null}
       {data && data.items.length > 0 ? (
         <div className="grid gap-2">
-          <VocabEntryList mode="editor" entries={rows} linkTo={(id) => `/edit/vocab/${id}`} />
+          <VocabEntryList
+            mode="editor"
+            entries={rows}
+            linkTo={(id) => `/edit/vocab/${id}`}
+            searchTo={(q) => `/edit/vocab?track=${track}&q=${encodeURIComponent(q)}`}
+            rootTo={familyHref}
+          />
           <div className="flex items-center justify-between gap-3 text-sm text-fg-muted">
             <span className="tabular-nums">
               {t("vocab.list.range", {

@@ -159,21 +159,60 @@ public sealed class VocabSeedImporter
 
         var keys = Path.Combine(folder, VocabSeedExporter.KeysFile);
         var meanings = Path.Combine(folder, VocabSeedExporter.MeaningsFile);
+        var roots = Path.Combine(folder, VocabSeedExporter.RootsFile);
+        var wordRoots = Path.Combine(folder, VocabSeedExporter.WordRootsFile);
 
         return Parse(
             await File.ReadAllBytesAsync(entries, token),
             File.Exists(keys) ? await File.ReadAllBytesAsync(keys, token) : null,
-            File.Exists(meanings) ? await File.ReadAllBytesAsync(meanings, token) : null);
+            File.Exists(meanings) ? await File.ReadAllBytesAsync(meanings, token) : null,
+            File.Exists(roots) ? await File.ReadAllBytesAsync(roots, token) : null,
+            File.Exists(wordRoots) ? await File.ReadAllBytesAsync(wordRoots, token) : null);
     }
 
-    public static VocabSeedData Parse(byte[] entries, byte[]? keys, byte[]? meanings)
+    /// <summary>
+    /// Dry run of the root files (roadmap 0030.7f): the sync runs in a transaction that is rolled back. Null without a vocab seed folder.
+    /// Entries are not touched, so a root row that needs an entry-side change is not part of the numbers (roots do not depend on entries).
+    /// </summary>
+    public async Task<(VocabRootSeedCounts Counts, int FileRoots, int FileWordRoots)?> PreviewRootsAsync(SeedLayout layout, CancellationToken token = default)
+    {
+        var data = await LoadAsync(layout, token);
+
+        if (data is null)
+        {
+            return null;
+        }
+
+        using var connection = await _connectionFactory.CreateDbConnectionAsync(token);
+        using var transaction = connection.BeginTransaction();
+        var counts = await VocabRootSeedSync.ApplyAsync(connection, transaction, data);
+        transaction.Rollback();
+
+        return (counts, data.Roots.Count, data.WordRoots.Count);
+    }
+
+    public static VocabSeedData Parse(byte[] entries, byte[]? keys, byte[]? meanings, byte[]? roots = null, byte[]? wordRoots = null)
     {
         var data = new VocabSeedData
         {
             Entries = SeedCsv.Read<VocabSeedEntryLine, VocabSeedEntryLineMap>(entries),
             Keys = keys is null ? [] : SeedCsv.Read<VocabSeedKeyLine, VocabSeedKeyLineMap>(keys),
-            Meanings = meanings is null ? [] : SeedCsv.Read<VocabSeedMeaningLine, VocabSeedMeaningLineMap>(meanings)
+            Meanings = meanings is null ? [] : SeedCsv.Read<VocabSeedMeaningLine, VocabSeedMeaningLineMap>(meanings),
+            Roots = roots is null ? [] : SeedCsv.Read<VocabSeedRootLine, VocabSeedRootLineMap>(roots),
+            WordRoots = wordRoots is null ? [] : SeedCsv.Read<VocabSeedWordRootLine, VocabSeedWordRootLineMap>(wordRoots)
         };
+
+        foreach (var r in data.Roots)
+        {
+            r.StrongsKey = NullIfEmpty(r.StrongsKey);
+            r.ParentRoot = NullIfEmpty(r.ParentRoot);
+        }
+
+        foreach (var w in data.WordRoots)
+        {
+            w.Prefixes = NullIfEmpty(w.Prefixes);
+            w.PrefixKeys = NullIfEmpty(w.PrefixKeys);
+        }
 
         // An empty CSV field is a null in the database (the exporter writes null as an empty field).
         foreach (var e in data.Entries)
@@ -336,7 +375,15 @@ public sealed class VocabSeedImporter
             }
         }
 
+        var roots = await VocabRootSeedSync.ApplyAsync(c, t, seed);
+
         return new SeedStepReport { Kind = Kind, Action = "import" }
+            .WithCount("rootsNew", roots.RootsNew)
+            .WithCount("rootsChanged", roots.RootsChanged)
+            .WithCount("wordRootsNew", roots.WordRootsNew)
+            .WithCount("wordRootsChanged", roots.WordRootsChanged)
+            .WithCount("manualKept", roots.ManualKept)
+            .WithCount("rootsSkipped", roots.Skipped)
             .WithCount("created", created)
             .WithCount("updated", updated)
             .WithCount("bumped", bumped)

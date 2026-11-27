@@ -41,6 +41,9 @@ public sealed partial class AgentPromptProvider : IAgentPromptProvider
     /// <summary>Prefix of the vocab dictionary-form prompt languages (<c>vocab-form-greek</c>, <c>vocab-form-hebrew</c>; roadmap 0022.13).</summary>
     public const string VocabFormPrefix = "vocab-form-";
 
+    /// <summary>Prefix of the vocab root prompt languages (<c>vocab-root-greek</c>, <c>vocab-root-hebrew</c>; roadmap 0030.4).</summary>
+    public const string VocabRootPrefix = "vocab-root-";
+
     /// <summary>Prompt language of the LXX tagging mode (roadmap 0028.7; files <c>lxx-tag-v1.md</c>, <c>lxx-tag-v2.md</c>).</summary>
     public const string LxxTagLanguage = "lxx-tag";
 

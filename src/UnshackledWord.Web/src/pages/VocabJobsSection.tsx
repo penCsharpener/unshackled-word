@@ -1,23 +1,12 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Button } from "@/components/Button";
 import { FormError } from "@/components/FormError";
 import { Select } from "@/components/Select";
 import { StatTile } from "@/components/StatTile";
-import { StatusBadge, type StatusTone } from "@/components/StatusBadge";
-import { TextField } from "@/components/TextField";
-import { formatCost } from "@/lib/agent/format";
-import {
-  agentKeys,
-  useAgentProfiles,
-  useAgentRun,
-  useAgentRuns,
-  useCancelAgentRun,
-  useResumeAgentRun,
-} from "@/lib/agent/queries";
-import { type AgentRun, canResumeRun, isRunActive } from "@/lib/agent/types";
+import { StatusBadge } from "@/components/StatusBadge";
 import { ApiError } from "@/lib/api";
 import { formatStamp } from "@/lib/format";
 import {
@@ -25,25 +14,24 @@ import {
   getMeaningsStatus,
   getRenderingsStatus,
   getVocabGenerateStatus,
+  getVocabRootStatus,
   startMeaningsDerive,
   startRenderingsRefresh,
   startVocabGenerate,
+  startVocabRootPrefill,
   type VocabGenerateStatus,
   type VocabJob,
   type VocabMeaningsStatus,
   type VocabRenderingsStatus,
+  type VocabRootStatus,
 } from "@/lib/vocab/api";
-import { vocabEditorKeys } from "@/lib/vocab/editorApi";
-import {
-  estimateVocabFormRun,
-  startVocabFormRun,
-  type VocabFormRunRange,
-} from "@/lib/vocab/formRunApi";
+import { VocabAgentRunCard } from "./VocabAgentRunCard";
 
 const POLL_MS = 1000;
 const renderingsKey = ["maintainer", "vocab", "renderings"] as const;
 const generateKey = ["maintainer", "vocab", "generate"] as const;
 const meaningsKey = ["maintainer", "vocab", "meanings"] as const;
+const rootsKey = ["maintainer", "vocab", "roots"] as const;
 
 /** Scope of a meaning derivation: all entries, or one course. */
 type MeaningsScope = "all" | "nt" | "at";
@@ -53,26 +41,6 @@ const COURSE_BY_SCOPE: Record<MeaningsScope, string | undefined> = {
   nt: "nt-greek",
   at: "ot-hebrew",
 };
-
-/** Course of a dictionary-form run: the NT or the AT (a form run always has one course). */
-type FormScope = "nt" | "at";
-const FORM_SCOPES: FormScope[] = ["nt", "at"];
-const FORM_COURSE: Record<FormScope, string> = { nt: "nt-greek", at: "ot-hebrew" };
-/** Default last rank of a form run: NT ranks 1 to 200, as in the roadmap example. */
-const FORM_TO_RANK = 200;
-
-/** A rank typed into a field: a whole number from 1, otherwise null. */
-function parseRank(text: string): number | null {
-  const rank = Number(text);
-  return text.trim() !== "" && Number.isInteger(rank) && rank > 0 ? rank : null;
-}
-
-/** A form run that is still going is info, a finished one ok, a failed one an error. */
-function formRunTone(status: string): StatusTone {
-  if (isRunActive(status)) return "info";
-  if (status === "completed") return "ok";
-  return status === "failed" ? "error" : "warning";
-}
 
 /** One entry whose first meaning changed, parsed from a report line `"{id} {lemma}: {before} -> {after}"` (`-` = none). */
 interface TopChange {
@@ -103,6 +71,16 @@ function generateSummary(job: VocabJob) {
     .reduce((sum, [, value]) => sum + value, 0);
   const created = counts.find(([key]) => key === "entriesCreated")?.[1] ?? 0;
   return { entries, created };
+}
+
+/** Rows written by a finished root prefill: Greek compounds and Hebrew/Aramaic verbs (new and updated rows). */
+function rootPrefillSummary(job: VocabJob) {
+  const counts = job.result?.steps[0]?.counts ?? {};
+  return {
+    greek: (counts.greekWritten ?? 0) + (counts.greekUpdated ?? 0),
+    hebrew: (counts.hebrewWritten ?? 0) + (counts.hebrewUpdated ?? 0),
+    unresolved: counts.greekUnresolved ?? 0,
+  };
 }
 
 /** Maintainer card "Vokabeln" (screen 7): the lexicon generation, the renderings refresh and the meaning derivation (dry run, then apply) as background jobs with their time. */
@@ -152,6 +130,20 @@ export function VocabJobsSection() {
       return queryClient.invalidateQueries({ queryKey: renderingsKey });
     },
   });
+  const roots = useQuery({
+    queryKey: rootsKey,
+    queryFn: ({ signal }) => getVocabRootStatus(signal),
+    refetchInterval: (query) => (query.state.data?.job?.status === "running" ? POLL_MS : false),
+  });
+  const startRoots = useMutation({
+    mutationFn: startVocabRootPrefill,
+    onSuccess: (job) => {
+      queryClient.setQueryData<VocabRootStatus>(rootsKey, (previous) =>
+        previous ? { ...previous, job } : previous,
+      );
+      return queryClient.invalidateQueries({ queryKey: rootsKey });
+    },
+  });
   const startGenerate = useMutation({
     mutationFn: startVocabGenerate,
     onSuccess: (job) => {
@@ -160,72 +152,15 @@ export function VocabJobsSection() {
     },
   });
 
-  const [formScope, setFormScope] = useState<FormScope>("nt");
-  const [formProfile, setFormProfile] = useState<string>();
-  const [formFrom, setFormFrom] = useState("1");
-  const [formTo, setFormTo] = useState(String(FORM_TO_RANK));
-  /** The form run started in this view; before that the newest run of mode `vocab-form` is shown. */
-  const [startedFormRunId, setStartedFormRunId] = useState<number>();
-
-  const profiles = useAgentProfiles();
-  const profileList = profiles.data ?? [];
-  const formProfileName = formProfile ?? profileList.find((p) => p.usable)?.name ?? "";
-  const formProfileUsable = profileList.some((p) => p.name === formProfileName && p.usable);
-  const fromRank = parseRank(formFrom);
-  const toRank = parseRank(formTo);
-  const formRequest: VocabFormRunRange | null =
-    formProfileUsable && fromRank !== null && toRank !== null && toRank >= fromRank
-      ? { course: FORM_COURSE[formScope], fromRank, toRank, profile: formProfileName }
-      : null;
-
-  /** Dry run of the range (no model, nothing written); the start is only enabled for the estimate shown. */
-  const formEstimate = useQuery({
-    queryKey: ["maintainer", "vocab", "form-runs", "estimate", formRequest],
-    queryFn: ({ signal }) => estimateVocabFormRun(formRequest as VocabFormRunRange, signal),
-    enabled: formRequest !== null,
-    retry: false,
-    staleTime: 30_000,
-    placeholderData: keepPreviousData,
-  });
-
-  const agentRuns = useAgentRuns();
-  const latestFormRunId = agentRuns.data?.find((run) => run.mode === "vocab-form")?.id;
-  const formRunId = startedFormRunId ?? latestFormRunId ?? null;
-  const formRun = useAgentRun(formRunId);
-  const formRunData = formRun.data;
-  const formRunStatus = formRunData?.status;
-  const formRunActive = formRunStatus !== undefined && isRunActive(formRunStatus);
-  const cancelFormRun = useCancelAgentRun();
-  const resumeFormRun = useResumeAgentRun();
-
-  const startFormRun = useMutation({
-    mutationFn: (body: VocabFormRunRange) => startVocabFormRun(body),
-    onSuccess: (run: AgentRun) => {
-      queryClient.setQueryData<AgentRun>(agentKeys.run(run.id), run);
-      setStartedFormRunId(run.id);
-      return queryClient.invalidateQueries({ queryKey: agentKeys.runs });
-    },
-  });
-
-  useEffect(() => {
-    // A finished form run has written forms: the editor lists (filter "Lernform von KI") must read them again.
-    if (formRunId !== null && formRunStatus !== undefined && !isRunActive(formRunStatus)) {
-      void queryClient.invalidateQueries({ queryKey: vocabEditorKeys.all });
-    }
-  }, [formRunId, formRunStatus, queryClient]);
-
-  const formRunBusy = formRunActive || startFormRun.isPending;
-  const formEstimateData = formEstimate.isPlaceholderData ? undefined : formEstimate.data;
-  const formReady = formRequest !== null && formEstimateData !== undefined && !formRunBusy;
-  const formNoEntries = formEstimate.error instanceof ApiError && formEstimate.error.status === 404;
-  const startForm = () => {
-    if (formRequest !== null && formReady) startFormRun.mutate(formRequest);
-  };
-
   const refreshJob = renderings.data?.job;
   const refreshRunning = refreshJob?.status === "running" || startRefresh.isPending;
   const generateJob = generate.data?.job;
   const generateRunning = generateJob?.status === "running" || startGenerate.isPending;
+  const rootsJob = roots.data?.job;
+  const rootsRunning = rootsJob?.status === "running" || startRoots.isPending;
+  const rootsInfo =
+    rootsJob?.status === "succeeded" && rootsJob.finishedAt ? rootPrefillSummary(rootsJob) : null;
+  const rootCounts = roots.data?.counts;
   const meaningsJob = meanings.data?.job;
   const meaningsRunning = meaningsJob?.status === "running" || startMeanings.isPending;
   const meaningsReport =
@@ -243,17 +178,18 @@ export function VocabJobsSection() {
       : t("vocab.jobs.startFailed");
 
   const messages = [
-    renderings.isError || generate.isError || meanings.isError ? t("vocab.jobs.loadFailed") : null,
+    renderings.isError || generate.isError || meanings.isError || roots.isError
+      ? t("vocab.jobs.loadFailed")
+      : null,
     startRefresh.error ? startError(startRefresh.error) : null,
     startGenerate.error ? startError(startGenerate.error) : null,
-    startFormRun.error ? t("vocab.jobs.forms.startFailed") : null,
-    cancelFormRun.isError ? t("agent.runs.cancelFailed") : null,
-    resumeFormRun.isError ? t("agent.runs.resumeFailed") : null,
+    startRoots.error ? startError(startRoots.error) : null,
     startMeanings.error ? startError(startMeanings.error) : null,
     refreshJob?.status === "failed" ? `${t("vocab.jobs.failed")} ${refreshJob.error ?? ""}` : null,
     generateJob?.status === "failed"
       ? `${t("vocab.jobs.failed")} ${generateJob.error ?? ""}`
       : null,
+    rootsJob?.status === "failed" ? `${t("vocab.jobs.failed")} ${rootsJob.error ?? ""}` : null,
     meaningsJob?.status === "failed"
       ? `${t("vocab.jobs.failed")} ${meaningsJob.error ?? ""}`
       : null,
@@ -293,6 +229,48 @@ export function VocabJobsSection() {
               {t("vocab.jobs.generate.start")}
             </Button>
           </div>
+        </li>
+        <li className="grid gap-3 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="grid gap-1">
+              <span className="font-medium">{t("vocab.jobs.roots.title")}</span>
+              <span className="text-sm text-fg-muted tabular-nums">
+                {rootsInfo && rootsJob?.finishedAt
+                  ? t("vocab.jobs.roots.last", {
+                      time: formatStamp(rootsJob.finishedAt, i18n.language),
+                      greek: number(rootsInfo.greek),
+                      hebrew: number(rootsInfo.hebrew),
+                      unresolved: number(rootsInfo.unresolved),
+                    })
+                  : t("vocab.jobs.roots.never")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {rootsRunning ? (
+                <StatusBadge tone="info">{t("vocab.jobs.running")}</StatusBadge>
+              ) : null}
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={rootsRunning}
+                onClick={() => startRoots.mutate()}
+              >
+                {t("vocab.jobs.roots.start")}
+              </Button>
+            </div>
+          </div>
+          {rootCounts ? (
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
+              <StatTile title={t("vocab.jobs.roots.prefill")} value={number(rootCounts.prefill)} />
+              <StatTile title={t("vocab.jobs.roots.agent")} value={number(rootCounts.agent)} />
+              <StatTile title={t("vocab.jobs.roots.manual")} value={number(rootCounts.manual)} />
+              <StatTile title={t("vocab.jobs.roots.missing")} value={number(rootCounts.missing)} />
+              <StatTile
+                title={t("vocab.jobs.roots.notApplicable")}
+                value={number(rootCounts.notApplicable)}
+              />
+            </div>
+          ) : null}
         </li>
         <li className="flex flex-wrap items-center justify-between gap-3 py-3">
           <div className="grid gap-1">
@@ -439,145 +417,8 @@ export function VocabJobsSection() {
             </div>
           ) : null}
         </li>
-        <li className="grid gap-3 py-3">
-          <div className="grid gap-1">
-            <span className="font-medium">{t("vocab.jobs.forms.title")}</span>
-            <span className="text-sm text-fg-muted">{t("vocab.jobs.forms.intro")}</span>
-          </div>
-          <div className="flex flex-wrap items-end gap-3">
-            <Select
-              label={t("vocab.jobs.forms.course")}
-              value={formScope}
-              onChange={(value) => setFormScope(value as FormScope)}
-              disabled={formRunBusy}
-              options={FORM_SCOPES.map((value) => ({
-                value,
-                label: t(`vocab.jobs.meanings.scopes.${value}`),
-              }))}
-            />
-            <TextField
-              type="number"
-              size="sm"
-              label={t("vocab.editor.rankFrom")}
-              min={1}
-              value={formFrom}
-              onChange={setFormFrom}
-            />
-            <TextField
-              type="number"
-              size="sm"
-              label={t("vocab.editor.rankTo")}
-              min={1}
-              value={formTo}
-              onChange={setFormTo}
-            />
-            <Select
-              label={t("vocab.jobs.forms.profile")}
-              value={formProfileName}
-              onChange={setFormProfile}
-              disabled={profileList.length === 0 || formRunBusy}
-              options={profileList.map((p) => ({
-                value: p.name,
-                label: p.usable
-                  ? `${p.name} · ${p.model}`
-                  : `${p.name} · ${t("agent.dialog.unusable", { reason: p.unusableReason ?? t("agent.dialog.noReason") })}`,
-                disabled: !p.usable,
-                title: p.unusableReason,
-              }))}
-            />
-            <Button variant="primary" size="sm" disabled={!formReady} onClick={startForm}>
-              {startFormRun.isPending ? t("agent.dialog.starting") : t("vocab.jobs.forms.start")}
-            </Button>
-          </div>
-          {formRequest === null ? (
-            <span className="text-sm text-fg-muted">{t("agent.dialog.estimate.needRange")}</span>
-          ) : formNoEntries ? (
-            <span className="text-sm text-fg-muted">{t("vocab.jobs.forms.noEntries")}</span>
-          ) : formEstimate.isError ? (
-            <FormError message={t("agent.dialog.estimate.failed")} />
-          ) : formEstimateData ? (
-            <div className="grid gap-3">
-              <span className="text-sm text-fg-muted">
-                {t("vocab.jobs.forms.ranks", {
-                  from: number(formEstimateData.fromRank),
-                  to: number(formEstimateData.toRank),
-                })}
-              </span>
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-                <StatTile
-                  title={t("vocab.jobs.forms.entries")}
-                  value={number(formEstimateData.entries)}
-                />
-                <StatTile
-                  title={t("agent.dialog.estimate.packages")}
-                  value={number(formEstimateData.batches)}
-                />
-                <StatTile
-                  title={t("agent.dialog.estimate.input")}
-                  value={number(formEstimateData.estimatedInputTokens)}
-                />
-                <StatTile
-                  title={t("agent.dialog.estimate.output")}
-                  value={number(formEstimateData.estimatedOutputTokens)}
-                />
-                <StatTile
-                  title={t("agent.dialog.estimate.cost")}
-                  value={formatCost(formEstimateData.estimatedCostUsd, i18n.language)}
-                />
-              </div>
-              {formEstimateData.warnings.map((warning) => (
-                <span key={warning} className="text-sm text-fg-muted">
-                  {warning}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <span role="status" className="text-sm text-fg-muted">
-              {t("agent.dialog.estimate.loading")}
-            </span>
-          )}
-          {formRunData ? (
-            <div className="grid gap-2 rounded-md border border-border p-3 text-sm">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <StatusBadge tone={formRunTone(formRunData.status)}>
-                  {t(`agent.status.${formRunData.status}`)}
-                </StatusBadge>
-                <span className="tabular-nums text-fg-muted">
-                  {t("agent.runs.tokensCell", {
-                    input: number(formRunData.inputTokens),
-                    output: number(formRunData.outputTokens),
-                  })}{" "}
-                  · {formatCost(formRunData.costUsd, i18n.language)}
-                </span>
-              </div>
-              {formRunData.statusNote ? (
-                <span className="text-fg-muted">{formRunData.statusNote}</span>
-              ) : null}
-              <div className="flex flex-wrap gap-2">
-                {formRunActive ? (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    disabled={cancelFormRun.isPending}
-                    onClick={() => cancelFormRun.mutate(formRunData.id)}
-                  >
-                    {t("agent.runs.cancel")}
-                  </Button>
-                ) : null}
-                {canResumeRun(formRunData.status) ? (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    disabled={resumeFormRun.isPending}
-                    onClick={() => resumeFormRun.mutate({ id: formRunData.id })}
-                  >
-                    {t("agent.runs.resume")}
-                  </Button>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
-        </li>
+        <VocabAgentRunCard kind="form" />
+        <VocabAgentRunCard kind="root" />
       </ul>
     </div>
   );

@@ -55,6 +55,12 @@ public sealed class GetVocabCourseEntriesRequest
 
     /// <summary>Optional search: normalized lemma prefix, transliteration prefix or German meaning text.</summary>
     public string? Q { get; set; }
+
+    /// <summary>Family filter (roadmap 0030.3): <c>VocabRoots."Id"</c>; the root's own entry comes first, then rank order.</summary>
+    public int? Root { get; set; }
+
+    /// <summary>With <see cref="Root"/>: also the entries of its sub-roots (<c>ParentRootId</c>, at most 4 levels). Default on.</summary>
+    public bool SubRoots { get; set; } = true;
 }
 
 public sealed class VocabMeaningResponse
@@ -94,6 +100,9 @@ public sealed class VocabCourseEntryResponse
     public bool Reviewed { get; set; }
 
     public List<string> StrongsKeys { get; set; } = [];
+
+    /// <summary>The entry's root (roadmap 0030.1); null while none is known.</summary>
+    public VocabRootResponse? Root { get; set; }
 }
 
 public sealed class GetVocabCourseEntriesResponse

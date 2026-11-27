@@ -54,6 +54,14 @@ const introductionCard = {
     { german: "Rede", rank: 2, count: 40 },
   ],
   verse,
+  root: {
+    id: 1,
+    root: "πορεύω",
+    strongsKey: "G4198",
+    prefixes: "ἐκ",
+    origin: "prefill",
+    isSimple: false,
+  },
 };
 
 const choiceCard = {
@@ -234,6 +242,7 @@ describe("StudySessionPage", () => {
     // Introduction: the word, its meanings and the sample verse.
     expect(await screen.findByText("Neues Wort")).toBeInTheDocument();
     expect(screen.getByText("Rede")).toBeInTheDocument();
+    expect(screen.getByText("ἐκ + πορεύω")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /1,1/ })).toHaveAttribute("href", "/bible/43/1#v1");
     await user.click(screen.getByRole("button", { name: "Verstanden" }));
 

@@ -7,6 +7,7 @@ import { FormError } from "@/components/FormError";
 import { Select } from "@/components/Select";
 import { TextField } from "@/components/TextField";
 import { VocabEntryList, type VocabEntryRow } from "@/components/VocabEntryList";
+import { VocabFamilyFilter } from "@/components/VocabFamilyFilter";
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import {
   getCourseEntries,
@@ -26,6 +27,12 @@ function parsePage(value: string | null): number {
   return Number.isInteger(page) && page > 0 ? page : 1;
 }
 
+/** The family filter from the URL: a positive root id, otherwise none. */
+function parseRoot(value: string | null): number | null {
+  const id = Number(value);
+  return value !== null && Number.isInteger(id) && id > 0 ? id : null;
+}
+
 /** Public vocabulary list (screen 1): one course per testament, searchable and paged. Track, page and query live in the URL. */
 export function VocabListPage() {
   const { t, i18n } = useTranslation();
@@ -33,6 +40,8 @@ export function VocabListPage() {
   const track: VocabTrack = params.get("track") === "H" ? "H" : "G";
   const page = parsePage(params.get("page"));
   const query = params.get("q") ?? "";
+  const root = parseRoot(params.get("root"));
+  const subRoots = params.get("subRoots") !== "false";
   const skip = (page - 1) * VOCAB_PAGE_SIZE;
 
   const [search, setSearch] = useState(query);
@@ -77,6 +86,12 @@ export function VocabListPage() {
     updateParams({ q: term || null, page: null }, true);
   }, [debouncedSearch]);
 
+  // A link that changes the search (the root's Strong's link, back/forward) updates the search field.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed on the URL query on purpose
+  useEffect(() => {
+    if (query !== debouncedSearch.trim()) setSearch(query);
+  }, [query]);
+
   const course = courses?.find((item) => item.track === track);
   const courseCode = course?.code;
 
@@ -85,15 +100,32 @@ export function VocabListPage() {
     const controller = new AbortController();
     setData(null);
     setEntriesFailed(false);
-    getCourseEntries(courseCode, { skip, take: VOCAB_PAGE_SIZE, q: query }, controller.signal)
+    getCourseEntries(
+      courseCode,
+      { skip, take: VOCAB_PAGE_SIZE, q: query, root: root ?? undefined, subRoots },
+      controller.signal,
+    )
       .then((response) => setData(response))
       .catch(() => {
         if (!controller.signal.aborted) setEntriesFailed(true);
       });
     return () => controller.abort();
-  }, [courseCode, skip, query]);
+  }, [courseCode, skip, query, root, subRoots]);
 
   const lang = vocabLang(track);
+
+  /**
+   * The list of one whole word family: only the track is kept. A search would cut the family down (the root's Strong's link
+   * falls back to `?q=<root>`, and that search matches the root alone, not its compounds).
+   */
+  const familyHref = (rootId: number) => {
+    const next = new URLSearchParams();
+    const trackParam = params.get("track");
+    if (trackParam) next.set("track", trackParam);
+    next.set("root", String(rootId));
+    return `/vocab?${next.toString()}`;
+  };
+
   const rows: VocabEntryRow[] = data
     ? data.items.map((item) => ({
         ...item,
@@ -154,6 +186,18 @@ export function VocabListPage() {
           </p>
         ) : null}
       </div>
+      {root !== null ? (
+        <VocabFamilyFilter
+          rootId={root}
+          lang={lang}
+          subRoots={subRoots}
+          onSubRootsChange={(value) =>
+            updateParams({ subRoots: value ? null : "false", page: null })
+          }
+          onClear={() => updateParams({ root: null, subRoots: null, page: null })}
+          rootHref={familyHref}
+        />
+      ) : null}
       <FormError message={coursesFailed || entriesFailed ? t("vocab.list.loadFailed") : ""} />
       {data && data.items.length === 0 ? <EmptyState>{t("vocab.list.empty")}</EmptyState> : null}
       {data && data.items.length > 0 ? (
@@ -162,6 +206,8 @@ export function VocabListPage() {
             mode="public"
             entries={rows}
             linkTo={(id) => `/vocab/${id}`}
+            searchTo={(q) => `/vocab?track=${track}&q=${encodeURIComponent(q)}`}
+            rootTo={familyHref}
             onPlay={(id) => {
               const url = data?.items.find((item) => item.id === id)?.audioUrl;
               if (url) player.play(url);

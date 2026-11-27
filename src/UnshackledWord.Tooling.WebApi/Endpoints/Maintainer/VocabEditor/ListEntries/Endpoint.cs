@@ -23,7 +23,7 @@ public sealed class Endpoint : Endpoint<ListVocabEditorEntriesRequest, ListVocab
         Get("vocab/entries");
         Group<RouteGroupConfig>();
         Roles(AppRoles.Admin, AppRoles.Maintainer);
-        Summary(s => s.Summary = "Vocab entries for the editor list in rank order (take at most 200). Filters combine with AND: unreviewed, noAudio, formMissing, formFromAgent, multiKey, retired, rankFrom/rankTo, course, q. Each row carries the learner count. 404 for an unknown course.");
+        Summary(s => s.Summary = "Vocab entries for the editor list in rank order (take at most 200). Filters combine with AND: unreviewed, noAudio, formMissing, formFromAgent, multiKey, retired, rankFrom/rankTo, root (+ subRoots), missingRoot, course, q. Each row carries the learner count. 404 for an unknown course.");
     }
 
     public override async Task HandleAsync(ListVocabEditorEntriesRequest req, CancellationToken ct)
@@ -49,6 +49,7 @@ public sealed class Validator : Validator<ListVocabEditorEntriesRequest>
         RuleFor(x => x.Take).InclusiveBetween(1, ListVocabEditorEntriesRequest.MaxTake);
         RuleFor(x => x.Q).MaximumLength(ListVocabEditorEntriesRequest.MaxQueryLength);
         RuleFor(x => x.Course).MaximumLength(30);
+        RuleFor(x => x.Root).GreaterThanOrEqualTo(1).When(x => x.Root is not null);
         RuleFor(x => x.RankFrom).GreaterThanOrEqualTo(1).When(x => x.RankFrom is not null);
         RuleFor(x => x.RankTo).GreaterThanOrEqualTo(1).When(x => x.RankTo is not null);
         RuleFor(x => x).Must(x => x.RankFrom is null || x.RankTo is null || x.RankFrom <= x.RankTo).WithMessage("rankFrom must not exceed rankTo.");

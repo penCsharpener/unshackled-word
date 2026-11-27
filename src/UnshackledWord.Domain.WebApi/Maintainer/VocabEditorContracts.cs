@@ -34,6 +34,16 @@ public sealed class ListVocabEditorEntriesRequest
 
     public int? RankFrom { get; set; }
     public int? RankTo { get; set; }
+
+    /// <summary>Family filter (roadmap 0030.3): <c>VocabRoots."Id"</c>; the root's own entry comes first, then rank order.</summary>
+    public int? Root { get; set; }
+
+    /// <summary>With <see cref="Root"/>: also the entries of its sub-roots (<c>ParentRootId</c>, at most 4 levels). Default on.</summary>
+    public bool SubRoots { get; set; } = true;
+
+    /// <summary>Active entries a root applies to (no morphemes, no proper names) whose main key has no root yet.</summary>
+    public bool MissingRoot { get; set; }
+
     public int Skip { get; set; }
     public int Take { get; set; } = 50;
 }
@@ -74,6 +84,9 @@ public sealed class VocabEditorListItemResponse
     public List<VocabMeaningResponse> Meanings { get; set; } = [];
 
     public List<string> StrongsKeys { get; set; } = [];
+
+    /// <summary>The entry's root (roadmap 0030.1); null while none is known.</summary>
+    public VocabRootResponse? Root { get; set; }
 }
 
 public sealed class ListVocabEditorEntriesResponse
@@ -162,6 +175,9 @@ public sealed class GetVocabEditorEntryResponse
     public List<VocabEditorMeaningResponse> Meanings { get; set; } = [];
 
     public List<VocabEditorKeyResponse> StrongsKeys { get; set; } = [];
+
+    /// <summary>The root of the main key with its parents (roadmap 0030.5); absent while no root is known.</summary>
+    public VocabEditorRootResponse? Root { get; set; }
 
     /// <summary>Users with a card on the entry: "n Nutzer werden benachrichtigt" before a learning-relevant change.</summary>
     public int Learners { get; set; }

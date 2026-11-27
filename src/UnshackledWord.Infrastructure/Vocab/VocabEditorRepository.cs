@@ -107,6 +107,12 @@ public sealed class VocabEditorRepository
                  OR EXISTS (SELECT 1
                             FROM "unshackled-word"."VocabMeanings" m
                             WHERE m."VocabEntryId" = e."Id" AND m."IsAccepted" AND lower(COALESCE(m."GermanOverride", m."German")) LIKE @LikeContains))
+            AND
+        """ + "\n" + VocabRootRepository.FamilyCondition + """
+
+            AND
+        """ + "\n" + VocabRootRepository.MissingRootCondition + """
+
         """;
 
     private const string SelectCount = "SELECT count(*)::int " + Filter;
@@ -128,7 +134,9 @@ public sealed class VocabEditorRepository
              , (SELECT count(*)::int FROM "unshackled-word"."VocabCards" c WHERE c."VocabEntryId" = e."Id") AS "Learners"
         """ + "\n" + Filter + """
 
-        ORDER BY e."Track", e."FrequencyRank" NULLS LAST, e."Id"
+        ORDER BY
+        """ + "\n" + VocabRootRepository.OwnEntryFirst + """
+        , e."Track", e."FrequencyRank" NULLS LAST, e."Id"
         OFFSET @Skip LIMIT @Take
         """;
 
@@ -183,6 +191,7 @@ public sealed class VocabEditorRepository
             Entry = entry,
             Meanings = (await _dbReader.ReadAsListAsync<VocabEditorMeaningResponse>(SelectMeanings, new { Id = id })).ToList(),
             StrongsKeys = (await _dbReader.ReadAsListAsync<VocabEditorKeyResponse>(SelectKeys, new { Id = id })).ToList(),
+            Root = await VocabRootRepository.ReadEditorRootAsync(_dbReader, id),
             Learners = await _dbReader.ExecuteScalarAsync<int>(SelectLearners, new { Id = id })
         };
 
@@ -231,6 +240,9 @@ public sealed class VocabEditorRepository
             req.MultiKey,
             req.RankFrom,
             req.RankTo,
+            RootId = req.Root,
+            req.SubRoots,
+            req.MissingRoot,
             Normalized = hasQuery ? normalized ?? string.Empty : null,
             NormalizedLike = Escape(normalized) + "%",
             Like = Escape(lower) + "%",
@@ -252,12 +264,14 @@ public sealed class VocabEditorRepository
             var ids = response.Items.Select(i => i.Id).ToArray();
             var meanings = (await _dbReader.ReadAsListAsync<ListMeaningRow>(SelectListMeanings, new { Ids = ids })).ToLookup(m => m.EntryId);
             var keys = (await _dbReader.ReadAsListAsync<ListKeyRow>(SelectListKeys, new { Ids = ids })).ToLookup(k => k.EntryId);
+            var roots = await VocabRootRepository.ReadByEntryIdsAsync(_dbReader, ids);
 
             foreach (var item in response.Items)
             {
                 item.AudioUrl = VocabAudio.UrlFor(_storage, item.AudioObjectKey);
                 item.Meanings = meanings[item.Id].Select(m => new VocabMeaningResponse { German = m.German, Rank = m.Rank, Count = m.Count, Share = m.Share }).ToList();
                 item.StrongsKeys = keys[item.Id].Select(k => k.StrongsKey).ToList();
+                item.Root = roots.GetValueOrDefault(item.Id);
             }
         }
 

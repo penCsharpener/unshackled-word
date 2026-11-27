@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import type { VocabEntryItem, VocabLang } from "@/lib/vocab/api";
+import type { VocabEntryItem, VocabLang, VocabRoot } from "@/lib/vocab/api";
 import type { VocabFormOrigin } from "@/lib/vocab/editorApi";
 import { Button } from "./Button";
 import { StatusBadge } from "./StatusBadge";
@@ -24,10 +24,24 @@ export interface VocabEntryListProps {
   linkTo: (id: number) => string;
   /** Called by the play button, which only renders for entries with audio (public mode). */
   onPlay?: (id: number) => void;
+  /**
+   * The list filtered by a search text. The root's Strong's link opens the root entry directly when it is on this page,
+   * otherwise the list searched for the root (its entry is the first hit); without it, the Strong's page.
+   */
+  searchTo?: (query: string) => string;
+  /** The list filtered to one word family (roadmap 0030.3); with it the root text is a link to the family. */
+  rootTo?: (rootId: number) => string;
 }
 
 /** Vocabulary table from `md` up, a card list below. Greek and Hebrew lemmas get their language and direction. */
-export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryListProps) {
+export function VocabEntryList({
+  mode,
+  entries,
+  linkTo,
+  onPlay,
+  searchTo,
+  rootTo,
+}: VocabEntryListProps) {
   const { t, i18n } = useTranslation();
   const number = (value: number) => value.toLocaleString(i18n.language);
   const editor = mode === "editor";
@@ -77,6 +91,105 @@ export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryList
       </span>
     ) : null;
 
+  const rootHref = (root: VocabRoot, key: string) => {
+    const target = entries.find((entry) => entry.strongsKeys.includes(key));
+    if (target) return linkTo(target.id);
+    return searchTo ? searchTo(root.root) : `/bible/strongs/${encodeURIComponent(key)}`;
+  };
+
+  const rootBadge = (root: VocabRoot) =>
+    root.origin === "agent" ? (
+      <span className="ml-2" title={t("vocab.root.agentTitle")}>
+        <StatusBadge tone="info">{t("vocab.root.agent")}</StatusBadge>
+      </span>
+    ) : null;
+
+  /** The bare root in the original script, a link to its family filter; a simple word (its own root) is dimmed. */
+  const rootText = (entry: VocabEntryRow, root: VocabRoot) => {
+    const text = (
+      <span
+        lang={entry.lang}
+        dir={entry.lang === "he" ? "rtl" : undefined}
+        title={root.isSimple ? t("vocab.root.simple") : undefined}
+        data-simple={root.isSimple || undefined}
+        className={`font-original${root.isSimple ? " text-fg-muted" : ""}`}
+      >
+        {root.root}
+      </span>
+    );
+    if (!rootTo) return text;
+    return (
+      <Link
+        to={rootTo(root.id)}
+        aria-label={t("vocab.root.openFamily", { root: root.root })}
+        className={`underline decoration-dotted underline-offset-2${root.isSimple ? "" : " text-accent"}`}
+      >
+        {text}
+      </Link>
+    );
+  };
+
+  const rootStrongs = (root: VocabRoot) =>
+    root.strongsKey ? (
+      <Link
+        to={rootHref(root, root.strongsKey)}
+        aria-label={t("vocab.root.openRoot", { key: root.strongsKey })}
+        className="tabular-nums text-accent underline"
+      >
+        {root.strongsKey}
+      </Link>
+    ) : null;
+
+  /** The three root cells (Präfixe, Wurzel, Wurzel-Strong's); empty cells while no root is known. */
+  const rootCells = (entry: VocabEntryRow) => {
+    const root = entry.root;
+    return (
+      <>
+        <td lang={entry.lang} className="whitespace-nowrap py-2 pr-4 font-original text-base">
+          {root?.prefixes ?? null}
+        </td>
+        <td className="whitespace-nowrap py-2 pr-4 text-base">
+          {root ? (
+            <>
+              {rootText(entry, root)}
+              {rootBadge(root)}
+            </>
+          ) : null}
+        </td>
+        <td className="py-2 pr-4">{root ? rootStrongs(root) : null}</td>
+      </>
+    );
+  };
+
+  /** Phone width: the three columns as one line under the lemma, `σύν + ἐπί · μαρτυρέω (G3140)`. */
+  const rootLine = (entry: VocabEntryRow) => {
+    const root = entry.root;
+    if (!root) return null;
+    return (
+      <span data-testid="root-line" className="text-sm text-fg-muted">
+        {root.prefixes ? (
+          <>
+            <span lang={entry.lang} className="font-original text-fg">
+              {root.prefixes}
+            </span>
+            {" · "}
+          </>
+        ) : null}
+        <span className={root.isSimple ? undefined : "text-fg"}>{rootText(entry, root)}</span>
+        {root.strongsKey ? <> ({rootStrongs(root)})</> : null}
+        {rootBadge(root)}
+      </span>
+    );
+  };
+
+  const rootHeaders = (
+    <>
+      <th className="py-2 pr-4 font-medium">{t("vocab.root.prefixes")}</th>
+      <th className="py-2 pr-4 font-medium">{t("vocab.root.root")}</th>
+      <th className="py-2 pr-4 font-medium">{t("vocab.root.strongs")}</th>
+    </>
+  );
+
   return (
     <div className="grid gap-2">
       <div className="hidden overflow-x-auto md:block">
@@ -88,6 +201,7 @@ export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryList
                   <th className="py-2 pr-4 font-medium">{t("vocab.editor.columns.rank")}</th>
                   <th className="py-2 pr-4 font-medium">{t("vocab.editor.columns.lemma")}</th>
                   <th className="py-2 pr-4 font-medium">{t("vocab.editor.columns.form")}</th>
+                  {rootHeaders}
                   <th className="py-2 pr-4 font-medium">{t("vocab.editor.columns.meanings")}</th>
                   <th className="py-2 pr-4 font-medium">{t("vocab.editor.columns.audio")}</th>
                   <th className="py-2 pr-4 font-medium">{t("vocab.editor.columns.reviewed")}</th>
@@ -100,6 +214,7 @@ export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryList
                   <th className="py-2 pr-4 font-medium">{t("vocab.list.columns.rank")}</th>
                   <th className="py-2 pr-4 font-medium">{t("vocab.list.columns.lemma")}</th>
                   <th className="py-2 pr-4 font-medium">{t("vocab.list.columns.form")}</th>
+                  {rootHeaders}
                   <th className="py-2 pr-4 font-medium">{t("vocab.list.columns.meanings")}</th>
                   <th className="py-2 pr-4 text-right font-medium">
                     {t("vocab.list.columns.occurrences")}
@@ -127,6 +242,7 @@ export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryList
                   {entry.dictionaryForm ?? <span className="font-sans text-fg-muted">–</span>}
                   {agentBadge(entry)}
                 </td>
+                {rootCells(entry)}
                 <td className="py-2 pr-4">
                   {entry.meanings.join(", ")}
                   {editor ? null : unreviewed(entry)}
@@ -180,6 +296,7 @@ export function VocabEntryList({ mode, entries, linkTo, onPlay }: VocabEntryList
                 {agentBadge(entry)}
               </span>
             ) : null}
+            {rootLine(entry)}
             {editor ? (
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span>

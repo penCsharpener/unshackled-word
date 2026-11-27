@@ -20,7 +20,46 @@ const greek = (over: Partial<VocabEntryRow> = {}): VocabEntryRow => ({
   ...over,
 });
 
-function renderList(entries: VocabEntryRow[], onPlay?: (id: number) => void) {
+const compound = (over: Partial<VocabEntryRow> = {}): VocabEntryRow =>
+  greek({
+    id: 21,
+    rank: 5000,
+    lemma: "συνεπιμαρτυρέω",
+    transliteration: "synepimartyreō",
+    dictionaryForm: null,
+    meanings: ["mitbezeugen"],
+    occurrences: 1,
+    strongsKeys: ["G4901"],
+    root: {
+      id: 4,
+      root: "μαρτυρέω",
+      strongsKey: "G3140",
+      prefixes: "σύν + ἐπί",
+      origin: "agent",
+      isSimple: false,
+    },
+    ...over,
+  });
+
+const simple = (over: Partial<VocabEntryRow> = {}): VocabEntryRow =>
+  greek({
+    id: 22,
+    rank: 300,
+    lemma: "μαρτυρέω",
+    transliteration: "martyreō",
+    dictionaryForm: null,
+    meanings: ["bezeugen"],
+    occurrences: 76,
+    strongsKeys: ["G3140"],
+    root: { id: 4, root: "μαρτυρέω", strongsKey: "G3140", origin: "prefill", isSimple: true },
+    ...over,
+  });
+
+function renderList(
+  entries: VocabEntryRow[],
+  onPlay?: (id: number) => void,
+  searchTo?: (query: string) => string,
+) {
   return render(
     <MemoryRouter>
       <VocabEntryList
@@ -28,6 +67,7 @@ function renderList(entries: VocabEntryRow[], onPlay?: (id: number) => void) {
         entries={entries}
         linkTo={(id) => `/vocab/${id}`}
         onPlay={onPlay}
+        searchTo={searchTo}
       />
     </MemoryRouter>,
   );
@@ -85,6 +125,103 @@ describe("VocabEntryList", () => {
     expect(link).toHaveAttribute("lang", "grc");
     expect(link).not.toHaveAttribute("dir");
   });
+
+  it("shows prefixes, root with the AI badge and the root's Strong's in the table", () => {
+    renderList([compound()]);
+    const table = screen.getByRole("table");
+    expect(within(table).getByRole("columnheader", { name: "Prefixes" })).toBeInTheDocument();
+    expect(within(table).getByRole("columnheader", { name: "Root" })).toBeInTheDocument();
+    expect(within(table).getByRole("columnheader", { name: "Root Strong's" })).toBeInTheDocument();
+    expect(within(table).getByText("σύν + ἐπί")).toBeInTheDocument();
+    expect(within(table).getByText("μαρτυρέω")).not.toHaveAttribute("data-simple");
+    expect(within(table).getByText("AI")).toBeInTheDocument();
+    expect(within(table).getByRole("link", { name: "Open root G3140" })).toHaveTextContent("G3140");
+  });
+
+  it("links the root's Strong's to the root entry when it is on the page", () => {
+    renderList([compound(), simple()], undefined, (q) => `/vocab?q=${q}`);
+    const table = screen.getByRole("table");
+    for (const link of within(table).getAllByRole("link", { name: "Open root G3140" }))
+      expect(link).toHaveAttribute("href", "/vocab/22");
+  });
+
+  it("links the root's Strong's to the list searched for the root when it is not on the page", () => {
+    renderList([compound()], undefined, (q) => `/vocab?q=${encodeURIComponent(q)}`);
+    expect(
+      within(screen.getByRole("table")).getByRole("link", { name: "Open root G3140" }),
+    ).toHaveAttribute("href", `/vocab?q=${encodeURIComponent("μαρτυρέω")}`);
+  });
+
+  it("falls back to the Strong's page without a search link", () => {
+    renderList([compound()]);
+    expect(
+      within(screen.getByRole("table")).getByRole("link", { name: "Open root G3140" }),
+    ).toHaveAttribute("href", "/bible/strongs/G3140");
+  });
+
+  it("links the root text to its family when rootTo is given", () => {
+    render(
+      <MemoryRouter>
+        <VocabEntryList
+          mode="public"
+          entries={[compound()]}
+          linkTo={(id) => `/vocab/${id}`}
+          rootTo={(id) => `/vocab?root=${id}`}
+        />
+      </MemoryRouter>,
+    );
+    const link = within(screen.getByRole("table")).getByRole("link", {
+      name: "Show the word family of μαρτυρέω",
+    });
+    expect(link).toHaveAttribute("href", "/vocab?root=4");
+  });
+
+  it("dims the root of a simple word and shows no AI badge for prefill roots", () => {
+    renderList([simple()]);
+    const table = screen.getByRole("table");
+    const root = within(table)
+      .getAllByText("μαρτυρέω")
+      .find((node) => node.tagName === "SPAN");
+    expect(root).toHaveAttribute("data-simple", "true");
+    expect(root).toHaveClass("text-fg-muted");
+    expect(within(table).queryByText("AI")).toBeNull();
+  });
+
+  it("leaves the root cells empty without a root, never 'undefined'", () => {
+    const { container } = renderList([greek()]);
+    expect(container.textContent).not.toContain("undefined");
+    const cells = within(screen.getByRole("table")).getAllByRole("cell");
+    // rank, lemma, form, then the three root cells
+    expect(cells[3]).toBeEmptyDOMElement();
+    expect(cells[4]).toBeEmptyDOMElement();
+    expect(cells[5]).toBeEmptyDOMElement();
+    expect(screen.queryByTestId("root-line")).toBeNull();
+  });
+
+  it("collapses the root into one line under the lemma on phone width", () => {
+    renderList([compound()]);
+    const line = screen.getByTestId("root-line");
+    expect(line.closest("ol")).not.toBeNull();
+    expect(line).toHaveTextContent("σύν + ἐπί · μαρτυρέω (G3140)");
+  });
+
+  it("marks Hebrew roots with lang he and dir rtl", () => {
+    renderList([
+      greek({
+        id: 9,
+        lemma: "כָּתַב",
+        dictionaryForm: null,
+        lang: "he",
+        strongsKeys: ["H3789"],
+        root: { id: 8, root: "כתב", strongsKey: "H3789", origin: "prefill", isSimple: true },
+      }),
+    ]);
+    for (const root of screen.getAllByText("כתב")) {
+      expect(root).toHaveAttribute("lang", "he");
+      expect(root).toHaveAttribute("dir", "rtl");
+      expect(root).toHaveClass("font-original");
+    }
+  });
 });
 
 describe("VocabEntryList in editor mode", () => {
@@ -121,5 +258,16 @@ describe("VocabEntryList in editor mode", () => {
     expect(
       within(screen.getByRole("table")).getByText("–", { selector: "td" }),
     ).toBeInTheDocument();
+  });
+
+  it("shows the root columns in the editor too", () => {
+    renderEditor([compound()]);
+    const table = screen.getByRole("table");
+    expect(within(table).getByRole("columnheader", { name: "Root Strong's" })).toBeInTheDocument();
+    expect(within(table).getByText("σύν + ἐπί")).toBeInTheDocument();
+    expect(within(table).getByRole("link", { name: "Open root G3140" })).toHaveAttribute(
+      "href",
+      "/bible/strongs/G3140",
+    );
   });
 });

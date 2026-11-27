@@ -9,7 +9,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.DataQuality;
 public static class DqChecks
 {
     /// <summary>Must-tier checks served by checks/{code} and listed in the overview, in tile order.</summary>
-    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5", "L6", "L7", .. DqTskChecks.Codes, .. DqGreekEditionChecks.Codes, .. DqRoleChecks.Codes];
+    public static readonly string[] Codes = ["U1", "U2", "U3", "C1", "M1", "M2", "M3", "M4", "L1", "L2", "L3", "L4", "L5", "L6", "L7", .. DqTskChecks.Codes, .. DqGreekEditionChecks.Codes, .. DqVocabRootChecks.Codes, .. DqRoleChecks.Codes];
 
     public static bool IsKnown(string code) => Codes.Contains(code);
 }
@@ -559,6 +559,13 @@ public sealed class DqCheckRepository : IDqCheckRepository
             return response;
         }
 
+        if (DqVocabRootChecks.IsVocabRootCheck(r.Code))
+        {
+            using var vocabConnection = await _connectionFactory.CreateDbConnectionAsync(ct);
+            (response.Total, response.Items) = await DqVocabRootChecks.FindingsAsync(vocabConnection, null, r.Code, facets, r.Page, r.PageSize, ct);
+            return response;
+        }
+
         if (DqTskChecks.IsTskCheck(r.Code))
         {
             using var tskConnection = await _connectionFactory.CreateDbConnectionAsync(ct);
@@ -812,6 +819,10 @@ public sealed class DqCheckRepository : IDqCheckRepository
             case "G1":
             case "G2":
                 return await DqGreekEditionChecks.CountAsync(connection, null, code, facets, ct);
+            case "V1":
+            case "V2":
+            case "V3":
+                return await DqVocabRootChecks.CountAsync(connection, null, code, facets, ct);
             case "L5":
             {
                 var violating = await GetL5CombosAsync(connection, facets, ct);

@@ -91,6 +91,10 @@ public sealed class SeedOperationService
         return result;
     }
 
+    /// <summary>Dry run of the vocab root files (roadmap 0030.7f); null when the repo seed has no vocab folder.</summary>
+    public Task<(VocabRootSeedCounts Counts, int FileRoots, int FileWordRoots)?> PreviewVocabRootsAsync(CancellationToken token) =>
+        _vocab.PreviewRootsAsync(_files.CreateRepoLayout(), token);
+
     private async Task<List<SeedStepReport>> ImportAsync(SeedExportKind kind, IProgress<string> progress, CancellationToken token)
     {
         var layout = _files.CreateRepoLayout();

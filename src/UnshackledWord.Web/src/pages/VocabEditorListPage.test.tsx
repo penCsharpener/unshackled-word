@@ -50,6 +50,7 @@ const listPage = {
       learners: 12,
       meanings: [{ german: "Mitte", rank: 1 }],
       strongsKeys: ["G3319"],
+      root: { id: 7, root: "μέσος", strongsKey: "G3319", origin: "prefill", isSimple: true },
     },
   ],
 };
@@ -117,6 +118,44 @@ describe("VocabEditorListPage", () => {
     expect(latest?.has("unreviewed")).toBe(false);
   });
 
+  it("offers the filter without root and sends it as missingRoot", async () => {
+    const fetchMock = stubRoutes();
+    renderAt();
+    await screen.findByRole("table");
+    await userEvent.selectOptions(screen.getByLabelText("Filter:"), "missingRoot");
+    await waitFor(() => expect(listQueries(fetchMock).at(-1)?.get("missingRoot")).toBe("true"));
+    expect(listQueries(fetchMock).at(-1)?.has("unreviewed")).toBe(false);
+  });
+
+  it("sends the family filter from the URL and shows the chip", async () => {
+    const fetchMock = stubRoutes();
+    renderAt("/edit/vocab?root=7&filter=all&subRoots=false");
+    await screen.findByRole("table");
+    const params = listQueries(fetchMock)[0] ?? new URLSearchParams();
+    expect(params.get("root")).toBe("7");
+    expect(params.get("subRoots")).toBe("false");
+    expect(params.has("unreviewed")).toBe(false);
+    expect(screen.getByTestId("family-filter")).toHaveTextContent("Word family:");
+  });
+
+  it("opens a family from the root text with the filter set to all", async () => {
+    stubRoutes();
+    renderAt();
+    const table = await screen.findByRole("table");
+    expect(
+      within(table).getByRole("link", { name: "Show the word family of μέσος" }),
+    ).toHaveAttribute("href", "/edit/vocab?root=7&filter=all");
+  });
+
+  it("opens the whole family: search, rank range and another filter are dropped, the track is kept", async () => {
+    stubRoutes();
+    renderAt("/edit/vocab?track=G&filter=formMissing&q=mes&rankFrom=10&page=2");
+    const table = await screen.findByRole("table");
+    expect(
+      within(table).getByRole("link", { name: "Show the word family of μέσος" }),
+    ).toHaveAttribute("href", "/edit/vocab?track=G&root=7&filter=all");
+  });
+
   it("sends an edited rank bound in the query", async () => {
     const fetchMock = stubRoutes();
     renderAt();
@@ -137,6 +176,21 @@ describe("VocabEditorListPage", () => {
       "/edit/vocab/56",
     );
     expect(within(table).getByText("Mitte")).toBeInTheDocument();
+  });
+
+  it("shows the root columns and links a word that is its own root to itself", async () => {
+    stubRoutes();
+    renderAt();
+    const table = await screen.findByRole("table");
+    expect(within(table).getByRole("columnheader", { name: "Root" })).toBeInTheDocument();
+    expect(within(table).getByText("μέσος", { selector: "span" })).toHaveAttribute(
+      "data-simple",
+      "true",
+    );
+    expect(within(table).getByRole("link", { name: "Open root G3319" })).toHaveAttribute(
+      "href",
+      "/edit/vocab/56",
+    );
   });
 
   it("says so when no entry matches", async () => {

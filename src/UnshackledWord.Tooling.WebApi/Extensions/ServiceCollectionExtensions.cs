@@ -58,7 +58,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabCourseRepository>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabEntryRepository>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabEditorRepository>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabRootRepository>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabEntryEditor>();
+        services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabRootEditor>();
         // Study sessions (roadmap 0022.8): the FSRS wrapper holds only its parameters, so one instance serves everyone.
         services.AddSingleton<UnshackledWord.Application.Features.Vocab.VocabScheduler>();
         services.AddScoped<UnshackledWord.Infrastructure.Vocab.VocabSessionService>();
