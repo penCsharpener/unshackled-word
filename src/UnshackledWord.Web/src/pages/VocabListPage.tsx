@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router";
 import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
 import { FormError } from "@/components/FormError";
+import { Pagination, pageCountOf } from "@/components/Pagination";
 import { Select } from "@/components/Select";
 import { TextField } from "@/components/TextField";
 import { VocabEntryList, type VocabEntryRow } from "@/components/VocabEntryList";
@@ -21,6 +22,9 @@ import {
 import { useAudioPlayer } from "@/lib/vocab/useAudioPlayer";
 
 const TRACKS: VocabTrack[] = ["G", "H"];
+
+/** With more rows than this the pager also shows above the list. */
+const PAGER_TOP_MIN_ROWS = 20;
 
 function parsePage(value: string | null): number {
   const page = Number(value);
@@ -135,6 +139,23 @@ export function VocabListPage() {
     : [];
   const last = data ? skip + data.items.length : 0;
 
+  const pager = data ? (
+    <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-fg-muted">
+      <span className="tabular-nums">
+        {t("vocab.list.range", {
+          from: number(skip + 1),
+          to: number(last),
+          total: number(data.total),
+        })}
+      </span>
+      <Pagination
+        page={page}
+        pageCount={pageCountOf(data.total, VOCAB_PAGE_SIZE)}
+        onPageChange={(next) => updateParams({ page: next <= 1 ? null : String(next) })}
+      />
+    </div>
+  ) : null;
+
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -202,6 +223,7 @@ export function VocabListPage() {
       {data && data.items.length === 0 ? <EmptyState>{t("vocab.list.empty")}</EmptyState> : null}
       {data && data.items.length > 0 ? (
         <div className="grid gap-2">
+          {data.items.length > PAGER_TOP_MIN_ROWS ? pager : null}
           <VocabEntryList
             mode="public"
             entries={rows}
@@ -213,33 +235,7 @@ export function VocabListPage() {
               if (url) player.play(url);
             }}
           />
-          <div className="flex items-center justify-between gap-3 text-sm text-fg-muted">
-            <span className="tabular-nums">
-              {t("vocab.list.range", {
-                from: number(skip + 1),
-                to: number(last),
-                total: number(data.total),
-              })}
-            </span>
-            <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => updateParams({ page: page - 1 <= 1 ? null : String(page - 1) })}
-              >
-                {t("vocab.list.prev")}
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={last >= data.total}
-                onClick={() => updateParams({ page: String(page + 1) })}
-              >
-                {t("vocab.list.next")}
-              </Button>
-            </div>
-          </div>
+          {pager}
         </div>
       ) : null}
     </section>

@@ -5,6 +5,7 @@ import { Navigate, useSearchParams } from "react-router";
 import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
 import { FormError } from "@/components/FormError";
+import { Pagination, pageCountOf } from "@/components/Pagination";
 import { Select } from "@/components/Select";
 import { TextField } from "@/components/TextField";
 import { VocabEntryList, type VocabEntryRow } from "@/components/VocabEntryList";
@@ -20,6 +21,9 @@ import {
 } from "@/lib/vocab/editorApi";
 
 const TRACKS: VocabTrack[] = ["G", "H"];
+
+/** With more rows than this the pager also shows above the list. */
+const PAGER_TOP_MIN_ROWS = 20;
 
 /** Filters of the editor list; `all` sends no flag. The default is "Ungeprüft" (unreviewed). */
 const FILTERS = [
@@ -189,6 +193,23 @@ export function VocabEditorListPage() {
     learners: item.learners,
   }));
   const last = data ? skip + data.items.length : 0;
+
+  const pager = data ? (
+    <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-fg-muted">
+      <span className="tabular-nums">
+        {t("vocab.list.range", {
+          from: number(skip + 1),
+          to: number(last),
+          total: number(data.total),
+        })}
+      </span>
+      <Pagination
+        page={page}
+        pageCount={pageCountOf(data.total, VOCAB_PAGE_SIZE)}
+        onPageChange={(next) => updateParams({ page: next <= 1 ? null : String(next) })}
+      />
+    </div>
+  ) : null;
   const failed = courses.isError || list.isError;
 
   return (
@@ -268,6 +289,7 @@ export function VocabEditorListPage() {
       {data && data.items.length === 0 ? <EmptyState>{t("vocab.editor.empty")}</EmptyState> : null}
       {data && data.items.length > 0 ? (
         <div className="grid gap-2">
+          {data.items.length > PAGER_TOP_MIN_ROWS ? pager : null}
           <VocabEntryList
             mode="editor"
             entries={rows}
@@ -275,33 +297,7 @@ export function VocabEditorListPage() {
             searchTo={(q) => `/edit/vocab?track=${track}&q=${encodeURIComponent(q)}`}
             rootTo={familyHref}
           />
-          <div className="flex items-center justify-between gap-3 text-sm text-fg-muted">
-            <span className="tabular-nums">
-              {t("vocab.list.range", {
-                from: number(skip + 1),
-                to: number(last),
-                total: number(data.total),
-              })}
-            </span>
-            <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => updateParams({ page: page - 1 <= 1 ? null : String(page - 1) })}
-              >
-                {t("vocab.list.prev")}
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={last >= data.total}
-                onClick={() => updateParams({ page: String(page + 1) })}
-              >
-                {t("vocab.list.next")}
-              </Button>
-            </div>
-          </div>
+          {pager}
         </div>
       ) : null}
     </section>

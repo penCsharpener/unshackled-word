@@ -296,8 +296,6 @@ export const en: Translation = {
       unreviewed: "unreviewed",
       empty: "No entries for this search.",
       loadFailed: "The vocabulary could not be loaded.",
-      prev: "Previous",
-      next: "Next",
     },
     pos: {
       aramaic: "Aramaic",
@@ -3496,6 +3494,16 @@ export const en: Translation = {
     },
   },
   dialog: { close: "Close" },
+  pagination: {
+    label: "Pages",
+    first: "First page",
+    previous: "Previous page",
+    next: "Next page",
+    last: "Last page",
+    page: "Page {{page}}",
+    jump: "Go to page",
+    jumpLabel: "Go to page (1–{{last}})",
+  },
   tskReview: {
     nav: "TSK suggestions",
     title: "TSK suggestions",

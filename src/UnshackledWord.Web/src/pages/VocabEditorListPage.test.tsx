@@ -56,13 +56,14 @@ const listPage = {
 };
 
 /** Routes fetch calls by path (the query string is read from the URL); unknown paths answer 404. */
-function stubRoutes(roles: string[] = ["maintainer"]) {
+function stubRoutes(roles: string[] = ["maintainer"], total = listPage.total) {
   const fetchMock = vi.fn(async (url: string) => {
     const parsed = new URL(url, "http://localhost");
     const path = parsed.pathname.replace(/^\/api/, "");
     if (path === "/auth/me") return json({ ...me, roles });
     if (path === "/vocab/courses") return json(courses);
-    if (path === "/maintainer/vocab/entries") return json(listPage);
+    if (path === "/maintainer/vocab/entries")
+      return json({ ...listPage, total, skip: Number(parsed.searchParams.get("skip") ?? 0) });
     return new Response("", { status: 404 });
   });
   vi.stubGlobal("fetch", fetchMock);
@@ -209,5 +210,29 @@ describe("VocabEditorListPage", () => {
     stubRoutes(["user"]);
     renderAt();
     expect(await screen.findByText("You do not have access to this page.")).toBeInTheDocument();
+  });
+
+  it("pages through the numbered page buttons and the jump field, with the page kept in skip", async () => {
+    const fetchMock = stubRoutes(["maintainer"], 600);
+    renderAt("/edit/vocab?page=2");
+    await screen.findByRole("table");
+    expect(listQueries(fetchMock).at(-1)?.get("skip")).toBe("50");
+    expect(screen.getByRole("button", { name: "Page 2" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByText("51–51 of 600")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Page 4" }));
+    await waitFor(() => expect(listQueries(fetchMock).at(-1)?.get("skip")).toBe("150"));
+    await userEvent.type(await screen.findByLabelText("Go to page (1–12)"), "12{Enter}");
+    await waitFor(() => expect(listQueries(fetchMock).at(-1)?.get("skip")).toBe("550"));
+    expect(await screen.findByRole("button", { name: "Last page" })).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "Previous page" }));
+    await waitFor(() => expect(listQueries(fetchMock).at(-1)?.get("skip")).toBe("500"));
+  });
+
+  it("shows no page navigation when all hits fit on one page", async () => {
+    stubRoutes();
+    renderAt();
+    await screen.findByRole("table");
+    expect(screen.getByText("1–1 of 1")).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Pages" })).not.toBeInTheDocument();
   });
 });

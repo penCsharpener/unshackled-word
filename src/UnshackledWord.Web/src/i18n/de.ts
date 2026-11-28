@@ -298,8 +298,6 @@ export const de = {
       unreviewed: "ungeprüft",
       empty: "Keine Einträge für diese Suche.",
       loadFailed: "Die Vokabeln konnten nicht geladen werden.",
-      prev: "Zurück",
-      next: "Weiter",
     },
     pos: {
       aramaic: "aramäisch",
@@ -3498,6 +3496,16 @@ export const de = {
     confirm: "Entfernen",
   },
   dialog: { close: "Schließen" },
+  pagination: {
+    label: "Seiten",
+    first: "Erste Seite",
+    previous: "Vorherige Seite",
+    next: "Nächste Seite",
+    last: "Letzte Seite",
+    page: "Seite {{page}}",
+    jump: "Gehe zu Seite",
+    jumpLabel: "Gehe zu Seite (1–{{last}})",
+  },
   privacy: {
     title: "Datenschutz",
     lead: "Diese Seite sammelt so wenig wie möglich. Hier steht, was gespeichert wird und warum.",

@@ -284,7 +284,7 @@ describe("VocabListPage", () => {
     expect(screen.queryByText("unreviewed")).not.toBeInTheDocument();
   });
 
-  it("pages forward with the Next button", async () => {
+  it("pages forward with the next-page button", async () => {
     const fetchMock = stubApi({
       "GET /vocab/courses": () => json(courses),
       "GET /vocab/courses/nt-greek/entries?skip=0&take=50": () =>
@@ -294,12 +294,65 @@ describe("VocabListPage", () => {
     });
     renderPage();
     await screen.findAllByRole("link", { name: "ὁ" });
-    expect(screen.getByRole("button", { name: "Previous" })).toBeDisabled();
-    await userEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByRole("button", { name: "Previous page" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Page 1" })).toHaveAttribute("aria-current", "page");
+    await userEvent.click(screen.getByRole("button", { name: "Next page" }));
     expect((await screen.findAllByRole("link", { name: "ἐν" })).length).toBeGreaterThan(0);
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/vocab/courses/nt-greek/entries?skip=50&take=50",
       expect.anything(),
     );
+    expect(screen.getByRole("button", { name: "Page 2" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByText("51–51 of 120")).toBeInTheDocument();
+  });
+
+  it("jumps to a page from the URL page and back to page 1 with the first-page button", async () => {
+    const fetchMock = stubApi({
+      "GET /vocab/courses": () => json(courses),
+      "GET /vocab/courses/nt-greek/entries?skip=0&take=50": () =>
+        json(page("nt-greek", [entry({})], 2000)),
+      "GET /vocab/courses/nt-greek/entries?skip=100&take=50": () =>
+        json(page("nt-greek", [entry({ id: 101, rank: 101, lemma: "ἐν" })], 2000, 100)),
+      "GET /vocab/courses/nt-greek/entries?skip=1950&take=50": () =>
+        json(page("nt-greek", [entry({ id: 1951, rank: 1951, lemma: "λόγος" })], 2000, 1950)),
+    });
+    renderPage("/vocab?page=3");
+    await screen.findAllByRole("link", { name: "ἐν" });
+    expect(screen.getByRole("button", { name: "Page 40" })).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText("Go to page (1–40)"), "99{Enter}");
+    expect((await screen.findAllByRole("link", { name: "λόγος" })).length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { name: "Page 40" })).toHaveAttribute("aria-current", "page");
+    await userEvent.click(screen.getByRole("button", { name: "First page" }));
+    expect((await screen.findAllByRole("link", { name: "ὁ" })).length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/vocab/courses/nt-greek/entries?skip=1950&take=50",
+      expect.anything(),
+    );
+  });
+
+  it("shows no page navigation for a single page", async () => {
+    stubApi({
+      "GET /vocab/courses": () => json(courses),
+      "GET /vocab/courses/nt-greek/entries?skip=0&take=50": () =>
+        json(page("nt-greek", [entry({})], 1)),
+    });
+    renderPage();
+    await screen.findAllByRole("link", { name: "ὁ" });
+    expect(screen.getByText("1–1 of 1")).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Pages" })).not.toBeInTheDocument();
+  });
+
+  it("shows the pager above and below a long list", async () => {
+    const items = Array.from({ length: 50 }, (_, i) =>
+      entry({ id: i + 1, rank: i + 1, lemma: `λ${i}` }),
+    );
+    stubApi({
+      "GET /vocab/courses": () => json(courses),
+      "GET /vocab/courses/nt-greek/entries?skip=0&take=50": () =>
+        json(page("nt-greek", items, 120)),
+    });
+    renderPage();
+    await screen.findAllByRole("link", { name: "λ0" });
+    expect(screen.getAllByRole("navigation", { name: "Pages" })).toHaveLength(2);
   });
 });
