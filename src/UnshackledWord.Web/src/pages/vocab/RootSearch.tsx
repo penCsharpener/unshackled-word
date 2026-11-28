@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
+import type { KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
+import { ScriptKeyboard } from "@/components/ScriptKeyboard";
 import { TextField } from "@/components/TextField";
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import type { VocabTrack } from "@/lib/vocab/api";
 import { searchVocabRoots, type VocabRootCandidate, vocabEditorKeys } from "@/lib/vocab/editorApi";
+import { BACKSPACE_KEY, remapPhysicalKey } from "@/lib/vocab/scriptLayouts";
 
 const ROMAN = ["", "", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
@@ -47,6 +50,20 @@ export function RootSearch({
   });
   const lang = track === "H" ? "he" : "grc";
   const items = query.data?.items ?? [];
+  const layout = track === "H" ? "hebrew" : "greek";
+
+  // Latin keys type Greek or Hebrew letters (the physical mapping the on-screen keyboard shows).
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    const letter = remapPhysicalKey(layout, event.key);
+    if (letter === undefined) return;
+    event.preventDefault();
+    onTextChange(text + letter);
+  }
+
+  function handleKey(key: string) {
+    onTextChange(key === BACKSPACE_KEY ? [...text].slice(0, -1).join("") : text + key);
+  }
 
   return (
     <div className="grid gap-2">
@@ -60,7 +77,9 @@ export function RootSearch({
         lang={lang}
         dir={track === "H" ? "rtl" : undefined}
         className="font-original"
+        onKeyDown={handleKeyDown}
       />
+      <ScriptKeyboard layout={layout} onKey={handleKey} />
       {items.length > 0 ? (
         <ul className="grid gap-1" aria-label={label}>
           {items.map((item) => (
