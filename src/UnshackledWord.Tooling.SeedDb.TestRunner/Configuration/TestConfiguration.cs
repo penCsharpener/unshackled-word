@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UnshackledWord.Infrastructure.Extensions;
 using UnshackledWord.Persistence.Postgres.Extensions;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
+using UnshackledWord.Seeding.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.TestRunner.Configuration;
 

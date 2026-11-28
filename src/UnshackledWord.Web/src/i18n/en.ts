@@ -2036,6 +2036,7 @@ export const en: Translation = {
     },
     job: {
       title: "Job: {{scope}} · for {{elapsed}}",
+      titleDone: "Job: {{scope}} · took {{elapsed}}",
       all: "All steps",
       group: "Group {{group}}",
       failed: "Error: {{error}}",

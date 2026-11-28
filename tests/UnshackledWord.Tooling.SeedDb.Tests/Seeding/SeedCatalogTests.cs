@@ -18,11 +18,25 @@ public class SeedCatalogTests
     }
 
     [Fact]
-    public void Only_the_base_group_is_wired()
+    public void Only_the_base_and_step_groups_are_wired()
     {
-        SeedCatalog.Steps.Where(s => s.Wired).Select(s => s.Group).Distinct().ShouldBe([SetupGroups.Base]);
-        SeedCatalog.Steps.Where(s => s.Group == SetupGroups.Base).ShouldAllBe(s => s.Wired);
-        SeedCatalog.Find("step-text")!.Wired.ShouldBeFalse();
+        SeedCatalog.Steps.Where(s => s.Wired).Select(s => s.Group).Distinct().ShouldBe([SetupGroups.Base, SetupGroups.Step], ignoreOrder: true);
+        SeedCatalog.Steps.Where(s => s.Group is SetupGroups.Base or SetupGroups.Step).ShouldAllBe(s => s.Wired);
+        SeedCatalog.Find("morphology")!.Wired.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Step_steps_are_downloads_from_github_with_a_library_runner()
+    {
+        var steps = SeedCatalog.Steps.Where(s => s.Group == SetupGroups.Step).ToList();
+        steps.Count.ShouldBe(6);
+        foreach (var step in steps)
+        {
+            step.Source.ShouldBe(SetupSources.Download, step.Key);
+            step.SourceHost.ShouldBe("github.com", step.Key);
+            step.Runner.ShouldNotBeNull(step.Key);
+            step.Runner!.Namespace!.StartsWith("UnshackledWord.Seeding.StepBible").ShouldBeTrue(step.Key);
+        }
     }
 
     [Fact]
@@ -75,5 +89,6 @@ public class SeedCatalogTests
         var expected = SeedCatalog.Steps.Select(SeedRunnerMap.RunnerOf).OfType<Type>().ToArray();
         SeedRunnerMap.RunnerTypes().ShouldBe(expected);
         SeedRunnerMap.RunnerTypes().Length.ShouldBe(20);
+        SeedCatalog.Steps.Where(s => s.Runner is not null).Count().ShouldBe(10);
     }
 }

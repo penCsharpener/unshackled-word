@@ -1,4 +1,5 @@
 import type { TFunction } from "i18next";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
@@ -335,8 +336,20 @@ function SetupStepRow({
   );
 }
 
-function elapsedText(job: SetupJob): string {
-  const end = job.finishedAt ? new Date(job.finishedAt).getTime() : Date.now();
+/** Current time, refreshed every second while `active` (a running job shows its elapsed time ticking between the 2 s polls). */
+function useNow(active: boolean): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!active) return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [active]);
+  return now;
+}
+
+function elapsedText(job: SetupJob, now: number): string {
+  const end = job.finishedAt ? new Date(job.finishedAt).getTime() : now;
   const seconds = Math.max(0, Math.round((end - new Date(job.startedAt).getTime()) / 1000));
   const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
   const ss = String(seconds % 60).padStart(2, "0");
@@ -345,6 +358,7 @@ function elapsedText(job: SetupJob): string {
 
 function SetupJobLog({ job, labels }: { job: SetupJob; labels: (key: SetupStepKey) => string }) {
   const { t } = useTranslation();
+  const now = useNow(job.status === "running");
   const scope =
     job.kind === "all"
       ? t("setup.job.all")
@@ -358,7 +372,10 @@ function SetupJobLog({ job, labels }: { job: SetupJob; labels: (key: SetupStepKe
   return (
     <div className="flex flex-col gap-3 rounded-md border border-border p-3">
       <h2 className="font-medium">
-        {t("setup.job.title", { scope, elapsed: elapsedText(job) })}
+        {t(job.status === "running" ? "setup.job.title" : "setup.job.titleDone", {
+          scope,
+          elapsed: elapsedText(job, now),
+        })}
         {" – "}
         <span role="status">{t(`setup.job.status.${job.status}`)}</span>
       </h2>

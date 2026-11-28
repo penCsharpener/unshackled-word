@@ -2,7 +2,7 @@ using UnshackledWord.Infrastructure.Seed;
 using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Morphology;
 using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 using UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
+using UnshackledWord.Seeding.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed;
 

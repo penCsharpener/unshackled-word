@@ -110,6 +110,7 @@ public class SetupStatusCalculatorTests
         var verses = steps.Single(s => s.Key == "elb1871-verses");
         verses.Status.ShouldBe(SetupStepStatuses.Grey);
         verses.Missing.ShouldBe(["elb1871-text"]);
-        steps.Single(s => s.Key == "step-text").Wired.ShouldBeFalse();
+        steps.Single(s => s.Key == "step-text").Wired.ShouldBeTrue();
+        steps.Single(s => s.Key == "morphology").Wired.ShouldBeFalse();
     }
 }

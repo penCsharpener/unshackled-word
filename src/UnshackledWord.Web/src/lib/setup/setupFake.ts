@@ -92,9 +92,8 @@ export const FAKE_CATALOG: readonly FakeStepSpec[] = [
       { name: "StepGreekWords", rows: 142095 },
       { name: "StepHebrewWords", rows: 305648 },
       { name: "StepGreekWordEditions", rows: 1100328 },
-      { name: "GreekEditions", rows: 22 },
     ],
-    { resumable: false },
+    { resumable: true },
   ),
   spec(
     "step-strongs",

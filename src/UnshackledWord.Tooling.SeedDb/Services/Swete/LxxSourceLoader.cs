@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Lxx;
 using UnshackledWord.Domain.Models.Settings;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
+using UnshackledWord.Seeding.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.Swete;
 

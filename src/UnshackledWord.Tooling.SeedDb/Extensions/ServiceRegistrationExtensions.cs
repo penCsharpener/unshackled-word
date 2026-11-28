@@ -16,7 +16,6 @@ using UnshackledWord.Tooling.SeedDb.Services.OpenScriptureData;
 using UnshackledWord.Tooling.SeedDb.Services.RepoSeed;
 using UnshackledWord.Tooling.SeedDb.Services.SBL.Extensions;
 using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
 using UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
 using UnshackledWord.Tooling.SeedDb.Services.Tsk;
 
@@ -39,7 +38,6 @@ public static partial class ServiceRegistrationExtensions
         services.AddScoped<GbtRunner>();
         services.AddSblServices();
         services.AddByzTxtServices();
-        services.AddStepRunner();
         services.AddLocalOnlyServices();
         services.AddScoped<OpenScriptureRunner>();
         services.AddScoped<SrTxtParserStrategy>();

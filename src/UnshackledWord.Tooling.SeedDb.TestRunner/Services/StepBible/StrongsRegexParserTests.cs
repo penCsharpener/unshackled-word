@@ -1,7 +1,7 @@
 using Shouldly;
 using UnshackledWord.Domain.Models.Dbo.Step;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible.StrongsToText;
+using UnshackledWord.Seeding.StepBible;
+using UnshackledWord.Seeding.StepBible.StrongsToText;
 
 namespace UnshackledWord.Tooling.SeedDb.TestRunner.Services.StepBible;
 

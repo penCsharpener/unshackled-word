@@ -1,6 +1,8 @@
 using UnshackledWord.Domain.WebApi.Admin;
 using UnshackledWord.Seeding.ElberfelderParser;
 using UnshackledWord.Seeding.RevisionSeed;
+using UnshackledWord.Seeding.StepBible;
+using UnshackledWord.Seeding.StepBible.StrongsToText;
 using UnshackledWord.Seeding.SttsSeed;
 
 namespace UnshackledWord.Seeding.Catalog;
@@ -12,7 +14,8 @@ namespace UnshackledWord.Seeding.Catalog;
 /// </summary>
 public static class SeedCatalog
 {
-    private const string StepHost = "raw.githubusercontent.com";
+    // the STEP files are requested from github.com/STEPBible/STEPBible-Data (raw/refs/heads/master), which redirects to raw.githubusercontent.com
+    private const string StepHost = "github.com";
     private const string GithubHost = "github.com";
 
     public static readonly IReadOnlyList<SeedStep> Steps =
@@ -24,24 +27,26 @@ public static class SeedCatalog
         Step("elb1871-text", SetupGroups.Base, SetupSources.Assets, typeof(ElberfelderTextRunner), ["books"], ["Elb1871Words", "BibleVerseCountingMapping"], wired: true, resumable: false),
         Step("elb1871-verses", SetupGroups.Base, SetupSources.Assets, typeof(Elb1871VerseRunner), ["elb1871-text"], ["Elb1871Verses"], wired: true),
 
+        // step: wired in 0031.7
         // not wired yet: the runners still live in Tooling.SeedDb (see SeedRunnerMap there)
         Step("morphology", SetupGroups.Other, SetupSources.Assets, null, ["elb1871-text"], ["Elb1871Morphology"]),
         Step("tsk", SetupGroups.Other, SetupSources.Assets, null, ["books"], ["Tsk"]),
         Step("tsk-curation", SetupGroups.Other, SetupSources.Assets, null, ["tsk", "elb1871-text"], ["TskCurations"]),
         Step("sr-gnt", SetupGroups.Other, SetupSources.Download, null, ["books"], ["SrGntWords"], sourceHost: GithubHost),
         Step("sbl", SetupGroups.Other, SetupSources.Download, null, ["books"], ["SblText", "SblApparatus"], sourceHost: GithubHost),
-        Step("step-text", SetupGroups.Step, SetupSources.Download, null, ["books"], ["StepGreekWords", "StepHebrewWords", "StepGreekWordEditions", "GreekEditions"], sourceHost: StepHost, resumable: false),
-        Step("step-strongs", SetupGroups.Step, SetupSources.Download, null, ["step-text"], ["StepUnifiedStrongs"], sourceHost: StepHost),
-        Step("step-morphology", SetupGroups.Step, SetupSources.Download, null, ["step-text"], ["StepGreekMorphology", "StepHebrewMorphology"], sourceHost: StepHost),
-        Step("step-lexicon", SetupGroups.Step, SetupSources.Download, null, ["step-strongs"], ["StepStrongsLexicon"], sourceHost: StepHost),
-        Step("step-relationship", SetupGroups.Step, SetupSources.Download, null, ["step-text"], ["StepHebrewWordsNormalized", "StepHebrewWordsNormalizedToHebrewWords"], sourceHost: StepHost),
+        // GreekEditions (the edition catalog) is filled by migration 0047, so it is not a table of this step: it would turn an empty database amber
+        Step("step-text", SetupGroups.Step, SetupSources.Download, typeof(StepDataBibleTextImporter), ["books"], ["StepGreekWords", "StepHebrewWords", "StepGreekWordEditions"], sourceHost: StepHost, wired: true),
+        Step("step-strongs", SetupGroups.Step, SetupSources.Download, typeof(StepDataStrongsImporter), ["step-text"], ["StepUnifiedStrongs"], sourceHost: StepHost, wired: true),
+        Step("step-morphology", SetupGroups.Step, SetupSources.Download, typeof(StepDataMorphologyImporter), ["step-text"], ["StepGreekMorphology", "StepHebrewMorphology"], sourceHost: StepHost, wired: true),
+        Step("step-lexicon", SetupGroups.Step, SetupSources.Download, typeof(StepDataLexiconImporter), ["step-strongs"], ["StepStrongsLexicon"], sourceHost: StepHost, wired: true),
+        Step("step-relationship", SetupGroups.Step, SetupSources.Download, typeof(StepDataRelationshipImporter), ["step-text"], ["StepHebrewWordsNormalized", "StepHebrewWordsNormalizedToHebrewWords"], sourceHost: StepHost, wired: true),
         // after the Hebrew normalization above: the Old Testament tokens come from StepHebrewWordsNormalized (roadmap 0027.2)
         Step("verse-similarity", SetupGroups.Derived, SetupSources.Assets, null, ["step-relationship"], ["VerseSimilarities"]),
         // after the STEP download, which holds TVTMS (roadmap 0028.3)
         Step("lxx-text", SetupGroups.Other, SetupSources.Download, null, ["step-text"], ["LxxVerses", "LxxWords"], sourceHost: GithubHost),
         // the confirmed LXX tags and links of the repo seed (roadmap 0028.8); links may be empty
         Step("lxx-tags", SetupGroups.Other, SetupSources.Assets, null, ["lxx-text"], ["LxxWordTags", "LxxHebrewLinks"], note: SetupNotes.NothingToImport),
-        Step("step-strongs-text", SetupGroups.Step, SetupSources.Download, null, ["step-text", "elb1871-text"], ["StepStrongsToText"], sourceHost: StepHost),
+        Step("step-strongs-text", SetupGroups.Step, SetupSources.Download, typeof(StepStrongsImport), ["step-text", "elb1871-text"], ["StepStrongsToText"], sourceHost: StepHost, wired: true),
         Step("ai-mappings", SetupGroups.Other, SetupSources.Assets, null, ["elb1871-text", "step-text"], ["Elb1871GreekMapping", "Elb1871HebrewMapping"], resumable: false),
         Step("revision-seed", SetupGroups.Other, SetupSources.Assets, null, ["revision-levels", "ai-mappings"], ["RevisionVerses", "RevisionWords", "RevisionMapping"], note: SetupNotes.NothingToImport),
         // a refresh of the materialized views, no runner class (0031.9)

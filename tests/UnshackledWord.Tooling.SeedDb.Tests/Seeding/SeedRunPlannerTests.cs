@@ -51,7 +51,7 @@ public class SeedRunPlannerTests
     [Fact]
     public void An_unwired_or_read_only_step_is_rejected()
     {
-        Plan(States("books"), new SetupRunRequest { Keys = ["step-text"] }).Error.ShouldContain("not wired");
+        Plan(States("books"), new SetupRunRequest { Keys = ["morphology"] }).Error.ShouldContain("not wired");
         Plan(States(), new SetupRunRequest { Keys = ["books"] }).Error.ShouldContain("read-only");
         Plan(States(), new SetupRunRequest { Keys = ["nope"] }).Error.ShouldContain("Unknown");
     }
@@ -78,15 +78,32 @@ public class SeedRunPlannerTests
     public void All_skips_green_steps_and_unwired_groups()
     {
         var plan = Plan(States("books", "stts"), new SetupRunRequest { All = true });
-        plan.Keys.ShouldBe(["revision-levels", "elb1871-text", "elb1871-verses"]);
+        plan.Keys.ShouldBe(["revision-levels", "elb1871-text", "elb1871-verses", "step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship", "step-strongs-text"]);
         plan.Kind.ShouldBe("all");
+    }
+
+    [Fact]
+    public void The_step_group_runs_all_six_steps_in_order_and_skips_what_waits_on_a_red_base_step()
+    {
+        var ready = Plan(States("books", "elb1871-text"), new SetupRunRequest { Group = SetupGroups.Step });
+        ready.Keys.ShouldBe(["step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship", "step-strongs-text"]);
+        ready.Kind.ShouldBe("group:step");
+
+        // without the Elb1871 text only step-strongs-text is left out
+        Plan(States("books"), new SetupRunRequest { Group = SetupGroups.Step }).Keys
+            .ShouldBe(["step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship"]);
+
+        // second run of the group: everything is green, rejected
+        var done = Plan(States("books", "elb1871-text", "step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship", "step-strongs-text"),
+            new SetupRunRequest { Group = SetupGroups.Step });
+        done.IsValid.ShouldBeFalse();
     }
 
     [Fact]
     public void A_group_with_nothing_red_is_rejected()
     {
         Plan(States("books", "stts", "revision-levels", "elb1871-text", "elb1871-verses"), new SetupRunRequest { Group = SetupGroups.Base }).IsValid.ShouldBeFalse();
-        Plan(States("books"), new SetupRunRequest { Group = SetupGroups.Step }).IsValid.ShouldBeFalse();
+        Plan(States("books"), new SetupRunRequest { Group = SetupGroups.Other }).IsValid.ShouldBeFalse();
         Plan(States("books"), new SetupRunRequest { Group = "x" }).Error.ShouldContain("Unknown group");
     }
 

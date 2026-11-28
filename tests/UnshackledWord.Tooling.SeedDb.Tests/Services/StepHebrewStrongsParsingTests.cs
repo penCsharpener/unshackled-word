@@ -1,5 +1,5 @@
 using UnshackledWord.Domain.Models.Dbo.Step;
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
+using UnshackledWord.Seeding.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Services;
 

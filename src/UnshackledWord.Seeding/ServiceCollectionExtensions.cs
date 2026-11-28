@@ -1,6 +1,7 @@
 using UnshackledWord.Seeding.Catalog;
 using UnshackledWord.Seeding.ElberfelderParser;
 using UnshackledWord.Seeding.RevisionSeed;
+using UnshackledWord.Seeding.StepBible;
 using UnshackledWord.Seeding.SttsSeed;
 
 namespace UnshackledWord.Seeding;
@@ -8,7 +9,7 @@ namespace UnshackledWord.Seeding;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers the base seed runners (Stts tags, revision levels, Elberfelder 1871 text and verses) and their helpers.
+    /// Registers the base seed runners (Stts tags, revision levels, Elberfelder 1871 text and verses, the STEP Bible importers) and their helpers.
     /// </summary>
     public static IServiceCollection AddSeedingServices(this IServiceCollection services)
     {
@@ -16,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<RevisionLevelSeedRunner>();
         services.AddElberfelder1871Services();
         services.AddSingleton<ParseHelper>();
+        services.AddStepRunner();
         services.AddSetupStatus();
         return services;
     }

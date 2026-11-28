@@ -2053,6 +2053,7 @@ export const de = {
     },
     job: {
       title: "Auftrag: {{scope}} · seit {{elapsed}}",
+      titleDone: "Auftrag: {{scope}} · Dauer {{elapsed}}",
       all: "Alle Schritte",
       group: "Gruppe {{group}}",
       failed: "Fehler: {{error}}",

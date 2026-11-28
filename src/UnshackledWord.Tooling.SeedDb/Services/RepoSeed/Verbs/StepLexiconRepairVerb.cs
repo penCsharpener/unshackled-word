@@ -1,4 +1,4 @@
-using UnshackledWord.Tooling.SeedDb.Services.StepBible;
+using UnshackledWord.Seeding.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 

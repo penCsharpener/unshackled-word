@@ -35,10 +35,10 @@ The exact table list per runner is confirmed when the runner moves (0031.4/0031.
 | base | `revision-levels` | `RevisionLevelSeedRunner` | `Revisions` 3 | — |
 | base | `elb1871-text` | `ElberfelderTextRunner` | `Elb1871Words` 722,743, `BibleVerseCountingMapping` 31,174 | books |
 | base | `elb1871-verses` | `Elb1871VerseRunner` | `Elb1871Verses` 31,169 | elb1871-text |
-| step | `step-text` | `StepDataBibleTextImporter` | `StepGreekWords` 142,095, `StepHebrewWords` 305,648, `StepGreekWordEditions` 1,100,328, `GreekEditions` 22 | books |
-| step | `step-strongs` | `StepDataStrongsImporter` | `StepUnifiedStrongs` 21,378 | step-text |
+| step | `step-text` | `StepDataBibleTextImporter` | `StepGreekWords` 142,095, `StepHebrewWords` 305,648, `StepGreekWordEditions` 1,100,328 (`GreekEditions` 22 is filled by migration 0047 and not a table of the step, or an empty database would show it amber) | books |
+| step | `step-strongs` | `StepDataStrongsImporter` | `StepUnifiedStrongs` 22,808 (21,378 before the 0022.1b parser fix) | step-text |
 | step | `step-morphology` | `StepDataMorphologyImporter` | `StepGreekMorphology` 1,644, `StepHebrewMorphology` 921 | step-text |
-| step | `step-lexicon` | `StepDataLexiconImporter` | `StepStrongsLexicon` 21,293 (+ person/place/other lexicons, empty on dev) | step-strongs |
+| step | `step-lexicon` | `StepDataLexiconImporter` | `StepStrongsLexicon` 22,717 (21,293 before the 0022.1b parser fix) (+ person/place/other lexicons, empty on dev) | step-strongs |
 | step | `step-relationship` | `StepDataRelationshipImporter` | `StepHebrewWordsNormalized` 38,521, `StepHebrewWordsNormalizedToHebrewWords` 540,463 | step-text |
 | step | `step-strongs-text` | `StepStrongsImport` | `StepStrongsToText` 682,558 | step-text, elb1871-text |
 | other | `morphology` | `MorphologySeedRunner` | `Elb1871Morphology` 721,542 | elb1871-text |

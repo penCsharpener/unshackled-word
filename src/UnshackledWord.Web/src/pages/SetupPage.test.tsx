@@ -220,6 +220,43 @@ describe("SetupPage", () => {
     ).toBeInTheDocument();
   });
 
+  it("ticks the elapsed time of a running job every second and shows the duration once it ended", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const { fake, fetchMock } = setup(["user", "admin"]);
+    const base = fetchMock.getMockImplementation();
+    const startedAt = new Date().toISOString();
+    let finishedAt: string | undefined;
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+      if (!url.endsWith("/admin/setup") || (init?.method ?? "GET") !== "GET")
+        return base?.(url, init) ?? new Response("", { status: 404 });
+      const { steps, checkedAt } = await fake.status();
+      return json({
+        checkedAt,
+        currentStep: finishedAt ? undefined : "step-text",
+        steps,
+        job: {
+          id: "j",
+          operation: "setup",
+          kind: "step-text",
+          status: finishedAt ? "succeeded" : "running",
+          startedAt,
+          finishedAt,
+          log: ["10:00:00 [1/1] step-text: start"],
+        },
+      });
+    });
+    renderPage();
+    await screen.findByText(/steps done/);
+    expect(
+      screen.getByRole("heading", { name: /Job: STEP original text · for 00:0\d/ }),
+    ).toBeInTheDocument();
+    await act(() => vi.advanceTimersByTimeAsync(5000));
+    expect(screen.getByRole("heading", { name: /for 00:0[4-9]/ })).toBeInTheDocument();
+    finishedAt = new Date(Date.parse(startedAt) + 125_000).toISOString();
+    await act(() => vi.advanceTimersByTimeAsync(2100));
+    expect(await screen.findByRole("heading", { name: /took 02:05/ })).toBeInTheDocument();
+  });
+
   it("follows a running server job: spinner on the current step, poll every 2 s, counts re-read", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const { fake, fetchMock } = setup(["user", "admin"]);
