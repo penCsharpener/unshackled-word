@@ -12,6 +12,8 @@ export interface HebrewLineProps {
   activeLinks: ReadonlySet<number>;
   /** Hebrew ids linked to any word of the unit (`bg-mark-same`). */
   unitLinks: ReadonlySet<number>;
+  /** Hebrew ids linked to the hovered Greek word (underlined). */
+  hoverLinks?: ReadonlySet<number>;
   /** False when the active word is in another unit: the buttons are disabled. */
   enabled: boolean;
   onToggle: (hebrewWordId: number) => void;
@@ -32,6 +34,7 @@ export function HebrewLine({
   words,
   activeLinks,
   unitLinks,
+  hoverLinks,
   enabled,
   onToggle,
   onTip,
@@ -70,7 +73,7 @@ export function HebrewLine({
               disabled={!enabled}
               aria-pressed={activeLinks.has(word.id)}
               aria-describedby={tip?.word.id === word.id ? tipId(word) : undefined}
-              className={`${activeLinks.has(word.id) ? "outline-2 outline-accent" : ""} ${unitLinks.has(word.id) ? "bg-mark-same" : ""}`}
+              className={`${activeLinks.has(word.id) ? "outline-2 outline-accent" : ""} ${unitLinks.has(word.id) ? "bg-mark-same" : ""} ${hoverLinks?.has(word.id) ? "underline decoration-2 decoration-accent underline-offset-8" : ""}`}
               onClick={() => onToggle(word.id)}
               onFocus={(event) => show(word, event.currentTarget)}
               onBlur={hide}

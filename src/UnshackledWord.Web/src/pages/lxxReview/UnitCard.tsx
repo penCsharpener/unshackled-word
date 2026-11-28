@@ -81,6 +81,13 @@ export function UnitCard({
     activeWord ? (draft?.words.get(activeWord.id)?.hebrewWordIds ?? []) : [],
   );
   const unitLinks = new Set([...(draft?.words.values() ?? [])].flatMap((w) => w.hebrewWordIds));
+  const [hoverWordId, setHoverWordId] = useState<number>();
+  const hoverLinks = new Set(
+    hoverWordId === undefined ? [] : (draft?.words.get(hoverWordId)?.hebrewWordIds ?? []),
+  );
+  const hoverGerman = new Set(
+    unit.hebrew.filter((h) => hoverLinks.has(h.id)).flatMap((h) => h.germanWordIds ?? []),
+  );
   const [tipWordIds, setTipWordIds] = useState<ReadonlySet<number>>(new Set());
 
   return (
@@ -150,11 +157,12 @@ export function UnitCard({
         words={unit.hebrew}
         activeLinks={activeLinks}
         unitLinks={unitLinks}
+        hoverLinks={hoverLinks}
         enabled={activeWord !== undefined}
         onToggle={onToggleHebrew}
         onTip={(word) => setTipWordIds(new Set(word?.germanWordIds ?? []))}
       />
-      <GermanLine words={unit.german} marked={tipWordIds} />
+      <GermanLine words={unit.german} marked={tipWordIds} underlined={hoverGerman} />
 
       {unit.proposal && unit.proposal.flags.length > 0 ? (
         <ul className="flex flex-col gap-1 text-sm text-fg-muted">
@@ -180,6 +188,7 @@ export function UnitCard({
         activeWordId={activeWordId}
         editing={editing}
         onActivate={onActivate}
+        onHoverWord={setHoverWordId}
         onChange={onChangeWord}
         onMorphologyValidity={onMorphologyValidity}
         onResetWord={onResetWord}
@@ -208,9 +217,11 @@ export function UnitCard({
 function GermanLine({
   words,
   marked,
+  underlined,
 }: {
   words: LxxReviewGermanWord[];
   marked: ReadonlySet<number>;
+  underlined: ReadonlySet<number>;
 }) {
   const { t } = useTranslation();
   if (words.length === 0) return null;
@@ -227,6 +238,10 @@ function GermanLine({
           {index > 0 ? " " : null}
           {marked.has(word.id) ? (
             <mark className="rounded-sm bg-mark-linked px-0.5 text-fg">{word.text}</mark>
+          ) : underlined.has(word.id) ? (
+            <span className="underline decoration-2 decoration-accent underline-offset-4">
+              {word.text}
+            </span>
           ) : (
             word.text
           )}

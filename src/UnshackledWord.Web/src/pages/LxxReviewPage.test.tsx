@@ -391,6 +391,23 @@ describe("LxxReviewPage (roadmap 0028.7f)", () => {
     await waitFor(() => expect(german.querySelectorAll("mark")).toHaveLength(0));
   });
 
+  it("underlines the linked Hebrew and German words while a Greek row is hovered", async () => {
+    stubFetch();
+    renderPage();
+    const a = await card("Rut 1:1");
+    const german = a.getByTestId("lxx-german-verse");
+    const underlined = () => german.querySelectorAll("span.underline");
+    expect(underlined()).toHaveLength(0);
+
+    const row = document.getElementById("lxx-word-1001") as HTMLElement;
+    await userEvent.hover(row);
+    await waitFor(() => expect(a.getByRole("button", { name: /וַיְהִי/ })).toHaveClass("underline"));
+    expect([...underlined()].map((m) => m.textContent)).toEqual(["Und", "es", "geschah"]);
+
+    await userEvent.unhover(row);
+    await waitFor(() => expect(underlined()).toHaveLength(0));
+  });
+
   it("shows no German verse for a unit without one", async () => {
     stubFetch();
     renderPage();

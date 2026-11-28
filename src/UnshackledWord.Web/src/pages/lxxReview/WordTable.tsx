@@ -21,6 +21,8 @@ export interface WordTableProps {
   /** Editor row open under the active word. */
   editing: boolean;
   onActivate: (lxxWordId: number) => void;
+  /** The mouse is over a word row (`undefined` when it leaves): the unit underlines its linked Hebrew and German words. */
+  onHoverWord?: (lxxWordId: number | undefined) => void;
   onChange: (lxxWordId: number, patch: Partial<WordDraft>) => void;
   onMorphologyValidity: (lxxWordId: number, code: string, valid: boolean | undefined) => void;
   onResetWord: (lxxWordId: number) => void;
@@ -221,6 +223,8 @@ export function WordTable(props: WordTableProps) {
                 aria-current={active ? "true" : undefined}
                 onFocus={() => onActivate(word.id)}
                 onClick={() => onActivate(word.id)}
+                onMouseEnter={() => props.onHoverWord?.(word.id)}
+                onMouseLeave={() => props.onHoverWord?.(undefined)}
               >
                 <td
                   className={`border-l-2 px-2 py-1 text-fg-muted ${active ? "border-accent" : "border-transparent"}`}
