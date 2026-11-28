@@ -55,6 +55,7 @@ public static class SetupStatusCalculator
                 Resumable = step.Resumable,
                 Wired = step.Wired,
                 Runnable = step.Runnable,
+                Rerunnable = step.Rerunnable ? true : null,
                 Failed = failed ? true : null,
                 Note = ranWithNote && tables.All(t => t.Rows == 0) ? step.Note : null,
                 Tables = tables,

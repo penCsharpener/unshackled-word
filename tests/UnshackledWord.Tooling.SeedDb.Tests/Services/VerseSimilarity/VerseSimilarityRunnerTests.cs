@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Features.VerseSimilarity;
-using UnshackledWord.Tooling.SeedDb.Services.VerseSimilarity;
+using UnshackledWord.Seeding.Derived;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Services.VerseSimilarity;
 

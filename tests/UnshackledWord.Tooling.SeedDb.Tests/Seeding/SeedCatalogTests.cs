@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using UnshackledWord.Domain.WebApi.Admin;
 using UnshackledWord.Seeding.Catalog;
 using UnshackledWord.Tooling.SeedDb.Extensions;
-using UnshackledWord.Tooling.SeedDb.Services;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Seeding;
 
@@ -18,11 +17,20 @@ public class SeedCatalogTests
     }
 
     [Fact]
-    public void Only_the_derived_group_is_not_wired()
+    public void Every_group_is_wired()
     {
-        SeedCatalog.Steps.Where(s => s.Wired).Select(s => s.Group).Distinct().ShouldBe([SetupGroups.Base, SetupGroups.Step, SetupGroups.Other], ignoreOrder: true);
-        SeedCatalog.Steps.Where(s => s.Group is SetupGroups.Base or SetupGroups.Step or SetupGroups.Other).ShouldAllBe(s => s.Wired);
-        SeedCatalog.Steps.Where(s => s.Group == SetupGroups.Derived).ShouldAllBe(s => !s.Wired);
+        SeedCatalog.Steps.Select(s => s.Group).Distinct().ShouldBe(SetupGroups.All, ignoreOrder: true);
+        SeedCatalog.Steps.ShouldAllBe(s => s.Wired);
+    }
+
+    [Fact]
+    public void The_derived_group_has_library_runners_and_only_stats_views_is_rerunnable()
+    {
+        var steps = SeedCatalog.Steps.Where(s => s.Group == SetupGroups.Derived).ToList();
+        steps.Select(s => s.Key).ShouldBe(["verse-similarity", "stats-views"]);
+        steps.ShouldAllBe(s => s.Runner != null && s.Runner.Namespace == "UnshackledWord.Seeding.Derived");
+        SeedCatalog.Steps.Where(s => s.Rerunnable).Select(s => s.Key).ShouldBe(["stats-views"]);
+        SeedCatalog.Find("stats-views")!.Tables.Select(t => t.Name).ShouldBe(["DqWordFacts", "StatsStrongsRenderings", "StatsStrongs", "StatsGermanLemma", "StatsGermanForms", "StatsVocabRenderings"]);
     }
 
     [Fact]
@@ -62,11 +70,11 @@ public class SeedCatalogTests
 
         foreach (var step in SeedCatalog.Steps)
         {
-            var runner = SeedRunnerMap.RunnerOf(step);
+            var runner = step.Runner;
             if (runner is null)
             {
-                // read-only rows and refresh-only steps
-                new[] { "books", "stats-views" }.ShouldContain(step.Key);
+                // the read-only row
+                step.Key.ShouldBe("books");
                 continue;
             }
 
@@ -86,10 +94,8 @@ public class SeedCatalogTests
     [Fact]
     public void The_cli_runs_the_runners_in_catalog_order()
     {
-        var expected = SeedCatalog.Steps.Select(SeedRunnerMap.RunnerOf).OfType<Type>().ToArray();
-        SeedRunnerMap.RunnerTypes().ShouldBe(expected);
-        SeedRunnerMap.RunnerTypes().Length.ShouldBe(20);
-        SeedCatalog.Steps.Where(s => s.Runner is not null).Count().ShouldBe(19);
+        SeedCatalog.Steps.Where(s => s.Runner is not null).Count().ShouldBe(21);
+        SeedCatalog.Steps.Where(s => s.Runner is null).Select(s => s.Key).ShouldBe(["books"]);
     }
 
     [Fact]

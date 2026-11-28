@@ -56,7 +56,7 @@ export function summarize(steps: SetupStep[]): { done: number; total: number } {
 
 /**
  * Keys a run of this scope would start, in catalog order: red (also grey, once its prerequisites
- * are planned), or amber and resumable; wired; runnable. A step counts as green for the steps behind
+ * are planned), or amber and resumable; wired; runnable. Only a run by key also takes a green re-runnable step. A step counts as green for the steps behind
  * it as soon as it is planned, so a chain can start `elb1871-verses` after `elb1871-text`.
  */
 export function runnableKeys(steps: SetupStep[], scope: RunSetupRequest): SetupStepKey[] {
@@ -65,7 +65,7 @@ export function runnableKeys(steps: SetupStep[], scope: RunSetupRequest): SetupS
   for (const step of steps) {
     if (!inScope(step, scope)) continue;
     const startable = step.status === "red" || step.status === "grey" || step.resumable;
-    const wanted = step.status !== "green" && startable;
+    const wanted = step.status !== "green" ? startable : isRerun(step) && "keys" in scope;
     if (!wanted || !step.wired || !step.runnable) continue;
     if (step.status === "amber" && !step.resumable) continue;
     if (!step.requires.every((key) => green.has(key) || planned.has(key))) continue;
@@ -80,11 +80,16 @@ function inScope(step: SetupStep, scope: RunSetupRequest): boolean {
   return scope.keys.includes(step.key);
 }
 
+/** A green row that may run again on request (stats-views): its button reads "Ansicht neu berechnen". */
+export function isRerun(step: SetupStep): boolean {
+  return step.status === "green" && step.rerunnable === true;
+}
+
 /** Why a row's button is disabled, or null. i18n key under `setup.disabled.*`. */
 export function disabledReason(step: SetupStep, jobRunning: boolean): DisabledReason | null {
   if (!step.runnable) return "readOnly";
   if (!step.wired) return "notWired";
-  if (step.status === "green") return "done";
+  if (step.status === "green" && !step.rerunnable) return "done";
   if (step.status === "grey") return "missing";
   if (step.status === "amber" && !step.resumable) return "notResumable";
   if (jobRunning) return "jobRunning";

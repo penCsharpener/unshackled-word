@@ -22,6 +22,7 @@ interface FakeStepSpec {
   requires: SetupStepKey[];
   resumable: boolean;
   runnable: boolean;
+  rerunnable?: boolean;
   /** Target counts after "run". `populated` marks materialized views. */
   tables: { name: string; rows: number; populated?: boolean }[];
   note?: "nothingToImport";
@@ -226,13 +227,14 @@ export const FAKE_CATALOG: readonly FakeStepSpec[] = [
     "assets",
     ["ai-mappings", "morphology"],
     [
-      { name: "StatsStrongs", rows: 14210, populated: true },
+      { name: "DqWordFacts", rows: 722743, populated: true },
       { name: "StatsStrongsRenderings", rows: 96830, populated: true },
+      { name: "StatsStrongs", rows: 14210, populated: true },
       { name: "StatsGermanLemma", rows: 18420, populated: true },
       { name: "StatsGermanForms", rows: 52960, populated: true },
       { name: "StatsVocabRenderings", rows: 41380, populated: true },
-      { name: "DqWordFacts", rows: 722743, populated: true },
     ],
+    { rerunnable: true },
   ),
 ];
 
@@ -394,6 +396,7 @@ export function createSetupFake(options: FakeOptions = {}): SetupFake {
         resumable: s.resumable,
         wired: true,
         runnable: s.runnable,
+        ...(s.rerunnable ? { rerunnable: true } : {}),
         ...(failed ? { failed: true } : {}),
         ...(ranWithNote && allZero ? { note: s.note } : {}),
         tables,

@@ -12,7 +12,7 @@ public sealed record SeedRunPlan(IReadOnlyList<string> Keys, string Kind, string
 
 /// <summary>
 /// Turns a <see cref="SetupRunRequest"/> into the steps to run (roadmap 0031.6). Pure: it reads the current step states, never the database.
-/// Explicit keys must be red (or grey with every prerequisite green or earlier in the plan; amber only for resumable steps), wired and runnable.
+/// Explicit keys must be red (or grey with every prerequisite green or earlier in the plan; amber only for resumable steps; green only for re-runnable ones), wired and runnable.
 /// Groups and "all" take the wired, runnable steps that are red or grey and skip the rest (green steps, unwired steps, steps that wait on an unwired one).
 /// A step whose prerequisite is neither green nor earlier in the plan is rejected (explicit keys) or skipped (group / all).
 /// </summary>
@@ -54,7 +54,8 @@ public static class SeedRunPlanner
             }
 
             var runnable = state.Status is SetupStepStatuses.Red or SetupStepStatuses.Grey
-                || (state.Status == SetupStepStatuses.Amber && state.Resumable);
+                || (state.Status == SetupStepStatuses.Amber && state.Resumable)
+                || (state.Status == SetupStepStatuses.Green && state.Rerunnable == true);
             if (!runnable)
             {
                 return SeedRunPlan.Invalid($"Step '{key}' is {NotRed} (status {state.Status}).");

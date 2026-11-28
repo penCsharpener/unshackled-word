@@ -51,7 +51,7 @@ The exact table list per runner is confirmed when the runner moves (0031.4/0031.
 | other | `lxx-tags` | `LxxTagSeedRunner` | `LxxWordTags` 265,807 (dev data; the repo seed `assets/seed/lxx/tags.csv` is empty), `LxxHebrewLinks` 0 | lxx-text |
 | other | `revision-seed` | `RevisionSeedRunner` | `RevisionVerses`, `RevisionWords`, `RevisionMapping` (0 on dev) | revision-levels, ai-mappings |
 | derived | `verse-similarity` | `VerseSimilarityRunner` | `VerseSimilarities` 917,459 | step-relationship |
-| derived | `stats-views` | refresh of the materialized views | `StatsStrongs`, `StatsStrongsRenderings`, `StatsGermanLemma`, `StatsGermanForms`, `StatsVocabRenderings`, `DqWordFacts` (populated yes/no, then count) | ai-mappings, morphology |
+| derived | `stats-views` | refresh of the materialized views | `DqWordFacts`, `StatsStrongsRenderings`, `StatsStrongs`, `StatsGermanLemma`, `StatsGermanForms`, `StatsVocabRenderings` (refresh order; populated yes/no, then count) | ai-mappings, morphology |
 
 `revision-seed` with 0 rows is a valid green state only if `assets/seed/revision` is empty; the step then reports "nichts zu importieren" and the row shows grün with a note. Same for `lxx-tags` links.
 

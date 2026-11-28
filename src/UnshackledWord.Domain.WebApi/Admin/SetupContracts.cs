@@ -74,6 +74,9 @@ public sealed class SetupStepResponse
     /// <summary>False for read-only rows (books from migration 0001).</summary>
     public bool Runnable { get; set; }
 
+    /// <summary>The step is idempotent and may be run again by key while green (only stats-views). Omitted when false.</summary>
+    public bool? Rerunnable { get; set; }
+
     /// <summary>A job for this step failed in this API process (makes the step amber). Omitted when false.</summary>
     public bool? Failed { get; set; }
 

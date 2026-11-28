@@ -1,4 +1,5 @@
 using UnshackledWord.Domain.WebApi.Admin;
+using UnshackledWord.Seeding.Derived;
 using UnshackledWord.Seeding.ElberfelderParser;
 using UnshackledWord.Seeding.AiMappingImport;
 using UnshackledWord.Seeding.Morphology;
@@ -16,7 +17,7 @@ namespace UnshackledWord.Seeding.Catalog;
 /// <summary>
 /// Every step the setup page shows, in run order (roadmap 0031, 03-seed-catalog.md). The SeedDb CLI runs the steps with a runner in this order,
 /// the page groups them by <see cref="SeedStep.Group"/>. Each step's <c>Requires</c> comes earlier in the list.
-/// Runners that have not moved into this library yet (0031.9) have no <c>Runner</c> here; SeedDb maps their keys to the types.
+/// Every runnable step has its runner here; only the read-only row (books) has none.
 /// </summary>
 public static class SeedCatalog
 {
@@ -48,7 +49,7 @@ public static class SeedCatalog
         Step("step-lexicon", SetupGroups.Step, SetupSources.Download, typeof(StepDataLexiconImporter), ["step-strongs"], ["StepStrongsLexicon"], sourceHost: StepHost, wired: true),
         Step("step-relationship", SetupGroups.Step, SetupSources.Download, typeof(StepDataRelationshipImporter), ["step-text"], ["StepHebrewWordsNormalized", "StepHebrewWordsNormalizedToHebrewWords"], sourceHost: StepHost, wired: true),
         // after the Hebrew normalization above: the Old Testament tokens come from StepHebrewWordsNormalized (roadmap 0027.2)
-        Step("verse-similarity", SetupGroups.Derived, SetupSources.Assets, null, ["step-relationship"], ["VerseSimilarities"]),
+        Step("verse-similarity", SetupGroups.Derived, SetupSources.Assets, typeof(VerseSimilarityRunner), ["step-relationship"], ["VerseSimilarities"], wired: true),
         // after the STEP download, which holds TVTMS (roadmap 0028.3)
         Step("lxx-text", SetupGroups.Other, SetupSources.Download, typeof(LxxTextImporter), ["step-text"], ["LxxVerses", "LxxWords"], sourceHost: GithubHost, wired: true, resumable: false),
         // the confirmed LXX tags and links of the repo seed (roadmap 0028.8); applied only while no tag is confirmed, links may be empty
@@ -57,8 +58,8 @@ public static class SeedCatalog
         Step("ai-mappings", SetupGroups.Other, SetupSources.Assets, typeof(AiMappingImportRunner), ["elb1871-text", "step-text"], ["Elb1871GreekMapping", "Elb1871HebrewMapping"], wired: true, resumable: false),
         // an empty assets/seed/revision (levels only) has nothing to import; on filled tables the runner is the rolling update
         Step("revision-seed", SetupGroups.Other, SetupSources.Assets, typeof(RevisionSeedRunner), ["revision-levels", "ai-mappings"], ["RevisionVerses", "RevisionWords", "RevisionMapping"], wired: true, note: SetupNotes.NothingToImport),
-        // a refresh of the materialized views, no runner class (0031.9)
-        Step("stats-views", SetupGroups.Derived, SetupSources.Assets, null, ["ai-mappings", "morphology"], ["StatsStrongs", "StatsStrongsRenderings", "StatsGermanLemma", "StatsGermanForms", "StatsVocabRenderings", "DqWordFacts"]),
+        // the refresh of the six materialized views (DqWordFacts first, StatsVocabRenderings last); idempotent, so the one re-runnable step (0031.9)
+        Step("stats-views", SetupGroups.Derived, SetupSources.Assets, typeof(StatsViewsRunner), ["ai-mappings", "morphology"], ["DqWordFacts", "StatsStrongsRenderings", "StatsStrongs", "StatsGermanLemma", "StatsGermanForms", "StatsVocabRenderings"], wired: true, rerunnable: true),
     ];
 
     public static SeedStep? Find(string key) => Steps.FirstOrDefault(s => s.Key == key);
@@ -74,6 +75,7 @@ public static class SeedCatalog
         bool resumable = true,
         bool wired = false,
         bool runnable = true,
-        string? note = null)
-        => new(key, group, source, sourceHost, runner, [.. tables.Select(t => new SeedTable(t))], requires, resumable, wired, runnable, note);
+        string? note = null,
+        bool rerunnable = false)
+        => new(key, group, source, sourceHost, runner, [.. tables.Select(t => new SeedTable(t))], requires, resumable, wired, runnable, note, rerunnable);
 }

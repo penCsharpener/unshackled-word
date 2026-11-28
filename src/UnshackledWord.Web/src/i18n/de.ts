@@ -2017,6 +2017,7 @@ export const de = {
     runGroup: "Gruppe ausführen",
     groupNothingToRun: "In dieser Gruppe ist nichts auszuführen.",
     run: "Ausführen",
+    rerun: "Ansicht neu berechnen",
     notWired: "noch nicht angebunden",
     fromMigration: "aus Migration",
     requires: "braucht: {{steps}}",

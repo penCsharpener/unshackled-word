@@ -1,4 +1,5 @@
 using UnshackledWord.Seeding.Abstractions;
+using UnshackledWord.Seeding.Catalog;
 
 namespace UnshackledWord.Tooling.SeedDb.Services;
 
@@ -8,7 +9,7 @@ public sealed partial class SeedingService
     private readonly ILogger<SeedingService> _logger;
 
     // The run order is the seed catalog (UnshackledWord.Seeding); a local filter (SeedingService.local.cs) may narrow or replace it.
-    private Type[] _runnerTypes = SeedRunnerMap.RunnerTypes();
+    private Type[] _runnerTypes = SeedCatalog.Steps.Select(s => s.Runner).OfType<Type>().ToArray();
 
     public SeedingService(IServiceScopeFactory scopeFactory, ILogger<SeedingService> logger)
     {

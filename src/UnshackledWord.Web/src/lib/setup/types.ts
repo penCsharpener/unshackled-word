@@ -54,6 +54,8 @@ export interface SetupStep {
   wired: boolean;
   /** false for read-only rows (books from migration 0001). */
   runnable: boolean;
+  /** Idempotent: may run again by key while green (only stats-views, button "Ansicht neu berechnen"). Groups and "all" still take red steps only. */
+  rerunnable?: boolean;
   /** A job for this step failed in this API process (makes it amber). */
   failed?: boolean;
   /** Valid green with 0 rows ("nichts zu importieren"): revision-seed, lxx-tags links. */

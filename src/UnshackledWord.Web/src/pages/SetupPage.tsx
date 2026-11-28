@@ -11,7 +11,7 @@ import { ApiError, describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { isAdmin } from "@/lib/auth/roles";
 import { formatNumber } from "@/lib/chart";
-import { disabledReason, runnableKeys, STEP_LINKS, summarize } from "@/lib/setup/catalog";
+import { disabledReason, isRerun, runnableKeys, STEP_LINKS, summarize } from "@/lib/setup/catalog";
 import {
   type RunSetupRequest,
   SETUP_GROUPS,
@@ -297,7 +297,11 @@ function SetupStepRow({
           title={reasonText}
           onClick={() => onRun(step.key)}
         >
-          {reason === "notWired" ? t("setup.disabled.notWired") : t("setup.run")}
+          {reason === "notWired"
+            ? t("setup.disabled.notWired")
+            : isRerun(step)
+              ? t("setup.rerun")
+              : t("setup.run")}
         </Button>
       ) : null}
       <div id={detailId} className="basis-full pl-6 text-sm text-fg-muted">

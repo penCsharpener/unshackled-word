@@ -2000,6 +2000,7 @@ export const en: Translation = {
     runGroup: "Run group",
     groupNothingToRun: "Nothing to run in this group.",
     run: "Run",
+    rerun: "Recalculate views",
     notWired: "not wired yet",
     fromMigration: "from migration",
     requires: "needs: {{steps}}",

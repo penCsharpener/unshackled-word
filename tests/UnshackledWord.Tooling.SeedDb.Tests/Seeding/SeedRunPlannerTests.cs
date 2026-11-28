@@ -51,8 +51,7 @@ public class SeedRunPlannerTests
     [Fact]
     public void An_unwired_or_read_only_step_is_rejected()
     {
-        Plan(States("books"), new SetupRunRequest { Keys = ["verse-similarity"] }).Error.ShouldContain("not wired");
-        Plan(States(), new SetupRunRequest { Keys = ["books"] }).Error.ShouldContain("read-only");
+                Plan(States(), new SetupRunRequest { Keys = ["books"] }).Error.ShouldContain("read-only");
         Plan(States(), new SetupRunRequest { Keys = ["nope"] }).Error.ShouldContain("Unknown");
     }
 
@@ -75,10 +74,10 @@ public class SeedRunPlannerTests
     }
 
     [Fact]
-    public void All_skips_green_steps_and_leaves_out_unwired_ones()
+    public void All_skips_green_steps()
     {
         var plan = Plan(States("books", "stts"), new SetupRunRequest { All = true });
-        plan.Keys.ShouldBe(["revision-levels", "elb1871-text", "elb1871-verses", "morphology", "tsk", "tsk-curation", "sr-gnt", "sbl", "step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship", "lxx-text", "lxx-tags", "step-strongs-text", "ai-mappings", "revision-seed"]);
+        plan.Keys.ShouldBe(["revision-levels", "elb1871-text", "elb1871-verses", "morphology", "tsk", "tsk-curation", "sr-gnt", "sbl", "step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship", "verse-similarity", "lxx-text", "lxx-tags", "step-strongs-text", "ai-mappings", "revision-seed", "stats-views"]);
         plan.Kind.ShouldBe("all");
     }
 
@@ -113,5 +112,39 @@ public class SeedRunPlannerTests
         var states = States("books");
         Plan(states, new SetupRunRequest()).IsValid.ShouldBeFalse();
         Plan(states, new SetupRunRequest { All = true, Group = SetupGroups.Base }).IsValid.ShouldBeFalse();
+    }
+
+    private static readonly string[] AllButDerived =
+        ["books", "stts", "revision-levels", "elb1871-text", "elb1871-verses", "morphology", "tsk", "tsk-curation", "sr-gnt", "sbl", "step-text", "step-strongs", "step-morphology",
+            "step-lexicon", "step-relationship", "lxx-text", "lxx-tags", "step-strongs-text", "ai-mappings", "revision-seed"];
+
+    [Fact]
+    public void The_derived_group_runs_both_steps_in_order_and_a_second_run_is_rejected()
+    {
+        var plan = Plan(States(AllButDerived), new SetupRunRequest { Group = SetupGroups.Derived });
+        plan.Keys.ShouldBe(["verse-similarity", "stats-views"]);
+        plan.Kind.ShouldBe("group:derived");
+
+        string[] allGreen = [.. AllButDerived, "verse-similarity", "stats-views"];
+        Plan(States(allGreen), new SetupRunRequest { Group = SetupGroups.Derived }).IsValid.ShouldBeFalse();
+        Plan(States(allGreen), new SetupRunRequest { All = true }).IsValid.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void A_green_rerunnable_step_runs_again_by_key_but_a_green_normal_step_does_not()
+    {
+        string[] allGreen = [.. AllButDerived, "verse-similarity", "stats-views"];
+        var again = Plan(States(allGreen), new SetupRunRequest { Keys = ["stats-views"] });
+        again.IsValid.ShouldBeTrue();
+        again.Keys.ShouldBe(["stats-views"]);
+        again.Kind.ShouldBe("stats-views");
+
+        Plan(States(allGreen), new SetupRunRequest { Keys = ["verse-similarity"] }).Error.ShouldContain("not red");
+    }
+
+    [Fact]
+    public void A_red_stats_step_waits_on_ai_mappings_and_morphology()
+    {
+        Plan(States("books", "elb1871-text"), new SetupRunRequest { Keys = ["stats-views"] }).Error.ShouldContain("ai-mappings");
     }
 }

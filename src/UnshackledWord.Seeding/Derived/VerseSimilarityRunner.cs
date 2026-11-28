@@ -2,7 +2,7 @@ using UnshackledWord.Application.Features.VerseSimilarity;
 using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Seeding.StepBible;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.VerseSimilarity;
+namespace UnshackledWord.Seeding.Derived;
 
 /// <summary>
 /// SeedDb pipeline step of roadmap 0027.2: rebuilds <c>VerseSimilarities</c> after the STEP import, gated like the Greek editions refresh in

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using UnshackledWord.Seeding.AiMappingImport;
 using UnshackledWord.Seeding.Catalog;
+using UnshackledWord.Seeding.Derived;
 using UnshackledWord.Seeding.ElberfelderParser;
 using UnshackledWord.Seeding.Morphology;
 using UnshackledWord.Seeding.RevisionSeed;
@@ -26,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ParseHelper>();
         services.AddStepRunner();
         services.AddOtherSeedRunners();
+        services.AddDerivedSeedRunners();
         services.AddSetupStatus();
         return services;
     }
@@ -65,6 +67,21 @@ public static class ServiceCollectionExtensions
         services.AddScoped<LxxTagSeedRunner>();
         services.AddHttpClient<SweteDownloader>();
         services.AddScoped<RevisionSeedRunner>();
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the runners of the <c>derived</c> group (verse similarity and the materialized view refresh, roadmap 0031.9) and what they need when the
+    /// host has not registered it already (the verse similarity services, the vocab view refresher). The host binds the <c>VerseSimilarity</c> options.
+    /// </summary>
+    public static IServiceCollection AddDerivedSeedRunners(this IServiceCollection services)
+    {
+        services.TryAddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseTokenRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseTokenRepository>();
+        services.TryAddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseSimilarityRepository>();
+        services.TryAddScoped<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityRebuildService>();
+        services.TryAddScoped<UnshackledWord.Infrastructure.Vocab.VocabRenderingsRefresher>();
+        services.AddScoped<VerseSimilarityRunner>();
+        services.AddScoped<StatsViewsRunner>();
         return services;
     }
 

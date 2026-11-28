@@ -112,6 +112,18 @@ public class SetupStatusCalculatorTests
         verses.Missing.ShouldBe(["elb1871-text"]);
         steps.Single(s => s.Key == "step-text").Wired.ShouldBeTrue();
         steps.Single(s => s.Key == "morphology").Wired.ShouldBeTrue();
-        steps.Single(s => s.Key == "verse-similarity").Wired.ShouldBeFalse();
+        steps.Single(s => s.Key == "verse-similarity").Wired.ShouldBeTrue();
+        steps.Single(s => s.Key == "stats-views").Rerunnable.ShouldBe(true);
+        steps.Where(s => s.Key != "stats-views").ShouldAllBe(s => s.Rerunnable == null);
+    }
+
+    [Fact]
+    public void An_unpopulated_view_counts_as_zero_rows_and_a_partly_refreshed_stats_step_is_amber()
+    {
+        var step = SeedCatalog.Find("stats-views")!;
+        var counts = step.Tables.ToDictionary(t => t.Name, t => new TableCount(t.Name, 0, false));
+        counts["DqWordFacts"] = new TableCount("DqWordFacts", 100, true);
+        var steps = SetupStatusCalculator.Compute([step], counts, None, None);
+        steps.Single().Status.ShouldBe(SetupStepStatuses.Amber);
     }
 }

@@ -361,4 +361,52 @@ describe("SetupPage", () => {
     expect(screen.getByText("Error: file missing")).toBeInTheDocument();
     expect(within(row).getByRole("button", { name: "Run" })).toBeEnabled();
   });
+
+  it("offers 'Recalculate views' on the green stats row and runs it by key", async () => {
+    const { fake, setupBody, runBody } = setup(["user", "admin"]);
+    setupBody.mockImplementation(async () => {
+      const { steps, checkedAt } = await fake.status();
+      return json({ checkedAt, steps: steps.map((step) => ({ ...step, status: "green" })) });
+    });
+    runBody.mockImplementation(async () =>
+      json(
+        {
+          id: "j",
+          operation: "setup",
+          kind: "stats-views",
+          status: "running",
+          startedAt: new Date().toISOString(),
+          log: [],
+        },
+        202,
+      ),
+    );
+    renderPage();
+    await screen.findByText(/steps done/);
+    expect(screen.getByRole("button", { name: "All done" })).toBeDisabled();
+    expect(within(rowOf("Similar verses")).getByRole("button", { name: "Run" })).toBeDisabled();
+    const button = within(rowOf("Statistics views")).getByRole("button", {
+      name: "Recalculate views",
+    });
+    expect(button).toBeEnabled();
+    await act(async () => button.click());
+    await waitFor(() => expect(runBody).toHaveBeenCalled());
+    expect(JSON.parse(String(runBody.mock.calls[0]?.[0]?.body))).toEqual({
+      keys: ["stats-views"],
+    });
+  });
+
+  it("shows the German label on the stats row", async () => {
+    await i18n.changeLanguage("de");
+    const { fake, setupBody } = setup(["user", "admin"]);
+    setupBody.mockImplementation(async () => {
+      const { steps, checkedAt } = await fake.status();
+      return json({ checkedAt, steps: steps.map((step) => ({ ...step, status: "green" })) });
+    });
+    renderPage();
+    await screen.findByText(/Schritten fertig/);
+    expect(
+      within(rowOf("Statistik-Sichten")).getByRole("button", { name: "Ansicht neu berechnen" }),
+    ).toBeEnabled();
+  });
 });
