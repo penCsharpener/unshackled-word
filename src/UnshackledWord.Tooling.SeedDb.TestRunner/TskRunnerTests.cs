@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using UnshackledWord.Tooling.SeedDb.Services.Tsk;
+using UnshackledWord.Seeding.Tsk;
 using UnshackledWord.Tooling.SeedDb.TestRunner.Extensions;
 
 namespace UnshackledWord.Tooling.SeedDb.TestRunner;

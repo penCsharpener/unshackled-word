@@ -18,11 +18,11 @@ public class SeedCatalogTests
     }
 
     [Fact]
-    public void Only_the_base_and_step_groups_are_wired()
+    public void Only_the_derived_group_is_not_wired()
     {
-        SeedCatalog.Steps.Where(s => s.Wired).Select(s => s.Group).Distinct().ShouldBe([SetupGroups.Base, SetupGroups.Step], ignoreOrder: true);
-        SeedCatalog.Steps.Where(s => s.Group is SetupGroups.Base or SetupGroups.Step).ShouldAllBe(s => s.Wired);
-        SeedCatalog.Find("morphology")!.Wired.ShouldBeFalse();
+        SeedCatalog.Steps.Where(s => s.Wired).Select(s => s.Group).Distinct().ShouldBe([SetupGroups.Base, SetupGroups.Step, SetupGroups.Other], ignoreOrder: true);
+        SeedCatalog.Steps.Where(s => s.Group is SetupGroups.Base or SetupGroups.Step or SetupGroups.Other).ShouldAllBe(s => s.Wired);
+        SeedCatalog.Steps.Where(s => s.Group == SetupGroups.Derived).ShouldAllBe(s => !s.Wired);
     }
 
     [Fact]
@@ -89,6 +89,21 @@ public class SeedCatalogTests
         var expected = SeedCatalog.Steps.Select(SeedRunnerMap.RunnerOf).OfType<Type>().ToArray();
         SeedRunnerMap.RunnerTypes().ShouldBe(expected);
         SeedRunnerMap.RunnerTypes().Length.ShouldBe(20);
-        SeedCatalog.Steps.Where(s => s.Runner is not null).Count().ShouldBe(10);
+        SeedCatalog.Steps.Where(s => s.Runner is not null).Count().ShouldBe(19);
+    }
+
+    [Fact]
+    public void Other_steps_have_a_library_runner_and_only_sbl_is_resumable()
+    {
+        var steps = SeedCatalog.Steps.Where(s => s.Group == SetupGroups.Other).ToList();
+        steps.Count.ShouldBe(9);
+        foreach (var step in steps)
+        {
+            step.Runner.ShouldNotBeNull(step.Key);
+            step.Runner!.Namespace!.StartsWith("UnshackledWord.Seeding.").ShouldBeTrue(step.Key);
+        }
+
+        steps.Where(s => s.Resumable).Select(s => s.Key).ShouldBe(["sbl", "lxx-tags", "revision-seed"], ignoreOrder: true);
+        steps.Where(s => s.Note is not null).Select(s => s.Key).ShouldBe(["tsk-curation", "lxx-tags", "revision-seed"], ignoreOrder: true);
     }
 }

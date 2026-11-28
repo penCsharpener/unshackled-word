@@ -156,6 +156,25 @@ describe("SetupPage", () => {
     expect(within(rowOf("STTS tags")).getByRole("button", { name: "Run" })).toBeEnabled();
   });
 
+  it("links the other-group rows to the imports page and the LXX review", async () => {
+    setup(["user", "admin"]);
+    renderPage();
+    await screen.findByText(/steps done/);
+    const tags = rowOf("Septuagint tags");
+    expect(within(tags).getByRole("link", { name: "Updates under Imports" })).toHaveAttribute(
+      "href",
+      "/edit/imports",
+    );
+    expect(within(tags).getByRole("link", { name: "Review LXX" })).toHaveAttribute(
+      "href",
+      "/edit/lxx",
+    );
+    expect(
+      within(rowOf("Septuagint text")).getByRole("link", { name: "Review LXX" }),
+    ).toHaveAttribute("href", "/edit/lxx");
+    expect(within(rowOf("STTS tags")).queryByRole("link")).toBeNull();
+  });
+
   it("re-reads the counts when refresh is clicked", async () => {
     const { setupBody } = setup(["user", "admin"]);
     renderPage();

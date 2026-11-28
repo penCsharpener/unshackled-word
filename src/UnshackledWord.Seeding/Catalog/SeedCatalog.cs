@@ -1,16 +1,22 @@
 using UnshackledWord.Domain.WebApi.Admin;
 using UnshackledWord.Seeding.ElberfelderParser;
+using UnshackledWord.Seeding.AiMappingImport;
+using UnshackledWord.Seeding.Morphology;
 using UnshackledWord.Seeding.RevisionSeed;
+using UnshackledWord.Seeding.SBL;
+using UnshackledWord.Seeding.StatisticalRestorationGnt;
 using UnshackledWord.Seeding.StepBible;
 using UnshackledWord.Seeding.StepBible.StrongsToText;
 using UnshackledWord.Seeding.SttsSeed;
+using UnshackledWord.Seeding.Swete;
+using UnshackledWord.Seeding.Tsk;
 
 namespace UnshackledWord.Seeding.Catalog;
 
 /// <summary>
 /// Every step the setup page shows, in run order (roadmap 0031, 03-seed-catalog.md). The SeedDb CLI runs the steps with a runner in this order,
 /// the page groups them by <see cref="SeedStep.Group"/>. Each step's <c>Requires</c> comes earlier in the list.
-/// Runners that have not moved into this library yet (0031.7 to 0031.9) have no <c>Runner</c> here; SeedDb maps their keys to the types.
+/// Runners that have not moved into this library yet (0031.9) have no <c>Runner</c> here; SeedDb maps their keys to the types.
 /// </summary>
 public static class SeedCatalog
 {
@@ -28,12 +34,13 @@ public static class SeedCatalog
         Step("elb1871-verses", SetupGroups.Base, SetupSources.Assets, typeof(Elb1871VerseRunner), ["elb1871-text"], ["Elb1871Verses"], wired: true),
 
         // step: wired in 0031.7
-        // not wired yet: the runners still live in Tooling.SeedDb (see SeedRunnerMap there)
-        Step("morphology", SetupGroups.Other, SetupSources.Assets, null, ["elb1871-text"], ["Elb1871Morphology"]),
-        Step("tsk", SetupGroups.Other, SetupSources.Assets, null, ["books"], ["Tsk"]),
-        Step("tsk-curation", SetupGroups.Other, SetupSources.Assets, null, ["tsk", "elb1871-text"], ["TskCurations"]),
-        Step("sr-gnt", SetupGroups.Other, SetupSources.Download, null, ["books"], ["SrGntWords"], sourceHost: GithubHost),
-        Step("sbl", SetupGroups.Other, SetupSources.Download, null, ["books"], ["SblText", "SblApparatus"], sourceHost: GithubHost),
+        // other (0031.8): the runners gate on "table empty" (one transaction or one bulk insert per table), so an amber step is not resumable, except SBL (one gate per table)
+        Step("morphology", SetupGroups.Other, SetupSources.Assets, typeof(MorphologySeedRunner), ["elb1871-text"], ["Elb1871Morphology"], wired: true, resumable: false),
+        Step("tsk", SetupGroups.Other, SetupSources.Assets, typeof(TskRunner), ["books"], ["Tsk"], wired: true, resumable: false),
+        // assets/seed/tsk/curations.csv is a change file that may not exist (then there is nothing to apply); applied only while TskCurations is empty
+        Step("tsk-curation", SetupGroups.Other, SetupSources.Assets, typeof(TskCurationSeedRunner), ["tsk", "elb1871-text"], ["TskCurations"], wired: true, resumable: false, note: SetupNotes.NothingToImport),
+        Step("sr-gnt", SetupGroups.Other, SetupSources.Download, typeof(SrRunner), ["books"], ["SrGntWords"], sourceHost: GithubHost, wired: true, resumable: false),
+        Step("sbl", SetupGroups.Other, SetupSources.Download, typeof(SblRunner), ["books"], ["SblText", "SblApparatus"], sourceHost: GithubHost, wired: true),
         // GreekEditions (the edition catalog) is filled by migration 0047, so it is not a table of this step: it would turn an empty database amber
         Step("step-text", SetupGroups.Step, SetupSources.Download, typeof(StepDataBibleTextImporter), ["books"], ["StepGreekWords", "StepHebrewWords", "StepGreekWordEditions"], sourceHost: StepHost, wired: true),
         Step("step-strongs", SetupGroups.Step, SetupSources.Download, typeof(StepDataStrongsImporter), ["step-text"], ["StepUnifiedStrongs"], sourceHost: StepHost, wired: true),
@@ -43,12 +50,13 @@ public static class SeedCatalog
         // after the Hebrew normalization above: the Old Testament tokens come from StepHebrewWordsNormalized (roadmap 0027.2)
         Step("verse-similarity", SetupGroups.Derived, SetupSources.Assets, null, ["step-relationship"], ["VerseSimilarities"]),
         // after the STEP download, which holds TVTMS (roadmap 0028.3)
-        Step("lxx-text", SetupGroups.Other, SetupSources.Download, null, ["step-text"], ["LxxVerses", "LxxWords"], sourceHost: GithubHost),
-        // the confirmed LXX tags and links of the repo seed (roadmap 0028.8); links may be empty
-        Step("lxx-tags", SetupGroups.Other, SetupSources.Assets, null, ["lxx-text"], ["LxxWordTags", "LxxHebrewLinks"], note: SetupNotes.NothingToImport),
+        Step("lxx-text", SetupGroups.Other, SetupSources.Download, typeof(LxxTextImporter), ["step-text"], ["LxxVerses", "LxxWords"], sourceHost: GithubHost, wired: true, resumable: false),
+        // the confirmed LXX tags and links of the repo seed (roadmap 0028.8); applied only while no tag is confirmed, links may be empty
+        Step("lxx-tags", SetupGroups.Other, SetupSources.Assets, typeof(LxxTagSeedRunner), ["lxx-text"], ["LxxWordTags", "LxxHebrewLinks"], wired: true, note: SetupNotes.NothingToImport),
         Step("step-strongs-text", SetupGroups.Step, SetupSources.Download, typeof(StepStrongsImport), ["step-text", "elb1871-text"], ["StepStrongsToText"], sourceHost: StepHost, wired: true),
-        Step("ai-mappings", SetupGroups.Other, SetupSources.Assets, null, ["elb1871-text", "step-text"], ["Elb1871GreekMapping", "Elb1871HebrewMapping"], resumable: false),
-        Step("revision-seed", SetupGroups.Other, SetupSources.Assets, null, ["revision-levels", "ai-mappings"], ["RevisionVerses", "RevisionWords", "RevisionMapping"], note: SetupNotes.NothingToImport),
+        Step("ai-mappings", SetupGroups.Other, SetupSources.Assets, typeof(AiMappingImportRunner), ["elb1871-text", "step-text"], ["Elb1871GreekMapping", "Elb1871HebrewMapping"], wired: true, resumable: false),
+        // an empty assets/seed/revision (levels only) has nothing to import; on filled tables the runner is the rolling update
+        Step("revision-seed", SetupGroups.Other, SetupSources.Assets, typeof(RevisionSeedRunner), ["revision-levels", "ai-mappings"], ["RevisionVerses", "RevisionWords", "RevisionMapping"], wired: true, note: SetupNotes.NothingToImport),
         // a refresh of the materialized views, no runner class (0031.9)
         Step("stats-views", SetupGroups.Derived, SetupSources.Assets, null, ["ai-mappings", "morphology"], ["StatsStrongs", "StatsStrongsRenderings", "StatsGermanLemma", "StatsGermanForms", "StatsVocabRenderings", "DqWordFacts"]),
     ];

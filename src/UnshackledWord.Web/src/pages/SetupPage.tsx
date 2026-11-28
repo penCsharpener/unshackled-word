@@ -1,6 +1,7 @@
 import type { TFunction } from "i18next";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { Button } from "@/components/Button";
 import { EmptyState } from "@/components/EmptyState";
 import { FormError } from "@/components/FormError";
@@ -10,7 +11,7 @@ import { ApiError, describeApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { isAdmin } from "@/lib/auth/roles";
 import { formatNumber } from "@/lib/chart";
-import { disabledReason, runnableKeys, summarize } from "@/lib/setup/catalog";
+import { disabledReason, runnableKeys, STEP_LINKS, summarize } from "@/lib/setup/catalog";
 import {
   type RunSetupRequest,
   SETUP_GROUPS,
@@ -262,6 +263,7 @@ function SetupStepRow({
   const shown: SetupStepStatus | "running" = running ? "running" : step.status;
   const word = step.failed && !running ? t("setup.status.failed") : t(`setup.status.${shown}`);
   const detailId = `setup-row-${step.key}`;
+  const links = STEP_LINKS[step.key] ?? [];
   const reasonText = !reason
     ? undefined
     : reason === "missing"
@@ -320,6 +322,15 @@ function SetupStepRow({
             </span>
           ))}
         </p>
+        {links.length > 0 ? (
+          <p className="flex flex-wrap gap-x-3">
+            {links.map((link) => (
+              <Link key={link.to} to={link.to} className="text-accent underline">
+                {t(`setup.links.${link.label}`)}
+              </Link>
+            ))}
+          </p>
+        ) : null}
         {failedLines?.length ? (
           <ol className="mt-1 font-mono">
             {failedLines.map((line, index) => (

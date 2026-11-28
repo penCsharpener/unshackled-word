@@ -142,17 +142,20 @@ export const FAKE_CATALOG: readonly FakeStepSpec[] = [
     "assets",
     ["elb1871-text"],
     [{ name: "Elb1871Morphology", rows: 721542 }],
+    { resumable: false },
   ),
-  spec("tsk", "other", "assets", ["books"], [{ name: "Tsk", rows: 378805 }]),
+  spec("tsk", "other", "assets", ["books"], [{ name: "Tsk", rows: 378805 }], { resumable: false }),
   spec(
     "tsk-curation",
     "other",
     "assets",
     ["tsk", "elb1871-text"],
     [{ name: "TskCurations", rows: 5 }],
+    { resumable: false, note: "nothingToImport" },
   ),
   spec("sr-gnt", "other", "download", ["books"], [{ name: "SrGntWords", rows: 137361 }], {
     sourceHost: "github.com",
+    resumable: false,
   }),
   spec(
     "sbl",
@@ -185,7 +188,7 @@ export const FAKE_CATALOG: readonly FakeStepSpec[] = [
       { name: "LxxVerses", rows: 23620 },
       { name: "LxxWords", rows: 486313 },
     ],
-    { sourceHost: "github.com" },
+    { sourceHost: "github.com", resumable: false },
   ),
   spec(
     "lxx-tags",

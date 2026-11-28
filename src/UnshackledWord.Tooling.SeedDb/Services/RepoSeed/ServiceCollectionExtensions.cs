@@ -1,7 +1,5 @@
 using UnshackledWord.Infrastructure.Seed;
-using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Morphology;
 using UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
-using UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
 using UnshackledWord.Seeding.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed;
@@ -11,8 +9,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRepoSeedServices(this IServiceCollection services)
     {
         services.AddSeedImportServices();
-        services.AddScoped<MorphologySeedRunner>();
-        services.AddScoped<RevisionSeedRunner>();
         services.AddScoped<ISeedVerb, ExportSeedVerb>();
         services.AddScoped<ISeedVerb, RebaseVerb>();
         services.AddScoped<ISeedVerb, AnchorCheckVerb>();
@@ -25,10 +21,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.IVerseSimilarityRepository, UnshackledWord.Infrastructure.VerseSimilarity.VerseSimilarityRepository>();
         services.AddScoped<UnshackledWord.Application.Features.VerseSimilarity.VerseSimilarityRebuildService>();
         services.AddScoped<ISeedVerb, VerseSimilarityVerb>();
-        services.AddScoped<UnshackledWord.Tooling.SeedDb.Services.Swete.LxxSourceLoader>();
         services.AddScoped<IOfflineSeedVerb, LxxCheckVerb>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxTextRepository, UnshackledWord.Infrastructure.Lxx.LxxTextRepository>();
-        services.AddScoped<UnshackledWord.Tooling.SeedDb.Services.Swete.LxxTextImporter>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.ILxxNtFormRepository, UnshackledWord.Infrastructure.Lxx.LxxNtFormRepository>();
         services.AddScoped<UnshackledWord.Application.Features.Lxx.LxxNtFormTagger>();
         services.AddScoped<ISeedVerb, LxxPrefillVerb>();

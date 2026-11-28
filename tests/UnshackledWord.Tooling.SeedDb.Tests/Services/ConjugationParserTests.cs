@@ -1,4 +1,4 @@
-﻿using UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
+﻿using UnshackledWord.Seeding.StatisticalRestorationGnt;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Services;
 

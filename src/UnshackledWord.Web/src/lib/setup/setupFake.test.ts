@@ -91,23 +91,23 @@ describe("setup fake", () => {
   });
 
   it("fails the configured step once, stops the chain and succeeds on the second run", async () => {
-    const fake = createSetupFake({ random: () => 0, failKey: "tsk" });
+    const fake = createSetupFake({ random: () => 0, failKey: "sbl" });
     await fake.run({ all: true });
     await vi.advanceTimersByTimeAsync(21 * 1500 + 1000);
     const { steps, job } = await fake.status();
-    expect(job).toMatchObject({ status: "failed", failedStep: "tsk", error: "Fake-Fehler in tsk" });
-    const tsk = find(steps, "tsk");
-    expect(tsk).toMatchObject({ status: "amber", failed: true });
-    expect(tsk.tables[0]?.rows).toBe(Math.floor(378805 / 2));
-    expect(find(steps, "tsk-curation").status).not.toBe("green");
+    expect(job).toMatchObject({ status: "failed", failedStep: "sbl", error: "Fake-Fehler in sbl" });
+    const sbl = find(steps, "sbl");
+    expect(sbl).toMatchObject({ status: "amber", failed: true });
+    expect(sbl.tables[0]?.rows).toBe(Math.floor(7939 / 2));
+    expect(find(steps, "lxx-text").status).not.toBe("green");
     expect(find(steps, "verse-similarity").status).not.toBe("green");
 
-    await fake.run({ keys: ["tsk"] });
+    await fake.run({ keys: ["sbl"] });
     await vi.advanceTimersByTimeAsync(2000);
     const again = await fake.status();
     expect(again.job?.status).toBe("succeeded");
-    expect(find(again.steps, "tsk")).toMatchObject({ status: "green" });
-    expect(find(again.steps, "tsk").failed).toBeUndefined();
+    expect(find(again.steps, "sbl")).toMatchObject({ status: "green" });
+    expect(find(again.steps, "sbl").failed).toBeUndefined();
   });
 
   it("reset clears the state and the stored copy", async () => {

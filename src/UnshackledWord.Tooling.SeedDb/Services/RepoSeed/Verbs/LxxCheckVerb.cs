@@ -7,7 +7,7 @@ using UnshackledWord.Application.Features.Lxx;
 using UnshackledWord.Domain.Models.BibleStructure.References;
 using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Seeding.StepBible;
-using UnshackledWord.Tooling.SeedDb.Services.Swete;
+using UnshackledWord.Seeding.Swete;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 

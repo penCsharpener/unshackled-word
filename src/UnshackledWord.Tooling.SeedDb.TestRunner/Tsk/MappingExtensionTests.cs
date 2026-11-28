@@ -1,7 +1,7 @@
 using Shouldly;
 using UnshackledWord.Domain.Models.BibleStructure;
-using UnshackledWord.Tooling.SeedDb.Services.Tsk.Extensions;
-using UnshackledWord.Tooling.SeedDb.Services.Tsk.Models;
+using UnshackledWord.Seeding.Tsk.Extensions;
+using UnshackledWord.Seeding.Tsk.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.TestRunner.Tsk;
 

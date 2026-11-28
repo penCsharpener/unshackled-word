@@ -51,7 +51,7 @@ public class SeedRunPlannerTests
     [Fact]
     public void An_unwired_or_read_only_step_is_rejected()
     {
-        Plan(States("books"), new SetupRunRequest { Keys = ["morphology"] }).Error.ShouldContain("not wired");
+        Plan(States("books"), new SetupRunRequest { Keys = ["verse-similarity"] }).Error.ShouldContain("not wired");
         Plan(States(), new SetupRunRequest { Keys = ["books"] }).Error.ShouldContain("read-only");
         Plan(States(), new SetupRunRequest { Keys = ["nope"] }).Error.ShouldContain("Unknown");
     }
@@ -75,10 +75,10 @@ public class SeedRunPlannerTests
     }
 
     [Fact]
-    public void All_skips_green_steps_and_unwired_groups()
+    public void All_skips_green_steps_and_leaves_out_unwired_ones()
     {
         var plan = Plan(States("books", "stts"), new SetupRunRequest { All = true });
-        plan.Keys.ShouldBe(["revision-levels", "elb1871-text", "elb1871-verses", "step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship", "step-strongs-text"]);
+        plan.Keys.ShouldBe(["revision-levels", "elb1871-text", "elb1871-verses", "morphology", "tsk", "tsk-curation", "sr-gnt", "sbl", "step-text", "step-strongs", "step-morphology", "step-lexicon", "step-relationship", "lxx-text", "lxx-tags", "step-strongs-text", "ai-mappings", "revision-seed"]);
         plan.Kind.ShouldBe("all");
     }
 
@@ -103,7 +103,7 @@ public class SeedRunPlannerTests
     public void A_group_with_nothing_red_is_rejected()
     {
         Plan(States("books", "stts", "revision-levels", "elb1871-text", "elb1871-verses"), new SetupRunRequest { Group = SetupGroups.Base }).IsValid.ShouldBeFalse();
-        Plan(States("books"), new SetupRunRequest { Group = SetupGroups.Other }).IsValid.ShouldBeFalse();
+        Plan(States("books"), new SetupRunRequest { Group = SetupGroups.Derived }).IsValid.ShouldBeFalse();
         Plan(States("books"), new SetupRunRequest { Group = "x" }).Error.ShouldContain("Unknown group");
     }
 

@@ -1,4 +1,4 @@
-using UnshackledWord.Tooling.SeedDb.Services.Swete;
+using UnshackledWord.Seeding.Swete;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Services.Swete;
 

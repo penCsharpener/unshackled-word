@@ -43,12 +43,12 @@ The exact table list per runner is confirmed when the runner moves (0031.4/0031.
 | step | `step-strongs-text` | `StepStrongsImport` | `StepStrongsToText` 682,558 | step-text, elb1871-text |
 | other | `morphology` | `MorphologySeedRunner` | `Elb1871Morphology` 721,542 | elb1871-text |
 | other | `tsk` | `TskRunner` | `Tsk` 378,805 | books |
-| other | `tsk-curation` | `TskCurationSeedRunner` | `TskCurations` 5 | tsk, elb1871-text |
+| other | `tsk-curation` | `TskCurationSeedRunner` | `TskCurations` 5 (0 when `assets/seed/tsk/curations.csv` is absent: green with "nichts zu importieren") | tsk, elb1871-text |
 | other | `sr-gnt` | `SrRunner` | `SrGntWords` 137,361 | books |
 | other | `sbl` | `SblRunner` | `SblText` 7,939, `SblApparatus` 4,441 | books |
 | other | `ai-mappings` | `AiMappingImportRunner` | `Elb1871GreekMapping` 169,981, `Elb1871HebrewMapping` 555,589 | elb1871-text, step-text |
 | other | `lxx-text` | `LxxTextImporter` | `LxxVerses` 23,620, `LxxWords` 486,313 | step-text (TVTMS download) |
-| other | `lxx-tags` | `LxxTagSeedRunner` | `LxxWordTags` 265,807, `LxxHebrewLinks` 0 | lxx-text |
+| other | `lxx-tags` | `LxxTagSeedRunner` | `LxxWordTags` 265,807 (dev data; the repo seed `assets/seed/lxx/tags.csv` is empty), `LxxHebrewLinks` 0 | lxx-text |
 | other | `revision-seed` | `RevisionSeedRunner` | `RevisionVerses`, `RevisionWords`, `RevisionMapping` (0 on dev) | revision-levels, ai-mappings |
 | derived | `verse-similarity` | `VerseSimilarityRunner` | `VerseSimilarities` 917,459 | step-relationship |
 | derived | `stats-views` | refresh of the materialized views | `StatsStrongs`, `StatsStrongsRenderings`, `StatsGermanLemma`, `StatsGermanForms`, `StatsVocabRenderings`, `DqWordFacts` (populated yes/no, then count) | ai-mappings, morphology |

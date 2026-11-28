@@ -1,4 +1,4 @@
-using UnshackledWord.Tooling.SeedDb.Services.Tsk.Extensions;
+using UnshackledWord.Seeding.Tsk.Extensions;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Services.Tsk.Extensions;
 

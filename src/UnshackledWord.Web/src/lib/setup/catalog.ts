@@ -15,6 +15,23 @@ export type DisabledReason =
   | "jobRunning";
 
 /**
+ * Maintainer pages that continue where a step stops (roadmap 0031.8f): updates of the repo seed after the first start
+ * (`/edit/imports`: morphology, mappings, revision, TSK curations, LXX tags) and the LXX review (`/edit/lxx`).
+ */
+export type SetupStepLink = { to: string; label: "imports" | "lxx" };
+export const STEP_LINKS: Partial<Record<SetupStepKey, SetupStepLink[]>> = {
+  morphology: [{ to: "/edit/imports", label: "imports" }],
+  "tsk-curation": [{ to: "/edit/imports", label: "imports" }],
+  "ai-mappings": [{ to: "/edit/imports", label: "imports" }],
+  "lxx-text": [{ to: "/edit/lxx", label: "lxx" }],
+  "lxx-tags": [
+    { to: "/edit/imports", label: "imports" },
+    { to: "/edit/lxx", label: "lxx" },
+  ],
+  "revision-seed": [{ to: "/edit/imports", label: "imports" }],
+};
+
+/**
  * Status from counts, the same rule the server applies (03-seed-catalog.md). The fake uses it; the
  * page never recomputes. A `note` ("nothing to import") makes a step that ran green even with 0 rows.
  */

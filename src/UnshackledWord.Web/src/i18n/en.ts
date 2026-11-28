@@ -2004,6 +2004,10 @@ export const en: Translation = {
     fromMigration: "from migration",
     requires: "needs: {{steps}}",
     nothingToImport: "nothing to import",
+    links: {
+      imports: "Updates under Imports",
+      lxx: "Review LXX",
+    },
     populated: "populated",
     notPopulated: "not populated",
     stoppedAt: "Stopped at: {{step}}",

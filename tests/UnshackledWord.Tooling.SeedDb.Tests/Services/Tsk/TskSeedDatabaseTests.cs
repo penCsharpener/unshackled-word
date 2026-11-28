@@ -10,7 +10,7 @@ using UnshackledWord.Domain.Models.Settings;
 using UnshackledWord.Infrastructure.Repositories;
 using UnshackledWord.Infrastructure.Services;
 using UnshackledWord.TestTooling;
-using UnshackledWord.Tooling.SeedDb.Services.Tsk;
+using UnshackledWord.Seeding.Tsk;
 
 namespace UnshackledWord.Tooling.SeedDb.Tests.Services.Tsk;
 

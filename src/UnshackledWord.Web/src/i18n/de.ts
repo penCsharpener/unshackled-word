@@ -2021,6 +2021,10 @@ export const de = {
     fromMigration: "aus Migration",
     requires: "braucht: {{steps}}",
     nothingToImport: "nichts zu importieren",
+    links: {
+      imports: "Updates unter Importe",
+      lxx: "LXX prüfen",
+    },
     populated: "befüllt",
     notPopulated: "nicht befüllt",
     stoppedAt: "Gestoppt bei: {{step}}",
