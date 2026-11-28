@@ -73,7 +73,7 @@ export function HebrewLine({
               disabled={!enabled}
               aria-pressed={activeLinks.has(word.id)}
               aria-describedby={tip?.word.id === word.id ? tipId(word) : undefined}
-              className={`${activeLinks.has(word.id) ? "outline-2 outline-accent" : ""} ${unitLinks.has(word.id) ? "bg-mark-same" : ""} ${hoverLinks?.has(word.id) ? "underline decoration-2 decoration-accent underline-offset-8" : ""}`}
+              className={`border-b-4 ${activeLinks.has(word.id) ? "outline-2 outline-accent" : ""} ${unitLinks.has(word.id) ? "bg-mark-same" : ""} ${hoverLinks?.has(word.id) ? "border-accent" : "border-transparent"}`}
               onClick={() => onToggle(word.id)}
               onFocus={(event) => show(word, event.currentTarget)}
               onBlur={hide}

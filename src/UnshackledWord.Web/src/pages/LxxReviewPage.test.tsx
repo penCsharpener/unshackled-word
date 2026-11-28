@@ -401,7 +401,9 @@ describe("LxxReviewPage (roadmap 0028.7f)", () => {
 
     const row = document.getElementById("lxx-word-1001") as HTMLElement;
     await userEvent.hover(row);
-    await waitFor(() => expect(a.getByRole("button", { name: /וַיְהִי/ })).toHaveClass("underline"));
+    await waitFor(() =>
+      expect(a.getByRole("button", { name: /וַיְהִי/ })).toHaveClass("border-accent"),
+    );
     expect([...underlined()].map((m) => m.textContent)).toEqual(["Und", "es", "geschah"]);
 
     await userEvent.unhover(row);

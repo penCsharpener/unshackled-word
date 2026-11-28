@@ -429,7 +429,7 @@ export function LxxReviewPage() {
   const notFound = chapterQuery.error instanceof ApiError && chapterQuery.error.status === 404;
 
   return (
-    <section className="mx-auto flex w-full max-w-screen-2xl flex-col gap-4 md:min-h-0 md:flex-1 md:flex-row md:overflow-hidden">
+    <section className="relative mx-auto flex w-full max-w-screen-2xl flex-col gap-4 md:min-h-0 md:flex-1 md:flex-row md:overflow-hidden">
       {books.isError ? (
         <div className="flex flex-col gap-2 md:w-64">
           <FormError message={t("lxxReview.error.books")} />
