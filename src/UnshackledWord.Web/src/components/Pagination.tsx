@@ -174,9 +174,10 @@ export function Pagination({
             <li key={item.key} className={layoutClass(item)}>
               <Button
                 size="sm"
+                variant={item.page === current ? "primary" : "secondary"}
                 aria-label={t("pagination.page", { page: item.page })}
                 aria-current={item.page === current ? "page" : undefined}
-                className={`tabular-nums ${item.page === current ? "border-accent bg-mark-same font-semibold" : ""}`}
+                className={`tabular-nums ${item.page === current ? "font-semibold" : ""}`}
                 onClick={() => go(item.page as number)}
               >
                 {item.page}
