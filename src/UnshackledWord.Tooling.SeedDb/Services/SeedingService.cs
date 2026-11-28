@@ -1,4 +1,4 @@
-﻿using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services;
 
@@ -9,10 +9,10 @@ public sealed partial class SeedingService
 
     private Type[] _runnerTypes =
     [
-        typeof(SttsSeed.SttsSeedRunner),
-        typeof(RevisionSeed.RevisionLevelSeedRunner),
-        typeof(ElberfelderParser.ElberfelderTextRunner),
-        typeof(ElberfelderParser.Elb1871VerseRunner),
+        typeof(Seeding.SttsSeed.SttsSeedRunner),
+        typeof(Seeding.RevisionSeed.RevisionLevelSeedRunner),
+        typeof(Seeding.ElberfelderParser.ElberfelderTextRunner),
+        typeof(Seeding.ElberfelderParser.Elb1871VerseRunner),
         typeof(RepoSeed.Morphology.MorphologySeedRunner),
         typeof(Tsk.TskRunner),
         typeof(Tsk.TskCurationSeedRunner),

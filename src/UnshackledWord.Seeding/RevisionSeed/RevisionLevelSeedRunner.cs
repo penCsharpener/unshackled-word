@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Dbo.Revision;
 using UnshackledWord.Domain.Models.Settings;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
+namespace UnshackledWord.Seeding.RevisionSeed;
 
 /// <summary>
 /// Seeds "Revisions" from assets/seed/revision/levels.csv (the literalness presets, roadmap 0011.1). Runs only into an empty table:

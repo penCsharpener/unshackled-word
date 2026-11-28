@@ -1,5 +1,5 @@
 using UnshackledWord.Application.Features.VerseSimilarity;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.VerseSimilarity;

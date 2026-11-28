@@ -1,5 +1,5 @@
 using UnshackledWord.Infrastructure.Seed.Morphology;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Morphology;
 

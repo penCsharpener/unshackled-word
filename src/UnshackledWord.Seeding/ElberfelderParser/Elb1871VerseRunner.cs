@@ -2,9 +2,9 @@ using UnshackledWord.Infrastructure.Seed.BaseText;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+namespace UnshackledWord.Seeding.ElberfelderParser;
 
 public sealed class Elb1871VerseRunner : IRunner
 {
@@ -31,8 +31,7 @@ public sealed class Elb1871VerseRunner : IRunner
 
         if (!_fileService.FileExists(elb1871Path))
         {
-            _logger.LogInformation("Elberfelder 1871 text file does not exist at path: {FilePath}. Skipping import.", elb1871Path);
-            return;
+            throw new FileNotFoundException($"Elberfelder 1871 text file does not exist at path: {elb1871Path}. Check AppSettings:DatabaseSeeding:SolutionAssetsPath.", elb1871Path);
         }
 
         await _strategy.SaveToDatabase(elb1871Path, token);

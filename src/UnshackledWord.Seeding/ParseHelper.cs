@@ -1,6 +1,6 @@
 ﻿using UnshackledWord.Domain.Models.BibleStructure;
 
-namespace UnshackledWord.Tooling.SeedDb.Services;
+namespace UnshackledWord.Seeding;
 
 public class ParseHelper
 {

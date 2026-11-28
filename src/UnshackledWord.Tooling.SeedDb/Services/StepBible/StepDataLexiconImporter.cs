@@ -1,4 +1,4 @@
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.LexiconParser;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;

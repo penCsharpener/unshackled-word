@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.Seed.Anchoring;
 using UnshackledWord.Domain.Models.Settings;
-using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+using UnshackledWord.Seeding.ElberfelderParser;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RepoSeed.Verbs;
 

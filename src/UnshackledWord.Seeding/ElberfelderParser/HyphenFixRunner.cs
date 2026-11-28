@@ -3,9 +3,9 @@ using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Infrastructure.Seed;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+namespace UnshackledWord.Seeding.ElberfelderParser;
 
 public class HyphenFixRunner : IRunner
 {

@@ -1,4 +1,4 @@
-namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+namespace UnshackledWord.Seeding.ElberfelderParser;
 
 public static class ValidHyphenWords
 {

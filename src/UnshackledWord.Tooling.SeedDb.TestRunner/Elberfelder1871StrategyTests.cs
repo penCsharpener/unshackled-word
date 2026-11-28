@@ -1,6 +1,6 @@
 using UnshackledWord.Infrastructure.Seed.BaseText;
 ﻿using Microsoft.Extensions.DependencyInjection;
-using UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+using UnshackledWord.Seeding.ElberfelderParser;
 using UnshackledWord.Tooling.SeedDb.TestRunner.Extensions;
 
 namespace UnshackledWord.Tooling.SeedDb.TestRunner;

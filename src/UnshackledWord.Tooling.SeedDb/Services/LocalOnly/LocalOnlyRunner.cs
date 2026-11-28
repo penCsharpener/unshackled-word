@@ -1,4 +1,4 @@
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.LocalOnly.Repositories;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.LocalOnly;

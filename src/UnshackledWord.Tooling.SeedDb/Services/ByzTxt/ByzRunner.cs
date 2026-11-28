@@ -1,4 +1,4 @@
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.ByzTxt;
 

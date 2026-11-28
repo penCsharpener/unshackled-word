@@ -1,6 +1,6 @@
 using UnshackledWord.Domain.WebApi.Maintainer;
 using UnshackledWord.Infrastructure.Seed.Lxx;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.Swete;

@@ -1,11 +1,12 @@
-﻿using System.Text;
+﻿using UnshackledWord.Seeding;
+using System.Text;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.Models.Grammar;
 using UnshackledWord.Tooling.SeedDb.Models;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 

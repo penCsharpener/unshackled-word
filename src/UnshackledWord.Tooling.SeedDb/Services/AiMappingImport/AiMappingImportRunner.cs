@@ -2,7 +2,7 @@ using UnshackledWord.Infrastructure.Seed.Mappings;
 using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Infrastructure.Seed.Mappings;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.AiMappingImport;

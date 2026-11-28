@@ -1,4 +1,4 @@
-namespace UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
+namespace UnshackledWord.Seeding.RevisionSeed;
 
 /// <summary>One line of assets/seed/revision/levels.csv (column names = header names).</summary>
 public sealed class RevisionLevelCsvRow

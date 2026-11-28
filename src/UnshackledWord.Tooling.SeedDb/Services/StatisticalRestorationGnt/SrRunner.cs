@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StatisticalRestorationGnt;
 

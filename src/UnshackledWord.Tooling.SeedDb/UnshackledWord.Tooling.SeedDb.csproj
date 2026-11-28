@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UnshackledWord.Application\UnshackledWord.Application.csproj"/>
     <ProjectReference Include="..\UnshackledWord.Infrastructure\UnshackledWord.Infrastructure.csproj"/>
+    <ProjectReference Include="..\UnshackledWord.Seeding\UnshackledWord.Seeding.csproj"/>
     <ProjectReference Include="..\UnshackledWord.Persistence.Postgres\UnshackledWord.Persistence.Postgres.csproj" />
 <!--    <ProjectReference Include="..\UnshackledWord.Tooling.Sqlite.Migration\UnshackledWord.Tooling.Sqlite.Migration.csproj"/>-->
 <!--    <ProjectReference Include="..\UnshackledWord.Persistence.Sqlite\UnshackledWord.Persistence.Sqlite.csproj"/>-->

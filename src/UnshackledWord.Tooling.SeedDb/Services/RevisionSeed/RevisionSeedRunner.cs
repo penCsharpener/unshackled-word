@@ -1,5 +1,5 @@
 using UnshackledWord.Infrastructure.Seed.Revision;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.RevisionSeed;
 

@@ -1,4 +1,4 @@
-namespace UnshackledWord.Tooling.SeedDb.Services.SttsSeed;
+namespace UnshackledWord.Seeding.SttsSeed;
 
 /// <summary>One line of assets/seed/stts-tags.csv (column names = header names).</summary>
 public sealed class SttsTagCsvRow

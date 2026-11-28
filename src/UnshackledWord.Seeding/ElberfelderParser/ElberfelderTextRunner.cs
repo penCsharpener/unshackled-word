@@ -2,9 +2,9 @@ using UnshackledWord.Infrastructure.Seed.BaseText;
 ﻿using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+namespace UnshackledWord.Seeding.ElberfelderParser;
 
 /// <summary>
 /// Imports the assets/elberfelder1871-theword-export.txt file and from it the Hebrew and LXX verse counting
@@ -37,8 +37,7 @@ public class ElberfelderTextRunner : IRunner
 
         if (_fileService.FileExists(elb1871Path) is false)
         {
-            _logger.LogInformation("Elberfelder 1871 text file does not exist at path: {FilePath}. Skipping import.", elb1871Path);
-            return;
+            throw new FileNotFoundException($"Elberfelder 1871 text file does not exist at path: {elb1871Path}. Check AppSettings:DatabaseSeeding:SolutionAssetsPath.", elb1871Path);
         }
 
         using var scope = _scopeFactory.CreateScope();

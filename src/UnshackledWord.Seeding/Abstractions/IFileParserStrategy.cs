@@ -1,4 +1,4 @@
-﻿namespace UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+﻿namespace UnshackledWord.Seeding.Abstractions;
 
 /// <summary>
 /// Parses the file and save the data to the database

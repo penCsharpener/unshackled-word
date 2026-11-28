@@ -8,7 +8,7 @@ using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Domain.Models.Settings;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.ElberfelderParser;
+namespace UnshackledWord.Seeding.ElberfelderParser;
 
 public partial class HyphenTypoDetectionService
 {

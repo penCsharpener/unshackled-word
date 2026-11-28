@@ -5,9 +5,9 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Options;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Domain.Models.Settings;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 
-namespace UnshackledWord.Tooling.SeedDb.Services.SttsSeed;
+namespace UnshackledWord.Seeding.SttsSeed;
 
 /// <summary>
 /// Seeds "SttsTags" from assets/seed/stts-tags.csv (the 54 STTS tags). Runs first, before any morphology import, because

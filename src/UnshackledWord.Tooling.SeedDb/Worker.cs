@@ -30,6 +30,7 @@ public class Worker : BackgroundService
         catch (Exception e)
         {
             _logger.LogError(e, "An error occurred during database seeding.");
+            Environment.ExitCode = 1;
             _lifetime.StopApplication();
         }
         finally

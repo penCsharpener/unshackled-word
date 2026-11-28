@@ -3,7 +3,7 @@ using UnshackledWord.Domain.Extensions;
 using UnshackledWord.Domain.Models.BibleStructure;
 using UnshackledWord.Domain.Models.Dbo;
 using UnshackledWord.Infrastructure.Repositories;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.Tsk.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.Tsk;

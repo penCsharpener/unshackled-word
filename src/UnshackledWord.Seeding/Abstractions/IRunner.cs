@@ -1,4 +1,4 @@
-﻿namespace UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+﻿namespace UnshackledWord.Seeding.Abstractions;
 
 public interface IRunner
 {

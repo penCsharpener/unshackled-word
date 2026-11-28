@@ -1,7 +1,7 @@
 using System.Text;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Abstractions.Step;
-using UnshackledWord.Tooling.SeedDb.Services.Abstractions;
+using UnshackledWord.Seeding.Abstractions;
 using UnshackledWord.Tooling.SeedDb.Services.StepBible.Models;
 
 namespace UnshackledWord.Tooling.SeedDb.Services.StepBible;
