@@ -34,4 +34,18 @@ public class VerseCountingMapProviderTests
         (await provider.GetAsync()).MapStart(1).ShouldBe(1);
         calls.ShouldBe(2);
     }
+
+    [Fact]
+    public async Task GetAsync_DoesNotCacheAnEmptyLoad()
+    {
+        // roadmap 0031: on an empty database the reader may ask before the setup page seeds BibleVerseCountingMapping
+        var calls = 0;
+        var provider = new VerseCountingMapProvider(_ => Task.FromResult<IReadOnlyList<VerseCountingRow>>(
+            ++calls == 1 ? [] : [new VerseCountingRow(39004005, 39003023)]));
+
+        (await provider.GetAsync()).MapStart(39004005).ShouldBe(39004005);
+        (await provider.GetAsync()).MapStart(39004005).ShouldBe(39003023);
+        (await provider.GetAsync()).MapStart(39004005).ShouldBe(39003023);
+        calls.ShouldBe(2);
+    }
 }

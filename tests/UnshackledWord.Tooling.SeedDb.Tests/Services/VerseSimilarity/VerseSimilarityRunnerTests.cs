@@ -61,6 +61,15 @@ public class VerseSimilarityRunnerTests
         await _repository.Received(1).TryAcquireRebuildLockAsync(Arg.Any<CancellationToken>());
     }
 
+    [Fact]
+    public async Task Run_RebuildNotSucceeded_Throws()
+    {
+        _repository.PairsMissingAsync(Arg.Any<CancellationToken>()).Returns(true);
+        _repository.TryAcquireRebuildLockAsync(Arg.Any<CancellationToken>()).Returns((IAsyncDisposable?)null);
+
+        await Should.ThrowAsync<InvalidOperationException>(() => NewRunner().Run(TestContext.Current.CancellationToken));
+    }
+
     [Theory]
     [InlineData("UnshackledWord.Tooling.SeedDb")]
     [InlineData("UnshackledWord.Tooling.WebApi")]

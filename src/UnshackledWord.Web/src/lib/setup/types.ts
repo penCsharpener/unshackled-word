@@ -80,6 +80,8 @@ export interface SetupStatus {
   job?: SetupJob;
   /** Step the running job works on right now (server: `currentStep` of `GET /admin/setup`). */
   currentStep?: SetupStepKey;
+  /** True while another seed job, export or backfill holds the shared lock (a run would answer 409). */
+  otherJobRunning?: boolean;
 }
 
 export type RunSetupRequest = { keys: SetupStepKey[] } | { group: SetupGroup } | { all: true };

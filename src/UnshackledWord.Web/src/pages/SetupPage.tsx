@@ -51,7 +51,9 @@ function SetupView() {
   const labels = (key: SetupStepKey) => t(`setup.step.${key}`);
   const steps = status.data?.steps ?? [];
   const job = status.data?.job;
-  const jobRunning = job?.status === "running" || run.isPending;
+  // any job holding the shared seed lock (setup, seed import, export) disables the run buttons
+  const jobRunning =
+    job?.status === "running" || status.data?.otherJobRunning === true || run.isPending;
   const { done, total } = summarize(steps);
   const allDone = total > 0 && done === total;
   const canRunAll = runnableKeys(steps, { all: true }).length > 0;

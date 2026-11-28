@@ -4,6 +4,7 @@ using UnshackledWord.Domain.WebApi.Admin;
 using UnshackledWord.Domain.WebApi.Maintainer;
 using UnshackledWord.Seeding.Catalog;
 using UnshackledWord.Tooling.WebApi.Auth;
+using UnshackledWord.Tooling.WebApi.Endpoints.Maintainer.ExportSeed;
 using UnshackledWord.Tooling.WebApi.Endpoints.Maintainer.SeedAdmin;
 
 namespace UnshackledWord.Tooling.WebApi.Endpoints.Admin.Setup.Get;
@@ -14,12 +15,14 @@ public sealed class Endpoint : EndpointWithoutRequest<SetupStatusResponse>
     private readonly SetupStatusService _service;
     private readonly SetupRunState _state;
     private readonly SeedJobRunner _runner;
+    private readonly SeedExportCoordinator _coordinator;
 
-    public Endpoint(SetupStatusService service, SetupRunState state, SeedJobRunner runner)
+    public Endpoint(SetupStatusService service, SetupRunState state, SeedJobRunner runner, SeedExportCoordinator coordinator)
     {
         _service = service;
         _state = state;
         _runner = runner;
+        _coordinator = coordinator;
     }
 
     public override void Configure()
@@ -37,6 +40,7 @@ public sealed class Endpoint : EndpointWithoutRequest<SetupStatusResponse>
         var snapshot = _runner.Snapshot();
         status.Job = snapshot is { Operation: SetupOperation.Name } ? snapshot : null;
         status.CurrentStep = status.Job is { Status: SeedJobResponse.Running } ? _state.CurrentStep : null;
+        status.OtherJobRunning = status.Job is not { Status: SeedJobResponse.Running } && _coordinator.IsRunning ? true : null;
         await Send.OkAsync(status, ct);
     }
 }

@@ -27,14 +27,22 @@ public sealed class LxxLexiconCache : ILxxLexiconSource
         await _gate.WaitAsync(token);
         try
         {
-            if (_lexicon is null)
+            if (_lexicon is { } loaded)
             {
-                using var connection = await _factory.CreateDbConnectionAsync(token);
-                var rows = await connection.QueryAsync<(string Strongs, string Lemma, string Gloss)>(new CommandDefinition(LxxAgentSql.Lexicon, cancellationToken: token));
-                _lexicon = LxxLexicon.Build(rows.Select(r => new LxxLexiconEntry(r.Strongs, r.Lemma, r.Gloss ?? string.Empty)));
+                return loaded;
             }
 
-            return _lexicon;
+            using var connection = await _factory.CreateDbConnectionAsync(token);
+            var rows = (await connection.QueryAsync<(string Strongs, string Lemma, string Gloss)>(new CommandDefinition(LxxAgentSql.Lexicon, cancellationToken: token))).AsList();
+            var lexicon = LxxLexicon.Build(rows.Select(r => new LxxLexiconEntry(r.Strongs, r.Lemma, r.Gloss ?? string.Empty)));
+
+            // an empty database (before the setup page's STEP lexicon step, roadmap 0031) is not cached, so the next call reads the seeded rows
+            if (rows.Count > 0)
+            {
+                _lexicon = lexicon;
+            }
+
+            return lexicon;
         }
         finally
         {

@@ -9,7 +9,8 @@ namespace UnshackledWord.Seeding.Derived;
 /// <see cref="StepDataBibleTextImporter.RefreshGreekEditionsIfNeededAsync"/>: only when this run inserted STEP words or the table is empty.
 /// It runs after <see cref="StepDataRelationshipImporter"/>, not inside the word import, because the Hebrew tokens are read from
 /// <c>StepHebrewWordsNormalized</c>, which that runner fills; on a fresh database an earlier rebuild would score an empty Old Testament and the
-/// gate would then never fill it. A failed rebuild is logged and leaves the old pairs; it does not stop the seed.
+/// gate would then never fill it. A failed rebuild leaves the old pairs and fails the step (roadmap 0031 review: the setup page shows it as failed,
+/// the CLI exits non-zero), instead of ending a job "succeeded" with an empty table.
 /// </summary>
 public sealed class VerseSimilarityRunner : IRunner
 {
@@ -27,7 +28,14 @@ public sealed class VerseSimilarityRunner : IRunner
         _logger = logger;
     }
 
-    public Task Run(CancellationToken token = default) => RebuildIfNeededAsync(_stepImport.WordsInserted, token);
+    public async Task Run(CancellationToken token = default)
+    {
+        var result = await RebuildIfNeededAsync(_stepImport.WordsInserted, token);
+        if (result is not null && result.Status != VerseSimilarityRebuildStatus.Succeeded)
+        {
+            throw new InvalidOperationException($"Verse similarity rebuild {result.Status}: {result.Error}");
+        }
+    }
 
     /// <summary>Returns the rebuild result, or null when the table is up to date and nothing ran.</summary>
     public async Task<VerseSimilarityRebuildResult?> RebuildIfNeededAsync(bool stepWordsInserted, CancellationToken token = default)

@@ -94,6 +94,9 @@ public sealed class SetupStatusResponse
 
     /// <summary>The running or last setup job of this process (same shape as api/maintainer/seed/status), null when none.</summary>
     public SeedJobResponse? Job { get; set; }
+
+    /// <summary>True while another seed job, export or backfill holds the shared lock (a run would answer 409); omitted otherwise.</summary>
+    public bool? OtherJobRunning { get; set; }
 }
 
 /// <summary>

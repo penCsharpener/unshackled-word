@@ -17,7 +17,9 @@ export function useSetupStatus(enabled: boolean) {
         withJobDetails(await api.get<SetupStatus>("/admin/setup", signal)),
       enabled,
       refetchInterval: (query) =>
-        query.state.data?.job?.status === "running" ? SETUP_POLL_MS : false,
+        query.state.data?.job?.status === "running" || query.state.data?.otherJobRunning
+          ? SETUP_POLL_MS
+          : false,
     }),
   );
 }

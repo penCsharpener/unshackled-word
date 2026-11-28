@@ -30,8 +30,21 @@ public sealed class VerseCountingMapProvider : IVerseCountingMapProvider
         await _gate.WaitAsync(token);
         try
         {
-            // A failed load is not cached; the next call tries again.
-            return _map ??= new VerseCountingMap(await _load(token));
+            if (_map is { } loaded)
+            {
+                return loaded;
+            }
+
+            // A failed load is not cached; neither is an empty one (a database before the setup page's Elb1871 text step, roadmap 0031),
+            // so the next call reads the seeded rows.
+            var rows = await _load(token);
+            var map = new VerseCountingMap(rows);
+            if (rows.Count > 0)
+            {
+                _map = map;
+            }
+
+            return map;
         }
         finally
         {
