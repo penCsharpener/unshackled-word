@@ -1,4 +1,6 @@
 using System.Data;
+using System.Net;
+using System.Text.RegularExpressions;
 using Dapper;
 using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Features.AgentMapping;
@@ -140,13 +142,128 @@ public sealed class LxxReviewRepository : ILxxReviewRepository
         var links = (await connection.QueryAsync<LxxReviewLinkRow>(new CommandDefinition(LxxReviewSql.Links, new { Ids = words.Select(w => w.Id).ToArray() }, transaction, cancellationToken: token))).ToList();
         var proposals = (await connection.QueryAsync<LxxReviewProposalRow>(new CommandDefinition(LxxReviewSql.OpenProposals, new { Ids = unitIds }, transaction, cancellationToken: token))).ToList();
 
-        return new LxxReviewState { Units = units, Words = words, HebrewWords = hebrew, Links = links, Proposals = proposals };
+        var (german, germanIds, notes) = await ReadHebrewTipsAsync(connection, transaction, hebrew, token);
+        var germanWords = hebRefIds.Length == 0
+            ? []
+            : (await connection.QueryAsync<LxxReviewGermanVerseWordRow>(new CommandDefinition(LxxReviewSql.GermanVerseWords, new { HebRefIds = hebRefIds }, transaction, cancellationToken: token))).ToList();
+
+        return new LxxReviewState
+        {
+            Units = units,
+            Words = words,
+            HebrewWords = hebrew,
+            Links = links,
+            Proposals = proposals,
+            HebrewGerman = german,
+            HebrewGermanIds = germanIds,
+            HebrewNotes = notes,
+            GermanWords = germanWords,
+        };
+    }
+
+    private static readonly Regex StrongsKey = new(@"^H0*(\d+)_?([A-Za-z]?)", RegexOptions.Compiled);
+    private const int NoteLimit = 400;
+
+    /// <summary>The hover tip data of the Hebrew words: mapped Elb1871 words and the shortened Strong's lexicon note.</summary>
+    private static async Task<(Dictionary<int, string> German, Dictionary<int, IReadOnlyList<int>> GermanIds, Dictionary<int, string> Notes)> ReadHebrewTipsAsync(IDbConnection connection, IDbTransaction? transaction, List<AgentSourceWordRow> hebrew, CancellationToken token)
+    {
+        var german = new Dictionary<int, string>();
+        var germanIds = new Dictionary<int, IReadOnlyList<int>>();
+        var notes = new Dictionary<int, string>();
+        if (hebrew.Count == 0)
+        {
+            return (german, germanIds, notes);
+        }
+
+        var ids = hebrew.Select(h => h.Id).ToArray();
+        var rows = await connection.QueryAsync<LxxReviewGermanRow>(new CommandDefinition(LxxReviewSql.HebrewGerman, new { Ids = ids }, transaction, cancellationToken: token));
+        foreach (var g in rows.GroupBy(r => r.HebrewWordId))
+        {
+            german[g.Key] = string.Join(" ", g.Select(r => r.Word));
+            germanIds[g.Key] = [.. g.Select(r => r.ElbWordId)];
+        }
+
+        var keys = hebrew.Select(h => (Word: h, Match: h.Strongs is null ? null : StrongsKey.Match(h.Strongs))).Where(x => x.Match is { Success: true }).ToList();
+        if (keys.Count == 0)
+        {
+            return (german, germanIds, notes);
+        }
+
+        var numbers = keys.Select(k => int.Parse(k.Match!.Groups[1].Value)).Distinct().ToArray();
+        var lexicon = (await connection.QueryAsync<LxxReviewLexiconRow>(new CommandDefinition(LxxReviewSql.HebrewLexicon, new { Numbers = numbers }, transaction, cancellationToken: token))).ToList();
+        foreach (var (word, match) in keys)
+        {
+            var number = int.Parse(match!.Groups[1].Value);
+            var extra = match.Groups[2].Value;
+            var entry = lexicon.Where(l => l.Number == number)
+                .OrderBy(l => string.Equals(l.Extra, extra, StringComparison.Ordinal) ? 0 : string.IsNullOrEmpty(l.Extra) ? 1 : 2)
+                .ThenBy(l => l.LanguageId)
+                .FirstOrDefault();
+            var text = PlainNote(entry?.Lexicon);
+            if (text.Length > 0)
+            {
+                notes[word.Id] = text;
+            }
+        }
+
+        return (german, germanIds, notes);
+    }
+
+    /// <summary>Lexicon HTML (<c>&lt;br&gt;</c>, <c>&lt;i&gt;</c>) as plain lines, shortened.</summary>
+    public static string PlainNote(string? html)
+    {
+        if (string.IsNullOrWhiteSpace(html))
+        {
+            return string.Empty;
+        }
+
+        var text = Regex.Replace(html, "<br\\s*/?>", "\n", RegexOptions.IgnoreCase);
+        text = WebUtility.HtmlDecode(Regex.Replace(text, "<[^>]+>", string.Empty)).Trim();
+        return text.Length <= NoteLimit ? text : text[..NoteLimit].TrimEnd() + "…";
     }
 }
 
 /// <summary>The SQL of <see cref="LxxReviewRepository"/>; public for the database tests.</summary>
 public static class LxxReviewSql
 {
+    /// <summary>The Elb1871 words mapped to STEP Hebrew words, in reading order.</summary>
+    public const string HebrewGerman = """
+                                       SELECT m."StepWordId" "HebrewWordId"
+                                            , w."Id" "ElbWordId"
+                                            , w."PlainWord" "Word"
+                                       FROM "unshackled-word"."Elb1871HebrewMapping" m
+                                           JOIN "unshackled-word"."Elb1871Words" w ON w."Id" = m."ElbWordId"
+                                       WHERE 1=1
+                                           AND m."StepWordId" = ANY(@Ids)
+                                       ORDER BY m."StepWordId"
+                                              , w."PositionInVerse"
+                                              , w."Id"
+                                       """;
+
+    /// <summary>The Elb1871 words of the given verses as printed, in reading order.</summary>
+    public const string GermanVerseWords = """
+                                           SELECT w."Id"
+                                                , w."HebRefId"
+                                                , w."WordInContext" "Text"
+                                           FROM "unshackled-word"."Elb1871Words" w
+                                           WHERE 1=1
+                                               AND w."HebRefId" = ANY(@HebRefIds)
+                                           ORDER BY w."HebRefId"
+                                                  , w."PositionInVerse"
+                                           """;
+
+    /// <summary>Hebrew (0) and Aramaic (1) Strong's lexicon rows of the given numbers.</summary>
+    public const string HebrewLexicon = """
+                                        SELECT ssl."Number"
+                                             , ssl."Extra"
+                                             , ssl."LanguageId"
+                                             , ssl."Lexicon"
+                                        FROM "unshackled-word"."StepStrongsLexicon" ssl
+                                        WHERE 1=1
+                                            AND ssl."LanguageId" IN (0, 1)
+                                            AND ssl."Number" = ANY(@Numbers)
+                                        """;
+
     /// <summary>Per book and Rahlfs chapter: units with a proposed tag or an open AI proposal, units with an AI proposal, low-confidence AI words.</summary>
     public const string ChapterCounts = """
                                         WITH proposed AS (

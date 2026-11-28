@@ -11,6 +11,7 @@ import {
 import { useCallback, useState } from "react";
 import type { AgentRunBlock } from "@/lib/agent/types";
 import { api } from "@/lib/api";
+import type { Morphology } from "@/lib/bible/types";
 import { invalidateReaderLxx, lxxMaintainerKeys } from "./lxx";
 
 // ---------- contracts ----------
@@ -72,6 +73,14 @@ export interface LxxReviewHebrewWord {
   strongs?: string;
   gloss?: string;
   morphology?: string;
+  /** `morphology` decoded into translation keys (root segment). */
+  morphologyDetail?: Morphology;
+  /** Elb1871 words mapped to this Hebrew word. */
+  german?: string;
+  /** Ids of those words in the unit's `german` verse (highlight). */
+  germanWordIds?: number[];
+  /** Strong's lexicon note, plain text. */
+  note?: string;
 }
 
 export interface LxxReviewFlag {
@@ -86,6 +95,11 @@ export interface LxxReviewProposal {
   createdAt: string;
   note?: string;
   flags: LxxReviewFlag[];
+}
+
+export interface LxxReviewGermanWord {
+  id: number;
+  text: string;
 }
 
 export interface LxxReviewUnit {
@@ -103,6 +117,8 @@ export interface LxxReviewUnit {
   hasConfirmed: boolean;
   words: LxxReviewWord[];
   hebrew: LxxReviewHebrewWord[];
+  /** Elb1871 verse of `hebRefId` word by word (with punctuation); empty for additions. */
+  german: LxxReviewGermanWord[];
   proposal?: LxxReviewProposal;
 }
 

@@ -32,6 +32,7 @@ const base = {
   isAddition: false,
   open: true,
   hasConfirmed: false,
+  german: [],
 };
 
 export const unitA: LxxReviewUnit = {
@@ -54,8 +55,25 @@ export const unitA: LxxReviewUnit = {
     word(1002, 2, "ἐγένετο", { ai: ai("γίνομαι", "G1096", "V-2ADI-3S", [502], true) }),
   ],
   hebrew: [
-    { id: 501, number: 1, text: "וַיְהִי" },
+    {
+      id: 501,
+      number: 1,
+      text: "וַיְהִי",
+      strongs: "H1961",
+      gloss: "to be",
+      german: "Und es geschah",
+      germanWordIds: [71, 72, 73],
+      note: "1) to be, become",
+    },
     { id: 502, number: 2, text: "בִּימֵי" },
+  ],
+  german: [
+    { id: 71, text: "Und" },
+    { id: 72, text: "es" },
+    { id: 73, text: "geschah" },
+    { id: 74, text: "in" },
+    { id: 75, text: "den" },
+    { id: 76, text: "Tagen," },
   ],
   proposal: {
     id: 11,

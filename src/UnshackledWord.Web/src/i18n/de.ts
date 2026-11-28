@@ -3607,6 +3607,8 @@ export const de = {
     hebrew: {
       addition: "Zusatz ohne hebräische Vorlage",
       linked: "verknüpft",
+      german: "Deutsch",
+      germanVerse: "Elberfelder 1871",
     },
     edit: {
       query: "Lemma oder Strong's suchen",

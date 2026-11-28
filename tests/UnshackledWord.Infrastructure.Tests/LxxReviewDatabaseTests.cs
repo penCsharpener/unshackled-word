@@ -133,6 +133,17 @@ public class LxxReviewDatabaseTests
     });
 
     [Fact]
+    public async Task GermanVerseWords_ReadTheElbVerseInOrder_AndMappedIdsBelongToIt() => await WithRuthAsync(async f =>
+    {
+        var verse = (await f.C.QueryAsync<LxxReviewGermanVerseWordRow>(LxxReviewSql.GermanVerseWords, new { HebRefIds = new[] { RuthOneOne } }, f.T)).ToList();
+        var mapped = (await f.C.QueryAsync<LxxReviewGermanRow>(LxxReviewSql.HebrewGerman, new { Ids = f.HebrewIds }, f.T)).ToList();
+
+        verse.ShouldNotBeEmpty();
+        verse.ShouldAllBe(w => w.HebRefId == RuthOneOne && w.Text != "");
+        mapped.Select(m => m.ElbWordId).ShouldBeSubsetOf(verse.Select(w => w.Id));
+    });
+
+    [Fact]
     public async Task Confirm_WritesTagsLinksAuditAndClosesTheProposal_ThenAnEditIsAnEditAudit() => await WithRuthAsync(async f =>
     {
         var proposalId = await InsertProposalAsync(f, (0, "καί", "G2532", "CONJ", "high", 0), (1, "γίνομαι", "G1096", "V-2ADI-3S", "high", 1));

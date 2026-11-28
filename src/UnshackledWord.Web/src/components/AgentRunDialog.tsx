@@ -410,7 +410,11 @@ function AgentRunDialogBody({
     ) : (
       <div className="flex flex-wrap justify-end gap-2">
         {(progressRun.data?.proposedVerses ?? 0) > 0 ? (
-          <Link to={reviewHref(runId ?? 0)} className={buttonClasses({ variant: "secondary" })}>
+          <Link
+            to={reviewHref(runId ?? 0)}
+            onClick={onClose}
+            className={buttonClasses({ variant: "secondary" })}
+          >
             {t("agent.dialog.review")}
           </Link>
         ) : null}

@@ -1,9 +1,11 @@
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
 import { FormError } from "@/components/FormError";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatStamp } from "@/lib/format";
 import type {
+  LxxReviewGermanWord,
   LxxReviewUnit,
   UnitDraft,
   WordDraft,
@@ -79,6 +81,7 @@ export function UnitCard({
     activeWord ? (draft?.words.get(activeWord.id)?.hebrewWordIds ?? []) : [],
   );
   const unitLinks = new Set([...(draft?.words.values() ?? [])].flatMap((w) => w.hebrewWordIds));
+  const [tipWordIds, setTipWordIds] = useState<ReadonlySet<number>>(new Set());
 
   return (
     <article
@@ -149,7 +152,9 @@ export function UnitCard({
         unitLinks={unitLinks}
         enabled={activeWord !== undefined}
         onToggle={onToggleHebrew}
+        onTip={(word) => setTipWordIds(new Set(word?.germanWordIds ?? []))}
       />
+      <GermanLine words={unit.german} marked={tipWordIds} />
 
       {unit.proposal && unit.proposal.flags.length > 0 ? (
         <ul className="flex flex-col gap-1 text-sm text-fg-muted">
@@ -196,5 +201,37 @@ export function UnitCard({
         message={saveState === "error" ? (draft?.error ?? t("lxxReview.error.save")) : ""}
       />
     </article>
+  );
+}
+
+/** The Elb1871 verse of the unit's Hebrew verse, for reference; the words mapped to the Hebrew word under the tip are marked. */
+function GermanLine({
+  words,
+  marked,
+}: {
+  words: LxxReviewGermanWord[];
+  marked: ReadonlySet<number>;
+}) {
+  const { t } = useTranslation();
+  if (words.length === 0) return null;
+  return (
+    <p
+      dir="ltr"
+      lang="de"
+      data-testid="lxx-german-verse"
+      className="font-serif text-sm text-fg-muted"
+    >
+      <span className="font-sans font-medium">{t("lxxReview.hebrew.germanVerse")}:</span>{" "}
+      {words.map((word, index) => (
+        <Fragment key={word.id}>
+          {index > 0 ? " " : null}
+          {marked.has(word.id) ? (
+            <mark className="rounded-sm bg-mark-linked px-0.5 text-fg">{word.text}</mark>
+          ) : (
+            word.text
+          )}
+        </Fragment>
+      ))}
+    </p>
   );
 }

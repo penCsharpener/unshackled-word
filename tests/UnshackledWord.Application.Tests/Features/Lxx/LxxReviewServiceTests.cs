@@ -445,6 +445,70 @@ public class LxxReviewServiceTests
     }
 
     [Fact]
+    public void BuildChapter_AddsTheGermanVerseOfTheHebRefId_AndTheMappedWordIdsPerHebrewWord()
+    {
+        var state = State(PlainWords());
+        state = new LxxReviewState
+        {
+            Units = state.Units,
+            Words = state.Words,
+            HebrewWords = state.HebrewWords,
+            HebrewGerman = new Dictionary<int, string> { [501] = "Und es geschah" },
+            HebrewGermanIds = new Dictionary<int, IReadOnlyList<int>> { [501] = [71, 72, 73], [502] = [] },
+            GermanWords =
+            [
+                new LxxReviewGermanVerseWordRow { Id = 71, HebRefId = 8_001_001, Text = "Und" },
+                new LxxReviewGermanVerseWordRow { Id = 72, HebRefId = 8_001_001, Text = "es" },
+                new LxxReviewGermanVerseWordRow { Id = 73, HebRefId = 8_001_001, Text = "geschah," },
+                new LxxReviewGermanVerseWordRow { Id = 99, HebRefId = 8_001_002, Text = "Fremd" },
+            ],
+        };
+
+        var unit = LxxReviewService.BuildChapter(8, 1, state, Lexicon).Units.Single();
+
+        unit.German.Select(g => g.Text).ShouldBe(["Und", "es", "geschah,"]);
+        unit.Hebrew[0].German.ShouldBe("Und es geschah");
+        unit.Hebrew[0].GermanWordIds.ShouldBe([71, 72, 73]);
+        unit.Hebrew[1].GermanWordIds.ShouldBeNull();
+        unit.Hebrew[2].GermanWordIds.ShouldBeNull();
+    }
+
+    [Fact]
+    public void BuildChapter_DecodesTheHebrewMorphology_RootSegment()
+    {
+        var state = State(PlainWords());
+        state = new LxxReviewState
+        {
+            Units = state.Units,
+            Words = state.Words,
+            HebrewWords = [new AgentSourceWordRow { Id = 501, RefId = 8_001_001, Position = 1, Text = "וַיְהִי", Strongs = "H1961", Morphology = "HC/Vqw3ms" }],
+        };
+
+        var hebrew = LxxReviewService.BuildChapter(8, 1, state, Lexicon).Units.Single().Hebrew.Single();
+
+        hebrew.MorphologyDetail!.Code.ShouldBe("HC/Vqw3ms");
+        hebrew.MorphologyDetail.PartOfSpeech.ShouldBe("verb");
+        hebrew.MorphologyDetail.Person.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void BuildChapter_AnAdditionWithoutHebRefId_HasNoGermanVerse()
+    {
+        var state = State(PlainWords());
+        state = new LxxReviewState
+        {
+            Units = [new LxxAgentUnitRow { Id = UnitId, BibleBookId = 8, Chapter = 1, Verse = 1, MapKind = "addition", SortOrder = 1 }],
+            Words = state.Words,
+            GermanWords = [new LxxReviewGermanVerseWordRow { Id = 71, HebRefId = 8_001_001, Text = "Und" }],
+        };
+
+        var unit = LxxReviewService.BuildChapter(8, 1, state, Lexicon).Units.Single();
+
+        unit.German.ShouldBeEmpty();
+        unit.Hebrew.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void BuildBooks_GroupsChaptersAndSumsCounts()
     {
         var books = LxxReviewService.BuildBooks(

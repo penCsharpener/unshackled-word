@@ -1,3 +1,5 @@
+using UnshackledWord.Domain.WebApi.Elberfelder.GetWordDetail;
+
 namespace UnshackledWord.Domain.WebApi.Maintainer;
 
 // Roadmap 0028.7f: the LXX review page /edit/lxx (Admin/Maintainer). Chapters are Rahlfs chapters (LxxVerses.Chapter), as the AI proposals and
@@ -105,6 +107,18 @@ public sealed class LxxReviewHebrewWordResponse
     public string? Strongs { get; set; }
     public string? Gloss { get; set; }
     public string? Morphology { get; set; }
+
+    /// <summary>The Elb1871 words mapped to this Hebrew word, space separated; absent when none.</summary>
+    /// <summary><see cref="Morphology"/> decoded into translation keys (root segment); absent without a code.</summary>
+    public MorphologyResponse? MorphologyDetail { get; set; }
+
+    public string? German { get; set; }
+
+    /// <summary>Ids of the Elb1871 words mapped to this Hebrew word (see <see cref="LxxReviewUnitResponse.German"/>); absent when none.</summary>
+    public List<int>? GermanWordIds { get; set; }
+
+    /// <summary>The Strong's lexicon note as plain text (shortened); absent when there is none.</summary>
+    public string? Note { get; set; }
 }
 
 public sealed class LxxReviewFlagResponse
@@ -155,7 +169,18 @@ public sealed class LxxReviewUnitResponse
 
     public List<LxxReviewWordResponse> Words { get; set; } = [];
     public List<LxxReviewHebrewWordResponse> Hebrew { get; set; } = [];
+
+    /// <summary>The Elb1871 verse of <see cref="HebRefId"/> word by word, for reference under the Hebrew line; empty for additions.</summary>
+    public List<LxxReviewGermanWordResponse> German { get; set; } = [];
+
     public LxxReviewProposalResponse? Proposal { get; set; }
+}
+
+/// <summary>One Elb1871 word as printed (with punctuation).</summary>
+public sealed class LxxReviewGermanWordResponse
+{
+    public int Id { get; set; }
+    public string Text { get; set; } = string.Empty;
 }
 
 /// <summary>Answer of <c>GET api/maintainer/lxx/review/{bibleBookId}/{chapter}</c>: every unit of the Rahlfs chapter in Swete's reading order.</summary>

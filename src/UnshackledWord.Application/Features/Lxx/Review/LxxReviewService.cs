@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using UnshackledWord.Application.Features.AgentMapping;
 using UnshackledWord.Application.Features.AgentMapping.Lxx;
+using UnshackledWord.Application.Features.VerseMapping;
 using UnshackledWord.Domain.WebApi.Maintainer;
 
 namespace UnshackledWord.Application.Features.Lxx.Review;
@@ -109,7 +110,14 @@ public sealed partial class LxxReviewService
                     Strongs = h.Strongs,
                     Gloss = h.Gloss,
                     Morphology = h.Morphology,
+                    MorphologyDetail = MorphologyResponses.Decode(true, h.Morphology),
+                    German = state.HebrewGerman.GetValueOrDefault(h.Id),
+                    GermanWordIds = state.HebrewGermanIds.TryGetValue(h.Id, out var ids) && ids.Count > 0 ? [.. ids] : null,
+                    Note = state.HebrewNotes.GetValueOrDefault(h.Id),
                 }).ToList(),
+                German = unit.HebRefId is { } refId
+                    ? [.. state.GermanWords.Where(g => g.HebRefId == refId).Select(g => new LxxReviewGermanWordResponse { Id = g.Id, Text = g.Text })]
+                    : [],
             };
 
             foreach (var word in view.Words)

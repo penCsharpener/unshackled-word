@@ -34,12 +34,49 @@ public sealed class LxxReviewProposalRow
     public DateTime CreatedAt { get; set; }
 }
 
+/// <summary>A German Elb1871 word mapped to a STEP Hebrew word.</summary>
+public sealed class LxxReviewGermanRow
+{
+    public int HebrewWordId { get; set; }
+    public int ElbWordId { get; set; }
+    public string Word { get; set; } = string.Empty;
+}
+
+/// <summary>One word of an Elb1871 verse as printed (with punctuation), for the German reference line under the Hebrew.</summary>
+public sealed class LxxReviewGermanVerseWordRow
+{
+    public int Id { get; set; }
+    public int HebRefId { get; set; }
+    public string Text { get; set; } = string.Empty;
+}
+
+/// <summary>A Strong's lexicon row (Hebrew/Aramaic) for the review hover tip.</summary>
+public sealed class LxxReviewLexiconRow
+{
+    public int Number { get; set; }
+    public string? Extra { get; set; }
+    public int LanguageId { get; set; }
+    public string? Lexicon { get; set; }
+}
+
 /// <summary>Units with their words (current tag), stored links, Hebrew words of their <c>HebRefId</c>s and open AI proposals.</summary>
 public sealed class LxxReviewState
 {
     public IReadOnlyList<LxxAgentUnitRow> Units { get; init; } = [];
     public IReadOnlyList<LxxAgentWordRow> Words { get; init; } = [];
     public IReadOnlyList<AgentSourceWordRow> HebrewWords { get; init; } = [];
+
+    /// <summary>Per STEP Hebrew word id: the Elb1871 words mapped to it, in reading order (review hover tip).</summary>
+    public IReadOnlyDictionary<int, string> HebrewGerman { get; init; } = new Dictionary<int, string>();
+
+    /// <summary>Per STEP Hebrew word id: the ids of the Elb1871 words mapped to it (highlight in the German line).</summary>
+    public IReadOnlyDictionary<int, IReadOnlyList<int>> HebrewGermanIds { get; init; } = new Dictionary<int, IReadOnlyList<int>>();
+
+    /// <summary>The Elb1871 words of the units' <c>HebRefId</c>s in reading order (German reference line).</summary>
+    public IReadOnlyList<LxxReviewGermanVerseWordRow> GermanWords { get; init; } = [];
+
+    /// <summary>Per STEP Hebrew word id: the Strong's lexicon note as plain text, shortened (review hover tip).</summary>
+    public IReadOnlyDictionary<int, string> HebrewNotes { get; init; } = new Dictionary<int, string>();
     public IReadOnlyList<LxxReviewLinkRow> Links { get; init; } = [];
     public IReadOnlyList<LxxReviewProposalRow> Proposals { get; init; } = [];
 }

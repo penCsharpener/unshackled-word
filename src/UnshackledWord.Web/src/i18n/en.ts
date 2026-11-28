@@ -3570,6 +3570,8 @@ export const en: Translation = {
     hebrew: {
       addition: "Addition without a Hebrew source",
       linked: "linked",
+      german: "German",
+      germanVerse: "Elberfelder 1871",
     },
     edit: {
       query: "Search lemma or Strong's",

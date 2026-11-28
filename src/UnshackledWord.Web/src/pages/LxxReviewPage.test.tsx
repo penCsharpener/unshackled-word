@@ -370,4 +370,31 @@ describe("LxxReviewPage (roadmap 0028.7f)", () => {
     await userEvent.keyboard("x");
     expect(a.getByRole("checkbox", { name: "Rut 1:1" })).toBeChecked();
   });
+
+  it("shows the Elberfelder verse under the Hebrew and marks the words of the hovered Hebrew word", async () => {
+    stubFetch();
+    renderPage();
+    const a = await card("Rut 1:1");
+    const german = a.getByTestId("lxx-german-verse");
+    expect(german).toHaveTextContent("Elberfelder 1871: Und es geschah in den Tagen,");
+    expect(german.querySelectorAll("mark")).toHaveLength(0);
+
+    await userEvent.hover(a.getByRole("button", { name: /וַיְהִי/ }));
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Deutsch: Und es geschah");
+    expect([...german.querySelectorAll("mark")].map((m) => m.textContent)).toEqual([
+      "Und",
+      "es",
+      "geschah",
+    ]);
+
+    await userEvent.unhover(a.getByRole("button", { name: /וַיְהִי/ }));
+    await waitFor(() => expect(german.querySelectorAll("mark")).toHaveLength(0));
+  });
+
+  it("shows no German verse for a unit without one", async () => {
+    stubFetch();
+    renderPage();
+    const b = await card("Rut 1:2");
+    expect(b.queryByTestId("lxx-german-verse")).toBeNull();
+  });
 });
