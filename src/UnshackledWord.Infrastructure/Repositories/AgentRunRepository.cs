@@ -129,6 +129,7 @@ public static class AgentRunSql
                                            , r."Mode"
                                            , r."IncludeConfirmed"
                                            , r."TextForm"
+                                           , r."BatchSize"
                                            , r."Status"
                                            , r."StatusNote"
                                            , r."InputTokens"

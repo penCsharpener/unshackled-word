@@ -448,6 +448,10 @@ export const en: Translation = {
         truncated: "Showing {{shown}} of {{total}} lemmas.",
         noTopChange: "No first meaning changes.",
       },
+      batchSize: "Entries per call",
+      batchSizeHint:
+        "This many entries go into one model call (1 to {{max}}). A resumed run keeps the value.",
+      batchSizeInvalid: "Entries per call: a whole number from 1 to {{max}}.",
       forms: {
         title: "Study forms by AI",
         intro: "Fills empty or generated study forms. Your own stay untouched.",

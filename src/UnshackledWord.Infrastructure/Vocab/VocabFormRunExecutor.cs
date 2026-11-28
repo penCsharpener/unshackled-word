@@ -8,14 +8,20 @@ namespace UnshackledWord.Infrastructure.Vocab;
 
 /// <summary>
 /// The run loop of mode <c>vocab-form</c> (roadmap 0022.13). Asks the model for the dictionary forms of the entries of the run's rank range
-/// in batches of <see cref="BatchSize"/>, checks every form with <see cref="VocabFormValidator"/> (rejected rows are asked once more with the
+/// in batches of the run's batch size (<see cref="DefaultBatchSize"/> when unset), checks every form with <see cref="VocabFormValidator"/> (rejected rows are asked once more with the
 /// problem listed) and writes the valid ones through <see cref="VocabEntryEditor.ApplyAgentFormAsync(int, string, int?, CancellationToken)"/>
 /// under the run's AI user: only missing or generated forms, origin <c>agent</c>, a changed text bumps like an editor change. Manual and agent
 /// forms are never touched. Resume asks again only for what still has no agent form. The final status note carries the counts.
 /// </summary>
 public sealed class VocabFormRunExecutor
 {
-    public const int BatchSize = 25;
+    /// <summary>Entries per model call when the run has no batch size of its own (runs created before migration 0059).</summary>
+    public const int DefaultBatchSize = 25;
+
+    /// <summary>Upper bound of the maintainer-set batch size.</summary>
+    public const int MaxBatchSize = 200;
+
+    public static int EffectiveBatchSize(int? batchSize) => batchSize is >= 1 and <= MaxBatchSize ? batchSize.Value : DefaultBatchSize;
     public const int MaxConsecutiveFailures = 3;
 
     private readonly VocabFormRepository _forms;
@@ -113,7 +119,7 @@ public sealed class VocabFormRunExecutor
         var status = AgentRunStatuses.Completed;
         string? stopNote = null;
 
-        foreach (var batch in candidates.Chunk(BatchSize))
+        foreach (var batch in candidates.Chunk(EffectiveBatchSize(run.BatchSize)))
         {
             stop.ThrowIfCancellationRequested();
 

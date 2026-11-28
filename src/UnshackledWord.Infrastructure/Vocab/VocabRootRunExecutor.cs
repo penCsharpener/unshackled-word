@@ -10,14 +10,20 @@ namespace UnshackledWord.Infrastructure.Vocab;
 
 /// <summary>
 /// The run loop of mode <c>vocab-root</c> (roadmap 0030.4). Asks the model for the root and the stripped prepositions of the entries of the run's
-/// rank range in batches of <see cref="BatchSize"/>, checks every answer with <see cref="VocabRootAnswerValidator"/> (rejected rows are asked once
+/// rank range in batches of the run's batch size (<see cref="DefaultBatchSize"/> when unset), checks every answer with <see cref="VocabRootAnswerValidator"/> (rejected rows are asked once
 /// more with the problem listed, flagged rows are only reported) and writes the accepted ones through <see cref="VocabRootRunWriter"/> with origin
 /// <c>agent</c> and the run id. Manual rows are never touched; prefill rows only with the option "Vorbefüllung prüfen" (stored as the run's
 /// <c>IncludeConfirmed</c>), and every replacement is listed in the run report. Resume asks again only for what still has no row.
 /// </summary>
 public sealed class VocabRootRunExecutor
 {
-    public const int BatchSize = 25;
+    /// <summary>Entries per model call when the run has no batch size of its own (runs created before migration 0059).</summary>
+    public const int DefaultBatchSize = 25;
+
+    /// <summary>Upper bound of the maintainer-set batch size.</summary>
+    public const int MaxBatchSize = 200;
+
+    public static int EffectiveBatchSize(int? batchSize) => batchSize is >= 1 and <= MaxBatchSize ? batchSize.Value : DefaultBatchSize;
     public const int MaxConsecutiveFailures = 3;
 
     private readonly VocabFormRepository _forms;
@@ -120,7 +126,7 @@ public sealed class VocabRootRunExecutor
         var status = AgentRunStatuses.Completed;
         string? stopNote = null;
 
-        foreach (var batch in candidates.Chunk(BatchSize))
+        foreach (var batch in candidates.Chunk(EffectiveBatchSize(run.BatchSize)))
         {
             stop.ThrowIfCancellationRequested();
 

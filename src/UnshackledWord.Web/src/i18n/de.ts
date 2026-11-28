@@ -450,6 +450,10 @@ export const de = {
         truncated: "Gezeigt werden {{shown}} von {{total}} Lemmata.",
         noTopChange: "Keine erste Bedeutung ändert sich.",
       },
+      batchSize: "Einträge pro Aufruf",
+      batchSizeHint:
+        "So viele Einträge gehen in einen Modellaufruf (1 bis {{max}}). Ein fortgesetzter Lauf behält den Wert.",
+      batchSizeInvalid: "Einträge pro Aufruf: eine ganze Zahl von 1 bis {{max}}.",
       forms: {
         title: "Lernformen per KI",
         intro: "Füllt leere oder erzeugte Lernformen. Eigene bleiben unberührt.",

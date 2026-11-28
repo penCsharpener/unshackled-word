@@ -109,12 +109,13 @@ public static class AgentStoreSql
         run.ApiTokenId,
         run.IncludeConfirmed,
         run.TextForm,
+        run.BatchSize,
     };
 
     // queued: no start, no end; running: started now; everything else (the debug endpoint writes "completed"): started and finished now.
     public const string InsertRun = """
-                                    INSERT INTO "unshackled-word"."AgentRuns" ("CreatedByUserId", "AiUserId", "Profile", "Model", "PromptVersion", "BibleBookId", "FromHebRefId", "ToHebRefId", "Mode", "Status", "StatusNote", "EstimatedTokens", "EstimatedCostUsd", "MaxTokens", "MaxCostUsd", "ApiTokenId", "IncludeConfirmed", "TextForm", "StartedAt", "FinishedAt")
-                                    VALUES (@CreatedByUserId, @AiUserId, @Profile, @Model, @PromptVersion, @BibleBookId, @FromHebRefId, @ToHebRefId, @Mode, @Status, @StatusNote, @EstimatedTokens, @EstimatedCostUsd, @MaxTokens, @MaxCostUsd, @ApiTokenId, @IncludeConfirmed, @TextForm
+                                    INSERT INTO "unshackled-word"."AgentRuns" ("CreatedByUserId", "AiUserId", "Profile", "Model", "PromptVersion", "BibleBookId", "FromHebRefId", "ToHebRefId", "Mode", "Status", "StatusNote", "EstimatedTokens", "EstimatedCostUsd", "MaxTokens", "MaxCostUsd", "ApiTokenId", "IncludeConfirmed", "TextForm", "BatchSize", "StartedAt", "FinishedAt")
+                                    VALUES (@CreatedByUserId, @AiUserId, @Profile, @Model, @PromptVersion, @BibleBookId, @FromHebRefId, @ToHebRefId, @Mode, @Status, @StatusNote, @EstimatedTokens, @EstimatedCostUsd, @MaxTokens, @MaxCostUsd, @ApiTokenId, @IncludeConfirmed, @TextForm, @BatchSize
                                           , CASE WHEN @Status = 'queued' THEN NULL ELSE now() END
                                           , CASE WHEN @Status IN ('queued', 'running') THEN NULL ELSE now() END)
                                     RETURNING "Id"

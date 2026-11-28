@@ -20,7 +20,9 @@ public sealed class VocabFormRunEstimateResult
 public sealed class VocabFormRunService
 {
     public const int MaxLimit = 2000;
-    public const int DefaultLimit = 200;
+
+    /// <summary>Entries selected when the request has no limit: the whole from..to range up to <see cref="MaxLimit"/>.</summary>
+    public static int EffectiveLimit(int? limit) => limit ?? MaxLimit;
 
     private readonly VocabFormRepository _forms;
     private readonly IAgentRunRepository _runs;
@@ -89,6 +91,7 @@ public sealed class VocabFormRunService
             EstimatedCostUsd = estimate.EstimatedCostUsd,
             MaxTokens = maxTokens,
             MaxCostUsd = maxCost,
+            BatchSize = plan.BatchSize,
         }, token);
 
         return new AgentRunPrepareResult { Outcome = AgentRunPrepareOutcome.Ok, RunId = runId };
@@ -104,6 +107,11 @@ public sealed class VocabFormRunService
         if (request.Limit is < 1 or > MaxLimit)
         {
             return Plan.Fail(AgentRunPrepareOutcome.BadRequest, $"limit must be 1..{MaxLimit}.");
+        }
+
+        if (request.BatchSize is < 1 or > VocabFormRunExecutor.MaxBatchSize)
+        {
+            return Plan.Fail(AgentRunPrepareOutcome.BadRequest, $"batchSize must be 1..{VocabFormRunExecutor.MaxBatchSize}.");
         }
 
         var course = await _forms.GetCourseAsync(request.Course, null, token);
@@ -130,14 +138,14 @@ public sealed class VocabFormRunService
             return Plan.Fail(AgentRunPrepareOutcome.BadRequest, e.Message);
         }
 
-        var candidates = await _forms.SelectCandidatesAsync(course.Track, request.FromRank, request.ToRank, request.Limit, token);
+        var candidates = await _forms.SelectCandidatesAsync(course.Track, request.FromRank, request.ToRank, EffectiveLimit(request.Limit), token);
 
         if (candidates.Count == 0)
         {
             return Plan.Fail(AgentRunPrepareOutcome.NotFound, "No entry of the range needs a form (every form is agent or manual, or the range is empty).");
         }
 
-        return new Plan { Profile = profile, Model = model, Prompt = prompt, Course = course, Candidates = candidates, FromRank = request.FromRank };
+        return new Plan { Profile = profile, Model = model, Prompt = prompt, Course = course, Candidates = candidates, BatchSize = request.BatchSize, CutAtMaxLimit = request.Limit is null && candidates.Count == MaxLimit, FromRank = request.FromRank };
     }
 
     private sealed class Plan
@@ -151,17 +159,21 @@ public sealed class VocabFormRunService
         public IReadOnlyList<VocabFormCandidate>? Candidates { get; init; }
         public int FromRank { get; init; }
 
+        public int? BatchSize { get; init; }
+        public bool CutAtMaxLimit { get; init; }
+
         public static Plan Fail(AgentRunPrepareOutcome outcome, string error) => new() { Outcome = outcome, Error = error };
 
         public VocabFormRunEstimateResponse ToEstimate(long? maxTokens, decimal? maxCost)
         {
             var prefixTokens = VocabFormRunExecutor.EstimateTokens(Prompt!.StaticPrefix);
-            var batches = (Candidates!.Count + VocabFormRunExecutor.BatchSize - 1) / VocabFormRunExecutor.BatchSize;
+            var batchSize = VocabFormRunExecutor.EffectiveBatchSize(BatchSize);
+            var batches = (Candidates!.Count + batchSize - 1) / batchSize;
             long input = 0, cached = 0, output = 0;
 
             for (var b = 0; b < batches; b++)
             {
-                var batch = Candidates.Skip(b * VocabFormRunExecutor.BatchSize).Take(VocabFormRunExecutor.BatchSize).ToList();
+                var batch = Candidates.Skip(b * batchSize).Take(batchSize).ToList();
                 input += prefixTokens + VocabFormRunExecutor.EstimatePackageTokens(batch);
                 cached += b == 0 ? 0 : prefixTokens;
                 output += VocabFormRunExecutor.EstimateOutputTokens(batch.Count);
@@ -179,12 +191,18 @@ public sealed class VocabFormRunService
                 PromptVersion = Prompt.Version,
                 Entries = Candidates.Count,
                 Batches = batches,
+                BatchSize = batchSize,
                 FromRank = Candidates[0].Rank,
                 ToRank = Candidates[^1].Rank,
                 EstimatedInputTokens = input,
                 EstimatedOutputTokens = output,
                 EstimatedCostUsd = Math.Round(Profile.Cost(Model!, input, cached, output), 4),
             };
+
+            if (CutAtMaxLimit)
+            {
+                response.Warnings.Add($"The range has more than {MaxLimit} entries: this run ends at rank {response.ToRank}; start another run from rank {response.ToRank + 1} for the rest.");
+            }
 
             if ((maxTokens is { } t && input + output > t) || (maxCost is { } c && response.EstimatedCostUsd > c))
             {

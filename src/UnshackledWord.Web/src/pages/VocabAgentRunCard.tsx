@@ -43,6 +43,9 @@ const RUN_SCOPES: RunScope[] = ["nt", "at"];
 const RUN_COURSE: Record<RunScope, string> = { nt: "nt-greek", at: "ot-hebrew" };
 /** Default last rank of a run: NT ranks 1 to 200, as in the roadmap example. */
 const RUN_TO_RANK = 200;
+/** Entries per model call: the API default 25, at most 200. */
+const DEFAULT_BATCH_SIZE = 25;
+const MAX_BATCH_SIZE = 200;
 
 const KIND_CONFIG = {
   form: {
@@ -65,6 +68,12 @@ const KIND_CONFIG = {
 function parseRank(text: string): number | null {
   const rank = Number(text);
   return text.trim() !== "" && Number.isInteger(rank) && rank > 0 ? rank : null;
+}
+
+/** A batch size typed into the field: a whole number from 1 to 200, otherwise null. */
+function parseBatchSize(text: string): number | null {
+  const size = parseRank(text);
+  return size !== null && size <= MAX_BATCH_SIZE ? size : null;
 }
 
 /** A run that is still going is info, a finished one ok, a failed one an error. */
@@ -166,6 +175,7 @@ export function VocabAgentRunCard({ kind }: { kind: VocabAgentRunKind }) {
   const [profile, setProfile] = useState<string>();
   const [from, setFrom] = useState("1");
   const [to, setTo] = useState(String(RUN_TO_RANK));
+  const [batch, setBatch] = useState(String(DEFAULT_BATCH_SIZE));
   const [checkPrefill, setCheckPrefill] = useState(false);
   /** The run started in this view; before that the newest run of this mode is shown. */
   const [startedRunId, setStartedRunId] = useState<number>();
@@ -176,12 +186,18 @@ export function VocabAgentRunCard({ kind }: { kind: VocabAgentRunKind }) {
   const profileUsable = profileList.some((p) => p.name === profileName && p.usable);
   const fromRank = parseRank(from);
   const toRank = parseRank(to);
+  const batchSize = parseBatchSize(batch);
   const request: VocabRootRunRange | null =
-    profileUsable && fromRank !== null && toRank !== null && toRank >= fromRank
+    profileUsable &&
+    fromRank !== null &&
+    toRank !== null &&
+    toRank >= fromRank &&
+    batchSize !== null
       ? {
           course: RUN_COURSE[scope],
           fromRank,
           toRank,
+          batchSize,
           profile: profileName,
           ...(kind === "root" && checkPrefill ? { checkPrefill: true } : {}),
         }
@@ -264,6 +280,18 @@ export function VocabAgentRunCard({ kind }: { kind: VocabAgentRunKind }) {
           value={to}
           onChange={setTo}
         />
+        <TextField
+          type="number"
+          size="sm"
+          label={t("vocab.jobs.batchSize")}
+          title={t("vocab.jobs.batchSizeHint", { max: MAX_BATCH_SIZE })}
+          min={1}
+          max={MAX_BATCH_SIZE}
+          value={batch}
+          onChange={setBatch}
+          invalid={batchSize === null}
+          disabled={busy}
+        />
         <Select
           label={t("vocab.jobs.forms.profile")}
           value={profileName}
@@ -292,7 +320,11 @@ export function VocabAgentRunCard({ kind }: { kind: VocabAgentRunKind }) {
           {startRun.isPending ? t("agent.dialog.starting") : t(`${config.prefix}.start`)}
         </Button>
       </div>
-      {request === null ? (
+      {batchSize === null ? (
+        <span className="text-sm text-fg-muted">
+          {t("vocab.jobs.batchSizeInvalid", { max: MAX_BATCH_SIZE })}
+        </span>
+      ) : request === null ? (
         <span className="text-sm text-fg-muted">{t("agent.dialog.estimate.needRange")}</span>
       ) : noEntries ? (
         <span className="text-sm text-fg-muted">{t(`${config.prefix}.noEntries`)}</span>

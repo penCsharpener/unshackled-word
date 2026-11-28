@@ -186,6 +186,7 @@ const formEstimate = {
   promptVersion: "vocab-form-greek-v1",
   entries: 120,
   batches: 6,
+  batchSize: 25,
   fromRank: 1,
   toRank: 200,
   estimatedInputTokens: 52000,
@@ -248,12 +249,68 @@ describe("VocabJobsSection study-form run", () => {
 
     await userEvent.click(start);
 
-    const body = { course: "nt-greek", fromRank: 1, toRank: 200, profile: "ollama" };
+    const body = { course: "nt-greek", fromRank: 1, toRank: 200, batchSize: 25, profile: "ollama" };
     await waitFor(() =>
       expect(formPosts(fetchMock, "/maintainer/vocab/form-runs")).toEqual([body]),
     );
     expect(formPosts(fetchMock, "/maintainer/vocab/form-runs/estimate")).toContainEqual(body);
     expect(await screen.findByText("118 forms written, 2 kept")).toBeInTheDocument();
+  });
+
+  it("covers the whole range with the batch size typed in and blocks a batch size above 200", async () => {
+    const fetchMock = stubApi({
+      "GET /maintainer/vocab/renderings/status": () => json({}),
+      "GET /maintainer/vocab/status": () => json({}),
+      "GET /maintainer/vocab/meanings/status": () => json({}),
+      "GET /maintainer/agent-runs/profiles": () => json([profile]),
+      "GET /maintainer/agent-runs?limit=50": () => json({ runs: [] }),
+      "POST /maintainer/vocab/form-runs/estimate": () =>
+        json({ ...formEstimate, entries: 400, batches: 4, batchSize: 100, toRank: 400 }),
+      "POST /maintainer/vocab/form-runs": () => json(formRun, 202),
+      "GET /maintainer/agent-runs/7": () => json(formRun),
+    });
+    renderSection();
+
+    const card = await waitFor(() => {
+      const element = document.querySelector<HTMLElement>('[data-run-kind="form"]');
+      if (!element) throw new Error("form run card missing");
+      return element;
+    });
+    const start = within(card).getByRole("button", { name: "Start run" });
+    const batch = within(card).getByLabelText("Entries per call");
+    const to = within(card).getByLabelText("to");
+
+    await userEvent.clear(batch);
+    await userEvent.type(batch, "201");
+    expect(
+      await within(card).findByText("Entries per call: a whole number from 1 to 200."),
+    ).toBeInTheDocument();
+    expect(start).toBeDisabled();
+
+    await userEvent.clear(batch);
+    await userEvent.type(batch, "100");
+    await userEvent.clear(to);
+    await userEvent.type(to, "400");
+    expect(await within(card).findByText("Ranks 1 to 400")).toBeInTheDocument();
+    await waitFor(() => expect(start).toBeEnabled());
+    await userEvent.click(start);
+
+    const body = {
+      course: "nt-greek",
+      fromRank: 1,
+      toRank: 400,
+      batchSize: 100,
+      profile: "ollama",
+    };
+    await waitFor(() =>
+      expect(formPosts(fetchMock, "/maintainer/vocab/form-runs")).toEqual([body]),
+    );
+    // no limit: the API covers the whole range (up to 2000 entries) instead of cutting it at 200
+    expect(
+      formPosts(fetchMock, "/maintainer/vocab/form-runs/estimate").every(
+        (sent) => !("limit" in sent),
+      ),
+    ).toBe(true);
   });
 });
 
@@ -314,6 +371,10 @@ describe("VocabJobsSection root run", () => {
     const start = await screen.findByRole("button", { name: "Start root run" });
     await waitFor(() => expect(start).toBeEnabled());
     await userEvent.click(screen.getByRole("switch", { name: "Check prefill" }));
+    const rootCard = document.querySelector<HTMLElement>('[data-run-kind="root"]') as HTMLElement;
+    const rootBatch = within(rootCard).getByLabelText("Entries per call");
+    await userEvent.clear(rootBatch);
+    await userEvent.type(rootBatch, "50");
     await waitFor(() =>
       expect(
         formPosts(fetchMock, "/maintainer/vocab/root-runs/estimate").some(
@@ -327,7 +388,14 @@ describe("VocabJobsSection root run", () => {
 
     await waitFor(() =>
       expect(formPosts(fetchMock, "/maintainer/vocab/root-runs")).toEqual([
-        { course: "nt-greek", fromRank: 1, toRank: 200, profile: "ollama", checkPrefill: true },
+        {
+          course: "nt-greek",
+          fromRank: 1,
+          toRank: 200,
+          batchSize: 50,
+          profile: "ollama",
+          checkPrefill: true,
+        },
       ]),
     );
     expect(await screen.findByText("Wrote 70 roots, replaced 1 prefill rows")).toBeInTheDocument();

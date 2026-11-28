@@ -15,8 +15,10 @@ export interface VocabFormRunRange {
   fromRank?: number;
   /** Last frequency rank; without it the run goes to the end of the course, the limit still applies. */
   toRank?: number;
-  /** At most this many entries (the API default is 200). */
+  /** At most this many entries (1..2000); omitted = up to 2000, so a from..to range is covered whole in one run. */
   limit?: number;
+  /** Entries per model call (1..200); omitted = 25. Stored on the run, so a resumed run keeps it. */
+  batchSize?: number;
   /** Profile name of `AgentMapping:Profiles`. */
   profile: string;
   model?: string;
@@ -30,7 +32,10 @@ export interface VocabFormRunEstimate {
   promptVersion: string;
   /** Entries the run would ask (form missing or generated, not retired). */
   entries: number;
+  /** Model calls of the run (entries / batch size, rounded up). */
   batches: number;
+  /** Entries per model call the run uses. */
+  batchSize: number;
   fromRank: number;
   toRank: number;
   estimatedInputTokens: number;

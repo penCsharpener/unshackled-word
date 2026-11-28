@@ -40,6 +40,9 @@ public sealed class AgentRunRecord
     /// <summary>Mode <c>lxx-tag</c>: <c>og</c>/<c>th</c> or null (both text forms).</summary>
     public string? TextForm { get; set; }
 
+    /// <summary>Modes <c>vocab-form</c>/<c>vocab-root</c>: entries per model call; null = the executor's default.</summary>
+    public int? BatchSize { get; set; }
+
     public string Status { get; set; } = string.Empty;
     public string? StatusNote { get; set; }
     public long InputTokens { get; set; }

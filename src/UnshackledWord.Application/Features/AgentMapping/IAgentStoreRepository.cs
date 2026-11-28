@@ -29,6 +29,9 @@ public sealed class AgentRunInsert
 
     /// <summary>Mode <c>lxx-tag</c>: <c>og</c>/<c>th</c> restricts the run to one Daniel text form; null = both (migration 0053).</summary>
     public string? TextForm { get; init; }
+
+    /// <summary>Modes <c>vocab-form</c>/<c>vocab-root</c>: entries per model call (1..200); null = the executor's default (migration 0059).</summary>
+    public int? BatchSize { get; init; }
 }
 
 public sealed class AgentPackageInsert
