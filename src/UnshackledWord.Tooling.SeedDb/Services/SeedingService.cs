@@ -7,32 +7,8 @@ public sealed partial class SeedingService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<SeedingService> _logger;
 
-    private Type[] _runnerTypes =
-    [
-        typeof(Seeding.SttsSeed.SttsSeedRunner),
-        typeof(Seeding.RevisionSeed.RevisionLevelSeedRunner),
-        typeof(Seeding.ElberfelderParser.ElberfelderTextRunner),
-        typeof(Seeding.ElberfelderParser.Elb1871VerseRunner),
-        typeof(RepoSeed.Morphology.MorphologySeedRunner),
-        typeof(Tsk.TskRunner),
-        typeof(Tsk.TskCurationSeedRunner),
-        typeof(StatisticalRestorationGnt.SrRunner),
-        typeof(SBL.SblRunner),
-        typeof(StepBible.StepDataBibleTextImporter),
-        typeof(StepBible.StepDataStrongsImporter),
-        typeof(StepBible.StepDataMorphologyImporter),
-        typeof(StepBible.StepDataLexiconImporter),
-        typeof(StepBible.StepDataRelationshipImporter),
-        // after the Hebrew normalization above: the Old Testament tokens come from StepHebrewWordsNormalized (roadmap 0027.2)
-        typeof(VerseSimilarity.VerseSimilarityRunner),
-        // after the STEP download, which holds TVTMS (roadmap 0028.3); only while LxxVerses is empty
-        typeof(Swete.LxxTextImporter),
-        // the confirmed LXX tags and links of the repo seed, only while LxxWordTags has no confirmed row (roadmap 0028.8)
-        typeof(Swete.LxxTagSeedRunner),
-        typeof(StepBible.StrongsToText.StepStrongsImport),
-        typeof(AiMappingImport.AiMappingImportRunner),
-        typeof(RevisionSeed.RevisionSeedRunner),
-    ];
+    // The run order is the seed catalog (UnshackledWord.Seeding); a local filter (SeedingService.local.cs) may narrow or replace it.
+    private Type[] _runnerTypes = SeedRunnerMap.RunnerTypes();
 
     public SeedingService(IServiceScopeFactory scopeFactory, ILogger<SeedingService> logger)
     {

@@ -1986,7 +1986,8 @@ export const en: Translation = {
     title: "Initial setup",
     intro:
       "Fills an empty database step by step. The state comes from the tables' row counts; only empty steps run.",
-    fakeNote: "Draft with sample data – nothing is saved. Start over with ?fake=reset.",
+    fakeNote:
+      "The counts are real. Running is still simulated (arrives with 0031.6) and changes no table.",
     loading: "Loading state …",
     loadFailed: "The state could not be loaded.",
     retry: "Try again",

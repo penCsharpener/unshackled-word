@@ -2004,7 +2004,7 @@ export const de = {
     intro:
       "Füllt eine leere Datenbank Schritt für Schritt. Der Stand kommt aus den Zeilenzahlen der Tabellen; nur leere Schritte laufen.",
     fakeNote:
-      "Entwurf mit Beispieldaten – es wird nichts gespeichert. Neu beginnen mit ?fake=reset.",
+      "Die Zahlen sind echt. Das Ausführen ist noch simuliert (folgt mit 0031.6) und ändert nichts an den Tabellen.",
     loading: "Stand wird geladen …",
     loadFailed: "Der Stand konnte nicht geladen werden.",
     retry: "Erneut versuchen",

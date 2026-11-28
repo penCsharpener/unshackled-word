@@ -292,7 +292,7 @@ function SetupStepRow({
           title={reasonText}
           onClick={() => onRun(step.key)}
         >
-          {t("setup.run")}
+          {reason === "notWired" ? t("setup.disabled.notWired") : t("setup.run")}
         </Button>
       ) : null}
       <div id={detailId} className="basis-full pl-6 text-sm text-fg-muted">

@@ -1,0 +1,20 @@
+meta {
+  name: GetSetupStatus
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}admin/setup
+  body: none
+  auth: inherit
+}
+
+docs {
+  Admin only (a maintainer without Admin gets 403). The seed catalog (roadmap 0031) with every step's state derived from row counts: steps[] in run order with key, group (base|step|other|derived), source (migration|assets|download), sourceHost, status (green|amber|red|grey), requires, missing (the requires that are not green; non-empty exactly when grey), resumable, wired (false until the runner has moved into UnshackledWord.Seeding; only the base group is wired), runnable (false for books), failed, note, tables[] { name, rows, populated (materialized views only) }. checkedAt; job is the running or last setup job (operation "setup", from 0031.6).
+  On an empty stack: books green, everything else red, elb1871-verses grey with missing ["elb1871-text"], step-text wired false.
+}
+
+settings {
+  encodeUrl: true
+}

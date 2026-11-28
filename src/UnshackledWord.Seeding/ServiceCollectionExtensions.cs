@@ -1,3 +1,4 @@
+using UnshackledWord.Seeding.Catalog;
 using UnshackledWord.Seeding.ElberfelderParser;
 using UnshackledWord.Seeding.RevisionSeed;
 using UnshackledWord.Seeding.SttsSeed;
@@ -15,6 +16,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<RevisionLevelSeedRunner>();
         services.AddElberfelder1871Services();
         services.AddSingleton<ParseHelper>();
+        services.AddSetupStatus();
+        return services;
+    }
+
+    /// <summary>Registers the service behind <c>GET api/admin/setup</c> (table counts per catalog step).</summary>
+    public static IServiceCollection AddSetupStatus(this IServiceCollection services)
+    {
+        services.AddScoped<SetupStatusService>();
         return services;
     }
 }

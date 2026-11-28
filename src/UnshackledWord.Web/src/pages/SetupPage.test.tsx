@@ -27,15 +27,29 @@ function renderPage() {
   );
 }
 
-function setup(roles: string[] | null, options: FakeOptions = {}) {
+/** Stands in for `GET /admin/setup`: the fake's steps and counts, with `wired` set per test. */
+function setup(roles: string[] | null, options: FakeOptions = {}, unwired: string[] = []) {
   sessionStorage.clear();
   const fake = createSetupFake({ random: () => 0, ...options });
   replaceSetupFake(fake);
   const status = vi.spyOn(fake, "status");
-  stubApi({
+  const setupBody = vi.fn(async () => {
+    const { steps, checkedAt } = await fake.status();
+    return json({
+      checkedAt,
+      steps: steps.map((step) => (unwired.includes(step.key) ? { ...step, wired: false } : step)),
+    });
+  });
+  const fetchMock = stubApi({
     "GET /auth/me": () => (roles ? json({ ...me, roles }) : new Response("", { status: 401 })),
   });
-  return { fake, status };
+  const base = fetchMock.getMockImplementation();
+  fetchMock.mockImplementation(async (url: string, init?: RequestInit) =>
+    url.endsWith("/admin/setup") && (init?.method ?? "GET") === "GET"
+      ? setupBody()
+      : (base?.(url, init) ?? new Response("", { status: 404 })),
+  );
+  return { fake, status, fetchMock, setupBody };
 }
 
 const rowOf = (label: string) => {
@@ -115,11 +129,34 @@ describe("SetupPage", () => {
     expect(within(rowOf("TSK cross references")).getByText("failed")).toBeInTheDocument();
   });
 
-  it("shows maintainers without admin the 403 note and never reads the fake", async () => {
-    const { status } = setup(["user", "maintainer"]);
+  it("shows maintainers without admin the 403 note and never reads the setup endpoint", async () => {
+    const { setupBody } = setup(["user", "maintainer"]);
     renderPage();
     expect(await screen.findByRole("alert")).toHaveTextContent("You do not have access");
-    expect(status).not.toHaveBeenCalled();
+    expect(setupBody).not.toHaveBeenCalled();
+  });
+
+  it("reads the real endpoint, says 'not wired yet' on unwired rows and keeps them disabled", async () => {
+    const { setupBody } = setup(["user", "admin"], {}, ["tsk", "step-text"]);
+    renderPage();
+    await screen.findByText(/steps done/);
+    expect(setupBody).toHaveBeenCalled();
+    const button = within(rowOf("TSK cross references")).getByRole("button", {
+      name: "not wired yet",
+    });
+    expect(button).toBeDisabled();
+    expect(within(rowOf("STTS tags")).getByRole("button", { name: "Run" })).toBeEnabled();
+  });
+
+  it("re-reads the counts when refresh is clicked", async () => {
+    const { setupBody } = setup(["user", "admin"]);
+    renderPage();
+    await screen.findByText(/steps done/);
+    const before = setupBody.mock.calls.length;
+    await act(async () => {
+      screen.getByRole("button", { name: "Reload state" }).click();
+    });
+    await waitFor(() => expect(setupBody.mock.calls.length).toBeGreaterThan(before));
   });
 
   it("sends anonymous visitors to the login page", async () => {
