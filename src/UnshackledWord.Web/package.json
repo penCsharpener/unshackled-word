@@ -1,6 +1,6 @@
 {
   "name": "unshackled-word-web",
-  "version": "0.16.14",
+  "version": "0.16.15",
   "private": true,
   "type": "module",
   "scripts": {

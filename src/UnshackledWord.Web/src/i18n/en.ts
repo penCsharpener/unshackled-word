@@ -1520,6 +1520,15 @@ export const en: Translation = {
   maintainer: {
     nav: "Maintenance",
     title: "Maintenance",
+    tabs: {
+      label: "Maintenance areas",
+      seed: "Seed",
+      revision: "Revision",
+      data: "Derived data",
+      lxx: "LXX",
+      vocab: "Vocabulary",
+      ai: "AI",
+    },
     seed: {
       title: "Export seed",
       intro:

@@ -107,7 +107,7 @@ export function SeedImportsPage() {
     );
   }
 
-  const maintenanceLink = <Link to="/edit/maintainer" className="text-accent underline" />;
+  const maintenanceLink = <Link to="/edit/maintainer?tab=seed" className="text-accent underline" />;
   const job = seedStatus.data?.job;
   const running = job?.status === "running" || start.isPending;
   const assetsProblem = seedStatus.data?.assetsProblem;

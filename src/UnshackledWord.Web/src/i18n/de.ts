@@ -1535,6 +1535,15 @@ export const de = {
   maintainer: {
     nav: "Wartung",
     title: "Wartung",
+    tabs: {
+      label: "Bereiche der Wartung",
+      seed: "Seed",
+      revision: "Revision",
+      data: "Abgeleitete Daten",
+      lxx: "LXX",
+      vocab: "Vokabeln",
+      ai: "KI",
+    },
     seed: {
       title: "Seed exportieren",
       intro:

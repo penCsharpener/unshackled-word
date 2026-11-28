@@ -16,7 +16,7 @@ function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={["/edit/maintainer?tab=revision"]}>
         <AuthProvider>
           <MaintainerPage />
         </AuthProvider>

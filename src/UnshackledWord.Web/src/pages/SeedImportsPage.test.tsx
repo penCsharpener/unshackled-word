@@ -64,7 +64,7 @@ describe("SeedImportsPage", () => {
     expect(card.getByText("VocabMeanings")).toBeInTheDocument();
     expect(await card.findByText("Roots: 3 new, 2 changed, 1 kept (manual)")).toBeInTheDocument();
     for (const link of screen.getAllByRole("link", { name: "Maintenance" })) {
-      expect(link).toHaveAttribute("href", "/edit/maintainer");
+      expect(link).toHaveAttribute("href", "/edit/maintainer?tab=seed");
     }
     expect(card.getByRole("note")).toBeInTheDocument();
 
