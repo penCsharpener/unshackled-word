@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
-        UnshackledWord.Seeding.ServiceCollectionExtensions.AddSetupStatus(services);
+        UnshackledWord.Seeding.ServiceCollectionExtensions.AddSeedingServices(services);
         services.AddScoped<BackupFileService>();
         services.AddScoped<Endpoints.Lemmas.ILemmaRepository, Endpoints.Lemmas.LemmaRepository>();
         services.AddScoped<Endpoints.Lemmas.ILemmaBulkRepository, Endpoints.Lemmas.LemmaBulkRepository>();
@@ -40,9 +40,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Endpoints.Revision.RevisionOverviewService>();
         services.AddScoped<Endpoints.Revision.BulkReplaceSearch.IBulkReplaceSearchRepository, Endpoints.Revision.BulkReplaceSearch.BulkReplaceSearchRepository>();
         services.AddScoped<Endpoints.Revision.BulkReplaceSearch.BulkReplaceSearchService>();
-        services.AddHostedService<Endpoints.Lemmas.Stts.SttsDriftCheck>();
+        services.AddSingleton<Endpoints.Lemmas.Stts.SttsDriftCheck>();
+        services.AddHostedService(sp => sp.GetRequiredService<Endpoints.Lemmas.Stts.SttsDriftCheck>());
         services.AddSingleton<Endpoints.DataQuality.StrongsLexiconIndex>();
         services.AddSingleton<Endpoints.Elberfelder.Search.SourceWords.SourceFormIndex>();
+        // Caches that hold the empty state until a seed step wrote data (roadmap 0031.6).
+        services.AddSingleton<UnshackledWord.Application.Abstractions.ISeedDataChanged>(sp => sp.GetRequiredService<Endpoints.DataQuality.StrongsLexiconIndex>());
+        services.AddSingleton<UnshackledWord.Application.Abstractions.ISeedDataChanged>(sp => sp.GetRequiredService<Endpoints.Elberfelder.Search.SourceWords.SourceFormIndex>());
+        services.AddSingleton<UnshackledWord.Application.Abstractions.ISeedDataChanged>(sp => sp.GetRequiredService<Endpoints.Lemmas.Stts.SttsDriftCheck>());
         services.AddScoped<Endpoints.Elberfelder.Search.SourceWords.ISourceWordRefs, Endpoints.Elberfelder.Search.SourceWords.SourceWordRefs>();
         services.AddScoped<Endpoints.Elberfelder.Search.SourceWords.ISourceWordSearchService, Endpoints.Elberfelder.Search.SourceWords.SourceWordSearchService>();
         services.AddScoped<UnshackledWord.Application.Features.GrammarSearch.IGrammarWordReader, Endpoints.Elberfelder.Search.Grammar.GrammarWordReader>();

@@ -1,5 +1,6 @@
 // Fake backend of the setup page (roadmap 0031.1): the response shape the API will return, in memory
-// plus sessionStorage, with timers instead of runners. Deleted in 0031.10; only useSetup.ts imports it.
+// plus sessionStorage, with timers instead of runners. Since 0031.6f the page talks to the real API; this is only the stand-in server of
+// the page tests. Deleted in 0031.10.
 import { ApiError } from "@/lib/api";
 import { runnableKeys, stepStatus } from "./catalog";
 import type {

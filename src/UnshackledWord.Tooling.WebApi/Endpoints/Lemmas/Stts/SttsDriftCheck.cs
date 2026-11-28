@@ -1,3 +1,4 @@
+using UnshackledWord.Application.Abstractions;
 using UnshackledWord.Application.Repositories;
 using UnshackledWord.Domain.Models.Grammar;
 
@@ -7,7 +8,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.Stts;
 /// Startup check: the in-code STTS list must agree with the SttsTags table. Differences are logged as an error and never stop the API;
 /// an empty table (not seeded yet) is a single information line.
 /// </summary>
-public sealed class SttsDriftCheck : IHostedService
+public sealed class SttsDriftCheck : IHostedService, ISeedDataChanged
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<SttsDriftCheck> _logger;
@@ -23,6 +24,9 @@ public sealed class SttsDriftCheck : IHostedService
         _ = Task.Run(() => RunAsync(CancellationToken.None), CancellationToken.None);
         return Task.CompletedTask;
     }
+
+    /// <summary>After the STTS tags were seeded the check runs again (it logged "no tags yet" at startup).</summary>
+    public Task SeedDataChangedAsync(string stepKey, CancellationToken token) => stepKey == "stts" ? RunAsync(token) : Task.CompletedTask;
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 

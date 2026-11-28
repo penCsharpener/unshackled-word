@@ -61,13 +61,13 @@ export interface SetupStep {
   tables: SetupTable[];
 }
 
-/** SeedJob widened by the setup operation; 0031.5f adds "setup" to SeedOperation and drops this alias. */
+/** SeedJob of the setup operation; `kind` is the step key(s), `group:<g>` or `all`. */
 export type SetupJob = Omit<SeedJob, "operation" | "kind"> & {
   operation: "setup";
   kind: SetupStepKey | `group:${SetupGroup}` | "all";
-  /** Step currently running inside a group/all job. */
+  /** Step currently running inside a group/all job (filled from `SetupStatus.currentStep`). */
   currentStep?: SetupStepKey;
-  /** Step that failed and stopped the chain. */
+  /** Step that failed and stopped the chain (filled from the step's `failed` flag when the job failed). */
   failedStep?: SetupStepKey;
 };
 
@@ -76,6 +76,8 @@ export interface SetupStatus {
   steps: SetupStep[];
   /** Same shape as api/maintainer/seed/status; operation "setup", kind = step key | `group:<g>` | "all". */
   job?: SetupJob;
+  /** Step the running job works on right now (server: `currentStep` of `GET /admin/setup`). */
+  currentStep?: SetupStepKey;
 }
 
 export type RunSetupRequest = { keys: SetupStepKey[] } | { group: SetupGroup } | { all: true };

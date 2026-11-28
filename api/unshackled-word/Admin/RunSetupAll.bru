@@ -1,0 +1,23 @@
+meta {
+  name: RunSetupAll
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{url}}admin/setup/run
+  body: json
+  auth: inherit
+}
+
+body:json {
+  { "all": true }
+}
+
+docs {
+  Admin only. Runs every red wired step of all groups in catalog order (until 0031.8 only the base group is wired); kind is "all". Stops at the first failure.
+}
+
+settings {
+  encodeUrl: true
+}

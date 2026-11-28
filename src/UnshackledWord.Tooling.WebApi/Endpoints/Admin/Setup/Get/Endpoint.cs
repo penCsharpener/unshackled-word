@@ -1,6 +1,7 @@
 using FastEndpoints;
 using UnshackledWord.Application.Features.Auth;
 using UnshackledWord.Domain.WebApi.Admin;
+using UnshackledWord.Domain.WebApi.Maintainer;
 using UnshackledWord.Seeding.Catalog;
 using UnshackledWord.Tooling.WebApi.Auth;
 using UnshackledWord.Tooling.WebApi.Endpoints.Maintainer.SeedAdmin;
@@ -11,11 +12,13 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.Admin.Setup.Get;
 public sealed class Endpoint : EndpointWithoutRequest<SetupStatusResponse>
 {
     private readonly SetupStatusService _service;
+    private readonly SetupRunState _state;
     private readonly SeedJobRunner _runner;
 
-    public Endpoint(SetupStatusService service, SeedJobRunner runner)
+    public Endpoint(SetupStatusService service, SetupRunState state, SeedJobRunner runner)
     {
         _service = service;
+        _state = state;
         _runner = runner;
     }
 
@@ -30,10 +33,10 @@ public sealed class Endpoint : EndpointWithoutRequest<SetupStatusResponse>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        // No job has failed or completed a step through the page yet: runs arrive with 0031.6.
-        var status = await _service.GetStatusAsync(new HashSet<string>(), new HashSet<string>(), ct);
+        var status = await _service.GetStatusAsync(_state.FailedKeys(), _state.CompletedKeys(), ct);
         var snapshot = _runner.Snapshot();
         status.Job = snapshot is { Operation: SetupOperation.Name } ? snapshot : null;
+        status.CurrentStep = status.Job is { Status: SeedJobResponse.Running } ? _state.CurrentStep : null;
         await Send.OkAsync(status, ct);
     }
 }

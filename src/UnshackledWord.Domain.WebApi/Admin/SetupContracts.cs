@@ -86,6 +86,20 @@ public sealed class SetupStatusResponse
     public DateTimeOffset CheckedAt { get; set; }
     public List<SetupStepResponse> Steps { get; set; } = [];
 
+    /// <summary>Key of the step the running setup job works on right now; omitted when no setup job runs.</summary>
+    public string? CurrentStep { get; set; }
+
     /// <summary>The running or last setup job of this process (same shape as api/maintainer/seed/status), null when none.</summary>
     public SeedJobResponse? Job { get; set; }
+}
+
+/// <summary>
+/// Body of <c>POST api/admin/setup/run</c>: exactly one of <see cref="Keys"/>, <see cref="Group"/> or <see cref="All"/>.
+/// Groups and "all" run the red wired steps in catalog order; <see cref="Keys"/> names steps explicitly.
+/// </summary>
+public sealed class SetupRunRequest
+{
+    public List<string>? Keys { get; set; }
+    public string? Group { get; set; }
+    public bool All { get; set; }
 }

@@ -11,7 +11,7 @@ get {
 }
 
 docs {
-  Admin only (a maintainer without Admin gets 403). The seed catalog (roadmap 0031) with every step's state derived from row counts: steps[] in run order with key, group (base|step|other|derived), source (migration|assets|download), sourceHost, status (green|amber|red|grey), requires, missing (the requires that are not green; non-empty exactly when grey), resumable, wired (false until the runner has moved into UnshackledWord.Seeding; only the base group is wired), runnable (false for books), failed, note, tables[] { name, rows, populated (materialized views only) }. checkedAt; job is the running or last setup job (operation "setup", from 0031.6).
+  Admin only (a maintainer without Admin gets 403). The seed catalog (roadmap 0031) with every step's state derived from row counts: steps[] in run order with key, group (base|step|other|derived), source (migration|assets|download), sourceHost, status (green|amber|red|grey), requires, missing (the requires that are not green; non-empty exactly when grey), resumable, wired (false until the runner has moved into UnshackledWord.Seeding; only the base group is wired), runnable (false for books), failed, note, tables[] { name, rows, populated (materialized views only) }. checkedAt; job is the running or last setup job (operation "setup", from 0031.6); currentStep names the step the running job works on. A step whose last run failed in this API process carries failed: true (amber when it wrote some rows, otherwise it stays red and can run again).
   On an empty stack: books green, everything else red, elb1871-verses grey with missing ["elb1871-text"], step-text wired false.
 }
 

@@ -24,6 +24,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSetupStatus(this IServiceCollection services)
     {
         services.AddScoped<SetupStatusService>();
+        services.AddSingleton<SetupRunState>();
+        services.AddSingleton<SeedStepRunner>();
+        services.AddOptions<SeedingOptions>().BindConfiguration(SeedingOptions.SectionName);
         return services;
     }
 }

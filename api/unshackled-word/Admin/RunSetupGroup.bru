@@ -1,0 +1,23 @@
+meta {
+  name: RunSetupGroup
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}admin/setup/run
+  body: json
+  auth: inherit
+}
+
+body:json {
+  { "group": "base" }
+}
+
+docs {
+  Admin only. Runs the red wired steps of the group (base|step|other|derived) in catalog order and stops at the first failure; kind is "group:base". 400 "Nothing to run" when no step of the group is red and ready.
+}
+
+settings {
+  encodeUrl: true
+}

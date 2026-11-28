@@ -7,7 +7,7 @@ public sealed record TableCount(string Name, long Rows, bool? Populated = null);
 
 /// <summary>
 /// Turns row counts into the status of every catalog step (03-seed-catalog.md, status rule):
-/// green = every table has rows; amber = some tables have rows or a job for the step failed in this process;
+/// green = every table has rows; amber = some tables have rows (also after a failed job that wrote some); a failed job that wrote nothing leaves the step red with <c>Failed</c> set;
 /// red = all tables empty; grey = red, but a required step is not green (<c>Missing</c> names them).
 /// Pure, so the rule is testable without a database.
 /// </summary>
@@ -66,7 +66,10 @@ public static class SetupStatusCalculator
 
     private static string StatusOf(List<SetupTableResponse> tables, bool hasMissing, bool failed, bool ranWithNote)
     {
-        if (failed)
+        var filled = tables.Count(t => t.Rows > 0);
+
+        // A failed job leaves the step amber only when it wrote something; with nothing written the step stays red (or grey) and can run again.
+        if (failed && filled > 0)
         {
             return SetupStepStatuses.Amber;
         }
@@ -76,7 +79,6 @@ public static class SetupStatusCalculator
             return SetupStepStatuses.Green;
         }
 
-        var filled = tables.Count(t => t.Rows > 0);
         if (tables.Count > 0 && filled == tables.Count)
         {
             return SetupStepStatuses.Green;

@@ -60,9 +60,17 @@ public class SetupStatusCalculatorTests
     }
 
     [Fact]
-    public void A_failed_job_makes_the_step_amber_even_when_empty()
+    public void A_failed_job_that_wrote_nothing_leaves_the_step_red_with_the_failed_flag()
     {
         var steps = SetupStatusCalculator.Compute([Step("a", [], ["A1"])], Counts(), new HashSet<string> { "a" }, None);
+        steps[0].Status.ShouldBe(SetupStepStatuses.Red);
+        steps[0].Failed.ShouldBe(true);
+    }
+
+    [Fact]
+    public void A_failed_job_that_wrote_some_rows_makes_the_step_amber()
+    {
+        var steps = SetupStatusCalculator.Compute([Step("a", [], ["A1", "A2"])], Counts(("A1", 3)), new HashSet<string> { "a" }, None);
         steps[0].Status.ShouldBe(SetupStepStatuses.Amber);
         steps[0].Failed.ShouldBe(true);
     }

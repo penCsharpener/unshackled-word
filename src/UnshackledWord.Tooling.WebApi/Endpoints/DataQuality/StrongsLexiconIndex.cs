@@ -24,7 +24,7 @@ public sealed record LexiconHit(LexiconEntry Entry, string MatchedBy);
 /// In-process search index over StepStrongsLexicon (one entry per base Strong's number; ~20k), loaded on first use.
 /// Matching order: exact Strong's → script without diacritics → folded transliteration prefix → Hebrew consonant skeleton → English gloss word.
 /// </summary>
-public sealed class StrongsLexiconIndex
+public sealed class StrongsLexiconIndex : ISeedDataChanged
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -116,6 +116,13 @@ public sealed class StrongsLexiconIndex
         {
             _gate.Release();
         }
+    }
+
+    /// <summary>A seed step wrote data: forget the loaded lexicon, the next request reads it again.</summary>
+    public Task SeedDataChangedAsync(string stepKey, CancellationToken token)
+    {
+        Volatile.Write(ref _byKey, null);
+        return Task.CompletedTask;
     }
 
     public async Task<LexiconEntry?> GetAsync(string? key, CancellationToken ct)

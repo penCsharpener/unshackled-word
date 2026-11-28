@@ -1,0 +1,23 @@
+meta {
+  name: RunSetupStep
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}admin/setup/run
+  body: json
+  auth: inherit
+}
+
+body:json {
+  { "keys": ["elb1871-text"] }
+}
+
+docs {
+  Admin only (roadmap 0031.6). Runs the named setup steps as one background seed job (operation "setup", kind = the key) and answers 202 with the job; poll GET admin/setup (job + counts) or GET maintainer/seed/status. Body: exactly one of keys, group or all. 400 "not red" when a step is green (or amber and not resumable), 400 when it is not wired or waits on a step that is not green, 409 while any seed job or export runs. A failing step ends the job failed and the step stays red (failed: true). Try: run elb1871-text -> 202, repeat -> 400 not red, run elb1871-verses before the text -> 400 needs elb1871-text first.
+}
+
+settings {
+  encodeUrl: true
+}

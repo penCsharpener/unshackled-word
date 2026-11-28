@@ -18,7 +18,7 @@ The catalog is one C# list in `UnshackledWord.Seeding` (`SeedCatalog`): every st
 ## Status rule
 
 - **grün** – every table of the step has rows.
-- **gelb** – some tables have rows, or a job for this step failed in this API process.
+- **gelb** – some tables have rows (also after a failed job that wrote some). A failed job that wrote nothing leaves the step rot with the flag `failed` (it can run again).
 - **rot** – all tables empty.
 - **grau** – red, but a `Requires` step is not green; the button is disabled and names the missing step.
 

@@ -134,9 +134,11 @@ function SetupView() {
         </Button>
       </div>
       <p className="text-fg-muted">{t("setup.intro")}</p>
-      <p role="note" className="text-sm text-fg-muted">
-        {t("setup.fakeNote")}
-      </p>
+      {steps.some((s) => !s.wired) ? (
+        <p role="note" className="text-sm text-fg-muted">
+          {t("setup.unwiredNote")}
+        </p>
+      ) : null}
       <FormError message={runMessage} />
 
       {steps.length === 0 ? (
@@ -348,7 +350,10 @@ function SetupJobLog({ job, labels }: { job: SetupJob; labels: (key: SetupStepKe
       ? t("setup.job.all")
       : job.kind.startsWith("group:")
         ? t("setup.job.group", { group: t(`setup.group.${job.kind.slice("group:".length)}`) })
-        : labels(job.kind as SetupStepKey);
+        : job.kind
+            .split(",")
+            .map((key) => labels(key as SetupStepKey))
+            .join(", ");
 
   return (
     <div className="flex flex-col gap-3 rounded-md border border-border p-3">

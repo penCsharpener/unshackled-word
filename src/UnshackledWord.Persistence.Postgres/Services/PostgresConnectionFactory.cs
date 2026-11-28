@@ -22,14 +22,17 @@ public sealed class PostgresDbConnectionFactory : IDbConnectionFactory
 
     public IDbConnection DbConnection { get; set; }
 
+    // A seed job (roadmap 0031.6) brings its own connection string with a longer command timeout.
+    private string Effective => SeedConnectionContext.Current ?? _connectionString;
+
     public IDbConnection CreateDbConnection()
     {
-        return new NpgsqlConnection(_connectionString);
+        return new NpgsqlConnection(Effective);
     }
 
     public async Task<IDbConnection> CreateDbConnectionAsync(CancellationToken token = default)
     {
-        var connection = new NpgsqlConnection(_connectionString);
+        var connection = new NpgsqlConnection(Effective);
         await connection.OpenAsync(token);
 
         return connection;
@@ -37,7 +40,7 @@ public sealed class PostgresDbConnectionFactory : IDbConnectionFactory
 
     public async Task BulkInsertAsync<T>(string tableName, string[] columns, ICollection<T> dataList, Action<IBinaryImporter, T> mapping, CancellationToken token = default)
     {
-        await using var connection = new NpgsqlConnection(_connectionString);
+        await using var connection = new NpgsqlConnection(Effective);
         await connection.OpenAsync(token);
 
         // 2. Define the COPY command (specifying columns is recommended)

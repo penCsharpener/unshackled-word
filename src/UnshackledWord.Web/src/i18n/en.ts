@@ -1986,8 +1986,8 @@ export const en: Translation = {
     title: "Initial setup",
     intro:
       "Fills an empty database step by step. The state comes from the tables' row counts; only empty steps run.",
-    fakeNote:
-      "The counts are real. Running is still simulated (arrives with 0031.6) and changes no table.",
+    unwiredNote:
+      'Steps marked "not wired yet" cannot run here yet; the seed command line still fills them.',
     loading: "Loading state …",
     loadFailed: "The state could not be loaded.",
     retry: "Try again",

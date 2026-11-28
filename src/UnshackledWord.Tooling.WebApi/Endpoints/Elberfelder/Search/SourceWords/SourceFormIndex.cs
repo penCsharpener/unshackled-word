@@ -12,7 +12,7 @@ public sealed record SourceFormEntry(string StrongsKey, string Form, string Fold
 /// In-process list of every distinct surface form of the Hebrew / Greek text (from DqWordFacts, so it is empty until the data quality facts were computed once),
 /// folded like <see cref="TranslitFolding.FoldScript"/>. Loaded on first use and re-read after <see cref="MaxAge"/>, since the maintainer can recompute the facts.
 /// </summary>
-public sealed class SourceFormIndex
+public sealed class SourceFormIndex : ISeedDataChanged
 {
     public static readonly TimeSpan MaxAge = TimeSpan.FromMinutes(30);
 
@@ -106,6 +106,13 @@ public sealed class SourceFormIndex
         {
             _gate.Release();
         }
+    }
+
+    /// <summary>A seed step wrote data: drop the snapshot, the next request reads again.</summary>
+    public Task SeedDataChangedAsync(string stepKey, CancellationToken token)
+    {
+        Volatile.Write(ref _snapshot, null);
+        return Task.CompletedTask;
     }
 
     /// <summary>False while the facts were never computed (the endpoint answers 503).</summary>

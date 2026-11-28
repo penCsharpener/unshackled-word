@@ -2003,8 +2003,8 @@ export const de = {
     title: "Ersteinrichtung",
     intro:
       "Füllt eine leere Datenbank Schritt für Schritt. Der Stand kommt aus den Zeilenzahlen der Tabellen; nur leere Schritte laufen.",
-    fakeNote:
-      "Die Zahlen sind echt. Das Ausführen ist noch simuliert (folgt mit 0031.6) und ändert nichts an den Tabellen.",
+    unwiredNote:
+      "Schritte mit „noch nicht angebunden“ laufen hier noch nicht; die Seed-Kommandozeile füllt sie weiterhin.",
     loading: "Stand wird geladen …",
     loadFailed: "Der Stand konnte nicht geladen werden.",
     retry: "Erneut versuchen",
