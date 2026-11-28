@@ -110,6 +110,83 @@ export const de = {
   about: {
     title: "Das freie Wort",
     lead: "Bibelstudium in Deutsch, Griechisch und Hebräisch, frei von Urheberrechten und Lizenzen.",
+    purpose: {
+      title: "Worum es geht",
+      text: "Das freie Wort will Bibelstudium in Deutsch, Griechisch und Hebräisch ohne Lizenzen und Urheberrechtsvermerke ermöglichen. Alles, was hier entsteht, steht unter CC0 und darf von jedem frei genutzt, kopiert und weiterverarbeitet werden. Grundlage ist die Elberfelder Bibel von 1871, die gemeinfrei ist. Ihre Wörter werden mit dem griechischen und hebräischen Urtext verknüpft, damit man nachvollziehen kann, welches deutsche Wort zu welchem Urtextwort gehört.",
+    },
+    features: {
+      title: "Was du hier findest",
+      reader: {
+        name: "Lesen mit Urtext",
+        text: "Elberfelder 1871 neben dem griechischen, hebräischen und aramäischen Text, mit Strong-Nummern, Grammatik und Wortdetails.",
+      },
+      links: {
+        name: "Parallelstellen",
+        text: "Querverweise (TSK), die von der Gemeinschaft ergänzt und kommentiert werden, und ähnliche Verse nach gemeinsamen Strong-Nummern.",
+      },
+      lxx: {
+        name: "Septuaginta",
+        text: "Der griechische Text des Alten Testaments, verknüpft mit dem Hebräischen.",
+      },
+      search: {
+        name: "Suche",
+        text: "Volltext, Strong-Nummern und Grammatiksuche in einer eigenen Abfragesprache, auch nach deutschen Wortformen.",
+      },
+      learn: {
+        name: "Lernen",
+        text: "Vokabeltrainer für Griechisch und Hebräisch nach Häufigkeit, mit Wiederholungsplan, Wortfamilien und Aussprache.",
+      },
+      notes: {
+        name: "Notizen",
+        text: "Eigene Notizen zu Kapiteln, Versen und Wörtern, privat, intern oder öffentlich.",
+      },
+      revision: {
+        name: "Revision",
+        text: "Ein Schieberegler von sehr wörtlich bis einfach, der nach und nach modernere Formulierungen einblendet.",
+      },
+    },
+    roles: {
+      title: "Rollen",
+      reader: {
+        name: "Leser",
+        text: "Lesen, suchen und alle Studienwerkzeuge nutzen, ohne Anmeldung.",
+      },
+      user: {
+        name: "Angemeldete Nutzer",
+        text: "Notizen schreiben, lernen und Verbesserungen vorschlagen.",
+      },
+      maintainer: {
+        name: "Prüfer und Betreuer",
+        text: "Prüfen Vorschläge und übernehmen sie in die gemeinsamen Daten. Wie beim Linux-Kernel schlagen viele vor, aber nur wenige führen zusammen.",
+      },
+      admin: {
+        name: "Administratoren",
+        text: "Verwalten Benutzer und Rollen.",
+      },
+    },
+    quality: {
+      title: "Wie verlässlich die Daten sind",
+      mapping: {
+        name: "Zuordnung",
+        text: "Die Verknüpfung deutscher Wörter mit dem Urtext entstand zuerst per KI aus offenen STEP-Bible-Daten und wird von Menschen geprüft. Sie kann Fehler enthalten, und nicht jeder Vers ist schon geprüft. Besonders die deutschen Fallangaben (Kasus) sind noch zu unsicher und werden deshalb nicht angeboten.",
+      },
+      language: {
+        name: "Sprache",
+        text: "Die Elberfelder von 1871 ist sehr wörtlich, aber ihr Deutsch ist veraltet. Manche Wörter und Satzstellungen klingen heute fremd, manche Wörter haben heute eine andere Bedeutung.",
+      },
+      source: {
+        name: "Urtext",
+        text: "Die Quellen sind offene Datensätze. Auch sie haben Lesarten und Unsicherheiten, die man nicht überlesen sollte.",
+      },
+      care: {
+        name: "Vorsicht",
+        text: "Das ist ein Studienwerkzeug, kein Ersatz für Grundlagenwerke. Wichtige Aussagen sollte man immer gegenprüfen.",
+      },
+    },
+    join: {
+      title: "Mitmachen",
+      text: "Das freie Wort lebt davon, dass die Daten besser werden: Falsche Zuordnungen korrigieren, Querverweise ergänzen, die Sprache der Revision verbessern, Vokabeln und Wortfamilien prüfen. Jede Korrektur steht danach allen zur Verfügung. Wer mitmachen möchte, meldet sich an.",
+    },
   },
   learn: {
     title: "Lernen",

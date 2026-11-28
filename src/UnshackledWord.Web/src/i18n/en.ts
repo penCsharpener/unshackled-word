@@ -108,6 +108,83 @@ export const en: Translation = {
   about: {
     title: "The free word",
     lead: "Bible study in German, Greek and Hebrew, free of copyright and licence strings.",
+    purpose: {
+      title: "What this is about",
+      text: "The free word makes Bible study in German, Greek and Hebrew possible without licences or copyright notices. Everything created here is CC0 and may be used, copied and built on by anyone. The base is the Elberfelder Bible of 1871, which is in the public domain. Its words are linked to the Greek and Hebrew original text, so you can see which German word belongs to which original word.",
+    },
+    features: {
+      title: "What you will find",
+      reader: {
+        name: "Reading with the original text",
+        text: "Elberfelder 1871 next to the Greek, Hebrew and Aramaic text, with Strong's numbers, grammar and word details.",
+      },
+      links: {
+        name: "Parallel passages",
+        text: "Cross references (TSK) that the community extends and comments on, and similar verses by shared Strong's numbers.",
+      },
+      lxx: {
+        name: "Septuagint",
+        text: "The Greek text of the Old Testament, linked to the Hebrew.",
+      },
+      search: {
+        name: "Search",
+        text: "Full text, Strong's numbers and grammar search in its own query language, also by German word forms.",
+      },
+      learn: {
+        name: "Learn",
+        text: "A vocabulary trainer for Greek and Hebrew by frequency, with a review schedule, word families and pronunciation.",
+      },
+      notes: {
+        name: "Notes",
+        text: "Your own notes on chapters, verses and words, private, internal or public.",
+      },
+      revision: {
+        name: "Revision",
+        text: "A slider from very literal to simple that gradually swaps in more modern wording.",
+      },
+    },
+    roles: {
+      title: "Roles",
+      reader: {
+        name: "Readers",
+        text: "Read, search and use all study tools without signing in.",
+      },
+      user: {
+        name: "Signed-in users",
+        text: "Write notes, learn and suggest improvements.",
+      },
+      maintainer: {
+        name: "Reviewers and maintainers",
+        text: "Check suggestions and merge them into the shared data. As with the Linux kernel, many suggest but only a few merge.",
+      },
+      admin: {
+        name: "Administrators",
+        text: "Manage users and roles.",
+      },
+    },
+    quality: {
+      title: "How reliable the data is",
+      mapping: {
+        name: "Mapping",
+        text: "The links between German words and the original text were first created by AI from open STEP Bible data and are being checked by people. They can contain errors, and not every verse has been checked yet. The German case labels in particular are still too unreliable and are therefore not offered.",
+      },
+      language: {
+        name: "Language",
+        text: "The Elberfelder of 1871 is very literal, but its German is outdated. Some words and sentence structures sound strange today, and some words now mean something different.",
+      },
+      source: {
+        name: "Original text",
+        text: "The sources are open datasets. They too have variant readings and uncertainties that should not be overlooked.",
+      },
+      care: {
+        name: "Caution",
+        text: "This is a study tool, not a replacement for reference works. Always double-check important statements.",
+      },
+    },
+    join: {
+      title: "Get involved",
+      text: "The free word lives from its data getting better: correcting wrong mappings, adding cross references, improving the revision's language, checking vocabulary and word families. Every correction is then available to everyone. If you want to help, sign in.",
+    },
   },
   learn: {
     title: "Learn",
