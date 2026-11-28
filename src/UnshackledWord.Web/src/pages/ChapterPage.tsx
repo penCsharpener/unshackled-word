@@ -18,6 +18,7 @@ import { AgentRunDialog } from "@/components/AgentRunDialog";
 import { BibleChapterPicker } from "@/components/BibleChapterPicker";
 import { Button, buttonClasses } from "@/components/Button";
 import { CrossReferenceList, crossReferenceKey } from "@/components/CrossReferenceList";
+import { EmptyState } from "@/components/EmptyState";
 import { HeaderPickerBar } from "@/components/HeaderPickerBar";
 import { WordInfoCard } from "@/components/HeaderWordInfo";
 import { LevelSlider } from "@/components/LevelSlider";
@@ -32,7 +33,7 @@ import { type WordDetailCloseReason, WordDetailPopover } from "@/components/Word
 import { track, trackRevisionLevel } from "@/lib/analytics";
 import { ApiError, describeApiError, describeApiErrors } from "@/lib/api";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { hasWriteRole } from "@/lib/auth/roles";
+import { hasWriteRole, isAdmin } from "@/lib/auth/roles";
 import { adjacentChapter, bookName, chapterPath, parseChapterParams } from "@/lib/bible/books";
 import { mainEditionCodes, useGreekEditionFilter } from "@/lib/bible/greekEditions";
 import { DANIEL_BOOK_ID, hasLxx, lxxHebrewWordIds, useLxxForm } from "@/lib/bible/lxx";
@@ -41,6 +42,7 @@ import {
   useBibleStructure,
   useChapterWords,
   useGreekEditions,
+  useNoBibleText,
   verseCrossReferenceTextsQuery,
 } from "@/lib/bible/queries";
 import {
@@ -148,6 +150,7 @@ export function ChapterPage() {
   const canRevise = hasWriteRole(auth.user);
   const signedIn = auth.status === "authenticated";
   const structure = useBibleStructure();
+  const noText = useNoBibleText();
   const books = structure.data;
 
   const ref = parseChapterParams(params.bookId, params.chapter, books);
@@ -1474,7 +1477,17 @@ export function ChapterPage() {
               </Button>
             </div>
           )}
-          {verses.isSuccess && verses.data.length === 0 && (
+          {verses.isSuccess && verses.data.length === 0 && noText && (
+            <EmptyState>
+              <p role="status">{t("bible.noText.message")}</p>
+              {isAdmin(auth.user) && (
+                <Link to="/edit/setup" className="text-accent underline">
+                  {t("bible.noText.setupLink")}
+                </Link>
+              )}
+            </EmptyState>
+          )}
+          {verses.isSuccess && verses.data.length === 0 && !noText && (
             <p className="text-fg-muted">{t("bible.chapter.empty")}</p>
           )}
           {verses.isSuccess &&

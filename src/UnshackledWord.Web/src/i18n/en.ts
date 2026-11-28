@@ -707,6 +707,10 @@ export const en: Translation = {
         revelation: "Revelation",
       },
     },
+    noText: {
+      message: "No Bible texts imported yet.",
+      setupLink: "Go to the first-time setup",
+    },
     picker: {
       label: "Choose book and chapter",
       loading: "Loading books …",

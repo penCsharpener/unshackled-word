@@ -10,6 +10,10 @@ export interface BibleStructureBook {
   /** index 0 = chapter 1; Heb (= Elb1871) versification */
   versesPerChapter: number[];
 }
+/** `GET /meta-bible/status`: false while no Elb1871 text has been imported (roadmap 0031). */
+export interface GetReaderStatusResponse {
+  hasText: boolean;
+}
 export interface GetBibleStructureResponse {
   books: BibleStructureBook[];
 }

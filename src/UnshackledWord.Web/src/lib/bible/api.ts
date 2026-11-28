@@ -12,6 +12,7 @@ import type {
   GetLxxChapterResponse,
   GetLxxWordResponse,
   GetPassageTextResponse,
+  GetReaderStatusResponse,
   GetSimilarVersesResponse,
   GetStrongsOccurrencesResponse,
   GetStrongsSummaryResponse,
@@ -52,6 +53,8 @@ const verseMappingPath = (bookId: number, chapter: number, verse: number) =>
   `/elberfelder/verseMapping/bookId/${bookId}/chapterId/${chapter}/verseId/${verse}`;
 
 export const bibleApi = {
+  readerStatus: (signal?: AbortSignal) =>
+    api.get<GetReaderStatusResponse>("/meta-bible/status", signal),
   structure: (signal?: AbortSignal) =>
     api.get<GetBibleStructureResponse>("/meta-bible/structure", signal),
   chapterText: (bookId: number, chapter: number, level = BASE_LEVEL, signal?: AbortSignal) =>

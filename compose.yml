@@ -29,33 +29,10 @@ services:
       - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
       - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
 
-  unshackledword.tooling.seed-db:
-    #image: unshackledword.tooling.seeddb
-    depends_on:
-      unshackledword.tooling.database:
-        condition: service_started
-      unshackledword.tooling.db-migration:
-        condition: service_completed_successfully
-    build:
-      context: .
-      dockerfile: src/UnshackledWord.Tooling.SeedDb/Dockerfile
-    user: "1000:1000"
-    environment:
-      - UNSHACKLEDWORD_ENVIRONMENT=${ENVIRONMENT}
-      - UNSHACKLEDWORD_CONNECTIONSTRINGS__POSTGRESCONNECTION=${POSTGRES_CONNECTIONSTRING}
-      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONTEMPPATH=${SOLUTIONTEMPPATH:-/src/temp}
-      - UNSHACKLEDWORD_APPSETTINGS__DATABASESEEDING__SOLUTIONASSETSPATH=${SOLUTIONASSETSPATH:-/src/assets}
-    volumes:
-      - ./assets:/src/assets
-      - ./temp:/src/temp
-# docker run -it --entrypoint /bin/bash unshackledword.tooling.seed-db
-
   unshackledword.tooling.webapi:
     #image: unshackledword.tooling.webapi
     depends_on:
       unshackledword.tooling.database:
-        condition: service_started
-      unshackledword.tooling.seed-db:
         condition: service_started
       unshackledword.tooling.db-migration:
         condition: service_completed_successfully

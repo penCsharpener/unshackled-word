@@ -5,6 +5,7 @@ import { groupWordsByVerse } from "./words";
 
 export const bibleKeys = {
   structure: ["bible", "structure"] as const,
+  readerStatus: ["bible", "readerStatus"] as const,
   greekEditions: ["bible", "greekEditions"] as const,
   chapterText: (bookId: number, chapter: number, level = BASE_LEVEL) =>
     ["bible", "chapterText", bookId, chapter, level] as const,
@@ -37,6 +38,16 @@ export const chapterTextQuery = (bookId: number, chapter: number, level = BASE_L
     queryFn: ({ signal }) => bibleApi.chapterText(bookId, chapter, level, signal),
     staleTime: Number.POSITIVE_INFINITY,
   });
+
+/** True once the first Bible text is imported; asked again on every visit so a finished setup shows up without a reload. */
+export function useNoBibleText(): boolean {
+  const { data } = useQuery({
+    queryKey: bibleKeys.readerStatus,
+    queryFn: ({ signal }) => bibleApi.readerStatus(signal),
+    staleTime: 0,
+  });
+  return data?.hasText === false;
+}
 
 export function useBibleStructure() {
   return useQuery(structureQuery());

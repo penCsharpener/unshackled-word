@@ -12,6 +12,6 @@ Folder roadmap (see the `roadmap-folder` skill): open only the file you need.
 | [06-risks.md](06-risks.md) | Risks worth naming before starting |
 | [07-design-0031.1.md](07-design-0031.1.md) | Design of the fake draft page (layout, files, types, i18n, tests, component proposals) |
 
-## Status (2026-11-27)
+## Status (2026-11-28)
 
-0031.1 built (fake draft of `/edit/setup`, nothing calls the API, version 0.16.0; the dot is `StatusBadge variant="dot"` with `busy`, option A). Waiting at Gate A: the maintainer clicks through the page. Rows 0031.2 and later are not started. Implementation pauses at every gate in [05-tasks.md](05-tasks.md) until the maintainer has clicked through the page.
+0031.1 built (fake draft of `/edit/setup`, version 0.16.0). 0031.2 done by the developer (empty database). 0031.3 and 0031.3f built (version 0.16.1): `unshackledword.tooling.seed-db` removed from `compose.yml` (the fresh override never named it) and the WebApi no longer depends on it; the public read endpoints already answered 200 with empty lists or 404 on an empty database (checked against a throwaway migrated database); `SttsDriftCheck` logs one information line; new public `GET api/meta-bible/status` (`hasText`) drives the empty-database notice ("Noch keine Bibeltexte importiert.", admin-only link to `/edit/setup`) on the reader home and chapter page. The setup page still runs on the fake. Waiting at Gate B: the maintainer clicks through the empty app. Rows 0031.4 and later are not started. Until 0031.6f an empty stack has no seed path except the SeedDb CLI.

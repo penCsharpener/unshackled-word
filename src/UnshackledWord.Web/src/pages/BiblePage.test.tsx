@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import { fixtureStructure } from "@/test/fixtures/bibleStructure";
 import { BiblePage } from "./BiblePage";
 
@@ -20,9 +21,11 @@ describe("BiblePage", () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(
       <QueryClientProvider client={client}>
-        <MemoryRouter>
-          <BiblePage />
-        </MemoryRouter>
+        <AuthProvider>
+          <MemoryRouter>
+            <BiblePage />
+          </MemoryRouter>
+        </AuthProvider>
       </QueryClientProvider>,
     );
     expect(screen.getByRole("heading", { level: 1, name: "Bibel" })).toBeInTheDocument();

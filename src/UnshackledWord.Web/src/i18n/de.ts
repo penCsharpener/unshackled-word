@@ -709,6 +709,10 @@ export const de = {
         revelation: "Offenbarung",
       },
     },
+    noText: {
+      message: "Noch keine Bibeltexte importiert.",
+      setupLink: "Zur Ersteinrichtung",
+    },
     picker: {
       label: "Buch und Kapitel wählen",
       loading: "Bücher werden geladen …",

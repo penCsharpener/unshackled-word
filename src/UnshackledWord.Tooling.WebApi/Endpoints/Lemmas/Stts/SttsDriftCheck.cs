@@ -5,7 +5,7 @@ namespace UnshackledWord.Tooling.WebApi.Endpoints.Lemmas.Stts;
 
 /// <summary>
 /// Startup check: the in-code STTS list must agree with the SttsTags table. Differences are logged as an error and never stop the API;
-/// an empty table (not seeded yet) is only a warning.
+/// an empty table (not seeded yet) is a single information line.
 /// </summary>
 public sealed class SttsDriftCheck : IHostedService
 {
@@ -34,7 +34,7 @@ public sealed class SttsDriftCheck : IHostedService
             var tags = await scope.ServiceProvider.GetRequiredService<ISttsTagRepository>().GetAllAsync(ct);
             if (tags.Count == 0)
             {
-                _logger.LogWarning("SttsTags is empty (not seeded yet); the STTS list in code cannot be checked");
+                _logger.LogInformation("SttsTags: no tags yet (not seeded); the STTS list in code is checked after the first seed and the next start");
                 return;
             }
 
