@@ -8,7 +8,7 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
 ## What does this repo provide?
 
 1. A source for Bible data in German, Greek and Hebrew
-   * the project `UnshackledWord.Tooling.SeedDb` downloads a variety of data sources that use open licenses and imports them into a postgres database, ie.:
+   * the library `UnshackledWord.Seeding` (run from the admin page `/edit/setup` after the first start, or from the `UnshackledWord.Tooling.SeedDb` CLI) downloads a variety of data sources that use open licenses and imports them into a postgres database, ie.:
      * [x] Step Bible Data (extensive Greek and Hebrew data)
      * [x] Treasury Of Scripture Knowledge
      * [x] Statistical Restoration Greek New Testament (SR)
@@ -42,7 +42,7 @@ In the spirit of thedoreanprinciple.org this project wants to go a different way
 * Elberfelder 1871 is the base text. Other versions (a modernized literal revision first, later more dynamic or simpler ones up to a children's Bible) are verse variants on top of it, one per literalness level (1–1000, Elb1871 = 100), so a reader can slide from literal to simple. Only the current text of each variant is stored; every save is kept in an audit log.
 * Everyone can suggest changes, the maintainer merges them. AI-made mappings are attributed to their own user and confirmed by humans.
 * Read-only study tools are public, writing requires login.
-* Self-hostable via `docker compose`. The seed runs on first start; only the mapping seed is updated afterwards.
+* Self-hostable via `docker compose`. On first start register (the first account becomes Admin) and run "Ersteinrichtung" (`/edit/setup`); only the mapping seed is updated afterwards.
 
 ## Docker Setup
 
@@ -106,7 +106,7 @@ Now you can run the migration project and it will setup the schema and tables fo
 
 ### Seeding the Database
 
-Second to run is `UnshackledWord.Tooling.SeedDb`. Here follow the same steps as for the migration project to add your secrets and connection string.
+Second to run is the seed. With the API running you can instead register, open the gear menu entry "Ersteinrichtung" (`/edit/setup`, Admin) and press "Alle ausführen"; the CLI `UnshackledWord.Tooling.SeedDb` runs the same 22 steps of `SeedCatalog` from a shell. For the CLI follow the same steps as for the migration project to add your secrets and connection string.
 You will also need to check the appsettings.json file for any relative path and copy the settings over to your secrets file.
 Now use absolute paths in your secrets file to point to the right folders on your machine. This is easier to debug and get started.
 Important paths to override are:
@@ -186,12 +186,12 @@ see `api/unshackled-word/Maintainer`). The job state lives in the API process on
 (they must be writable for the container user); without a reachable assets folder the page says so and only the zip download works. A rebase empties tables the readers use for
 its duration, so run it when nobody reads.
 
-**What `docker compose up` does**
+**What the first start does** (`docker compose up` runs only the migration; the data comes from the setup page `/edit/setup` or the SeedDb CLI, which run the same catalog)
 
 | Start | STTS tags, morphology | Mappings |
 |---|---|---|
-| First, empty volume | migrations, then `SttsSeedRunner`, the German text, `MorphologySeedRunner` (then `RefreshVerseLemmaText`), the STEP data, `AiMappingImportRunner`: all imported and re-anchored | imported |
-| Later, same seed | skipped (tables not empty) | skipped (same `SeedVersion`) |
+| First, empty volume | migrations; then, on the setup page or the CLI, `SttsSeedRunner`, the German text, `MorphologySeedRunner` (then `RefreshVerseLemmaText`), the STEP data, `AiMappingImportRunner`: all imported and re-anchored | imported |
+| Later, same seed | skipped (tables not empty, steps stay green) | skipped (same `SeedVersion`) |
 | Later, newer mapping seed in the repo | skipped: morphology is never updated after the first import | updated verse by verse (see below) |
 
 Mapping update: after each import the database remembers a content hash per verse (`SeedVerseState`). A newer seed replaces a verse only when its rows still

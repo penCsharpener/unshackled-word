@@ -45,7 +45,7 @@ services:
     ports:
       - "7654:8080"
     # The maintainer seed page (menu "Wartung") writes assets/seed and temp/seed-report: both folders must be writable for the container user,
-    # so it runs as 1000:1000 like the seed container (default would be UID 1654). Not verified in a compose run yet.
+    # so it runs as 1000:1000 (default would be UID 1654). Not verified in a compose run yet.
     volumes:
       - ./assets:/src/assets
       - ./temp:/src/temp

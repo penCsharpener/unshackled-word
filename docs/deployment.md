@@ -14,7 +14,6 @@ Browser ──HTTPS──▶ Reverse proxy (Caddy/nginx/Traefik)   one public or
                                         └──▶ SMTP provider (invites, password reset, magic links)
 
 unshackledword.tooling.db-migration   one-shot, applies numbered SQL scripts, then exits
-unshackledword.tooling.seed-db        one-shot, downloads sources and imports data, then exits
 unshackledword.tooling.mcpserver      optional, MCP over HTTP at /mcp (no authentication, see §10)
 ```
 
@@ -36,12 +35,12 @@ Serve the SPA and the API from **one origin**. The frontend calls the relative `
 ```bash
 git clone <repo-url> unshackled-word && cd unshackled-word
 mkdir -p temp
-# The API container runs as UID 1654 (the aspnet image's $APP_UID), the seed container as 1000.
+# The API container runs as UID 1654 (the aspnet image's $APP_UID), the setup jobs run inside it, so the folders below must be writable for it.
 # The maintainer page ("Wartung") writes assets/seed and temp/seed-report, so both folders must be writable.
 sudo chown -R 1000:1000 assets temp && sudo chmod -R g+w assets temp
 ```
 
-If you would rather not juggle UIDs, add `user: "1000:1000"` to the `webapi` service (the seed service already does this).
+If you would rather not juggle UIDs, add `user: "1000:1000"` to the `webapi` service.
 
 ## 4. Configuration
 
@@ -129,9 +128,6 @@ services:
       unshackledword.tooling.database:
         condition: service_healthy
 
-  unshackledword.tooling.seed-db:
-    restart: "no"
-
   unshackledword.tooling.webapi:
     restart: unless-stopped
     ports: !reset []                 # the proxy reaches it as unshackledword.tooling.webapi:8080
@@ -139,8 +135,6 @@ services:
       unshackledword.tooling.database:
         condition: service_healthy
       unshackledword.tooling.db-migration:
-        condition: service_completed_successfully
-      unshackledword.tooling.seed-db:
         condition: service_completed_successfully
       mailpit: !reset null
     environment:
@@ -228,18 +222,18 @@ docker compose -f compose.yml -f compose.prod.yml up -d unshackledword.tooling.d
 # 3. schema (idempotent; prints "No new scripts" when up to date)
 docker compose -f compose.yml -f compose.prod.yml run --rm unshackledword.tooling.db-migration
 
-# 4. seed (first start only; long-running, needs internet)
-docker compose -f compose.yml -f compose.prod.yml run --rm unshackledword.tooling.seed-db
-
-# 5. the rest
+# 4. the rest (there is no seed container; the data is imported from the web UI, see below)
 docker compose -f compose.yml -f compose.prod.yml up -d
 ```
 
-What the one-shot services do:
+**First start: register, then "Ersteinrichtung".** The database is empty after the migration and the reader shows "Noch keine Bibeltexte importiert.". Open the site and register the first account: it becomes the Admin (if registration mail does not work yet, see §7 for the SMTP settings). Open the gear menu in the header, entry "Ersteinrichtung" / "Initial setup" (`/edit/setup`, Admin only). The page lists the 22 seed steps in four groups (Grundtext Elb1871, STEP Bible, Weitere Quellen, Abgeleitete Daten) with a status dot and the table counts per step. Press "Alle ausführen" / "Run all" (or "Gruppe ausführen", or the button of one row); steps run in catalog order, only red steps are taken, a step waits for its prerequisites ("braucht: …"), the run stops at the first failure, and the log under the page shows progress. A failed step that wrote nothing stays red and can simply run again. Everything runs as a background job inside the API process (one at a time, 409 while another seed job runs); closing the browser does not stop it, restarting the API does. Measured on a developer machine from an empty database with fresh downloads: about 5.5 minutes for all 22 steps (the STEP group about 90 s, the materialized views about a minute); slower connections take longer. The API container needs outbound internet for the STEP, SR-GNT, SBL and Swete downloads (cached in `temp/`) and the repo `assets/` folder (it is part of the API image). Each seed job has its own command timeout (`Seeding:CommandTimeoutSeconds`, default 900).
 
-* **db-migration** applies the numbered raw-SQL scripts in `src/UnshackledWord.Tooling.Postgres.Migration/scripts/` and records them. Migrations only create schema; all seed data is CSV and is imported afterwards.
-* **seed-db** downloads the open-licence sources into `temp/` (cached, later runs are faster) and imports them, then imports the repo seed (`assets/seed`, `assets/Elb1871Mappings`: German morphology/lemmas, word mappings, STTS tags, revision). The seed is meant for the **initial start**; afterwards only the mapping seed is updated, via the maintainer page (§8). Do not re-run the full seed against a database with live edits. Watch it with `docker compose logs -f unshackledword.tooling.seed-db`. STEP Bible data is downloaded on the fly and never redistributed; if an upstream URL fails, the run fails or leaves orphans, so check the log and the data-quality page afterwards.
-* Because `seed-db` and `db-migration` are plain services, a bare `docker compose up -d` runs them again on every start. The migration is a no-op when nothing is new. For the seed, prefer the explicit steps above (or the `completed_successfully` conditions in `compose.prod.yml`) and do not use `restart:` on these two.
+What the services do:
+
+* **db-migration** applies the numbered raw-SQL scripts in `src/UnshackledWord.Tooling.Postgres.Migration/scripts/` and records them. Migrations only create schema; all seed data is imported afterwards, from the setup page.
+* **The setup page** (library `UnshackledWord.Seeding`, `SeedCatalog`) downloads the open-licence sources into `temp/` (cached, later runs are faster) and imports them, then imports the repo seed (`assets/seed`, `assets/Elb1871Mappings`: German morphology/lemmas, word mappings, STTS tags, revision). The setup is meant for the **initial start**; afterwards only the mapping seed is updated, via the maintainer page (§8). Steps that are already green are not run again (only the materialized views, "Ansicht neu berechnen", may be refreshed), so a second "Alle ausführen" is rejected. STEP Bible data is downloaded on the fly and never redistributed; if an upstream URL fails, the step fails, so read the log and the data-quality page afterwards. Some steps take their data from the maintainer's own tables (`Elb1871Morphology`, `TskCurations`, `LxxWordTags`, `RevisionVerses`): the repo seed may hold fewer rows than the maintainer's database, the step then shows green with "nichts zu importieren".
+* **SeedDb CLI as an alternative.** The same catalog can run from a shell against any database: `dotnet run --project src/UnshackledWord.Tooling.SeedDb` (all steps in catalog order, in one process), with the connection string and `AppSettings:DatabaseSeeding:SolutionAssetsPath`/`SolutionTempPath` as described in the README. Use it for scripted or headless installs; it is no compose service any more, and the verbs `export-seed`, `anchor-check` and `rebase` stay CLI tools for the maintainer. Do not run it against a database that already holds live edits.
+* A bare `docker compose up -d` only starts the migration (a no-op when nothing is new), the API and the database; nothing seeds on start.
 
 ### Session keys
 
@@ -297,15 +291,15 @@ These are background jobs inside the API process; their state is lost if the API
 
 ### TSK curation seed
 
-`assets/seed/tsk/curations.csv` is the change file of the curated TSK cross references (highlight/hide, comments, word links, added links; no user data). The first start applies it only to an empty `TskCurations`; later it moves only via the maintainer menus ("Wartung": own export button, also written by the "Alles" seed export/round trip and zip; "Importe" import, option "Exakt wie Datei" to also delete). Migrations 0044–0046 (stored TSK keys, curations and audit, proposals) must run before the API reports healthy; back up before updating.
+`assets/seed/tsk/curations.csv` is the change file of the curated TSK cross references (highlight/hide, comments, word links, added links; no user data). The setup step `tsk-curation` applies it only to an empty `TskCurations`; later it moves only via the maintainer menus ("Wartung": own export button, also written by the "Alles" seed export/round trip and zip; "Importe" import, option "Exakt wie Datei" to also delete). Migrations 0044–0046 (stored TSK keys, curations and audit, proposals) must run before the API reports healthy; back up before updating.
 
 ### Vocab seed
 
-`assets/seed/vocab` (`entries.csv`, `keys.csv`, `meanings.csv`) holds the vocab lexicon content: entries, Strong's keys, German meanings (derived/manual, accepted, pinned, ranks), dictionary forms and the audio object *keys*. It never holds progress (cards, sessions, review log, settings, change rows) and no ids. The first start imports it; "Import" and "Update" on the maintainer page run the same sync: entries are matched by `(Track, Lemma)` (fallback: a Strong's key they hold), matched entries take the seed, unknown ones are created, entries missing from the seed are left alone. A learning-relevant difference (accepted meanings, dictionary form, keys, lemma) bumps the entry's content version and writes a change row, so learners see it in their change list; anything else is updated silently. The audio key is only set from the seed, never cleared by it. Export fails if `(Track, Lemma)` exists twice among live entries: merge or retire the duplicate first.
+`assets/seed/vocab` (`entries.csv`, `keys.csv`, `meanings.csv`) holds the vocab lexicon content: entries, Strong's keys, German meanings (derived/manual, accepted, pinned, ranks), dictionary forms and the audio object *keys*. It never holds progress (cards, sessions, review log, settings, change rows) and no ids. The setup page does not import it; the maintainer menu "Importe" does (`/edit/imports`); "Import" and "Update" on the maintainer page run the same sync: entries are matched by `(Track, Lemma)` (fallback: a Strong's key they hold), matched entries take the seed, unknown ones are created, entries missing from the seed are left alone. A learning-relevant difference (accepted meanings, dictionary form, keys, lemma) bumps the entry's content version and writes a change row, so learners see it in their change list; anything else is updated silently. The audio key is only set from the seed, never cleared by it. Export fails if `(Track, Lemma)` exists twice among live entries: merge or retire the duplicate first.
 
 ### LXX (roadmap 0028)
 
-SeedDb downloads the Swete files (about 12 MB, pinned commit `AppSettings:DatabaseSeeding:Swete:Commit`) into `temp/SeedData/Swete/` on first run and imports the text only into an empty `LxxVerses`. The confirmed LXX tags in `assets/seed/lxx/` are applied only while no tag is confirmed; afterwards use the maintainer export ("Wartung") and import ("Importe"). A STEP re-import renumbers the Hebrew words: SeedDb then deletes the LXX Hebrew links and re-imports them from `assets/seed/lxx/links.csv`, so export the LXX tags before it.
+The setup step `lxx-text` (or the SeedDb CLI) downloads the Swete files (about 12 MB, pinned commit `AppSettings:DatabaseSeeding:Swete:Commit`) into `temp/SeedData/Swete/` on first run and imports the text only into an empty `LxxVerses`. The confirmed LXX tags in `assets/seed/lxx/` are applied only while no tag is confirmed; afterwards use the maintainer export ("Wartung") and import ("Importe"). A STEP re-import renumbers the Hebrew words: SeedDb then deletes the LXX Hebrew links and re-imports them from `assets/seed/lxx/links.csv`, so export the LXX tags before it.
 
 AI tagging runs (mode `lxx-tag`) need a model profile under `AgentMapping:Profiles` and cost money, so estimate first. Set `MaxOutputTokens` to at least 16384, or `MaxVersesPerPackage` to about 10, for this mode.
 
@@ -337,7 +331,7 @@ Notes (roadmap 0023) live in the app database, so the `pg_dump` above already co
 rsync -a temp/notes/ /backups/notes/
 ```
 
-**Restore.** On a fresh database (schema migrations as in §6; the seed is not needed for notes):
+**Restore.** On a fresh database (schema migrations as in §6; the setup page is not needed for notes):
 
 1. Users register again with the same e-mail address. Import matches authors by normalised e-mail, so a note whose author does not exist yet is skipped and listed in the report.
 2. Put the file into `temp/notes/` (or keep it there from the backup) and open `/edit/imports`, card "Notizen": choose the file (newest preselected) and press import. The same via API: `POST api/maintainer/notes/import` with `{ "fileName": "notes-….json" }`.
@@ -534,7 +528,7 @@ curl -sI https://<site>/stats/api/heartbeat                  # must NOT reach Um
 | Maintainer page says assets are not reachable / export fails | `assets` or `temp` not writable for the container user (§3), or not mounted. |
 | `db-migration` cannot connect | Wrong `POSTGRES_CONNECTIONSTRING` host (must be the service name `unshackledword.tooling.database`) or the database is not healthy yet. |
 | Data-quality page returns 500 after an update | A migration is pending: run the `db-migration` service. |
-| Seed shows orphans or fails on download | An upstream source is unreachable or changed; read the seed log and the `SeedImports` rows on the data-quality page. Re-run only after reading the README "Seed" section. |
+| A setup step fails (download) | An upstream source is unreachable or changed; read the log on `/edit/setup` and the `SeedImports` rows on the data-quality page; a step that wrote nothing can run again, otherwise read the README "Seed" section first. |
 | Deep link such as `/read/...` returns 404 | The proxy lacks the SPA fallback to `index.html`. |
 
 ## 12. Open items (not solved in the repo yet)

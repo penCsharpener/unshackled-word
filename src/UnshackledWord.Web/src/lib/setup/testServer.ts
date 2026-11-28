@@ -1,6 +1,5 @@
-// Fake backend of the setup page (roadmap 0031.1): the response shape the API will return, in memory
-// plus sessionStorage, with timers instead of runners. Since 0031.6f the page talks to the real API; this is only the stand-in server of
-// the page tests. Deleted in 0031.10.
+// Test-only stand-in for the setup API (the response shape of GET/POST api/admin/setup), in memory plus sessionStorage, with timers
+// instead of runners. Only the tests import it; production code talks to the real API.
 import { ApiError } from "@/lib/api";
 import { runnableKeys, stepStatus } from "./catalog";
 import type {
@@ -12,7 +11,6 @@ import type {
   SetupStep,
   SetupStepKey,
 } from "./types";
-import { SETUP_STEP_KEYS } from "./types";
 
 interface FakeStepSpec {
   key: SetupStepKey;
@@ -239,35 +237,20 @@ export const FAKE_CATALOG: readonly FakeStepSpec[] = [
 ];
 
 export interface FakeOptions {
-  /** `?fake=reset`: clear the stored state before the first read. */
+  /** clear the stored state before the first read. */
   reset?: boolean;
-  /** `?fake=fail:<key>`: that step fails once (exercises the failed state). */
+  /** that step fails once (exercises the failed state). */
   failKey?: SetupStepKey;
   /** Injectable for tests. */
   random?: () => number;
   now?: () => Date;
 }
 
-/** Reads `?fake=` from the URL (comma list: `reset`, `fail:<key>`). */
-export function fakeOptionsFromSearch(search: string): FakeOptions {
-  const value = new URLSearchParams(search).get("fake") ?? "";
-  const options: FakeOptions = {};
-  for (const part of value.split(",")) {
-    if (part === "reset") options.reset = true;
-    if (part.startsWith("fail:")) {
-      const key = part.slice("fail:".length);
-      const known = SETUP_STEP_KEYS.find((k) => k === key);
-      if (known) options.failKey = known;
-    }
-  }
-  return options;
-}
-
 export interface SetupFake {
   status(): Promise<SetupStatus>;
   /** Rejects with ApiError(409) while a job runs, ApiError(400) naming a key that is not runnable. */
   run(request: RunSetupRequest): Promise<SetupJob>;
-  /** Clears state and timers (tests, `?fake=reset`). */
+  /** Clears state and timers (tests). */
   reset(): void;
 }
 
@@ -528,17 +511,4 @@ export function createSetupFake(options: FakeOptions = {}): SetupFake {
       writeStorage(null);
     },
   };
-}
-
-let instance: SetupFake | undefined;
-
-/** Module singleton used by useSetup.ts; created on first use with `fakeOptionsFromSearch(location.search)`. */
-export function setupFake(): SetupFake {
-  instance ??= createSetupFake(fakeOptionsFromSearch(globalThis.location?.search ?? ""));
-  return instance;
-}
-
-/** Tests: replace the singleton. */
-export function replaceSetupFake(fake: SetupFake | undefined) {
-  instance = fake;
 }

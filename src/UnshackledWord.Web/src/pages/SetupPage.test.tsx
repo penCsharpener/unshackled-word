@@ -4,8 +4,8 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
 import { AuthProvider } from "@/lib/auth/AuthContext";
-import type { FakeOptions } from "@/lib/setup/setupFake";
-import { createSetupFake, replaceSetupFake } from "@/lib/setup/setupFake";
+import type { FakeOptions } from "@/lib/setup/testServer";
+import { createSetupFake } from "@/lib/setup/testServer";
 import { json, me, stubApi } from "@/test/authHelpers";
 import { SetupPage } from "./SetupPage";
 
@@ -34,7 +34,6 @@ function renderPage() {
 function setup(roles: string[] | null, options: FakeOptions = {}, unwired: string[] = []) {
   sessionStorage.clear();
   const fake = createSetupFake({ random: () => 0, ...options });
-  replaceSetupFake(fake);
   const status = vi.spyOn(fake, "status");
   const setupBody = vi.fn(async () => {
     const { steps, checkedAt, job } = await fake.status();
@@ -70,7 +69,6 @@ beforeEach(() => i18n.changeLanguage("en"));
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
-  replaceSetupFake(undefined);
 });
 
 describe("SetupPage", () => {
@@ -206,7 +204,7 @@ describe("SetupPage", () => {
     expect(rowOf("Elb1871-Text")).toHaveTextContent("722.743");
   });
 
-  it("posts the run request of a row to the server and shows nothing fake", async () => {
+  it("posts the run request of a row to the server and shows no stand-in text", async () => {
     const { runBody } = setup(["user", "admin"]);
     renderPage();
     await screen.findByText(/steps done/);

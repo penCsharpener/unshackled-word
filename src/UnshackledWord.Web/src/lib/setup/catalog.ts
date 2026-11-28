@@ -32,7 +32,7 @@ export const STEP_LINKS: Partial<Record<SetupStepKey, SetupStepLink[]>> = {
 };
 
 /**
- * Status from counts, the same rule the server applies (03-seed-catalog.md). The fake uses it; the
+ * Status from counts, the same rule the server applies (03-seed-catalog.md). The test server uses it; the
  * page never recomputes. A `note` ("nothing to import") makes a step that ran green even with 0 rows.
  */
 export function stepStatus(

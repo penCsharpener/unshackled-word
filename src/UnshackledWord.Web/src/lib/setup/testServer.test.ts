@@ -3,7 +3,7 @@ import { de } from "@/i18n/de";
 import { en } from "@/i18n/en";
 import { ApiError } from "@/lib/api";
 import { runnableKeys, stepStatus, summarize } from "./catalog";
-import { createSetupFake, FAKE_CATALOG, fakeOptionsFromSearch } from "./setupFake";
+import { createSetupFake, FAKE_CATALOG } from "./testServer";
 import type { SetupStep, SetupStepKey, SetupTable } from "./types";
 import { SETUP_STEP_KEYS } from "./types";
 
@@ -19,7 +19,7 @@ const find = (steps: SetupStep[], key: SetupStepKey) => {
   return step;
 };
 
-describe("setup fake", () => {
+describe("setup test server", () => {
   it("starts with 22 steps and only the books green", async () => {
     const fake = createSetupFake({ random: () => 0 });
     const { steps } = await fake.status();
@@ -128,12 +128,6 @@ describe("setup fake", () => {
     const second = createSetupFake({ random: () => 0 });
     const { job } = await second.status();
     expect(job).toMatchObject({ status: "failed", error: "Seite neu geladen" });
-  });
-
-  it("reads ?fake= flags", () => {
-    expect(fakeOptionsFromSearch("?fake=reset,fail:sbl")).toEqual({ reset: true, failKey: "sbl" });
-    expect(fakeOptionsFromSearch("?fake=fail:nope")).toEqual({});
-    expect(fakeOptionsFromSearch("")).toEqual({});
   });
 });
 
